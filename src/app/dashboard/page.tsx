@@ -51,7 +51,7 @@ export default function Example() {
         >
           <DialogBackdrop
             transition
-            className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
+            className="fixed inset-0 bg-zinc-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
           />
 
           <div className="fixed inset-0 flex">
@@ -77,7 +77,7 @@ export default function Example() {
 
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2 dark:bg-zinc-900">
-                <div className="flex h-16 shrink-0 items-center justify-center gap-2 border-b-1">
+                <div className="border-foreground/10 flex h-16 shrink-0 items-center justify-center gap-2 border-b">
                   <FireIcon className="h-8 w-8 text-rose-500" />
                   <span className="font-display text-xl">Ignidash</span>
                 </div>
@@ -131,7 +131,7 @@ export default function Example() {
                                 className={classNames(
                                   team.current
                                     ? "border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400"
-                                    : "border-gray-200 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:border-gray-700 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
+                                    : "border-foreground/10 dark:border-foreground/20 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
                                   "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium dark:bg-zinc-900"
                                 )}
                               >
@@ -153,8 +153,8 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-zinc-900">
-            <div className="flex h-16 shrink-0 items-center justify-center gap-2 border-b-1">
+          <div className="border-foreground/10 dark:border-foreground/10 flex grow flex-col gap-y-5 overflow-y-auto border-r bg-white px-6 dark:bg-zinc-900">
+            <div className="border-foreground/10 flex h-16 shrink-0 items-center justify-center gap-2 border-b">
               <FireIcon className="h-8 w-8 text-rose-500" />
               <span className="font-display text-xl">Ignidash</span>
             </div>
@@ -208,7 +208,7 @@ export default function Example() {
                             className={classNames(
                               team.current
                                 ? "border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400"
-                                : "border-gray-200 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:border-gray-700 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
+                                : "border-foreground/10 dark:border-foreground/20 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
                               "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium dark:bg-zinc-900"
                             )}
                           >
@@ -273,7 +273,7 @@ export default function Example() {
           </div>
         </main>
 
-        <aside className="fixed inset-y-0 left-72 hidden w-96 overflow-y-auto border-r border-gray-200 px-4 py-6 sm:px-6 lg:px-8 xl:block dark:border-gray-800">
+        <aside className="border-foreground/10 dark:border-foreground/10 fixed inset-y-0 left-72 hidden w-96 overflow-y-auto border-r px-4 py-6 sm:px-6 lg:px-8 xl:block">
           {/* Secondary column (hidden on smaller screens) */}
         </aside>
       </div>
