@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DesktopSidebar } from "./components/desktop-sidebar";
 import { MainArea } from "./components/main-area";
 import { MobileHeader } from "./components/mobile-header";
-import { MobileSidebarDialog } from "./components/mobile-sidebar-dialog";
+import { MobileSidebar } from "./components/mobile-sidebar";
 import { SecondaryColumn } from "./components/secondary-column";
 import { navigation } from "./navigation";
 
@@ -14,7 +14,7 @@ export default function DashboardPage() {
   return (
     <>
       <div>
-        <MobileSidebarDialog
+        <MobileSidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           navigation={navigation}
