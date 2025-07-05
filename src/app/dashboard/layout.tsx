@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import { DesktopSidebar } from "./components/desktop-sidebar";
 import { MobileHeader } from "./components/mobile-header";
 import { MobileSidebar } from "./components/mobile-sidebar";
-import { MainArea } from "./components/main-area";
-import { SecondaryColumn } from "./components/secondary-column";
 import { getNavigation, getCurrentPageTitle } from "./navigation";
 
 export default function DashboardLayout({
@@ -34,8 +32,7 @@ export default function DashboardLayout({
         currentPageTitle={currentPageTitle}
       />
 
-      <MainArea>{children}</MainArea>
-      <SecondaryColumn />
+      {children}
     </div>
   );
 }
