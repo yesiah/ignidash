@@ -27,17 +27,12 @@ const navigation = [
   { name: "Explore", href: "#", icon: ChartBarIcon, current: false },
   { name: "Copilot", href: "#", icon: SparklesIcon, current: false },
 ];
-const teams = [
-  { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Example() {
+export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -113,38 +108,6 @@ export default function Example() {
                         ))}
                       </ul>
                     </li>
-                    <li>
-                      <div className="text-xs/6 font-semibold text-gray-400 dark:text-gray-500">
-                        Your teams
-                      </div>
-                      <ul role="list" className="-mx-2 mt-2 space-y-1">
-                        {teams.map((team) => (
-                          <li key={team.name}>
-                            <a
-                              href={team.href}
-                              className={classNames(
-                                team.current
-                                  ? "bg-gray-50 text-rose-600 dark:bg-zinc-800 dark:text-rose-400"
-                                  : "text-gray-700 hover:bg-gray-50 hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
-                                "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                              )}
-                            >
-                              <span
-                                className={classNames(
-                                  team.current
-                                    ? "border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400"
-                                    : "border-foreground/10 dark:border-foreground/20 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
-                                  "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium dark:bg-zinc-900"
-                                )}
-                              >
-                                {team.initial}
-                              </span>
-                              <span className="truncate">{team.name}</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
                   </ul>
                 </nav>
               </div>
@@ -188,38 +151,6 @@ export default function Example() {
                             )}
                           />
                           {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                <li>
-                  <div className="text-xs/6 font-semibold text-gray-400 dark:text-gray-500">
-                    Your teams
-                  </div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
-                      <li key={team.name}>
-                        <a
-                          href={team.href}
-                          className={classNames(
-                            team.current
-                              ? "bg-gray-50 text-rose-600 dark:bg-zinc-800 dark:text-rose-400"
-                              : "text-gray-700 hover:bg-gray-50 hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
-                            "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                          )}
-                        >
-                          <span
-                            className={classNames(
-                              team.current
-                                ? "border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400"
-                                : "border-foreground/10 dark:border-foreground/20 text-gray-400 group-hover:border-rose-600 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:border-rose-400 dark:group-hover:text-rose-400",
-                              "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium dark:bg-zinc-900"
-                            )}
-                          >
-                            {team.initial}
-                          </span>
-                          <span className="truncate">{team.name}</span>
                         </a>
                       </li>
                     ))}
