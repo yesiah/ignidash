@@ -77,7 +77,7 @@ export default function Example() {
 
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2 dark:bg-zinc-900">
-                <div className="border-foreground/10 flex h-16 shrink-0 items-center justify-center gap-2 border-b">
+                <div className="border-foreground/10 flex h-16 shrink-0 items-center gap-2 border-b">
                   <FireIcon className="h-8 w-8 text-rose-500" />
                   <span className="font-display text-xl">Ignidash</span>
                 </div>
@@ -154,7 +154,7 @@ export default function Example() {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="border-foreground/10 dark:border-foreground/10 flex grow flex-col gap-y-5 overflow-y-auto border-r bg-white px-6 dark:bg-zinc-900">
-            <div className="border-foreground/10 flex h-16 shrink-0 items-center justify-center gap-2 border-b">
+            <div className="border-foreground/10 flex h-16 shrink-0 items-center gap-2 border-b">
               <FireIcon className="h-8 w-8 text-rose-500" />
               <span className="font-display text-xl">Ignidash</span>
             </div>
