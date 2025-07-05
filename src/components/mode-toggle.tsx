@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/catalyst/button";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
+import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 
 export function ModeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
