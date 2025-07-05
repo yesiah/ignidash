@@ -9,7 +9,7 @@ export function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
-        "my-4 overflow-hidden bg-gray-100 shadow-sm sm:rounded-lg dark:bg-zinc-900",
+        "my-2 overflow-hidden bg-gray-100 shadow-sm sm:rounded-lg dark:bg-zinc-900",
         className ?? ""
       )}
     >

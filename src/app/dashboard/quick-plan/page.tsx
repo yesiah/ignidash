@@ -11,7 +11,7 @@ export default function QuickPlanPage() {
   return (
     <>
       <MainArea>
-        <div className="border-foreground/10 dark:border-foreground/10 border-b pb-5">
+        <div className="border-foreground/10 mb-5 border-b pb-5">
           <h3 className="font-display flex items-center gap-2 text-lg font-semibold text-gray-900 lg:text-xl dark:text-gray-100">
             <PresentationChartLineIcon className="h-5 w-5" />
             Results
@@ -19,15 +19,25 @@ export default function QuickPlanPage() {
         </div>
       </MainArea>
       <SecondaryColumn>
-        <div className="border-foreground/10 dark:border-foreground/10 border-b pb-5">
+        <div className="border-foreground/10 mb-5 border-b pb-5">
           <h3 className="font-display flex items-center gap-2 text-lg font-semibold text-gray-900 lg:text-xl dark:text-gray-100">
             <CalculatorIcon className="h-5 w-5" />
             Your Numbers
           </h3>
         </div>
-        <Card>
-          <CoreInputs />
-        </Card>
+        <div className="border-foreground/10 mb-5 border-b pb-5">
+          <div className="ml-2">
+            <h4 className="text-base font-semibold">Foundation</h4>
+            <p className="text-muted-foreground mt-2 text-sm">
+              The core numbers needed to estimate your financial independence
+              timeline.
+            </p>
+          </div>
+
+          <Card>
+            <CoreInputs />
+          </Card>
+        </div>
       </SecondaryColumn>
     </>
   );
