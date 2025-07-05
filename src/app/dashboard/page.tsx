@@ -10,24 +10,22 @@ import {
 } from "@headlessui/react";
 import {
   Bars3Icon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
+  BoltIcon,
+  ChartBarIcon,
+  LightBulbIcon,
+  MagnifyingGlassIcon,
+  SparklesIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { ModeToggle } from "@/components/mode-toggle";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
+  { name: "Quick Plan", href: "#", icon: BoltIcon, current: true },
+  { name: "Deep Dive", href: "#", icon: MagnifyingGlassIcon, current: false },
+  { name: "Insights", href: "#", icon: LightBulbIcon, current: false },
+  { name: "Explore", href: "#", icon: ChartBarIcon, current: false },
+  { name: "Copilot", href: "#", icon: SparklesIcon, current: false },
 ];
 const teams = [
   { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
@@ -258,7 +256,7 @@ export default function Example() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
           <div className="flex-1 text-sm/6 font-semibold text-gray-900 dark:text-gray-100">
-            Dashboard
+            Quick Plan
           </div>
           <a href="#">
             <span className="sr-only">Your profile</span>
