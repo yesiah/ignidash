@@ -1,14 +1,11 @@
 import Image from "next/image";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { ModeToggle } from "@/components/mode-toggle";
+import { cn } from "@/lib/utils";
 import type { NavigationItem } from "../navigation";
 
 interface DesktopSidebarProps {
   navigation: NavigationItem[];
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
 }
 
 export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
@@ -31,7 +28,7 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                   <li key={item.name}>
                     <a
                       href={item.href}
-                      className={classNames(
+                      className={cn(
                         item.current
                           ? "bg-gray-50 text-rose-600 dark:bg-zinc-800 dark:text-rose-400"
                           : "text-gray-700 hover:bg-gray-50 hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
@@ -40,7 +37,7 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                     >
                       <item.icon
                         aria-hidden="true"
-                        className={classNames(
+                        className={cn(
                           item.current
                             ? "text-rose-600 dark:text-rose-400"
                             : "text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400",
