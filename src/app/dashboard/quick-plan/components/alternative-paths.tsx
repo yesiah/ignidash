@@ -2,17 +2,14 @@
 
 import { Input } from "@/components/catalyst/input";
 import { DisclosureSection } from "@/components/disclosure-section";
-import {
-  RocketLaunchIcon,
-  BuildingStorefrontIcon,
-} from "@heroicons/react/24/outline";
+import { Coffee, RollerCoaster } from "lucide-react";
 
 export function CoastFIRE() {
   return (
     <DisclosureSection
       title="Coast FIRE"
       desc="Front-load savings, then work just enough to cover living expenses."
-      icon={<RocketLaunchIcon className="h-5 w-5" />}
+      icon={<RollerCoaster className="h-5 w-5" />}
     >
       <form onSubmit={(e) => e.preventDefault()} className="mt-4 space-y-4">
         <div>
@@ -34,7 +31,7 @@ export function BaristaFIRE() {
     <DisclosureSection
       title="Barista FIRE"
       desc="Work part-time in enjoyable jobs while investments cover the rest."
-      icon={<BuildingStorefrontIcon className="h-5 w-5" />}
+      icon={<Coffee className="h-5 w-5" />}
     >
       <form onSubmit={(e) => e.preventDefault()} className="mt-4 space-y-4">
         <div>
