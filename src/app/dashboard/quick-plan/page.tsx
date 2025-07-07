@@ -6,6 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Card } from "@/components/card";
 import { CoreInputs } from "./components/core-inputs";
+import { AlternativePaths } from "./components/alternative-paths";
 
 export default function QuickPlanPage() {
   return (
@@ -36,6 +37,18 @@ export default function QuickPlanPage() {
 
           <Card>
             <CoreInputs />
+          </Card>
+        </div>
+        <div className="border-foreground/10 mb-5 border-b pb-5">
+          <div className="ml-2">
+            <h4 className="text-base font-semibold">Alternative Paths</h4>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Discover hybrid approaches that combine partial work and
+              investment growth for earlier lifestyle flexibility.
+            </p>
+          </div>
+          <Card>
+            <AlternativePaths />
           </Card>
         </div>
       </SecondaryColumn>
