@@ -43,8 +43,8 @@ export default function QuickPlanPage() {
           <div className="ml-2">
             <h4 className="text-base font-semibold">Alternative Paths</h4>
             <p className="text-muted-foreground mt-2 text-sm">
-              Discover hybrid approaches that combine partial work and
-              investment growth for earlier lifestyle flexibility.
+              Full retirement isn&apos;t your only option. Explore proven
+              strategies for earlier freedom.
             </p>
           </div>
           <Card>
