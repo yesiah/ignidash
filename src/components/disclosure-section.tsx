@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 interface DisclosureSectionProps {
   title: string;
   desc?: string;
+  icon: React.ReactNode;
   children: React.ReactNode;
   className?: string;
 }
@@ -18,6 +19,7 @@ interface DisclosureSectionProps {
 export function DisclosureSection({
   title,
   desc,
+  icon,
   children,
   className,
 }: DisclosureSectionProps) {
@@ -31,7 +33,10 @@ export function DisclosureSection({
       >
         <div className="w-full text-left">
           <div className="flex w-full items-center justify-between">
-            <h4 className="text-base font-semibold">{title}</h4>
+            <div className="flex items-center gap-2">
+              {icon}
+              <h4 className="text-base font-semibold">{title}</h4>
+            </div>
             <ChevronDownIcon className="w-5 shrink-0 group-data-open:rotate-180" />
           </div>
           <p className="text-muted-foreground mt-2 hidden text-xs group-data-open:block">
