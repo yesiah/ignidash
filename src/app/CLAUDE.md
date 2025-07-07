@@ -19,18 +19,18 @@ We serve "thoughtful optimizers" - people who want an assistant to help them mak
 ### Hero Section
 
 **Headline:** Financial independence. Personalized.
-**Subheadline:** Explore retirement timelines, run what-if projections, and get AI-powered insights — without the complexity of traditional tools.
+**Subheadline:** Explore retirement timelines, run what-if projections, and get AI-powered insights to discover paths and make confident life decisions.
 
 ### Features Section
 
 **Feature 1: Every FIRE Path, Clearly Mapped**
-Run the numbers on early retirement, sabbaticals, part-time work, and more. See how your future shifts.
+Run the numbers on early retirement, sabbaticals, part-time work, and more. Compare paths side-by-side to find what excites you.
 
 **Feature 2: Play Out Your What-Ifs**
 See how kids, career changes, time off, and other major decisions affect your financial independence timeline.
 
 **Feature 3: Your AI Retirement Advisor**
-Get wisdom inspired by the best minds in financial independence, personalized to your exact situation.
+Discover new possibilities and compare paths with confidence. Get personalized insights for every option, tailored to your situation and values.
 
 **Feature 4: Share Your Plan**
 From running it by your inner circle to starting a conversation on Reddit or X, share your plan with one simple link.
