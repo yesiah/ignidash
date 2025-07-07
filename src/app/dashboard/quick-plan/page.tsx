@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Card } from "@/components/card";
 import { CoreInputs } from "./components/core-inputs";
-import { AlternativePaths } from "./components/alternative-paths";
+import { CoastFIRE, BaristaFIRE } from "./components/alternative-paths";
 
 export default function QuickPlanPage() {
   return (
@@ -48,7 +48,10 @@ export default function QuickPlanPage() {
             </p>
           </div>
           <Card>
-            <AlternativePaths />
+            <CoastFIRE />
+          </Card>
+          <Card>
+            <BaristaFIRE />
           </Card>
         </div>
       </SecondaryColumn>
