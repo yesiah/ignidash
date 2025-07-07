@@ -11,7 +11,7 @@ import { Input } from "@/components/catalyst/input";
 export function AlternativePaths() {
   return (
     <Disclosure>
-      <DisclosureButton className="group flex w-full items-center justify-between gap-2">
+      <DisclosureButton className="group data-open:border-foreground/10 flex w-full items-center justify-between gap-2 data-open:mb-5 data-open:border-b data-open:pb-5">
         Coast FIRE
         <ChevronDownIcon className="w-5 group-data-open:rotate-180" />
       </DisclosureButton>
