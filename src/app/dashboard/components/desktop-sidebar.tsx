@@ -24,7 +24,7 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              <ul role="list" className="-mx-2 space-y-1">
+              <ul role="list" className="-mx-2 space-y-2">
                 {navigation.map((item) => (
                   <li key={item.name}>
                     <Link
@@ -32,7 +32,7 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                       className={cn(
                         item.current
                           ? "border border-rose-600 bg-white text-rose-600 dark:border-rose-400 dark:bg-zinc-800 dark:text-rose-400"
-                          : "text-gray-700 hover:bg-white hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
+                          : "border border-transparent text-gray-700 hover:bg-white hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
                         "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
                       )}
                     >
