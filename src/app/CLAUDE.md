@@ -29,7 +29,7 @@ Run the numbers on early retirement, sabbaticals, part-time work, and more. Comp
 **Feature 2: Play Out Your What-Ifs**
 See how kids, career changes, time off, and other major decisions affect your financial independence timeline.
 
-**Feature 3: Your AI Retirement Advisor**
+**Feature 3: Your AI Retirement Comrade**
 Discover new possibilities and compare paths with confidence. Get personalized insights for every option, tailored to your situation and values.
 
 **Feature 4: Share Your Plan**
