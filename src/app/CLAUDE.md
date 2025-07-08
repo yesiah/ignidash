@@ -71,3 +71,20 @@ From running it by your inner circle to starting a conversation on Reddit or X, 
 - Empathetic to decision paralysis
 - Focus on outcomes over features
 - Reddit-friendly (authentic, not corporate)
+
+## Investment Advice Compliance
+
+**CRITICAL**: Avoid any content that could be construed as investment advice. This means:
+
+- Never recommend specific securities, funds, or investment products (e.g., "invest in VTSAX")
+- Never suggest portfolio allocations (e.g., "60% stocks, 40% bonds")
+- Never provide personalized investment strategies
+
+When discussing investment concepts (withdrawal rates, compound interest, asset allocation theory), always include disclaimer: "This is for educational purposes only. Not personalized investment advice."
+
+Focus on:
+
+- ✅ Life path exploration (Coast FIRE, Barista FIRE)
+- ✅ Financial calculations and projections
+- ✅ Educational explanations of concepts
+- ❌ NOT specific investment recommendations
