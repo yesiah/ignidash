@@ -1,5 +1,6 @@
 import { CheckIcon } from "@heroicons/react/20/solid";
 import Navbar from "../components/navbar";
+import Footer from "../components/footer";
 
 const tiers = [
   {
@@ -153,6 +154,7 @@ export default function PricingPage() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
