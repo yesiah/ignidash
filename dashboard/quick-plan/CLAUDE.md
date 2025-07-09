@@ -28,8 +28,8 @@ Quick Plan is the core FIRE calculator feature that provides instant projections
 - **Type**: Currency input
 - **Validation**: Required, must be positive
 - **UI**: Currency formatting with $ prefix
-- **Progressive Disclosure**:
-  - "Income growth rate" (collapsible)
+- **Advanced Settings** (in Advanced Settings drawer):
+  - "Income growth rate"
   - **Default**: 3% annually
   - **Range**: 0-10%
 
@@ -38,11 +38,11 @@ Quick Plan is the core FIRE calculator feature that provides instant projections
 - **Type**: Currency input
 - **Validation**: Required, must be positive, should be ≤ income
 - **UI**: Currency formatting with $ prefix
-- **Progressive Disclosure**:
-  - "Expense growth rate" (collapsible)
+- **Advanced Settings** (in Advanced Settings drawer):
+  - "Expense growth rate"
     - **Default**: 3% annually
     - **Range**: 0-10%
-  - "Retirement expenses" (collapsible)
+  - "Retirement expenses"
     - **Default**: Same as current expenses
     - **UI**: Currency input or percentage of current expenses
 
@@ -51,8 +51,8 @@ Quick Plan is the core FIRE calculator feature that provides instant projections
 - **Type**: Currency input
 - **Validation**: Required, must be non-negative
 - **UI**: Currency formatting with $ prefix
-- **Progressive Disclosure**:
-  - "Asset allocation & expected returns" (collapsible)
+- **Advanced Settings** (in Advanced Settings drawer):
+  - "Asset allocation & expected returns"
   - **Stocks**: Default 70%, Expected return 7%
   - **Bonds**: Default 30%, Expected return 4%
   - **Cash**: Default 0%, Expected return 1%
@@ -121,6 +121,14 @@ Users can add up to 3 events total, mixing and matching:
 │  Your Numbers                                 [⚙️ Settings] │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### Advanced Settings Drawer
+
+Triggered by "Advanced" button under Core Inputs card, contains input-specific advanced settings:
+
+- Income growth rate
+- Expense growth rate and retirement expenses
+- Asset allocation & expected returns
 
 ### Settings Dialog/Drawer
 
@@ -519,9 +527,10 @@ personalized advice."
 
 ## User Experience Guidelines
 
-### Progressive Disclosure Implementation
+### Advanced Settings Implementation
 
-- **Collapsible sections** with clear expand/collapse indicators
+- **Separate Advanced Settings drawer** for input-specific settings
+- **Clean Core Inputs** without inline disclosure components
 - **Sensible defaults** that work for most users
 - **Contextual help** tooltips for complex concepts
 - **Visual hierarchy** to guide user attention
