@@ -36,7 +36,7 @@ export function SectionSelector({
 }: SectionSelectorProps) {
   return (
     <div className="mb-5">
-      <div className="grid grid-cols-1 sm:hidden">
+      <div className="border-foreground/10 grid grid-cols-1 border-b pb-5 sm:hidden">
         <select
           value={tabs.find((tab) => tab.value === activeSection)?.name}
           onChange={(e) => {
