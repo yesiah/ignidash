@@ -49,7 +49,7 @@ export default function Drawer({
                   </button>
                 </div>
               </TransitionChild>
-              <div className="bg-emphasized-background flex h-full flex-col overflow-y-auto py-6 shadow-xl">
+              <div className="bg-emphasized-background flex h-full flex-col overflow-y-auto py-6">
                 <div className="px-4 sm:px-6">
                   <DialogTitle className="text-foreground text-base font-semibold">
                     {title}
