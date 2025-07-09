@@ -4,6 +4,7 @@ import { CalculatorIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "@/components/icon-button";
 import { useState } from "react";
 import Drawer from "@/components/drawer";
+import { GlobalSettings } from "./global-settings";
 
 export function YourNumbersHeader() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -29,7 +30,7 @@ export function YourNumbersHeader() {
         title="Settings"
         desc="Adjust the assumptions and rules used to calculate your FIRE timeline."
       >
-        <div />
+        <GlobalSettings />
       </Drawer>
     </>
   );
