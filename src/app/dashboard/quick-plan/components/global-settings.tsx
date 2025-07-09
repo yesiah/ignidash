@@ -52,6 +52,23 @@ export function GlobalSettings() {
 
         <Card>
           <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <div key="life-expectancy">
+              <label
+                htmlFor="life-expectancy"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Life Expectancy (years)
+              </label>
+              <Input
+                id="life-expectancy"
+                type="number"
+                value={lifeExpectancy}
+                onChange={(e) => setLifeExpectancy(e.target.value)}
+                placeholder="85"
+                min="50"
+                max="110"
+              />
+            </div>
             <div key="inflation-rate">
               <label
                 htmlFor="inflation-rate"
@@ -68,24 +85,6 @@ export function GlobalSettings() {
                 min="0"
                 max="8"
                 step="0.1"
-              />
-            </div>
-
-            <div key="life-expectancy">
-              <label
-                htmlFor="life-expectancy"
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Life Expectancy (years)
-              </label>
-              <Input
-                id="life-expectancy"
-                type="number"
-                value={lifeExpectancy}
-                onChange={(e) => setLifeExpectancy(e.target.value)}
-                placeholder="85"
-                min="70"
-                max="110"
               />
             </div>
           </form>
