@@ -35,7 +35,7 @@ export function SectionSelector({
   setActiveSection,
 }: SectionSelectorProps) {
   return (
-    <div>
+    <div className="mb-5">
       <div className="grid grid-cols-1 sm:hidden">
         <select
           value={tabs.find((tab) => tab.value === activeSection)?.name}
