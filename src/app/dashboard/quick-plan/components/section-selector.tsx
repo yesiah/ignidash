@@ -13,7 +13,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Tabs() {
+export function SectionSelector() {
   return (
     <div>
       <div className="grid grid-cols-1 sm:hidden">

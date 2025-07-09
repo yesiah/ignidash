@@ -5,15 +5,15 @@ import { Card } from "@/components/card";
 import { IconButton } from "@/components/icon-button";
 import { CoreInputs } from "./components/core-inputs";
 import { CoastFIRE, BaristaFIRE } from "./components/alternative-paths";
-import Tabs from "@/components/tabs";
-import { ResultsHeader } from "@/components/results-header";
+import { SectionSelector } from "./components/section-selector";
+import { ResultsHeader } from "./components/results-header";
 
 export default function QuickPlanPage() {
   return (
     <>
       <MainArea>
         <div className="block xl:hidden">
-          <Tabs />
+          <SectionSelector />
         </div>
         <div className="border-foreground/10 mb-5 hidden border-b pb-5 xl:block">
           <ResultsHeader />
