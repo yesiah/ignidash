@@ -1,31 +1,60 @@
 "use client";
 
-import { Input } from "@/components/catalyst/input";
+import { useState } from "react";
+import { NumberField } from "@/components/number-field";
 
 export function CoreInputs() {
+  const [currentAge, setCurrentAge] = useState("");
+  const [annualIncome, setAnnualIncome] = useState("");
+  const [annualExpenses, setAnnualExpenses] = useState("");
+  const [investedAssets, setInvestedAssets] = useState("");
+
   const calcFields = [
-    { id: "current-age", label: "Current Age", placeholder: "28" },
-    { id: "annual-income", label: "Annual Income", placeholder: "$85,000" },
-    { id: "annual-expenses", label: "Annual Expenses", placeholder: "$50,000" },
-    { id: "invested-assets", label: "Invested Assets", placeholder: "$75,000" },
+    {
+      id: "current-age",
+      label: "Current Age",
+      placeholder: "28",
+      value: currentAge,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setCurrentAge(e.target.value),
+    },
+    {
+      id: "annual-income",
+      label: "Annual Income",
+      placeholder: "$85,000",
+      value: annualIncome,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setAnnualIncome(e.target.value),
+    },
+    {
+      id: "annual-expenses",
+      label: "Annual Expenses",
+      placeholder: "$50,000",
+      value: annualExpenses,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setAnnualExpenses(e.target.value),
+    },
+    {
+      id: "invested-assets",
+      label: "Invested Assets",
+      placeholder: "$75,000",
+      value: investedAssets,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setInvestedAssets(e.target.value),
+    },
   ];
 
   return (
     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
       {calcFields.map((calcField) => (
-        <div key={calcField.id}>
-          <label
-            htmlFor={calcField.id}
-            className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            {calcField.label}
-          </label>
-          <Input
-            id={calcField.id}
-            type="number"
-            placeholder={calcField.placeholder}
-          />
-        </div>
+        <NumberField
+          key={calcField.id}
+          id={calcField.id}
+          label={calcField.label}
+          value={calcField.value}
+          onChange={calcField.onChange}
+          placeholder={calcField.placeholder}
+        />
       ))}
     </form>
   );
