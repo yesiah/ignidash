@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Input } from "@/components/catalyst/input";
 import { Card } from "@/components/card";
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 
 export function GlobalSettings() {
   const [safeWithdrawalRate, setSafeWithdrawalRate] = useState("4");
   const [inflationRate, setInflationRate] = useState("3");
   const [lifeExpectancy, setLifeExpectancy] = useState("85");
+  const [currencyFormat, setCurrencyFormat] = useState("today"); // "today" or "future"
 
   return (
     <>
@@ -86,6 +88,43 @@ export function GlobalSettings() {
                 max="8"
                 step="0.1"
               />
+            </div>
+          </form>
+        </Card>
+      </div>
+      <div className="mb-5 pb-5">
+        <div className="ml-2">
+          <h4 className="text-base font-semibold">Display</h4>
+        </div>
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <div key="currency-display">
+              <label
+                htmlFor="currency-display"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Currency Format
+              </label>
+              <div className="mt-2 grid grid-cols-1">
+                <select
+                  id="currency-display"
+                  name="currency-display"
+                  value={currencyFormat}
+                  onChange={(e) => setCurrencyFormat(e.target.value)}
+                  className="focus:outline-foreground col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6"
+                >
+                  <option value="today">Today&apos;s Currency</option>
+                  <option value="future">Future Inflated Currency</option>
+                </select>
+                <ChevronDownIcon
+                  aria-hidden="true"
+                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                />
+              </div>
+              <p className="text-muted-foreground mt-2 text-xs">
+                Today&apos;s currency shows purchasing power now, future
+                currency show nominal amounts at retirement.
+              </p>
             </div>
           </form>
         </Card>
