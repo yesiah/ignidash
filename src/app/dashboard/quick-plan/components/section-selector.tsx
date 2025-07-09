@@ -46,7 +46,7 @@ export function SectionSelector({
             }
           }}
           aria-label="Select a section"
-          className="bg-emphasized-background text-foreground outline-foreground/10 col-start-1 row-start-1 w-full appearance-none rounded-md py-2 pr-8 pl-3 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-rose-600 dark:focus:outline-rose-400"
+          className="bg-emphasized-background text-foreground outline-foreground/10 focus:outline-foreground col-start-1 row-start-1 w-full appearance-none rounded-md py-2 pr-8 pl-3 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2"
         >
           {tabs.map((tab) => (
             <option key={tab.name} value={tab.name}>
