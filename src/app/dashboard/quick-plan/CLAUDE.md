@@ -590,6 +590,7 @@ personalized advice."
 - **Advanced withdrawal strategies**
 - **Detailed breakdown exports**
 - **AI-powered optimization suggestions**
+- **Portfolio rebalancing over time** - Feature to model changing asset allocation as users age (e.g., glide path from aggressive to conservative)
 
 ## Implementation Priority
 
