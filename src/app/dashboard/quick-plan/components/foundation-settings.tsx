@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { NumberField } from "@/components/number-field";
 import { FormSection } from "@/components/form-section";
-import InvalidInputError from "./invalid-input-error";
+import InvalidInputError from "@/components/invalid-input-error";
 
 interface FoundationSettingsProps {
   annualExpenses?: string;
@@ -89,7 +89,14 @@ export function FoundationSettings({
         />
       </FormSection>
 
-      <FormSection title="Asset Allocation">
+      <FormSection
+        title="Asset Allocation"
+        errorComponent={
+          showAllocationError && (
+            <InvalidInputError title="Asset allocation must total 100%" />
+          )
+        }
+      >
         <NumberField
           id="stock-allocation"
           label="Stocks (%)"
@@ -117,9 +124,6 @@ export function FoundationSettings({
           min="0"
           max="100"
         />
-        {showAllocationError && (
-          <InvalidInputError title="Asset allocation must total 100%" />
-        )}
       </FormSection>
       <FormSection title="Expected Returns" hasBorder={false}>
         <NumberField

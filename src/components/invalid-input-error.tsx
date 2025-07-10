@@ -1,6 +1,6 @@
 import { XCircleIcon } from "@heroicons/react/20/solid";
 
-interface InvalidInputErrorProps {
+export interface InvalidInputErrorProps {
   title: string;
   description?: string;
 }
@@ -10,7 +10,7 @@ export default function InvalidInputError({
   description,
 }: InvalidInputErrorProps) {
   return (
-    <div className="rounded-md bg-red-50 p-4">
+    <div className="rounded-lg bg-red-50 p-4">
       <div className="flex">
         <div className="shrink-0">
           <XCircleIcon aria-hidden="true" className="size-5 text-red-400" />

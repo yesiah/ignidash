@@ -1,12 +1,14 @@
 "use client";
 
 import { Card } from "@/components/card";
+import type { InvalidInputErrorProps } from "@/components/invalid-input-error";
 
 interface FormSectionProps {
   title: React.ReactNode;
   desc?: string;
   children: React.ReactNode;
   hasBorder?: boolean;
+  errorComponent?: React.ReactElement<InvalidInputErrorProps> | false;
 }
 
 export function FormSection({
@@ -14,6 +16,7 @@ export function FormSection({
   desc,
   children,
   hasBorder = true,
+  errorComponent,
 }: FormSectionProps) {
   return (
     <div
@@ -30,6 +33,7 @@ export function FormSection({
           {children}
         </form>
       </Card>
+      {errorComponent}
     </div>
   );
 }
