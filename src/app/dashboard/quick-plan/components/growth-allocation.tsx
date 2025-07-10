@@ -83,7 +83,7 @@ export function GrowthAllocation({ annualExpenses }: GrowthAllocationProps) {
           value={retirementExpenses}
           onChange={(e) => setRetirementExpenses(e.target.value)}
           placeholder={retirementExpensesPlaceholder}
-          desc="Annual spending in today's currency. Often lower than current expenses."
+          desc="Annual retirement spending in today's currency. Often lower than current expenses."
         />
       </FormSection>
 
