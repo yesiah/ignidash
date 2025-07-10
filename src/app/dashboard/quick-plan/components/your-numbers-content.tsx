@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/card";
-import { CoreInputs } from "./core-inputs";
+import { FoundationInputs } from "./foundation-inputs";
 import { CoastFIRE, BaristaFIRE } from "./fire-path-options";
 import { RightChevronButton } from "@/components/right-chevron-button";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export function YourNumbersContent() {
     <>
       <div className="border-foreground/10 mb-5 border-b pb-5">
         <div className="ml-2">
-          <h4 className="text-base font-semibold">Foundation</h4>
+          <h4 className="text-base font-semibold">The Foundation</h4>
           <p className="text-muted-foreground mt-2 text-sm">
             The core numbers needed to estimate your financial independence
             timeline.
@@ -29,7 +29,7 @@ export function YourNumbersContent() {
         </div>
 
         <Card>
-          <CoreInputs
+          <FoundationInputs
             currentAge={currentAge}
             setCurrentAge={setCurrentAge}
             annualIncome={annualIncome}
@@ -48,7 +48,7 @@ export function YourNumbersContent() {
       </div>
       <div className="border-foreground/10 mb-5 border-b pb-5">
         <div className="ml-2">
-          <h4 className="text-base font-semibold">FIRE Paths</h4>
+          <h4 className="text-base font-semibold">Alternative Strategies</h4>
           <p className="text-muted-foreground mt-2 text-sm">
             Full retirement isn&apos;t your only option. Explore proven
             strategies for earlier freedom.

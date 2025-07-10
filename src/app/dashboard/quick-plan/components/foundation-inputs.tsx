@@ -2,7 +2,7 @@
 
 import { NumberField } from "@/components/number-field";
 
-interface CoreInputsProps {
+interface FoundationInputsProps {
   currentAge: string;
   setCurrentAge: (value: string) => void;
   annualIncome: string;
@@ -13,7 +13,7 @@ interface CoreInputsProps {
   setInvestedAssets: (value: string) => void;
 }
 
-export function CoreInputs({
+export function FoundationInputs({
   currentAge,
   setCurrentAge,
   annualIncome,
@@ -22,7 +22,7 @@ export function CoreInputs({
   setAnnualExpenses,
   investedAssets,
   setInvestedAssets,
-}: CoreInputsProps) {
+}: FoundationInputsProps) {
   const calcFields = [
     {
       id: "current-age",
