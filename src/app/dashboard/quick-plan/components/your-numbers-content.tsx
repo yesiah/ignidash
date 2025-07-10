@@ -6,10 +6,10 @@ import { CoastFIRE, BaristaFIRE } from "./fire-path-options";
 import { RightChevronButton } from "@/components/right-chevron-button";
 import { useState } from "react";
 import Drawer from "@/components/drawer";
-import { AdvancedSettings } from "./advanced-settings";
+import { GrowthAllocation } from "./growth-allocation";
 
 export function YourNumbersContent() {
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [growthAllocationOpen, setGrowthAllocationOpen] = useState(false);
 
   // Foundation inputs state
   const [currentAge, setCurrentAge] = useState("");
@@ -42,8 +42,8 @@ export function YourNumbersContent() {
         </Card>
 
         <RightChevronButton
-          title="Advanced Settings"
-          onClick={() => setAdvancedOpen(true)}
+          title="Growth & Allocation"
+          onClick={() => setGrowthAllocationOpen(true)}
         />
       </div>
       <div className="border-foreground/10 mb-5 border-b pb-5">
@@ -62,12 +62,12 @@ export function YourNumbersContent() {
         </Card>
       </div>
       <Drawer
-        open={advancedOpen}
-        setOpen={setAdvancedOpen}
-        title="Advanced Settings"
+        open={growthAllocationOpen}
+        setOpen={setGrowthAllocationOpen}
+        title="Growth & Allocation"
         desc="Fine-tune how your Foundation numbers are used in projections."
       >
-        <AdvancedSettings annualExpenses={annualExpenses} />
+        <GrowthAllocation annualExpenses={annualExpenses} />
       </Drawer>
     </>
   );
