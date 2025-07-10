@@ -117,7 +117,7 @@ export function GrowthAllocation({ annualExpenses }: GrowthAllocationProps) {
           placeholder="70"
           min="0"
           max="100"
-          desc="Higher risk, higher returns. Typically decreases closer to retirement."
+          desc="Higher risk, higher returns. Typically decreases closer to retirement to reduce volatility."
         />
         <NumberField
           id="bond-allocation"
@@ -127,7 +127,7 @@ export function GrowthAllocation({ annualExpenses }: GrowthAllocationProps) {
           placeholder="30"
           min="0"
           max="100"
-          desc="Lower risk, steady income. Typically increases closer to retirement."
+          desc="Lower risk, steady income. Typically increases closer to retirement to reduce volatility."
         />
         <NumberField
           id="cash-allocation"
