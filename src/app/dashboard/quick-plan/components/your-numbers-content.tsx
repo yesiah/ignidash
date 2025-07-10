@@ -1,9 +1,15 @@
+"use client";
+
 import { Card } from "@/components/card";
 import { CoreInputs } from "./core-inputs";
 import { CoastFIRE, BaristaFIRE } from "./alternative-paths";
 import { RightChevronButton } from "@/components/right-chevron-button";
+import { useState } from "react";
+import Drawer from "@/components/drawer";
 
 export function YourNumbersContent() {
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
   return (
     <>
       <div className="border-foreground/10 mb-5 border-b pb-5">
@@ -19,7 +25,10 @@ export function YourNumbersContent() {
           <CoreInputs />
         </Card>
 
-        <RightChevronButton title="Advanced" />
+        <RightChevronButton
+          title="Configuration"
+          onClick={() => setAdvancedOpen(true)}
+        />
       </div>
       <div className="border-foreground/10 mb-5 border-b pb-5">
         <div className="ml-2">
@@ -36,6 +45,14 @@ export function YourNumbersContent() {
           <BaristaFIRE />
         </Card>
       </div>
+      <Drawer
+        open={advancedOpen}
+        setOpen={setAdvancedOpen}
+        title="Configuration"
+        desc="Fine-tune how your Foundation numbers are used in projections."
+      >
+        {/* TODO: Advanced drawer content to be implemented */}
+      </Drawer>
     </>
   );
 }
