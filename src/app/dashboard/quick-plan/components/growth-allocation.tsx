@@ -141,7 +141,7 @@ export function GrowthAllocation({ annualExpenses }: GrowthAllocationProps) {
           min="0"
           max="20"
           step="0.1"
-          desc="Historical average ~10%. Conservative projections use 7-8%."
+          desc="Historical average 9-11%. Conservative projections use 7-8%."
         />
         <NumberField
           id="bond-return"
