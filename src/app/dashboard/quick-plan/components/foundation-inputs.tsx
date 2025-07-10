@@ -34,7 +34,7 @@ export function FoundationInputs({
     },
     {
       id: "annual-income",
-      label: "Annual Income",
+      label: "Net Annual Income",
       placeholder: "$85,000",
       value: annualIncome,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
