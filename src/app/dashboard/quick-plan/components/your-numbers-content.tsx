@@ -6,9 +6,16 @@ import { CoastFIRE, BaristaFIRE } from "./alternative-paths";
 import { RightChevronButton } from "@/components/right-chevron-button";
 import { useState } from "react";
 import Drawer from "@/components/drawer";
+import { FoundationSettings } from "./foundation-settings";
 
 export function YourNumbersContent() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
+
+  // Foundation inputs state
+  const [currentAge, setCurrentAge] = useState("");
+  const [annualIncome, setAnnualIncome] = useState("");
+  const [annualExpenses, setAnnualExpenses] = useState("");
+  const [investedAssets, setInvestedAssets] = useState("");
 
   return (
     <>
@@ -22,7 +29,16 @@ export function YourNumbersContent() {
         </div>
 
         <Card>
-          <CoreInputs />
+          <CoreInputs
+            currentAge={currentAge}
+            setCurrentAge={setCurrentAge}
+            annualIncome={annualIncome}
+            setAnnualIncome={setAnnualIncome}
+            annualExpenses={annualExpenses}
+            setAnnualExpenses={setAnnualExpenses}
+            investedAssets={investedAssets}
+            setInvestedAssets={setInvestedAssets}
+          />
         </Card>
 
         <RightChevronButton
@@ -51,7 +67,7 @@ export function YourNumbersContent() {
         title="Configuration"
         desc="Fine-tune how your Foundation numbers are used in projections."
       >
-        {/* TODO: Advanced drawer content to be implemented */}
+        <FoundationSettings annualExpenses={annualExpenses} />
       </Drawer>
     </>
   );

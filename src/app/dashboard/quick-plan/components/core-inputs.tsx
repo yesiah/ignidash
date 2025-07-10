@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
 import { NumberField } from "@/components/number-field";
 
-export function CoreInputs() {
-  const [currentAge, setCurrentAge] = useState("");
-  const [annualIncome, setAnnualIncome] = useState("");
-  const [annualExpenses, setAnnualExpenses] = useState("");
-  const [investedAssets, setInvestedAssets] = useState("");
+interface CoreInputsProps {
+  currentAge: string;
+  setCurrentAge: (value: string) => void;
+  annualIncome: string;
+  setAnnualIncome: (value: string) => void;
+  annualExpenses: string;
+  setAnnualExpenses: (value: string) => void;
+  investedAssets: string;
+  setInvestedAssets: (value: string) => void;
+}
 
+export function CoreInputs({
+  currentAge,
+  setCurrentAge,
+  annualIncome,
+  setAnnualIncome,
+  annualExpenses,
+  setAnnualExpenses,
+  investedAssets,
+  setInvestedAssets,
+}: CoreInputsProps) {
   const calcFields = [
     {
       id: "current-age",
