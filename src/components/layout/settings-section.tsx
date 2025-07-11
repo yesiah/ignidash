@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import type { InvalidInputErrorProps } from "@/components/ui/invalid-input-error";
 
 interface SettingsSectionProps {
-  title: React.ReactNode;
+  title?: React.ReactNode;
   desc?: string | React.ReactNode;
   children: React.ReactNode;
   hasBorder?: boolean;
@@ -24,10 +24,12 @@ export function SettingsSection({
         hasBorder ? "border-foreground/10 mb-5 border-b pb-5" : "mb-5 pb-5"
       }
     >
-      <div className="ml-2">
-        <h4 className="text-base font-semibold">{title}</h4>
-        {desc && <p className="text-muted-foreground mt-2 text-sm">{desc}</p>}
-      </div>
+      {(title || desc) && (
+        <div className="ml-2">
+          {title && <h4 className="text-base font-semibold">{title}</h4>}
+          {desc && <p className="text-muted-foreground mt-2 text-sm">{desc}</p>}
+        </div>
+      )}
       <Card>
         <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           {children}
