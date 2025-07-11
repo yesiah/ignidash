@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { NumberField } from "@/components/ui/number-field";
 import { SectionHeader } from "@/components/layout/section-header";
+import { DisclosureSection } from "@/components/layout/disclosure-section";
+import InvalidInputError from "@/components/ui/invalid-input-error";
+import { ArrowTrendingUpIcon, ChartPieIcon } from "@heroicons/react/24/outline";
 
 interface BasicsSectionProps {
   currentAge: string;
@@ -25,6 +29,35 @@ export function BasicsSection({
   investedAssets,
   setInvestedAssets,
 }: BasicsSectionProps) {
+  // Growth rates state
+  const [incomeGrowthRate, setIncomeGrowthRate] = useState("3");
+  const [expenseGrowthRate, setExpenseGrowthRate] = useState("3");
+
+  // Asset allocation state
+  const [stockAllocation, setStockAllocation] = useState("70");
+  const [bondAllocation, setBondAllocation] = useState("30");
+  const [cashAllocation, setCashAllocation] = useState("0");
+
+  // Utility function to validate allocation totals 100%
+  const isAllocationValid = (
+    stocks: string,
+    bonds: string,
+    cash: string
+  ): boolean => {
+    const sum =
+      parseFloat(stocks || "0") +
+      parseFloat(bonds || "0") +
+      parseFloat(cash || "0");
+    return Math.abs(sum - 100) < 0.01;
+  };
+
+  // Show allocation error message
+  const showAllocationError = !isAllocationValid(
+    stockAllocation,
+    bondAllocation,
+    cashAllocation
+  );
+
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
       <SectionHeader
@@ -69,6 +102,79 @@ export function BasicsSection({
           </fieldset>
         </form>
       </Card>
+
+      <div className="mt-4 space-y-4">
+        <DisclosureSection
+          title="Income & Spending Growth"
+          desc="Set expected growth rates for income and expenses over time."
+          icon={<ArrowTrendingUpIcon className="h-5 w-5" aria-hidden="true" />}
+        >
+          <div className="space-y-4">
+            <NumberField
+              id="income-growth-rate"
+              label="Income Growth Rate (%)"
+              value={incomeGrowthRate}
+              onChange={(e) => setIncomeGrowthRate(e.target.value)}
+              placeholder="3"
+              min="0"
+              max="50"
+              step="0.1"
+            />
+            <NumberField
+              id="expense-growth-rate"
+              label="Expense Growth Rate (%)"
+              value={expenseGrowthRate}
+              onChange={(e) => setExpenseGrowthRate(e.target.value)}
+              placeholder="3"
+              min="0"
+              max="10"
+              step="0.1"
+            />
+          </div>
+        </DisclosureSection>
+
+        <DisclosureSection
+          title="Investment Portfolio"
+          desc="Configure asset allocation across stocks, bonds, and cash."
+          icon={<ChartPieIcon className="h-5 w-5" aria-hidden="true" />}
+        >
+          <div className="space-y-4">
+            <NumberField
+              id="stock-allocation"
+              label="Stocks (%)"
+              value={stockAllocation}
+              onChange={(e) => setStockAllocation(e.target.value)}
+              placeholder="70"
+              min="0"
+              max="100"
+              step="1"
+            />
+            <NumberField
+              id="bond-allocation"
+              label="Bonds (%)"
+              value={bondAllocation}
+              onChange={(e) => setBondAllocation(e.target.value)}
+              placeholder="30"
+              min="0"
+              max="100"
+              step="1"
+            />
+            <NumberField
+              id="cash-allocation"
+              label="Cash (%)"
+              value={cashAllocation}
+              onChange={(e) => setCashAllocation(e.target.value)}
+              placeholder="0"
+              min="0"
+              max="100"
+              step="1"
+            />
+          </div>
+        </DisclosureSection>
+        {showAllocationError && (
+          <InvalidInputError title="Asset allocation must total 100%" />
+        )}
+      </div>
     </div>
   );
 }

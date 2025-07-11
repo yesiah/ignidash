@@ -16,9 +16,6 @@ export function YourNumbersSections() {
   const [retirementExpenses, setRetirementExpenses] = useState("");
 
   // Fine-Tune drawer states
-  const [incomeSpendingGrowthOpen, setIncomeSpendingGrowthOpen] =
-    useState(false);
-  const [investmentPortfolioOpen, setInvestmentPortfolioOpen] = useState(false);
   const [marketAssumptionsOpen, setMarketAssumptionsOpen] = useState(false);
   const [retirementFundingOpen, setRetirementFundingOpen] = useState(false);
 
@@ -42,10 +39,6 @@ export function YourNumbersSections() {
       />
 
       <FineTuneSection
-        incomeSpendingGrowthOpen={incomeSpendingGrowthOpen}
-        setIncomeSpendingGrowthOpen={setIncomeSpendingGrowthOpen}
-        investmentPortfolioOpen={investmentPortfolioOpen}
-        setInvestmentPortfolioOpen={setInvestmentPortfolioOpen}
         marketAssumptionsOpen={marketAssumptionsOpen}
         setMarketAssumptionsOpen={setMarketAssumptionsOpen}
         retirementFundingOpen={retirementFundingOpen}

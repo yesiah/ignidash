@@ -2,23 +2,12 @@
 
 import { DrawerTriggerButton } from "@/components/ui/drawer-trigger-button";
 import Drawer from "@/components/ui/drawer";
-import { IncomeSpendingDrawer } from "../drawers/income-spending-drawer";
-import { InvestmentPortfolioDrawer } from "../drawers/investment-portfolio-drawer";
 import { MarketAssumptionsDrawer } from "../drawers/market-assumptions-drawer";
 import { RetirementFundingDrawer } from "../drawers/retirement-funding-drawer";
-import {
-  ArrowTrendingUpIcon,
-  ChartPieIcon,
-  ChartBarIcon,
-  ClockIcon,
-} from "@heroicons/react/24/outline";
+import { ChartBarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { SectionHeader } from "@/components/layout/section-header";
 
 interface FineTuneSectionProps {
-  incomeSpendingGrowthOpen: boolean;
-  setIncomeSpendingGrowthOpen: (open: boolean) => void;
-  investmentPortfolioOpen: boolean;
-  setInvestmentPortfolioOpen: (open: boolean) => void;
   marketAssumptionsOpen: boolean;
   setMarketAssumptionsOpen: (open: boolean) => void;
   retirementFundingOpen: boolean;
@@ -26,10 +15,6 @@ interface FineTuneSectionProps {
 }
 
 export function FineTuneSection({
-  incomeSpendingGrowthOpen,
-  setIncomeSpendingGrowthOpen,
-  investmentPortfolioOpen,
-  setInvestmentPortfolioOpen,
   marketAssumptionsOpen,
   setMarketAssumptionsOpen,
   retirementFundingOpen,
@@ -41,20 +26,6 @@ export function FineTuneSection({
         <SectionHeader
           headline="Fine-Tuning"
           desc="Adjust advanced settings to refine your projections and assumptions."
-        />
-
-        <DrawerTriggerButton
-          title="Income & Spending Growth"
-          desc="Set expected growth rates for income and expenses over time."
-          leftIcon={ArrowTrendingUpIcon}
-          onClick={() => setIncomeSpendingGrowthOpen(true)}
-        />
-
-        <DrawerTriggerButton
-          title="Investment Portfolio"
-          desc="Configure asset allocation across stocks, bonds, and cash."
-          leftIcon={ChartPieIcon}
-          onClick={() => setInvestmentPortfolioOpen(true)}
         />
 
         <DrawerTriggerButton
@@ -73,22 +44,6 @@ export function FineTuneSection({
       </div>
 
       {/* Fine-Tune drawers */}
-      <Drawer
-        open={incomeSpendingGrowthOpen}
-        setOpen={setIncomeSpendingGrowthOpen}
-        title="Income & Spending Growth"
-      >
-        <IncomeSpendingDrawer />
-      </Drawer>
-
-      <Drawer
-        open={investmentPortfolioOpen}
-        setOpen={setInvestmentPortfolioOpen}
-        title="Investment Portfolio"
-      >
-        <InvestmentPortfolioDrawer />
-      </Drawer>
-
       <Drawer
         open={marketAssumptionsOpen}
         setOpen={setMarketAssumptionsOpen}
