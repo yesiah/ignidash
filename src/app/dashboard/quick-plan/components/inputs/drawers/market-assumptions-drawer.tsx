@@ -52,6 +52,7 @@ export function MarketAssumptionsDrawer() {
       <SettingsSection
         title="Expected Returns"
         desc={getExpectedReturnsDescription()}
+        legendText="Expected investment returns configuration"
       >
         <NumberField
           id="stock-return"
@@ -89,6 +90,7 @@ export function MarketAssumptionsDrawer() {
         title="Economic Factors"
         desc="Economic factors that impact your purchasing power and real investment returns over time."
         hasBorder={false}
+        legendText="Economic factors for financial projections"
       >
         <NumberField
           id="inflation-rate"

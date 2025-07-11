@@ -13,7 +13,10 @@ export function RetirementFundingDrawer() {
 
   return (
     <>
-      <SettingsSection title="Withdrawal Strategy">
+      <SettingsSection
+        title="Withdrawal Strategy"
+        legendText="Retirement withdrawal strategy settings"
+      >
         <NumberField
           id="safe-withdrawal-rate"
           label="Safe Withdrawal Rate (%)"
@@ -40,7 +43,11 @@ export function RetirementFundingDrawer() {
         />
       </SettingsSection>
 
-      <SettingsSection title="Life Expectancy" hasBorder={false}>
+      <SettingsSection
+        title="Life Expectancy"
+        hasBorder={false}
+        legendText="Life expectancy planning assumptions"
+      >
         <NumberField
           id="life-expectancy"
           label="Life Expectancy (years)"

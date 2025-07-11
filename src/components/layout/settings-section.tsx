@@ -10,6 +10,7 @@ interface SettingsSectionProps {
   children: React.ReactNode;
   hasBorder?: boolean;
   errorComponent?: React.ReactElement<InvalidInputErrorProps> | false;
+  legendText?: string;
 }
 
 export function SettingsSection({
@@ -18,6 +19,7 @@ export function SettingsSection({
   children,
   hasBorder = true,
   errorComponent,
+  legendText,
 }: SettingsSectionProps) {
   return (
     <div
@@ -27,8 +29,11 @@ export function SettingsSection({
     >
       <SectionHeader title={title} desc={desc} />
       <Card>
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-          {children}
+        <form onSubmit={(e) => e.preventDefault()}>
+          <fieldset className="space-y-4">
+            <legend className="sr-only">{legendText}</legend>
+            {children}
+          </fieldset>
         </form>
       </Card>
       {errorComponent}
