@@ -106,7 +106,7 @@ export function BasicsSection({
       <div className="mt-4 space-y-4">
         <DisclosureSection
           title="Income & Spending Growth"
-          desc="Set expected growth rates for income and expenses over time."
+          desc="Set expected nominal growth rates for income and expenses over time."
           icon={<ArrowTrendingUpIcon className="h-5 w-5" aria-hidden="true" />}
         >
           <div className="space-y-4">
