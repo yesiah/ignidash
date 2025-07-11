@@ -16,7 +16,7 @@ export function MobileSidebarContent({
       <div className="border-foreground/10 flex h-16 shrink-0 items-center justify-between gap-2 border-b">
         <div className="flex items-center gap-2">
           <FireIcon className="h-8 w-8 text-rose-500" aria-hidden="true" />
-          <span className="font-display text-xl">Ignidash</span>
+          <span className="text-xl font-semibold">Ignidash</span>
         </div>
         <ModeToggle />
       </div>

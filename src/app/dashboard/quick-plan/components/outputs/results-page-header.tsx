@@ -30,7 +30,7 @@ export function ResultsPageHeader() {
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
       <div className="flex items-center justify-between">
-        <h3 className="font-display flex items-center gap-2 text-lg font-semibold text-gray-900 lg:text-xl dark:text-gray-100">
+        <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900 lg:text-xl dark:text-gray-100">
           <PresentationChartLineIcon className="h-5 w-5" aria-hidden="true" />
           Results
         </h3>
