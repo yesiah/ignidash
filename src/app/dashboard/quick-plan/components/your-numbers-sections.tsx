@@ -6,13 +6,6 @@ import { GoalSection } from "./goal-section";
 import { FineTuneSection } from "./fine-tune-section";
 
 export function YourNumbersSections() {
-  // Fine-Tune drawer states
-  const [incomeSpendingGrowthOpen, setIncomeSpendingGrowthOpen] =
-    useState(false);
-  const [investmentPortfolioOpen, setInvestmentPortfolioOpen] = useState(false);
-  const [marketAssumptionsOpen, setMarketAssumptionsOpen] = useState(false);
-  const [retirementFundingOpen, setRetirementFundingOpen] = useState(false);
-
   // Basics inputs state
   const [currentAge, setCurrentAge] = useState("");
   const [annualIncome, setAnnualIncome] = useState("");
@@ -21,6 +14,13 @@ export function YourNumbersSections() {
 
   // Goal inputs state
   const [retirementExpenses, setRetirementExpenses] = useState("");
+
+  // Fine-Tune drawer states
+  const [incomeSpendingGrowthOpen, setIncomeSpendingGrowthOpen] =
+    useState(false);
+  const [investmentPortfolioOpen, setInvestmentPortfolioOpen] = useState(false);
+  const [marketAssumptionsOpen, setMarketAssumptionsOpen] = useState(false);
+  const [retirementFundingOpen, setRetirementFundingOpen] = useState(false);
 
   return (
     <>
