@@ -17,6 +17,7 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import { NumberField } from "@/components/number-field";
+import { YourNumbersSectionHeader } from "./your-numbers-section-header";
 
 export function YourNumbersSections() {
   // Fine-Tune drawer states
@@ -38,13 +39,11 @@ export function YourNumbersSections() {
   return (
     <>
       <div className="border-foreground/10 mb-5 border-b pb-5">
-        <div className="ml-2">
-          <h4 className="text-base font-semibold">Basics</h4>
-          <p className="text-muted-foreground mt-2 text-sm">
-            The core numbers needed to estimate your financial independence
-            timeline.
-          </p>
-        </div>
+        <YourNumbersSectionHeader
+          headline="Basics"
+          desc="The core numbers needed to estimate your financial independence 
+            timeline."
+        />
 
         <Card>
           <BasicsInputs
@@ -60,13 +59,11 @@ export function YourNumbersSections() {
         </Card>
       </div>
       <div className="border-foreground/10 mb-5 border-b pb-5">
-        <div className="ml-2">
-          <h4 className="text-base font-semibold">Goal</h4>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Full retirement isn&apos;t your only option. Explore proven
-            strategies for earlier freedom.
-          </p>
-        </div>
+        <YourNumbersSectionHeader
+          headline="Goal"
+          desc="Full retirement isn't your only option. Explore proven
+            strategies for earlier freedom."
+        />
         <Card>
           <NumberField
             id="retirement-expenses"
@@ -84,12 +81,11 @@ export function YourNumbersSections() {
         </Card>
       </div>
       <div className="mb-5 space-y-4 pb-5">
-        <div className="ml-2">
-          <h4 className="text-base font-semibold">Fine-Tune</h4>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Adjust advanced settings to refine your projections and assumptions.
-          </p>
-        </div>
+        <YourNumbersSectionHeader
+          headline="Fine-Tune"
+          desc="Adjust advanced settings to refine your projections and 
+            assumptions."
+        />
 
         <DrawerTriggerButton
           title="Income & Spending Growth"
