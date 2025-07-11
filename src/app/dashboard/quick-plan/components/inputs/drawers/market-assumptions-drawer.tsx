@@ -21,6 +21,23 @@ function getInflationRateDescription() {
   );
 }
 
+function getExpectedReturnsDescription() {
+  return (
+    <>
+      Expected annual returns before inflation. See{" "}
+      <a
+        href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histretSP.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-foreground hover:text-foreground/80 underline"
+      >
+        historical data
+      </a>
+      . Past performance doesn&apos;t guarantee future results.
+    </>
+  );
+}
+
 export function MarketAssumptionsDrawer() {
   // Expected returns state
   const [stockReturn, setStockReturn] = useState("10");
@@ -34,20 +51,7 @@ export function MarketAssumptionsDrawer() {
     <>
       <SettingsSection
         title="Expected Returns"
-        desc={
-          <>
-            Expected annual returns before inflation. See{" "}
-            <a
-              href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histretSP.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground hover:text-foreground/80 underline"
-            >
-              historical data
-            </a>
-            . Past performance doesn&apos;t guarantee future results.
-          </>
-        }
+        desc={getExpectedReturnsDescription()}
       >
         <NumberField
           id="stock-return"
