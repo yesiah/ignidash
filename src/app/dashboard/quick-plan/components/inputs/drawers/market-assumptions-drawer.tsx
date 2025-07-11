@@ -41,7 +41,6 @@ export function MarketAssumptionsDrawer() {
           min="0"
           max="20"
           step="0.1"
-          desc="Historical average 9-11%. Conservative projections use 7-8%."
         />
         <NumberField
           id="bond-return"
@@ -52,7 +51,6 @@ export function MarketAssumptionsDrawer() {
           min="0"
           max="15"
           step="0.1"
-          desc="Historical average 5-6%. Varies with interest rates."
         />
         <NumberField
           id="cash-return"
@@ -63,11 +61,14 @@ export function MarketAssumptionsDrawer() {
           min="0"
           max="10"
           step="0.1"
-          desc="Money market rates. Often 2-5%, tracks Fed rates."
         />
       </SettingsSection>
 
-      <SettingsSection title="Economic Projections" hasBorder={false}>
+      <SettingsSection
+        title="Economic Factors"
+        desc="Economic factors that impact your purchasing power and real investment returns over time."
+        hasBorder={false}
+      >
         <NumberField
           id="inflation-rate"
           label="Inflation Rate (%)"
@@ -93,15 +94,6 @@ export function MarketAssumptionsDrawer() {
           }
         />
       </SettingsSection>
-
-      <div className="border-foreground/10 rounded-lg border-1 p-2">
-        <p className="text-muted-foreground text-xs">
-          <strong>Disclaimer:</strong> This calculator is for educational
-          purposes only and does not constitute investment advice. Past
-          performance is not indicative of future results. Consult a qualified
-          financial advisor for personalized guidance.
-        </p>
-      </div>
     </>
   );
 }
