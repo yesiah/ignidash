@@ -3,10 +3,10 @@
 import { MainArea } from "../components/main-area";
 import { SecondaryColumn } from "../components/secondary-column";
 import { SectionSelector } from "./components/section-selector";
-import { ResultsContent } from "./components/results-content";
-import { ResultsHeader } from "./components/results-header";
+import { ResultsSections } from "./components/results-sections";
+import { ResultsPageHeader } from "./components/results-page-header";
 import { YourNumbersSections } from "./components/your-numbers-sections";
-import { YourNumbersHeader } from "./components/your-numbers-header";
+import { YourNumbersPageHeader } from "./components/your-numbers-page-header";
 import { useState } from "react";
 
 type ActiveSection = "results" | "your-numbers";
@@ -24,18 +24,18 @@ export default function QuickPlanPage() {
             setActiveSection={setActiveSection}
           />
           {activeSection === "results" ? (
-            <ResultsContent />
+            <ResultsSections />
           ) : (
             <YourNumbersSections />
           )}
         </div>
         <div className="hidden xl:block">
-          <ResultsHeader />
-          <ResultsContent />
+          <ResultsPageHeader />
+          <ResultsSections />
         </div>
       </MainArea>
       <SecondaryColumn>
-        <YourNumbersHeader />
+        <YourNumbersPageHeader />
         <YourNumbersSections />
       </SecondaryColumn>
     </>

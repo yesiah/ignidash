@@ -12,7 +12,7 @@ import {
   ChartBarIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
-import { YourNumbersSectionHeader } from "./your-numbers-section-header";
+import { SectionHeader } from "./section-header";
 
 interface FineTuneSectionProps {
   incomeSpendingGrowthOpen: boolean;
@@ -38,7 +38,7 @@ export function FineTuneSection({
   return (
     <>
       <div className="mb-5 space-y-4 pb-5">
-        <YourNumbersSectionHeader
+        <SectionHeader
           headline="Fine-Tune"
           desc="Adjust advanced settings to refine your projections and assumptions."
         />

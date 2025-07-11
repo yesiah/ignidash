@@ -1,12 +1,9 @@
-interface YourNumbersSectionHeaderProps {
+interface SectionHeaderProps {
   headline: string;
   desc: string;
 }
 
-export function YourNumbersSectionHeader({
-  headline,
-  desc,
-}: YourNumbersSectionHeaderProps) {
+export function SectionHeader({ headline, desc }: SectionHeaderProps) {
   return (
     <div className="ml-2">
       <h4 className="text-base font-semibold">{headline}</h4>

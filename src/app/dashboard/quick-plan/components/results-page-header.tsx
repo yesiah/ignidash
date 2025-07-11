@@ -8,7 +8,7 @@ import {
 import { IconButton } from "@/components/icon-button";
 import { useState, useCallback } from "react";
 
-export function ResultsHeader() {
+export function ResultsPageHeader() {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const handleLinkClick = useCallback(() => {

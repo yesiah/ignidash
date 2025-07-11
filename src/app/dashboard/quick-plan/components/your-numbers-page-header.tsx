@@ -1,7 +1,7 @@
 import { CalculatorIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "@/components/icon-button";
 
-export function YourNumbersHeader() {
+export function YourNumbersPageHeader() {
   return (
     <>
       <div className="border-foreground/10 mb-5 border-b pb-5">

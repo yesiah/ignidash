@@ -1,4 +1,4 @@
-export function ResultsContent() {
+export function ResultsSections() {
   return (
     <>
       {/* Placeholder for actual results content */}

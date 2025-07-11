@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/card";
 import { NumberField } from "@/components/number-field";
-import { YourNumbersSectionHeader } from "./your-numbers-section-header";
+import { SectionHeader } from "./section-header";
 
 interface BasicsSectionProps {
   currentAge: string;
@@ -27,7 +27,7 @@ export function BasicsSection({
 }: BasicsSectionProps) {
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
-      <YourNumbersSectionHeader
+      <SectionHeader
         headline="Basics"
         desc="The core numbers needed to estimate your financial independence timeline."
       />

@@ -3,7 +3,7 @@
 import { Card } from "@/components/card";
 import { CoastFIRE, BaristaFIRE } from "./goal-strategy-options";
 import { NumberField } from "@/components/number-field";
-import { YourNumbersSectionHeader } from "./your-numbers-section-header";
+import { SectionHeader } from "./section-header";
 
 interface GoalSectionProps {
   retirementExpenses: string;
@@ -18,7 +18,7 @@ export function GoalSection({
 }: GoalSectionProps) {
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
-      <YourNumbersSectionHeader
+      <SectionHeader
         headline="Goal"
         desc="Full retirement isn't your only option. Explore proven strategies for earlier freedom."
       />
