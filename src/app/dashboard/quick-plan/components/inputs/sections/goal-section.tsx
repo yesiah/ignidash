@@ -23,7 +23,7 @@ export function GoalSection({
     <div className="border-foreground/10 mb-5 border-b pb-5">
       <SectionHeader
         headline="Retirement Goal"
-        desc="How much do you need to retire comfortably? Explore different paths to get there."
+        desc="Your retirement spending level determines when you'll have enough to retire."
       />
       <form onSubmit={(e) => e.preventDefault()}>
         <fieldset className="space-y-4">
