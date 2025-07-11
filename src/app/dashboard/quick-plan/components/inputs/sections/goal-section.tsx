@@ -12,12 +12,20 @@ interface GoalSectionProps {
   retirementExpenses: string;
   setRetirementExpenses: (value: string) => void;
   annualExpenses: string;
+  targetRetirementAge: string;
+  setTargetRetirementAge: (value: string) => void;
+  partTimeIncome: string;
+  setPartTimeIncome: (value: string) => void;
 }
 
 export function GoalSection({
   retirementExpenses,
   setRetirementExpenses,
   annualExpenses,
+  targetRetirementAge,
+  setTargetRetirementAge,
+  partTimeIncome,
+  setPartTimeIncome,
 }: GoalSectionProps) {
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
@@ -40,8 +48,14 @@ export function GoalSection({
               placeholder={annualExpenses || "$50,000"}
             />
           </Card>
-          <CoastFIRE />
-          <BaristaFIRE />
+          <CoastFIRE
+            targetRetirementAge={targetRetirementAge}
+            setTargetRetirementAge={setTargetRetirementAge}
+          />
+          <BaristaFIRE
+            partTimeIncome={partTimeIncome}
+            setPartTimeIncome={setPartTimeIncome}
+          />
         </fieldset>
       </form>
     </div>

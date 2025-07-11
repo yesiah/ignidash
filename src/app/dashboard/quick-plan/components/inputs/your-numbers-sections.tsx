@@ -15,6 +15,10 @@ export function YourNumbersSections() {
   // Goal inputs state
   const [retirementExpenses, setRetirementExpenses] = useState("");
 
+  // Strategy-specific state
+  const [targetRetirementAge, setTargetRetirementAge] = useState("");
+  const [partTimeIncome, setPartTimeIncome] = useState("");
+
   // Fine-Tune drawer states
   const [marketAssumptionsOpen, setMarketAssumptionsOpen] = useState(false);
   const [retirementFundingOpen, setRetirementFundingOpen] = useState(false);
@@ -36,6 +40,10 @@ export function YourNumbersSections() {
         retirementExpenses={retirementExpenses}
         setRetirementExpenses={setRetirementExpenses}
         annualExpenses={annualExpenses}
+        targetRetirementAge={targetRetirementAge}
+        setTargetRetirementAge={setTargetRetirementAge}
+        partTimeIncome={partTimeIncome}
+        setPartTimeIncome={setPartTimeIncome}
       />
 
       <FineTuneSection
