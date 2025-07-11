@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import type { InvalidInputErrorProps } from "@/components/ui/invalid-input-error";
+import { SectionHeader } from "./section-header";
 
 interface SettingsSectionProps {
   title?: React.ReactNode;
@@ -24,12 +25,7 @@ export function SettingsSection({
         hasBorder ? "border-foreground/10 mb-5 border-b pb-5" : "mb-5 pb-5"
       }
     >
-      {(title || desc) && (
-        <div className="ml-2">
-          {title && <h4 className="text-base font-semibold">{title}</h4>}
-          {desc && <p className="text-muted-foreground mt-2 text-sm">{desc}</p>}
-        </div>
-      )}
+      <SectionHeader title={title} desc={desc} />
       <Card>
         <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           {children}

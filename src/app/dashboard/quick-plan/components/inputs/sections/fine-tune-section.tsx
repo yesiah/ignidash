@@ -24,7 +24,7 @@ export function FineTuneSection({
     <>
       <div className="border-foreground/10 mb-5 space-y-4 border-b pb-5">
         <SectionHeader
-          headline="Fine-Tuning"
+          title="Fine-Tuning"
           desc="Adjust advanced settings to refine your projections and assumptions."
         />
 

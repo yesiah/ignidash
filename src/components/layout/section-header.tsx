@@ -1,13 +1,15 @@
 interface SectionHeaderProps {
-  headline: string;
-  desc: string;
+  title?: string | React.ReactNode;
+  desc?: string | React.ReactNode;
 }
 
-export function SectionHeader({ headline, desc }: SectionHeaderProps) {
+export function SectionHeader({ title, desc }: SectionHeaderProps) {
   return (
-    <div className="ml-2">
-      <h4 className="text-base font-semibold">{headline}</h4>
-      <p className="text-muted-foreground mt-2 text-sm">{desc}</p>
-    </div>
+    (title || desc) && (
+      <div className="ml-2">
+        {title && <h4 className="text-base font-semibold">{title}</h4>}
+        {desc && <p className="text-muted-foreground mt-2 text-sm">{desc}</p>}
+      </div>
+    )
   );
 }
