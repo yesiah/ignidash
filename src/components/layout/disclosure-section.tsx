@@ -36,14 +36,16 @@ export function DisclosureSection({
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
                 {icon}
-                <h4>{title}</h4>
+                <span>{title}</span>
               </div>
               <ChevronDownIcon
                 className="w-5 shrink-0 group-data-open:rotate-180"
                 aria-hidden="true"
               />
             </div>
-            <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
+            {desc && (
+              <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
+            )}
           </div>
         </DisclosureButton>
         <DisclosurePanel>

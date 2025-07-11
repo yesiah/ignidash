@@ -2,6 +2,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 interface DrawerTriggerButtonProps {
   title: string;
+  desc?: string;
   onClick?: () => void;
   className?: string;
   leftIcon?: React.ForwardRefExoticComponent<
@@ -14,6 +15,7 @@ interface DrawerTriggerButtonProps {
 
 export function DrawerTriggerButton({
   title,
+  desc,
   onClick,
   className = "",
   leftIcon,
@@ -26,11 +28,18 @@ export function DrawerTriggerButton({
       onClick={onClick}
       className={`bg-emphasized-background text-foreground hover:ring-foreground/10 focus-visible:outline-foreground flex w-full items-center justify-between rounded-lg p-4 text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
     >
-      <div className="flex items-center gap-2">
-        {LeftIcon && <LeftIcon className="h-5 w-5" aria-hidden="true" />}
-        <span>{title}</span>
+      <div className="w-full text-left">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-2">
+            {LeftIcon && <LeftIcon className="h-5 w-5" aria-hidden="true" />}
+            <span>{title}</span>
+          </div>
+          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+        </div>
+        {desc && (
+          <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
+        )}
       </div>
-      <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
     </button>
   );
 }
