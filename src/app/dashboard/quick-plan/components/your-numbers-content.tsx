@@ -7,6 +7,10 @@ import { RightChevronButton } from "@/components/right-chevron-button";
 import { useState } from "react";
 import Drawer from "@/components/drawer";
 import { GrowthAllocation } from "./growth-allocation";
+import { IncomeSpendingGrowth } from "./income-spending-growth";
+import { InvestmentPortfolio } from "./investment-portfolio";
+import { MarketEconomicAssumptions } from "./market-economic-assumptions";
+import { RetirementFundingDuration } from "./retirement-funding-duration";
 import {
   ArrowTrendingUpIcon,
   ChartPieIcon,
@@ -82,7 +86,7 @@ export function YourNumbersContent() {
           <BaristaFIRE />
         </Card>
       </div>
-      <div className="mb-5 space-y-2 pb-5">
+      <div className="mb-5 space-y-4 pb-5">
         <div className="ml-2">
           <h4 className="text-base font-semibold">Fine-Tune</h4>
           <p className="text-muted-foreground mt-2 text-sm">
@@ -132,7 +136,7 @@ export function YourNumbersContent() {
         title="Income & Spending Growth"
         desc="Set growth rates for income and expenses over time."
       >
-        {/* Empty for now */}
+        <IncomeSpendingGrowth />
       </Drawer>
 
       <Drawer
@@ -141,7 +145,7 @@ export function YourNumbersContent() {
         title="Investment Portfolio"
         desc="Configure your asset allocation across stocks, bonds, and cash."
       >
-        {/* Empty for now */}
+        <InvestmentPortfolio />
       </Drawer>
 
       <Drawer
@@ -150,7 +154,7 @@ export function YourNumbersContent() {
         title="Market & Economic Assumptions"
         desc="Set expected returns and economic projections."
       >
-        {/* Empty for now */}
+        <MarketEconomicAssumptions />
       </Drawer>
 
       <Drawer
@@ -159,7 +163,7 @@ export function YourNumbersContent() {
         title="Retirement Funding & Duration"
         desc="Configure withdrawal rates and life expectancy."
       >
-        {/* Empty for now */}
+        <RetirementFundingDuration />
       </Drawer>
     </>
   );
