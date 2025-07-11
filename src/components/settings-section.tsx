@@ -11,7 +11,7 @@ interface FormSectionProps {
   errorComponent?: React.ReactElement<InvalidInputErrorProps> | false;
 }
 
-export function FormSection({
+export function SettingsSection({
   title,
   desc,
   children,

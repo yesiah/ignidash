@@ -13,7 +13,7 @@ interface FoundationInputsProps {
   setInvestedAssets: (value: string) => void;
 }
 
-export function FoundationInputs({
+export function BasicsInputs({
   currentAge,
   setCurrentAge,
   annualIncome,

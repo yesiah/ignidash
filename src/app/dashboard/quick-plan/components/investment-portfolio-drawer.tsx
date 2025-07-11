@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { NumberField } from "@/components/number-field";
-import { FormSection } from "@/components/form-section";
+import { SettingsSection } from "@/components/settings-section";
 import InvalidInputError from "@/components/invalid-input-error";
 
-export function InvestmentPortfolio() {
+export function InvestmentPortfolioDrawer() {
   // Asset allocation state
   const [stockAllocation, setStockAllocation] = useState("70");
   const [bondAllocation, setBondAllocation] = useState("30");
@@ -33,7 +33,7 @@ export function InvestmentPortfolio() {
 
   return (
     <>
-      <FormSection
+      <SettingsSection
         title="Asset Allocation"
         hasBorder={false}
         desc={
@@ -86,7 +86,7 @@ export function InvestmentPortfolio() {
           max="100"
           desc="Emergency fund and stability. Amount varies by personal needs."
         />
-      </FormSection>
+      </SettingsSection>
     </>
   );
 }

@@ -5,7 +5,7 @@ import { SecondaryColumn } from "../components/secondary-column";
 import { SectionSelector } from "./components/section-selector";
 import { ResultsContent } from "./components/results-content";
 import { ResultsHeader } from "./components/results-header";
-import { YourNumbersContent } from "./components/your-numbers-content";
+import { YourNumbersSections } from "./components/your-numbers-sections";
 import { YourNumbersHeader } from "./components/your-numbers-header";
 import { useState } from "react";
 
@@ -26,7 +26,7 @@ export default function QuickPlanPage() {
           {activeSection === "results" ? (
             <ResultsContent />
           ) : (
-            <YourNumbersContent />
+            <YourNumbersSections />
           )}
         </div>
         <div className="hidden xl:block">
@@ -36,7 +36,7 @@ export default function QuickPlanPage() {
       </MainArea>
       <SecondaryColumn>
         <YourNumbersHeader />
-        <YourNumbersContent />
+        <YourNumbersSections />
       </SecondaryColumn>
     </>
   );

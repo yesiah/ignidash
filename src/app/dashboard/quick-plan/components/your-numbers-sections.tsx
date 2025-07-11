@@ -1,15 +1,15 @@
 "use client";
 
 import { Card } from "@/components/card";
-import { FoundationInputs } from "./foundation-inputs";
-import { CoastFIRE, BaristaFIRE } from "./fire-path-options";
-import { RightChevronButton } from "@/components/right-chevron-button";
+import { BasicsInputs } from "./basics-inputs";
+import { CoastFIRE, BaristaFIRE } from "./goal-strategy-options";
+import { DrawerTriggerButton } from "@/components/drawer-trigger-button";
 import { useState } from "react";
 import Drawer from "@/components/drawer";
-import { IncomeSpendingGrowth } from "./income-spending-growth";
-import { InvestmentPortfolio } from "./investment-portfolio";
-import { MarketEconomicAssumptions } from "./market-economic-assumptions";
-import { RetirementFundingDuration } from "./retirement-funding-duration";
+import { IncomeSpendingDrawer } from "./income-spending-drawer";
+import { InvestmentPortfolioDrawer } from "./investment-portfolio-drawer";
+import { MarketAssumptionsDrawer } from "./market-assumptions-drawer";
+import { RetirementFundingDrawer } from "./retirement-funding-drawer";
 import {
   ArrowTrendingUpIcon,
   ChartPieIcon,
@@ -18,7 +18,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { NumberField } from "@/components/number-field";
 
-export function YourNumbersContent() {
+export function YourNumbersSections() {
   // Fine-Tune drawer states
   const [incomeSpendingGrowthOpen, setIncomeSpendingGrowthOpen] =
     useState(false);
@@ -47,7 +47,7 @@ export function YourNumbersContent() {
         </div>
 
         <Card>
-          <FoundationInputs
+          <BasicsInputs
             currentAge={currentAge}
             setCurrentAge={setCurrentAge}
             annualIncome={annualIncome}
@@ -91,25 +91,25 @@ export function YourNumbersContent() {
           </p>
         </div>
 
-        <RightChevronButton
+        <DrawerTriggerButton
           title="Income & Spending Growth"
           leftIcon={ArrowTrendingUpIcon}
           onClick={() => setIncomeSpendingGrowthOpen(true)}
         />
 
-        <RightChevronButton
+        <DrawerTriggerButton
           title="Investment Portfolio"
           leftIcon={ChartPieIcon}
           onClick={() => setInvestmentPortfolioOpen(true)}
         />
 
-        <RightChevronButton
+        <DrawerTriggerButton
           title="Market & Economic Assumptions"
           leftIcon={ChartBarIcon}
           onClick={() => setMarketAssumptionsOpen(true)}
         />
 
-        <RightChevronButton
+        <DrawerTriggerButton
           title="Retirement Funding & Duration"
           leftIcon={ClockIcon}
           onClick={() => setRetirementFundingOpen(true)}
@@ -123,7 +123,7 @@ export function YourNumbersContent() {
         title="Income & Spending Growth"
         desc="Set growth rates for income and expenses over time."
       >
-        <IncomeSpendingGrowth />
+        <IncomeSpendingDrawer />
       </Drawer>
 
       <Drawer
@@ -132,7 +132,7 @@ export function YourNumbersContent() {
         title="Investment Portfolio"
         desc="Configure your asset allocation across stocks, bonds, and cash."
       >
-        <InvestmentPortfolio />
+        <InvestmentPortfolioDrawer />
       </Drawer>
 
       <Drawer
@@ -141,7 +141,7 @@ export function YourNumbersContent() {
         title="Market & Economic Assumptions"
         desc="Set expected returns and economic projections."
       >
-        <MarketEconomicAssumptions />
+        <MarketAssumptionsDrawer />
       </Drawer>
 
       <Drawer
@@ -150,7 +150,7 @@ export function YourNumbersContent() {
         title="Retirement Funding & Duration"
         desc="Configure withdrawal rates and life expectancy."
       >
-        <RetirementFundingDuration />
+        <RetirementFundingDrawer />
       </Drawer>
     </>
   );

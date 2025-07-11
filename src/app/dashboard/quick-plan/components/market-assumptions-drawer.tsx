@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { NumberField } from "@/components/number-field";
-import { FormSection } from "@/components/form-section";
+import { SettingsSection } from "@/components/settings-section";
 
-export function MarketEconomicAssumptions() {
+export function MarketAssumptionsDrawer() {
   // Expected returns state
   const [stockReturn, setStockReturn] = useState("10");
   const [bondReturn, setBondReturn] = useState("5");
@@ -15,7 +15,7 @@ export function MarketEconomicAssumptions() {
 
   return (
     <>
-      <FormSection
+      <SettingsSection
         title="Expected Returns"
         desc={
           <>
@@ -65,9 +65,9 @@ export function MarketEconomicAssumptions() {
           step="0.1"
           desc="Money market rates. Often 2-5%, tracks Fed rates."
         />
-      </FormSection>
+      </SettingsSection>
 
-      <FormSection title="Economic Projections" hasBorder={false}>
+      <SettingsSection title="Economic Projections" hasBorder={false}>
         <NumberField
           id="inflation-rate"
           label="Inflation Rate (%)"
@@ -92,7 +92,7 @@ export function MarketEconomicAssumptions() {
             </>
           }
         />
-      </FormSection>
+      </SettingsSection>
 
       <div className="border-foreground/10 rounded-lg border-1 p-2">
         <p className="text-muted-foreground text-xs">

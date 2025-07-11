@@ -12,7 +12,7 @@ interface RightChevronButtonProps {
   >;
 }
 
-export function RightChevronButton({
+export function DrawerTriggerButton({
   title,
   onClick,
   className = "",

@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { NumberField } from "@/components/number-field";
-import { FormSection } from "@/components/form-section";
+import { SettingsSection } from "@/components/settings-section";
 
-export function IncomeSpendingGrowth() {
+export function IncomeSpendingDrawer() {
   // Growth rates state
   const [incomeGrowthRate, setIncomeGrowthRate] = useState("3");
   const [expenseGrowthRate, setExpenseGrowthRate] = useState("3");
 
   return (
     <>
-      <FormSection title="Net Annual Income">
+      <SettingsSection title="Net Annual Income">
         <NumberField
           id="income-growth-rate"
           label="Income Growth Rate (%)"
@@ -23,9 +23,9 @@ export function IncomeSpendingGrowth() {
           step="0.1"
           desc="Annual raise percentage. 0% loses purchasing power to inflation."
         />
-      </FormSection>
+      </SettingsSection>
 
-      <FormSection title="Annual Expenses" hasBorder={false}>
+      <SettingsSection title="Annual Expenses" hasBorder={false}>
         <NumberField
           id="expense-growth-rate"
           label="Expense Growth Rate (%)"
@@ -37,7 +37,7 @@ export function IncomeSpendingGrowth() {
           step="0.1"
           desc="Annual spending increase. 0% means buying less as prices rise due to inflation."
         />
-      </FormSection>
+      </SettingsSection>
     </>
   );
 }

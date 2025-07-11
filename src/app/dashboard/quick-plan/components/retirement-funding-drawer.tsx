@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { NumberField } from "@/components/number-field";
-import { FormSection } from "@/components/form-section";
+import { SettingsSection } from "@/components/settings-section";
 
-export function RetirementFundingDuration() {
+export function RetirementFundingDrawer() {
   // Withdrawal strategy state
   const [safeWithdrawalRate, setSafeWithdrawalRate] = useState("4");
 
@@ -13,7 +13,7 @@ export function RetirementFundingDuration() {
 
   return (
     <>
-      <FormSection title="Withdrawal Strategy">
+      <SettingsSection title="Withdrawal Strategy">
         <NumberField
           id="safe-withdrawal-rate"
           label="Safe Withdrawal Rate (%)"
@@ -38,9 +38,9 @@ export function RetirementFundingDuration() {
             </>
           }
         />
-      </FormSection>
+      </SettingsSection>
 
-      <FormSection title="Life Expectancy" hasBorder={false}>
+      <SettingsSection title="Life Expectancy" hasBorder={false}>
         <NumberField
           id="life-expectancy"
           label="Life Expectancy (years)"
@@ -64,7 +64,7 @@ export function RetirementFundingDuration() {
             </>
           }
         />
-      </FormSection>
+      </SettingsSection>
     </>
   );
 }
