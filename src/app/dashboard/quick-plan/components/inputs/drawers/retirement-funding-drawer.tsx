@@ -60,7 +60,7 @@ export function RetirementFundingDrawer() {
   const [safeWithdrawalRate, setSafeWithdrawalRate] = useState("4");
 
   // Tax planning state
-  const [retirementIncome, setRetirementIncome] = useState("");
+  const [retirementIncome, setRetirementIncome] = useState("0");
   const [effectiveTaxRate, setEffectiveTaxRate] = useState("15");
 
   // Life expectancy state
@@ -89,7 +89,7 @@ export function RetirementFundingDrawer() {
           label="Passive Retirement Income"
           value={retirementIncome}
           onChange={(e) => setRetirementIncome(e.target.value)}
-          placeholder="$30,000"
+          placeholder="$0"
           min="0"
           desc="Passive income sources in retirement like Social Security, pensions, or annuities. This helps estimate total retirement income beyond investment withdrawals."
         />
