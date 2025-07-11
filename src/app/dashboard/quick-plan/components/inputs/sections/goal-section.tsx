@@ -22,7 +22,7 @@ export function GoalSection({
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
       <SectionHeader
-        headline="Goal"
+        headline="Retirement Goal"
         desc="How much do you need to retire comfortably? Explore different paths to get there."
       />
       <form onSubmit={(e) => e.preventDefault()}>
