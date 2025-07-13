@@ -30,7 +30,7 @@ export function GoalSection() {
               id="retirement-expenses"
               label="Retirement Expenses"
               value={goals.retirementExpenses}
-              onChange={(value) => updateGoals("retirementExpenses", value)}
+              onBlur={(value) => updateGoals("retirementExpenses", value)}
               placeholder="$50,000"
               min={0}
             />

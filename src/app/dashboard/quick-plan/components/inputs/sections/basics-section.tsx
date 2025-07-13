@@ -44,7 +44,7 @@ export function BasicsSection() {
               id="current-age"
               label="Current Age"
               value={basics.currentAge}
-              onChange={(value) => updateBasics("currentAge", value)}
+              onBlur={(value) => updateBasics("currentAge", value)}
               placeholder="28"
               min={16}
               max={100}
@@ -53,7 +53,7 @@ export function BasicsSection() {
               id="annual-income"
               label="Net Annual Income"
               value={basics.annualIncome}
-              onChange={(value) => updateBasics("annualIncome", value)}
+              onBlur={(value) => updateBasics("annualIncome", value)}
               placeholder="$85,000"
               min={0}
             />
@@ -61,7 +61,7 @@ export function BasicsSection() {
               id="annual-expenses"
               label="Annual Expenses"
               value={basics.annualExpenses}
-              onChange={(value) => updateBasics("annualExpenses", value)}
+              onBlur={(value) => updateBasics("annualExpenses", value)}
               placeholder="$50,000"
               min={0}
             />
@@ -69,7 +69,7 @@ export function BasicsSection() {
               id="invested-assets"
               label="Invested Assets"
               value={basics.investedAssets}
-              onChange={(value) => updateBasics("investedAssets", value)}
+              onBlur={(value) => updateBasics("investedAssets", value)}
               placeholder="$75,000"
               min={0}
             />
@@ -92,9 +92,7 @@ export function BasicsSection() {
                 id="income-growth-rate"
                 label="Income Growth Rate (%)"
                 value={growthRates.incomeGrowthRate}
-                onChange={(value) =>
-                  updateGrowthRates("incomeGrowthRate", value ?? 3)
-                }
+                onBlur={(value) => updateGrowthRates("incomeGrowthRate", value)}
                 placeholder="3%"
                 min={0}
                 max={50}
@@ -104,8 +102,8 @@ export function BasicsSection() {
                 id="expense-growth-rate"
                 label="Expense Growth Rate (%)"
                 value={growthRates.expenseGrowthRate}
-                onChange={(value) =>
-                  updateGrowthRates("expenseGrowthRate", value ?? 3)
+                onBlur={(value) =>
+                  updateGrowthRates("expenseGrowthRate", value)
                 }
                 placeholder="3%"
                 min={0}
@@ -130,9 +128,7 @@ export function BasicsSection() {
                 id="stock-allocation"
                 label="Stocks (%)"
                 value={allocation.stockAllocation}
-                onChange={(value) =>
-                  updateAllocation("stockAllocation", value ?? 70)
-                }
+                onBlur={(value) => updateAllocation("stockAllocation", value)}
                 placeholder="70%"
                 min={0}
                 max={100}
@@ -142,9 +138,7 @@ export function BasicsSection() {
                 id="bond-allocation"
                 label="Bonds (%)"
                 value={allocation.bondAllocation}
-                onChange={(value) =>
-                  updateAllocation("bondAllocation", value ?? 30)
-                }
+                onBlur={(value) => updateAllocation("bondAllocation", value)}
                 placeholder="30%"
                 min={0}
                 max={100}
@@ -154,9 +148,7 @@ export function BasicsSection() {
                 id="cash-allocation"
                 label="Cash (%)"
                 value={allocation.cashAllocation}
-                onChange={(value) =>
-                  updateAllocation("cashAllocation", value ?? 0)
-                }
+                onBlur={(value) => updateAllocation("cashAllocation", value)}
                 placeholder="0%"
                 min={0}
                 max={100}

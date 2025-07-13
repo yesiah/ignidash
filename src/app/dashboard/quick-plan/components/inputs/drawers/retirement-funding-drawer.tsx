@@ -73,8 +73,8 @@ export function RetirementFundingDrawer() {
           id="safe-withdrawal-rate"
           label="Safe Withdrawal Rate (%)"
           value={retirementFunding.safeWithdrawalRate}
-          onChange={(value) =>
-            updateRetirementFunding("safeWithdrawalRate", value ?? 4)
+          onBlur={(value) =>
+            updateRetirementFunding("safeWithdrawalRate", value)
           }
           placeholder="4%"
           min={2}
@@ -86,9 +86,7 @@ export function RetirementFundingDrawer() {
           id="retirement-income"
           label="Passive Retirement Income"
           value={retirementFunding.retirementIncome}
-          onChange={(value) =>
-            updateRetirementFunding("retirementIncome", value ?? 0)
-          }
+          onBlur={(value) => updateRetirementFunding("retirementIncome", value)}
           placeholder="$0"
           min={0}
           desc="Passive income sources in retirement like Social Security, pensions, or annuities. This helps estimate total retirement income beyond investment withdrawals."
@@ -105,9 +103,7 @@ export function RetirementFundingDrawer() {
           id="life-expectancy"
           label="Life Expectancy (years)"
           value={retirementFunding.lifeExpectancy}
-          onChange={(value) =>
-            updateRetirementFunding("lifeExpectancy", value ?? 85)
-          }
+          onBlur={(value) => updateRetirementFunding("lifeExpectancy", value)}
           placeholder="85"
           min={50}
           max={110}
@@ -117,9 +113,7 @@ export function RetirementFundingDrawer() {
           id="effective-tax-rate"
           label="Estimated Effective Tax Rate (%)"
           value={retirementFunding.effectiveTaxRate}
-          onChange={(value) =>
-            updateRetirementFunding("effectiveTaxRate", value ?? 15)
-          }
+          onBlur={(value) => updateRetirementFunding("effectiveTaxRate", value)}
           placeholder="15%"
           min={0}
           max={50}

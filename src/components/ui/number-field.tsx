@@ -7,7 +7,7 @@ interface NumberFieldProps {
   id: string;
   label: string;
   value: number | null;
-  onChange: (value: number | null) => void;
+  onBlur: (value: string) => { success: boolean; error?: string };
   placeholder?: string;
   min?: number;
   max?: number;
@@ -19,7 +19,7 @@ export function NumberField({
   id,
   label,
   value,
-  onChange,
+  onBlur,
   placeholder,
   min,
   max,
@@ -31,6 +31,9 @@ export function NumberField({
     () => value?.toString() ?? ""
   );
 
+  // Local error state for displaying validation errors
+  const [error, setError] = useState<string | null>(null);
+
   // Sync external value changes to local state
   useEffect(() => {
     setLocalValue(value?.toString() ?? "");
@@ -39,22 +42,17 @@ export function NumberField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // Always update local state to allow typing
+    if (error) {
+      setError(null);
+    }
+
     setLocalValue(inputValue);
+  };
 
-    if (inputValue === "") {
-      onChange(null);
-      return;
-    }
-
-    // Allow users to type "-" or "." without blocking
-    if (inputValue === "-" || inputValue === "." || inputValue === "-.") {
-      return; // Don't update store, let them finish typing
-    }
-
-    const numericValue = parseFloat(inputValue);
-    if (!isNaN(numericValue) && isFinite(numericValue)) {
-      onChange(numericValue);
+  const handleBlur = () => {
+    const result = onBlur(localValue);
+    if (!result.success && result.error) {
+      setError(result.error);
     }
   };
 
@@ -71,12 +69,16 @@ export function NumberField({
         type="text"
         value={localValue}
         onChange={handleChange}
+        onBlur={handleBlur}
         placeholder={placeholder}
         min={min}
         max={max}
         step={step}
         aria-describedby={desc ? `${id}-desc` : undefined}
       />
+      {error && (
+        <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>
+      )}
       {desc && (
         <p id={`${id}-desc`} className="text-muted-foreground mt-2 text-xs">
           {desc}
