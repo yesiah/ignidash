@@ -1,21 +1,37 @@
-import { z } from "zod";
+import { z, ZodNumber } from "zod";
+
+const coerceNumber = (zodNumber: ZodNumber) => {
+  return z.preprocess((val) => {
+    if (val === "" || val === null || val === undefined) {
+      return null;
+    }
+
+    return Number(val);
+  }, zodNumber);
+};
 
 // Helper function to create a currency field that allows zero
 const currencyFieldAllowsZero = (customMessage?: string) => {
-  return z.coerce.number().nonnegative(customMessage || "Must be 0 or greater");
+  return coerceNumber(
+    z.number().nonnegative(customMessage || "Must be 0 or greater")
+  );
 };
 
 // Helper function to create a currency field that forbids zero
 const currencyFieldForbidsZero = (customMessage?: string) => {
-  return z.coerce.number().positive(customMessage || "Must be greater than 0");
+  return coerceNumber(
+    z.number().positive(customMessage || "Must be greater than 0")
+  );
 };
 
 // Helper function to create a percentage field with custom range
 const percentageField = (min = 0, max = 100, fieldName = "Value") => {
-  return z.coerce
-    .number()
-    .min(min, `${fieldName} must be at least ${min}%`)
-    .max(max, `${fieldName} must be at most ${max}%`);
+  return coerceNumber(
+    z
+      .number()
+      .min(min, `${fieldName} must be at least ${min}%`)
+      .max(max, `${fieldName} must be at most ${max}%`)
+  );
 };
 
 // Helper function to create an age field with configurable range
@@ -24,10 +40,12 @@ const ageField = (
   max = 100,
   customMessages?: { min?: string; max?: string }
 ) => {
-  return z.coerce
-    .number()
-    .min(min, customMessages?.min || `Age must be at least ${min}`)
-    .max(max, customMessages?.max || `Age must be at most ${max}`);
+  return coerceNumber(
+    z
+      .number()
+      .min(min, customMessages?.min || `Age must be at least ${min}`)
+      .max(max, customMessages?.max || `Age must be at most ${max}`)
+  );
 };
 
 // Basic financial information schema
