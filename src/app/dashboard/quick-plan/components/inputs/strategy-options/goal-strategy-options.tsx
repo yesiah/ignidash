@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberField } from "@/components/ui/number-field";
+import { NumberInput } from "@/components/ui/number-input";
 import { DisclosureSection } from "@/components/layout/disclosure-section";
 import { Coffee, RollerCoaster } from "lucide-react";
 
@@ -22,7 +22,7 @@ export function CoastFIRE({
       desc="Front-load savings, then work just enough to cover living expenses."
       icon={<RollerCoaster className="h-5 w-5" aria-hidden="true" />}
     >
-      <NumberField
+      <NumberInput
         id="target-retirement-age"
         label="Target Retirement Age"
         value={targetRetirementAge}
@@ -53,7 +53,7 @@ export function BaristaFIRE({
       desc="Work part-time in enjoyable jobs while investments cover the rest."
       icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
     >
-      <NumberField
+      <NumberInput
         id="part-time-income"
         label="Part-time Annual Income"
         value={partTimeIncome}

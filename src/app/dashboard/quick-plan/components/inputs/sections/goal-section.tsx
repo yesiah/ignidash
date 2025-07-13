@@ -5,7 +5,7 @@ import {
   CoastFIRE,
   BaristaFIRE,
 } from "../strategy-options/goal-strategy-options";
-import { NumberField } from "@/components/ui/number-field";
+import { NumberInput } from "@/components/ui/number-input";
 import { SectionHeader } from "@/components/layout/section-header";
 import { useGoalsData, useUpdateGoals } from "@/lib/stores/quick-plan-store";
 
@@ -26,7 +26,7 @@ export function GoalSection() {
             Retirement goal and strategy options
           </legend>
           <Card>
-            <NumberField
+            <NumberInput
               id="retirement-expenses"
               label="Retirement Expenses"
               value={goals.retirementExpenses}

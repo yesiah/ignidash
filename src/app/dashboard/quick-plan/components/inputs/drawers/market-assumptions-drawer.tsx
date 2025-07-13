@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberField } from "@/components/ui/number-field";
+import { NumberInput } from "@/components/ui/number-input";
 import { CardFormSection } from "@/components/layout/card-form-section";
 import {
   useMarketAssumptionsData,
@@ -52,7 +52,7 @@ export function MarketAssumptionsDrawer() {
         desc={getExpectedReturnsDescription()}
         legendText="Expected investment returns configuration"
       >
-        <NumberField
+        <NumberInput
           id="stock-return"
           label="Stock Returns (%)"
           value={marketAssumptions.stockReturn}
@@ -62,7 +62,7 @@ export function MarketAssumptionsDrawer() {
           max={20}
           step={0.1}
         />
-        <NumberField
+        <NumberInput
           id="bond-return"
           label="Bond Returns (%)"
           value={marketAssumptions.bondReturn}
@@ -72,7 +72,7 @@ export function MarketAssumptionsDrawer() {
           max={15}
           step={0.1}
         />
-        <NumberField
+        <NumberInput
           id="cash-return"
           label="Cash Returns (%)"
           value={marketAssumptions.cashReturn}
@@ -90,7 +90,7 @@ export function MarketAssumptionsDrawer() {
         hasBorder={false}
         legendText="Economic factors for financial projections"
       >
-        <NumberField
+        <NumberInput
           id="inflation-rate"
           label="Inflation Rate (%)"
           value={marketAssumptions.inflationRate}

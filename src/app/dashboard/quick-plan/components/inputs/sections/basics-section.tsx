@@ -1,10 +1,9 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { NumberField } from "@/components/ui/number-field";
+import { NumberInput } from "@/components/ui/number-input";
 import { SectionHeader } from "@/components/layout/section-header";
 import { DisclosureSection } from "@/components/layout/disclosure-section";
-import InvalidInputError from "@/components/ui/invalid-input-error";
 import { ArrowTrendingUpIcon, ChartPieIcon } from "@heroicons/react/24/outline";
 import {
   useBasicsData,
@@ -14,14 +13,11 @@ import {
   useUpdateGrowthRates,
   useUpdateAllocation,
 } from "@/lib/stores/quick-plan-store";
-import { useAllocationValidation } from "@/lib/hooks/use-validation";
 
 export function BasicsSection() {
   const basics = useBasicsData();
   const growthRates = useGrowthRatesData();
   const allocation = useAllocationData();
-
-  const { isValid: allocationIsValid } = useAllocationValidation(allocation);
 
   const updateBasics = useUpdateBasics();
   const updateGrowthRates = useUpdateGrowthRates();
@@ -40,7 +36,7 @@ export function BasicsSection() {
             <legend className="sr-only">
               Basic financial information for FIRE calculation
             </legend>
-            <NumberField
+            <NumberInput
               id="current-age"
               label="Current Age"
               value={basics.currentAge}
@@ -49,7 +45,7 @@ export function BasicsSection() {
               min={16}
               max={100}
             />
-            <NumberField
+            <NumberInput
               id="annual-income"
               label="Net Annual Income"
               value={basics.annualIncome}
@@ -57,7 +53,7 @@ export function BasicsSection() {
               placeholder="$85,000"
               min={0}
             />
-            <NumberField
+            <NumberInput
               id="annual-expenses"
               label="Annual Expenses"
               value={basics.annualExpenses}
@@ -65,7 +61,7 @@ export function BasicsSection() {
               placeholder="$50,000"
               min={0}
             />
-            <NumberField
+            <NumberInput
               id="invested-assets"
               label="Invested Assets"
               value={basics.investedAssets}
@@ -88,7 +84,7 @@ export function BasicsSection() {
               <legend className="sr-only">
                 Income and expense growth rate projections
               </legend>
-              <NumberField
+              <NumberInput
                 id="income-growth-rate"
                 label="Income Growth Rate (%)"
                 value={growthRates.incomeGrowthRate}
@@ -98,7 +94,7 @@ export function BasicsSection() {
                 max={50}
                 step={0.1}
               />
-              <NumberField
+              <NumberInput
                 id="expense-growth-rate"
                 label="Expense Growth Rate (%)"
                 value={growthRates.expenseGrowthRate}
@@ -124,7 +120,7 @@ export function BasicsSection() {
               <legend className="sr-only">
                 Asset allocation percentages for investment portfolio
               </legend>
-              <NumberField
+              <NumberInput
                 id="stock-allocation"
                 label="Stocks (%)"
                 value={allocation.stockAllocation}
@@ -134,7 +130,7 @@ export function BasicsSection() {
                 max={100}
                 step={1}
               />
-              <NumberField
+              <NumberInput
                 id="bond-allocation"
                 label="Bonds (%)"
                 value={allocation.bondAllocation}
@@ -144,7 +140,7 @@ export function BasicsSection() {
                 max={100}
                 step={1}
               />
-              <NumberField
+              <NumberInput
                 id="cash-allocation"
                 label="Cash (%)"
                 value={allocation.cashAllocation}
@@ -157,9 +153,6 @@ export function BasicsSection() {
             </fieldset>
           </form>
         </DisclosureSection>
-        {!allocationIsValid && (
-          <InvalidInputError title="Asset allocation must total 100%" />
-        )}
       </div>
     </div>
   );

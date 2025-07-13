@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/catalyst/input";
 
-interface NumberFieldProps {
+interface NumberInputProps {
   id: string;
   label: string;
   value: number | null;
@@ -15,7 +15,7 @@ interface NumberFieldProps {
   desc?: string | React.ReactNode;
 }
 
-export function NumberField({
+export function NumberInput({
   id,
   label,
   value,
@@ -25,7 +25,7 @@ export function NumberField({
   max,
   step,
   desc,
-}: NumberFieldProps) {
+}: NumberInputProps) {
   // Local string state that allows incomplete inputs
   const [localValue, setLocalValue] = useState<string>(
     () => value?.toString() ?? ""

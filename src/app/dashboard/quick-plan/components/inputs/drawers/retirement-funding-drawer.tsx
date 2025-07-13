@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberField } from "@/components/ui/number-field";
+import { NumberInput } from "@/components/ui/number-input";
 import { CardFormSection } from "@/components/layout/card-form-section";
 import {
   useRetirementFundingData,
@@ -69,7 +69,7 @@ export function RetirementFundingDrawer() {
         desc="Portfolio withdrawals and income sources that will cover your retirement expenses."
         legendText="Retirement cash flow planning settings"
       >
-        <NumberField
+        <NumberInput
           id="safe-withdrawal-rate"
           label="Safe Withdrawal Rate (%)"
           value={retirementFunding.safeWithdrawalRate}
@@ -82,7 +82,7 @@ export function RetirementFundingDrawer() {
           step={0.1}
           desc={getSafeWithdrawalRateDescription()}
         />
-        <NumberField
+        <NumberInput
           id="retirement-income"
           label="Passive Retirement Income"
           value={retirementFunding.retirementIncome}
@@ -99,7 +99,7 @@ export function RetirementFundingDrawer() {
         hasBorder={false}
         legendText="Life expectancy and tax planning assumptions"
       >
-        <NumberField
+        <NumberInput
           id="life-expectancy"
           label="Life Expectancy (years)"
           value={retirementFunding.lifeExpectancy}
@@ -109,7 +109,7 @@ export function RetirementFundingDrawer() {
           max={110}
           desc={getLifeExpectancyDescription()}
         />
-        <NumberField
+        <NumberInput
           id="effective-tax-rate"
           label="Estimated Effective Tax Rate (%)"
           value={retirementFunding.effectiveTaxRate}
