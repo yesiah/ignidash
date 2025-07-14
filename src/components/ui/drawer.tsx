@@ -31,13 +31,13 @@ export default function Drawer({
 
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full sm:pl-16">
             <DialogPanel
               transition
-              className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-closed:translate-x-full sm:duration-700"
+              className="pointer-events-auto relative w-screen max-w-full transform transition duration-500 ease-in-out data-closed:translate-x-full sm:max-w-md sm:duration-700"
             >
               <TransitionChild>
-                <div className="absolute top-0 left-0 -ml-8 flex pt-4 pr-2 duration-500 ease-in-out data-closed:opacity-0 sm:-ml-10 sm:pr-4">
+                <div className="absolute top-0 left-0 -ml-8 hidden pt-4 pr-2 duration-500 ease-in-out data-closed:opacity-0 sm:-ml-10 sm:flex sm:pr-4">
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
@@ -50,10 +50,18 @@ export default function Drawer({
                 </div>
               </TransitionChild>
               <div className="flex h-full flex-col overflow-y-auto">
-                <div className="bg-emphasized-background px-4 py-6 sm:px-6">
+                <div className="bg-emphasized-background flex items-center justify-between px-4 py-6 sm:block sm:px-6">
                   <DialogTitle className="text-foreground text-base font-semibold">
                     {title}
                   </DialogTitle>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="inline-block rounded-md text-white hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-hidden sm:hidden"
+                  >
+                    <span className="sr-only">Close panel</span>
+                    <XMarkIcon aria-hidden="true" className="size-6" />
+                  </button>
                 </div>
                 <div className="bg-background relative flex-1 px-4 py-6 sm:px-6">
                   {children}
