@@ -27,10 +27,9 @@ export function MobileSidebarContent({
           <li>
             <ul role="list" className="-mx-2 space-y-2">
               {navigation.map((item) => (
-                <li key={item.name}>
+                <li key={item.name} onClick={onClose}>
                   <Link
                     href={item.href}
-                    onClick={onClose}
                     className={cn(
                       item.current
                         ? "border border-rose-600 bg-white text-rose-600 dark:border-rose-400 dark:bg-zinc-800 dark:text-rose-400"
