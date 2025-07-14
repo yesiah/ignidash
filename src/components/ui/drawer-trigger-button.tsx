@@ -22,23 +22,44 @@ export function DrawerTriggerButton({
 }: DrawerTriggerButtonProps) {
   const LeftIcon = leftIcon;
 
+  //  <div className="flex w-full items-center justify-between text-left">
+  //           <div className="flex flex-col">
+  //             <div className="flex items-center gap-2">
+  //               {icon}
+  //               <span>{title}</span>
+  //             </div>
+  //             {desc && (
+  //               <p className="text-muted-foreground mt-2 block text-xs">
+  //                 {desc}
+  //               </p>
+  //             )}
+  //           </div>
+  //           <ChevronDownIcon
+  //             className="ml-2 w-5 shrink-0 group-data-open:rotate-180"
+  //             aria-hidden="true"
+  //           />
+  //         </div>
+
   return (
     <button
       type="button"
       onClick={onClick}
       className={`bg-emphasized-background text-foreground hover:ring-foreground/10 focus-visible:outline-foreground flex w-full items-center justify-between rounded-lg p-4 text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
     >
-      <div className="w-full text-left">
-        <div className="flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between text-left">
+        <div className="flex flex-col">
           <div className="flex items-center gap-2">
             {LeftIcon && <LeftIcon className="h-5 w-5" aria-hidden="true" />}
             <span>{title}</span>
           </div>
-          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+          {desc && (
+            <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
+          )}
         </div>
-        {desc && (
-          <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
-        )}
+        <ChevronRightIcon
+          className="ml-2 h-5 w-5 shrink-0"
+          aria-hidden="true"
+        />
       </div>
     </button>
   );
