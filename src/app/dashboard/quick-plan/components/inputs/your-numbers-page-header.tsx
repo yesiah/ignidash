@@ -7,7 +7,7 @@ import Drawer from "@/components/ui/drawer";
 import { PreferencesDrawer } from "./drawers/preferences-drawer";
 
 export function YourNumbersPageHeader() {
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
 
   return (
     <>
@@ -19,13 +19,17 @@ export function YourNumbersPageHeader() {
           </h3>
           <IconButton
             icon={Cog6ToothIcon}
-            label="Settings"
-            onClick={() => setSettingsOpen(true)}
+            label="Preferences"
+            onClick={() => setPreferencesOpen(true)}
           />
         </div>
       </div>
 
-      <Drawer open={settingsOpen} setOpen={setSettingsOpen} title="Settings">
+      <Drawer
+        open={preferencesOpen}
+        setOpen={setPreferencesOpen}
+        title="Preferences"
+      >
         <PreferencesDrawer />
       </Drawer>
     </>
