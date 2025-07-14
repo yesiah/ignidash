@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { NumberInput } from "@/components/ui/number-input";
 import { SectionHeader } from "@/components/layout/section-header";
 import { DisclosureSection } from "@/components/layout/disclosure-section";
+import InvalidInputError from "@/components/ui/invalid-input-error";
 import { ArrowTrendingUpIcon, ChartPieIcon } from "@heroicons/react/24/outline";
 import {
   useBasicsData,
@@ -22,6 +24,49 @@ export function BasicsSection() {
   const updateBasics = useUpdateBasics();
   const updateGrowthRates = useUpdateGrowthRates();
   const updateAllocation = useUpdateAllocation();
+
+  // Local state for allocation tracking
+  const [localAllocation, setLocalAllocation] = useState({
+    stockAllocation: allocation.stockAllocation,
+    bondAllocation: allocation.bondAllocation,
+    cashAllocation: allocation.cashAllocation,
+  });
+
+  // Error state for allocation validation
+  const [allocationError, setAllocationError] = useState<string | null>(null);
+
+  // Sync store changes to local state
+  useEffect(() => {
+    setLocalAllocation({
+      stockAllocation: allocation.stockAllocation,
+      bondAllocation: allocation.bondAllocation,
+      cashAllocation: allocation.cashAllocation,
+    });
+  }, [allocation]);
+
+  // Handler for allocation field changes
+  const handleAllocationBlur = (
+    field: keyof typeof localAllocation,
+    value: unknown
+  ) => {
+    const updatedAllocation = {
+      ...localAllocation,
+      [field]: value,
+    };
+
+    setLocalAllocation(updatedAllocation);
+
+    const result = updateAllocation(updatedAllocation);
+    if (!result.success) {
+      setAllocationError(result.error || "Invalid allocation values");
+    } else {
+      setAllocationError(null);
+    }
+
+    // HACK: Always return success to prevent field-level errors, relying on section-level validation instead.
+    // TODO: Properly route field-specific vs form-level errors to appropriate UI locations.
+    return { success: true };
+  };
 
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
@@ -118,30 +163,42 @@ export function BasicsSection() {
               <NumberInput
                 id="stock-allocation"
                 label="Stocks (%)"
-                value={allocation.stockAllocation}
-                onBlur={(value) => updateAllocation("stockAllocation", value)}
+                value={localAllocation.stockAllocation}
+                onBlur={(value) =>
+                  handleAllocationBlur("stockAllocation", value)
+                }
                 placeholder="70%"
                 suffix="%"
               />
               <NumberInput
                 id="bond-allocation"
                 label="Bonds (%)"
-                value={allocation.bondAllocation}
-                onBlur={(value) => updateAllocation("bondAllocation", value)}
+                value={localAllocation.bondAllocation}
+                onBlur={(value) =>
+                  handleAllocationBlur("bondAllocation", value)
+                }
                 placeholder="30%"
                 suffix="%"
               />
               <NumberInput
                 id="cash-allocation"
                 label="Cash (%)"
-                value={allocation.cashAllocation}
-                onBlur={(value) => updateAllocation("cashAllocation", value)}
+                value={localAllocation.cashAllocation}
+                onBlur={(value) =>
+                  handleAllocationBlur("cashAllocation", value)
+                }
                 placeholder="0%"
                 suffix="%"
               />
             </fieldset>
           </form>
         </DisclosureSection>
+        {allocationError && (
+          <InvalidInputError
+            title="Asset Allocation Error"
+            description={allocationError}
+          />
+        )}
       </div>
     </div>
   );

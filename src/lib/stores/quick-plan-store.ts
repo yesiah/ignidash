@@ -34,10 +34,9 @@ interface QuickPlanState {
       field: keyof GrowthRatesInputs,
       value: unknown
     ) => UpdateResult;
-    updateAllocation: (
-      field: keyof AllocationInputs,
-      value: unknown
-    ) => UpdateResult;
+    updateAllocation: (data: {
+      [K in keyof AllocationInputs]: unknown;
+    }) => UpdateResult;
     updateGoals: (field: keyof GoalsInputs, value: unknown) => UpdateResult;
     updateMarketAssumptions: (
       field: keyof MarketAssumptionsInputs,
@@ -157,17 +156,46 @@ const validateField = <T extends ValidSection>(
     };
   }
 
-  // Extract the most relevant error message
+  // Extract the most relevant error message for field validation
   const { error } = result;
 
   // Find field-specific error or form-level error
   const relevantIssue =
     error.issues.find((issue) => {
-      return (
-        issue.path[0] === field ||
-        issue.path[0] === "_form" ||
-        issue.path.length === 0
-      );
+      return issue.path[0] === field || issue.path.length === 0;
+    }) || error.issues[0];
+
+  return {
+    valid: false,
+    error: relevantIssue.message,
+  };
+};
+
+// Helper to validate an entire section
+const validateSection = <T extends ValidSection>(
+  section: T,
+  sectionData: unknown
+): { valid: boolean; data?: QuickPlanInputs[T]; error?: string } => {
+  // Get the schema for this section
+  const sectionSchema = quickPlanSchema.shape[section];
+
+  // Use safeParse for cleaner error handling
+  const result = sectionSchema.safeParse(sectionData);
+
+  if (result.success) {
+    return {
+      valid: true,
+      data: result.data as QuickPlanInputs[T],
+    };
+  }
+
+  // Extract form-level error message for section validation
+  const { error } = result;
+
+  // For section validation, look specifically for form-level errors
+  const relevantIssue =
+    error.issues.find((issue) => {
+      return issue.path[0] === "_form" || issue.path.length === 0;
     }) || error.issues[0];
 
   return {
@@ -224,13 +252,8 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             };
           },
 
-          updateAllocation: (field, value) => {
-            const result = validateField(
-              "allocation",
-              field,
-              value,
-              get().inputs.allocation
-            );
+          updateAllocation: (data) => {
+            const result = validateSection("allocation", data);
 
             if (result.valid && result.data) {
               set((state) => {
