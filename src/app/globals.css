@@ -52,3 +52,9 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+@layer utilities {
+  .focus-visible-default {
+    @apply focus-visible:outline-foreground focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+}

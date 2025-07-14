@@ -18,7 +18,7 @@ export function MobileHeader({
       <button
         type="button"
         onClick={onMenuClick}
-        className="-m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300"
+        className="focus-visible-default -m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300"
       >
         <span className="sr-only">Open sidebar</span>
         <Bars3Icon aria-hidden="true" className="size-6" />
@@ -27,7 +27,7 @@ export function MobileHeader({
         <Icon aria-hidden="true" className="size-5" />
         {currentPageTitle}
       </div>
-      <a href="#">
+      <a className="focus-visible-default" href="#">
         <span className="sr-only">Your profile</span>
         <Image
           alt=""

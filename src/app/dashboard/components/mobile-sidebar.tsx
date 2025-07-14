@@ -38,7 +38,7 @@ export function MobileSidebar({
               <button
                 type="button"
                 onClick={onClose}
-                className="focus-visible:outline-foreground -m-2.5 p-2.5 focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="focus-visible-default -m-2.5 p-2.5"
               >
                 <span className="sr-only">Close sidebar</span>
                 <XMarkIcon aria-hidden="true" className="size-6 text-white" />

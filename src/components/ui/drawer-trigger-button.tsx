@@ -44,7 +44,7 @@ export function DrawerTriggerButton({
     <button
       type="button"
       onClick={onClick}
-      className={`bg-emphasized-background text-foreground hover:ring-foreground/10 focus-visible:outline-foreground flex w-full items-center justify-between rounded-lg p-4 text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
+      className={`bg-emphasized-background text-foreground hover:ring-foreground/10 focus-visible-default flex w-full items-center justify-between rounded-lg p-4 text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset ${className}`}
     >
       <div className="flex w-full items-center justify-between text-left">
         <div className="flex flex-col">
