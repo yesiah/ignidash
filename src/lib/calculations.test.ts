@@ -4,6 +4,7 @@ import {
   calculatePortfolioReturnNominal,
   calculatePortfolioReturnReal,
   calculateYearlyContribution,
+  calculateFuturePortfolioValue,
 } from "./calculations";
 import { defaultState } from "./stores/quick-plan-store";
 
@@ -309,5 +310,179 @@ describe("calculateYearlyContribution", () => {
 
     // Year 1: (50,000 × 1.02) - (60,000 × 1.04) = 51,000 - 62,400 = -11,400
     expect(result1).toBe(-11400);
+  });
+});
+
+describe("calculateFuturePortfolioValue", () => {
+  it("should calculate correct future value with positive real returns and contributions", () => {
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 100000,
+        annualIncome: 80000,
+        annualExpenses: 50000,
+      },
+      allocation: {
+        stockAllocation: 70,
+        bondAllocation: 30,
+        cashAllocation: 0,
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        stockReturn: 10,
+        bondReturn: 5,
+        cashReturn: 3,
+        inflationRate: 3,
+      },
+      growthRates: {
+        incomeGrowthRate: 3,
+        expenseGrowthRate: 3,
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 5);
+
+    // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
+    // Initial assets after 5 years: 100,000 × (1.053398)^5 = 129,706.75
+    //
+    // Contributions (all growing at 3% real):
+    // Year 0: 30,000 × (1.053398)^4 = 36,939.53
+    // Year 1: 30,900 × (1.053398)^3 = 36,119.03
+    // Year 2: 31,827 × (1.053398)^2 = 35,316.75
+    // Year 3: 32,781.81 × (1.053398)^1 = 34,532.30
+    // Year 4: 33,765.26 × (1.053398)^0 = 33,765.26
+    // Total contributions FV: 176,672.86
+    //
+    // Total: 129,706.75 + 176,672.86 = 306,379.61
+
+    expect(result).toBeCloseTo(306379.61, 0);
+  });
+
+  it("should handle zero real return scenario (100% cash with inflation = cash return)", () => {
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 100000,
+        annualIncome: 80000,
+        annualExpenses: 50000,
+      },
+      allocation: {
+        stockAllocation: 0,
+        bondAllocation: 0,
+        cashAllocation: 100,
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        stockReturn: 10,
+        bondReturn: 5,
+        cashReturn: 3,
+        inflationRate: 3, // Same as cash return = 0% real return
+      },
+      growthRates: {
+        incomeGrowthRate: 0,
+        expenseGrowthRate: 0,
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 5);
+
+    // With 0% real return, no growth on assets or contributions
+    // Initial assets: 100,000 (no growth)
+    // Contributions: 30,000 per year × 5 years = 150,000
+    // Total: 100,000 + 150,000 = 250,000
+
+    expect(result).toBe(250000);
+  });
+
+  it("should handle negative contributions in later years when expenses grow faster than income", () => {
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 500000,
+        annualIncome: 60000,
+        annualExpenses: 55000, // Close to income
+      },
+      allocation: {
+        stockAllocation: 60,
+        bondAllocation: 40,
+        cashAllocation: 0,
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        stockReturn: 10,
+        bondReturn: 5,
+        cashReturn: 3,
+        inflationRate: 3,
+      },
+      growthRates: {
+        incomeGrowthRate: 1, // Income grows slowly
+        expenseGrowthRate: 4, // Expenses grow faster
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 10);
+
+    // Real return: (1.07 / 1.03) - 1 = 3.883%
+    //
+    // Contributions by year:
+    // Year 0: 60,000 - 55,000 = 5,000 (positive)
+    // Year 1: 60,600 - 57,200 = 3,400 (positive)
+    // Year 2: 61,206 - 59,488 = 1,718 (positive)
+    // Year 3: 61,818 - 61,867.52 = -49.52 (turns negative)
+    // ... continues increasingly negative
+    //
+    // Assets should grow but be reduced by negative contributions (withdrawals)
+    // This tests that the function correctly handles the transition to retirement-like scenario
+
+    // Initial assets growth: 500,000 × (1.03883)^10 = 731,061.43
+    // Net effect of contributions will be small/negative due to withdrawals
+
+    expect(result).toBeGreaterThan(500000); // Should still grow due to returns
+    expect(result).toBeLessThan(800000); // But limited by withdrawals
+  });
+
+  it("should return -1 when investedAssets is null", () => {
+    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: null,
+        annualIncome: 80000,
+        annualExpenses: 50000,
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 5);
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Cannot calculate future portfolio value: invested assets is required"
+    );
+    expect(result).toBe(-1);
+    consoleSpy.mockRestore();
+  });
+
+  it("should return -1 when calculateYearlyContribution returns -1", () => {
+    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 100000,
+        annualIncome: null, // This will cause calculateYearlyContribution to return -1
+        annualExpenses: 50000,
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 5);
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Cannot calculate yearly contribution: annual income and expenses are required"
+    );
+    expect(result).toBe(-1);
+    consoleSpy.mockRestore();
   });
 });
