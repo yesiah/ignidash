@@ -32,20 +32,22 @@ export function DisclosureSection({
             className ?? ""
           )}
         >
-          <div className="w-full text-left">
-            <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between text-left">
+            <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 {icon}
                 <span>{title}</span>
               </div>
-              <ChevronDownIcon
-                className="w-5 shrink-0 group-data-open:rotate-180"
-                aria-hidden="true"
-              />
+              {desc && (
+                <p className="text-muted-foreground mt-2 block text-xs">
+                  {desc}
+                </p>
+              )}
             </div>
-            {desc && (
-              <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
-            )}
+            <ChevronDownIcon
+              className="ml-2 w-5 shrink-0 group-data-open:rotate-180"
+              aria-hidden="true"
+            />
           </div>
         </DisclosureButton>
         <DisclosurePanel>
