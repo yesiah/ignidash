@@ -137,6 +137,11 @@ export const getFIREAnalysis = (
 
   // Handle missing data cases
   if (requiredPortfolio === -1 || yearsToFIRE === -1 || fireAge === -1) {
+    const failureMessage =
+      requiredPortfolio === -1
+        ? "Missing required data to calculate FIRE goals"
+        : "FIRE is not achievable with current parameters";
+
     return {
       achievable: false,
       yearsToFIRE: -1,
@@ -144,10 +149,7 @@ export const getFIREAnalysis = (
       requiredPortfolio: requiredPortfolio === -1 ? 0 : requiredPortfolio,
       currentPortfolio,
       projectedPortfolioAtFIRE: 0,
-      message:
-        requiredPortfolio === -1
-          ? "Missing required data to calculate FIRE goals"
-          : "FIRE is not achievable with current parameters",
+      message: failureMessage,
     };
   }
 
