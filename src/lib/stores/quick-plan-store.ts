@@ -12,13 +12,7 @@ import {
   validateField,
   validateSection,
 } from "../schemas/quick-plan-schema";
-import {
-  calculateRequiredPortfolio,
-  calculateWeightedPortfolioReturnNominal,
-  calculateWeightedPortfolioReturnReal,
-  calculateYearlyContribution,
-  calculateFuturePortfolioValue,
-} from "../calculations";
+import { calculateRequiredPortfolio } from "../calculations";
 import {
   calculateYearsToFIRE,
   calculateFIREAge,
@@ -382,82 +376,21 @@ export const useRequiredPortfolio = () =>
     )
   );
 
-export const useWeightedPortfolioReturnNominal = () =>
-  useQuickPlanStore((state) =>
-    calculateWeightedPortfolioReturnNominal(
-      state.inputs.allocation,
-      state.inputs.marketAssumptions
-    )
-  );
-
-export const useWeightedPortfolioReturnReal = () =>
-  useQuickPlanStore((state) =>
-    calculateWeightedPortfolioReturnReal(
-      state.inputs.allocation,
-      state.inputs.marketAssumptions
-    )
-  );
-
-export const useCurrentAnnualContribution = () =>
-  useQuickPlanStore(
-    (state) =>
-      calculateYearlyContribution(
-        state.inputs.basics.annualIncome,
-        state.inputs.basics.annualExpenses,
-        state.inputs.growthRates,
-        state.inputs.marketAssumptions.inflationRate,
-        0,
-        false
-      ) // Year 0, real terms
-  );
-
-export const useCurrentAnnualContributionNominal = () =>
-  useQuickPlanStore(
-    (state) =>
-      calculateYearlyContribution(
-        state.inputs.basics.annualIncome,
-        state.inputs.basics.annualExpenses,
-        state.inputs.growthRates,
-        state.inputs.marketAssumptions.inflationRate,
-        0,
-        true
-      ) // Year 0, nominal terms
-  );
-
 // FIRE Calculations
 export const useYearsToFIRE = () =>
   useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return calculateYearsToFIRE(inputs);
+    return calculateYearsToFIRE(state.inputs);
   });
 
 export const useFIREAge = () =>
   useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return calculateFIREAge(inputs);
+    return calculateFIREAge(state.inputs);
   });
 
 export const useFIREAnalysis = () =>
   useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return getFIREAnalysis(inputs);
+    return getFIREAnalysis(state.inputs);
   });
-
-// Portfolio Value Calculations
-export const useFuturePortfolioValue = (
-  years: number,
-  nominal: boolean = false
-) =>
-  useQuickPlanStore((state) =>
-    calculateFuturePortfolioValue(
-      state.inputs.basics,
-      state.inputs.allocation,
-      state.inputs.marketAssumptions,
-      state.inputs.growthRates,
-      years,
-      nominal
-    )
-  );
 
 // Validation helper functions (can be reused)
 const validateBasicsComplete = (basics: BasicsInputs) => {
