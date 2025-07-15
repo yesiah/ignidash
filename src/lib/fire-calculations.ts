@@ -13,7 +13,10 @@ export const calculateYearsToFIRE = (
   maxYears: number = 100
 ): number => {
   // First, check if we can calculate the required portfolio
-  const requiredPortfolio = calculateRequiredPortfolio(inputs);
+  const requiredPortfolio = calculateRequiredPortfolio(
+    inputs.goals.retirementExpenses,
+    inputs.retirementFunding.safeWithdrawalRate
+  );
   if (requiredPortfolio === -1) {
     return -1; // Missing required data
   }
@@ -107,7 +110,10 @@ export const getFIREAnalysis = (
   projectedPortfolioAtFIRE: number;
   message: string;
 } => {
-  const requiredPortfolio = calculateRequiredPortfolio(inputs);
+  const requiredPortfolio = calculateRequiredPortfolio(
+    inputs.goals.retirementExpenses,
+    inputs.retirementFunding.safeWithdrawalRate
+  );
   const currentPortfolio = inputs.basics.investedAssets ?? 0;
   const yearsToFIRE = calculateYearsToFIRE(inputs);
   const fireAge = calculateFIREAge(inputs);

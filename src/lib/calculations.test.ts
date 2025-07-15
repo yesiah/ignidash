@@ -10,29 +10,14 @@ import { defaultState } from "./stores/quick-plan-store";
 
 describe("calculateRequiredPortfolio", () => {
   it("should return 1,000,000 for 40,000 retirement expenses with 4% SWR", () => {
-    const inputs = {
-      ...defaultState.inputs,
-      goals: {
-        ...defaultState.inputs.goals,
-        retirementExpenses: 40000,
-      },
-    };
-
-    const result = calculateRequiredPortfolio(inputs);
+    const result = calculateRequiredPortfolio(40000, 4);
     expect(result).toBe(1000000);
   });
 
   it("should warn and return -1 when retirementExpenses is null", () => {
     const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const inputs = {
-      ...defaultState.inputs,
-      goals: {
-        ...defaultState.inputs.goals,
-        retirementExpenses: null,
-      },
-    };
 
-    const result = calculateRequiredPortfolio(inputs);
+    const result = calculateRequiredPortfolio(null, 4);
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "Cannot calculate required portfolio: retirement expenses is required"

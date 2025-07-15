@@ -1,20 +1,13 @@
 import { QuickPlanInputs } from "./schemas/quick-plan-schema";
 
 // Calculation function to determine required portfolio for retirement
-export const calculateRequiredPortfolio = (inputs: QuickPlanInputs): number => {
-  const { retirementExpenses } = inputs.goals;
-  const { safeWithdrawalRate } = inputs.retirementFunding;
-
+export const calculateRequiredPortfolio = (
+  retirementExpenses: number | null,
+  safeWithdrawalRate: number
+): number => {
   if (retirementExpenses === null) {
     console.warn(
       "Cannot calculate required portfolio: retirement expenses is required"
-    );
-    return -1;
-  }
-
-  if (safeWithdrawalRate === null) {
-    console.warn(
-      "Cannot calculate required portfolio: safe withdrawal rate is required"
     );
     return -1;
   }

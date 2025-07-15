@@ -12,6 +12,18 @@ import {
   validateField,
   validateSection,
 } from "../schemas/quick-plan-schema";
+import {
+  calculateRequiredPortfolio,
+  calculateWeightedPortfolioReturnNominal,
+  calculateWeightedPortfolioReturnReal,
+  calculateYearlyContribution,
+  calculateFuturePortfolioValue,
+} from "../calculations";
+import {
+  calculateYearsToFIRE,
+  calculateFIREAge,
+  getFIREAnalysis,
+} from "../fire-calculations";
 
 // Update result type
 type UpdateResult = {
@@ -354,3 +366,110 @@ export const useResetStore = () =>
   useQuickPlanStore((state) => state.actions.resetStore);
 export const useResetSection = () =>
   useQuickPlanStore((state) => state.actions.resetSection);
+
+// ================================
+// COMPUTED SELECTORS
+// ================================
+// These selectors perform calculations using the input data
+// They are memoized by Zustand for performance optimization
+
+// Portfolio & Asset Calculations
+export const useRequiredPortfolio = () =>
+  useQuickPlanStore((state) =>
+    calculateRequiredPortfolio(
+      state.inputs.goals.retirementExpenses,
+      state.inputs.retirementFunding.safeWithdrawalRate
+    )
+  );
+
+export const useWeightedPortfolioReturnNominal = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateWeightedPortfolioReturnNominal(inputs);
+  });
+
+export const useWeightedPortfolioReturnReal = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateWeightedPortfolioReturnReal(inputs);
+  });
+
+export const useCurrentAnnualContribution = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateYearlyContribution(inputs, 0, false); // Year 0, real terms
+  });
+
+export const useCurrentAnnualContributionNominal = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateYearlyContribution(inputs, 0, true); // Year 0, nominal terms
+  });
+
+// FIRE Calculations
+export const useYearsToFIRE = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateYearsToFIRE(inputs);
+  });
+
+export const useFIREAge = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateFIREAge(inputs);
+  });
+
+export const useFIREAnalysis = () =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return getFIREAnalysis(inputs);
+  });
+
+// Portfolio Value Calculations
+export const useFuturePortfolioValue = (
+  years: number,
+  nominal: boolean = false
+) =>
+  useQuickPlanStore((state) => {
+    const inputs = state.inputs;
+    return calculateFuturePortfolioValue(inputs, years, nominal);
+  });
+
+// Validation helper functions (can be reused)
+const validateBasicsComplete = (basics: BasicsInputs) => {
+  const { currentAge, annualIncome, annualExpenses, investedAssets } = basics;
+  return {
+    isComplete:
+      currentAge !== null &&
+      annualIncome !== null &&
+      annualExpenses !== null &&
+      investedAssets !== null,
+    hasCurrentAge: currentAge !== null,
+    hasAnnualIncome: annualIncome !== null,
+    hasAnnualExpenses: annualExpenses !== null,
+    hasInvestedAssets: investedAssets !== null,
+  };
+};
+
+const validateGoalsComplete = (goals: GoalsInputs) => {
+  const { retirementExpenses } = goals;
+  return {
+    isComplete: retirementExpenses !== null,
+    hasRetirementExpenses: retirementExpenses !== null,
+  };
+};
+
+// Validation State Selectors
+export const useBasicsValidation = () =>
+  useQuickPlanStore((state) => validateBasicsComplete(state.inputs.basics));
+
+export const useGoalsValidation = () =>
+  useQuickPlanStore((state) => validateGoalsComplete(state.inputs.goals));
+
+export const useIsCalculationReady = () =>
+  useQuickPlanStore((state) => {
+    const basicsValid = validateBasicsComplete(state.inputs.basics);
+    const goalsValid = validateGoalsComplete(state.inputs.goals);
+
+    return basicsValid.isComplete && goalsValid.isComplete;
+  });
