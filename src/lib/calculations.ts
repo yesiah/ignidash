@@ -2,6 +2,7 @@ import {
   QuickPlanInputs,
   AllocationInputs,
   MarketAssumptionsInputs,
+  GrowthRatesInputs,
 } from "./schemas/quick-plan-schema";
 
 // Calculation function to determine required portfolio for retirement
@@ -71,20 +72,21 @@ export const calculateWeightedPortfolioReturnReal = (
 
 // Helper function to calculate yearly contribution (income - expenses) for a given year
 export const calculateYearlyContribution = (
-  inputs: QuickPlanInputs,
+  annualIncome: number | null,
+  annualExpenses: number | null,
+  growthRates: GrowthRatesInputs,
+  inflationRate: number,
   year: number,
   calculateInNominalTerms: boolean
 ): number => {
-  const { annualIncome, annualExpenses } = inputs.basics;
-  const { incomeGrowthRate, expenseGrowthRate } = inputs.growthRates;
-  const { inflationRate } = inputs.marketAssumptions;
-
   if (annualIncome === null || annualExpenses === null) {
     console.warn(
       "Cannot calculate yearly contribution: annual income and expenses are required"
     );
     return -1;
   }
+
+  const { incomeGrowthRate, expenseGrowthRate } = growthRates;
 
   let effectiveIncomeGrowth: number;
   let effectiveExpenseGrowth: number;
@@ -146,7 +148,10 @@ export const calculateFuturePortfolioValue = (
 
   for (let year = 0; year < years; year++) {
     const contribution = calculateYearlyContribution(
-      inputs,
+      inputs.basics.annualIncome,
+      inputs.basics.annualExpenses,
+      inputs.growthRates,
+      inputs.marketAssumptions.inflationRate,
       year,
       calculateInNominalTerms
     );

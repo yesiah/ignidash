@@ -399,16 +399,30 @@ export const useWeightedPortfolioReturnReal = () =>
   );
 
 export const useCurrentAnnualContribution = () =>
-  useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return calculateYearlyContribution(inputs, 0, false); // Year 0, real terms
-  });
+  useQuickPlanStore(
+    (state) =>
+      calculateYearlyContribution(
+        state.inputs.basics.annualIncome,
+        state.inputs.basics.annualExpenses,
+        state.inputs.growthRates,
+        state.inputs.marketAssumptions.inflationRate,
+        0,
+        false
+      ) // Year 0, real terms
+  );
 
 export const useCurrentAnnualContributionNominal = () =>
-  useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return calculateYearlyContribution(inputs, 0, true); // Year 0, nominal terms
-  });
+  useQuickPlanStore(
+    (state) =>
+      calculateYearlyContribution(
+        state.inputs.basics.annualIncome,
+        state.inputs.basics.annualExpenses,
+        state.inputs.growthRates,
+        state.inputs.marketAssumptions.inflationRate,
+        0,
+        true
+      ) // Year 0, nominal terms
+  );
 
 // FIRE Calculations
 export const useYearsToFIRE = () =>
