@@ -166,7 +166,7 @@ describe("calculatePortfolioReturnReal", () => {
 });
 
 describe("calculateYearlyContribution", () => {
-  it("should calculate correct contribution for year 0 (base year)", () => {
+  it("should calculate correct contribution for year 0 (base year) with nominal values", () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -180,13 +180,13 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 0);
+    const result = calculateYearlyContribution(inputs, 0, true); // true for nominal
 
     // Year 0: 100,000 - 60,000 = 40,000
     expect(result).toBe(40000);
   });
 
-  it("should calculate correct contribution for year 1", () => {
+  it("should calculate correct contribution for year 1 with nominal values", () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -200,13 +200,38 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 1);
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     // Year 1: (100,000 × 1.03) - (60,000 × 1.03) = 103,000 - 61,800 = 41,200
     expect(result).toBe(41200);
   });
 
-  it("should handle different growth rates for income and expenses", () => {
+  it("should calculate correct contribution for year 1 with real values", () => {
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        annualIncome: 100000,
+        annualExpenses: 60000,
+      },
+      growthRates: {
+        incomeGrowthRate: 5, // 5% nominal
+        expenseGrowthRate: 5, // 5% nominal
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        inflationRate: 3,
+      },
+    };
+
+    const result = calculateYearlyContribution(inputs, 1, false); // false for real
+
+    // Real growth = (1.05 / 1.03) - 1 = 0.0194 = 1.94%
+    // Year 1: (100,000 × 1.0194) - (60,000 × 1.0194) = 101,940 - 61,164 = 40,776
+    expect(result).toBeCloseTo(40776.7, 1);
+  });
+
+  it("should handle different growth rates for income and expenses with nominal values", () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -220,13 +245,13 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 1);
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     // Year 1: (100,000 × 1.05) - (60,000 × 1.02) = 105,000 - 61,200 = 43,800
     expect(result).toBe(43800);
   });
 
-  it("should handle multiple years with compounding", () => {
+  it("should handle multiple years with compounding using nominal values", () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -240,7 +265,7 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 5);
+    const result = calculateYearlyContribution(inputs, 5, true); // true for nominal
 
     // Year 5: (100,000 × 1.03^5) - (60,000 × 1.03^5)
     // = (100,000 × 1.159274) - (60,000 × 1.159274)
@@ -259,7 +284,7 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 1);
+    const result = calculateYearlyContribution(inputs, 1, true);
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "Cannot calculate yearly contribution: annual income and expenses are required"
@@ -279,7 +304,7 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result = calculateYearlyContribution(inputs, 1);
+    const result = calculateYearlyContribution(inputs, 1, true);
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "Cannot calculate yearly contribution: annual income and expenses are required"
@@ -288,7 +313,7 @@ describe("calculateYearlyContribution", () => {
     consoleSpy.mockRestore();
   });
 
-  it("should handle negative contribution (expenses exceed income)", () => {
+  it("should handle negative contribution (expenses exceed income) with nominal values", () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -302,8 +327,8 @@ describe("calculateYearlyContribution", () => {
       },
     };
 
-    const result0 = calculateYearlyContribution(inputs, 0);
-    const result1 = calculateYearlyContribution(inputs, 1);
+    const result0 = calculateYearlyContribution(inputs, 0, true);
+    const result1 = calculateYearlyContribution(inputs, 1, true);
 
     // Year 0: 50,000 - 60,000 = -10,000
     expect(result0).toBe(-10000);
@@ -336,27 +361,73 @@ describe("calculateFuturePortfolioValue", () => {
         inflationRate: 3,
       },
       growthRates: {
+        incomeGrowthRate: 3, // Nominal growth
+        expenseGrowthRate: 3, // Nominal growth
+      },
+    };
+
+    const result = calculateFuturePortfolioValue(inputs, 5, false); // false for real values
+
+    // Since growth rates are nominal (3%) and inflation is 3%, real growth is 0%
+    // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
+    // Initial assets after 5 years: 100,000 × (1.053398)^5 = 129,706.75
+    //
+    // Contributions stay constant at 30,000 in real terms (0% real growth):
+    // Year 0: 30,000 × (1.053398)^4 = 36,939.53
+    // Year 1: 30,000 × (1.053398)^3 = 35,067.01
+    // Year 2: 30,000 × (1.053398)^2 = 33,289.42
+    // Year 3: 30,000 × (1.053398)^1 = 31,601.94
+    // Year 4: 30,000 × (1.053398)^0 = 30,000.00
+    // Total contributions FV: 166,897.91
+    //
+    // Total: 129,706.75 + 166,897.91 = 296,604.65
+
+    expect(result).toBeCloseTo(296604.65, 0);
+  });
+
+  it("should calculate correct future value with nominal returns", () => {
+    const inputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 100000,
+        annualIncome: 80000,
+        annualExpenses: 50000,
+      },
+      allocation: {
+        stockAllocation: 70,
+        bondAllocation: 30,
+        cashAllocation: 0,
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        stockReturn: 10,
+        bondReturn: 5,
+        cashReturn: 3,
+        inflationRate: 3,
+      },
+      growthRates: {
         incomeGrowthRate: 3,
         expenseGrowthRate: 3,
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs, 5);
+    const result = calculateFuturePortfolioValue(inputs, 5, true); // true for nominal values
 
-    // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
-    // Initial assets after 5 years: 100,000 × (1.053398)^5 = 129,706.75
+    // Nominal return: 8.5%
+    // Initial assets after 5 years: 100,000 × (1.085)^5 = 150,365.67
     //
-    // Contributions (all growing at 3% real):
-    // Year 0: 30,000 × (1.053398)^4 = 36,939.53
-    // Year 1: 30,900 × (1.053398)^3 = 36,119.03
-    // Year 2: 31,827 × (1.053398)^2 = 35,316.75
-    // Year 3: 32,781.81 × (1.053398)^1 = 34,532.30
-    // Year 4: 33,765.26 × (1.053398)^0 = 33,765.26
-    // Total contributions FV: 176,672.86
+    // Contributions growing at 3% nominal:
+    // Year 0: 30,000 × (1.085)^4 = 41,575.76
+    // Year 1: 30,900 × (1.085)^3 = 39,468.23
+    // Year 2: 31,827 × (1.085)^2 = 37,467.54
+    // Year 3: 32,781.81 × (1.085)^1 = 35,568.26
+    // Year 4: 33,765.26 × (1.085)^0 = 33,765.26
+    // Total contributions FV: 187,845.06
     //
-    // Total: 129,706.75 + 176,672.86 = 306,379.61
+    // Total: 150,365.67 + 187,845.06 = 338,210.73
 
-    expect(result).toBeCloseTo(306379.61, 0);
+    expect(result).toBeCloseTo(338210.73, 0);
   });
 
   it("should handle zero real return scenario (100% cash with inflation = cash return)", () => {
@@ -381,15 +452,15 @@ describe("calculateFuturePortfolioValue", () => {
         inflationRate: 3, // Same as cash return = 0% real return
       },
       growthRates: {
-        incomeGrowthRate: 0,
-        expenseGrowthRate: 0,
+        incomeGrowthRate: 3, // With 3% inflation, this is 0% real growth
+        expenseGrowthRate: 3, // With 3% inflation, this is 0% real growth
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs, 5);
+    const result = calculateFuturePortfolioValue(inputs, 5, false); // false for real values
 
-    // With 0% real return, no growth on assets or contributions
-    // Initial assets: 100,000 (no growth)
+    // With 0% real return and 0% real growth on contributions
+    // Initial assets: 100,000 (no real growth)
     // Contributions: 30,000 per year × 5 years = 150,000
     // Total: 100,000 + 150,000 = 250,000
 
@@ -418,27 +489,19 @@ describe("calculateFuturePortfolioValue", () => {
         inflationRate: 3,
       },
       growthRates: {
-        incomeGrowthRate: 1, // Income grows slowly
-        expenseGrowthRate: 4, // Expenses grow faster
+        incomeGrowthRate: 1, // Income grows slowly (nominal)
+        expenseGrowthRate: 4, // Expenses grow faster (nominal)
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs, 10);
+    const result = calculateFuturePortfolioValue(inputs, 10, false); // false for real values
 
     // Real return: (1.07 / 1.03) - 1 = 3.883%
+    // Real income growth: (1.01 / 1.03) - 1 = -1.94%
+    // Real expense growth: (1.04 / 1.03) - 1 = 0.97%
     //
-    // Contributions by year:
-    // Year 0: 60,000 - 55,000 = 5,000 (positive)
-    // Year 1: 60,600 - 57,200 = 3,400 (positive)
-    // Year 2: 61,206 - 59,488 = 1,718 (positive)
-    // Year 3: 61,818 - 61,867.52 = -49.52 (turns negative)
-    // ... continues increasingly negative
-    //
+    // Contributions turn negative as expenses grow faster than income in real terms
     // Assets should grow but be reduced by negative contributions (withdrawals)
-    // This tests that the function correctly handles the transition to retirement-like scenario
-
-    // Initial assets growth: 500,000 × (1.03883)^10 = 731,061.43
-    // Net effect of contributions will be small/negative due to withdrawals
 
     expect(result).toBeGreaterThan(500000); // Should still grow due to returns
     expect(result).toBeLessThan(800000); // But limited by withdrawals
@@ -456,7 +519,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs, 5);
+    const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "Cannot calculate future portfolio value: invested assets is required"
@@ -477,7 +540,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs, 5);
+    const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith(
       "Cannot calculate yearly contribution: annual income and expenses are required"

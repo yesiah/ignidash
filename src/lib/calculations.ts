@@ -70,10 +70,12 @@ export const calculatePortfolioReturnReal = (
 // Helper function to calculate yearly contribution (income - expenses) for a given year
 export const calculateYearlyContribution = (
   inputs: QuickPlanInputs,
-  year: number
+  year: number,
+  calculateInNominalTerms: boolean
 ): number => {
   const { annualIncome, annualExpenses } = inputs.basics;
   const { incomeGrowthRate, expenseGrowthRate } = inputs.growthRates;
+  const { inflationRate } = inputs.marketAssumptions;
 
   if (annualIncome === null || annualExpenses === null) {
     console.warn(
@@ -82,12 +84,26 @@ export const calculateYearlyContribution = (
     return -1;
   }
 
-  // Calculate income and expenses for the given year
-  // Year n contribution = (annualIncome × (1 + incomeGrowthRate/100)^n) - (annualExpenses × (1 + expenseGrowthRate/100)^n)
-  const futureIncome =
-    annualIncome * Math.pow(1 + incomeGrowthRate / 100, year);
+  let effectiveIncomeGrowth: number;
+  let effectiveExpenseGrowth: number;
+
+  if (calculateInNominalTerms) {
+    // Use the rates as-is (they're already nominal)
+    effectiveIncomeGrowth = incomeGrowthRate / 100;
+    effectiveExpenseGrowth = expenseGrowthRate / 100;
+  } else {
+    // Convert nominal rates to real rates
+    // Real growth = (1 + nominal) / (1 + inflation) - 1
+    effectiveIncomeGrowth =
+      (1 + incomeGrowthRate / 100) / (1 + inflationRate / 100) - 1;
+    effectiveExpenseGrowth =
+      (1 + expenseGrowthRate / 100) / (1 + inflationRate / 100) - 1;
+  }
+
+  // Calculate future values using the appropriate growth rates
+  const futureIncome = annualIncome * Math.pow(1 + effectiveIncomeGrowth, year);
   const futureExpenses =
-    annualExpenses * Math.pow(1 + expenseGrowthRate / 100, year);
+    annualExpenses * Math.pow(1 + effectiveExpenseGrowth, year);
 
   return futureIncome - futureExpenses;
 };
@@ -95,7 +111,8 @@ export const calculateYearlyContribution = (
 // Calculate future portfolio value with annual contributions
 export const calculateFuturePortfolioValue = (
   inputs: QuickPlanInputs,
-  years: number
+  years: number,
+  calculateInNominalTerms: boolean
 ): number => {
   const { investedAssets } = inputs.basics;
 
@@ -106,17 +123,25 @@ export const calculateFuturePortfolioValue = (
     return -1;
   }
 
-  // Get real (inflation-adjusted) return rate as decimal
-  const realReturn = calculatePortfolioReturnReal(inputs) / 100;
+  // Get return rate as decimal
+  const rateOfReturn =
+    (calculateInNominalTerms
+      ? calculatePortfolioReturnNominal(inputs)
+      : calculatePortfolioReturnReal(inputs)) / 100;
 
   // Current assets grow for the full period
-  const futureValueOfAssets = investedAssets * Math.pow(1 + realReturn, years);
+  const futureValueOfAssets =
+    investedAssets * Math.pow(1 + rateOfReturn, years);
 
   // Calculate future value of all contributions
   let futureValueOfContributions = 0;
 
   for (let year = 0; year < years; year++) {
-    const contribution = calculateYearlyContribution(inputs, year);
+    const contribution = calculateYearlyContribution(
+      inputs,
+      year,
+      calculateInNominalTerms
+    );
 
     // Handle error case from calculateYearlyContribution
     if (contribution === -1) {
@@ -132,7 +157,7 @@ export const calculateFuturePortfolioValue = (
     // Calculate future value of this year's contribution
     // When growthPeriods = 0, Math.pow returns 1, so contribution is added as-is
     futureValueOfContributions +=
-      contribution * Math.pow(1 + realReturn, growthPeriods);
+      contribution * Math.pow(1 + rateOfReturn, growthPeriods);
   }
 
   return futureValueOfAssets + futureValueOfContributions;
