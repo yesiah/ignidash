@@ -6,7 +6,7 @@ import {
 } from "./fire-calculations";
 import {
   calculateFuturePortfolioValue,
-  calculatePortfolioReturnReal,
+  calculateWeightedPortfolioReturnReal,
 } from "./calculations";
 import { QuickPlanInputs } from "./schemas/quick-plan-schema";
 
@@ -573,7 +573,7 @@ describe("FIRE Calculations - Additional Validation", () => {
       };
 
       // Calculate the actual real return from our inputs
-      const realReturn = calculatePortfolioReturnReal(inputs) / 100;
+      const realReturn = calculateWeightedPortfolioReturnReal(inputs) / 100;
 
       // Manual calculation with the correct real return
       const fvAnnuity =

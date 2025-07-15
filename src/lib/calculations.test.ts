@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import {
   calculateRequiredPortfolio,
-  calculatePortfolioReturnNominal,
-  calculatePortfolioReturnReal,
+  calculateWeightedPortfolioReturnNominal,
+  calculateWeightedPortfolioReturnReal,
   calculateYearlyContribution,
   calculateFuturePortfolioValue,
 } from "./calculations";
@@ -59,7 +59,7 @@ describe("calculatePortfolioReturnNominal", () => {
       },
     };
 
-    const result = calculatePortfolioReturnNominal(inputs);
+    const result = calculateWeightedPortfolioReturnNominal(inputs);
 
     // Expected calculation:
     // Stock: 70% × 10% = 0.70 × 0.10 = 0.07
@@ -78,7 +78,7 @@ describe("calculatePortfolioReturnNominal", () => {
         cashAllocation: 0,
       },
     };
-    expect(calculatePortfolioReturnNominal(inputs)).toBe(10);
+    expect(calculateWeightedPortfolioReturnNominal(inputs)).toBe(10);
   });
 
   it("should warn when allocations don't sum to 100%", () => {
@@ -92,7 +92,7 @@ describe("calculatePortfolioReturnNominal", () => {
       },
     };
 
-    calculatePortfolioReturnNominal(inputs);
+    calculateWeightedPortfolioReturnNominal(inputs);
     expect(consoleSpy).toHaveBeenCalledWith("Allocations sum to 95%, not 100%");
     consoleSpy.mockRestore();
   });
@@ -116,7 +116,7 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculatePortfolioReturnReal(inputs);
+    const result = calculateWeightedPortfolioReturnReal(inputs);
 
     // Expected calculation:
     // Nominal return: 8.5%
@@ -133,8 +133,8 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const nominalReturn = calculatePortfolioReturnNominal(inputs);
-    const realReturn = calculatePortfolioReturnReal(inputs);
+    const nominalReturn = calculateWeightedPortfolioReturnNominal(inputs);
+    const realReturn = calculateWeightedPortfolioReturnReal(inputs);
 
     // With 0% inflation, real return should equal nominal return
     // Use toBeCloseTo to handle floating-point precision
@@ -156,7 +156,7 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculatePortfolioReturnReal(inputs);
+    const result = calculateWeightedPortfolioReturnReal(inputs);
 
     // Expected calculation:
     // Nominal return: 3%
