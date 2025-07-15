@@ -392,47 +392,25 @@ export const useFIREAnalysis = () =>
     return getFIREAnalysis(state.inputs);
   });
 
-// Validation helper functions (can be reused)
-const validateBasicsComplete = (basics: BasicsInputs) => {
-  const { currentAge, annualIncome, annualExpenses, investedAssets } = basics;
-
-  const hasCurrentAge = currentAge !== null;
-  const hasAnnualIncome = annualIncome !== null;
-  const hasAnnualExpenses = annualExpenses !== null;
-  const hasInvestedAssets = investedAssets !== null;
-
-  return {
-    isComplete:
-      hasCurrentAge &&
-      hasAnnualIncome &&
-      hasAnnualExpenses &&
-      hasInvestedAssets,
-    hasCurrentAge: hasCurrentAge,
-    hasAnnualIncome: hasAnnualIncome,
-    hasAnnualExpenses: hasAnnualExpenses,
-    hasInvestedAssets: hasInvestedAssets,
-  };
-};
-
-const validateGoalsComplete = (goals: GoalsInputs) => {
-  const { retirementExpenses } = goals;
-  return {
-    isComplete: retirementExpenses !== null,
-    hasRetirementExpenses: retirementExpenses !== null,
-  };
-};
-
 // Validation State Selectors
 export const useBasicsValidation = () =>
-  useQuickPlanStore((state) => validateBasicsComplete(state.inputs.basics));
+  useQuickPlanStore(
+    (state) =>
+      state.inputs.basics.currentAge !== null &&
+      state.inputs.basics.annualIncome !== null &&
+      state.inputs.basics.annualExpenses !== null &&
+      state.inputs.basics.investedAssets !== null
+  );
 
 export const useGoalsValidation = () =>
-  useQuickPlanStore((state) => validateGoalsComplete(state.inputs.goals));
+  useQuickPlanStore((state) => state.inputs.goals.retirementExpenses !== null);
 
 export const useIsCalculationReady = () =>
-  useQuickPlanStore((state) => {
-    const basicsValid = validateBasicsComplete(state.inputs.basics);
-    const goalsValid = validateGoalsComplete(state.inputs.goals);
-
-    return basicsValid.isComplete && goalsValid.isComplete;
-  });
+  useQuickPlanStore(
+    (state) =>
+      state.inputs.basics.currentAge !== null &&
+      state.inputs.basics.annualIncome !== null &&
+      state.inputs.basics.annualExpenses !== null &&
+      state.inputs.basics.investedAssets !== null &&
+      state.inputs.goals.retirementExpenses !== null
+  );
