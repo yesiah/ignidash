@@ -573,7 +573,11 @@ describe("FIRE Calculations - Additional Validation", () => {
       };
 
       // Calculate the actual real return from our inputs
-      const realReturn = calculateWeightedPortfolioReturnReal(inputs) / 100;
+      const realReturn =
+        calculateWeightedPortfolioReturnReal(
+          inputs.allocation,
+          inputs.marketAssumptions
+        ) / 100;
 
       // Manual calculation with the correct real return
       const fvAnnuity =

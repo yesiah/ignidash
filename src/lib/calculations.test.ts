@@ -112,7 +112,10 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculateWeightedPortfolioReturnReal(inputs);
+    const result = calculateWeightedPortfolioReturnReal(
+      inputs.allocation,
+      inputs.marketAssumptions
+    );
 
     // Expected calculation:
     // Nominal return: 8.5%
@@ -133,7 +136,10 @@ describe("calculatePortfolioReturnReal", () => {
       inputs.allocation,
       inputs.marketAssumptions
     );
-    const realReturn = calculateWeightedPortfolioReturnReal(inputs);
+    const realReturn = calculateWeightedPortfolioReturnReal(
+      inputs.allocation,
+      inputs.marketAssumptions
+    );
 
     // With 0% inflation, real return should equal nominal return
     // Use toBeCloseTo to handle floating-point precision
@@ -155,7 +161,10 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculateWeightedPortfolioReturnReal(inputs);
+    const result = calculateWeightedPortfolioReturnReal(
+      inputs.allocation,
+      inputs.marketAssumptions
+    );
 
     // Expected calculation:
     // Nominal return: 3%

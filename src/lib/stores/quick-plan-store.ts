@@ -391,10 +391,12 @@ export const useWeightedPortfolioReturnNominal = () =>
   );
 
 export const useWeightedPortfolioReturnReal = () =>
-  useQuickPlanStore((state) => {
-    const inputs = state.inputs;
-    return calculateWeightedPortfolioReturnReal(inputs);
-  });
+  useQuickPlanStore((state) =>
+    calculateWeightedPortfolioReturnReal(
+      state.inputs.allocation,
+      state.inputs.marketAssumptions
+    )
+  );
 
 export const useCurrentAnnualContribution = () =>
   useQuickPlanStore((state) => {

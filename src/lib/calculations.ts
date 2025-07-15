@@ -52,14 +52,15 @@ export const calculateWeightedPortfolioReturnNominal = (
 
 // Helper function to calculate real portfolio return
 export const calculateWeightedPortfolioReturnReal = (
-  inputs: QuickPlanInputs
+  allocation: AllocationInputs,
+  marketAssumptions: MarketAssumptionsInputs
 ): number => {
-  const { inflationRate } = inputs.marketAssumptions;
+  const { inflationRate } = marketAssumptions;
 
   // Get nominal return using the nominal function
   const nominalReturn = calculateWeightedPortfolioReturnNominal(
-    inputs.allocation,
-    inputs.marketAssumptions
+    allocation,
+    marketAssumptions
   );
 
   // Calculate real return (adjust for inflation)
@@ -131,7 +132,10 @@ export const calculateFuturePortfolioValue = (
           inputs.allocation,
           inputs.marketAssumptions
         )
-      : calculateWeightedPortfolioReturnReal(inputs)) / 100;
+      : calculateWeightedPortfolioReturnReal(
+          inputs.allocation,
+          inputs.marketAssumptions
+        )) / 100;
 
   // Current assets grow for the full period
   const futureValueOfAssets =
