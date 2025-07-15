@@ -5,7 +5,7 @@ import {
   calculateWeightedPortfolioReturnReal,
   calculateYearlyContribution,
   calculateFuturePortfolioValue,
-} from "./calculations";
+} from "./portfolio-calculations";
 import { defaultState } from "./stores/quick-plan-store";
 
 describe("calculateRequiredPortfolio", () => {

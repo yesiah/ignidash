@@ -2,7 +2,7 @@ import { QuickPlanInputs } from "./schemas/quick-plan-schema";
 import {
   calculateRequiredPortfolio,
   calculateFuturePortfolioValue,
-} from "./calculations";
+} from "./portfolio-calculations";
 
 /**
  * Calculate the number of years until FIRE (Financial Independence, Retire Early)

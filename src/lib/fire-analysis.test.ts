@@ -3,11 +3,11 @@ import {
   calculateYearsToFIRE,
   calculateFIREAge,
   getFIREAnalysis,
-} from "./fire-calculations";
+} from "./fire-analysis";
 import {
   calculateFuturePortfolioValue,
   calculateWeightedPortfolioReturnReal,
-} from "./calculations";
+} from "./portfolio-calculations";
 import { QuickPlanInputs } from "./schemas/quick-plan-schema";
 
 describe("FIRE Calculations", () => {

@@ -13,12 +13,12 @@ import {
   validateField,
   validateSection,
 } from "../schemas/quick-plan-schema";
-import { calculateRequiredPortfolio } from "../calculations";
+import { calculateRequiredPortfolio } from "../portfolio-calculations";
 import {
   calculateYearsToFIRE,
   calculateFIREAge,
   getFIREAnalysis,
-} from "../fire-calculations";
+} from "../fire-analysis";
 
 // Update result type
 type UpdateResult = {
