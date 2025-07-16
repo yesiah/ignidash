@@ -1,19 +1,9 @@
-import {
-  AllocationInputs,
-  MarketAssumptionsInputs,
-  GrowthRatesInputs,
-  BasicsInputs,
-} from "./schemas/quick-plan-schema";
+import { AllocationInputs, MarketAssumptionsInputs, GrowthRatesInputs, BasicsInputs } from './schemas/quick-plan-schema';
 
 // Calculation function to determine required portfolio for retirement
-export const calculateRequiredPortfolio = (
-  retirementExpenses: number | null,
-  safeWithdrawalRate: number
-): number => {
+export const calculateRequiredPortfolio = (retirementExpenses: number | null, safeWithdrawalRate: number): number => {
   if (retirementExpenses === null) {
-    console.warn(
-      "Cannot calculate required portfolio: retirement expenses is required"
-    );
+    console.warn('Cannot calculate required portfolio: retirement expenses is required');
     return -1;
   }
 
@@ -43,26 +33,15 @@ export const calculateWeightedPortfolioReturnNominal = (
   const bondReturnDecimal = bondReturn / 100;
   const cashReturnDecimal = cashReturn / 100;
 
-  return (
-    (stockWeight * stockReturnDecimal +
-      bondWeight * bondReturnDecimal +
-      cashWeight * cashReturnDecimal) *
-    100
-  );
+  return (stockWeight * stockReturnDecimal + bondWeight * bondReturnDecimal + cashWeight * cashReturnDecimal) * 100;
 };
 
 // Helper function to calculate real portfolio return
-export const calculateWeightedPortfolioReturnReal = (
-  allocation: AllocationInputs,
-  marketAssumptions: MarketAssumptionsInputs
-): number => {
+export const calculateWeightedPortfolioReturnReal = (allocation: AllocationInputs, marketAssumptions: MarketAssumptionsInputs): number => {
   const { inflationRate } = marketAssumptions;
 
   // Get nominal return using the nominal function
-  const nominalReturn = calculateWeightedPortfolioReturnNominal(
-    allocation,
-    marketAssumptions
-  );
+  const nominalReturn = calculateWeightedPortfolioReturnNominal(allocation, marketAssumptions);
 
   // Calculate real return (adjust for inflation)
   const realReturn = (1 + nominalReturn / 100) / (1 + inflationRate / 100) - 1;
@@ -80,9 +59,7 @@ export const calculateYearlyContribution = (
   calculateInNominalTerms: boolean
 ): number => {
   if (annualIncome === null || annualExpenses === null) {
-    console.warn(
-      "Cannot calculate yearly contribution: annual income and expenses are required"
-    );
+    console.warn('Cannot calculate yearly contribution: annual income and expenses are required');
     return -1;
   }
 
@@ -98,16 +75,13 @@ export const calculateYearlyContribution = (
   } else {
     // Convert nominal rates to real rates
     // Real growth = (1 + nominal) / (1 + inflation) - 1
-    effectiveIncomeGrowth =
-      (1 + incomeGrowthRate / 100) / (1 + inflationRate / 100) - 1;
-    effectiveExpenseGrowth =
-      (1 + expenseGrowthRate / 100) / (1 + inflationRate / 100) - 1;
+    effectiveIncomeGrowth = (1 + incomeGrowthRate / 100) / (1 + inflationRate / 100) - 1;
+    effectiveExpenseGrowth = (1 + expenseGrowthRate / 100) / (1 + inflationRate / 100) - 1;
   }
 
   // Calculate future values using the appropriate growth rates
   const futureIncome = annualIncome * Math.pow(1 + effectiveIncomeGrowth, year);
-  const futureExpenses =
-    annualExpenses * Math.pow(1 + effectiveExpenseGrowth, year);
+  const futureExpenses = annualExpenses * Math.pow(1 + effectiveExpenseGrowth, year);
 
   return futureIncome - futureExpenses;
 };
@@ -123,9 +97,7 @@ export const calculateFuturePortfolioValue = (
 ): number => {
   const { investedAssets } = basics;
   if (investedAssets === null) {
-    console.warn(
-      "Cannot calculate future portfolio value: invested assets is required"
-    );
+    console.warn('Cannot calculate future portfolio value: invested assets is required');
     return -1;
   }
 
@@ -133,12 +105,10 @@ export const calculateFuturePortfolioValue = (
   const rateOfReturn =
     (calculateInNominalTerms
       ? calculateWeightedPortfolioReturnNominal(allocation, marketAssumptions)
-      : calculateWeightedPortfolioReturnReal(allocation, marketAssumptions)) /
-    100;
+      : calculateWeightedPortfolioReturnReal(allocation, marketAssumptions)) / 100;
 
   // Current assets grow for the full period
-  const futureValueOfAssets =
-    investedAssets * Math.pow(1 + rateOfReturn, years);
+  const futureValueOfAssets = investedAssets * Math.pow(1 + rateOfReturn, years);
 
   // Calculate future value of all contributions
   let futureValueOfContributions = 0;
@@ -166,8 +136,7 @@ export const calculateFuturePortfolioValue = (
 
     // Calculate future value of this year's contribution
     // When growthPeriods = 0, Math.pow returns 1, so contribution is added as-is
-    futureValueOfContributions +=
-      contribution * Math.pow(1 + rateOfReturn, growthPeriods);
+    futureValueOfContributions += contribution * Math.pow(1 + rateOfReturn, growthPeriods);
   }
 
   return futureValueOfAssets + futureValueOfContributions;

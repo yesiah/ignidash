@@ -1,4 +1,4 @@
-type SurfaceColor = "default" | "emphasized";
+type SurfaceColor = 'default' | 'emphasized';
 
 interface IconButtonProps {
   icon: React.ForwardRefExoticComponent<
@@ -12,16 +12,8 @@ interface IconButtonProps {
   surfaceColor?: SurfaceColor;
 }
 
-export function IconButton({
-  icon: Icon,
-  label,
-  onClick,
-  surfaceColor = "default",
-}: IconButtonProps) {
-  const hoverClasses =
-    surfaceColor === "emphasized"
-      ? "hover:bg-background"
-      : "hover:bg-emphasized-background";
+export function IconButton({ icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
+  const hoverClasses = surfaceColor === 'emphasized' ? 'hover:bg-background' : 'hover:bg-emphasized-background';
 
   return (
     <button

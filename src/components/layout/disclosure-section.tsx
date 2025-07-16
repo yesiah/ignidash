@@ -1,12 +1,8 @@
-"use client";
+'use client';
 
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { cn } from "@/lib/utils";
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { cn } from '@/lib/utils';
 
 interface DisclosureSectionProps {
   title: string;
@@ -16,20 +12,14 @@ interface DisclosureSectionProps {
   className?: string;
 }
 
-export function DisclosureSection({
-  title,
-  desc,
-  icon,
-  children,
-  className,
-}: DisclosureSectionProps) {
+export function DisclosureSection({ title, desc, icon, children, className }: DisclosureSectionProps) {
   return (
     <div className="bg-emphasized-background text-foreground hover:ring-foreground/10 rounded-lg text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset">
       <Disclosure>
         <DisclosureButton
           className={cn(
-            "group data-open:border-foreground/10 focus-visible-default flex w-full items-center justify-between gap-2 p-4 data-open:border-b data-open:pb-5",
-            className ?? ""
+            'group data-open:border-foreground/10 focus-visible-default flex w-full items-center justify-between gap-2 p-4 data-open:border-b data-open:pb-5',
+            className ?? ''
           )}
         >
           <div className="flex w-full items-center justify-between text-left">
@@ -38,16 +28,9 @@ export function DisclosureSection({
                 {icon}
                 <span>{title}</span>
               </div>
-              {desc && (
-                <p className="text-muted-foreground mt-2 block text-xs">
-                  {desc}
-                </p>
-              )}
+              {desc && <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>}
             </div>
-            <ChevronDownIcon
-              className="ml-2 w-5 shrink-0 group-data-open:rotate-180"
-              aria-hidden="true"
-            />
+            <ChevronDownIcon className="ml-2 w-5 shrink-0 group-data-open:rotate-180" aria-hidden="true" />
           </div>
         </DisclosureButton>
         <DisclosurePanel>

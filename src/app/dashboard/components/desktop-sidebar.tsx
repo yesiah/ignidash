@@ -1,9 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
-import { FireIcon } from "@heroicons/react/24/solid";
-import { ModeToggle } from "@/components/providers/mode-toggle";
-import { cn } from "@/lib/utils";
-import type { NavigationItem } from "../navigation";
+import Image from 'next/image';
+import Link from 'next/link';
+import { FireIcon } from '@heroicons/react/24/solid';
+import { ModeToggle } from '@/components/providers/mode-toggle';
+import { cn } from '@/lib/utils';
+import type { NavigationItem } from '../navigation';
 
 interface DesktopSidebarProps {
   navigation: NavigationItem[];
@@ -31,18 +31,18 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                       href={item.href}
                       className={cn(
                         item.current
-                          ? "border border-rose-600 bg-white text-rose-600 dark:border-rose-400 dark:bg-zinc-800 dark:text-rose-400"
-                          : "border border-transparent text-gray-700 hover:bg-white hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400",
-                        "group focus-visible-default flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
+                          ? 'border border-rose-600 bg-white text-rose-600 dark:border-rose-400 dark:bg-zinc-800 dark:text-rose-400'
+                          : 'border border-transparent text-gray-700 hover:bg-white hover:text-rose-600 dark:text-gray-300 dark:hover:bg-zinc-800 dark:hover:text-rose-400',
+                        'group focus-visible-default flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold'
                       )}
                     >
                       <item.icon
                         aria-hidden="true"
                         className={cn(
                           item.current
-                            ? "text-rose-600 dark:text-rose-400"
-                            : "text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400",
-                          "size-6 shrink-0"
+                            ? 'text-rose-600 dark:text-rose-400'
+                            : 'text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400',
+                          'size-6 shrink-0'
                         )}
                       />
                       {item.name}

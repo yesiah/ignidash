@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { CalculatorIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
-import { IconButton } from "@/components/ui/icon-button";
-import Drawer from "@/components/ui/drawer";
-import { PreferencesDrawer } from "./drawers/preferences-drawer";
+import { useState } from 'react';
+import { CalculatorIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { IconButton } from '@/components/ui/icon-button';
+import Drawer from '@/components/ui/drawer';
+import { PreferencesDrawer } from './drawers/preferences-drawer';
 
 export function YourNumbersPageHeader() {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
@@ -17,19 +17,11 @@ export function YourNumbersPageHeader() {
             <CalculatorIcon className="h-5 w-5" aria-hidden="true" />
             Your Numbers
           </h3>
-          <IconButton
-            icon={Cog6ToothIcon}
-            label="Preferences"
-            onClick={() => setPreferencesOpen(true)}
-          />
+          <IconButton icon={Cog6ToothIcon} label="Preferences" onClick={() => setPreferencesOpen(true)} />
         </div>
       </div>
 
-      <Drawer
-        open={preferencesOpen}
-        setOpen={setPreferencesOpen}
-        title="Preferences"
-      >
+      <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title="Preferences">
         <PreferencesDrawer />
       </Drawer>
     </>

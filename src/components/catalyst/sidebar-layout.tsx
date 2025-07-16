@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as Headless from "@headlessui/react";
-import React, { useState } from "react";
-import { NavbarItem } from "./navbar";
+import * as Headless from '@headlessui/react';
+import React, { useState } from 'react';
+import { NavbarItem } from './navbar';
 
 function OpenMenuIcon() {
   return (
@@ -20,11 +20,7 @@ function CloseMenuIcon() {
   );
 }
 
-function MobileSidebar({
-  open,
-  close,
-  children,
-}: React.PropsWithChildren<{ open: boolean; close: () => void }>) {
+function MobileSidebar({ open, close, children }: React.PropsWithChildren<{ open: boolean; close: () => void }>) {
   return (
     <Headless.Dialog open={open} onClose={close} className="lg:hidden">
       <Headless.DialogBackdrop
@@ -71,10 +67,7 @@ export function SidebarLayout({
       {/* Navbar on mobile */}
       <header className="flex items-center px-4 lg:hidden">
         <div className="py-2.5">
-          <NavbarItem
-            onClick={() => setShowSidebar(true)}
-            aria-label="Open navigation"
-          >
+          <NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
             <OpenMenuIcon />
           </NavbarItem>
         </div>

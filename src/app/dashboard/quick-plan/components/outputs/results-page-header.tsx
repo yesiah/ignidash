@@ -1,12 +1,8 @@
-"use client";
+'use client';
 
-import {
-  PresentationChartLineIcon,
-  LinkIcon,
-  CheckIcon,
-} from "@heroicons/react/24/outline";
-import { IconButton } from "@/components/ui/icon-button";
-import { useState, useCallback } from "react";
+import { PresentationChartLineIcon, LinkIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { IconButton } from '@/components/ui/icon-button';
+import { useState, useCallback } from 'react';
 
 export function ResultsPageHeader() {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
@@ -21,10 +17,10 @@ export function ResultsPageHeader() {
 
   if (isLinkCopied) {
     icon = CheckIcon;
-    label = "Link copied";
+    label = 'Link copied';
   } else {
     icon = LinkIcon;
-    label = "Link sharing";
+    label = 'Link sharing';
   }
 
   return (

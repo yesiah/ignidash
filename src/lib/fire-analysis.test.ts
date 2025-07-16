@@ -1,16 +1,9 @@
-import { describe, it, expect } from "vitest";
-import {
-  calculateYearsToFIRE,
-  calculateFIREAge,
-  getFIREAnalysis,
-} from "./fire-analysis";
-import {
-  calculateFuturePortfolioValue,
-  calculateWeightedPortfolioReturnReal,
-} from "./portfolio-calculations";
-import { QuickPlanInputs } from "./schemas/quick-plan-schema";
+import { describe, it, expect } from 'vitest';
+import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis } from './fire-analysis';
+import { calculateFuturePortfolioValue, calculateWeightedPortfolioReturnReal } from './portfolio-calculations';
+import { QuickPlanInputs } from './schemas/quick-plan-schema';
 
-describe("FIRE Calculations", () => {
+describe('FIRE Calculations', () => {
   // Base test case with complete valid inputs
   const baseInputs: QuickPlanInputs = {
     basics: {
@@ -47,8 +40,8 @@ describe("FIRE Calculations", () => {
     },
   };
 
-  describe("calculateYearsToFIRE", () => {
-    it("should calculate years to FIRE for a typical scenario", () => {
+  describe('calculateYearsToFIRE', () => {
+    it('should calculate years to FIRE for a typical scenario', () => {
       const years = calculateYearsToFIRE(baseInputs);
       // With $100k starting, $40k/year savings (0% real growth), 5.34% real return
       // Need to reach $1M (40k/0.04)
@@ -57,7 +50,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(14);
     });
 
-    it("should return 0 if already achieved FIRE", () => {
+    it('should return 0 if already achieved FIRE', () => {
       const wealthyInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -69,7 +62,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(0);
     });
 
-    it("should return -1 if retirement expenses are missing", () => {
+    it('should return -1 if retirement expenses are missing', () => {
       const invalidInputs: QuickPlanInputs = {
         ...baseInputs,
         goals: {
@@ -81,7 +74,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(-1);
     });
 
-    it("should handle very low savings rate scenarios", () => {
+    it('should handle very low savings rate scenarios', () => {
       const lowSavingsInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -98,7 +91,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(76);
     });
 
-    it("should handle high savings rate scenarios", () => {
+    it('should handle high savings rate scenarios', () => {
       const highSavingsInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -114,7 +107,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(7);
     });
 
-    it("should handle scenario where starting assets alone could reach FIRE", () => {
+    it('should handle scenario where starting assets alone could reach FIRE', () => {
       const goodStartInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -132,14 +125,14 @@ describe("FIRE Calculations", () => {
     });
   });
 
-  describe("calculateFIREAge", () => {
-    it("should calculate FIRE age correctly", () => {
+  describe('calculateFIREAge', () => {
+    it('should calculate FIRE age correctly', () => {
       const fireAge = calculateFIREAge(baseInputs);
       // Current age 30 + 14 years to FIRE = 44
       expect(fireAge).toBe(44);
     });
 
-    it("should return current age if already achieved FIRE", () => {
+    it('should return current age if already achieved FIRE', () => {
       const wealthyInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -151,7 +144,7 @@ describe("FIRE Calculations", () => {
       expect(fireAge).toBe(30);
     });
 
-    it("should return -1 if current age is missing", () => {
+    it('should return -1 if current age is missing', () => {
       const invalidInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -163,7 +156,7 @@ describe("FIRE Calculations", () => {
       expect(fireAge).toBe(-1);
     });
 
-    it("should handle very low savings scenarios", () => {
+    it('should handle very low savings scenarios', () => {
       const lowSavingsInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -180,8 +173,8 @@ describe("FIRE Calculations", () => {
     });
   });
 
-  describe("getFIREAnalysis", () => {
-    it("should provide complete FIRE analysis for achievable scenario", () => {
+  describe('getFIREAnalysis', () => {
+    it('should provide complete FIRE analysis for achievable scenario', () => {
       const analysis = getFIREAnalysis(baseInputs);
 
       expect(analysis.achievable).toBe(true);
@@ -192,12 +185,10 @@ describe("FIRE Calculations", () => {
       // After 14 years, portfolio should be just over $1M
       expect(analysis.projectedPortfolioAtFIRE).toBeGreaterThan(1000000);
       expect(analysis.projectedPortfolioAtFIRE).toBeLessThan(1010000);
-      expect(analysis.message).toBe(
-        "FIRE is achievable in 14 years at age 44."
-      );
+      expect(analysis.message).toBe('FIRE is achievable in 14 years at age 44.');
     });
 
-    it("should indicate already achieved FIRE", () => {
+    it('should indicate already achieved FIRE', () => {
       const wealthyInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -210,12 +201,10 @@ describe("FIRE Calculations", () => {
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(0);
       expect(analysis.fireAge).toBe(30);
-      expect(analysis.message).toBe(
-        "Congratulations! You have already achieved FIRE."
-      );
+      expect(analysis.message).toBe('Congratulations! You have already achieved FIRE.');
     });
 
-    it("should handle missing data gracefully", () => {
+    it('should handle missing data gracefully', () => {
       const invalidInputs: QuickPlanInputs = {
         ...baseInputs,
         goals: {
@@ -228,12 +217,10 @@ describe("FIRE Calculations", () => {
       expect(analysis.achievable).toBe(false);
       expect(analysis.yearsToFIRE).toBe(-1);
       expect(analysis.fireAge).toBe(-1);
-      expect(analysis.message).toBe(
-        "Missing required data to calculate FIRE goals"
-      );
+      expect(analysis.message).toBe('Missing required data to calculate FIRE goals');
     });
 
-    it("should provide appropriate message for long timeframes", () => {
+    it('should provide appropriate message for long timeframes', () => {
       const slowInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -246,12 +233,10 @@ describe("FIRE Calculations", () => {
 
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(28);
-      expect(analysis.message).toBe(
-        "FIRE is achievable in 28 years at age 58."
-      );
+      expect(analysis.message).toBe('FIRE is achievable in 28 years at age 58.');
     });
 
-    it("should calculate correct required portfolio", () => {
+    it('should calculate correct required portfolio', () => {
       const customInputs: QuickPlanInputs = {
         ...baseInputs,
         goals: {
@@ -268,7 +253,7 @@ describe("FIRE Calculations", () => {
       expect(analysis.requiredPortfolio).toBeCloseTo(1428571.43, 2);
     });
 
-    it("should handle quick FIRE scenario with appropriate message", () => {
+    it('should handle quick FIRE scenario with appropriate message', () => {
       const quickFireInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -282,14 +267,12 @@ describe("FIRE Calculations", () => {
 
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(5);
-      expect(analysis.message).toBe(
-        "You can achieve FIRE in 5 years at age 35."
-      );
+      expect(analysis.message).toBe('You can achieve FIRE in 5 years at age 35.');
     });
   });
 
-  describe("Edge Cases and Boundary Conditions", () => {
-    it("should handle zero income scenario with negative contributions", () => {
+  describe('Edge Cases and Boundary Conditions', () => {
+    it('should handle zero income scenario with negative contributions', () => {
       const zeroIncomeInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -305,7 +288,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(-1);
     });
 
-    it("should handle scenario where portfolio grows despite negative contributions", () => {
+    it('should handle scenario where portfolio grows despite negative contributions', () => {
       const withdrawingButGrowingInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -322,7 +305,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(4);
     });
 
-    it("should handle very high withdrawal rates", () => {
+    it('should handle very high withdrawal rates', () => {
       const highWithdrawalInputs: QuickPlanInputs = {
         ...baseInputs,
         retirementFunding: {
@@ -338,7 +321,7 @@ describe("FIRE Calculations", () => {
       expect(analysis.yearsToFIRE).toBe(10);
     });
 
-    it("should handle negative real returns", () => {
+    it('should handle negative real returns', () => {
       const negativeReturnInputs: QuickPlanInputs = {
         ...baseInputs,
         marketAssumptions: {
@@ -355,7 +338,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(-1);
     });
 
-    it("should handle exactly meeting FIRE requirements", () => {
+    it('should handle exactly meeting FIRE requirements', () => {
       const exactFIREInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -367,7 +350,7 @@ describe("FIRE Calculations", () => {
       expect(years).toBe(0);
     });
 
-    it("should handle just below FIRE requirements", () => {
+    it('should handle just below FIRE requirements', () => {
       const almostFIREInputs: QuickPlanInputs = {
         ...baseInputs,
         basics: {
@@ -382,10 +365,10 @@ describe("FIRE Calculations", () => {
   });
 });
 
-describe("FIRE Calculations - Additional Validation", () => {
+describe('FIRE Calculations - Additional Validation', () => {
   // 1. Cross-reference with known FIRE calculators
-  describe("Cross-validation with External Calculators", () => {
-    it("should match FIREcalc.com basic scenario", () => {
+  describe('Cross-validation with External Calculators', () => {
+    it('should match FIREcalc.com basic scenario', () => {
       // FIREcalc.com example: $100k start, $40k/year savings, 7% return, 3% inflation
       // Expected result: ~14-15 years to reach $1M
       const firecalcInputs: QuickPlanInputs = {
@@ -429,7 +412,7 @@ describe("FIRE Calculations - Additional Validation", () => {
       expect(years).toBeLessThanOrEqual(18);
     });
 
-    it("should match PersonalCapital retirement planner scenario", () => {
+    it('should match PersonalCapital retirement planner scenario', () => {
       // Personal Capital typically uses Monte Carlo, but median case should be similar
       const pcInputs: QuickPlanInputs = {
         basics: {
@@ -476,8 +459,8 @@ describe("FIRE Calculations - Additional Validation", () => {
   });
 
   // 2. Mathematical identity checks
-  describe("Mathematical Identity Verification", () => {
-    it("should satisfy the compound interest equation", () => {
+  describe('Mathematical Identity Verification', () => {
+    it('should satisfy the compound interest equation', () => {
       const inputs: QuickPlanInputs = {
         basics: {
           currentAge: 30,
@@ -541,7 +524,7 @@ describe("FIRE Calculations - Additional Validation", () => {
       }
     });
 
-    it("should follow the future value of annuity formula", () => {
+    it('should follow the future value of annuity formula', () => {
       // FV = PMT × [(1+r)^n - 1] / r
       const annualSavings = 30000;
       const years = 10;
@@ -583,15 +566,10 @@ describe("FIRE Calculations - Additional Validation", () => {
       };
 
       // Calculate the actual real return from our inputs
-      const realReturn =
-        calculateWeightedPortfolioReturnReal(
-          inputs.allocation,
-          inputs.marketAssumptions
-        ) / 100;
+      const realReturn = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions) / 100;
 
       // Manual calculation with the correct real return
-      const fvAnnuity =
-        annualSavings * ((Math.pow(1 + realReturn, years) - 1) / realReturn);
+      const fvAnnuity = annualSavings * ((Math.pow(1 + realReturn, years) - 1) / realReturn);
 
       const portfolioValue = calculateFuturePortfolioValue(
         inputs.basics,
@@ -608,8 +586,8 @@ describe("FIRE Calculations - Additional Validation", () => {
   });
 
   // 3. Boundary and stress tests
-  describe("Boundary and Stress Tests", () => {
-    it("should handle extreme market returns correctly", () => {
+  describe('Boundary and Stress Tests', () => {
+    it('should handle extreme market returns correctly', () => {
       const extremeInputs: QuickPlanInputs = {
         basics: {
           currentAge: 30,
@@ -651,7 +629,7 @@ describe("FIRE Calculations - Additional Validation", () => {
       expect(years).toBeGreaterThan(0);
     });
 
-    it("should handle zero return scenario", () => {
+    it('should handle zero return scenario', () => {
       const zeroReturnInputs: QuickPlanInputs = {
         basics: {
           currentAge: 30,
@@ -695,8 +673,8 @@ describe("FIRE Calculations - Additional Validation", () => {
   });
 
   // 4. Consistency checks
-  describe("Internal Consistency Verification", () => {
-    it("should be consistent when run multiple times", () => {
+  describe('Internal Consistency Verification', () => {
+    it('should be consistent when run multiple times', () => {
       const inputs: QuickPlanInputs = {
         basics: {
           currentAge: 40,
@@ -742,7 +720,7 @@ describe("FIRE Calculations - Additional Validation", () => {
       expect(new Set(results).size).toBe(1);
     });
 
-    it("should show monotonic behavior with savings rate", () => {
+    it('should show monotonic behavior with savings rate', () => {
       const baseInputs: QuickPlanInputs = {
         basics: {
           currentAge: 30,
@@ -799,7 +777,7 @@ describe("FIRE Calculations - Additional Validation", () => {
   });
 
   // 5. Known edge cases from financial planning
-  describe("Known Financial Planning Scenarios", () => {
+  describe('Known Financial Planning Scenarios', () => {
     it("should handle the 'Coast FIRE' scenario", () => {
       // Coast FIRE: Current assets will grow to FIRE amount without more contributions
       const coastInputs: QuickPlanInputs = {
@@ -890,8 +868,8 @@ describe("FIRE Calculations - Additional Validation", () => {
 });
 
 // 6. Property-based testing concepts
-describe("Property-Based Validation", () => {
-  it("should always reach FIRE faster with higher returns", () => {
+describe('Property-Based Validation', () => {
+  it('should always reach FIRE faster with higher returns', () => {
     const baseInputs: QuickPlanInputs = {
       basics: {
         currentAge: 30,
@@ -942,7 +920,7 @@ describe("Property-Based Validation", () => {
     expect(highReturnYears).toBeLessThan(lowReturnYears);
   });
 
-  it("should never achieve FIRE if withdrawal > growth + savings", () => {
+  it('should never achieve FIRE if withdrawal > growth + savings', () => {
     const impossibleInputs: QuickPlanInputs = {
       basics: {
         currentAge: 30,

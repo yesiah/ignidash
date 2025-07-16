@@ -1,34 +1,32 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from 'vitest';
 import {
   calculateRequiredPortfolio,
   calculateWeightedPortfolioReturnNominal,
   calculateWeightedPortfolioReturnReal,
   calculateYearlyContribution,
   calculateFuturePortfolioValue,
-} from "./portfolio-calculations";
-import { defaultState } from "./stores/quick-plan-store";
+} from './portfolio-calculations';
+import { defaultState } from './stores/quick-plan-store';
 
-describe("calculateRequiredPortfolio", () => {
-  it("should return 1,000,000 for 40,000 retirement expenses with 4% SWR", () => {
+describe('calculateRequiredPortfolio', () => {
+  it('should return 1,000,000 for 40,000 retirement expenses with 4% SWR', () => {
     const result = calculateRequiredPortfolio(40000, 4);
     expect(result).toBe(1000000);
   });
 
-  it("should warn and return -1 when retirementExpenses is null", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it('should warn and return -1 when retirementExpenses is null', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const result = calculateRequiredPortfolio(null, 4);
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Cannot calculate required portfolio: retirement expenses is required"
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate required portfolio: retirement expenses is required');
     expect(result).toBe(-1);
     consoleSpy.mockRestore();
   });
 });
 
-describe("calculatePortfolioReturnNominal", () => {
-  it("should calculate correct nominal portfolio return", () => {
+describe('calculatePortfolioReturnNominal', () => {
+  it('should calculate correct nominal portfolio return', () => {
     const inputs = {
       ...defaultState.inputs,
       allocation: {
@@ -44,10 +42,7 @@ describe("calculatePortfolioReturnNominal", () => {
       },
     };
 
-    const result = calculateWeightedPortfolioReturnNominal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
+    const result = calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions);
 
     // Expected calculation:
     // Stock: 70% × 10% = 0.70 × 0.10 = 0.07
@@ -57,7 +52,7 @@ describe("calculatePortfolioReturnNominal", () => {
     expect(result).toBe(8.5);
   });
 
-  it("should handle 100% stock allocation", () => {
+  it('should handle 100% stock allocation', () => {
     const inputs = {
       ...defaultState.inputs,
       allocation: {
@@ -66,16 +61,11 @@ describe("calculatePortfolioReturnNominal", () => {
         cashAllocation: 0,
       },
     };
-    expect(
-      calculateWeightedPortfolioReturnNominal(
-        inputs.allocation,
-        inputs.marketAssumptions
-      )
-    ).toBe(10);
+    expect(calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions)).toBe(10);
   });
 
   it("should warn when allocations don't sum to 100%", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
       allocation: {
@@ -85,17 +75,14 @@ describe("calculatePortfolioReturnNominal", () => {
       },
     };
 
-    calculateWeightedPortfolioReturnNominal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
-    expect(consoleSpy).toHaveBeenCalledWith("Allocations sum to 95%, not 100%");
+    calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions);
+    expect(consoleSpy).toHaveBeenCalledWith('Allocations sum to 95%, not 100%');
     consoleSpy.mockRestore();
   });
 });
 
-describe("calculatePortfolioReturnReal", () => {
-  it("should calculate correct real portfolio return with default values", () => {
+describe('calculatePortfolioReturnReal', () => {
+  it('should calculate correct real portfolio return with default values', () => {
     const inputs = {
       ...defaultState.inputs,
       allocation: {
@@ -112,10 +99,7 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculateWeightedPortfolioReturnReal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
+    const result = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions);
 
     // Expected calculation:
     // Nominal return: 8.5%
@@ -123,7 +107,7 @@ describe("calculatePortfolioReturnReal", () => {
     expect(result).toBeCloseTo(5.339, 2);
   });
 
-  it("should handle zero inflation (real return equals nominal return)", () => {
+  it('should handle zero inflation (real return equals nominal return)', () => {
     const inputs = {
       ...defaultState.inputs,
       marketAssumptions: {
@@ -132,21 +116,15 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const nominalReturn = calculateWeightedPortfolioReturnNominal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
-    const realReturn = calculateWeightedPortfolioReturnReal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
+    const nominalReturn = calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions);
+    const realReturn = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions);
 
     // With 0% inflation, real return should equal nominal return
     // Use toBeCloseTo to handle floating-point precision
     expect(realReturn).toBeCloseTo(nominalReturn, 10);
   });
 
-  it("should handle high inflation scenario (negative real returns)", () => {
+  it('should handle high inflation scenario (negative real returns)', () => {
     const inputs = {
       ...defaultState.inputs,
       allocation: {
@@ -161,10 +139,7 @@ describe("calculatePortfolioReturnReal", () => {
       },
     };
 
-    const result = calculateWeightedPortfolioReturnReal(
-      inputs.allocation,
-      inputs.marketAssumptions
-    );
+    const result = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions);
 
     // Expected calculation:
     // Nominal return: 3%
@@ -173,8 +148,8 @@ describe("calculatePortfolioReturnReal", () => {
   });
 });
 
-describe("calculateYearlyContribution", () => {
-  it("should calculate correct contribution for year 0 (base year) with nominal values", () => {
+describe('calculateYearlyContribution', () => {
+  it('should calculate correct contribution for year 0 (base year) with nominal values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -201,7 +176,7 @@ describe("calculateYearlyContribution", () => {
     expect(result).toBe(40000);
   });
 
-  it("should calculate correct contribution for year 1 with nominal values", () => {
+  it('should calculate correct contribution for year 1 with nominal values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -228,7 +203,7 @@ describe("calculateYearlyContribution", () => {
     expect(result).toBe(41200);
   });
 
-  it("should calculate correct contribution for year 1 with real values", () => {
+  it('should calculate correct contribution for year 1 with real values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -260,7 +235,7 @@ describe("calculateYearlyContribution", () => {
     expect(result).toBeCloseTo(40776.7, 1);
   });
 
-  it("should handle different growth rates for income and expenses with nominal values", () => {
+  it('should handle different growth rates for income and expenses with nominal values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -287,7 +262,7 @@ describe("calculateYearlyContribution", () => {
     expect(result).toBe(43800);
   });
 
-  it("should handle multiple years with compounding using nominal values", () => {
+  it('should handle multiple years with compounding using nominal values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -316,8 +291,8 @@ describe("calculateYearlyContribution", () => {
     expect(result).toBeCloseTo(46370.96, 2);
   });
 
-  it("should return -1 when annualIncome is null", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it('should return -1 when annualIncome is null', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -336,15 +311,13 @@ describe("calculateYearlyContribution", () => {
       true
     ); // true for nominal
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Cannot calculate yearly contribution: annual income and expenses are required"
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);
     consoleSpy.mockRestore();
   });
 
-  it("should return -1 when annualExpenses is null", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it('should return -1 when annualExpenses is null', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -363,14 +336,12 @@ describe("calculateYearlyContribution", () => {
       true
     ); // true for nominal
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Cannot calculate yearly contribution: annual income and expenses are required"
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);
     consoleSpy.mockRestore();
   });
 
-  it("should handle negative contribution (expenses exceed income) with nominal values", () => {
+  it('should handle negative contribution (expenses exceed income) with nominal values', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -409,8 +380,8 @@ describe("calculateYearlyContribution", () => {
   });
 });
 
-describe("calculateFuturePortfolioValue", () => {
-  it("should calculate correct future value with positive real returns and contributions", () => {
+describe('calculateFuturePortfolioValue', () => {
+  it('should calculate correct future value with positive real returns and contributions', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -437,14 +408,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      5,
-      false
-    ); // false for real values
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false); // false for real values
 
     // Since growth rates are nominal (3%) and inflation is 3%, real growth is 0%
     // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
@@ -463,7 +427,7 @@ describe("calculateFuturePortfolioValue", () => {
     expect(result).toBeCloseTo(296604.65, 0);
   });
 
-  it("should calculate correct future value with nominal returns", () => {
+  it('should calculate correct future value with nominal returns', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -490,14 +454,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      5,
-      true
-    ); // true for nominal values
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, true); // true for nominal values
 
     // Nominal return: 8.5%
     // Initial assets after 5 years: 100,000 × (1.085)^5 = 150,365.67
@@ -515,7 +472,7 @@ describe("calculateFuturePortfolioValue", () => {
     expect(result).toBeCloseTo(338210.73, 0);
   });
 
-  it("should handle zero real return scenario (100% cash with inflation = cash return)", () => {
+  it('should handle zero real return scenario (100% cash with inflation = cash return)', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -542,14 +499,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      5,
-      false
-    ); // false for real values
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false); // false for real values
 
     // With 0% real return and 0% real growth on contributions
     // Initial assets: 100,000 (no real growth)
@@ -559,7 +509,7 @@ describe("calculateFuturePortfolioValue", () => {
     expect(result).toBe(250000);
   });
 
-  it("should handle negative contributions in later years when expenses grow faster than income", () => {
+  it('should handle negative contributions in later years when expenses grow faster than income', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -586,14 +536,7 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      10,
-      false
-    ); // false for real values
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 10, false); // false for real values
 
     // Real return: (1.07 / 1.03) - 1 = 3.883%
     // Real income growth: (1.01 / 1.03) - 1 = -1.94%
@@ -606,8 +549,8 @@ describe("calculateFuturePortfolioValue", () => {
     expect(result).toBeLessThan(800000); // But limited by withdrawals
   });
 
-  it("should return -1 when investedAssets is null", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it('should return -1 when investedAssets is null', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -618,24 +561,15 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      5,
-      false
-    );
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false);
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Cannot calculate future portfolio value: invested assets is required"
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate future portfolio value: invested assets is required');
     expect(result).toBe(-1);
     consoleSpy.mockRestore();
   });
 
-  it("should return -1 when calculateYearlyContribution returns -1", () => {
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it('should return -1 when calculateYearlyContribution returns -1', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -646,18 +580,9 @@ describe("calculateFuturePortfolioValue", () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      5,
-      false
-    );
+    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false);
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Cannot calculate yearly contribution: annual income and expenses are required"
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);
     consoleSpy.mockRestore();
   });

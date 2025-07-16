@@ -1,16 +1,13 @@
-"use client";
+'use client';
 
-import { NumberInput } from "@/components/ui/number-input";
-import { CardFormSection } from "@/components/layout/card-form-section";
-import {
-  useRetirementFundingData,
-  useUpdateRetirementFunding,
-} from "@/lib/stores/quick-plan-store";
+import { NumberInput } from '@/components/ui/number-input';
+import { CardFormSection } from '@/components/layout/card-form-section';
+import { useRetirementFundingData, useUpdateRetirementFunding } from '@/lib/stores/quick-plan-store';
 
 function getSafeWithdrawalRateDescription() {
   return (
     <>
-      Annual portfolio withdrawal percentage.{" "}
+      Annual portfolio withdrawal percentage.{' '}
       <a
         href="https://www.investopedia.com/terms/f/four-percent-rule.asp"
         target="_blank"
@@ -27,7 +24,7 @@ function getSafeWithdrawalRateDescription() {
 function getLifeExpectancyDescription() {
   return (
     <>
-      Age you expect to live to. See{" "}
+      Age you expect to live to. See{' '}
       <a
         href="https://www.cdc.gov/nchs/fastats/life-expectancy.htm"
         target="_blank"
@@ -35,7 +32,7 @@ function getLifeExpectancyDescription() {
         className="text-foreground hover:text-foreground/80 underline"
       >
         CDC life expectancy data
-      </a>{" "}
+      </a>{' '}
       for current averages.
     </>
   );
@@ -44,7 +41,7 @@ function getLifeExpectancyDescription() {
 function getEffectiveTaxRateDescription() {
   return (
     <>
-      Estimated tax rate on retirement withdrawals. See{" "}
+      Estimated tax rate on retirement withdrawals. See{' '}
       <a
         href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-tax-on-early-distributions"
         target="_blank"
@@ -52,7 +49,7 @@ function getEffectiveTaxRateDescription() {
         className="text-foreground hover:text-foreground/80 underline"
       >
         IRS retirement tax guidance
-      </a>{" "}
+      </a>{' '}
       for planning details. Affects after-tax income calculations.
     </>
   );
@@ -73,9 +70,7 @@ export function RetirementFundingDrawer() {
           id="safe-withdrawal-rate"
           label="Safe Withdrawal Rate (%)"
           value={retirementFunding.safeWithdrawalRate}
-          onBlur={(value) =>
-            updateRetirementFunding("safeWithdrawalRate", value)
-          }
+          onBlur={(value) => updateRetirementFunding('safeWithdrawalRate', value)}
           inputMode="decimal"
           placeholder="4%"
           suffix="%"
@@ -85,7 +80,7 @@ export function RetirementFundingDrawer() {
           id="retirement-income"
           label="Passive Retirement Income"
           value={retirementFunding.retirementIncome}
-          onBlur={(value) => updateRetirementFunding("retirementIncome", value)}
+          onBlur={(value) => updateRetirementFunding('retirementIncome', value)}
           inputMode="decimal"
           placeholder="$0"
           prefix="$"
@@ -103,7 +98,7 @@ export function RetirementFundingDrawer() {
           id="life-expectancy"
           label="Life Expectancy (years)"
           value={retirementFunding.lifeExpectancy}
-          onBlur={(value) => updateRetirementFunding("lifeExpectancy", value)}
+          onBlur={(value) => updateRetirementFunding('lifeExpectancy', value)}
           inputMode="numeric"
           placeholder="85"
           decimalScale={0}
@@ -113,7 +108,7 @@ export function RetirementFundingDrawer() {
           id="effective-tax-rate"
           label="Estimated Effective Tax Rate (%)"
           value={retirementFunding.effectiveTaxRate}
-          onBlur={(value) => updateRetirementFunding("effectiveTaxRate", value)}
+          onBlur={(value) => updateRetirementFunding('effectiveTaxRate', value)}
           inputMode="decimal"
           placeholder="15%"
           suffix="%"

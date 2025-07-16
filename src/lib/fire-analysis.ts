@@ -1,22 +1,13 @@
-import { QuickPlanInputs } from "./schemas/quick-plan-schema";
-import {
-  calculateRequiredPortfolio,
-  calculateFuturePortfolioValue,
-} from "./portfolio-calculations";
+import { QuickPlanInputs } from './schemas/quick-plan-schema';
+import { calculateRequiredPortfolio, calculateFuturePortfolioValue } from './portfolio-calculations';
 
 /**
  * Calculate the number of years until FIRE (Financial Independence, Retire Early)
  * Returns -1 if FIRE is not achievable within 100 years or if required data is missing
  */
-export const calculateYearsToFIRE = (
-  inputs: QuickPlanInputs,
-  maxYears: number = 100
-): number => {
+export const calculateYearsToFIRE = (inputs: QuickPlanInputs, maxYears: number = 100): number => {
   // First, check if we can calculate the required portfolio
-  const requiredPortfolio = calculateRequiredPortfolio(
-    inputs.goals.retirementExpenses,
-    inputs.retirementFunding.safeWithdrawalRate
-  );
+  const requiredPortfolio = calculateRequiredPortfolio(inputs.goals.retirementExpenses, inputs.retirementFunding.safeWithdrawalRate);
   if (requiredPortfolio === -1) {
     return -1; // Missing required data
   }
@@ -99,7 +90,7 @@ export const calculateFIREAge = (inputs: QuickPlanInputs): number => {
   const { currentAge } = inputs.basics;
 
   if (currentAge === null) {
-    console.warn("Cannot calculate FIRE age: current age is required");
+    console.warn('Cannot calculate FIRE age: current age is required');
     return -1;
   }
 
@@ -127,10 +118,7 @@ export const getFIREAnalysis = (
   projectedPortfolioAtFIRE: number;
   message: string;
 } => {
-  const requiredPortfolio = calculateRequiredPortfolio(
-    inputs.goals.retirementExpenses,
-    inputs.retirementFunding.safeWithdrawalRate
-  );
+  const requiredPortfolio = calculateRequiredPortfolio(inputs.goals.retirementExpenses, inputs.retirementFunding.safeWithdrawalRate);
   const currentPortfolio = inputs.basics.investedAssets ?? 0;
   const yearsToFIRE = calculateYearsToFIRE(inputs);
   const fireAge = calculateFIREAge(inputs);
@@ -138,9 +126,7 @@ export const getFIREAnalysis = (
   // Handle missing data cases
   if (requiredPortfolio === -1 || yearsToFIRE === -1 || fireAge === -1) {
     const failureMessage =
-      requiredPortfolio === -1
-        ? "Missing required data to calculate FIRE goals"
-        : "FIRE is not achievable with current parameters";
+      requiredPortfolio === -1 ? 'Missing required data to calculate FIRE goals' : 'FIRE is not achievable with current parameters';
 
     return {
       achievable: false,
@@ -163,9 +149,9 @@ export const getFIREAnalysis = (
   );
 
   // Generate appropriate message
-  let message = "";
+  let message = '';
   if (yearsToFIRE === 0) {
-    message = "Congratulations! You have already achieved FIRE.";
+    message = 'Congratulations! You have already achieved FIRE.';
   } else if (yearsToFIRE <= 10) {
     message = `You can achieve FIRE in ${yearsToFIRE} years at age ${fireAge}.`;
   } else if (yearsToFIRE <= 30) {
@@ -190,9 +176,7 @@ export interface ChartDataPoint {
   portfolioValue: number;
 }
 
-export const getFIREChartData = (
-  inputs: QuickPlanInputs
-): { age: number; portfolioValue: number }[] => {
+export const getFIREChartData = (inputs: QuickPlanInputs): { age: number; portfolioValue: number }[] => {
   const startAge = inputs.basics.currentAge;
   const endAge = inputs.retirementFunding.lifeExpectancy;
   if (startAge === null) return [];

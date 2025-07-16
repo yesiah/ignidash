@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface DrawerTriggerButtonProps {
   title: string;
@@ -13,13 +13,7 @@ interface DrawerTriggerButtonProps {
   >;
 }
 
-export function DrawerTriggerButton({
-  title,
-  desc,
-  onClick,
-  className = "",
-  leftIcon,
-}: DrawerTriggerButtonProps) {
+export function DrawerTriggerButton({ title, desc, onClick, className = '', leftIcon }: DrawerTriggerButtonProps) {
   const LeftIcon = leftIcon;
 
   //  <div className="flex w-full items-center justify-between text-left">
@@ -52,14 +46,9 @@ export function DrawerTriggerButton({
             {LeftIcon && <LeftIcon className="h-5 w-5" aria-hidden="true" />}
             <span>{title}</span>
           </div>
-          {desc && (
-            <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>
-          )}
+          {desc && <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>}
         </div>
-        <ChevronRightIcon
-          className="ml-2 h-5 w-5 shrink-0"
-          aria-hidden="true"
-        />
+        <ChevronRightIcon className="ml-2 h-5 w-5 shrink-0" aria-hidden="true" />
       </div>
     </button>
   );

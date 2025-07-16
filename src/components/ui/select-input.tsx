@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { ChevronDownIcon } from '@heroicons/react/16/solid';
 
 interface SelectInputProps {
   id: string;
@@ -11,20 +11,10 @@ interface SelectInputProps {
   desc?: string | React.ReactNode;
 }
 
-export function SelectInput({
-  id,
-  label,
-  value,
-  onChange,
-  options,
-  desc,
-}: SelectInputProps) {
+export function SelectInput({ id, label, value, onChange, options, desc }: SelectInputProps) {
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
       <div className="mt-2 grid grid-cols-1">

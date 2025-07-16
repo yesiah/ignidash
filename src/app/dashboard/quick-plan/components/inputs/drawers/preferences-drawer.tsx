@@ -1,13 +1,9 @@
-"use client";
+'use client';
 
-import { SelectInput } from "@/components/ui/select-input";
-import { CardFormSection } from "@/components/layout/card-form-section";
-import { Button } from "@/components/catalyst/button";
-import {
-  usePreferencesData,
-  useUpdatePreferences,
-  useResetStore,
-} from "@/lib/stores/quick-plan-store";
+import { SelectInput } from '@/components/ui/select-input';
+import { CardFormSection } from '@/components/layout/card-form-section';
+import { Button } from '@/components/catalyst/button';
+import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
 
 export function PreferencesDrawer() {
   const preferences = usePreferencesData();
@@ -25,10 +21,10 @@ export function PreferencesDrawer() {
           id="display-format"
           label="Currency Display"
           value={preferences.displayFormat}
-          onChange={(e) => updatePreferences("displayFormat", e.target.value)}
+          onChange={(e) => updatePreferences('displayFormat', e.target.value)}
           options={[
-            { value: "today", label: "Today's Currency" },
-            { value: "future", label: "Future Inflated Currency" },
+            { value: 'today', label: "Today's Currency" },
+            { value: 'future', label: 'Future Inflated Currency' },
           ]}
           desc="Today's currency shows values in current dollars. Future inflated currency shows values adjusted for inflation."
         />
@@ -44,10 +40,10 @@ export function PreferencesDrawer() {
           id="data-storage"
           label="Data Persistence"
           value={preferences.dataStorage}
-          onChange={(e) => updatePreferences("dataStorage", e.target.value)}
+          onChange={(e) => updatePreferences('dataStorage', e.target.value)}
           options={[
-            { value: "localStorage", label: "Local Storage" },
-            { value: "none", label: "No Data Persistence" },
+            { value: 'localStorage', label: 'Local Storage' },
+            { value: 'none', label: 'No Data Persistence' },
           ]}
           desc="Local storage saves your data on this device. No data persistence means your data is lost when you close or refresh the page."
         />
@@ -56,9 +52,7 @@ export function PreferencesDrawer() {
           <Button color="red" onClick={() => resetStore()} className="w-full">
             Delete Saved Data
           </Button>
-          <p className="text-muted-foreground mt-2 text-xs">
-            This will permanently delete all saved data and reset to defaults.
-          </p>
+          <p className="text-muted-foreground mt-2 text-xs">This will permanently delete all saved data and reset to defaults.</p>
         </div>
       </CardFormSection>
     </>

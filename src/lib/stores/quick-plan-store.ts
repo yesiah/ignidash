@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
-import { useShallow } from "zustand/react/shallow";
-import { useMemo } from "react";
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+import { useShallow } from 'zustand/react/shallow';
+import { useMemo } from 'react';
 import {
   type QuickPlanInputs,
   type BasicsInputs,
@@ -13,14 +13,9 @@ import {
   type RetirementFundingInputs,
   validateField,
   validateSection,
-} from "../schemas/quick-plan-schema";
-import { calculateRequiredPortfolio } from "../portfolio-calculations";
-import {
-  calculateYearsToFIRE,
-  calculateFIREAge,
-  getFIREAnalysis,
-  getFIREChartData,
-} from "../fire-analysis";
+} from '../schemas/quick-plan-schema';
+import { calculateRequiredPortfolio } from '../portfolio-calculations';
+import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis, getFIREChartData } from '../fire-analysis';
 
 // Update result type
 type UpdateResult = {
@@ -33,35 +28,23 @@ interface QuickPlanState {
   inputs: QuickPlanInputs;
 
   preferences: {
-    displayFormat: "today" | "future";
-    dataStorage: "localStorage" | "none";
+    displayFormat: 'today' | 'future';
+    dataStorage: 'localStorage' | 'none';
   };
 
   actions: {
     // Basic input actions with validation and error reporting
     updateBasics: (field: keyof BasicsInputs, value: unknown) => UpdateResult;
-    updateGrowthRates: (
-      field: keyof GrowthRatesInputs,
-      value: unknown
-    ) => UpdateResult;
+    updateGrowthRates: (field: keyof GrowthRatesInputs, value: unknown) => UpdateResult;
     updateAllocation: (data: {
       [K in keyof AllocationInputs]: unknown;
     }) => UpdateResult;
     updateGoals: (field: keyof GoalsInputs, value: unknown) => UpdateResult;
-    updateMarketAssumptions: (
-      field: keyof MarketAssumptionsInputs,
-      value: unknown
-    ) => UpdateResult;
-    updateRetirementFunding: (
-      field: keyof RetirementFundingInputs,
-      value: unknown
-    ) => UpdateResult;
+    updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
+    updateRetirementFunding: (field: keyof RetirementFundingInputs, value: unknown) => UpdateResult;
 
     // Preferences actions
-    updatePreferences: (
-      field: keyof QuickPlanState["preferences"],
-      value: string
-    ) => void;
+    updatePreferences: (field: keyof QuickPlanState['preferences'], value: string) => void;
 
     // Utility actions
     resetStore: () => void;
@@ -70,7 +53,7 @@ interface QuickPlanState {
 }
 
 // Default state with existing component defaults
-export const defaultState: Pick<QuickPlanState, "inputs" | "preferences"> = {
+export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
   inputs: {
     basics: {
       currentAge: null,
@@ -106,21 +89,21 @@ export const defaultState: Pick<QuickPlanState, "inputs" | "preferences"> = {
     },
   },
   preferences: {
-    displayFormat: "today",
-    dataStorage: "localStorage",
+    displayFormat: 'today',
+    dataStorage: 'localStorage',
   },
 };
 
 // Clean up existing data if dataStorage preference is "none"
 const cleanupExistingData = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
-  const stored = localStorage.getItem("quick-plan-storage");
+  const stored = localStorage.getItem('quick-plan-storage');
   if (!stored) return;
 
   try {
     const parsed = JSON.parse(stored);
-    if (parsed.state?.preferences?.dataStorage === "none") {
+    if (parsed.state?.preferences?.dataStorage === 'none') {
       // Only keep preferences, remove inputs
       const cleanedData = {
         state: {
@@ -128,12 +111,12 @@ const cleanupExistingData = () => {
         },
         version: parsed.version,
       };
-      localStorage.setItem("quick-plan-storage", JSON.stringify(cleanedData));
+      localStorage.setItem('quick-plan-storage', JSON.stringify(cleanedData));
     }
   } catch (error) {
     // Handle parsing errors - remove corrupted data
-    console.warn("Failed to parse quick-plan storage:", error);
-    localStorage.removeItem("quick-plan-storage");
+    console.warn('Failed to parse quick-plan storage:', error);
+    localStorage.removeItem('quick-plan-storage');
   }
 };
 
@@ -149,12 +132,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
         actions: {
           // Update actions with validation
           updateBasics: (field, value) => {
-            const result = validateField(
-              "basics",
-              field,
-              value,
-              get().inputs.basics
-            );
+            const result = validateField('basics', field, value, get().inputs.basics);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -169,12 +147,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           },
 
           updateGrowthRates: (field, value) => {
-            const result = validateField(
-              "growthRates",
-              field,
-              value,
-              get().inputs.growthRates
-            );
+            const result = validateField('growthRates', field, value, get().inputs.growthRates);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -189,7 +162,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           },
 
           updateAllocation: (data) => {
-            const result = validateSection("allocation", data);
+            const result = validateSection('allocation', data);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -204,12 +177,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           },
 
           updateGoals: (field, value) => {
-            const result = validateField(
-              "goals",
-              field,
-              value,
-              get().inputs.goals
-            );
+            const result = validateField('goals', field, value, get().inputs.goals);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -224,12 +192,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           },
 
           updateMarketAssumptions: (field, value) => {
-            const result = validateField(
-              "marketAssumptions",
-              field,
-              value,
-              get().inputs.marketAssumptions
-            );
+            const result = validateField('marketAssumptions', field, value, get().inputs.marketAssumptions);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -244,12 +207,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           },
 
           updateRetirementFunding: (field, value) => {
-            const result = validateField(
-              "retirementFunding",
-              field,
-              value,
-              get().inputs.retirementFunding
-            );
+            const result = validateField('retirementFunding', field, value, get().inputs.retirementFunding);
 
             if (result.valid && result.data) {
               set((state) => {
@@ -266,12 +224,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           // Preferences actions
           updatePreferences: (field, value) =>
             set((state) => {
-              if (field === "displayFormat") {
-                state.preferences.displayFormat = value as "today" | "future";
-              } else if (field === "dataStorage") {
-                state.preferences.dataStorage = value as
-                  | "localStorage"
-                  | "none";
+              if (field === 'displayFormat') {
+                state.preferences.displayFormat = value as 'today' | 'future';
+              } else if (field === 'dataStorage') {
+                state.preferences.dataStorage = value as 'localStorage' | 'none';
               }
             }),
 
@@ -283,21 +239,18 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 
           resetSection: (section) =>
             set((state) => {
-              Object.assign(
-                state.inputs[section],
-                defaultState.inputs[section]
-              );
+              Object.assign(state.inputs[section], defaultState.inputs[section]);
             }),
         },
       })),
       {
-        name: "quick-plan-storage",
+        name: 'quick-plan-storage',
         version: 1,
         // Only persist the inputs and preferences state, not the actions
         partialize: (state) => {
           const baseResult = { preferences: state.preferences };
 
-          if (state.preferences.dataStorage === "localStorage") {
+          if (state.preferences.dataStorage === 'localStorage') {
             return {
               ...baseResult,
               inputs: state.inputs,
@@ -309,61 +262,41 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       }
     ),
     {
-      name: "Quick Plan Store",
-      anonymousActionType: "quickPlan/action", // Default for any unnamed actions
+      name: 'Quick Plan Store',
+      anonymousActionType: 'quickPlan/action', // Default for any unnamed actions
     }
   )
 );
 
 // Data selectors (stable references)
-export const useBasicsData = () =>
-  useQuickPlanStore((state) => state.inputs.basics);
-export const useGrowthRatesData = () =>
-  useQuickPlanStore((state) => state.inputs.growthRates);
-export const useAllocationData = () =>
-  useQuickPlanStore((state) => state.inputs.allocation);
-export const useGoalsData = () =>
-  useQuickPlanStore((state) => state.inputs.goals);
-export const useMarketAssumptionsData = () =>
-  useQuickPlanStore((state) => state.inputs.marketAssumptions);
-export const useRetirementFundingData = () =>
-  useQuickPlanStore((state) => state.inputs.retirementFunding);
+export const useBasicsData = () => useQuickPlanStore((state) => state.inputs.basics);
+export const useGrowthRatesData = () => useQuickPlanStore((state) => state.inputs.growthRates);
+export const useAllocationData = () => useQuickPlanStore((state) => state.inputs.allocation);
+export const useGoalsData = () => useQuickPlanStore((state) => state.inputs.goals);
+export const useMarketAssumptionsData = () => useQuickPlanStore((state) => state.inputs.marketAssumptions);
+export const useRetirementFundingData = () => useQuickPlanStore((state) => state.inputs.retirementFunding);
 
 // Individual field selectors for performance optimization
-export const useCurrentAge = () =>
-  useQuickPlanStore((state) => state.inputs.basics.currentAge);
-export const useAnnualIncome = () =>
-  useQuickPlanStore((state) => state.inputs.basics.annualIncome);
-export const useAnnualExpenses = () =>
-  useQuickPlanStore((state) => state.inputs.basics.annualExpenses);
-export const useInvestedAssets = () =>
-  useQuickPlanStore((state) => state.inputs.basics.investedAssets);
+export const useCurrentAge = () => useQuickPlanStore((state) => state.inputs.basics.currentAge);
+export const useAnnualIncome = () => useQuickPlanStore((state) => state.inputs.basics.annualIncome);
+export const useAnnualExpenses = () => useQuickPlanStore((state) => state.inputs.basics.annualExpenses);
+export const useInvestedAssets = () => useQuickPlanStore((state) => state.inputs.basics.investedAssets);
 
 // Action selectors
-export const useUpdateBasics = () =>
-  useQuickPlanStore((state) => state.actions.updateBasics);
-export const useUpdateGrowthRates = () =>
-  useQuickPlanStore((state) => state.actions.updateGrowthRates);
-export const useUpdateAllocation = () =>
-  useQuickPlanStore((state) => state.actions.updateAllocation);
-export const useUpdateGoals = () =>
-  useQuickPlanStore((state) => state.actions.updateGoals);
-export const useUpdateMarketAssumptions = () =>
-  useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
-export const useUpdateRetirementFunding = () =>
-  useQuickPlanStore((state) => state.actions.updateRetirementFunding);
+export const useUpdateBasics = () => useQuickPlanStore((state) => state.actions.updateBasics);
+export const useUpdateGrowthRates = () => useQuickPlanStore((state) => state.actions.updateGrowthRates);
+export const useUpdateAllocation = () => useQuickPlanStore((state) => state.actions.updateAllocation);
+export const useUpdateGoals = () => useQuickPlanStore((state) => state.actions.updateGoals);
+export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
+export const useUpdateRetirementFunding = () => useQuickPlanStore((state) => state.actions.updateRetirementFunding);
 
 // Preferences selectors
-export const usePreferencesData = () =>
-  useQuickPlanStore((state) => state.preferences);
-export const useUpdatePreferences = () =>
-  useQuickPlanStore((state) => state.actions.updatePreferences);
+export const usePreferencesData = () => useQuickPlanStore((state) => state.preferences);
+export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
 
 // Utility selectors
-export const useResetStore = () =>
-  useQuickPlanStore((state) => state.actions.resetStore);
-export const useResetSection = () =>
-  useQuickPlanStore((state) => state.actions.resetSection);
+export const useResetStore = () => useQuickPlanStore((state) => state.actions.resetStore);
+export const useResetSection = () => useQuickPlanStore((state) => state.actions.resetSection);
 
 // ================================
 // COMPUTED SELECTORS
@@ -374,21 +307,15 @@ export const useResetSection = () =>
 // Portfolio & Asset Calculations
 export const useRequiredPortfolio = () =>
   useQuickPlanStore((state) =>
-    calculateRequiredPortfolio(
-      state.inputs.goals.retirementExpenses,
-      state.inputs.retirementFunding.safeWithdrawalRate
-    )
+    calculateRequiredPortfolio(state.inputs.goals.retirementExpenses, state.inputs.retirementFunding.safeWithdrawalRate)
   );
 
 // FIRE Calculations
-export const useYearsToFIRE = () =>
-  useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs));
+export const useYearsToFIRE = () => useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs));
 
-export const useFIREAge = () =>
-  useQuickPlanStore((state) => calculateFIREAge(state.inputs));
+export const useFIREAge = () => useQuickPlanStore((state) => calculateFIREAge(state.inputs));
 
-export const useFIREAnalysis = () =>
-  useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs)));
+export const useFIREAnalysis = () => useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs)));
 
 export const useFIREChartData = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
@@ -405,8 +332,7 @@ export const useBasicsValidation = () =>
       state.inputs.basics.investedAssets !== null
   );
 
-export const useGoalsValidation = () =>
-  useQuickPlanStore((state) => state.inputs.goals.retirementExpenses !== null);
+export const useGoalsValidation = () => useQuickPlanStore((state) => state.inputs.goals.retirementExpenses !== null);
 
 export const useIsCalculationReady = () =>
   useQuickPlanStore(

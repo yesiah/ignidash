@@ -1,13 +1,7 @@
-"use client";
+'use client';
 
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, TransitionChild } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface DrawerProps {
   open: boolean;
@@ -16,12 +10,7 @@ interface DrawerProps {
   children?: React.ReactNode;
 }
 
-export default function Drawer({
-  open,
-  setOpen,
-  title = "Settings",
-  children,
-}: DrawerProps) {
+export default function Drawer({ open, setOpen, title = 'Settings', children }: DrawerProps) {
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-60">
       <DialogBackdrop
@@ -51,9 +40,7 @@ export default function Drawer({
               </TransitionChild>
               <div className="flex h-full flex-col overflow-y-auto">
                 <div className="bg-emphasized-background flex items-center justify-between px-4 py-6 sm:block sm:px-6">
-                  <DialogTitle className="text-foreground text-base font-semibold">
-                    {title}
-                  </DialogTitle>
+                  <DialogTitle className="text-foreground text-base font-semibold">{title}</DialogTitle>
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
@@ -63,9 +50,7 @@ export default function Drawer({
                     <XMarkIcon aria-hidden="true" className="size-6" />
                   </button>
                 </div>
-                <div className="bg-background relative flex-1 px-4 py-6 sm:px-6">
-                  {children}
-                </div>
+                <div className="bg-background relative flex-1 px-4 py-6 sm:px-6">{children}</div>
               </div>
             </DialogPanel>
           </div>

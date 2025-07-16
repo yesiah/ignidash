@@ -1,34 +1,29 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { Dialog, DialogPanel } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { FireIcon } from "@heroicons/react/24/solid";
+import { useState } from 'react';
+import Link from 'next/link';
+import { Dialog, DialogPanel } from '@headlessui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { FireIcon } from '@heroicons/react/24/solid';
 
 const navigation = [
-  { name: "How It Works", href: "/#how-it-works" },
-  { name: "FAQ", href: "/#faq" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "Get Started", href: "/dashboard/quick-plan" },
+  { name: 'How It Works', href: '/#how-it-works' },
+  { name: 'FAQ', href: '/#faq' },
+  { name: 'Pricing', href: '/pricing' },
+  { name: 'Get Started', href: '/dashboard/quick-plan' },
 ];
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <header className="absolute inset-x-0 top-0 z-50">
-      <nav
-        aria-label="Global"
-        className="flex items-center justify-between p-6 lg:px-8"
-      >
+      <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Ignidash</span>
             <div className="flex items-center gap-2">
               <FireIcon className="h-8 w-8 text-rose-500" aria-hidden="true" />
-              <span className="text-xl font-semibold text-gray-900">
-                Ignidash
-              </span>
+              <span className="text-xl font-semibold text-gray-900">Ignidash</span>
             </div>
           </Link>
         </div>
@@ -44,11 +39,7 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-sm/6 font-semibold text-gray-900"
-            >
+            <Link key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
               {item.name}
             </Link>
           ))}
@@ -59,31 +50,18 @@ export default function Navbar() {
           </a>
         </div>
       </nav>
-      <Dialog
-        open={mobileMenuOpen}
-        onClose={setMobileMenuOpen}
-        className="lg:hidden"
-      >
+      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Ignidash</span>
               <div className="flex items-center gap-2">
-                <FireIcon
-                  className="h-8 w-8 text-rose-500"
-                  aria-hidden="true"
-                />
-                <span className="text-xl font-semibold text-gray-900">
-                  Ignidash
-                </span>
+                <FireIcon className="h-8 w-8 text-rose-500" aria-hidden="true" />
+                <span className="text-xl font-semibold text-gray-900">Ignidash</span>
               </div>
             </Link>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-            >
+            <button type="button" onClick={() => setMobileMenuOpen(false)} className="-m-2.5 rounded-md p-2.5 text-gray-700">
               <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="size-6" />
             </button>
@@ -102,10 +80,7 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
+                <a href="#" className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                   Log in
                 </a>
               </div>

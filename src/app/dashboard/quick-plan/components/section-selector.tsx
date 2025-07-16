@@ -1,12 +1,9 @@
-"use client";
+'use client';
 
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
-import {
-  CalculatorIcon,
-  PresentationChartLineIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from '@heroicons/react/16/solid';
+import { CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/20/solid';
 
-type ActiveSection = "results" | "your-numbers";
+type ActiveSection = 'results' | 'your-numbers';
 
 interface SectionSelectorProps {
   activeSection: ActiveSection;
@@ -15,25 +12,22 @@ interface SectionSelectorProps {
 
 const tabs = [
   {
-    name: "Your Numbers",
+    name: 'Your Numbers',
     icon: CalculatorIcon,
-    value: "your-numbers" as ActiveSection,
+    value: 'your-numbers' as ActiveSection,
   },
   {
-    name: "Results",
+    name: 'Results',
     icon: PresentationChartLineIcon,
-    value: "results" as ActiveSection,
+    value: 'results' as ActiveSection,
   },
 ];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
-export function SectionSelector({
-  activeSection,
-  setActiveSection,
-}: SectionSelectorProps) {
+export function SectionSelector({ activeSection, setActiveSection }: SectionSelectorProps) {
   return (
     <div className="mb-5">
       <div className="border-foreground/10 grid grid-cols-1 border-b pb-5 sm:hidden">
@@ -68,21 +62,21 @@ export function SectionSelector({
                 <button
                   key={tab.name}
                   onClick={() => setActiveSection(tab.value)}
-                  aria-current={isActive ? "page" : undefined}
+                  aria-current={isActive ? 'page' : undefined}
                   className={classNames(
                     isActive
-                      ? "border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400"
-                      : "border-transparent text-gray-700 hover:text-rose-600 dark:text-gray-300 dark:hover:text-rose-400",
-                    "group focus-visible-default inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium"
+                      ? 'border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400'
+                      : 'border-transparent text-gray-700 hover:text-rose-600 dark:text-gray-300 dark:hover:text-rose-400',
+                    'group focus-visible-default inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium'
                   )}
                 >
                   <tab.icon
                     aria-hidden="true"
                     className={classNames(
                       isActive
-                        ? "text-rose-600 dark:text-rose-400"
-                        : "text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400",
-                      "mr-2 -ml-0.5 size-5"
+                        ? 'text-rose-600 dark:text-rose-400'
+                        : 'text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400',
+                      'mr-2 -ml-0.5 size-5'
                     )}
                   />
                   <span>{tab.name}</span>

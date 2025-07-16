@@ -1,25 +1,17 @@
-import Image from "next/image";
-import { Bars3Icon } from "@heroicons/react/24/outline";
-import type { NavigationItem } from "../navigation";
+import Image from 'next/image';
+import { Bars3Icon } from '@heroicons/react/24/outline';
+import type { NavigationItem } from '../navigation';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
   currentPageTitle: string;
-  currentPageIcon: NavigationItem["icon"];
+  currentPageIcon: NavigationItem['icon'];
 }
 
-export function MobileHeader({
-  onMenuClick,
-  currentPageTitle,
-  currentPageIcon: Icon,
-}: MobileHeaderProps) {
+export function MobileHeader({ onMenuClick, currentPageTitle, currentPageIcon: Icon }: MobileHeaderProps) {
   return (
     <div className="bg-emphasized-background sticky top-0 z-40 flex items-center gap-x-6 px-4 py-4 shadow-xs sm:px-6 lg:hidden">
-      <button
-        type="button"
-        onClick={onMenuClick}
-        className="focus-visible-default -m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300"
-      >
+      <button type="button" onClick={onMenuClick} className="focus-visible-default -m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300">
         <span className="sr-only">Open sidebar</span>
         <Bars3Icon aria-hidden="true" className="size-6" />
       </button>

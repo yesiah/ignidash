@@ -1,13 +1,13 @@
-import { useFIREAnalysis } from "@/lib/stores/quick-plan-store";
-import { formatNumber } from "@/lib/utils";
+import { useFIREAnalysis } from '@/lib/stores/quick-plan-store';
+import { formatNumber } from '@/lib/utils';
 
 export function ResultsOverview() {
   const fireAnalysis = useFIREAnalysis();
 
   const stats = [
-    { name: "FIRE Age", stat: fireAnalysis.fireAge },
-    { name: "Years to FIRE", stat: fireAnalysis.yearsToFIRE },
-    { name: "Required Portfolio Size", stat: fireAnalysis.requiredPortfolio },
+    { name: 'FIRE Age', stat: fireAnalysis.fireAge },
+    { name: 'Years to FIRE', stat: fireAnalysis.yearsToFIRE },
+    { name: 'Required Portfolio Size', stat: fireAnalysis.requiredPortfolio },
   ];
 
   return (
@@ -18,12 +18,8 @@ export function ResultsOverview() {
             key={item.name}
             className="bg-emphasized-background overflow-hidden rounded-lg px-4 py-5 text-center shadow-sm sm:p-6 sm:text-left"
           >
-            <dt className="text-muted-foreground truncate text-sm font-medium">
-              {item.name}
-            </dt>
-            <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
-              {formatNumber(item.stat)}
-            </dd>
+            <dt className="text-muted-foreground truncate text-sm font-medium">{item.name}</dt>
+            <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">{formatNumber(item.stat)}</dd>
           </div>
         ))}
       </dl>

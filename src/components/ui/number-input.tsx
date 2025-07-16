@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Input } from "@/components/catalyst/input";
-import { NumericFormat } from "react-number-format";
+import { useState, useEffect } from 'react';
+import { Input } from '@/components/catalyst/input';
+import { NumericFormat } from 'react-number-format';
 
 interface NumberInputProps {
   id: string;
   label: string;
   value: number | null;
   onBlur: (value: string | null) => { success: boolean; error?: string };
-  inputMode: "numeric" | "decimal";
+  inputMode: 'numeric' | 'decimal';
   placeholder?: string;
   desc?: string | React.ReactNode;
   // Formatting props
@@ -35,23 +35,17 @@ export function NumberInput({
   allowLeadingZeros = false,
 }: NumberInputProps) {
   // Local string state that allows incomplete inputs
-  const [localValue, setLocalValue] = useState<string>(
-    () => value?.toString() ?? ""
-  );
+  const [localValue, setLocalValue] = useState<string>(() => value?.toString() ?? '');
 
   // Local error state for displaying validation errors
   const [error, setError] = useState<string | null>(null);
 
   // Sync external value changes to local state
   useEffect(() => {
-    setLocalValue(value?.toString() ?? "");
+    setLocalValue(value?.toString() ?? '');
   }, [value]);
 
-  const handleValueChange = (values: {
-    value: string;
-    formattedValue: string;
-    floatValue?: number;
-  }) => {
+  const handleValueChange = (values: { value: string; formattedValue: string; floatValue?: number }) => {
     if (error) {
       setError(null);
     }
@@ -61,7 +55,7 @@ export function NumberInput({
   };
 
   const handleBlur = () => {
-    const result = onBlur(localValue !== "" ? localValue : null);
+    const result = onBlur(localValue !== '' ? localValue : null);
     if (!result.success && result.error) {
       setError(result.error);
     }
@@ -69,10 +63,7 @@ export function NumberInput({
 
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
       <NumericFormat
@@ -96,9 +87,7 @@ export function NumberInput({
           return value.length <= 12;
         }}
       />
-      {error && (
-        <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
       {desc && (
         <p id={`${id}-desc`} className="text-muted-foreground mt-2 text-xs">
           {desc}

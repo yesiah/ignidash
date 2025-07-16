@@ -189,7 +189,7 @@ interface QuickPlanState {
   cashReturn: number; // default 1%
 
   // FIRE path specific
-  firePath: "traditional" | "coast" | "barista";
+  firePath: 'traditional' | 'coast' | 'barista';
   targetRetirementAge?: number; // Coast FIRE only
   baristaSideIncome?: number; // Barista FIRE only
 
@@ -200,12 +200,12 @@ interface QuickPlanState {
   safeWithdrawalRate: number; // default 4%
   inflationRate: number; // default 3%
   lifeExpectancy: number; // default 85
-  displayFormat: "today" | "future"; // default 'today'
+  displayFormat: 'today' | 'future'; // default 'today'
 }
 
 interface Event {
   id: string;
-  type: "windfall" | "majorPurchase" | "lifeChange" | "careerBreak";
+  type: 'windfall' | 'majorPurchase' | 'lifeChange' | 'careerBreak';
   amount: number;
   year: number;
   endYear?: number; // only for lifeChange and careerBreak

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { NumberInput } from "@/components/ui/number-input";
-import { SectionHeader } from "@/components/layout/section-header";
-import { DisclosureSection } from "@/components/layout/disclosure-section";
-import InvalidInputError from "@/components/ui/invalid-input-error";
-import { ArrowTrendingUpIcon, ChartPieIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
+import { NumberInput } from '@/components/ui/number-input';
+import { SectionHeader } from '@/components/layout/section-header';
+import { DisclosureSection } from '@/components/layout/disclosure-section';
+import InvalidInputError from '@/components/ui/invalid-input-error';
+import { ArrowTrendingUpIcon, ChartPieIcon } from '@heroicons/react/24/outline';
 import {
   useBasicsData,
   useGrowthRatesData,
@@ -14,7 +14,7 @@ import {
   useUpdateBasics,
   useUpdateGrowthRates,
   useUpdateAllocation,
-} from "@/lib/stores/quick-plan-store";
+} from '@/lib/stores/quick-plan-store';
 
 export function BasicsSection() {
   const basics = useBasicsData();
@@ -45,10 +45,7 @@ export function BasicsSection() {
   }, [allocation]);
 
   // Handler for allocation field changes
-  const handleAllocationBlur = (
-    field: keyof typeof localAllocation,
-    value: unknown
-  ) => {
+  const handleAllocationBlur = (field: keyof typeof localAllocation, value: unknown) => {
     const updatedAllocation = {
       ...localAllocation,
       [field]: value,
@@ -58,7 +55,7 @@ export function BasicsSection() {
 
     const result = updateAllocation(updatedAllocation);
     if (!result.success) {
-      setAllocationError(result.error || "Invalid allocation values");
+      setAllocationError(result.error || 'Invalid allocation values');
     } else {
       setAllocationError(null);
     }
@@ -70,22 +67,17 @@ export function BasicsSection() {
 
   return (
     <div className="border-foreground/10 mb-5 border-b pb-5">
-      <SectionHeader
-        title="Financial Foundation"
-        desc="The core numbers needed to estimate your financial independence timeline."
-      />
+      <SectionHeader title="Financial Foundation" desc="The core numbers needed to estimate your financial independence timeline." />
 
       <Card>
         <form onSubmit={(e) => e.preventDefault()}>
           <fieldset className="space-y-4">
-            <legend className="sr-only">
-              Basic financial information for FIRE calculation
-            </legend>
+            <legend className="sr-only">Basic financial information for FIRE calculation</legend>
             <NumberInput
               id="current-age"
               label="Current Age"
               value={basics.currentAge}
-              onBlur={(value) => updateBasics("currentAge", value)}
+              onBlur={(value) => updateBasics('currentAge', value)}
               inputMode="numeric"
               placeholder="28"
               decimalScale={0}
@@ -94,7 +86,7 @@ export function BasicsSection() {
               id="annual-income"
               label="Net Annual Income"
               value={basics.annualIncome}
-              onBlur={(value) => updateBasics("annualIncome", value)}
+              onBlur={(value) => updateBasics('annualIncome', value)}
               inputMode="decimal"
               placeholder="$85,000"
               prefix="$"
@@ -103,7 +95,7 @@ export function BasicsSection() {
               id="annual-expenses"
               label="Annual Expenses"
               value={basics.annualExpenses}
-              onBlur={(value) => updateBasics("annualExpenses", value)}
+              onBlur={(value) => updateBasics('annualExpenses', value)}
               inputMode="decimal"
               placeholder="$50,000"
               prefix="$"
@@ -112,7 +104,7 @@ export function BasicsSection() {
               id="invested-assets"
               label="Invested Assets"
               value={basics.investedAssets}
-              onBlur={(value) => updateBasics("investedAssets", value)}
+              onBlur={(value) => updateBasics('investedAssets', value)}
               inputMode="decimal"
               placeholder="$75,000"
               prefix="$"
@@ -129,16 +121,12 @@ export function BasicsSection() {
         >
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
-              <legend className="sr-only">
-                Asset allocation percentages for investment portfolio
-              </legend>
+              <legend className="sr-only">Asset allocation percentages for investment portfolio</legend>
               <NumberInput
                 id="stock-allocation"
                 label="Stocks (%)"
                 value={localAllocation.stockAllocation}
-                onBlur={(value) =>
-                  handleAllocationBlur("stockAllocation", value)
-                }
+                onBlur={(value) => handleAllocationBlur('stockAllocation', value)}
                 inputMode="decimal"
                 placeholder="70%"
                 suffix="%"
@@ -147,9 +135,7 @@ export function BasicsSection() {
                 id="bond-allocation"
                 label="Bonds (%)"
                 value={localAllocation.bondAllocation}
-                onBlur={(value) =>
-                  handleAllocationBlur("bondAllocation", value)
-                }
+                onBlur={(value) => handleAllocationBlur('bondAllocation', value)}
                 inputMode="decimal"
                 placeholder="30%"
                 suffix="%"
@@ -158,9 +144,7 @@ export function BasicsSection() {
                 id="cash-allocation"
                 label="Cash (%)"
                 value={localAllocation.cashAllocation}
-                onBlur={(value) =>
-                  handleAllocationBlur("cashAllocation", value)
-                }
+                onBlur={(value) => handleAllocationBlur('cashAllocation', value)}
                 inputMode="decimal"
                 placeholder="0%"
                 suffix="%"
@@ -169,12 +153,7 @@ export function BasicsSection() {
           </form>
         </DisclosureSection>
 
-        {allocationError && (
-          <InvalidInputError
-            title="Asset Allocation Error"
-            description={allocationError}
-          />
-        )}
+        {allocationError && <InvalidInputError title="Asset Allocation Error" description={allocationError} />}
 
         <DisclosureSection
           title="Income & Spending Growth"
@@ -183,14 +162,12 @@ export function BasicsSection() {
         >
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
-              <legend className="sr-only">
-                Income and expense growth rate projections
-              </legend>
+              <legend className="sr-only">Income and expense growth rate projections</legend>
               <NumberInput
                 id="income-growth-rate"
                 label="Income Growth Rate (%)"
                 value={growthRates.incomeGrowthRate}
-                onBlur={(value) => updateGrowthRates("incomeGrowthRate", value)}
+                onBlur={(value) => updateGrowthRates('incomeGrowthRate', value)}
                 inputMode="decimal"
                 placeholder="3%"
                 suffix="%"
@@ -199,9 +176,7 @@ export function BasicsSection() {
                 id="expense-growth-rate"
                 label="Expense Growth Rate (%)"
                 value={growthRates.expenseGrowthRate}
-                onBlur={(value) =>
-                  updateGrowthRates("expenseGrowthRate", value)
-                }
+                onBlur={(value) => updateGrowthRates('expenseGrowthRate', value)}
                 inputMode="decimal"
                 placeholder="3%"
                 suffix="%"

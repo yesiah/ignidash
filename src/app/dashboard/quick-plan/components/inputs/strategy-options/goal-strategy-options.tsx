@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { NumberInput } from "@/components/ui/number-input";
-import { DisclosureSection } from "@/components/layout/disclosure-section";
-import { Coffee, RollerCoaster } from "lucide-react";
+import { NumberInput } from '@/components/ui/number-input';
+import { DisclosureSection } from '@/components/layout/disclosure-section';
+import { Coffee, RollerCoaster } from 'lucide-react';
 
 interface CoastFIREProps {
   targetRetirementAge: number | null;
@@ -12,10 +12,7 @@ interface CoastFIREProps {
   };
 }
 
-export function CoastFIRE({
-  targetRetirementAge,
-  setTargetRetirementAge,
-}: CoastFIREProps) {
+export function CoastFIRE({ targetRetirementAge, setTargetRetirementAge }: CoastFIREProps) {
   return (
     <DisclosureSection
       title="Coast FIRE"
@@ -43,10 +40,7 @@ interface BaristaFIREProps {
   };
 }
 
-export function BaristaFIRE({
-  partTimeIncome,
-  setPartTimeIncome,
-}: BaristaFIREProps) {
+export function BaristaFIRE({ partTimeIncome, setPartTimeIncome }: BaristaFIREProps) {
   return (
     <DisclosureSection
       title="Barista FIRE"

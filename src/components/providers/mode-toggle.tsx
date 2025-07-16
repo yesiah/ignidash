@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useTheme } from "next-themes";
-import { IconButton } from "@/components/ui/icon-button";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import * as React from 'react';
+import { useTheme } from 'next-themes';
+import { IconButton } from '@/components/ui/icon-button';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 export function ModeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -13,7 +13,7 @@ export function ModeToggle() {
     setMounted(true);
   }, []);
 
-  const isDark = resolvedTheme === "dark";
+  const isDark = resolvedTheme === 'dark';
 
   if (!mounted) {
     return null;
@@ -25,20 +25,13 @@ export function ModeToggle() {
 
   if (isDark) {
     icon = SunIcon;
-    label = "Switch to light mode";
-    newTheme = "light";
+    label = 'Switch to light mode';
+    newTheme = 'light';
   } else {
     icon = MoonIcon;
-    label = "Switch to dark mode";
-    newTheme = "dark";
+    label = 'Switch to dark mode';
+    newTheme = 'dark';
   }
 
-  return (
-    <IconButton
-      icon={icon}
-      label={label}
-      onClick={() => setTheme(newTheme)}
-      surfaceColor="emphasized"
-    />
-  );
+  return <IconButton icon={icon} label={label} onClick={() => setTheme(newTheme)} surfaceColor="emphasized" />;
 }
