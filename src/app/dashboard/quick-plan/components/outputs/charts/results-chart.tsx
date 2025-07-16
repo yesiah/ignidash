@@ -76,7 +76,12 @@ export function ResultsChart() {
             </linearGradient>
           </defs>
           <XAxis dataKey="age" interval={isSmallScreen ? 4 : 3} />
-          <YAxis tickFormatter={formatNumber} hide={isSmallScreen} />
+          <YAxis
+            hide={isSmallScreen}
+            tickFormatter={(value: number, _index: number) =>
+              formatNumber(value)
+            }
+          />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip />} />
           <Area
