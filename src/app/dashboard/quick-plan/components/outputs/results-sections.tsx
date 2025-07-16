@@ -12,7 +12,7 @@ export function ResultsSections() {
         <div className="border-foreground/10 mb-5 border-b pb-5">
           <SectionHeader
             title="Overview"
-            desc="Key metrics and accurate projections for your retirement plan."
+            desc="Essential insights and forecasts for your retirement planning."
           />
           <ResultsOverview />
           <Card>
