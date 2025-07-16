@@ -169,6 +169,13 @@ export function BasicsSection() {
           </form>
         </DisclosureSection>
 
+        {allocationError && (
+          <InvalidInputError
+            title="Asset Allocation Error"
+            description={allocationError}
+          />
+        )}
+
         <DisclosureSection
           title="Income & Spending Growth"
           desc="Set expected nominal growth rates for income and expenses over time."
@@ -202,12 +209,6 @@ export function BasicsSection() {
             </fieldset>
           </form>
         </DisclosureSection>
-        {allocationError && (
-          <InvalidInputError
-            title="Asset Allocation Error"
-            description={allocationError}
-          />
-        )}
       </div>
     </div>
   );
