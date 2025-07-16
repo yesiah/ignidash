@@ -10,7 +10,7 @@ export function ResultsSections() {
       <div className="mx-auto max-w-5xl space-y-8">
         <ResultsOverview />
         <Card>
-          <h4 className="text-foreground mb-4 text-lg font-semibold">
+          <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">
             Portfolio Projection
           </h4>
           <ResultsChart />
