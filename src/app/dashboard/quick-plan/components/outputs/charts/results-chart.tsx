@@ -30,7 +30,7 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="text-foreground bg-background rounded-lg border p-3 shadow-md">
+      <div className="text-foreground rounded-lg border bg-rose-100 p-3 shadow-md dark:bg-rose-900">
         <p className="mb-1 text-sm font-medium">Age {label}</p>
         <p className="text-sm">
           Portfolio Value:
