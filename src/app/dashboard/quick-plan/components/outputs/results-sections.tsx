@@ -8,7 +8,7 @@ export function ResultsSections() {
   const isCalculationReady = useIsCalculationReady();
   if (isCalculationReady) {
     return (
-      <div className="mx-auto max-w-4xl space-y-4">
+      <div className="space-y-4">
         <div className="border-foreground/10 mb-5 border-b pb-5">
           <SectionHeader title="Overview" desc="Essential insights and forecasts for your retirement planning." />
           <ResultsOverview />
