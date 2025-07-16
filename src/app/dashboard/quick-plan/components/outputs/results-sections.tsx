@@ -7,7 +7,7 @@ export function ResultsSections() {
   const isCalculationReady = useIsCalculationReady();
   if (isCalculationReady) {
     return (
-      <div className="mx-auto max-w-7xl space-y-8">
+      <div className="mx-auto max-w-5xl space-y-8">
         <ResultsOverview />
         <Card>
           <h4 className="text-foreground mb-4 text-lg font-semibold">
