@@ -36,11 +36,8 @@ export function ResultsChart() {
               <stop offset="95%" stopColor="#e11d48" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="age" className="text-muted-foreground text-xs" />
-          <YAxis
-            tickFormatter={formatNumber}
-            className="text-muted-foreground text-xs"
-          />
+          <XAxis dataKey="age" className="text-xs" />
+          <YAxis tickFormatter={formatNumber} className="text-xs" />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip
             labelFormatter={(age: number) => `Age ${age}`}
