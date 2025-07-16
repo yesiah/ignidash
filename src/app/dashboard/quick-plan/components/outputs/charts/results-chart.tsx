@@ -83,18 +83,18 @@ export function ResultsChart() {
             </linearGradient>
           </defs>
           <XAxis
-            dataKey="age"
-            interval={isSmallScreen ? 4 : 3}
             tick={{ fill: foregroundMutedColor }}
             axisLine={{ stroke: foregroundMutedColor }}
+            dataKey="age"
+            interval={isSmallScreen ? 4 : 3}
           />
           <YAxis
+            tick={{ fill: foregroundMutedColor }}
+            axisLine={{ stroke: foregroundMutedColor }}
             hide={isSmallScreen}
             tickFormatter={(value: number, _index: number) =>
               formatNumber(value)
             }
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={{ stroke: foregroundMutedColor }}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip />} />
