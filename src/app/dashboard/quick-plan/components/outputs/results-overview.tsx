@@ -12,11 +12,15 @@ export function ResultsOverview() {
 
   return (
     <>
-      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {stats.map((item) => (
+      <dl className="mt-5 grid grid-cols-1 sm:grid-cols-3">
+        {stats.map((item, index) => (
           <div
             key={item.name}
-            className="bg-emphasized-background overflow-hidden rounded-lg px-4 py-5 shadow-sm sm:p-6"
+            className={`px-4 py-5 sm:p-6 ${
+              index < stats.length - 1
+                ? "border-foreground/10 border-b sm:border-r sm:border-b-0"
+                : ""
+            }`}
           >
             <dt className="text-muted-foreground truncate text-sm font-medium">
               {item.name}
