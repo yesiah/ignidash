@@ -72,6 +72,8 @@ export function ResultsChart() {
   const foregroundColor = theme === "dark" ? "#f3f4f6" : "#111827"; // gray-100 : gray-900
   const foregroundMutedColor = theme === "dark" ? "#d1d5db" : "#4b5563"; // gray-300 : gray-600
 
+  const interval = isSmallScreen ? 4 : 3;
+
   return (
     <div className="h-64 w-full sm:h-80 lg:h-96">
       <ResponsiveContainer width="100%" height="100%">
@@ -86,7 +88,7 @@ export function ResultsChart() {
             tick={{ fill: foregroundMutedColor }}
             axisLine={{ stroke: foregroundMutedColor }}
             dataKey="age"
-            interval={isSmallScreen ? 4 : 3}
+            interval={interval}
           />
           <YAxis
             tick={{ fill: foregroundMutedColor }}
@@ -109,7 +111,7 @@ export function ResultsChart() {
             <ReferenceLine
               x={fireAnalysis.fireAge}
               stroke={foregroundColor}
-              strokeDasharray="5 5"
+              strokeDasharray="10 5"
               label={{
                 value: "FIRE Age",
                 position: "insideBottomLeft",
