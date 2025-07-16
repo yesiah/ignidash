@@ -113,7 +113,7 @@ export function ResultsChart() {
               stroke={foregroundColor}
               strokeDasharray="10 5"
               label={{
-                value: "FIRE Age",
+                value: "FIRE",
                 position: "insideBottomLeft",
                 fill: foregroundColor,
               }}
