@@ -70,6 +70,7 @@ export function ResultsChart() {
 
   const gridColor = theme === "dark" ? "#4b5563" : "#d1d5db"; // gray-600 : gray-300
   const foregroundColor = theme === "dark" ? "#f3f4f6" : "#111827"; // gray-100 : gray-900
+  const foregroundMutedColor = theme === "dark" ? "#d1d5db" : "#4b5563"; // gray-300 : gray-600
 
   return (
     <div className="h-64 w-full sm:h-80 lg:h-96">
@@ -81,12 +82,19 @@ export function ResultsChart() {
               <stop offset="95%" stopColor="#e11d48" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="age" interval={isSmallScreen ? 4 : 3} />
+          <XAxis
+            dataKey="age"
+            interval={isSmallScreen ? 4 : 3}
+            tick={{ fill: foregroundMutedColor }}
+            axisLine={{ stroke: foregroundMutedColor }}
+          />
           <YAxis
             hide={isSmallScreen}
             tickFormatter={(value: number, _index: number) =>
               formatNumber(value)
             }
+            tick={{ fill: foregroundMutedColor }}
+            axisLine={{ stroke: foregroundMutedColor }}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip />} />
