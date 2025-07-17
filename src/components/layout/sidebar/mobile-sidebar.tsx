@@ -2,6 +2,7 @@
 
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+
 import type { NavigationItem } from '@/lib/navigation';
 
 import MobileSidebarContent from './mobile-sidebar-content';

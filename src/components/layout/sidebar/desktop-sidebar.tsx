@@ -1,4 +1,5 @@
 import Image from 'next/image';
+
 import type { NavigationItem } from '@/lib/navigation';
 
 import SidebarLink from './sidebar-link';
