@@ -1,5 +1,5 @@
 import { FireIcon } from '@heroicons/react/24/solid';
-import { ModeToggle } from '@/components/providers/mode-toggle';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export default function SidebarBrand() {
   return (
