@@ -53,7 +53,7 @@ type UpdateResult = {
  * Helper function to create update actions with validation
  * Reduces code duplication across all update methods
  */
-const createUpdateAction = <T extends keyof QuickPlanInputs>(
+const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
   section: T,
   set: (fn: (state: QuickPlanState) => void) => void,
   get: () => QuickPlanState
@@ -191,11 +191,11 @@ export const useQuickPlanStore = create<QuickPlanState>()(
         ...defaultState,
         actions: {
           // Update actions with validation - using helper to reduce duplication
-          updateBasics: createUpdateAction('basics', set, get),
-          updateGrowthRates: createUpdateAction('growthRates', set, get),
-          updateGoals: createUpdateAction('goals', set, get),
-          updateMarketAssumptions: createUpdateAction('marketAssumptions', set, get),
-          updateRetirementFunding: createUpdateAction('retirementFunding', set, get),
+          updateBasics: createSimpleUpdateAction('basics', set, get),
+          updateGrowthRates: createSimpleUpdateAction('growthRates', set, get),
+          updateGoals: createSimpleUpdateAction('goals', set, get),
+          updateMarketAssumptions: createSimpleUpdateAction('marketAssumptions', set, get),
+          updateRetirementFunding: createSimpleUpdateAction('retirementFunding', set, get),
 
           // Special case for allocation - uses validateSection instead of validateField
           updateAllocation: (data) => {
