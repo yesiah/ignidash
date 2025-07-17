@@ -7,7 +7,7 @@ import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/column-header';
 import { PreferencesDrawer } from './drawers/preferences-drawer';
 
-export function YourNumbersPageHeader() {
+export function NumbersColumnHeader() {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
 
   return (
