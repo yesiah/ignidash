@@ -38,7 +38,6 @@ import {
   validateField,
   validateSection,
 } from '@/lib/schemas/quick-plan-schema';
-import { calculateRequiredPortfolio } from '@/lib/calc/portfolio-calculations';
 import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis, getFIREChartData } from '@/lib/calc/fire-analysis';
 
 // ================================
@@ -75,7 +74,10 @@ const createUpdateAction = <T extends keyof QuickPlanInputs>(
   };
 };
 
-// Store state interface
+// ================================
+// STATE INTERFACE & DEFAULT STATE
+// ================================
+
 interface QuickPlanState {
   inputs: QuickPlanInputs;
 
@@ -104,7 +106,6 @@ interface QuickPlanState {
   };
 }
 
-// Default state
 export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
   inputs: {
     basics: {
@@ -146,6 +147,10 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
   },
 };
 
+// ================================
+// PERSISTENCE UTILITIES
+// ================================
+
 // Clean up existing data if dataStorage preference is "none"
 const cleanupExistingData = () => {
   if (typeof window === 'undefined') return;
@@ -175,7 +180,10 @@ const cleanupExistingData = () => {
 // Run cleanup on initialization
 cleanupExistingData();
 
-// Create the store
+// ================================
+// STORE CREATION
+// ================================
+
 export const useQuickPlanStore = create<QuickPlanState>()(
   devtools(
     persist(
@@ -252,6 +260,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
   )
 );
 
+// ================================
+// DATA SELECTORS
+// ================================
+
 // Data selectors (stable references)
 export const useBasicsData = () => useQuickPlanStore((state) => state.inputs.basics);
 export const useGrowthRatesData = () => useQuickPlanStore((state) => state.inputs.growthRates);
@@ -281,12 +293,6 @@ export const useUpdatePreferences = () => useQuickPlanStore((state) => state.act
 // Utility selectors
 export const useResetStore = () => useQuickPlanStore((state) => state.actions.resetStore);
 export const useResetSection = () => useQuickPlanStore((state) => state.actions.resetSection);
-
-// Portfolio & Asset Calculations
-export const useRequiredPortfolio = () =>
-  useQuickPlanStore((state) =>
-    calculateRequiredPortfolio(state.inputs.goals.retirementExpenses, state.inputs.retirementFunding.safeWithdrawalRate)
-  );
 
 // FIRE Calculations
 export const useYearsToFIRE = () => useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs));
