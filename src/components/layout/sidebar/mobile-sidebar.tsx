@@ -32,7 +32,6 @@ export function MobileSidebar({ open, onClose, navigation }: MobileSidebarProps)
               </button>
             </div>
           </TransitionChild>
-
           <MobileSidebarContent navigation={navigation} onClose={onClose} />
         </DialogPanel>
       </div>
