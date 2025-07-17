@@ -5,7 +5,7 @@ import { CardFormSection } from '@/components/card-form-section';
 import { Button } from '@/components/catalyst/button';
 import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
 
-export function PreferencesDrawer() {
+export default function PreferencesDrawer() {
   const preferences = usePreferencesData();
   const updatePreferences = useUpdatePreferences();
   const resetStore = useResetStore();

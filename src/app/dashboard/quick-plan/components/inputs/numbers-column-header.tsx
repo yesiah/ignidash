@@ -7,7 +7,7 @@ import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/column-header';
 
-import { PreferencesDrawer } from './drawers/preferences-drawer';
+import PreferencesDrawer from './drawers/preferences-drawer';
 
 export default function NumbersColumnHeader() {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
