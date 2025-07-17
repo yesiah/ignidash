@@ -5,7 +5,7 @@ import { IconButton } from '@/components/ui/icon-button';
 import ColumnHeader from '@/components/column-header';
 import { useState, useCallback } from 'react';
 
-export function ResultsPageHeader() {
+export default function ResultsColumnHeader() {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const handleLinkClick = useCallback(() => {

@@ -7,7 +7,7 @@ import { SecondaryColumn } from '@/components/layout/secondary-column';
 
 import { SectionSelector } from './components/section-selector';
 import { ResultsSections } from './components/outputs/results-sections';
-import { ResultsPageHeader } from './components/outputs/results-page-header';
+import ResultsColumnHeader from './components/outputs/results-column-header';
 import { NumbersColumnSections } from './components/inputs/numbers-column-sections';
 import { NumbersColumnHeader } from './components/inputs/numbers-column-header';
 
@@ -24,7 +24,7 @@ export default function QuickPlanPage() {
           {activeSection === 'results' ? <ResultsSections /> : <NumbersColumnSections />}
         </div>
         <div className="hidden xl:block">
-          <ResultsPageHeader />
+          <ResultsColumnHeader />
           <ResultsSections />
         </div>
       </MainArea>
