@@ -30,7 +30,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="relative rounded-md text-white hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-hidden"
+                    className="relative rounded-md text-white hover:text-zinc-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-hidden"
                   >
                     <span className="absolute -inset-2.5" />
                     <span className="sr-only">Close panel</span>
@@ -38,6 +38,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
                   </button>
                 </div>
               </TransitionChild>
+              {/* Checked through here. */}
               <div className="flex h-full flex-col overflow-y-auto">
                 <div className="bg-emphasized-background flex items-center justify-between px-4 py-6 sm:block sm:px-6">
                   <DialogTitle className="text-foreground text-base font-semibold">{title}</DialogTitle>
