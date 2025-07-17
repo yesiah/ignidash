@@ -11,7 +11,7 @@ interface MobileHeaderProps {
 export function MobileHeader({ onMenuClick, currentPageTitle, currentPageIcon: Icon }: MobileHeaderProps) {
   return (
     <div className="bg-emphasized-background sticky top-0 z-40 flex items-center gap-x-6 px-4 py-4 shadow-xs sm:px-6 lg:hidden">
-      <button type="button" onClick={onMenuClick} className="focus-visible-default -m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300">
+      <button type="button" onClick={onMenuClick} className="focus-outline -m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300">
         <span className="sr-only">Open sidebar</span>
         <Bars3Icon aria-hidden="true" className="size-6" />
       </button>
@@ -19,7 +19,7 @@ export function MobileHeader({ onMenuClick, currentPageTitle, currentPageIcon: I
         <Icon aria-hidden="true" className="size-5" />
         {currentPageTitle}
       </div>
-      <a className="focus-visible-default" href="#">
+      <a className="focus-outline" href="#">
         <span className="sr-only">Your profile</span>
         <Image
           alt=""

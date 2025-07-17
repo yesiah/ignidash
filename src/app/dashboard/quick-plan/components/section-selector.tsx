@@ -67,7 +67,7 @@ export function SectionSelector({ activeSection, setActiveSection }: SectionSele
                     isActive
                       ? 'border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400'
                       : 'border-transparent text-gray-700 hover:text-rose-600 dark:text-gray-300 dark:hover:text-rose-400',
-                    'group focus-visible-default inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium'
+                    'group focus-outline inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium'
                   )}
                 >
                   <tab.icon

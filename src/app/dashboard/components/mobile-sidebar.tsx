@@ -26,7 +26,7 @@ export function MobileSidebar({ open, onClose, navigation }: MobileSidebarProps)
         >
           <TransitionChild>
             <div className="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out data-closed:opacity-0">
-              <button type="button" onClick={onClose} className="focus-visible-default -m-2.5 p-2.5">
+              <button type="button" onClick={onClose} className="focus-outline -m-2.5 p-2.5">
                 <span className="sr-only">Close sidebar</span>
                 <XMarkIcon aria-hidden="true" className="size-6 text-white" />
               </button>

@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -54,8 +55,8 @@ input[type='number'] {
 }
 
 @layer utilities {
-  .focus-visible-default {
-    @apply focus-visible:outline-foreground focus-visible:outline-2 focus-visible:outline-offset-2;
+  .focus-outline {
+    @apply focus-visible:outline-primary focus-visible:outline-2 focus-visible:outline-offset-2;
   }
 }
 

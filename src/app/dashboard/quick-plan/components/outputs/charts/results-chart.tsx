@@ -75,6 +75,7 @@ export function ResultsChart() {
             tick={{ fill: foregroundMutedColor }}
             axisLine={false}
             hide={isSmallScreen}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             tickFormatter={(value: number, _index: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />

@@ -44,7 +44,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="focus-visible-default inline-block rounded-md text-gray-700 hover:text-gray-900 sm:hidden dark:text-gray-300 dark:hover:text-gray-100"
+                    className="focus-outline inline-block rounded-md text-gray-700 hover:text-gray-900 sm:hidden dark:text-gray-300 dark:hover:text-gray-100"
                   >
                     <span className="sr-only">Close panel</span>
                     <XMarkIcon aria-hidden="true" className="size-6" />

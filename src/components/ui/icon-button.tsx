@@ -20,7 +20,7 @@ export function IconButton({ icon: Icon, label, onClick, surfaceColor = 'default
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`focus-visible-default rounded-full p-2 ${hoverClasses} border-foreground/10 border`}
+      className={`focus-outline rounded-full p-2 ${hoverClasses} border-foreground/10 border`}
     >
       <Icon aria-hidden="true" className="size-5" />
     </button>
