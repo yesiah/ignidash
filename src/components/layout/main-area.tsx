@@ -2,7 +2,7 @@ interface MainAreaProps {
   children?: React.ReactNode;
 }
 
-export function MainArea({ children }: MainAreaProps) {
+export default function MainArea({ children }: MainAreaProps) {
   return (
     <main className="lg:pl-72">
       <div className="xl:pl-96">
