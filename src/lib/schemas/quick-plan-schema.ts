@@ -1,5 +1,36 @@
+/**
+ * Quick Plan Schema - Financial Planning Form Validation
+ *
+ * This module provides comprehensive Zod schema definitions for financial planning form validation.
+ * It includes schemas for user inputs across multiple categories (basics, growth rates, allocation,
+ * goals, market assumptions, retirement funding) with custom validation logic and error handling.
+ *
+ * Architecture:
+ * - Zod schemas with custom validation rules for financial data
+ * - Helper functions for common field types (currency, percentage, age)
+ * - Type-safe field and section validation utilities
+ * - Comprehensive error formatting for UI display
+ * - Custom refinement validators for complex business rules
+ *
+ * Key Features:
+ * - Number coercion with null/empty handling
+ * - Currency validation with configurable limits
+ * - Percentage validation with custom ranges
+ * - Age validation with customizable messages
+ * - Asset allocation validation ensuring 100% total
+ * - Type-safe validation helpers for form integration
+ */
+
 import { z, ZodNumber } from 'zod';
 
+// ================================
+// HELPER FUNCTIONS
+// ================================
+
+/**
+ * Coerces values to numbers with proper null/empty handling
+ * Converts empty strings, null, and undefined to null for optional fields
+ */
 const coerceNumber = (zodNumber: ZodNumber) => {
   return z.preprocess((val) => {
     if (val === '' || val === null || val === undefined) {
@@ -10,7 +41,10 @@ const coerceNumber = (zodNumber: ZodNumber) => {
   }, zodNumber);
 };
 
-// Helper function to create a currency field that allows zero
+/**
+ * Creates a currency field validator that allows zero values
+ * Used for fields like annual income where zero is valid (unemployed/retired)
+ */
 const currencyFieldAllowsZero = (customMessage?: string) => {
   return coerceNumber(
     z
@@ -20,7 +54,10 @@ const currencyFieldAllowsZero = (customMessage?: string) => {
   );
 };
 
-// Helper function to create a currency field that forbids zero
+/**
+ * Creates a currency field validator that forbids zero values
+ * Used for fields like annual expenses where zero is not realistic
+ */
 const currencyFieldForbidsZero = (customMessage?: string) => {
   return coerceNumber(
     z
@@ -30,7 +67,10 @@ const currencyFieldForbidsZero = (customMessage?: string) => {
   );
 };
 
-// Helper function to create a percentage field with custom range
+/**
+ * Creates a percentage field validator with configurable range
+ * Used for growth rates, allocation percentages, etc.
+ */
 const percentageField = (min = 0, max = 100, fieldName = 'Value') => {
   return coerceNumber(
     z
@@ -40,7 +80,10 @@ const percentageField = (min = 0, max = 100, fieldName = 'Value') => {
   );
 };
 
-// Helper function to create an age field with configurable range
+/**
+ * Creates an age field validator with configurable range and custom messages
+ * Used for current age, retirement age, life expectancy, etc.
+ */
 const ageField = (min = 16, max = 100, customMessages?: { min?: string; max?: string }) => {
   return coerceNumber(
     z
@@ -50,7 +93,14 @@ const ageField = (min = 16, max = 100, customMessages?: { min?: string; max?: st
   );
 };
 
-// Basic financial information schema
+// ================================
+// SCHEMA DEFINITIONS
+// ================================
+
+/**
+ * Basic financial information schema
+ * Core user data including age, income, expenses, and current assets
+ */
 export const basicsSchema = z.object({
   currentAge: ageField(16, 100, {
     min: 'You must be at least 16 years old to use this calculator',
@@ -61,13 +111,19 @@ export const basicsSchema = z.object({
   investedAssets: currencyFieldAllowsZero('Invested assets cannot be negative (enter 0 if starting from scratch)').nullable(),
 });
 
-// Growth rates schema (disclosure section)
+/**
+ * Growth rates schema (disclosure section)
+ * Handles income and expense growth assumptions
+ */
 export const growthRatesSchema = z.object({
   incomeGrowthRate: percentageField(0, 50, 'Income growth rate'),
   expenseGrowthRate: percentageField(0, 10, 'Expense growth rate'),
 });
 
-// Asset allocation schema (disclosure section)
+/**
+ * Asset allocation schema (disclosure section)
+ * Portfolio allocation between stocks, bonds, and cash with 100% total validation
+ */
 export const allocationSchema = z
   .object({
     stockAllocation: percentageField(0, 100, 'Stock allocation'),
@@ -85,7 +141,10 @@ export const allocationSchema = z
     }
   );
 
-// Goals schema
+/**
+ * Goals schema
+ * Retirement planning targets and expected income sources
+ */
 export const goalsSchema = z.object({
   retirementExpenses: currencyFieldForbidsZero('Retirement expenses are required and must be greater than 0').nullable(),
   targetRetirementAge: ageField(16, 100, {
@@ -95,7 +154,10 @@ export const goalsSchema = z.object({
   partTimeIncome: currencyFieldAllowsZero('Part-time income cannot be negative (enter 0 if no part-time work planned)').nullable(),
 });
 
-// Market assumptions schema (drawer)
+/**
+ * Market assumptions schema
+ * Expected returns for different asset classes and inflation rate
+ */
 export const marketAssumptionsSchema = z.object({
   stockReturn: percentageField(0, 20, 'Stock return'),
   bondReturn: percentageField(0, 15, 'Bond return'),
@@ -103,7 +165,10 @@ export const marketAssumptionsSchema = z.object({
   inflationRate: percentageField(0, 8, 'Inflation rate'),
 });
 
-// Retirement funding schema (drawer)
+/**
+ * Retirement funding schema
+ * Advanced retirement planning parameters including withdrawal rates and tax considerations
+ */
 export const retirementFundingSchema = z.object({
   safeWithdrawalRate: percentageField(2, 6, 'Safe withdrawal rate'),
   retirementIncome: currencyFieldAllowsZero(
@@ -116,7 +181,10 @@ export const retirementFundingSchema = z.object({
   effectiveTaxRate: percentageField(0, 50, 'Effective tax rate'),
 });
 
-// Combined schema for all inputs
+/**
+ * Combined schema for all inputs
+ * Master schema that includes all sections of the financial planning form
+ */
 export const quickPlanSchema = z.object({
   basics: basicsSchema,
   growthRates: growthRatesSchema,
@@ -126,7 +194,14 @@ export const quickPlanSchema = z.object({
   retirementFunding: retirementFundingSchema,
 });
 
-// Type inference
+// ================================
+// TYPE DEFINITIONS
+// ================================
+
+/**
+ * TypeScript type definitions inferred from Zod schemas
+ * Provides type safety for all financial planning form data
+ */
 export type QuickPlanInputs = z.infer<typeof quickPlanSchema>;
 export type BasicsInputs = z.infer<typeof basicsSchema>;
 export type GrowthRatesInputs = z.infer<typeof growthRatesSchema>;
@@ -135,7 +210,14 @@ export type GoalsInputs = z.infer<typeof goalsSchema>;
 export type MarketAssumptionsInputs = z.infer<typeof marketAssumptionsSchema>;
 export type RetirementFundingInputs = z.infer<typeof retirementFundingSchema>;
 
-// Helper function to format Zod errors for UI display
+// ================================
+// UTILITY FUNCTIONS
+// ================================
+
+/**
+ * Formats Zod validation errors for UI display
+ * Converts Zod error objects into a flat record of field paths to error messages
+ */
 export const formatZodErrors = (error: z.ZodError) => {
   const formatted: Record<string, string> = {};
 
@@ -147,10 +229,16 @@ export const formatZodErrors = (error: z.ZodError) => {
   return formatted;
 };
 
-// Type to ensure section exists in both QuickPlanInputs and quickPlanSchema.shape
+/**
+ * Type constraint to ensure section exists in both QuickPlanInputs and quickPlanSchema.shape
+ * Provides type safety for validation functions
+ */
 type ValidSection = keyof QuickPlanInputs & keyof typeof quickPlanSchema.shape;
 
-// Helper to validate a single field within a section
+/**
+ * Validates a single field within a section
+ * Used for real-time form validation as users type
+ */
 export const validateField = <T extends ValidSection>(
   section: T,
   field: keyof QuickPlanInputs[T],
@@ -188,7 +276,10 @@ export const validateField = <T extends ValidSection>(
   };
 };
 
-// Helper to validate an entire section
+/**
+ * Validates an entire section of the form
+ * Used for section-level validation and form submission
+ */
 export const validateSection = <T extends ValidSection>(
   section: T,
   sectionData: unknown
