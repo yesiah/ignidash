@@ -16,12 +16,22 @@ type ActiveSection = 'results' | 'your-numbers';
 export default function QuickPlanPage() {
   const [activeSection, setActiveSection] = useState<ActiveSection>('your-numbers');
 
+  let activeSectionComponent;
+  switch (activeSection) {
+    case 'results':
+      activeSectionComponent = <ResultsSections />;
+      break;
+    case 'your-numbers':
+      activeSectionComponent = <NumbersColumnSections />;
+      break;
+  }
+
   return (
     <>
       <MainArea>
         <div className="block xl:hidden">
           <SectionSelector activeSection={activeSection} setActiveSection={setActiveSection} />
-          {activeSection === 'results' ? <ResultsSections /> : <NumbersColumnSections />}
+          {activeSectionComponent}
         </div>
         <div className="hidden xl:block">
           <ResultsColumnHeader />
