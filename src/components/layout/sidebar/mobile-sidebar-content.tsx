@@ -8,7 +8,7 @@ interface MobileSidebarContentProps {
   onClose: () => void;
 }
 
-export function MobileSidebarContent({ navigation, onClose }: MobileSidebarContentProps) {
+export default function MobileSidebarContent({ navigation, onClose }: MobileSidebarContentProps) {
   return (
     <div className="bg-emphasized-background border-border flex grow flex-col gap-y-5 overflow-y-auto border-r px-6 pb-2">
       <SidebarBrand />

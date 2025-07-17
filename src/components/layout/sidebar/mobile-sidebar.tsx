@@ -2,8 +2,9 @@
 
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { MobileSidebarContent } from './mobile-sidebar-content';
 import type { NavigationItem } from '@/lib/navigation';
+
+import MobileSidebarContent from './mobile-sidebar-content';
 
 interface MobileSidebarProps {
   open: boolean;
@@ -11,7 +12,7 @@ interface MobileSidebarProps {
   navigation: NavigationItem[];
 }
 
-export function MobileSidebar({ open, onClose, navigation }: MobileSidebarProps) {
+export default function MobileSidebar({ open, onClose, navigation }: MobileSidebarProps) {
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50 lg:hidden">
       <DialogBackdrop
