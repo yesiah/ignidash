@@ -1,4 +1,4 @@
-import { BoltIcon, ChartBarIcon, LightBulbIcon, MagnifyingGlassIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { BoltIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
 
 export interface NavigationItem {
   name: string;
@@ -14,14 +14,7 @@ export interface NavigationItem {
 
 export const navigationItems: Omit<NavigationItem, 'current'>[] = [
   { name: 'Quick Plan', href: '/dashboard/quick-plan', icon: BoltIcon },
-  {
-    name: 'Deep Dive',
-    href: '/dashboard/deep-dive',
-    icon: MagnifyingGlassIcon,
-  },
-  { name: 'Insights', href: '/dashboard/insights', icon: LightBulbIcon },
-  { name: 'Explore', href: '/dashboard/explore', icon: ChartBarIcon },
-  { name: 'Copilot', href: '/dashboard/copilot', icon: SparklesIcon },
+  { name: 'Pro', href: '/dashboard/pro', icon: RocketLaunchIcon },
 ];
 
 export function getNavigation(currentPath: string): NavigationItem[] {
@@ -40,37 +33,3 @@ export function getCurrentPageIcon(currentPath: string): NavigationItem['icon'] 
   const item = navigationItems.find((item) => item.href === currentPath);
   return item?.icon || BoltIcon;
 }
-
-// Deprecated: Use getNavigation instead
-export const navigation: NavigationItem[] = [
-  {
-    name: 'Quick Plan',
-    href: '/dashboard/quick-plan',
-    icon: BoltIcon,
-    current: true,
-  },
-  {
-    name: 'Deep Dive',
-    href: '/dashboard/deep-dive',
-    icon: MagnifyingGlassIcon,
-    current: false,
-  },
-  {
-    name: 'Insights',
-    href: '/dashboard/insights',
-    icon: LightBulbIcon,
-    current: false,
-  },
-  {
-    name: 'Explore',
-    href: '/dashboard/explore',
-    icon: ChartBarIcon,
-    current: false,
-  },
-  {
-    name: 'Copilot',
-    href: '/dashboard/copilot',
-    icon: SparklesIcon,
-    current: false,
-  },
-];
