@@ -1,9 +1,10 @@
 'use client';
 
-import { PresentationChartLineIcon, LinkIcon, CheckIcon } from '@heroicons/react/24/outline';
-import { IconButton } from '@/components/ui/icon-button';
-import ColumnHeader from '@/components/column-header';
 import { useState, useCallback } from 'react';
+import { PresentationChartLineIcon, LinkIcon, CheckIcon } from '@heroicons/react/24/outline';
+
+import IconButton from '@/components/ui/icon-button';
+import ColumnHeader from '@/components/column-header';
 
 export default function ResultsColumnHeader() {
   const [isLinkCopied, setIsLinkCopied] = useState(false);

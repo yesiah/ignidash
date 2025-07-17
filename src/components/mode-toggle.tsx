@@ -2,10 +2,11 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
-import { IconButton } from '@/components/ui/icon-button';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
-export function ModeToggle() {
+import IconButton from '@/components/ui/icon-button';
+
+export default function ModeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 

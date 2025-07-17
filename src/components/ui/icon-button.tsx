@@ -12,7 +12,7 @@ interface IconButtonProps {
   surfaceColor?: SurfaceColor;
 }
 
-export function IconButton({ icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
+export default function IconButton({ icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
   const hoverClasses = surfaceColor === 'emphasized' ? 'hover:bg-background' : 'hover:bg-emphasized-background';
 
   return (
