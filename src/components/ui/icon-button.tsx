@@ -22,7 +22,7 @@ export default function IconButton({ icon: Icon, label, onClick, surfaceColor = 
       onClick={onClick}
       className={`focus-outline rounded-full p-2 ${hoverClasses} border-border border`}
     >
-      <Icon aria-hidden="true" className="size-5" />
+      <Icon aria-hidden="true" className="h-5 w-5" />
     </button>
   );
 }
