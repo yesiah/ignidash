@@ -1,10 +1,10 @@
 'use client';
 
-import { SelectInput } from '@/components/ui/select-input';
 import { Button } from '@/components/catalyst/button';
 import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/section-header';
 import Card from '@/components/ui/card';
+import SelectInput from '@/components/ui/select-input';
 
 export default function PreferencesDrawer() {
   const preferences = usePreferencesData();

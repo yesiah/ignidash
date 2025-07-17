@@ -11,7 +11,7 @@ interface SelectInputProps {
   desc?: string | React.ReactNode;
 }
 
-export function SelectInput({ id, label, value, onChange, options, desc }: SelectInputProps) {
+export default function SelectInput({ id, label, value, onChange, options, desc }: SelectInputProps) {
   return (
     <div>
       <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
