@@ -91,7 +91,7 @@ export default function Footer() {
             </a>
           ))}
         </div>
-        <p className="mt-10 text-center text-sm/6 text-gray-600">&copy; 2024 Schelske Dev Co. LLC. All rights reserved.</p>
+        <p className="mt-10 text-center text-sm/6 text-gray-600">&copy; 2025 Schelske Dev Co. LLC. All rights reserved.</p>
       </div>
     </footer>
   );
