@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import type { NavigationItem } from '../../../app/dashboard/navigation';
+import type { NavigationItem } from '@/lib/navigation';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
