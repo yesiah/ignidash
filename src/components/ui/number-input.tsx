@@ -73,6 +73,7 @@ export function NumberInput({
         onBlur={handleBlur}
         placeholder={placeholder}
         inputMode={inputMode}
+        autoComplete="off"
         thousandSeparator=","
         decimalSeparator="."
         prefix={prefix}
