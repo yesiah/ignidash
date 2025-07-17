@@ -13,7 +13,7 @@ export function YourNumbersPageHeader() {
   return (
     <>
       <ColumnHeader
-        title="Your Numbers"
+        title="Numbers"
         icon={CalculatorIcon}
         iconButton={<IconButton icon={Cog6ToothIcon} label="Preferences" onClick={() => setPreferencesOpen(true)} />}
       />
