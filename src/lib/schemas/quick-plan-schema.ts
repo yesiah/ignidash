@@ -30,6 +30,9 @@ import { z, ZodNumber } from 'zod';
 /**
  * Coerces values to numbers with proper null/empty handling
  * Converts empty strings, null, and undefined to null for optional fields
+ *
+ * @param zodNumber - The Zod number schema to apply after coercion
+ * @returns A preprocessed Zod schema that handles null/empty values
  */
 const coerceNumber = (zodNumber: ZodNumber) => {
   return z.preprocess((val) => {
@@ -44,6 +47,9 @@ const coerceNumber = (zodNumber: ZodNumber) => {
 /**
  * Creates a currency field validator that allows zero values
  * Used for fields like annual income where zero is valid (unemployed/retired)
+ *
+ * @param customMessage - Optional custom error message for validation failures
+ * @returns Zod schema for currency fields that accepts zero and positive values
  */
 const currencyFieldAllowsZero = (customMessage?: string) => {
   return coerceNumber(
@@ -57,6 +63,9 @@ const currencyFieldAllowsZero = (customMessage?: string) => {
 /**
  * Creates a currency field validator that forbids zero values
  * Used for fields like annual expenses where zero is not realistic
+ *
+ * @param customMessage - Optional custom error message for validation failures
+ * @returns Zod schema for currency fields that requires positive values only
  */
 const currencyFieldForbidsZero = (customMessage?: string) => {
   return coerceNumber(
@@ -70,6 +79,11 @@ const currencyFieldForbidsZero = (customMessage?: string) => {
 /**
  * Creates a percentage field validator with configurable range
  * Used for growth rates, allocation percentages, etc.
+ *
+ * @param min - Minimum allowed percentage value (default: 0)
+ * @param max - Maximum allowed percentage value (default: 100)
+ * @param fieldName - Name of the field for error messages (default: "Value")
+ * @returns Zod schema for percentage fields with specified range
  */
 const percentageField = (min = 0, max = 100, fieldName = 'Value') => {
   return coerceNumber(
@@ -83,6 +97,11 @@ const percentageField = (min = 0, max = 100, fieldName = 'Value') => {
 /**
  * Creates an age field validator with configurable range and custom messages
  * Used for current age, retirement age, life expectancy, etc.
+ *
+ * @param min - Minimum allowed age value (default: 16)
+ * @param max - Maximum allowed age value (default: 100)
+ * @param customMessages - Optional custom error messages for min/max validation
+ * @returns Zod schema for age fields with specified range and messages
  */
 const ageField = (min = 16, max = 100, customMessages?: { min?: string; max?: string }) => {
   return coerceNumber(
@@ -217,6 +236,18 @@ export type RetirementFundingInputs = z.infer<typeof retirementFundingSchema>;
 /**
  * Formats Zod validation errors for UI display
  * Converts Zod error objects into a flat record of field paths to error messages
+ *
+ * @param error - The Zod error object to format
+ * @returns A flat object mapping field paths to error messages
+ *
+ * @example
+ * ```typescript
+ * const result = schema.safeParse(data);
+ * if (!result.success) {
+ *   const errors = formatZodErrors(result.error);
+ *   // errors = { "basics.currentAge": "Age must be at least 16" }
+ * }
+ * ```
  */
 export const formatZodErrors = (error: z.ZodError) => {
   const formatted: Record<string, string> = {};
@@ -238,6 +269,22 @@ type ValidSection = keyof QuickPlanInputs & keyof typeof quickPlanSchema.shape;
 /**
  * Validates a single field within a section
  * Used for real-time form validation as users type
+ *
+ * @param section - The section name (e.g., 'basics', 'goals')
+ * @param field - The field name within the section
+ * @param value - The new value to validate
+ * @param currentData - The current section data
+ * @returns Validation result with success status, validated data, or error message
+ *
+ * @example
+ * ```typescript
+ * const result = validateField('basics', 'currentAge', 25, currentBasicsData);
+ * if (result.valid) {
+ *   // Use result.data for the validated section data
+ * } else {
+ *   // Display result.error to the user
+ * }
+ * ```
  */
 export const validateField = <T extends ValidSection>(
   section: T,
@@ -279,6 +326,20 @@ export const validateField = <T extends ValidSection>(
 /**
  * Validates an entire section of the form
  * Used for section-level validation and form submission
+ *
+ * @param section - The section name (e.g., 'basics', 'goals')
+ * @param sectionData - The complete section data to validate
+ * @returns Validation result with success status, validated data, or error message
+ *
+ * @example
+ * ```typescript
+ * const result = validateSection('allocation', allocationData);
+ * if (result.valid) {
+ *   // Section is valid, use result.data
+ * } else {
+ *   // Show result.error (e.g., "Asset allocation must total 100%")
+ * }
+ * ```
  */
 export const validateSection = <T extends ValidSection>(
   section: T,

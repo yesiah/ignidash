@@ -52,6 +52,11 @@ type UpdateResult = {
 /**
  * Helper function to create update actions with validation
  * Reduces code duplication across all update methods
+ *
+ * @param section - The section name for validation
+ * @param set - Zustand set function for state updates
+ * @param get - Zustand get function for current state access
+ * @returns Update function that validates and updates a single field
  */
 const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
   section: T,
@@ -87,7 +92,7 @@ interface QuickPlanState {
   };
 
   actions: {
-    // Basic input actions with validation and error reporting
+    /** Basic input actions with validation and error reporting */
     updateBasics: (field: keyof BasicsInputs, value: unknown) => UpdateResult;
     updateGrowthRates: (field: keyof GrowthRatesInputs, value: unknown) => UpdateResult;
     updateAllocation: (data: {
@@ -151,7 +156,10 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
 // PERSISTENCE UTILITIES
 // ================================
 
-// Clean up existing data if dataStorage preference is "none"
+/**
+ * Clean up existing data if dataStorage preference is "none"
+ * Removes sensitive user data from localStorage while preserving preferences
+ */
 const cleanupExistingData = () => {
   if (typeof window === 'undefined') return;
 
@@ -177,7 +185,7 @@ const cleanupExistingData = () => {
   }
 };
 
-// Run cleanup on initialization
+/** Run cleanup on initialization */
 cleanupExistingData();
 
 // ================================
@@ -213,7 +221,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             };
           },
 
-          // Preferences actions
+          /** Preferences actions */
           updatePreferences: (field, value) =>
             set((state) => {
               if (field === 'displayFormat') {
@@ -223,7 +231,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
               }
             }),
 
-          // Utility actions
+          /** Utility actions */
           resetStore: () =>
             set((state) => {
               Object.assign(state.inputs, defaultState.inputs);
@@ -264,7 +272,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 // DATA SELECTORS
 // ================================
 
-// Data selectors (stable references)
+/**
+ * Data selectors (stable references)
+ * These hooks provide direct access to specific sections of the form data
+ */
 export const useBasicsData = () => useQuickPlanStore((state) => state.inputs.basics);
 export const useGrowthRatesData = () => useQuickPlanStore((state) => state.inputs.growthRates);
 export const useAllocationData = () => useQuickPlanStore((state) => state.inputs.allocation);
@@ -272,13 +283,19 @@ export const useGoalsData = () => useQuickPlanStore((state) => state.inputs.goal
 export const useMarketAssumptionsData = () => useQuickPlanStore((state) => state.inputs.marketAssumptions);
 export const useRetirementFundingData = () => useQuickPlanStore((state) => state.inputs.retirementFunding);
 
-// Individual field selectors for performance optimization
+/**
+ * Individual field selectors for performance optimization
+ * Use these for components that only need specific fields to minimize re-renders
+ */
 export const useCurrentAge = () => useQuickPlanStore((state) => state.inputs.basics.currentAge);
 export const useAnnualIncome = () => useQuickPlanStore((state) => state.inputs.basics.annualIncome);
 export const useAnnualExpenses = () => useQuickPlanStore((state) => state.inputs.basics.annualExpenses);
 export const useInvestedAssets = () => useQuickPlanStore((state) => state.inputs.basics.investedAssets);
 
-// Action selectors
+/**
+ * Action selectors
+ * These hooks provide access to update functions with built-in validation
+ */
 export const useUpdateBasics = () => useQuickPlanStore((state) => state.actions.updateBasics);
 export const useUpdateGrowthRates = () => useQuickPlanStore((state) => state.actions.updateGrowthRates);
 export const useUpdateAllocation = () => useQuickPlanStore((state) => state.actions.updateAllocation);
@@ -286,15 +303,24 @@ export const useUpdateGoals = () => useQuickPlanStore((state) => state.actions.u
 export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
 export const useUpdateRetirementFunding = () => useQuickPlanStore((state) => state.actions.updateRetirementFunding);
 
-// Preferences selectors
+/**
+ * Preferences selectors
+ * These hooks manage user preferences and settings
+ */
 export const usePreferencesData = () => useQuickPlanStore((state) => state.preferences);
 export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
 
-// Utility selectors
+/**
+ * Utility selectors
+ * These hooks provide access to store management functions
+ */
 export const useResetStore = () => useQuickPlanStore((state) => state.actions.resetStore);
 export const useResetSection = () => useQuickPlanStore((state) => state.actions.resetSection);
 
-// FIRE Calculations
+/**
+ * FIRE Calculations
+ * These hooks provide computed values for Financial Independence, Retire Early analysis
+ */
 export const useYearsToFIRE = () => useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs));
 export const useFIREAge = () => useQuickPlanStore((state) => calculateFIREAge(state.inputs));
 export const useFIREAnalysis = () => useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs)));
@@ -303,7 +329,10 @@ export const useFIREChartData = () => {
   return useMemo(() => getFIREChartData(inputs), [inputs]);
 };
 
-// Validation State Selectors
+/**
+ * Validation State Selectors
+ * These hooks check if sections or the entire form have valid data for calculations
+ */
 export const useBasicsValidation = () =>
   useQuickPlanStore(
     (state) =>
