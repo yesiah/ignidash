@@ -35,12 +35,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -62,5 +56,11 @@ input[type='number'] {
 @layer utilities {
   .focus-visible-default {
     @apply focus-visible:outline-foreground focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
