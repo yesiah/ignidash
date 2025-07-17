@@ -21,7 +21,7 @@ const tiers = [
     name: 'Pro + AI',
     id: 'tier-pro-ai',
     href: '#',
-    priceMonthly: '$17',
+    priceMonthly: '$13',
     description: 'Get AI-powered insights and guidance for confident decisions.',
     features: [
       'Everything in Pro',
