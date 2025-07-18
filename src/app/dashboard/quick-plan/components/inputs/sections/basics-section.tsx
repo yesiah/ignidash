@@ -33,9 +33,6 @@ export function BasicsSection() {
     cashAllocation: allocation.cashAllocation,
   });
 
-  // Error state for allocation validation
-  const [allocationError, setAllocationError] = useState<string | null>(null);
-
   // Sync store changes to local state
   useEffect(() => {
     setLocalAllocation({
@@ -44,6 +41,9 @@ export function BasicsSection() {
       cashAllocation: allocation.cashAllocation,
     });
   }, [allocation]);
+
+  // Error state for allocation validation
+  const [allocationError, setAllocationError] = useState<string | null>(null);
 
   // Handler for allocation field changes
   const handleAllocationBlur = (field: keyof typeof localAllocation, value: unknown) => {
