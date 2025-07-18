@@ -59,7 +59,7 @@ export default function NumberInput({
 
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label htmlFor={id} className="block text-sm/6 font-medium">
         {label}
       </label>
       <NumericFormat
