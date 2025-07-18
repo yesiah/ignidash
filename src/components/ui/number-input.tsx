@@ -80,10 +80,7 @@ export default function NumberInput({
         customInput={Input}
         aria-invalid={!!error}
         aria-describedby={desc ? `${id}-desc` : undefined}
-        isAllowed={(values) => {
-          const { value } = values;
-          return value.length <= 12;
-        }}
+        isAllowed={({ value }) => value.length <= 12}
       />
       {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
       {desc && (
