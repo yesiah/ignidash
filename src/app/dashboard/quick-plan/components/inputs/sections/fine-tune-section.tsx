@@ -4,8 +4,8 @@ import { ChartBarIcon, ClockIcon } from '@heroicons/react/24/outline';
 
 import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
-import SectionHeader from '@/components/section-header';
-import DisclosureSection from '@/components/disclosure-card';
+import SectionHeader from '@/components/ui/section-header';
+import DisclosureSection from '@/components/ui/disclosure-card';
 import {
   useMarketAssumptionsData,
   useUpdateMarketAssumptions,

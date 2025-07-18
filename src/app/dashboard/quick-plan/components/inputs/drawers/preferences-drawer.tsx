@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/catalyst/button';
 import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
-import SectionHeader from '@/components/section-header';
+import SectionHeader from '@/components/ui/section-header';
 import Card from '@/components/ui/card';
 import SelectMenu from '@/components/ui/select-menu';
 
