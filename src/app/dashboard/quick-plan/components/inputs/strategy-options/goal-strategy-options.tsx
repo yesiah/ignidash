@@ -14,11 +14,7 @@ interface CoastFIREProps {
 
 export function CoastFIRE({ targetRetirementAge, setTargetRetirementAge }: CoastFIREProps) {
   return (
-    <DisclosureSection
-      title="Coast FIRE"
-      desc="Front-load savings, then work just enough to cover living expenses."
-      icon={<RollerCoaster className="h-5 w-5" aria-hidden="true" />}
-    >
+    <DisclosureSection title="Coast FIRE" desc="Front-load savings, then work just enough to cover living expenses." icon={RollerCoaster}>
       <NumberInput
         id="target-retirement-age"
         label="Target Retirement Age"
@@ -42,11 +38,7 @@ interface BaristaFIREProps {
 
 export function BaristaFIRE({ partTimeIncome, setPartTimeIncome }: BaristaFIREProps) {
   return (
-    <DisclosureSection
-      title="Barista FIRE"
-      desc="Work part-time in enjoyable jobs while investments cover the rest."
-      icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
-    >
+    <DisclosureSection title="Barista FIRE" desc="Work part-time in enjoyable jobs while investments cover the rest." icon={Coffee}>
       <NumberInput
         id="part-time-income"
         label="Part-time Annual Income"

@@ -6,26 +6,29 @@ import { cn } from '@/lib/utils';
 
 interface DisclosureSectionProps {
   title: string;
-  desc?: string;
-  icon: React.ReactNode;
+  desc: string;
+  icon: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
+      title?: string;
+      titleId?: string;
+    } & React.RefAttributes<SVGSVGElement>
+  >;
   children: React.ReactNode;
-  className?: string;
 }
 
-export default function DisclosureSection({ title, desc, icon, children, className }: DisclosureSectionProps) {
+export default function DisclosureSection({ title, desc, icon: Icon, children }: DisclosureSectionProps) {
   return (
     <div className="bg-emphasized-background text-foreground hover:ring-foreground/10 rounded-lg text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset">
       <Disclosure>
         <DisclosureButton
           className={cn(
-            'group data-open:border-foreground/10 focus-outline flex w-full items-center justify-between gap-2 p-4 data-open:border-b data-open:pb-5',
-            className ?? ''
+            'group data-open:border-foreground/10 focus-outline flex w-full items-center justify-between gap-2 p-4 data-open:border-b data-open:pb-5'
           )}
         >
           <div className="flex w-full items-center justify-between text-left">
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                {icon}
+                <Icon className="text-primary h-5 w-5" aria-hidden="true" />
                 <span>{title}</span>
               </div>
               {desc && <p className="text-muted-foreground mt-2 block text-xs">{desc}</p>}

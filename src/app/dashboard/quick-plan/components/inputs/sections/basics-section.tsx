@@ -119,7 +119,7 @@ export function BasicsSection() {
         <DisclosureSection
           title="Investment Portfolio"
           desc="Configure asset allocation across stocks, bonds, and cash."
-          icon={<ChartPieIcon className="h-5 w-5" aria-hidden="true" />}
+          icon={ChartPieIcon}
         >
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
@@ -160,7 +160,7 @@ export function BasicsSection() {
         <DisclosureSection
           title="Income & Spending Growth"
           desc="Set expected nominal growth rates for income and expenses over time."
-          icon={<ArrowTrendingUpIcon className="h-5 w-5" aria-hidden="true" />}
+          icon={ArrowTrendingUpIcon}
         >
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
