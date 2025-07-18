@@ -12,7 +12,7 @@ interface DisclosureSectionProps {
   className?: string;
 }
 
-export function DisclosureSection({ title, desc, icon, children, className }: DisclosureSectionProps) {
+export default function DisclosureSection({ title, desc, icon, children, className }: DisclosureSectionProps) {
   return (
     <div className="bg-emphasized-background text-foreground hover:ring-foreground/10 rounded-lg text-sm font-medium shadow-sm hover:ring-1 hover:ring-inset">
       <Disclosure>
