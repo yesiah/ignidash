@@ -115,7 +115,7 @@ export function BasicsSection() {
         </form>
       </Card>
 
-      <div className="mt-4 space-y-4">
+      <div className="space-y-4">
         <DisclosureSection
           title="Investment Portfolio"
           desc="Configure asset allocation across stocks, bonds, and cash."
