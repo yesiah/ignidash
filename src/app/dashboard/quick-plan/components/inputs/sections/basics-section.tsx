@@ -155,7 +155,7 @@ export function BasicsSection() {
           </form>
         </DisclosureSection>
 
-        {allocationError && <InvalidInputError title="Asset Allocation Error" description={allocationError} />}
+        {allocationError && <InvalidInputError title="Asset Allocation Error" desc={allocationError} />}
 
         <DisclosureSection
           title="Income & Spending Growth"
