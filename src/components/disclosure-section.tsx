@@ -18,7 +18,7 @@ export default function DisclosureSection({ title, desc, icon: Icon, children }:
       <DisclosureButton className="group data-open:border-border focus-outline flex w-full items-center justify-between p-4 data-open:border-b data-open:pb-5">
         <div className="flex w-full items-center justify-between text-left">
           <div className="flex flex-col">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 font-medium">
               <Icon className="text-primary h-5 w-5" aria-hidden="true" />
               <span>{title}</span>
             </div>
