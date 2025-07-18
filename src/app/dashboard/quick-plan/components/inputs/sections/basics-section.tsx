@@ -68,8 +68,7 @@ export function BasicsSection() {
 
   return (
     <div className="border-border mb-5 border-b pb-5">
-      <SectionHeader title="Financial Foundation" desc="The core numbers needed to estimate your financial independence timeline." />
-
+      <SectionHeader title="Financial Foundation" desc="Enter the core numbers needed to estimate your financial independence timeline." />
       <Card>
         <form onSubmit={(e) => e.preventDefault()}>
           <fieldset className="space-y-4">
