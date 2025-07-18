@@ -5,7 +5,7 @@ import { ChartBarIcon, ClockIcon } from '@heroicons/react/24/outline';
 import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
-import DisclosureSection from '@/components/ui/disclosure-card';
+import DisclosureCard from '@/components/ui/disclosure-card';
 import {
   useMarketAssumptionsData,
   useUpdateMarketAssumptions,
@@ -127,7 +127,7 @@ export default function FineTuneSection() {
           </form>
         </Card>
         <div className="space-y-4">
-          <DisclosureSection title="Expected Returns" desc={getExpectedReturnsDescription()} icon={ChartBarIcon}>
+          <DisclosureCard title="Expected Returns" desc={getExpectedReturnsDescription()} icon={ChartBarIcon}>
             <form onSubmit={(e) => e.preventDefault()}>
               <fieldset className="space-y-4">
                 <legend className="sr-only">Expected investment returns configuration</legend>
@@ -160,8 +160,8 @@ export default function FineTuneSection() {
                 />
               </fieldset>
             </form>
-          </DisclosureSection>
-          <DisclosureSection
+          </DisclosureCard>
+          <DisclosureCard
             title="Cash Flow"
             desc="Portfolio withdrawals and income sources that will cover your retirement expenses."
             icon={ChartBarIcon}
@@ -191,8 +191,8 @@ export default function FineTuneSection() {
                 />
               </fieldset>
             </form>
-          </DisclosureSection>
-          <DisclosureSection
+          </DisclosureCard>
+          <DisclosureCard
             title="Death & Taxes"
             desc="Life expectancy and tax assumptions that affect retirement planning."
             icon={ClockIcon}
@@ -222,7 +222,7 @@ export default function FineTuneSection() {
                 />
               </fieldset>
             </form>
-          </DisclosureSection>
+          </DisclosureCard>
         </div>
       </div>
     </>

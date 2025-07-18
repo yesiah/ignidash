@@ -7,7 +7,7 @@ import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
 import InvalidInputError from '@/components/ui/invalid-input-error';
 import SectionHeader from '@/components/ui/section-header';
-import DisclosureSection from '@/components/ui/disclosure-card';
+import DisclosureCard from '@/components/ui/disclosure-card';
 import {
   useBasicsData,
   useGrowthRatesData,
@@ -116,11 +116,7 @@ export default function BasicsSection() {
       </Card>
 
       <div className="space-y-4">
-        <DisclosureSection
-          title="Investment Portfolio"
-          desc="Configure asset allocation across stocks, bonds, and cash."
-          icon={ChartPieIcon}
-        >
+        <DisclosureCard title="Investment Portfolio" desc="Configure asset allocation across stocks, bonds, and cash." icon={ChartPieIcon}>
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
               <legend className="sr-only">Asset allocation percentages for investment portfolio</legend>
@@ -153,11 +149,11 @@ export default function BasicsSection() {
               />
             </fieldset>
           </form>
-        </DisclosureSection>
+        </DisclosureCard>
 
         {allocationError && <InvalidInputError title="Asset Allocation Error" desc={allocationError} />}
 
-        <DisclosureSection
+        <DisclosureCard
           title="Income & Spending Growth"
           desc="Set expected nominal growth rates for income and expenses over time."
           icon={ArrowTrendingUpIcon}
@@ -185,7 +181,7 @@ export default function BasicsSection() {
               />
             </fieldset>
           </form>
-        </DisclosureSection>
+        </DisclosureCard>
       </div>
     </div>
   );
