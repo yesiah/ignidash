@@ -14,7 +14,10 @@ interface DisclosureSectionProps {
 
 export default function DisclosureSection({ title, desc, icon: Icon, children }: DisclosureSectionProps) {
   return (
-    <Disclosure as="div" className="bg-emphasized-background border-border my-4 overflow-hidden rounded-lg border shadow-sm">
+    <Disclosure
+      as="div"
+      className="bg-emphasized-background border-border my-4 overflow-hidden rounded-lg border shadow-sm transition-shadow duration-300 ease-in-out hover:shadow-md"
+    >
       <DisclosureButton className="group data-open:border-border focus-outline flex w-full items-center justify-between p-4 data-open:border-b data-open:pb-5">
         <div className="flex w-full items-center justify-between text-left">
           <div className="flex flex-col gap-2">
