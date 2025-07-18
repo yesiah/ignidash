@@ -61,8 +61,10 @@ export function BasicsSection() {
       setAllocationError(null);
     }
 
-    // HACK: Always return success to prevent field-level errors, relying on section-level validation instead.
-    // TODO: Properly route field-specific vs form-level errors to appropriate UI locations.
+    /*
+     * HACK: Always return success to prevent field-level errors, relying on section-level validation instead.
+     * TODO: Properly route field-specific vs form-level errors to appropriate UI locations.
+     */
     return { success: true };
   };
 
