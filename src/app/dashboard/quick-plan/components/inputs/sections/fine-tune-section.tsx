@@ -98,7 +98,7 @@ function getEffectiveTaxRateDescription() {
   );
 }
 
-export function FineTuneSection() {
+export default function FineTuneSection() {
   const marketAssumptions = useMarketAssumptionsData();
   const updateMarketAssumptions = useUpdateMarketAssumptions();
 

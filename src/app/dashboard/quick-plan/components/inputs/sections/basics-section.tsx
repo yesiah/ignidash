@@ -17,7 +17,7 @@ import {
   useUpdateAllocation,
 } from '@/lib/stores/quick-plan-store';
 
-export function BasicsSection() {
+export default function BasicsSection() {
   const basics = useBasicsData();
   const growthRates = useGrowthRatesData();
   const allocation = useAllocationData();

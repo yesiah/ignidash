@@ -8,7 +8,7 @@ import SectionHeader from '@/components/ui/section-header';
 import DisclosureSection from '@/components/ui/disclosure-card';
 import { useGoalsData, useUpdateGoals } from '@/lib/stores/quick-plan-store';
 
-export function GoalSection() {
+export default function GoalSection() {
   const goals = useGoalsData();
   const updateGoals = useUpdateGoals();
 
