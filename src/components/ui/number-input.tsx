@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/catalyst/input';
 import { NumericFormat } from 'react-number-format';
+
+import { Input } from '@/components/catalyst/input';
 
 interface NumberInputProps {
   id: string;
