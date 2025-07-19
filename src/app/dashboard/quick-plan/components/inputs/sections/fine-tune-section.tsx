@@ -17,16 +17,16 @@ import {
 function getInflationRateDescription() {
   return (
     <>
-      Expected yearly price increases. Historically 3%. See{' '}
+      Average annual cost of living increase.{' '}
       <a
         href="https://www.bls.gov/charts/consumer-price-index/consumer-price-index-by-category-line-chart.htm"
         target="_blank"
         rel="noopener noreferrer"
         className="text-foreground hover:text-foreground/80 underline"
       >
-        Bureau of Labor Statistics CPI data
-      </a>{' '}
-      for current rates.
+        Historical average: 3%
+      </a>
+      .
     </>
   );
 }
