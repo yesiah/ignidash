@@ -330,6 +330,37 @@ export const useFIREChartData = () => {
 };
 
 /**
+ * Asset Allocation Calculations
+ * These hooks provide computed dollar amounts for each asset class based on allocation percentages
+ */
+export const useStocksDollarAmount = () =>
+  useQuickPlanStore((state) => {
+    const investedAssets = state.inputs.basics.investedAssets;
+    if (investedAssets === null) return 0;
+
+    const stockAllocation = state.inputs.allocation.stockAllocation;
+    return (investedAssets * stockAllocation) / 100;
+  });
+
+export const useBondsDollarAmount = () =>
+  useQuickPlanStore((state) => {
+    const investedAssets = state.inputs.basics.investedAssets;
+    if (investedAssets === null) return 0;
+
+    const bondAllocation = state.inputs.allocation.bondAllocation;
+    return (investedAssets * bondAllocation) / 100;
+  });
+
+export const useCashDollarAmount = () =>
+  useQuickPlanStore((state) => {
+    const investedAssets = state.inputs.basics.investedAssets;
+    if (investedAssets === null) return 0;
+
+    const cashAllocation = state.inputs.allocation.cashAllocation;
+    return (investedAssets * cashAllocation) / 100;
+  });
+
+/**
  * Validation State Selectors
  * These hooks check if sections or the entire form have valid data for calculations
  */
