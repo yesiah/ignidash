@@ -3,6 +3,8 @@
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/20/solid';
 
+import { cn } from '@/lib/utils';
+
 type ActiveSection = 'results' | 'your-numbers';
 
 interface SectionSelectorProps {
@@ -22,10 +24,6 @@ const tabs = [
     value: 'results' as ActiveSection,
   },
 ];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function SectionSelector({ activeSection, setActiveSection }: SectionSelectorProps) {
   return (
@@ -63,7 +61,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                   key={tab.name}
                   onClick={() => setActiveSection(tab.value)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={classNames(
+                  className={cn(
                     isActive
                       ? 'border-rose-600 text-rose-600 dark:border-rose-400 dark:text-rose-400'
                       : 'border-transparent text-gray-700 hover:text-rose-600 dark:text-gray-300 dark:hover:text-rose-400',
@@ -72,7 +70,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 >
                   <tab.icon
                     aria-hidden="true"
-                    className={classNames(
+                    className={cn(
                       isActive
                         ? 'text-rose-600 dark:text-rose-400'
                         : 'text-gray-400 group-hover:text-rose-600 dark:text-gray-500 dark:group-hover:text-rose-400',
