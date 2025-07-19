@@ -51,16 +51,16 @@ function getExpectedReturnsDescription() {
 function getSafeWithdrawalRateDescription() {
   return (
     <>
-      Annual portfolio withdrawal percentage.{' '}
+      Annual portfolio withdrawal percentage. The{' '}
       <a
         href="https://www.investopedia.com/terms/f/four-percent-rule.asp"
         target="_blank"
         rel="noopener noreferrer"
         className="text-foreground hover:text-foreground/80 underline"
       >
-        4% is standard
-      </a>
-      , and lower rates are more conservative.
+        4% rule
+      </a>{' '}
+      is standard.
     </>
   );
 }
