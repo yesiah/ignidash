@@ -13,7 +13,7 @@ export default function ResultsSections() {
     return (
       <div className="space-y-4">
         <div className="border-foreground/10 mb-5 border-b pb-5">
-          <SectionHeader title="Overview" desc="Essential insights and forecasts for your retirement planning." />
+          <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
           <ResultsOverview />
           <Card>
             <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
