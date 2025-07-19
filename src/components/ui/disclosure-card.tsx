@@ -26,7 +26,7 @@ export default function DisclosureCard({ title, desc, icon: Icon, children }: Di
             <p className="text-muted-foreground text-sm">{desc}</p>
           </div>
           <ChevronDownIcon
-            className="ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
+            className="text-muted-foreground ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
             aria-hidden="true"
           />
         </div>
