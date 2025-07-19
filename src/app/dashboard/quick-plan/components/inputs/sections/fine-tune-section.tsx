@@ -82,23 +82,6 @@ function getLifeExpectancyDescription() {
   );
 }
 
-function getEffectiveTaxRateDescription() {
-  return (
-    <>
-      Estimated tax rate on retirement withdrawals. See{' '}
-      <a
-        href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-tax-on-early-distributions"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-foreground hover:text-foreground/80 underline"
-      >
-        IRS retirement tax guidance
-      </a>{' '}
-      for planning details. Affects after-tax income calculations.
-    </>
-  );
-}
-
 export default function FineTuneSection() {
   const marketAssumptions = useMarketAssumptionsData();
   const updateMarketAssumptions = useUpdateMarketAssumptions();
@@ -219,7 +202,7 @@ export default function FineTuneSection() {
                   inputMode="decimal"
                   placeholder="15%"
                   suffix="%"
-                  desc={getEffectiveTaxRateDescription()}
+                  desc="Average tax rate on withdrawals and retirement income. Typically 10-20%."
                 />
               </fieldset>
             </form>
