@@ -48,6 +48,7 @@ export default function GoalSection() {
               inputMode="numeric"
               placeholder="65"
               decimalScale={0}
+              desc="When you want to fully retire. Determines when you can stop saving and coast."
             />
           </fieldset>
         </form>
@@ -64,6 +65,7 @@ export default function GoalSection() {
               inputMode="decimal"
               placeholder="$18,000"
               prefix="$"
+              desc="Expected gross income from part-time work in today's dollars."
             />
           </fieldset>
         </form>
