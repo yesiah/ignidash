@@ -1,12 +1,12 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { ChartDataPoint } from '@/lib/calc/fire-analysis';
 import { useFIREChartData, useFIREAnalysis } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -37,19 +37,10 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 export function ResultsChart() {
   const { theme } = useTheme();
+  const isSmallScreen = useIsMobile();
+
   const chartData = useFIREChartData();
   const fireAnalysis = useFIREAnalysis();
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth < 640); // 640px is sm breakpoint
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
 
   if (chartData.length === 0) {
     return null;
@@ -62,7 +53,7 @@ export function ResultsChart() {
   const interval = isSmallScreen ? 4 : 3;
 
   return (
-    <div className="[&_svg:focus]:outline-foreground h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:rounded-lg [&_svg:focus]:outline-2 [&_svg:focus]:outline-offset-2">
+    <div className="[&_svg:focus]:outline-primary h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:rounded-lg [&_svg:focus]:outline-2 [&_svg:focus]:outline-offset-2">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
           <defs>
@@ -76,8 +67,7 @@ export function ResultsChart() {
             tick={{ fill: foregroundMutedColor }}
             axisLine={false}
             hide={isSmallScreen}
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            tickFormatter={(value: number, _index: number) => formatNumber(value, 1)}
+            tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip />} />
