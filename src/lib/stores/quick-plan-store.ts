@@ -125,8 +125,8 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
     },
     allocation: {
       stockAllocation: 70,
-      bondAllocation: 30,
-      cashAllocation: 0,
+      bondAllocation: 25,
+      cashAllocation: 5,
     },
     goals: {
       retirementExpenses: null, // Real $ - "What I'd spend in retirement (today's dollars)"

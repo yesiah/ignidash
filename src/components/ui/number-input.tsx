@@ -7,7 +7,7 @@ import { Input } from '@/components/catalyst/input';
 
 interface NumberInputProps {
   id: string;
-  label: string;
+  label: string | React.ReactNode;
   value: number | null;
   onBlur: (value: string | null) => { success: boolean; error?: string };
   inputMode: 'numeric' | 'decimal';

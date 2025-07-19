@@ -16,7 +16,11 @@ import {
   useUpdateBasics,
   useUpdateGrowthRates,
   useUpdateAllocation,
+  useStocksDollarAmount,
+  useBondsDollarAmount,
+  useCashDollarAmount,
 } from '@/lib/stores/quick-plan-store';
+import { formatNumber } from '@/lib/utils';
 
 export default function BasicsSection() {
   const basics = useBasicsData();
@@ -26,6 +30,11 @@ export default function BasicsSection() {
   const updateBasics = useUpdateBasics();
   const updateGrowthRates = useUpdateGrowthRates();
   const updateAllocation = useUpdateAllocation();
+
+  // Get dollar amounts for each asset class
+  const stocksDollarAmount = useStocksDollarAmount();
+  const bondsDollarAmount = useBondsDollarAmount();
+  const cashDollarAmount = useCashDollarAmount();
 
   // Local state for allocation tracking
   const [localAllocation, setLocalAllocation] = useState({
@@ -123,7 +132,16 @@ export default function BasicsSection() {
               <legend className="sr-only">Asset allocation percentages for investment portfolio</legend>
               <NumberInput
                 id="stock-allocation"
-                label="Stocks (%)"
+                label={
+                  stocksDollarAmount > 0 ? (
+                    <div className="flex w-full items-center justify-between">
+                      <span>Stocks (%)</span>
+                      <span className="text-muted-foreground">${formatNumber(stocksDollarAmount, 1)}</span>
+                    </div>
+                  ) : (
+                    'Stocks (%)'
+                  )
+                }
                 value={localAllocation.stockAllocation}
                 onBlur={(value) => handleAllocationBlur('stockAllocation', value)}
                 inputMode="decimal"
@@ -132,7 +150,16 @@ export default function BasicsSection() {
               />
               <NumberInput
                 id="bond-allocation"
-                label="Bonds (%)"
+                label={
+                  bondsDollarAmount > 0 ? (
+                    <div className="flex w-full items-center justify-between">
+                      <span>Bonds (%)</span>
+                      <span className="text-muted-foreground">${formatNumber(bondsDollarAmount, 1)}</span>
+                    </div>
+                  ) : (
+                    'Bonds (%)'
+                  )
+                }
                 value={localAllocation.bondAllocation}
                 onBlur={(value) => handleAllocationBlur('bondAllocation', value)}
                 inputMode="decimal"
@@ -141,7 +168,16 @@ export default function BasicsSection() {
               />
               <NumberInput
                 id="cash-allocation"
-                label="Cash (%)"
+                label={
+                  cashDollarAmount > 0 ? (
+                    <div className="flex w-full items-center justify-between">
+                      <span>Cash (%)</span>
+                      <span className="text-muted-foreground">${formatNumber(cashDollarAmount, 1)}</span>
+                    </div>
+                  ) : (
+                    'Cash (%)'
+                  )
+                }
                 value={localAllocation.cashAllocation}
                 onBlur={(value) => handleAllocationBlur('cashAllocation', value)}
                 inputMode="decimal"
