@@ -75,7 +75,7 @@ function getLifeExpectancyDescription() {
         rel="noopener noreferrer"
         className="text-foreground hover:text-foreground/80 underline"
       >
-        US average: 77 years
+        US average: 78 years
       </a>
       .
     </>
