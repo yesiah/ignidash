@@ -165,7 +165,7 @@ export default function FineTuneSection() {
                 />
                 <NumberInput
                   id="retirement-income"
-                  label="Gross Passive Retirement Income"
+                  label="Passive Retirement Income"
                   value={retirementFunding.retirementIncome}
                   onBlur={(value) => updateRetirementFunding('retirementIncome', value)}
                   inputMode="decimal"
