@@ -31,7 +31,7 @@ export default function GoalSection() {
               inputMode="decimal"
               placeholder="$50,000"
               prefix="$"
-              desc="What you'll actually spend each year in retirement, after taxes."
+              desc="Annual retirement spending in today's dollars, after taxes."
             />
           </fieldset>
         </form>
