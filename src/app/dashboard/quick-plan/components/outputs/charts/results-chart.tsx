@@ -21,18 +21,17 @@ interface CustomTooltipProps {
 }
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="text-foreground rounded-lg border bg-rose-100 p-3 shadow-md dark:bg-rose-900">
-        <p className="mb-1 text-sm font-medium">Age {label}</p>
-        <p className="text-sm">
-          Portfolio Value:
-          <span className="ml-1 font-medium">{formatNumber(payload[0].value)}</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
+  if (!(active && payload && payload.length)) return null;
+
+  return (
+    <div className="text-foreground rounded-lg border bg-rose-100 p-3 shadow-md dark:bg-rose-900">
+      <p className="mb-1 text-sm font-medium">Age {label}</p>
+      <p className="text-sm">
+        Portfolio Value:
+        <span className="ml-1 font-medium">{formatNumber(payload[0].value)}</span>
+      </p>
+    </div>
+  );
 };
 
 export function ResultsChart() {
