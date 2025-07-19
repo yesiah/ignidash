@@ -3,6 +3,7 @@
 import { Button } from '@/components/catalyst/button';
 import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
+import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import SelectMenu from '@/components/ui/select-menu';
 
@@ -13,7 +14,7 @@ export default function PreferencesDrawer() {
 
   return (
     <>
-      <div className="border-border mb-5 border-b pb-5">
+      <SectionContainer showBottomBorder>
         <SectionHeader title="Display" desc="Choose how to display currency values in your projections." />
         <Card>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -33,9 +34,9 @@ export default function PreferencesDrawer() {
             </fieldset>
           </form>
         </Card>
-      </div>
+      </SectionContainer>
 
-      <div className="mb-5 pb-5">
+      <SectionContainer showBottomBorder={false}>
         <SectionHeader title="Data Storage" desc="Control how your data is saved and managed." />
         <Card>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -62,7 +63,7 @@ export default function PreferencesDrawer() {
             </fieldset>
           </form>
         </Card>
-      </div>
+      </SectionContainer>
     </>
   );
 }

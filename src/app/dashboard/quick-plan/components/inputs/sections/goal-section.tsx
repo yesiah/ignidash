@@ -5,6 +5,7 @@ import { Coffee, RollerCoaster } from 'lucide-react';
 import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
+import SectionContainer from '@/components/ui/section-container';
 import DisclosureCard from '@/components/ui/disclosure-card';
 import { useGoalsData, useUpdateGoals } from '@/lib/stores/quick-plan-store';
 
@@ -13,7 +14,7 @@ export default function GoalSection() {
   const updateGoals = useUpdateGoals();
 
   return (
-    <div className="border-border mb-5 border-b pb-5">
+    <SectionContainer showBottomBorder>
       <SectionHeader
         title="Retirement Goal"
         desc="Your retirement spending level determines when you'll have enough to retire. Consider optional strategies for getting there."
@@ -66,6 +67,6 @@ export default function GoalSection() {
           </fieldset>
         </form>
       </DisclosureCard>
-    </div>
+    </SectionContainer>
   );
 }

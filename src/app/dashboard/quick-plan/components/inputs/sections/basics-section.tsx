@@ -7,6 +7,7 @@ import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
 import InvalidInputError from '@/components/ui/invalid-input-error';
 import SectionHeader from '@/components/ui/section-header';
+import SectionContainer from '@/components/ui/section-container';
 import DisclosureCard from '@/components/ui/disclosure-card';
 import {
   useBasicsData,
@@ -69,7 +70,7 @@ export default function BasicsSection() {
   };
 
   return (
-    <div className="border-border mb-5 border-b pb-5">
+    <SectionContainer showBottomBorder>
       <SectionHeader title="Financial Foundation" desc="Enter the core numbers needed to estimate your financial independence timeline." />
       <Card>
         <form onSubmit={(e) => e.preventDefault()}>
@@ -183,6 +184,6 @@ export default function BasicsSection() {
           </form>
         </DisclosureCard>
       </div>
-    </div>
+    </SectionContainer>
   );
 }
