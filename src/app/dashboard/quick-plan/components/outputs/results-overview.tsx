@@ -1,5 +1,6 @@
 'use client';
 
+import Card from '@/components/ui/card';
 import { useFIREAnalysis } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 
@@ -14,15 +15,12 @@ export function ResultsOverview() {
 
   return (
     <>
-      <dl className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {stats.map((item) => (
-          <div
-            key={item.name}
-            className="bg-emphasized-background overflow-hidden rounded-lg px-4 py-5 text-center shadow-sm sm:p-6 sm:text-left"
-          >
+          <Card key={item.name} className="text-center sm:text-left">
             <dt className="text-muted-foreground truncate text-sm font-medium">{item.name}</dt>
             <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">{formatNumber(item.stat)}</dd>
-          </div>
+          </Card>
         ))}
       </dl>
     </>

@@ -12,16 +12,14 @@ export default function ResultsSections() {
   const isCalculationReady = useIsCalculationReady();
   if (isCalculationReady) {
     return (
-      <div className="space-y-4">
-        <SectionContainer showBottomBorder>
-          <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
-          <ResultsOverview />
-          <Card>
-            <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
-            <ResultsChart />
-          </Card>
-        </SectionContainer>
-      </div>
+      <SectionContainer showBottomBorder>
+        <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
+        <ResultsOverview />
+        <Card>
+          <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
+          <ResultsChart />
+        </Card>
+      </SectionContainer>
     );
   }
 
