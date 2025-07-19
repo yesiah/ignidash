@@ -25,13 +25,13 @@ export default function GoalSection() {
             <legend className="sr-only">Retirement spending goal configuration</legend>
             <NumberInput
               id="retirement-expenses"
-              label="Retirement Expenses (After-Tax)"
+              label="Retirement Expenses"
               value={goals.retirementExpenses}
               onBlur={(value) => updateGoals('retirementExpenses', value)}
               inputMode="decimal"
               placeholder="$50,000"
               prefix="$"
-              desc="Annual retirement spending in today's dollars, after taxes."
+              desc="Annual retirement spending in today's dollars, excluding taxes."
             />
           </fieldset>
         </form>
