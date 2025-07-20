@@ -126,7 +126,7 @@ describe('calculateYearlyContribution', () => {
     const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
-    expect(result).toBe(-1);
+    expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
 
@@ -144,7 +144,7 @@ describe('calculateYearlyContribution', () => {
     const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
-    expect(result).toBe(-1);
+    expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
 

@@ -20,7 +20,7 @@ export const getFIREChartData = (inputs: QuickPlanInputs): ChartDataPoint[] => {
       false // Use real terms
     );
 
-    if (portfolioValue !== -1) {
+    if (portfolioValue !== null) {
       data.push({ age, portfolioValue });
     }
   }

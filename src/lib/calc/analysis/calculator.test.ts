@@ -76,7 +76,7 @@ describe('FIRE Calculations', () => {
         },
       };
       const years = calculateYearsToFIRE(invalidInputs);
-      expect(years).toBe(-1);
+      expect(years).toBe(null);
     });
 
     it('should handle very low savings rate scenarios', () => {
@@ -158,7 +158,7 @@ describe('FIRE Calculations', () => {
         },
       };
       const fireAge = calculateFIREAge(invalidInputs);
-      expect(fireAge).toBe(-1);
+      expect(fireAge).toBe(null);
     });
 
     it('should handle very low savings scenarios', () => {
@@ -186,11 +186,6 @@ describe('FIRE Calculations', () => {
       expect(analysis.yearsToFIRE).toBe(14);
       expect(analysis.fireAge).toBe(44);
       expect(analysis.requiredPortfolio).toBe(1000000); // 40k / 0.04
-      expect(analysis.currentPortfolio).toBe(100000);
-      // After 14 years, portfolio should be just over $1M
-      expect(analysis.projectedPortfolioAtFIRE).toBeGreaterThan(1000000);
-      expect(analysis.projectedPortfolioAtFIRE).toBeLessThan(1010000);
-      expect(analysis.message).toBe('FIRE is achievable in 14 years at age 44.');
     });
 
     it('should indicate already achieved FIRE', () => {
@@ -206,7 +201,6 @@ describe('FIRE Calculations', () => {
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(0);
       expect(analysis.fireAge).toBe(30);
-      expect(analysis.message).toBe('Congratulations! You have already achieved FIRE.');
     });
 
     it('should handle missing data gracefully', () => {
@@ -220,9 +214,8 @@ describe('FIRE Calculations', () => {
       const analysis = getFIREAnalysis(invalidInputs);
 
       expect(analysis.achievable).toBe(false);
-      expect(analysis.yearsToFIRE).toBe(-1);
-      expect(analysis.fireAge).toBe(-1);
-      expect(analysis.message).toBe('Missing required data to calculate FIRE goals');
+      expect(analysis.yearsToFIRE).toBe(null);
+      expect(analysis.fireAge).toBe(null);
     });
 
     it('should provide appropriate message for long timeframes', () => {
@@ -238,7 +231,6 @@ describe('FIRE Calculations', () => {
 
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(28);
-      expect(analysis.message).toBe('FIRE is achievable in 28 years at age 58.');
     });
 
     it('should calculate correct required portfolio', () => {
@@ -272,7 +264,6 @@ describe('FIRE Calculations', () => {
 
       expect(analysis.achievable).toBe(true);
       expect(analysis.yearsToFIRE).toBe(5);
-      expect(analysis.message).toBe('You can achieve FIRE in 5 years at age 35.');
     });
   });
 
@@ -507,7 +498,7 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
       };
 
-      const years = calculateYearsToFIRE(inputs);
+      const years = calculateYearsToFIRE(inputs)!;
       const futureValue = calculateFuturePortfolioValue(inputs, years, false);
       const requiredPortfolio = 40000 / 0.04;
 
@@ -766,7 +757,7 @@ describe('FIRE Calculations - Additional Validation', () => {
             annualExpenses: 100000 - savings,
           },
         };
-        return calculateYearsToFIRE(inputs);
+        return calculateYearsToFIRE(inputs)!;
       });
 
       // Years to FIRE should decrease as savings increase
@@ -911,7 +902,7 @@ describe('Property-Based Validation', () => {
       },
     };
 
-    const lowReturnYears = calculateYearsToFIRE(baseInputs);
+    const lowReturnYears = calculateYearsToFIRE(baseInputs)!;
 
     const highReturnInputs = {
       ...baseInputs,

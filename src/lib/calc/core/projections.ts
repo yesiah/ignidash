@@ -4,21 +4,21 @@ import { calculateWeightedPortfolioReturnNominal, calculateWeightedPortfolioRetu
 import { calculateYearlyContribution } from './contributions';
 
 // Calculation function to determine required portfolio for retirement
-export const calculateRequiredPortfolio = (retirementExpenses: number | null, safeWithdrawalRate: number): number => {
+export const calculateRequiredPortfolio = (retirementExpenses: number | null, safeWithdrawalRate: number): number | null => {
   if (retirementExpenses === null) {
     console.warn('Cannot calculate required portfolio: retirement expenses is required');
-    return -1;
+    return null;
   }
 
   return retirementExpenses / (safeWithdrawalRate / 100);
 };
 
 // Calculate future portfolio value with annual contributions
-export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: number, calculateInNominalTerms: boolean): number => {
+export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: number, calculateInNominalTerms: boolean): number | null => {
   const { investedAssets } = inputs.basics;
   if (investedAssets === null) {
     console.warn('Cannot calculate future portfolio value: invested assets is required');
-    return -1;
+    return null;
   }
 
   // Get return rate as decimal
@@ -37,9 +37,9 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
     const contribution = calculateYearlyContribution(inputs, year, calculateInNominalTerms);
 
     // Handle error case from calculateYearlyContribution
-    if (contribution === -1) {
+    if (contribution === null) {
       console.warn(`Failed to calculate contribution for year ${year}`);
-      return -1;
+      return null;
     }
 
     // Contribution made at end of year, so it grows for (years - year - 1) periods

@@ -16,7 +16,7 @@ describe('calculateRequiredPortfolio', () => {
     const result = calculateRequiredPortfolio(null, 4);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate required portfolio: retirement expenses is required');
-    expect(result).toBe(-1);
+    expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
 });
@@ -205,7 +205,7 @@ describe('calculateFuturePortfolioValue', () => {
     const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate future portfolio value: invested assets is required');
-    expect(result).toBe(-1);
+    expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
 
@@ -224,7 +224,7 @@ describe('calculateFuturePortfolioValue', () => {
     const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
-    expect(result).toBe(-1);
+    expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
 });

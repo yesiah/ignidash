@@ -1,11 +1,11 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 // Helper function to calculate yearly contribution (income - expenses) for a given year
-export const calculateYearlyContribution = (inputs: QuickPlanInputs, year: number, calculateInNominalTerms: boolean): number => {
+export const calculateYearlyContribution = (inputs: QuickPlanInputs, year: number, calculateInNominalTerms: boolean): number | null => {
   const { annualIncome, annualExpenses } = inputs.basics;
   if (annualIncome === null || annualExpenses === null) {
     console.warn('Cannot calculate yearly contribution: annual income and expenses are required');
-    return -1;
+    return null;
   }
 
   const { incomeGrowthRate, expenseGrowthRate } = inputs.growthRates;
