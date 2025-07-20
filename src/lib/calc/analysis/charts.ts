@@ -9,11 +9,10 @@ export interface ChartDataPoint {
 
 export const getFIREChartData = (inputs: QuickPlanInputs): ChartDataPoint[] => {
   const startAge = inputs.basics.currentAge;
-  const endAge = inputs.retirementFunding.lifeExpectancy;
   if (startAge === null) return [];
 
   const data: ChartDataPoint[] = [];
-  for (let age = startAge; age <= endAge; age++) {
+  for (let age = startAge; age <= inputs.retirementFunding.lifeExpectancy; age++) {
     const portfolioValue = calculateFuturePortfolioValue(
       inputs,
       age - startAge,
