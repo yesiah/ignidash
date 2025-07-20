@@ -281,7 +281,7 @@ describe('FIRE Calculations', () => {
       const years = calculateYearsToFIRE(zeroIncomeInputs);
       // $500k with -$40k/year withdrawals at 5.34% real return
       // Portfolio shrinks over time, will never reach $1M
-      expect(years).toBe(-1);
+      expect(years).toBe(null);
     });
 
     it('should handle scenario where portfolio grows despite negative contributions', () => {
@@ -331,7 +331,7 @@ describe('FIRE Calculations', () => {
       // Nominal return: 0.7*3% + 0.3*2% = 2.7%
       // Real return: (1.027/1.05) - 1 = -2.19%
       // With negative real returns, portfolio shrinks in real terms
-      expect(years).toBe(-1);
+      expect(years).toBe(null);
     });
 
     it('should handle exactly meeting FIRE requirements', () => {
@@ -956,6 +956,6 @@ describe('Property-Based Validation', () => {
     };
 
     const years = calculateYearsToFIRE(impossibleInputs);
-    expect(years).toBe(-1);
+    expect(years).toBe(null);
   });
 });

@@ -26,7 +26,7 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs, maxYears: number =
   // Binary search for the years to FIRE
   let low = 0;
   let high = maxYears;
-  let result = -1;
+  let result = null;
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
