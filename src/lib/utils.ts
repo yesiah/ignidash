@@ -6,8 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatNumber(num: number, fractionDigits: number = 2) {
-  if (num >= 1000000000) return (num / 1000000000).toFixed(fractionDigits) + 'B';
-  if (num >= 1000000) return (num / 1000000).toFixed(fractionDigits) + 'M';
-  if (num >= 1000) return (num / 1000).toFixed(fractionDigits) + 'k';
-  return num.toString();
+  const absNum = Math.abs(num);
+  const sign = num < 0 ? '-' : '';
+
+  if (absNum >= 1000000000) return sign + (absNum / 1000000000).toFixed(fractionDigits) + 'B';
+  if (absNum >= 1000000) return sign + (absNum / 1000000).toFixed(fractionDigits) + 'M';
+  if (absNum >= 1000) return sign + (absNum / 1000).toFixed(fractionDigits) + 'k';
+  return sign + absNum.toString();
 }
