@@ -35,6 +35,7 @@ import {
   type GoalsInputs,
   type MarketAssumptionsInputs,
   type RetirementFundingInputs,
+  type FlexiblePathsInputs,
   validateField,
   validateSection,
 } from '@/lib/schemas/quick-plan-schema';
@@ -101,6 +102,7 @@ interface QuickPlanState {
     updateGoals: (field: keyof GoalsInputs, value: unknown) => UpdateResult;
     updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
     updateRetirementFunding: (field: keyof RetirementFundingInputs, value: unknown) => UpdateResult;
+    updateFlexiblePaths: (field: keyof FlexiblePathsInputs, value: unknown) => UpdateResult;
 
     // Preferences actions
     updatePreferences: (field: keyof QuickPlanState['preferences'], value: string) => void;
@@ -130,8 +132,6 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
     },
     goals: {
       retirementExpenses: null, // Real $ - "What I'd spend in retirement (today's dollars)"
-      targetRetirementAge: null,
-      partTimeIncome: null, // Real $ - "Part-time income (today's dollars)"
     },
     marketAssumptions: {
       stockReturn: 10, // Nominal % - matches market reporting
@@ -144,6 +144,10 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
       retirementIncome: 0, // Real $ - "Social Security (today's dollars)"
       lifeExpectancy: 78,
       effectiveTaxRate: 15,
+    },
+    flexiblePaths: {
+      targetRetirementAge: null,
+      partTimeIncome: null, // Real $ - "Part-time income (today's dollars)"
     },
   },
   preferences: {
@@ -204,6 +208,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           updateGoals: createSimpleUpdateAction('goals', set, get),
           updateMarketAssumptions: createSimpleUpdateAction('marketAssumptions', set, get),
           updateRetirementFunding: createSimpleUpdateAction('retirementFunding', set, get),
+          updateFlexiblePaths: createSimpleUpdateAction('flexiblePaths', set, get),
 
           // Special case for allocation - uses validateSection instead of validateField
           updateAllocation: (data) => {
@@ -282,6 +287,7 @@ export const useAllocationData = () => useQuickPlanStore((state) => state.inputs
 export const useGoalsData = () => useQuickPlanStore((state) => state.inputs.goals);
 export const useMarketAssumptionsData = () => useQuickPlanStore((state) => state.inputs.marketAssumptions);
 export const useRetirementFundingData = () => useQuickPlanStore((state) => state.inputs.retirementFunding);
+export const useFlexiblePathsData = () => useQuickPlanStore((state) => state.inputs.flexiblePaths);
 
 /**
  * Individual field selectors for performance optimization
@@ -302,6 +308,7 @@ export const useUpdateAllocation = () => useQuickPlanStore((state) => state.acti
 export const useUpdateGoals = () => useQuickPlanStore((state) => state.actions.updateGoals);
 export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
 export const useUpdateRetirementFunding = () => useQuickPlanStore((state) => state.actions.updateRetirementFunding);
+export const useUpdateFlexiblePaths = () => useQuickPlanStore((state) => state.actions.updateFlexiblePaths);
 
 /**
  * Preferences selectors

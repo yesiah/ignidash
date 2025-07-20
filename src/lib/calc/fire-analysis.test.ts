@@ -23,8 +23,6 @@ describe('FIRE Calculations', () => {
     },
     goals: {
       retirementExpenses: 40000,
-      targetRetirementAge: 50,
-      partTimeIncome: 0,
     },
     marketAssumptions: {
       stockReturn: 10,
@@ -37,6 +35,10 @@ describe('FIRE Calculations', () => {
       retirementIncome: 0,
       lifeExpectancy: 85,
       effectiveTaxRate: 15,
+    },
+    flexiblePaths: {
+      targetRetirementAge: 50,
+      partTimeIncome: 0,
     },
   };
 
@@ -389,8 +391,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 7, // Common assumption
@@ -403,6 +403,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -432,8 +436,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 50000,
-          targetRetirementAge: 55,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 9,
@@ -446,6 +448,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 90,
           effectiveTaxRate: 20,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 55,
+          partTimeIncome: 0,
         },
       };
 
@@ -479,8 +485,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 10,
@@ -493,6 +497,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -534,8 +542,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 8,
@@ -548,6 +554,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -585,8 +595,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 20, // Very high return
@@ -599,6 +607,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -627,8 +639,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 10,
@@ -641,6 +651,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -672,8 +686,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 60000,
-          targetRetirementAge: 55,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 9,
@@ -686,6 +698,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 90,
           effectiveTaxRate: 20,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 55,
+          partTimeIncome: 0,
         },
       };
 
@@ -718,8 +734,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 50,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 10,
@@ -732,6 +746,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 85,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 50,
+          partTimeIncome: 0,
         },
       };
 
@@ -777,8 +795,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 40000,
-          targetRetirementAge: 65,
-          partTimeIncome: 0,
         },
         marketAssumptions: {
           stockReturn: 10,
@@ -791,6 +807,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 90,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 65,
+          partTimeIncome: 0,
         },
       };
 
@@ -821,8 +841,6 @@ describe('FIRE Calculations - Additional Validation', () => {
         },
         goals: {
           retirementExpenses: 25000, // Lower due to $15k part-time income
-          targetRetirementAge: 45,
-          partTimeIncome: 15000,
         },
         marketAssumptions: {
           stockReturn: 10,
@@ -835,6 +853,10 @@ describe('FIRE Calculations - Additional Validation', () => {
           retirementIncome: 0,
           lifeExpectancy: 90,
           effectiveTaxRate: 15,
+        },
+        flexiblePaths: {
+          targetRetirementAge: 45,
+          partTimeIncome: 15000,
         },
       };
 
@@ -867,8 +889,6 @@ describe('Property-Based Validation', () => {
       },
       goals: {
         retirementExpenses: 40000,
-        targetRetirementAge: 50,
-        partTimeIncome: 0,
       },
       marketAssumptions: {
         stockReturn: 8,
@@ -881,6 +901,10 @@ describe('Property-Based Validation', () => {
         retirementIncome: 0,
         lifeExpectancy: 85,
         effectiveTaxRate: 15,
+      },
+      flexiblePaths: {
+        targetRetirementAge: 50,
+        partTimeIncome: 0,
       },
     };
 
@@ -918,8 +942,6 @@ describe('Property-Based Validation', () => {
       },
       goals: {
         retirementExpenses: 40000,
-        targetRetirementAge: 65,
-        partTimeIncome: 0,
       },
       marketAssumptions: {
         stockReturn: 6,
@@ -932,6 +954,10 @@ describe('Property-Based Validation', () => {
         retirementIncome: 0,
         lifeExpectancy: 90,
         effectiveTaxRate: 15,
+      },
+      flexiblePaths: {
+        targetRetirementAge: 65,
+        partTimeIncome: 0,
       },
     };
 

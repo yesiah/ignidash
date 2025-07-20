@@ -131,15 +131,6 @@ export const basicsSchema = z.object({
 });
 
 /**
- * Growth rates schema (disclosure section)
- * Handles income and expense growth assumptions
- */
-export const growthRatesSchema = z.object({
-  incomeGrowthRate: percentageField(0, 50, 'Income growth rate'),
-  expenseGrowthRate: percentageField(0, 10, 'Expense growth rate'),
-});
-
-/**
  * Asset allocation schema (disclosure section)
  * Portfolio allocation between stocks, bonds, and cash with 100% total validation
  */
@@ -161,16 +152,20 @@ export const allocationSchema = z
   );
 
 /**
+ * Growth rates schema (disclosure section)
+ * Handles income and expense growth assumptions
+ */
+export const growthRatesSchema = z.object({
+  incomeGrowthRate: percentageField(0, 50, 'Income growth rate'),
+  expenseGrowthRate: percentageField(0, 10, 'Expense growth rate'),
+});
+
+/**
  * Goals schema
  * Retirement planning targets and expected income sources
  */
 export const goalsSchema = z.object({
   retirementExpenses: currencyFieldForbidsZero('Retirement expenses are required and must be greater than 0').nullable(),
-  targetRetirementAge: ageField(16, 100, {
-    min: 'Target retirement age must be at least 16',
-    max: 'Target retirement age cannot exceed 100',
-  }).nullable(),
-  partTimeIncome: currencyFieldAllowsZero('Part-time income cannot be negative (enter 0 if no part-time work planned)').nullable(),
 });
 
 /**
@@ -201,6 +196,18 @@ export const retirementFundingSchema = z.object({
 });
 
 /**
+ * Flexible paths schema
+ * Additional retirement planning options for coast FIRE and barista FIRE
+ */
+export const flexiblePathsSchema = z.object({
+  targetRetirementAge: ageField(16, 100, {
+    min: 'Target retirement age must be at least 16',
+    max: 'Target retirement age cannot exceed 100',
+  }).nullable(),
+  partTimeIncome: currencyFieldAllowsZero('Part-time income cannot be negative (enter 0 if no part-time work planned)').nullable(),
+});
+
+/**
  * Combined schema for all inputs
  * Master schema that includes all sections of the financial planning form
  */
@@ -211,6 +218,7 @@ export const quickPlanSchema = z.object({
   goals: goalsSchema,
   marketAssumptions: marketAssumptionsSchema,
   retirementFunding: retirementFundingSchema,
+  flexiblePaths: flexiblePathsSchema,
 });
 
 // ================================
@@ -228,6 +236,7 @@ export type AllocationInputs = z.infer<typeof allocationSchema>;
 export type GoalsInputs = z.infer<typeof goalsSchema>;
 export type MarketAssumptionsInputs = z.infer<typeof marketAssumptionsSchema>;
 export type RetirementFundingInputs = z.infer<typeof retirementFundingSchema>;
+export type FlexiblePathsInputs = z.infer<typeof flexiblePathsSchema>;
 
 // ================================
 // UTILITY FUNCTIONS

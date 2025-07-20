@@ -6,11 +6,11 @@ import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import DisclosureCard from '@/components/ui/disclosure-card';
-import { useGoalsData, useUpdateGoals } from '@/lib/stores/quick-plan-store';
+import { useFlexiblePathsData, useUpdateFlexiblePaths } from '@/lib/stores/quick-plan-store';
 
 export default function FIREPathsSection() {
-  const goals = useGoalsData();
-  const updateGoals = useUpdateGoals();
+  const flexiblePaths = useFlexiblePathsData();
+  const updateFlexiblePaths = useUpdateFlexiblePaths();
 
   return (
     <SectionContainer showBottomBorder={false}>
@@ -22,8 +22,8 @@ export default function FIREPathsSection() {
             <NumberInput
               id="target-retirement-age"
               label="Target Retirement Age"
-              value={goals.targetRetirementAge}
-              onBlur={(value) => updateGoals('targetRetirementAge', value)}
+              value={flexiblePaths.targetRetirementAge}
+              onBlur={(value) => updateFlexiblePaths('targetRetirementAge', value)}
               inputMode="numeric"
               placeholder="65"
               decimalScale={0}
@@ -39,8 +39,8 @@ export default function FIREPathsSection() {
             <NumberInput
               id="part-time-income"
               label="Part-Time Annual Income"
-              value={goals.partTimeIncome}
-              onBlur={(value) => updateGoals('partTimeIncome', value)}
+              value={flexiblePaths.partTimeIncome}
+              onBlur={(value) => updateFlexiblePaths('partTimeIncome', value)}
               inputMode="decimal"
               placeholder="$18,000"
               prefix="$"
