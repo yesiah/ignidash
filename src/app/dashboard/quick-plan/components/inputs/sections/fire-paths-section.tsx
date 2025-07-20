@@ -13,8 +13,8 @@ export default function FIREPathsSection() {
   const updateGoals = useUpdateGoals();
 
   return (
-    <SectionContainer showBottomBorder>
-      <SectionHeader title="Other FIRE Paths" desc="Explore paths that align with your values and lifestyle preferences." />
+    <SectionContainer showBottomBorder={false}>
+      <SectionHeader title="Flexible Paths" desc="Blend work and freedom in ways that fit your life. Explore if curious, skip if not." />
       <DisclosureCard title="Coast FIRE" desc="Front-load savings, then work just enough to cover living expenses." icon={RollerCoaster}>
         <form onSubmit={(e) => e.preventDefault()}>
           <fieldset className="space-y-4">
