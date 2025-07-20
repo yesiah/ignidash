@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   );
 };
 
-export function ResultsChart() {
+export default function ResultsChart() {
   const { theme } = useTheme();
   const isSmallScreen = useIsMobile();
 
