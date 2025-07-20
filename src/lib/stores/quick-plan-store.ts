@@ -39,7 +39,8 @@ import {
   validateField,
   validateSection,
 } from '@/lib/schemas/quick-plan-schema';
-import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis, getFIREChartData } from '@/lib/calc/fire-analysis';
+import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis } from '@/lib/calc/analysis/calculator';
+import { getFIREChartData } from '@/lib/calc/analysis/charts';
 
 // ================================
 // TYPES & HELPERS
