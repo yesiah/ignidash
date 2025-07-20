@@ -497,14 +497,7 @@ describe('FIRE Calculations - Additional Validation', () => {
       };
 
       const years = calculateYearsToFIRE(inputs);
-      const futureValue = calculateFuturePortfolioValue(
-        inputs.basics,
-        inputs.allocation,
-        inputs.marketAssumptions,
-        inputs.growthRates,
-        years,
-        false
-      );
+      const futureValue = calculateFuturePortfolioValue(inputs, years, false);
       const requiredPortfolio = 40000 / 0.04;
 
       // The portfolio value at FIRE should be >= required (within rounding)
@@ -512,14 +505,7 @@ describe('FIRE Calculations - Additional Validation', () => {
 
       // But year before should be less
       if (years > 0) {
-        const yearBefore = calculateFuturePortfolioValue(
-          inputs.basics,
-          inputs.allocation,
-          inputs.marketAssumptions,
-          inputs.growthRates,
-          years - 1,
-          false
-        );
+        const yearBefore = calculateFuturePortfolioValue(inputs, years - 1, false);
         expect(yearBefore).toBeLessThan(requiredPortfolio);
       }
     });
@@ -571,14 +557,7 @@ describe('FIRE Calculations - Additional Validation', () => {
       // Manual calculation with the correct real return
       const fvAnnuity = annualSavings * ((Math.pow(1 + realReturn, years) - 1) / realReturn);
 
-      const portfolioValue = calculateFuturePortfolioValue(
-        inputs.basics,
-        inputs.allocation,
-        inputs.marketAssumptions,
-        inputs.growthRates,
-        years,
-        false
-      );
+      const portfolioValue = calculateFuturePortfolioValue(inputs, years, false);
 
       // Should match within floating point precision
       expect(portfolioValue).toBeCloseTo(fvAnnuity, 2);

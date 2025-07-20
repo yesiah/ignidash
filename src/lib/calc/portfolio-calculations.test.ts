@@ -163,14 +163,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      0,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 0, true); // true for nominal
 
     // Year 0: 100,000 - 60,000 = 40,000
     expect(result).toBe(40000);
@@ -190,14 +183,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     // Year 1: (100,000 × 1.03) - (60,000 × 1.03) = 103,000 - 61,800 = 41,200
     expect(result).toBe(41200);
@@ -221,14 +207,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      false
-    ); // false for real
+    const result = calculateYearlyContribution(inputs, 1, false); // false for real
 
     // Real growth = (1.05 / 1.03) - 1 = 0.0194 = 1.94%
     // Year 1: (100,000 × 1.0194) - (60,000 × 1.0194) = 101,940 - 61,164 = 40,776
@@ -249,14 +228,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     // Year 1: (100,000 × 1.05) - (60,000 × 1.02) = 105,000 - 61,200 = 43,800
     expect(result).toBe(43800);
@@ -276,14 +248,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      5,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 5, true); // true for nominal
 
     // Year 5: (100,000 × 1.03^5) - (60,000 × 1.03^5)
     // = (100,000 × 1.159274) - (60,000 × 1.159274)
@@ -302,14 +267,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);
@@ -327,14 +285,7 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      true
-    ); // true for nominal
+    const result = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);
@@ -355,22 +306,8 @@ describe('calculateYearlyContribution', () => {
       },
     };
 
-    const result0 = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      0,
-      true
-    ); // true for nominal
-    const result1 = calculateYearlyContribution(
-      inputs.basics.annualIncome,
-      inputs.basics.annualExpenses,
-      inputs.growthRates,
-      inputs.marketAssumptions.inflationRate,
-      1,
-      true
-    ); // true for nominal
+    const result0 = calculateYearlyContribution(inputs, 0, true); // true for nominal
+    const result1 = calculateYearlyContribution(inputs, 1, true); // true for nominal
 
     // Year 0: 50,000 - 60,000 = -10,000
     expect(result0).toBe(-10000);
@@ -408,7 +345,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false); // false for real values
+    const result = calculateFuturePortfolioValue(inputs, 5, false); // false for real values
 
     // Since growth rates are nominal (3%) and inflation is 3%, real growth is 0%
     // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
@@ -454,7 +391,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, true); // true for nominal values
+    const result = calculateFuturePortfolioValue(inputs, 5, true); // true for nominal values
 
     // Nominal return: 8.5%
     // Initial assets after 5 years: 100,000 × (1.085)^5 = 150,365.67
@@ -499,7 +436,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false); // false for real values
+    const result = calculateFuturePortfolioValue(inputs, 5, false); // false for real values
 
     // With 0% real return and 0% real growth on contributions
     // Initial assets: 100,000 (no real growth)
@@ -536,7 +473,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 10, false); // false for real values
+    const result = calculateFuturePortfolioValue(inputs, 10, false); // false for real values
 
     // Real return: (1.07 / 1.03) - 1 = 3.883%
     // Real income growth: (1.01 / 1.03) - 1 = -1.94%
@@ -561,7 +498,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false);
+    const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate future portfolio value: invested assets is required');
     expect(result).toBe(-1);
@@ -580,7 +517,7 @@ describe('calculateFuturePortfolioValue', () => {
       },
     };
 
-    const result = calculateFuturePortfolioValue(inputs.basics, inputs.allocation, inputs.marketAssumptions, inputs.growthRates, 5, false);
+    const result = calculateFuturePortfolioValue(inputs, 5, false);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate yearly contribution: annual income and expenses are required');
     expect(result).toBe(-1);

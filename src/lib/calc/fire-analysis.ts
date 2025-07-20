@@ -29,14 +29,7 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs, maxYears: number =
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
-    const futureValue = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      mid,
-      false
-    ); // Use real terms
+    const futureValue = calculateFuturePortfolioValue(inputs, mid, false); // Use real terms
 
     if (futureValue === -1) {
       return -1; // Error in calculation
@@ -52,25 +45,11 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs, maxYears: number =
 
   // If no solution found within maxYears, check if it's achievable at all
   if (result === -1) {
-    const finalValue = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
-      maxYears,
-      false
-    );
+    const finalValue = calculateFuturePortfolioValue(inputs, maxYears, false);
     if (finalValue < requiredPortfolio) {
       // Check if portfolio is growing - if the trajectory is positive,
       // it might be achievable beyond maxYears
-      const valueAt90Years = calculateFuturePortfolioValue(
-        inputs.basics,
-        inputs.allocation,
-        inputs.marketAssumptions,
-        inputs.growthRates,
-        maxYears - 10,
-        false
-      );
+      const valueAt90Years = calculateFuturePortfolioValue(inputs, maxYears - 10, false);
       if (finalValue > valueAt90Years) {
         return -1; // Growing but not fast enough within reasonable timeframe
       } else {
@@ -139,14 +118,7 @@ export const getFIREAnalysis = (
     };
   }
 
-  const projectedPortfolioAtFIRE = calculateFuturePortfolioValue(
-    inputs.basics,
-    inputs.allocation,
-    inputs.marketAssumptions,
-    inputs.growthRates,
-    yearsToFIRE,
-    false
-  );
+  const projectedPortfolioAtFIRE = calculateFuturePortfolioValue(inputs, yearsToFIRE, false);
 
   // Generate appropriate message
   let message = '';
@@ -184,10 +156,7 @@ export const getFIREChartData = (inputs: QuickPlanInputs): { age: number; portfo
   const data: ChartDataPoint[] = [];
   for (let age = startAge; age <= endAge; age++) {
     const portfolioValue = calculateFuturePortfolioValue(
-      inputs.basics,
-      inputs.allocation,
-      inputs.marketAssumptions,
-      inputs.growthRates,
+      inputs,
       age - startAge,
       false // Use real terms
     );

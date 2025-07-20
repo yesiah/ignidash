@@ -1,4 +1,4 @@
-import { AllocationInputs, MarketAssumptionsInputs, GrowthRatesInputs, BasicsInputs } from '../schemas/quick-plan-schema';
+import { AllocationInputs, MarketAssumptionsInputs, QuickPlanInputs } from '../schemas/quick-plan-schema';
 
 // Calculation function to determine required portfolio for retirement
 export const calculateRequiredPortfolio = (retirementExpenses: number | null, safeWithdrawalRate: number): number => {
@@ -50,20 +50,14 @@ export const calculateWeightedPortfolioReturnReal = (allocation: AllocationInput
 };
 
 // Helper function to calculate yearly contribution (income - expenses) for a given year
-export const calculateYearlyContribution = (
-  annualIncome: number | null,
-  annualExpenses: number | null,
-  growthRates: GrowthRatesInputs,
-  inflationRate: number,
-  year: number,
-  calculateInNominalTerms: boolean
-): number => {
+export const calculateYearlyContribution = (inputs: QuickPlanInputs, year: number, calculateInNominalTerms: boolean): number => {
+  const { annualIncome, annualExpenses } = inputs.basics;
   if (annualIncome === null || annualExpenses === null) {
     console.warn('Cannot calculate yearly contribution: annual income and expenses are required');
     return -1;
   }
 
-  const { incomeGrowthRate, expenseGrowthRate } = growthRates;
+  const { incomeGrowthRate, expenseGrowthRate } = inputs.growthRates;
 
   let effectiveIncomeGrowth: number;
   let effectiveExpenseGrowth: number;
@@ -75,8 +69,8 @@ export const calculateYearlyContribution = (
   } else {
     // Convert nominal rates to real rates
     // Real growth = (1 + nominal) / (1 + inflation) - 1
-    effectiveIncomeGrowth = (1 + incomeGrowthRate / 100) / (1 + inflationRate / 100) - 1;
-    effectiveExpenseGrowth = (1 + expenseGrowthRate / 100) / (1 + inflationRate / 100) - 1;
+    effectiveIncomeGrowth = (1 + incomeGrowthRate / 100) / (1 + inputs.marketAssumptions.inflationRate / 100) - 1;
+    effectiveExpenseGrowth = (1 + expenseGrowthRate / 100) / (1 + inputs.marketAssumptions.inflationRate / 100) - 1;
   }
 
   // Calculate future values using the appropriate growth rates
@@ -87,15 +81,8 @@ export const calculateYearlyContribution = (
 };
 
 // Calculate future portfolio value with annual contributions
-export const calculateFuturePortfolioValue = (
-  basics: BasicsInputs,
-  allocation: AllocationInputs,
-  marketAssumptions: MarketAssumptionsInputs,
-  growthRates: GrowthRatesInputs,
-  years: number,
-  calculateInNominalTerms: boolean
-): number => {
-  const { investedAssets } = basics;
+export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: number, calculateInNominalTerms: boolean): number => {
+  const { investedAssets } = inputs.basics;
   if (investedAssets === null) {
     console.warn('Cannot calculate future portfolio value: invested assets is required');
     return -1;
@@ -104,8 +91,8 @@ export const calculateFuturePortfolioValue = (
   // Get return rate as decimal
   const rateOfReturn =
     (calculateInNominalTerms
-      ? calculateWeightedPortfolioReturnNominal(allocation, marketAssumptions)
-      : calculateWeightedPortfolioReturnReal(allocation, marketAssumptions)) / 100;
+      ? calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions)
+      : calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions)) / 100;
 
   // Current assets grow for the full period
   const futureValueOfAssets = investedAssets * Math.pow(1 + rateOfReturn, years);
@@ -114,14 +101,7 @@ export const calculateFuturePortfolioValue = (
   let futureValueOfContributions = 0;
 
   for (let year = 0; year < years; year++) {
-    const contribution = calculateYearlyContribution(
-      basics.annualIncome,
-      basics.annualExpenses,
-      growthRates,
-      marketAssumptions.inflationRate,
-      year,
-      calculateInNominalTerms
-    );
+    const contribution = calculateYearlyContribution(inputs, year, calculateInNominalTerms);
 
     // Handle error case from calculateYearlyContribution
     if (contribution === -1) {
