@@ -111,7 +111,7 @@ export default function BasicsSection() {
             />
             <NumberInput
               id="annual-expenses"
-              label="Annual Expenses"
+              label="Annual Spending"
               value={basics.annualExpenses}
               onBlur={(value) => updateBasics('annualExpenses', value)}
               inputMode="decimal"
@@ -198,12 +198,12 @@ export default function BasicsSection() {
 
         <DisclosureCard
           title="Income & Spending Growth"
-          desc="Set expected nominal growth rates for income and expenses over time."
+          desc="Set expected nominal growth rates for income and spending over time."
           icon={ArrowTrendingUpIcon}
         >
           <form onSubmit={(e) => e.preventDefault()}>
             <fieldset className="space-y-4">
-              <legend className="sr-only">Income and expense growth rate projections</legend>
+              <legend className="sr-only">Income and spending growth rate projections</legend>
               <NumberInput
                 id="income-growth-rate"
                 label={
@@ -222,7 +222,7 @@ export default function BasicsSection() {
                 id="expense-growth-rate"
                 label={
                   <div className="flex w-full items-center justify-between">
-                    <span>Expense Growth Rate (%)</span>
+                    <span>Spending Growth Rate (%)</span>
                     <span className="text-muted-foreground">{expenseRealGrowthRate.toFixed(1)}% real</span>
                   </div>
                 }

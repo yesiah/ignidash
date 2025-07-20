@@ -170,7 +170,7 @@ export default function FineTuneSection() {
           </DisclosureCard>
           <DisclosureCard
             title="Retirement Cash Flow"
-            desc="Portfolio withdrawals and income sources that will cover your retirement expenses."
+            desc="Portfolio withdrawals and income sources that will cover your retirement spending."
             icon={BanknotesIcon}
           >
             <form onSubmit={(e) => e.preventDefault()}>

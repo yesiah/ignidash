@@ -19,7 +19,7 @@ export default function GoalSection() {
             <legend className="sr-only">Retirement spending goal configuration</legend>
             <NumberInput
               id="retirement-expenses"
-              label="Retirement Expenses"
+              label="Retirement Spending"
               value={goals.retirementExpenses}
               onBlur={(value) => updateGoals('retirementExpenses', value)}
               inputMode="decimal"
