@@ -1,4 +1,5 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+
 import { calculateFuturePortfolioValue } from '../core/projections';
 
 export interface ChartDataPoint {
