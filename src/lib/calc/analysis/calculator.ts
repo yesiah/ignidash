@@ -7,14 +7,12 @@ import { calculateRequiredPortfolio, calculateFuturePortfolioValue } from '../co
  * Returns -1 if FIRE is not achievable within 100 years or if required data is missing
  */
 export const calculateYearsToFIRE = (inputs: QuickPlanInputs, maxYears: number = 100): number | null => {
-  // First, check if we can calculate the required portfolio
   const requiredPortfolio = calculateRequiredPortfolio(inputs.goals.retirementExpenses, inputs.retirementFunding.safeWithdrawalRate);
   if (requiredPortfolio === null) {
     console.warn('Cannot calculate years to FIRE: required portfolio is missing');
     return null;
   }
 
-  // Check if already FIRE'd
   const currentPortfolioValue = inputs.basics.investedAssets;
   if (currentPortfolioValue === null) {
     console.warn('Cannot calculate years to FIRE: current portfolio value is required');
