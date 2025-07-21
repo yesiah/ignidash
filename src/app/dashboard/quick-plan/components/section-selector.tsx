@@ -33,7 +33,10 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           <button
             type="button"
             onClick={() => setActiveSection('your-numbers')}
-            className="bg-emphasized-background ring-border hover:bg-background relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10"
+            className={cn(
+              activeSection === 'your-numbers' ? '' : '',
+              'bg-emphasized-background ring-border hover:bg-background relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
+            )}
           >
             <CalculatorIcon className="text-primary mr-2 -ml-0.5 size-5" aria-hidden="true" />
             Numbers
@@ -41,7 +44,10 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           <button
             type="button"
             onClick={() => setActiveSection('results')}
-            className="bg-emphasized-background ring-border hover:bg-background relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10"
+            className={cn(
+              activeSection === 'results' ? '' : '',
+              'bg-emphasized-background ring-border hover:bg-background relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
+            )}
           >
             <PresentationChartLineIcon className="text-primary mr-2 -ml-0.5 size-5" aria-hidden="true" />
             Results
