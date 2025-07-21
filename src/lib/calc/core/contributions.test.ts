@@ -5,7 +5,7 @@ import { defaultState } from '@/lib/stores/quick-plan-store';
 import { calculateYearlyContribution } from './contributions';
 
 describe('calculateYearlyContribution', () => {
-  it('should calculate correct contribution for year 0 (base year) with nominal values', () => {
+  it('should calculate correct contribution for year 0 (base year)', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -25,7 +25,7 @@ describe('calculateYearlyContribution', () => {
     expect(result).toBe(40000);
   });
 
-  it('should calculate correct contribution for year 1 with nominal values', () => {
+  it('should calculate correct contribution for year 1 with growth equal to inflation', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -37,15 +37,20 @@ describe('calculateYearlyContribution', () => {
         incomeGrowthRate: 3,
         expenseGrowthRate: 3,
       },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        inflationRate: 3,
+      },
     };
 
     const result = calculateYearlyContribution(inputs, 1);
 
-    // Year 1: (100,000 × 1.03) - (60,000 × 1.03) = 103,000 - 61,800 = 41,200
-    expect(result).toBe(41200);
+    // With 3% nominal growth and 3% inflation, real growth is 0%
+    // Year 1: (100,000 × 1.0) - (60,000 × 1.0) = 100,000 - 60,000 = 40,000
+    expect(result).toBe(40000);
   });
 
-  it('should calculate correct contribution for year 1 with real values', () => {
+  it('should calculate correct contribution for year 1 with positive real growth', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -70,7 +75,7 @@ describe('calculateYearlyContribution', () => {
     expect(result).toBeCloseTo(40776.7, 1);
   });
 
-  it('should handle different growth rates for income and expenses with nominal values', () => {
+  it('should handle different growth rates for income and expenses', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -79,18 +84,24 @@ describe('calculateYearlyContribution', () => {
         annualExpenses: 60000,
       },
       growthRates: {
-        incomeGrowthRate: 5, // Higher income growth
-        expenseGrowthRate: 2, // Lower expense growth
+        incomeGrowthRate: 5, // Higher income growth (nominal)
+        expenseGrowthRate: 2, // Lower expense growth (nominal)
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        inflationRate: 3,
       },
     };
 
     const result = calculateYearlyContribution(inputs, 1);
 
-    // Year 1: (100,000 × 1.05) - (60,000 × 1.02) = 105,000 - 61,200 = 43,800
-    expect(result).toBe(43800);
+    // Real income growth: (1.05 / 1.03) - 1 = 0.0194 = 1.94%
+    // Real expense growth: (1.02 / 1.03) - 1 = -0.0097 = -0.97%
+    // Year 1: (100,000 × 1.0194) - (60,000 × 0.9903) = 101,941.75 - 59,417.48 = 42,524.27
+    expect(result).toBeCloseTo(42524.27, 2);
   });
 
-  it('should handle multiple years with compounding using nominal values', () => {
+  it('should handle multiple years with compounding when growth equals inflation', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -102,17 +113,20 @@ describe('calculateYearlyContribution', () => {
         incomeGrowthRate: 3,
         expenseGrowthRate: 3,
       },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        inflationRate: 3,
+      },
     };
 
     const result = calculateYearlyContribution(inputs, 5);
 
-    // Year 5: (100,000 × 1.03^5) - (60,000 × 1.03^5)
-    // = (100,000 × 1.159274) - (60,000 × 1.159274)
-    // = 115,927.4 - 69,556.44 = 46,370.96
-    expect(result).toBeCloseTo(46370.96, 2);
+    // With 3% nominal growth and 3% inflation, real growth is 0%
+    // Year 5: (100,000 × 1.0^5) - (60,000 × 1.0^5) = 100,000 - 60,000 = 40,000
+    expect(result).toBe(40000);
   });
 
-  it('should return -1 when annualIncome is null', () => {
+  it('should return null when annualIncome is null', () => {
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
@@ -130,7 +144,7 @@ describe('calculateYearlyContribution', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return -1 when annualExpenses is null', () => {
+  it('should return null when annualExpenses is null', () => {
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const inputs = {
       ...defaultState.inputs,
@@ -148,7 +162,7 @@ describe('calculateYearlyContribution', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should handle negative contribution (expenses exceed income) with nominal values', () => {
+  it('should handle negative contribution (expenses exceed income)', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -158,7 +172,11 @@ describe('calculateYearlyContribution', () => {
       },
       growthRates: {
         incomeGrowthRate: 2,
-        expenseGrowthRate: 4, // Expenses growing faster
+        expenseGrowthRate: 4, // Expenses growing faster (nominal)
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        inflationRate: 3,
       },
     };
 
@@ -168,7 +186,9 @@ describe('calculateYearlyContribution', () => {
     // Year 0: 50,000 - 60,000 = -10,000
     expect(result0).toBe(-10000);
 
-    // Year 1: (50,000 × 1.02) - (60,000 × 1.04) = 51,000 - 62,400 = -11,400
-    expect(result1).toBe(-11400);
+    // Real income growth: (1.02 / 1.03) - 1 = -0.97%
+    // Real expense growth: (1.04 / 1.03) - 1 = 0.97%
+    // Year 1: (50,000 × 0.9903) - (60,000 × 1.0097) = 49,514.56 - 60,582.52 = -11,067.96
+    expect(result1).toBeCloseTo(-11067.96, 2);
   });
 });
