@@ -7,7 +7,7 @@ export interface ChartDataPoint {
   portfolioValue: number;
 }
 
-export const getFIREChartData = (inputs: QuickPlanInputs, calculateInNominalTerms: boolean): ChartDataPoint[] => {
+export const getFIREChartData = (inputs: QuickPlanInputs): ChartDataPoint[] => {
   const startAge = inputs.basics.currentAge;
   if (startAge === null) return [];
 
@@ -15,7 +15,7 @@ export const getFIREChartData = (inputs: QuickPlanInputs, calculateInNominalTerm
 
   const data: ChartDataPoint[] = [];
   for (let age = startAge; age <= endAge; age++) {
-    const portfolioValue = calculateFuturePortfolioValue(inputs, age - startAge, calculateInNominalTerms);
+    const portfolioValue = calculateFuturePortfolioValue(inputs, age - startAge);
 
     if (portfolioValue !== null) {
       data.push({ age, portfolioValue });

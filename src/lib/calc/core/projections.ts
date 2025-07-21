@@ -1,6 +1,6 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
-import { calculateWeightedPortfolioReturnNominal, calculateWeightedPortfolioReturnReal } from './returns';
+import { calculateWeightedPortfolioReturnReal } from './returns';
 import { calculateYearlyContribution } from './contributions';
 
 // Calculation function to determine required portfolio for retirement
@@ -14,7 +14,7 @@ export const calculateRequiredPortfolio = (retirementExpenses: number | null, sa
 };
 
 // Calculate future portfolio value with annual contributions
-export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: number, calculateInNominalTerms: boolean): number | null => {
+export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: number): number | null => {
   const { investedAssets } = inputs.basics;
   if (investedAssets === null) {
     console.warn('Cannot calculate future portfolio value: invested assets is required');
@@ -22,10 +22,7 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
   }
 
   // Get return rate as decimal
-  const rateOfReturn =
-    (calculateInNominalTerms
-      ? calculateWeightedPortfolioReturnNominal(inputs.allocation, inputs.marketAssumptions)
-      : calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions)) / 100;
+  const rateOfReturn = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions) / 100;
 
   // Current assets grow for the full period
   const futureValueOfAssets = investedAssets * Math.pow(1 + rateOfReturn, years);
@@ -34,7 +31,7 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
   let futureValueOfContributions = 0;
 
   for (let year = 0; year < years; year++) {
-    const contribution = calculateYearlyContribution(inputs, year, calculateInNominalTerms);
+    const contribution = calculateYearlyContribution(inputs, year);
 
     // Handle error case from calculateYearlyContribution
     if (contribution === null) {

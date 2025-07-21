@@ -329,15 +329,12 @@ export const useResetSection = () => useQuickPlanStore((state) => state.actions.
  * FIRE Calculations
  * These hooks provide computed values for Financial Independence, Retire Early analysis
  */
-export const useYearsToFIRE = () =>
-  useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs, state.preferences.displayFormat === 'future'));
-export const useFIREAge = () => useQuickPlanStore((state) => calculateFIREAge(state.inputs, state.preferences.displayFormat === 'future'));
-export const useFIREAnalysis = () =>
-  useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs, state.preferences.displayFormat === 'future')));
+export const useYearsToFIRE = () => useQuickPlanStore((state) => calculateYearsToFIRE(state.inputs));
+export const useFIREAge = () => useQuickPlanStore((state) => calculateFIREAge(state.inputs));
+export const useFIREAnalysis = () => useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs)));
 export const useFIREChartData = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
-  const calculateInNominalTerms = useQuickPlanStore((state) => state.preferences.displayFormat === 'future');
-  return useMemo(() => getFIREChartData(inputs, calculateInNominalTerms), [inputs, calculateInNominalTerms]);
+  return useMemo(() => getFIREChartData(inputs), [inputs]);
 };
 
 /**
