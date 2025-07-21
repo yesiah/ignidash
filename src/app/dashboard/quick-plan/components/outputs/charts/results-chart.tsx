@@ -74,7 +74,7 @@ export default function ResultsChart() {
           <Area type="monotone" dataKey="portfolioValue" stroke={primaryColor} fillOpacity={1} fill="url(#colorPortfolio)" />
           {fireAnalysis.isAchievable && (
             <ReferenceLine
-              x={fireAnalysis.fireAge!}
+              x={Math.round(fireAnalysis.fireAge!)}
               stroke={foregroundColor}
               strokeDasharray="10 5"
               label={{ value: 'FIRE', position: 'insideBottomLeft', fill: foregroundColor }}
