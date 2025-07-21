@@ -38,13 +38,13 @@ export default function FIREPathsSection() {
             <legend className="sr-only">Barista FIRE part-time income configuration</legend>
             <NumberInput
               id="part-time-income"
-              label="Part-Time Annual Income"
+              label="Part-Time Income"
               value={flexiblePaths.partTimeIncome}
               onBlur={(value) => updateFlexiblePaths('partTimeIncome', value)}
               inputMode="decimal"
               placeholder="$18,000"
               prefix="$"
-              desc="Expected gross income from part-time work in today's dollars."
+              desc="Expected gross annual income from part-time work in today's dollars."
             />
           </fieldset>
         </form>
