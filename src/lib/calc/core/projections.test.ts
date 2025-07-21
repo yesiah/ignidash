@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { defaultState } from '@/lib/stores/quick-plan-store';
 
-import { calculateRequiredPortfolio, calculateFuturePortfolioValue } from './projections';
+import { calculateRequiredPortfolio, calculateFuturePortfolioValue, calculatePostFIREPortfolioValue } from './projections';
 
 describe('calculateRequiredPortfolio', () => {
   it('should return 1,000,000 for 40,000 retirement expenses with 4% SWR', () => {
@@ -328,5 +328,136 @@ describe('calculateFuturePortfolioValue', () => {
       expect(result).toBeGreaterThan(100000);
       expect(result).not.toBeNull();
     });
+  });
+});
+
+describe('calculatePostFIREPortfolioValue', () => {
+  const baseInputs = {
+    ...defaultState.inputs,
+    goals: {
+      retirementExpenses: 80000,
+    },
+    retirementFunding: {
+      ...defaultState.inputs.retirementFunding,
+      retirementIncome: 30000,
+      effectiveTaxRate: 25,
+    },
+    allocation: {
+      stockAllocation: 60,
+      bondAllocation: 40,
+      cashAllocation: 0,
+    },
+    marketAssumptions: {
+      ...defaultState.inputs.marketAssumptions,
+      stockReturn: 8,
+      bondReturn: 4,
+      cashReturn: 2,
+      inflationRate: 3,
+    },
+  };
+
+  it('should calculate portfolio value after retirement with withdrawals and taxes', () => {
+    // Starting portfolio: $1,000,000
+    // Retirement expenses: $80,000 (before taxes)
+    // Passive income: $30,000 → Net: $22,500 (after 25% tax)
+    // Shortfall: $57,500
+    // Gross withdrawal needed: $57,500 / 0.75 = $76,667
+    // Nominal return: (0.6 × 8%) + (0.4 × 4%) = 6.4%
+    // Real return: (1.064 / 1.03) - 1 = 3.3009%
+
+    const result = calculatePostFIREPortfolioValue(baseInputs, 1000000, 1);
+
+    // After 1 year:
+    // Start: $1,000,000
+    // BOY withdrawal: $76,667
+    // Remaining: $923,333
+    // Growth: $923,333 × 1.033009 = $953,812
+
+    expect(result).toBeCloseTo(953812, 0);
+  });
+
+  it('should handle case where passive income covers all expenses', () => {
+    const highIncomeInputs = {
+      ...baseInputs,
+      retirementFunding: {
+        ...baseInputs.retirementFunding,
+        retirementIncome: 120000, // High passive income
+      },
+    };
+
+    // Passive income: $120,000 → Net: $90,000 (after 25% tax)
+    // Retirement expenses: $80,000
+    // No withdrawal needed, portfolio just grows
+
+    const result = calculatePostFIREPortfolioValue(highIncomeInputs, 1000000, 1);
+
+    // Portfolio grows by real return: $1,000,000 × 1.033009 = $1,033,009
+    expect(result).toBeCloseTo(1033010, 0);
+  });
+
+  it('should return 0 when portfolio is depleted', () => {
+    const smallPortfolioInputs = {
+      ...baseInputs,
+      goals: {
+        retirementExpenses: 200000, // Very high expenses
+      },
+    };
+
+    // With only $50,000 starting portfolio and high expenses,
+    // the portfolio should be depleted quickly
+    const result = calculatePostFIREPortfolioValue(smallPortfolioInputs, 50000, 1);
+
+    expect(result).toBe(0);
+  });
+
+  it('should calculate multiple years correctly', () => {
+    const result = calculatePostFIREPortfolioValue(baseInputs, 1000000, 3);
+
+    // Year 1: $1,000,000 - $76,667 = $923,333 → $923,333 × 1.033009 = $953,812
+    // Year 2: $953,812 - $76,667 = $877,145 → $877,145 × 1.033009 = $906,090
+    // Year 3: $906,090 - $76,667 = $829,423 → $829,423 × 1.033009 = $856,813
+
+    expect(result).toBeCloseTo(856813, 0);
+  });
+
+  it('should return null when retirement expenses is null', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const invalidInputs = {
+      ...baseInputs,
+      goals: {
+        retirementExpenses: null,
+      },
+    };
+
+    const result = calculatePostFIREPortfolioValue(invalidInputs, 1000000, 1);
+
+    expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate post-FIRE portfolio value: retirement expenses is required');
+    expect(result).toBe(null);
+    consoleSpy.mockRestore();
+  });
+
+  it('should handle zero tax rate correctly', () => {
+    const noTaxInputs = {
+      ...baseInputs,
+      retirementFunding: {
+        ...baseInputs.retirementFunding,
+        effectiveTaxRate: 0,
+      },
+    };
+
+    // No taxes:
+    // Net passive income: $30,000
+    // Shortfall: $50,000
+    // No tax on withdrawal: $50,000 needed
+
+    const result = calculatePostFIREPortfolioValue(noTaxInputs, 1000000, 1);
+
+    // After 1 year:
+    // Start: $1,000,000
+    // BOY withdrawal: $50,000
+    // Remaining: $950,000
+    // Growth: $950,000 × 1.033009 = $981,359
+
+    expect(result).toBeCloseTo(981359, 0);
   });
 });

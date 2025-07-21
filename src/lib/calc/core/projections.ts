@@ -65,3 +65,52 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
 
   return futureValueOfAssets + futureValueOfContributions;
 };
+
+// Calculate portfolio value after FIRE age with retirement withdrawals
+export const calculatePostFIREPortfolioValue = (
+  inputs: QuickPlanInputs,
+  startingPortfolioValue: number,
+  yearsInRetirement: number
+): number | null => {
+  const { retirementExpenses } = inputs.goals;
+  if (retirementExpenses === null) {
+    console.warn('Cannot calculate post-FIRE portfolio value: retirement expenses is required');
+    return null;
+  }
+
+  const { retirementIncome, effectiveTaxRate } = inputs.retirementFunding;
+
+  // Get return rate as decimal
+  const rateOfReturn = calculateWeightedPortfolioReturnReal(inputs.allocation, inputs.marketAssumptions) / 100;
+
+  let portfolioValue = startingPortfolioValue;
+
+  // Simulate each year in retirement
+  for (let year = 0; year < yearsInRetirement; year++) {
+    // Calculate net passive income (after taxes)
+    const netPassiveIncome = retirementIncome * (1 - effectiveTaxRate / 100);
+
+    // Calculate after-tax shortfall that needs to be covered by withdrawals
+    const afterTaxShortfall = retirementExpenses - netPassiveIncome;
+
+    // If passive income covers all expenses, no withdrawal needed
+    let grossWithdrawal = 0;
+    if (afterTaxShortfall > 0) {
+      // Calculate gross withdrawal needed (includes taxes on the withdrawal)
+      grossWithdrawal = afterTaxShortfall / (1 - effectiveTaxRate / 100);
+    }
+
+    // Beginning-of-year withdrawal
+    portfolioValue -= grossWithdrawal;
+
+    // If portfolio goes negative, return 0 (portfolio depleted)
+    if (portfolioValue < 0) {
+      return 0;
+    }
+
+    // Portfolio grows for the rest of the year
+    portfolioValue *= 1 + rateOfReturn;
+  }
+
+  return portfolioValue;
+};
