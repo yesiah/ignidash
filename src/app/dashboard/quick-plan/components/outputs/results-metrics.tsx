@@ -8,9 +8,9 @@ export default function ResultsMetrics() {
   const fireAnalysis = useFIREAnalysis();
 
   const stats = [
-    { name: 'FIRE Age', stat: fireAnalysis.fireAge },
-    { name: 'Years to FIRE', stat: fireAnalysis.yearsToFIRE },
-    { name: 'Required Portfolio Size', stat: fireAnalysis.requiredPortfolio },
+    { name: 'FIRE Age', stat: fireAnalysis.fireAge, fractionDigits: 1 },
+    { name: 'Years to FIRE', stat: fireAnalysis.yearsToFIRE, fractionDigits: 1 },
+    { name: 'Required Portfolio Size', stat: fireAnalysis.requiredPortfolio, fractionDigits: 2 },
   ];
 
   return (
@@ -19,7 +19,9 @@ export default function ResultsMetrics() {
         {stats.map((item) => (
           <Card key={item.name} className="text-center sm:text-left">
             <dt className="text-muted-foreground truncate text-sm font-medium">{item.name}</dt>
-            <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">{item.stat ? formatNumber(item.stat) : 'N/A'}</dd>
+            <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
+              {item.stat ? formatNumber(item.stat, item.fractionDigits) : 'N/A'}
+            </dd>
           </Card>
         ))}
       </dl>

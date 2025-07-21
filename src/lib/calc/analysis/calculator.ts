@@ -51,7 +51,7 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs): number | null => 
   }
 
   // Round to nearest tenth
-  return result !== null ? Math.round(result * 10) / 10 : null;
+  return result;
 };
 
 /**

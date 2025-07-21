@@ -12,5 +12,5 @@ export function formatNumber(num: number, fractionDigits: number = 2) {
   if (absNum >= 1000000000) return sign + (absNum / 1000000000).toFixed(fractionDigits) + 'B';
   if (absNum >= 1000000) return sign + (absNum / 1000000).toFixed(fractionDigits) + 'M';
   if (absNum >= 1000) return sign + (absNum / 1000).toFixed(fractionDigits) + 'k';
-  return sign + absNum.toString();
+  return sign + absNum.toFixed(fractionDigits);
 }
