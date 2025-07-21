@@ -43,7 +43,13 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
 
     // Contribution made at end of year, so it grows for (years - year - 1) periods
     const growthPeriods = years - year - 1;
-    futureValueOfContributions += contribution * Math.pow(1 + rateOfReturn, growthPeriods);
+    if (contribution >= 0) {
+      // Positive contributions grow with returns
+      futureValueOfContributions += contribution * Math.pow(1 + rateOfReturn, growthPeriods);
+    } else {
+      // Negative contributions (withdrawals) don't earn returns, just reduce the total
+      futureValueOfContributions += contribution;
+    }
   }
 
   // Handle partial year if present
