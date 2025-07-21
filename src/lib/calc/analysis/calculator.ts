@@ -34,7 +34,7 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs): number | null => 
     return null; // Cannot retire within 100 years
   }
 
-  while (high - low > 0.01) {
+  while (high - low > 0.005) {
     const mid = (low + high) / 2;
     const futureValue = calculateFuturePortfolioValue(inputs, mid);
 
