@@ -85,8 +85,9 @@ export const calculatePostFIREPortfolioValue = (
 
   let portfolioValue = startingPortfolioValue;
 
-  // Simulate each year in retirement
-  for (let year = 0; year < yearsInRetirement; year++) {
+  // Handle full years
+  const fullYears = Math.floor(yearsInRetirement);
+  for (let year = 0; year < fullYears; year++) {
     // Calculate net passive income (after taxes)
     const netPassiveIncome = retirementIncome * (1 - effectiveTaxRate / 100);
 
@@ -110,6 +111,47 @@ export const calculatePostFIREPortfolioValue = (
 
     // Portfolio grows for the rest of the year
     portfolioValue *= 1 + rateOfReturn;
+
+    // If passive income exceeds expenses, add surplus as end-of-year contribution
+    if (afterTaxShortfall < 0) {
+      const surplus = Math.abs(afterTaxShortfall);
+      portfolioValue += surplus;
+    }
+  }
+
+  // Handle partial year if present
+  const partialYear = yearsInRetirement - fullYears;
+  if (partialYear > 0) {
+    // Calculate net passive income (after taxes)
+    const netPassiveIncome = retirementIncome * (1 - effectiveTaxRate / 100);
+
+    // Calculate after-tax shortfall that needs to be covered by withdrawals
+    const afterTaxShortfall = retirementExpenses - netPassiveIncome;
+
+    // If passive income covers all expenses, no withdrawal needed
+    let grossWithdrawal = 0;
+    if (afterTaxShortfall > 0) {
+      // Calculate gross withdrawal needed (includes taxes on the withdrawal)
+      grossWithdrawal = afterTaxShortfall / (1 - effectiveTaxRate / 100);
+    }
+
+    // Prorate withdrawal for partial year (beginning of period)
+    const proratedWithdrawal = grossWithdrawal * partialYear;
+    portfolioValue -= proratedWithdrawal;
+
+    // If portfolio goes negative, return 0 (portfolio depleted)
+    if (portfolioValue < 0) {
+      return 0;
+    }
+
+    // Portfolio grows for the partial year
+    portfolioValue *= Math.pow(1 + rateOfReturn, partialYear);
+
+    // If passive income exceeds expenses, add prorated surplus as end-of-period contribution
+    if (afterTaxShortfall < 0) {
+      const surplus = Math.abs(afterTaxShortfall) * partialYear;
+      portfolioValue += surplus;
+    }
   }
 
   return portfolioValue;
