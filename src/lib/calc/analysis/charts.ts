@@ -36,7 +36,7 @@ export const getFIREChartData = (inputs: QuickPlanInputs, fireAge: number | null
   for (const age of sortedAges) {
     const portfolioValue =
       fireAge !== null && age >= fireAge && portfolioValueAtFIRE !== null
-        ? calculateFuturePortfolioValueAfterRetirement(inputs, portfolioValueAtFIRE, age - fireAge)
+        ? calculateFuturePortfolioValueAfterRetirement(inputs, portfolioValueAtFIRE, age - fireAge, fireAge)
         : calculateFuturePortfolioValue(inputs, age - startAge);
 
     if (portfolioValue !== null) {

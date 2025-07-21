@@ -70,7 +70,8 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
 export const calculateFuturePortfolioValueAfterRetirement = (
   inputs: QuickPlanInputs,
   startingPortfolioValue: number,
-  yearsInRetirement: number
+  yearsInRetirement: number,
+  retirementStartAge: number
 ): number | null => {
   const { retirementExpenses } = inputs.goals;
   if (retirementExpenses === null) {
@@ -88,8 +89,14 @@ export const calculateFuturePortfolioValueAfterRetirement = (
   // Handle full years
   const fullYears = Math.floor(yearsInRetirement);
   for (let year = 0; year < fullYears; year++) {
+    // Calculate current age
+    const currentAge = retirementStartAge + year;
+
+    // Only apply retirement income if age 62 or older
+    const applicableRetirementIncome = currentAge >= 62 ? retirementIncome : 0;
+
     // Calculate net passive income (after taxes)
-    const netPassiveIncome = retirementIncome * (1 - effectiveTaxRate / 100);
+    const netPassiveIncome = applicableRetirementIncome * (1 - effectiveTaxRate / 100);
 
     // Calculate after-tax shortfall that needs to be covered by withdrawals
     const afterTaxShortfall = retirementExpenses - netPassiveIncome;
@@ -122,8 +129,14 @@ export const calculateFuturePortfolioValueAfterRetirement = (
   // Handle partial year if present
   const partialYear = yearsInRetirement - fullYears;
   if (partialYear > 0) {
+    // Calculate current age for partial year
+    const currentAge = retirementStartAge + fullYears;
+
+    // Only apply retirement income if age 62 or older
+    const applicableRetirementIncome = currentAge >= 62 ? retirementIncome : 0;
+
     // Calculate net passive income (after taxes)
-    const netPassiveIncome = retirementIncome * (1 - effectiveTaxRate / 100);
+    const netPassiveIncome = applicableRetirementIncome * (1 - effectiveTaxRate / 100);
 
     // Calculate after-tax shortfall that needs to be covered by withdrawals
     const afterTaxShortfall = retirementExpenses - netPassiveIncome;
