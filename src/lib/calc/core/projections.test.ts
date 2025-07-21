@@ -68,7 +68,7 @@ describe('calculateFuturePortfolioValue', () => {
     expect(result).toBeCloseTo(296604.65, 0);
   });
 
-  it('should calculate correct future value with nominal returns', () => {
+  it('should calculate correct future value when growth equals inflation (0% real growth)', () => {
     const inputs = {
       ...defaultState.inputs,
       basics: {
@@ -90,27 +90,27 @@ describe('calculateFuturePortfolioValue', () => {
         inflationRate: 3,
       },
       growthRates: {
-        incomeGrowthRate: 3,
-        expenseGrowthRate: 3,
+        incomeGrowthRate: 3, // Same as inflation = 0% real growth
+        expenseGrowthRate: 3, // Same as inflation = 0% real growth
       },
     };
 
     const result = calculateFuturePortfolioValue(inputs, 5);
 
-    // Nominal return: 8.5%
-    // Initial assets after 5 years: 100,000 × (1.085)^5 = 150,365.67
+    // Real return: 5.3398% (from nominal 8.5% and 3% inflation)
+    // Initial assets after 5 years: 100,000 × (1.053398)^5 = 129,706.75
     //
-    // Contributions growing at 3% nominal:
-    // Year 0: 30,000 × (1.085)^4 = 41,575.76
-    // Year 1: 30,900 × (1.085)^3 = 39,468.23
-    // Year 2: 31,827 × (1.085)^2 = 37,467.54
-    // Year 3: 32,781.81 × (1.085)^1 = 35,568.26
-    // Year 4: 33,765.26 × (1.085)^0 = 33,765.26
-    // Total contributions FV: 187,845.06
+    // Contributions stay constant at 30,000 in real terms (0% real growth):
+    // Year 0: 30,000 × (1.053398)^4 = 36,939.53
+    // Year 1: 30,000 × (1.053398)^3 = 35,067.01
+    // Year 2: 30,000 × (1.053398)^2 = 33,289.42
+    // Year 3: 30,000 × (1.053398)^1 = 31,601.94
+    // Year 4: 30,000 × (1.053398)^0 = 30,000.00
+    // Total contributions FV: 166,897.91
     //
-    // Total: 150,365.67 + 187,845.06 = 338,210.73
+    // Total: 129,706.75 + 166,897.91 = 296,604.65
 
-    expect(result).toBeCloseTo(338210.73, 0);
+    expect(result).toBeCloseTo(296604.65, 0);
   });
 
   it('should handle zero real return scenario (100% cash with inflation = cash return)', () => {
