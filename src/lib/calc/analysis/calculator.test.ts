@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis } from './calculator';
-import { calculateFuturePortfolioValue } from '../core/projections';
+import { calculateFuturePortfolioValue, calculateRequiredPortfolio } from '../core/projections';
 import { calculateWeightedPortfolioReturnReal } from '../core/returns';
 
 describe('FIRE Calculations', () => {
@@ -957,5 +957,145 @@ describe('Property-Based Validation', () => {
 
     const years = calculateYearsToFIRE(impossibleInputs);
     expect(years).toBe(null);
+  });
+});
+
+// Integration tests for floating point precision
+describe('Floating Point Precision Integration Tests', () => {
+  const baseInputs: QuickPlanInputs = {
+    basics: {
+      currentAge: 30,
+      annualIncome: 100000,
+      annualExpenses: 60000,
+      investedAssets: 100000,
+    },
+    growthRates: {
+      incomeGrowthRate: 3,
+      expenseGrowthRate: 3,
+    },
+    allocation: {
+      stockAllocation: 70,
+      bondAllocation: 30,
+      cashAllocation: 0,
+    },
+    goals: {
+      retirementExpenses: 40000,
+    },
+    marketAssumptions: {
+      stockReturn: 10,
+      bondReturn: 5,
+      cashReturn: 3,
+      inflationRate: 3,
+    },
+    retirementFunding: {
+      safeWithdrawalRate: 4,
+      retirementIncome: 0,
+      lifeExpectancy: 85,
+      effectiveTaxRate: 15,
+    },
+    flexiblePaths: {
+      targetRetirementAge: 50,
+      partTimeIncome: 0,
+    },
+  };
+
+  it('should have round-trip consistency between calculateYearsToFIRE and calculateFuturePortfolioValue', () => {
+    const yearsToFIRE = calculateYearsToFIRE(baseInputs);
+    expect(yearsToFIRE).not.toBeNull();
+
+    // The portfolio value at the calculated years should meet or exceed the required portfolio
+    const portfolioAtFIRE = calculateFuturePortfolioValue(baseInputs, yearsToFIRE!);
+    const requiredPortfolio = calculateRequiredPortfolio(
+      baseInputs.goals.retirementExpenses,
+      baseInputs.retirementFunding.safeWithdrawalRate
+    );
+
+    expect(portfolioAtFIRE).toBeGreaterThanOrEqual(requiredPortfolio! - 500); // Allow tolerance for binary search precision
+  });
+
+  it('should verify binary search precision is appropriate', () => {
+    const yearsToFIRE = calculateYearsToFIRE(baseInputs);
+    expect(yearsToFIRE).not.toBeNull();
+
+    // Check that 0.05 years earlier would not be sufficient
+    const portfolioEarlier = calculateFuturePortfolioValue(baseInputs, yearsToFIRE! - 0.05);
+    const requiredPortfolio = calculateRequiredPortfolio(
+      baseInputs.goals.retirementExpenses,
+      baseInputs.retirementFunding.safeWithdrawalRate
+    );
+
+    expect(portfolioEarlier).toBeLessThan(requiredPortfolio!);
+  });
+
+  it('should handle scenarios resulting in specific fractional years', () => {
+    // Create a scenario that should result in a specific fractional result
+    const customInputs: QuickPlanInputs = {
+      ...baseInputs,
+      basics: {
+        ...baseInputs.basics,
+        investedAssets: 950000, // Very close to FIRE
+        annualIncome: 70000,
+        annualExpenses: 60000, // Low savings
+      },
+    };
+
+    const years = calculateYearsToFIRE(customInputs);
+    expect(years).not.toBeNull();
+    expect(years).toBeGreaterThan(0);
+    expect(years).toBeLessThan(2); // Should be less than 2 years
+
+    // Verify this works with calculateFuturePortfolioValue
+    const futureValue = calculateFuturePortfolioValue(customInputs, years!);
+    const requiredPortfolio = 1000000; // 40k / 0.04
+    expect(futureValue).toBeGreaterThanOrEqual(requiredPortfolio - 2000); // Allow larger tolerance for edge case
+  });
+
+  it('should handle edge case where result is very close to boundary', () => {
+    // Create scenario that might result in something like 4.99 or 5.01
+    const edgeInputs: QuickPlanInputs = {
+      ...baseInputs,
+      basics: {
+        ...baseInputs.basics,
+        investedAssets: 200000,
+        annualIncome: 150000,
+        annualExpenses: 30000, // High savings rate
+      },
+    };
+
+    const years = calculateYearsToFIRE(edgeInputs);
+    expect(years).not.toBeNull();
+
+    // Should be a reasonable timeframe
+    expect(years).toBeGreaterThan(0);
+    expect(years).toBeLessThan(10);
+
+    // Verify precision by checking portfolio value
+    const futureValue = calculateFuturePortfolioValue(edgeInputs, years!);
+    expect(futureValue).toBeGreaterThanOrEqual(1000000 - 6000); // Allow tolerance for binary search precision
+  });
+
+  it('should verify partial year contributions are handled correctly in FIRE calculations', () => {
+    const years = calculateYearsToFIRE(baseInputs);
+    expect(years).not.toBeNull();
+
+    // If the result has a fractional part, verify the calculation is correct
+    if (years! % 1 !== 0) {
+      const wholeYears = Math.floor(years!);
+      const partialYear = years! - wholeYears;
+
+      // The portfolio value should account for the partial year contribution
+      const portfolioAtFIRE = calculateFuturePortfolioValue(baseInputs, years!);
+      const portfolioAtWholeYears = calculateFuturePortfolioValue(baseInputs, wholeYears);
+
+      // The difference should be approximately the prorated contribution
+      const annualContribution = baseInputs.basics.annualIncome! - baseInputs.basics.annualExpenses!;
+      const expectedPartialContribution = annualContribution * partialYear;
+      const actualDifference = portfolioAtFIRE! - portfolioAtWholeYears!;
+
+      // The difference includes asset growth, so comparison should account for that
+      // Just verify the partial year logic is working (difference is reasonable)
+      expect(actualDifference).toBeGreaterThan(expectedPartialContribution * 0.5);
+      expect(actualDifference).toBeLessThan(expectedPartialContribution * 3);
+    }
   });
 });

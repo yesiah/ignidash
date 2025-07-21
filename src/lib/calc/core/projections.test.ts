@@ -227,4 +227,106 @@ describe('calculateFuturePortfolioValue', () => {
     expect(result).toBe(null);
     consoleSpy.mockRestore();
   });
+
+  // New tests for floating point year handling
+  describe('Floating Point Year Handling', () => {
+    const baseInputs = {
+      ...defaultState.inputs,
+      basics: {
+        ...defaultState.inputs.basics,
+        investedAssets: 100000,
+        annualIncome: 80000,
+        annualExpenses: 50000,
+      },
+      allocation: {
+        stockAllocation: 70,
+        bondAllocation: 30,
+        cashAllocation: 0,
+      },
+      marketAssumptions: {
+        ...defaultState.inputs.marketAssumptions,
+        stockReturn: 10,
+        bondReturn: 5,
+        cashReturn: 3,
+        inflationRate: 3,
+      },
+      growthRates: {
+        incomeGrowthRate: 3,
+        expenseGrowthRate: 3,
+      },
+    };
+
+    it('should handle small fractional years correctly', () => {
+      const result01 = calculateFuturePortfolioValue(baseInputs, 0.1);
+      const result05 = calculateFuturePortfolioValue(baseInputs, 0.5);
+      const result09 = calculateFuturePortfolioValue(baseInputs, 0.9);
+
+      // Should have smooth progression
+      expect(result01).toBeGreaterThan(100000); // More than starting assets
+      expect(result05).toBeGreaterThan(result01!);
+      expect(result09).toBeGreaterThan(result05!);
+
+      // 0.5 years should include half a year's contribution (15,000) plus asset growth
+      const expectedAssetGrowth = 100000 * Math.pow(1.053398, 0.5); // ~102,618
+      const expectedPartialContribution = 30000 * 0.5; // 15,000
+      expect(result05).toBeCloseTo(expectedAssetGrowth + expectedPartialContribution, 0);
+    });
+
+    it('should handle fractional years near boundaries correctly', () => {
+      const result099 = calculateFuturePortfolioValue(baseInputs, 0.99);
+      const result100 = calculateFuturePortfolioValue(baseInputs, 1.0);
+      const result101 = calculateFuturePortfolioValue(baseInputs, 1.01);
+
+      // Should show smooth progression across the 1-year boundary
+      expect(result100).toBeGreaterThan(result099!);
+      expect(result101).toBeGreaterThan(result100!);
+
+      // Difference between 0.99 and 1.01 should be small
+      const diff = result101! - result099!;
+      expect(diff).toBeLessThan(1000); // Should be small difference
+    });
+
+    it('should correctly prorate partial year contributions', () => {
+      const result25 = calculateFuturePortfolioValue(baseInputs, 2.25);
+      const result20 = calculateFuturePortfolioValue(baseInputs, 2.0);
+
+      // The difference includes:
+      // 1. Additional asset growth for 0.25 years
+      // 2. Prorated contribution (0.25 * 30,000 = 7,500) with no growth
+      const rateOfReturn = 0.053398; // Real return rate
+      const assetGrowthDifference = result20! * (Math.pow(1 + rateOfReturn, 0.25) - 1);
+      const proratedContribution = 30000 * 0.25;
+      const expectedDifference = assetGrowthDifference + proratedContribution;
+
+      const actualDifference = result25! - result20!;
+      expect(actualDifference).toBeCloseTo(expectedDifference, 0);
+    });
+
+    it('should verify mathematical continuity for various fractional years', () => {
+      const years = [1.1, 1.3, 1.7, 1.9];
+      const results = years.map((y) => calculateFuturePortfolioValue(baseInputs, y));
+
+      // Results should be in ascending order
+      for (let i = 1; i < results.length; i++) {
+        expect(results[i]).toBeGreaterThan(results[i - 1]!);
+      }
+    });
+
+    it('should handle very small fractional years', () => {
+      const result001 = calculateFuturePortfolioValue(baseInputs, 0.001);
+      const result000 = calculateFuturePortfolioValue(baseInputs, 0);
+
+      // Should be barely more than starting assets
+      expect(result001).toBeGreaterThan(result000!);
+      expect(result001! - result000!).toBeLessThan(100); // Very small difference
+    });
+
+    it('should handle high precision fractional years', () => {
+      const result = calculateFuturePortfolioValue(baseInputs, 1.123456789);
+
+      // Should handle high precision without issues
+      expect(result).toBeGreaterThan(100000);
+      expect(result).not.toBeNull();
+    });
+  });
 });
