@@ -66,6 +66,37 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
   return futureValueOfAssets + futureValueOfContributions;
 };
 
+// Helper function to calculate retirement withdrawal and surplus for a given age
+const calculateRetirementCashFlow = (
+  retirementExpenses: number,
+  retirementIncome: number,
+  effectiveTaxRate: number,
+  currentAge: number
+): { grossWithdrawal: number; surplus: number } => {
+  // Only apply retirement income if age 62 or older
+  const applicableRetirementIncome = currentAge >= 62 ? retirementIncome : 0;
+
+  // Calculate net passive income (after taxes)
+  const netPassiveIncome = applicableRetirementIncome * (1 - effectiveTaxRate / 100);
+
+  // Calculate after-tax shortfall that needs to be covered by withdrawals
+  const afterTaxShortfall = retirementExpenses - netPassiveIncome;
+
+  // If passive income covers all expenses, no withdrawal needed
+  let grossWithdrawal = 0;
+  let surplus = 0;
+
+  if (afterTaxShortfall > 0) {
+    // Calculate gross withdrawal needed (includes taxes on the withdrawal)
+    grossWithdrawal = afterTaxShortfall / (1 - effectiveTaxRate / 100);
+  } else {
+    // Passive income exceeds expenses, calculate surplus
+    surplus = Math.abs(afterTaxShortfall);
+  }
+
+  return { grossWithdrawal, surplus };
+};
+
 // Calculate portfolio value after FIRE age with retirement withdrawals
 export const calculateFuturePortfolioValueAfterRetirement = (
   inputs: QuickPlanInputs,
@@ -92,21 +123,8 @@ export const calculateFuturePortfolioValueAfterRetirement = (
     // Calculate current age
     const currentAge = retirementStartAge + year;
 
-    // Only apply retirement income if age 62 or older
-    const applicableRetirementIncome = currentAge >= 62 ? retirementIncome : 0;
-
-    // Calculate net passive income (after taxes)
-    const netPassiveIncome = applicableRetirementIncome * (1 - effectiveTaxRate / 100);
-
-    // Calculate after-tax shortfall that needs to be covered by withdrawals
-    const afterTaxShortfall = retirementExpenses - netPassiveIncome;
-
-    // If passive income covers all expenses, no withdrawal needed
-    let grossWithdrawal = 0;
-    if (afterTaxShortfall > 0) {
-      // Calculate gross withdrawal needed (includes taxes on the withdrawal)
-      grossWithdrawal = afterTaxShortfall / (1 - effectiveTaxRate / 100);
-    }
+    // Calculate cash flows for this year
+    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(retirementExpenses, retirementIncome, effectiveTaxRate, currentAge);
 
     // Beginning-of-year withdrawal
     portfolioValue -= grossWithdrawal;
@@ -120,8 +138,7 @@ export const calculateFuturePortfolioValueAfterRetirement = (
     portfolioValue *= 1 + rateOfReturn;
 
     // If passive income exceeds expenses, add surplus as end-of-year contribution
-    if (afterTaxShortfall < 0) {
-      const surplus = Math.abs(afterTaxShortfall);
+    if (surplus > 0) {
       portfolioValue += surplus;
     }
   }
@@ -132,21 +149,8 @@ export const calculateFuturePortfolioValueAfterRetirement = (
     // Calculate current age for partial year
     const currentAge = retirementStartAge + fullYears;
 
-    // Only apply retirement income if age 62 or older
-    const applicableRetirementIncome = currentAge >= 62 ? retirementIncome : 0;
-
-    // Calculate net passive income (after taxes)
-    const netPassiveIncome = applicableRetirementIncome * (1 - effectiveTaxRate / 100);
-
-    // Calculate after-tax shortfall that needs to be covered by withdrawals
-    const afterTaxShortfall = retirementExpenses - netPassiveIncome;
-
-    // If passive income covers all expenses, no withdrawal needed
-    let grossWithdrawal = 0;
-    if (afterTaxShortfall > 0) {
-      // Calculate gross withdrawal needed (includes taxes on the withdrawal)
-      grossWithdrawal = afterTaxShortfall / (1 - effectiveTaxRate / 100);
-    }
+    // Calculate cash flows for partial year
+    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(retirementExpenses, retirementIncome, effectiveTaxRate, currentAge);
 
     // Prorate withdrawal for partial year (beginning of period)
     const proratedWithdrawal = grossWithdrawal * partialYear;
@@ -161,9 +165,9 @@ export const calculateFuturePortfolioValueAfterRetirement = (
     portfolioValue *= Math.pow(1 + rateOfReturn, partialYear);
 
     // If passive income exceeds expenses, add prorated surplus as end-of-period contribution
-    if (afterTaxShortfall < 0) {
-      const surplus = Math.abs(afterTaxShortfall) * partialYear;
-      portfolioValue += surplus;
+    if (surplus > 0) {
+      const proratedSurplus = surplus * partialYear;
+      portfolioValue += proratedSurplus;
     }
   }
 
