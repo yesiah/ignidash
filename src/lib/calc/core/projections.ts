@@ -125,12 +125,8 @@ export const calculateFuturePortfolioValueAfterRetirement = (
   const fullYears = Math.floor(yearsInRetirement);
   for (let year = 0; year < fullYears; year++) {
     // Calculate cash flows for this year
-    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(
-      retirementExpenses,
-      retirementIncome,
-      effectiveTaxRate,
-      retirementStartAge + year
-    );
+    const currentAge = retirementStartAge + year;
+    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(retirementExpenses, retirementIncome, effectiveTaxRate, currentAge);
 
     // Beginning-of-year withdrawal
     portfolioValue -= grossWithdrawal;
@@ -150,12 +146,8 @@ export const calculateFuturePortfolioValueAfterRetirement = (
   const partialYear = yearsInRetirement - fullYears;
   if (partialYear > 0) {
     // Calculate cash flows for partial year
-    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(
-      retirementExpenses,
-      retirementIncome,
-      effectiveTaxRate,
-      retirementStartAge + fullYears
-    );
+    const currentAge = retirementStartAge + fullYears;
+    const { grossWithdrawal, surplus } = calculateRetirementCashFlow(retirementExpenses, retirementIncome, effectiveTaxRate, currentAge);
 
     // Prorate withdrawal for partial year (beginning of period)
     const proratedWithdrawal = grossWithdrawal * partialYear;
