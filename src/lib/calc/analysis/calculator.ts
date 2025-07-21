@@ -24,12 +24,18 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs): number | null => 
   }
 
   // Binary search for the years to FIRE
-  let low = 0;
-  let high = 100;
+  let low = 0.0;
+  let high = 100.0;
   let result = null;
 
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
+  // First check if it's even possible within 100 years
+  const maxValue = calculateFuturePortfolioValue(inputs, high);
+  if (maxValue === null || maxValue < requiredPortfolio) {
+    return null; // Cannot retire within 100 years
+  }
+
+  while (high - low > 0.01) {
+    const mid = (low + high) / 2;
     const futureValue = calculateFuturePortfolioValue(inputs, mid);
 
     if (futureValue === null) {
@@ -38,13 +44,14 @@ export const calculateYearsToFIRE = (inputs: QuickPlanInputs): number | null => 
 
     if (futureValue >= requiredPortfolio) {
       result = mid;
-      high = mid - 1; // Look for earlier years
+      high = mid;
     } else {
-      low = mid + 1; // Need more years
+      low = mid;
     }
   }
 
-  return result;
+  // Round to nearest tenth
+  return result !== null ? Math.round(result * 10) / 10 : null;
 };
 
 /**

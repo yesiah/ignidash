@@ -30,7 +30,9 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
   // Calculate future value of all contributions
   let futureValueOfContributions = 0;
 
-  for (let year = 0; year < years; year++) {
+  // Handle full years
+  const fullYears = Math.floor(years);
+  for (let year = 0; year < fullYears; year++) {
     const contribution = calculateYearlyContribution(inputs, year);
 
     // Handle error case from calculateYearlyContribution
@@ -40,13 +42,25 @@ export const calculateFuturePortfolioValue = (inputs: QuickPlanInputs, years: nu
     }
 
     // Contribution made at end of year, so it grows for (years - year - 1) periods
-    // For year 0: grows for (years - 1) periods
-    // For year (years - 1): grows for 0 periods (no growth)
     const growthPeriods = years - year - 1;
-
-    // Calculate future value of this year's contribution
-    // When growthPeriods = 0, Math.pow returns 1, so contribution is added as-is
     futureValueOfContributions += contribution * Math.pow(1 + rateOfReturn, growthPeriods);
+  }
+
+  // Handle partial year if present
+  const partialYear = years - fullYears;
+  if (partialYear > 0) {
+    const partialYearContribution = calculateYearlyContribution(inputs, fullYears);
+
+    // Handle error case from calculateYearlyContribution
+    if (partialYearContribution === null) {
+      console.warn(`Failed to calculate contribution for partial year ${fullYears}`);
+      return null;
+    }
+
+    // For partial year, contribution is prorated and made at the end of the partial period
+    // So it has no growth period (added at the very end)
+    const proratedContribution = partialYearContribution * partialYear;
+    futureValueOfContributions += proratedContribution;
   }
 
   return futureValueOfAssets + futureValueOfContributions;
