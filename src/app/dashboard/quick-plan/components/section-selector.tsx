@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/20/solid';
 
 import { cn } from '@/lib/utils';
@@ -30,27 +29,24 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
     <div className="mb-5">
       {/* Mobile Navigation */}
       <div className="border-border grid grid-cols-1 border-b pt-3 pb-5 sm:hidden">
-        <select
-          value={tabs.find((tab) => tab.value === activeSection)?.name}
-          onChange={(e) => {
-            const selectedTab = tabs.find((tab) => tab.name === e.target.value);
-            if (selectedTab) {
-              setActiveSection(selectedTab.value);
-            }
-          }}
-          aria-label="Select a section"
-          className="bg-emphasized-background outline-border col-start-1 row-start-1 w-full appearance-none rounded-md py-2 pr-8 pl-3 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-rose-600"
-        >
-          {tabs.map((tab) => (
-            <option key={tab.name} value={tab.name}>
-              {tab.name}
-            </option>
-          ))}
-        </select>
-        <ChevronDownIcon
-          aria-hidden="true"
-          className="text-muted-foreground pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end"
-        />
+        <span className="isolate inline-flex w-full rounded-md shadow-xs">
+          <button
+            type="button"
+            onClick={() => setActiveSection('your-numbers')}
+            className="bg-emphasized-background ring-border hover:bg-background relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10"
+          >
+            <CalculatorIcon className="text-primary mr-2 -ml-0.5 size-5" aria-hidden="true" />
+            Numbers
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection('results')}
+            className="bg-emphasized-background ring-border hover:bg-background relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10"
+          >
+            <PresentationChartLineIcon className="text-primary mr-2 -ml-0.5 size-5" aria-hidden="true" />
+            Results
+          </button>
+        </span>
       </div>
 
       {/* Desktop Navigation */}
