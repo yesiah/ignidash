@@ -29,7 +29,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   return (
     <div className="mb-5">
       {/* Mobile Navigation */}
-      <div className="border-border grid grid-cols-1 border-b pb-5 sm:hidden">
+      <div className="border-border grid grid-cols-1 border-b pt-3 pb-5 sm:hidden">
         <select
           value={tabs.find((tab) => tab.value === activeSection)?.name}
           onChange={(e) => {
