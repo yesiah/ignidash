@@ -36,8 +36,8 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             type="button"
             onClick={() => setActiveSection('your-numbers')}
             className={cn(
-              activeSection === 'your-numbers' ? 'text-primary' : 'hover:text-primary/75 text-muted-foreground',
-              'ring-border relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
+              activeSection === 'your-numbers' ? 'text-primary' : 'hover:text-primary/75 text-muted-foreground hover:bg-background',
+              'ring-border bg-emphasized-background relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
             )}
           >
             <CalculatorIcon aria-hidden="true" className="mr-2 -ml-0.5 size-5" />
@@ -47,8 +47,8 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             type="button"
             onClick={() => setActiveSection('results')}
             className={cn(
-              activeSection === 'results' ? 'text-primary' : 'hover:text-primary/75 text-muted-foreground',
-              'ring-border relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
+              activeSection === 'results' ? 'text-primary' : 'hover:text-primary/75 text-muted-foreground hover:bg-background',
+              'ring-border bg-emphasized-background relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10'
             )}
           >
             <PresentationChartLineIcon aria-hidden="true" className="mr-2 -ml-0.5 size-5" />
