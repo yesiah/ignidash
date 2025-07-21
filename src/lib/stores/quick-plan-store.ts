@@ -334,7 +334,8 @@ export const useFIREAge = () => useQuickPlanStore((state) => calculateFIREAge(st
 export const useFIREAnalysis = () => useQuickPlanStore(useShallow((state) => getFIREAnalysis(state.inputs)));
 export const useFIREChartData = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
-  return useMemo(() => getFIREChartData(inputs), [inputs]);
+  const fireAge = useFIREAge();
+  return useMemo(() => getFIREChartData(inputs, fireAge), [inputs, fireAge]);
 };
 
 /**
