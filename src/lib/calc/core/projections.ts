@@ -4,13 +4,21 @@ import { calculateWeightedPortfolioReturnReal } from './returns';
 import { calculateYearlyContribution, calculateRetirementCashFlow } from './contributions';
 
 // Calculation function to determine required portfolio for retirement
-export const calculateRequiredPortfolio = (retirementExpenses: number | null, safeWithdrawalRate: number): number | null => {
+export const calculateRequiredPortfolio = (
+  retirementExpenses: number | null,
+  safeWithdrawalRate: number,
+  effectiveTaxRate: number
+): number | null => {
   if (retirementExpenses === null) {
     console.warn('Cannot calculate required portfolio: retirement expenses is required');
     return null;
   }
 
-  return retirementExpenses / (safeWithdrawalRate / 100);
+  // Calculate gross withdrawal needed (includes taxes)
+  const grossWithdrawal = retirementExpenses / (1 - effectiveTaxRate / 100);
+
+  // Apply safe withdrawal rate to gross withdrawal
+  return grossWithdrawal / (safeWithdrawalRate / 100);
 };
 
 // Calculate future portfolio value with annual contributions

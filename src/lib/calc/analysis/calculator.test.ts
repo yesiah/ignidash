@@ -1007,7 +1007,8 @@ describe('Floating Point Precision Integration Tests', () => {
     const portfolioAtFIRE = calculateFuturePortfolioValue(baseInputs, yearsToFIRE!);
     const requiredPortfolio = calculateRequiredPortfolio(
       baseInputs.goals.retirementExpenses,
-      baseInputs.retirementFunding.safeWithdrawalRate
+      baseInputs.retirementFunding.safeWithdrawalRate,
+      baseInputs.retirementFunding.effectiveTaxRate
     );
 
     expect(portfolioAtFIRE).toBeGreaterThanOrEqual(requiredPortfolio! - 500); // Allow tolerance for binary search precision
@@ -1021,7 +1022,8 @@ describe('Floating Point Precision Integration Tests', () => {
     const portfolioEarlier = calculateFuturePortfolioValue(baseInputs, yearsToFIRE! - 0.05);
     const requiredPortfolio = calculateRequiredPortfolio(
       baseInputs.goals.retirementExpenses,
-      baseInputs.retirementFunding.safeWithdrawalRate
+      baseInputs.retirementFunding.safeWithdrawalRate,
+      baseInputs.retirementFunding.effectiveTaxRate
     );
 
     expect(portfolioEarlier).toBeLessThan(requiredPortfolio!);

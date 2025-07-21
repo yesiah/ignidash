@@ -5,15 +5,22 @@ import { defaultState } from '@/lib/stores/quick-plan-store';
 import { calculateRequiredPortfolio, calculateFuturePortfolioValue, calculateFuturePortfolioValueAfterRetirement } from './projections';
 
 describe('calculateRequiredPortfolio', () => {
-  it('should return 1,000,000 for 40,000 retirement expenses with 4% SWR', () => {
-    const result = calculateRequiredPortfolio(40000, 4);
+  it('should return 1,000,000 for 40,000 retirement expenses with 4% SWR and 0% tax', () => {
+    const result = calculateRequiredPortfolio(40000, 4, 0);
     expect(result).toBe(1000000);
   });
 
-  it('should warn and return -1 when retirementExpenses is null', () => {
+  it('should account for taxes correctly', () => {
+    // With 25% tax rate, gross withdrawal = $40,000 / 0.75 = $53,333
+    // Required portfolio = $53,333 / 0.04 = $1,333,333
+    const result = calculateRequiredPortfolio(40000, 4, 25);
+    expect(result).toBeCloseTo(1333333, 0);
+  });
+
+  it('should warn and return null when retirementExpenses is null', () => {
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    const result = calculateRequiredPortfolio(null, 4);
+    const result = calculateRequiredPortfolio(null, 4, 25);
 
     expect(consoleSpy).toHaveBeenCalledWith('Cannot calculate required portfolio: retirement expenses is required');
     expect(result).toBe(null);
@@ -387,15 +394,17 @@ describe('calculateFuturePortfolioValueAfterRetirement', () => {
 
     // Passive income: $120,000 → Net: $90,000 (after 25% tax)
     // Retirement expenses: $80,000
-    // No withdrawal needed, portfolio just grows
+    // Surplus: $10,000 (no withdrawal needed)
 
     const result = calculateFuturePortfolioValueAfterRetirement(highIncomeInputs, 1000000, 1, 62);
 
     // Portfolio grows by real return: $1,000,000 × 1.033009 = $1,033,009
-    expect(result).toBeCloseTo(1033010, 0);
+    // Plus surplus added at end: $10,000
+    // Total: $1,043,009
+    expect(result).toBeCloseTo(1043010, 0);
   });
 
-  it('should return 0 when portfolio is depleted', () => {
+  it('should show negative portfolio when depleted', () => {
     const smallPortfolioInputs = {
       ...baseInputs,
       goals: {
@@ -404,10 +413,14 @@ describe('calculateFuturePortfolioValueAfterRetirement', () => {
     };
 
     // With only $50,000 starting portfolio and high expenses,
-    // the portfolio should be depleted quickly
+    // the portfolio should go negative
     const result = calculateFuturePortfolioValueAfterRetirement(smallPortfolioInputs, 50000, 1, 50);
 
-    expect(result).toBe(0);
+    // Net passive income at age 50: $0 (< 62)
+    // Gross withdrawal needed: $200,000 / 0.75 = $266,667
+    // Portfolio after withdrawal: $50,000 - $266,667 = -$216,667
+    // No growth on negative portfolio, so final result = -$216,667
+    expect(result).toBeCloseTo(-216667, 0);
   });
 
   it('should calculate multiple years correctly', () => {
