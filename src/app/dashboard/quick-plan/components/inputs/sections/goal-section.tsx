@@ -125,13 +125,13 @@ export default function GoalSection() {
             />
             <NumberInput
               id="effective-tax-rate"
-              label="Estimated Effective Tax Rate (%)"
+              label="Retirement Tax Rate (%)"
               value={retirementFunding.effectiveTaxRate}
               onBlur={(value) => updateRetirementFunding('effectiveTaxRate', value)}
               inputMode="decimal"
               placeholder="15%"
               suffix="%"
-              desc="Average tax rate on withdrawals and retirement income."
+              desc="Average effective tax rate on withdrawals and retirement income."
             />
           </fieldset>
         </form>
