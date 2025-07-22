@@ -1,8 +1,11 @@
 'use client';
 
+import { cn } from '@/lib/utils';
+
 type SurfaceColor = 'default' | 'emphasized';
 
 interface IconButtonProps {
+  className?: string;
   icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
   >;
@@ -11,7 +14,7 @@ interface IconButtonProps {
   surfaceColor?: SurfaceColor;
 }
 
-export default function IconButton({ icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
+export default function IconButton({ className, icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
   let hoverClass;
   switch (surfaceColor) {
     case 'default':
@@ -27,7 +30,7 @@ export default function IconButton({ icon: Icon, label, onClick, surfaceColor = 
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`focus-outline border-border rounded-full border p-2 shadow-md ${hoverClass}`}
+      className={cn(`focus-outline border-border rounded-full border p-2 ${hoverClass}`, className)}
     >
       <Icon aria-hidden="true" className="size-5" />
     </button>
