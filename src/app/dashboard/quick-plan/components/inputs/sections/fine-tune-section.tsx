@@ -212,7 +212,7 @@ export default function FineTuneSection() {
                   inputMode="decimal"
                   placeholder="15%"
                   suffix="%"
-                  desc="Average tax rate on withdrawals and retirement income. Typically 10-20%."
+                  desc="Average tax rate on withdrawals and retirement income."
                 />
               </fieldset>
             </form>
