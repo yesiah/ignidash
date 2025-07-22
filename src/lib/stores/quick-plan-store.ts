@@ -144,7 +144,7 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'preferences'> = {
       safeWithdrawalRate: 4,
       retirementIncome: 0, // Real $ - "Social Security (today's dollars)"
       lifeExpectancy: 78,
-      effectiveTaxRate: 15,
+      effectiveTaxRate: 0,
     },
     flexiblePaths: {
       targetRetirementAge: null,
