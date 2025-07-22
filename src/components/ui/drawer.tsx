@@ -15,7 +15,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
     <Dialog open={open} onClose={setOpen} className="relative z-50">
       <DialogBackdrop
         transition
-        className="bg-emphasized-background fixed inset-0 transition-opacity duration-500 ease-in-out data-closed:opacity-0 sm:bg-zinc-900/75"
+        className="bg-emphasized-background fixed inset-0 transition-opacity duration-300 ease-in-out data-closed:opacity-0 sm:bg-zinc-900/75"
       />
 
       <div className="fixed inset-0 overflow-hidden">
@@ -23,10 +23,10 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full sm:pl-16">
             <DialogPanel
               transition
-              className="pointer-events-auto relative w-screen max-w-full transform transition duration-500 ease-in-out data-closed:translate-x-full sm:max-w-md sm:duration-700"
+              className="pointer-events-auto relative w-screen max-w-full transform transition duration-300 ease-in-out data-closed:translate-x-full sm:max-w-md"
             >
               <TransitionChild>
-                <div className="absolute top-0 left-0 -ml-8 hidden pt-4 pr-2 duration-500 ease-in-out data-closed:opacity-0 sm:-ml-10 sm:flex sm:pr-4">
+                <div className="absolute top-0 left-0 -ml-8 hidden pt-4 pr-2 duration-300 ease-in-out data-closed:opacity-0 sm:-ml-10 sm:flex sm:pr-4">
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
