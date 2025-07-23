@@ -9,6 +9,7 @@ import { useGrowthRatesData, useUpdateGrowthRates, useIncomeRealGrowthRate, useE
 export default function IncomeSpendingGrowth() {
   const growthRates = useGrowthRatesData();
   const updateGrowthRates = useUpdateGrowthRates();
+
   const incomeRealGrowthRate = useIncomeRealGrowthRate();
   const expenseRealGrowthRate = useExpenseRealGrowthRate();
 
