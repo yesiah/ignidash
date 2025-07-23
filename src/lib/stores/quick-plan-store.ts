@@ -82,9 +82,7 @@ const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
       set((state) => {
         state.inputs[section] = result.data!;
         state.touched[section] = true;
-        if (state.errors[section]) {
-          delete state.errors[section][field];
-        }
+        if (state.errors[section]) delete state.errors[section][field];
       });
     } else {
       set((state) => {
@@ -256,11 +254,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
                 state.inputs.allocation = result.data!;
                 state.errors.allocation = {};
               } else {
-                const error = result.error;
                 state.errors.allocation = {
-                  stockAllocation: error,
-                  bondAllocation: error,
-                  cashAllocation: error,
+                  stockAllocation: result.error,
+                  bondAllocation: result.error,
+                  cashAllocation: result.error,
                 };
               }
             });
@@ -284,16 +281,16 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           /** Utility actions */
           resetStore: () =>
             set((state) => {
-              Object.assign(state.inputs, defaultState.inputs);
-              state.touched = defaultState.touched;
-              state.errors = defaultState.errors;
+              state.inputs = { ...defaultState.inputs };
+              state.touched = { ...defaultState.touched };
+              state.errors = {};
             }),
 
           resetSection: (section) =>
             set((state) => {
               Object.assign(state.inputs[section], defaultState.inputs[section]);
               state.touched[section] = false;
-              state.errors[section] = defaultState.errors[section];
+              if (state.errors[section]) delete state.errors[section];
             }),
         },
       })),
@@ -301,7 +298,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
         name: 'quick-plan-storage',
         version: 2,
         // Simple migration: just use defaults for any version change
-        migrate: () => defaultState,
+        migrate: () => ({ ...defaultState }),
         // Only persist the inputs and preferences state, not the actions
         partialize: (state) => {
           const baseResult = { preferences: state.preferences };
