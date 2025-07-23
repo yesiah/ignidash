@@ -55,6 +55,12 @@ type TouchedState = {
   [K in keyof QuickPlanInputs]: boolean;
 };
 
+type ErrorState = {
+  [K in keyof QuickPlanInputs]?: {
+    [F in keyof QuickPlanInputs[K]]?: string;
+  };
+};
+
 /**
  * Helper function to create update actions with validation
  * Reduces code duplication across all update methods
@@ -76,10 +82,17 @@ const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
       set((state) => {
         state.inputs[section] = result.data!;
         state.touched[section] = true;
+        if (state.errors[section]) {
+          delete state.errors[section][field];
+        }
       });
     } else {
       set((state) => {
         state.touched[section] = true;
+        state.errors[section] = {
+          ...state.errors[section],
+          [field]: result.error,
+        };
       });
     }
 
@@ -96,8 +109,8 @@ const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
 
 interface QuickPlanState {
   inputs: QuickPlanInputs;
-
   touched: TouchedState;
+  errors: ErrorState;
 
   preferences: {
     displayFormat: 'today' | 'future';
@@ -125,7 +138,7 @@ interface QuickPlanState {
   };
 }
 
-export const defaultState: Pick<QuickPlanState, 'inputs' | 'touched' | 'preferences'> = {
+export const defaultState: Omit<QuickPlanState, 'actions'> = {
   inputs: {
     basics: {
       currentAge: null,
@@ -171,6 +184,7 @@ export const defaultState: Pick<QuickPlanState, 'inputs' | 'touched' | 'preferen
     retirementFunding: false,
     flexiblePaths: false,
   },
+  errors: {},
   preferences: {
     displayFormat: 'today',
     dataStorage: 'localStorage',
@@ -240,6 +254,14 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 
               if (result.valid && result.data) {
                 state.inputs.allocation = result.data!;
+                state.errors.allocation = {};
+              } else {
+                const error = result.error;
+                state.errors.allocation = {
+                  stockAllocation: error,
+                  bondAllocation: error,
+                  cashAllocation: error,
+                };
               }
             });
 
@@ -264,12 +286,14 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             set((state) => {
               Object.assign(state.inputs, defaultState.inputs);
               Object.assign(state.touched, defaultState.touched);
+              state.errors = defaultState.errors;
             }),
 
           resetSection: (section) =>
             set((state) => {
               Object.assign(state.inputs[section], defaultState.inputs[section]);
               Object.assign(state.touched[section], defaultState.touched[section]);
+              state.errors[section] = defaultState.errors[section];
             }),
         },
       })),
