@@ -486,3 +486,30 @@ export const useIsCalculationReady = () =>
       state.inputs.basics.investedAssets !== null &&
       state.inputs.goals.retirementExpenses !== null
   );
+
+/**
+ * Touched State Selectors
+ * These hooks provide access to form interaction state for UI feedback
+ */
+export const useBasicsTouched = () => useQuickPlanStore((state) => state.touched.basics);
+export const useGrowthRatesTouched = () => useQuickPlanStore((state) => state.touched.growthRates);
+export const useAllocationTouched = () => useQuickPlanStore((state) => state.touched.allocation);
+export const useGoalsTouched = () => useQuickPlanStore((state) => state.touched.goals);
+export const useMarketAssumptionsTouched = () => useQuickPlanStore((state) => state.touched.marketAssumptions);
+export const useRetirementFundingTouched = () => useQuickPlanStore((state) => state.touched.retirementFunding);
+export const useFlexiblePathsTouched = () => useQuickPlanStore((state) => state.touched.flexiblePaths);
+
+/**
+ * Error State Selectors
+ * These hooks provide access to validation error state for form feedback
+ */
+const useSectionHasErrors = (section: keyof QuickPlanInputs) =>
+  useQuickPlanStore((state) => Object.keys(state.errors[section] || {}).length > 0);
+
+export const useBasicsHasErrors = () => useSectionHasErrors('basics');
+export const useGrowthRatesHasErrors = () => useSectionHasErrors('growthRates');
+export const useAllocationHasErrors = () => useSectionHasErrors('allocation');
+export const useGoalsHasErrors = () => useSectionHasErrors('goals');
+export const useMarketAssumptionsHasErrors = () => useSectionHasErrors('marketAssumptions');
+export const useRetirementFundingHasErrors = () => useSectionHasErrors('retirementFunding');
+export const useFlexiblePathsHasErrors = () => useSectionHasErrors('flexiblePaths');
