@@ -1,5 +1,5 @@
-import BasicsSection from './sections/basics/basics-section';
-import GoalSection from './sections/retirement-goal/goal-section';
+import BasicsSection from './sections/basics/section';
+import GoalSection from './sections/retirement-goal/section';
 import FineTuneSection from './sections/fine-tune-section';
 import FIREPathsSection from './sections/fire-paths-section';
 
