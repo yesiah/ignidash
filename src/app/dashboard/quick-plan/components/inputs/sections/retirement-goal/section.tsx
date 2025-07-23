@@ -2,9 +2,9 @@
 
 import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
-import SectionHeader from '@/components/ui/section-header';
+import SectionHeader, { SectionStatus } from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
-import { useGoalsData, useUpdateGoals } from '@/lib/stores/quick-plan-store';
+import { useGoalsData, useUpdateGoals, useGoalsTouched, useGoalsHasErrors, useGoalsValidation } from '@/lib/stores/quick-plan-store';
 
 import RetirementFunding from './retirement-funding';
 import DeathTaxes from './death-taxes';
@@ -13,12 +13,27 @@ export default function GoalSection() {
   const goals = useGoalsData();
   const updateGoals = useUpdateGoals();
 
+  const goalsAreTouched = useGoalsTouched();
+  const goalsHasErrors = useGoalsHasErrors();
+  const goalsAreComplete = useGoalsValidation();
+
+  let status: SectionStatus;
+  if (goalsAreComplete) {
+    status = 'complete';
+  } else if (goalsHasErrors) {
+    status = 'error';
+  } else if (goalsAreTouched) {
+    status = 'in-progress';
+  } else {
+    status = 'not-started';
+  }
+
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader
         title="Retirement Goal"
         desc="Your retirement spending level determines when you'll have enough to retire."
-        status="complete"
+        status={status}
       />
       <Card>
         <form onSubmit={(e) => e.preventDefault()}>
