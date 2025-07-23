@@ -384,6 +384,8 @@ export const useFIREChartData = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
 
   const fireAge = useFIREAge();
+  // TODO: Rethink rounding logic. See results-chart.tsx's ReferenceLine for context.
+  // Rounding here to ensure consistent chart data, but may need to be revisited.
   const roundedFireAge = fireAge !== null ? Math.round(fireAge) : null;
 
   return useMemo(() => getFIREChartData(inputs, roundedFireAge), [inputs, roundedFireAge]);
