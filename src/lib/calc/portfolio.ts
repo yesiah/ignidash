@@ -2,6 +2,8 @@ import { Asset, AssetClass } from './asset';
 
 export interface PortfolioChange {
   assetChanges: Record<AssetClass, number>; // Change in each asset class
+  description: string;
+  metadata?: Record<string, unknown>;
 }
 
 export class Portfolio {

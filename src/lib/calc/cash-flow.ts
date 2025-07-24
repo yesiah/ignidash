@@ -5,6 +5,12 @@ import { Portfolio, PortfolioChange } from './portfolio';
 export interface CashFlow {
   id: string;
   name: string;
-  isEligible(year: number, currentAge: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
-  calculateChange(year: number, currentAge: number, portfolio: Portfolio, inputs: QuickPlanInputs): PortfolioChange;
+  shouldApply(year: number, currentAge: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
+  calculateChange(
+    year: number,
+    currentAge: number,
+    portfolio: Portfolio,
+    inputs: QuickPlanInputs,
+    accumulatedChange: PortfolioChange
+  ): PortfolioChange;
 }
