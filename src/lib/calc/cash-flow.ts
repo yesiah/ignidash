@@ -1,10 +1,10 @@
-export interface CashFlow {
-  // Money coming in (real dollars)
-  income: number; // All income sources combined
-  contributions: number; // Money going into portfolio
+import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
-  // Money going out (real dollars)
-  expenses: number; // All living expenses
-  withdrawals: number; // Money coming out of portfolio
-  taxes: number; // Total taxes paid
+import { Portfolio, PortfolioChange } from './portfolio';
+
+export interface CashFlow {
+  id: string;
+  name: string;
+  isEligible(year: number, currentAge: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
+  calculateChange(year: number, currentAge: number, portfolio: Portfolio, inputs: QuickPlanInputs): PortfolioChange;
 }
