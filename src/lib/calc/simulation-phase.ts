@@ -12,8 +12,8 @@ export interface SimulationPhase {
 }
 
 export class AccumulationPhase implements SimulationPhase {
-  getCashFlows(_inputs: QuickPlanInputs): CashFlow[] {
-    return [new AnnualIncome(), new AnnualExpenses()];
+  getCashFlows(inputs: QuickPlanInputs): CashFlow[] {
+    return [new AnnualIncome(inputs), new AnnualExpenses(inputs)];
   }
 
   shouldTransition(_year: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
@@ -40,8 +40,8 @@ export class AccumulationPhase implements SimulationPhase {
 
     // Calculate net cash flow from all income/expense events
     for (const cashFlow of this.getCashFlows(inputs)) {
-      if (cashFlow.shouldApply(year, currentAge, inputs)) {
-        totalCashFlow += cashFlow.calculateChange(year, currentAge, inputs);
+      if (cashFlow.shouldApply(year, currentAge)) {
+        totalCashFlow += cashFlow.calculateChange(year, currentAge);
       }
     }
 
@@ -59,8 +59,8 @@ export class AccumulationPhase implements SimulationPhase {
 }
 
 export class RetirementPhase implements SimulationPhase {
-  getCashFlows(_inputs: QuickPlanInputs): CashFlow[] {
-    return [new PassiveRetirementIncome(), new RetirementExpenses()];
+  getCashFlows(inputs: QuickPlanInputs): CashFlow[] {
+    return [new PassiveRetirementIncome(inputs), new RetirementExpenses(inputs)];
   }
 
   shouldTransition(_year: number, _portfolio: Portfolio, _inputs: QuickPlanInputs): boolean {
@@ -81,8 +81,8 @@ export class RetirementPhase implements SimulationPhase {
 
     // Calculate net cash flow from income and expenses
     for (const cashFlow of this.getCashFlows(inputs)) {
-      if (cashFlow.shouldApply(year, currentAge, inputs)) {
-        totalCashFlow += cashFlow.calculateChange(year, currentAge, inputs);
+      if (cashFlow.shouldApply(year, currentAge)) {
+        totalCashFlow += cashFlow.calculateChange(year, currentAge);
       }
     }
 
