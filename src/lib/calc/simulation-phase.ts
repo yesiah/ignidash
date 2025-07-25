@@ -103,7 +103,7 @@ export class AccumulationPhase implements SimulationPhase {
     // Calculate net cash flow from all income/expense events
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {
-        totalCashFlow += cashFlow.calculateChange(year, currentAge);
+        totalCashFlow += cashFlow.calculateAmount(year, currentAge);
       }
     }
 
@@ -149,7 +149,7 @@ export class RetirementPhase implements SimulationPhase {
     // Calculate net cash flow from income and expenses
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {
-        totalCashFlow += cashFlow.calculateChange(year, currentAge);
+        totalCashFlow += cashFlow.calculateAmount(year, currentAge);
       }
     }
 

@@ -42,7 +42,7 @@ export interface CashFlow {
    * @param currentAge - User's age in the given year
    * @returns Cash flow amount (positive for income, negative for expenses)
    */
-  calculateChange(year: number, currentAge: number): number;
+  calculateAmount(year: number, currentAge: number): number;
 }
 
 /**
@@ -64,7 +64,7 @@ export class AnnualIncome implements CashFlow {
     return true;
   }
 
-  calculateChange(year: number, currentAge: number): number {
+  calculateAmount(year: number, currentAge: number): number {
     const annualIncome = this.inputs.basics.annualIncome!;
 
     // Convert nominal growth to real growth
@@ -95,7 +95,7 @@ export class AnnualExpenses implements CashFlow {
     return true;
   }
 
-  calculateChange(year: number, currentAge: number): number {
+  calculateAmount(year: number, currentAge: number): number {
     const annualExpenses = this.inputs.basics.annualExpenses!;
 
     // Convert nominal growth to real growth
@@ -128,7 +128,7 @@ export class PassiveRetirementIncome implements CashFlow {
     return currentAge >= 62;
   }
 
-  calculateChange(year: number, currentAge: number): number {
+  calculateAmount(year: number, currentAge: number): number {
     const { retirementIncome, effectiveTaxRate } = this.inputs.retirementFunding;
     return retirementIncome * (1 - effectiveTaxRate / 100);
   }
@@ -153,7 +153,7 @@ export class RetirementExpenses implements CashFlow {
     return true;
   }
 
-  calculateChange(year: number, currentAge: number): number {
+  calculateAmount(year: number, currentAge: number): number {
     const { retirementExpenses } = this.inputs.goals;
     return retirementExpenses!;
   }
