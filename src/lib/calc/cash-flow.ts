@@ -69,3 +69,21 @@ export class PassiveRetirementIncome implements CashFlow {
     return retirementIncome * (1 - effectiveTaxRate / 100);
   }
 }
+
+export class RetirementExpenses implements CashFlow {
+  id = 'retirement-expenses';
+  name = 'Retirement Expenses';
+
+  shouldApply(_year: number, _currentAge: number, _inputs: QuickPlanInputs): boolean {
+    return true;
+  }
+
+  calculateChange(year: number, currentAge: number, inputs: QuickPlanInputs): number {
+    const { retirementExpenses } = inputs.goals;
+    if (!retirementExpenses) {
+      return 0;
+    }
+
+    return retirementExpenses;
+  }
+}
