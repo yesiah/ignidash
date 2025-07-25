@@ -73,7 +73,8 @@ type ErrorState = {
 const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
   section: T,
   set: (fn: (state: QuickPlanState) => void) => void,
-  get: () => QuickPlanState
+  get: () => QuickPlanState,
+  shouldUpdateTouchedState: boolean = true
 ) => {
   return (field: keyof QuickPlanInputs[T], value: unknown): UpdateResult => {
     const result = validateField(section, field, value, get().inputs[section]);
@@ -81,16 +82,20 @@ const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
     if (result.valid && result.data) {
       set((state) => {
         state.inputs[section] = result.data!;
-        if (value) {
-          state.touched[section] = true;
-        } else {
-          state.touched[section] = false;
+        if (shouldUpdateTouchedState) {
+          if (value) {
+            state.touched[section] = true;
+          } else {
+            state.touched[section] = false;
+          }
         }
         if (state.errors[section]) delete state.errors[section][field];
       });
     } else {
       set((state) => {
-        state.touched[section] = true;
+        if (shouldUpdateTouchedState) {
+          state.touched[section] = true;
+        }
         state.errors[section] = {
           ...state.errors[section],
           [field]: result.error,
@@ -127,6 +132,7 @@ interface QuickPlanState {
       [K in keyof AllocationInputs]: unknown;
     }) => UpdateResult;
     updateGoals: (field: keyof GoalsInputs, value: unknown) => UpdateResult;
+    updateGoalsWithoutTouched: (field: keyof GoalsInputs, value: unknown) => UpdateResult;
     updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
     updateRetirementFunding: (field: keyof RetirementFundingInputs, value: unknown) => UpdateResult;
     updateFlexiblePaths: (field: keyof FlexiblePathsInputs, value: unknown) => UpdateResult;
@@ -243,6 +249,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           updateBasics: createSimpleUpdateAction('basics', set, get),
           updateGrowthRates: createSimpleUpdateAction('growthRates', set, get),
           updateGoals: createSimpleUpdateAction('goals', set, get),
+          updateGoalsWithoutTouched: createSimpleUpdateAction('goals', set, get, false),
           updateMarketAssumptions: createSimpleUpdateAction('marketAssumptions', set, get),
           updateRetirementFunding: createSimpleUpdateAction('retirementFunding', set, get),
           updateFlexiblePaths: createSimpleUpdateAction('flexiblePaths', set, get),
@@ -360,6 +367,7 @@ export const useUpdateBasics = () => useQuickPlanStore((state) => state.actions.
 export const useUpdateGrowthRates = () => useQuickPlanStore((state) => state.actions.updateGrowthRates);
 export const useUpdateAllocation = () => useQuickPlanStore((state) => state.actions.updateAllocation);
 export const useUpdateGoals = () => useQuickPlanStore((state) => state.actions.updateGoals);
+export const useUpdateGoalsWithoutTouched = () => useQuickPlanStore((state) => state.actions.updateGoalsWithoutTouched);
 export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
 export const useUpdateRetirementFunding = () => useQuickPlanStore((state) => state.actions.updateRetirementFunding);
 export const useUpdateFlexiblePaths = () => useQuickPlanStore((state) => state.actions.updateFlexiblePaths);

@@ -14,12 +14,17 @@ import {
   useAllocationHasErrors,
   useGrowthRatesTouched,
   useGrowthRatesHasErrors,
+  useUpdateGoalsWithoutTouched,
+  useGoalsTouched,
 } from '@/lib/stores/quick-plan-store';
 
 import InvestmentPortfolio from './investment-portfolio';
 import IncomeSpendingGrowth from './income-spending-growth';
 
 export default function BasicsSection() {
+  const updateGoalsWithoutTouched = useUpdateGoalsWithoutTouched();
+  const goalsAreTouched = useGoalsTouched();
+
   const basics = useBasicsData();
   const updateBasics = useUpdateBasics();
 
@@ -79,7 +84,13 @@ export default function BasicsSection() {
               id="annual-expenses"
               label="Annual Spending"
               value={basics.annualExpenses}
-              onBlur={(value) => updateBasics('annualExpenses', value)}
+              onBlur={(value) => {
+                const result = updateBasics('annualExpenses', value);
+                if (result.success && !goalsAreTouched) {
+                  updateGoalsWithoutTouched('retirementExpenses', value);
+                }
+                return result;
+              }}
               inputMode="decimal"
               placeholder="$50,000"
               prefix="$"
