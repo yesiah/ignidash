@@ -1,16 +1,79 @@
+/**
+ * Simulation Phases - Financial Life Stage Management
+ *
+ * This module provides a state machine implementation for modeling different phases of financial life
+ * (accumulation vs. retirement). Each phase defines its own cash flow patterns, transition conditions,
+ * and portfolio management strategies to accurately model changing financial needs over time.
+ *
+ * Architecture:
+ * - SimulationPhase interface for consistent phase behavior
+ * - State machine pattern with transition logic between phases
+ * - Phase-specific cash flow management and portfolio operations
+ * - Tax-aware withdrawal calculations for retirement scenarios
+ *
+ * Key Features:
+ * - Accumulation phase with income and expense management
+ * - Retirement phase with withdrawal-based cash flow
+ * - Automatic phase transitions based on portfolio milestones
+ * - Tax-adjusted withdrawal calculations for retirement funding
+ * - FIRE (Financial Independence, Retire Early) detection logic
+ * - Portfolio preservation strategies during different life stages
+ */
+
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import { Portfolio } from './portfolio';
 import { CashFlow, AnnualIncome, AnnualExpenses, PassiveRetirementIncome, RetirementExpenses } from './cash-flow';
 
+/**
+ * Simulation phase interface defining financial life stage behavior
+ * Implements the strategy pattern for different phases of financial planning
+ */
 export interface SimulationPhase {
+  /**
+   * Gets the cash flow components active during this phase
+   * @param inputs - User's financial planning inputs
+   * @returns Array of cash flow components for this phase
+   */
   getCashFlows(inputs: QuickPlanInputs): CashFlow[];
+
+  /**
+   * Determines if the simulation should transition to the next phase
+   * @param year - Current simulation year
+   * @param portfolio - Current portfolio state
+   * @param inputs - User's financial planning inputs
+   * @returns True if phase transition should occur
+   */
   shouldTransition(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
+
+  /**
+   * Gets the next phase in the simulation sequence
+   * @param inputs - User's financial planning inputs
+   * @returns Next simulation phase or null if this is the final phase
+   */
   getNextPhase(inputs: QuickPlanInputs): SimulationPhase | null;
+
+  /**
+   * Gets the human-readable name of this phase
+   * @returns Phase name for display purposes
+   */
   getName(): string;
+
+  /**
+   * Processes a single year of this phase, applying cash flows to the portfolio
+   * @param year - Current simulation year
+   * @param portfolio - Current portfolio state
+   * @param inputs - User's financial planning inputs
+   * @returns Updated portfolio after processing the year
+   */
   processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): Portfolio;
 }
 
+/**
+ * Accumulation Phase Implementation
+ * Models the working years with income generation and expense management
+ * Transitions to retirement when portfolio reaches FIRE threshold
+ */
 export class AccumulationPhase implements SimulationPhase {
   getCashFlows(inputs: QuickPlanInputs): CashFlow[] {
     return [new AnnualIncome(inputs), new AnnualExpenses(inputs)];
@@ -58,6 +121,11 @@ export class AccumulationPhase implements SimulationPhase {
   }
 }
 
+/**
+ * Retirement Phase Implementation
+ * Models retirement years with portfolio withdrawals and passive income
+ * Includes tax-adjusted withdrawal calculations for sustainable spending
+ */
 export class RetirementPhase implements SimulationPhase {
   getCashFlows(inputs: QuickPlanInputs): CashFlow[] {
     return [new PassiveRetirementIncome(inputs), new RetirementExpenses(inputs)];
