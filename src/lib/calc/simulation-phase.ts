@@ -39,12 +39,11 @@ export interface SimulationPhase {
 
   /**
    * Determines if the simulation should transition to the next phase
-   * @param year - Current simulation year
    * @param portfolio - Current portfolio state
    * @param inputs - User's financial planning inputs
    * @returns True if phase transition should occur
    */
-  shouldTransition(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
+  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
 
   /**
    * Gets the next phase in the simulation sequence
@@ -79,7 +78,7 @@ export class AccumulationPhase implements SimulationPhase {
     return [new AnnualIncome(inputs), new AnnualExpenses(inputs)];
   }
 
-  shouldTransition(_year: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
+  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
     const retirementExpenses = inputs.goals.retirementExpenses!;
     const { safeWithdrawalRate, effectiveTaxRate } = inputs.retirementFunding;
 
@@ -89,7 +88,7 @@ export class AccumulationPhase implements SimulationPhase {
     return portfolio.getTotalValue() >= requiredPortfolio;
   }
 
-  getNextPhase(_inputs: QuickPlanInputs): SimulationPhase | null {
+  getNextPhase(inputs: QuickPlanInputs): SimulationPhase | null {
     return new RetirementPhase();
   }
 
@@ -131,11 +130,11 @@ export class RetirementPhase implements SimulationPhase {
     return [new PassiveRetirementIncome(inputs), new RetirementExpenses(inputs)];
   }
 
-  shouldTransition(_year: number, _portfolio: Portfolio, _inputs: QuickPlanInputs): boolean {
+  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
     return false;
   }
 
-  getNextPhase(_inputs: QuickPlanInputs): SimulationPhase | null {
+  getNextPhase(inputs: QuickPlanInputs): SimulationPhase | null {
     return null;
   }
 
