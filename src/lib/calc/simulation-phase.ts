@@ -48,11 +48,7 @@ export class AccumulationPhase implements SimulationPhase {
     // Apply net cash flow to portfolio
     if (totalCashFlow > 0) {
       // Surplus - contribute to portfolio (using target allocation)
-      return portfolio.withContribution(totalCashFlow, {
-        stocks: inputs.allocation.stockAllocation,
-        bonds: inputs.allocation.bondAllocation,
-        cash: inputs.allocation.cashAllocation,
-      });
+      return portfolio.withCash(totalCashFlow);
     } else if (totalCashFlow < 0) {
       // Deficit - withdraw from portfolio (cash → bonds → stocks)
       return portfolio.withWithdrawal(Math.abs(totalCashFlow));
@@ -91,11 +87,7 @@ export class RetirementPhase implements SimulationPhase {
     }
 
     if (totalCashFlow >= 0) {
-      return portfolio.withContribution(totalCashFlow, {
-        stocks: inputs.allocation.stockAllocation,
-        bonds: inputs.allocation.bondAllocation,
-        cash: inputs.allocation.cashAllocation,
-      });
+      return portfolio.withCash(totalCashFlow);
     }
 
     // Need to withdraw to cover shortfall

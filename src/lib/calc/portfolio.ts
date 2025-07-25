@@ -42,19 +42,6 @@ export class Portfolio {
     return new Portfolio(updatedAssets);
   }
 
-  // Add contribution (increases principal)
-  withContribution(amount: number, targetAllocation: AssetAllocation /* TODO: Need targetAllocation? */): Portfolio {
-    if (amount < 0) throw new Error('Contribution amount must be positive');
-    if (amount === 0) return this; // No change
-
-    const updatedAssets = this.assets.map((asset) => ({
-      ...asset,
-      principal: asset.principal + amount * targetAllocation[asset.assetClass],
-    }));
-
-    return new Portfolio(updatedAssets);
-  }
-
   // Withdraw money (priority: cash → bonds → stocks)
   withWithdrawal(amount: number): Portfolio {
     if (amount < 0) throw new Error('Withdrawal amount must be positive');
@@ -91,6 +78,42 @@ export class Portfolio {
         remainingToWithdraw -= withdrawFromThisAsset;
       }
     }
+
+    return new Portfolio(updatedAssets);
+  }
+
+  // Add cash specifically (for income)
+  withCash(amount: number): Portfolio {
+    if (amount < 0) throw new Error('Cash amount must be positive');
+    if (amount === 0) return this; // No change if zero or negative
+
+    const updatedAssets = this.assets.map((asset) =>
+      asset.assetClass === 'cash' ? { ...asset, principal: asset.principal + amount } : asset
+    );
+
+    return new Portfolio(updatedAssets);
+  }
+
+  // Rebalance to target allocation (preserves total principal/growth ratios)
+  withRebalance(targetAllocation: AssetAllocation): Portfolio {
+    const totalValue = this.getTotalValue();
+    if (totalValue < 0) throw new Error('Cannot rebalance empty portfolio');
+    if (totalValue === 0) return this; // No change if empty portfolio
+
+    const totalPrincipal = this.assets.reduce((sum, asset) => sum + asset.principal, 0);
+    const totalGrowth = this.assets.reduce((sum, asset) => sum + asset.growth, 0);
+
+    const updatedAssets = this.assets.map((asset) => {
+      const targetValue = totalValue * targetAllocation[asset.assetClass];
+      const principalRatio = totalPrincipal / totalValue;
+      const growthRatio = totalGrowth / totalValue;
+
+      return {
+        ...asset,
+        principal: targetValue * principalRatio,
+        growth: targetValue * growthRatio,
+      };
+    });
 
     return new Portfolio(updatedAssets);
   }

@@ -3,6 +3,7 @@ import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { Portfolio } from './portfolio';
 import { ReturnsProvider, FixedReturnProvider } from './returns-provider';
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
+import { convertAllocationInputsToAssetAllocation } from './asset';
 
 interface SimulationResult {
   success: boolean;
@@ -30,6 +31,9 @@ export class FixedReturnsSimulationEngine implements SimulationEngine {
     for (let year = 1; year <= lifeExpectancy - startAge; year++) {
       // Process cash flows first (throughout the year)
       portfolio = currentPhase.processYear(year, portfolio, this.inputs);
+
+      // Rebalance portfolio to target allocation
+      portfolio = portfolio.withRebalance(convertAllocationInputsToAssetAllocation(this.inputs.allocation));
 
       // Apply returns at end of year (compounding on final balance)
       const returns = returnProvider.getReturns(year);
