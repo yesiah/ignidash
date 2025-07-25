@@ -1,13 +1,55 @@
+/**
+ * Cash Flow Components - Financial Planning Cash Flow Calculations
+ *
+ * This module provides a pluggable cash flow calculation system for financial planning scenarios.
+ * It implements a strategy pattern where different cash flow components (income, expenses, retirement income)
+ * can be calculated independently and combined to model comprehensive financial projections.
+ *
+ * Architecture:
+ * - CashFlow interface for consistent calculation strategy
+ * - Year-based calculations with age-dependent logic
+ * - Real vs. nominal growth rate conversions using Fisher equation
+ * - Modular components for income, expenses, and retirement scenarios
+ *
+ * Key Features:
+ * - Age-dependent cash flow activation (e.g., retirement income at 62+)
+ * - Inflation-adjusted real growth calculations
+ * - Flexible component system for different financial scenarios
+ * - Tax-adjusted retirement income calculations
+ */
+
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
+/**
+ * Cash flow calculation interface
+ * Defines the contract for all cash flow components in the financial model
+ */
 export interface CashFlow {
   readonly id: string;
   readonly name: string;
 
+  /**
+   * Determines if this cash flow component should be applied for a given year/age
+   * @param year - Years from current year (0 = current year)
+   * @param currentAge - User's age in the given year
+   * @returns True if cash flow should be applied
+   */
   shouldApply(year: number, currentAge: number): boolean;
+
+  /**
+   * Calculates the cash flow change for a given year/age
+   * @param year - Years from current year (0 = current year)
+   * @param currentAge - User's age in the given year
+   * @returns Cash flow amount (positive for income, negative for expenses)
+   */
   calculateChange(year: number, currentAge: number): number;
 }
 
+/**
+ * Annual Income Cash Flow Component
+ * Calculates projected annual income with inflation-adjusted growth
+ * Applied for all years during working life
+ */
 export class AnnualIncome implements CashFlow {
   readonly id = 'annual-income';
   readonly name = 'Annual Income';
@@ -34,6 +76,11 @@ export class AnnualIncome implements CashFlow {
   }
 }
 
+/**
+ * Annual Expenses Cash Flow Component
+ * Calculates projected annual expenses with inflation-adjusted growth
+ * Applied for all years throughout the projection period
+ */
 export class AnnualExpenses implements CashFlow {
   readonly id = 'annual-expenses';
   readonly name = 'Annual Expenses';
@@ -62,6 +109,11 @@ export class AnnualExpenses implements CashFlow {
   }
 }
 
+/**
+ * Passive Retirement Income Cash Flow Component
+ * Calculates after-tax passive income (Social Security, pensions) starting at age 62
+ * Applied only during retirement years with tax adjustments
+ */
 export class PassiveRetirementIncome implements CashFlow {
   readonly id = 'passive-retirement-income';
   readonly name = 'Passive Retirement Income';
@@ -82,6 +134,11 @@ export class PassiveRetirementIncome implements CashFlow {
   }
 }
 
+/**
+ * Retirement Expenses Cash Flow Component
+ * Calculates projected retirement living expenses
+ * Applied for all years (represents target retirement spending level)
+ */
 export class RetirementExpenses implements CashFlow {
   readonly id = 'retirement-expenses';
   readonly name = 'Retirement Expenses';
