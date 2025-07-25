@@ -24,9 +24,9 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import { Portfolio } from './portfolio';
-import { ReturnsProvider, FixedReturnProvider } from './returns-provider';
+import { ReturnsProvider, FixedReturnProvider, ReturnsWithMetadata } from './returns-provider';
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
-import { AssetReturns, convertAllocationInputsToAssetAllocation } from './asset';
+import { convertAllocationInputsToAssetAllocation } from './asset';
 
 /**
  * Simulation result containing success status, portfolio progression, and metadata
@@ -36,7 +36,7 @@ interface SimulationResult {
   success: boolean;
   data: Array<[number /* timeInYears */, Portfolio]>;
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
-  returnsMetadata: Array<[number /* timeInYears */, AssetReturns]>;
+  returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
 }
 
 /**
@@ -78,7 +78,7 @@ export class FixedReturnsSimulationEngine implements SimulationEngine {
 
     const data: Array<[number, Portfolio]> = [[0, portfolio]];
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
-    const returnsMetadata: Array<[number, AssetReturns]> = [];
+    const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
 
     for (let year = 1; year <= lifeExpectancy - startAge; year++) {
       // Process cash flows first (throughout the year)
@@ -89,7 +89,7 @@ export class FixedReturnsSimulationEngine implements SimulationEngine {
 
       // Apply returns at end of year (compounding on final balance)
       const returns = returnProvider.getReturns(year);
-      portfolio = portfolio.withReturns(returns);
+      portfolio = portfolio.withReturns(returns.returns);
 
       data.push([year, portfolio]);
       returnsMetadata.push([year, returns]);

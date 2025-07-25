@@ -24,6 +24,18 @@ import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { AssetReturns } from './asset';
 
 /**
+ * Represents asset returns data combined with relevant metadata.
+ * This interface is used to encapsulate the returns along with any additional
+ * information that may be needed for tracking or display purposes.
+ */
+export interface ReturnsWithMetadata {
+  returns: AssetReturns;
+  metadata: {
+    inflationRate: number;
+  };
+}
+
+/**
  * Returns provider interface for asset return calculations
  * Defines the contract for all return calculation strategies
  */
@@ -33,7 +45,7 @@ export interface ReturnsProvider {
    * @param year The year for which to get the returns.
    * @returns The real asset returns for the specified year.
    */
-  getReturns(year: number): AssetReturns;
+  getReturns(year: number): ReturnsWithMetadata;
 }
 
 /**
@@ -54,7 +66,7 @@ export class FixedReturnProvider implements ReturnsProvider {
    * @param _year - Year parameter (unused in fixed return implementation)
    * @returns Real asset returns as decimal rates for each asset class
    */
-  getReturns(_year: number): AssetReturns {
+  getReturns(_year: number): ReturnsWithMetadata {
     const { stockReturn, bondReturn, cashReturn, inflationRate } = this.inputs.marketAssumptions;
 
     const realStockReturn = (1 + stockReturn / 100) / (1 + inflationRate / 100) - 1;
@@ -62,9 +74,14 @@ export class FixedReturnProvider implements ReturnsProvider {
     const realCashReturn = (1 + cashReturn / 100) / (1 + inflationRate / 100) - 1;
 
     return {
-      stocks: realStockReturn,
-      bonds: realBondReturn,
-      cash: realCashReturn,
+      returns: {
+        stocks: realStockReturn,
+        bonds: realBondReturn,
+        cash: realCashReturn,
+      },
+      metadata: {
+        inflationRate,
+      },
     };
   }
 }
