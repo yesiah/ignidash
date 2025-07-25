@@ -29,7 +29,8 @@ import { SimulationPhase, AccumulationPhase } from './simulation-phase';
 import { AssetReturns, convertAllocationInputsToAssetAllocation } from './asset';
 
 /**
- * Simulation result containing success status and time-series portfolio data
+ * Simulation result containing success status, portfolio progression, and metadata
+ * Tracks year-by-year portfolio values, phase transitions, and market returns applied
  */
 interface SimulationResult {
   success: boolean;
