@@ -78,7 +78,7 @@ export class RetirementExpenses implements CashFlow {
     return true;
   }
 
-  calculateChange(year: number, currentAge: number, inputs: QuickPlanInputs): number {
+  calculateChange(year: number, _currentAge: number, inputs: QuickPlanInputs): number {
     const { retirementExpenses } = inputs.goals;
     return retirementExpenses ?? 0;
   }
