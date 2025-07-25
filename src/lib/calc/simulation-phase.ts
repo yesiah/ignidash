@@ -1,7 +1,7 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import { Portfolio } from './portfolio';
-import { CashFlow } from './cash-flow';
+import { CashFlow, AnnualIncome, AnnualExpenses } from './cash-flow';
 
 export interface SimulationPhase {
   getCashFlows(inputs: QuickPlanInputs): CashFlow[];
@@ -13,11 +13,17 @@ export interface SimulationPhase {
 
 export class AccumulationPhase implements SimulationPhase {
   getCashFlows(_inputs: QuickPlanInputs): CashFlow[] {
-    throw new Error('getCashFlows not implemented for AccumulationPhase');
+    return [new AnnualIncome(), new AnnualExpenses()];
   }
 
-  shouldTransition(_year: number, _portfolio: Portfolio, _inputs: QuickPlanInputs): boolean {
-    throw new Error('shouldTransition not implemented for AccumulationPhase');
+  shouldTransition(_year: number, portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
+    const retirementExpenses = inputs.goals.retirementExpenses!;
+    const { safeWithdrawalRate, effectiveTaxRate } = inputs.retirementFunding;
+
+    const grossWithdrawal = retirementExpenses / (1 - effectiveTaxRate / 100);
+    const requiredPortfolio = grossWithdrawal / (safeWithdrawalRate / 100);
+
+    return portfolio.getTotalValue() >= requiredPortfolio;
   }
 
   getNextPhase(_inputs: QuickPlanInputs): SimulationPhase | null {

@@ -8,9 +8,9 @@ export interface CashFlow {
   calculateChange(year: number, currentAge: number, inputs: QuickPlanInputs): number;
 }
 
-export class SalaryIncome implements CashFlow {
-  id = 'salary-income';
-  name = 'Salary Income';
+export class AnnualIncome implements CashFlow {
+  id = 'annual-income';
+  name = 'Annual Income';
 
   shouldApply(_year: number, _currentAge: number, _inputs: QuickPlanInputs): boolean {
     return true;
@@ -31,9 +31,9 @@ export class SalaryIncome implements CashFlow {
   }
 }
 
-export class LivingExpenses implements CashFlow {
-  id = 'living-expenses';
-  name = 'Living Expenses';
+export class AnnualExpenses implements CashFlow {
+  id = 'annual-expenses';
+  name = 'Annual Expenses';
 
   shouldApply(_year: number, _currentAge: number, _inputs: QuickPlanInputs): boolean {
     return true;
