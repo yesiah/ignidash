@@ -98,9 +98,9 @@ const DEFAULT_VOLATILITY: MarketVolatility = {
  */
 const CORRELATION_MATRIX = [
   // Stocks, Bonds, Cash, Inflation
-  [1.0, -0.2, 0.1, -0.15], // Stocks
-  [-0.2, 1.0, 0.3, -0.3], // Bonds
-  [0.1, 0.3, 1.0, 0.6], // Cash
+  [1.0, -0.1, 0.05, -0.15], // Stocks
+  [-0.1, 1.0, 0.2, -0.3], // Bonds
+  [0.05, 0.2, 1.0, 0.6], // Cash
   [-0.15, -0.3, 0.6, 1.0], // Inflation
 ];
 
