@@ -34,7 +34,7 @@ class SeededRandom {
     // LCG parameters (same as glibc)
     const a = 1103515245;
     const c = 12345;
-    const m = 2 ** 32;
+    const m = 2 ** 31;
 
     this.seed = (a * this.seed + c) % m;
     return this.seed / m;
