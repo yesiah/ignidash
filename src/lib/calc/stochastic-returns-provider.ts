@@ -25,7 +25,7 @@ class SeededRandom {
 
   constructor(seed: number) {
     // Ensure seed is a positive integer within valid range
-    this.seed = Math.floor(Math.abs(seed)) % 2147483647;
+    this.seed = Math.floor(Math.abs(seed)) % 2147483648; // 2^31
     if (this.seed === 0) this.seed = 1;
   }
 
@@ -36,7 +36,7 @@ class SeededRandom {
     // LCG parameters (same as glibc)
     const a = 1103515245;
     const c = 12345;
-    const m = 2147483647; // 2^31 - 1
+    const m = 2147483648; // 2^31
 
     this.seed = (a * this.seed + c) % m;
     return this.seed / m;
@@ -66,7 +66,7 @@ class SeededRandom {
    */
   reset(seed: number): void {
     // Apply same validation as constructor
-    this.seed = Math.floor(Math.abs(seed)) % 2147483647;
+    this.seed = Math.floor(Math.abs(seed)) % 2147483648; // 2^31
     if (this.seed === 0) this.seed = 1;
   }
 }
