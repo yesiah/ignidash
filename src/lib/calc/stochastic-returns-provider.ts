@@ -86,10 +86,10 @@ interface MarketVolatility {
  * Based on long-term historical data
  */
 const DEFAULT_VOLATILITY: MarketVolatility = {
-  stocks: 0.2, // 20% annual volatility
-  bonds: 0.05, // 5% annual volatility
+  stocks: 0.22, // 22% annual volatility
+  bonds: 0.06, // 6% annual volatility
   cash: 0.01, // 1% annual volatility
-  inflation: 0.015, // 1.5% annual volatility
+  inflation: 0.03, // 3% annual volatility
 };
 
 /**
