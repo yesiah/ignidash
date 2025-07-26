@@ -211,15 +211,17 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
     // Extract final portfolio values for percentile calculations
     const finalValues = scenarios
       .map(([_seed, result]) => {
-        const lastDataPoint = result.data[result.data.length - 1];
-        return lastDataPoint ? lastDataPoint[1].getTotalValue() : 0;
+        const dataPointsCount = result.data.length;
+        if (dataPointsCount === 0) throw new Error('No data points in simulation result');
+
+        return result.data[dataPointsCount - 1][1].getTotalValue();
       })
       .sort((a, b) => a - b);
 
     // Calculate percentiles
     const getPercentile = (arr: number[], percentile: number) => {
       const index = Math.floor((percentile / 100) * arr.length);
-      return arr[index] || 0;
+      return arr[index];
     };
 
     return {
