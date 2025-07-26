@@ -24,7 +24,9 @@ class SeededRandom {
   private seed: number;
 
   constructor(seed: number) {
-    this.seed = seed;
+    // Ensure seed is a positive integer within valid range
+    this.seed = Math.floor(Math.abs(seed)) % 2147483647;
+    if (this.seed === 0) this.seed = 1;
   }
 
   /**
@@ -34,7 +36,7 @@ class SeededRandom {
     // LCG parameters (same as glibc)
     const a = 1103515245;
     const c = 12345;
-    const m = 2 ** 31;
+    const m = 2147483647; // 2^31 - 1
 
     this.seed = (a * this.seed + c) % m;
     return this.seed / m;
@@ -45,7 +47,13 @@ class SeededRandom {
    * Uses Box-Muller transform
    */
   nextGaussian(): number {
-    const u1 = this.next();
+    let u1;
+
+    // Ensure u1 is not 0 to avoid log(0)
+    do {
+      u1 = this.next();
+    } while (u1 === 0);
+
     const u2 = this.next();
 
     // Box-Muller transform
@@ -57,7 +65,9 @@ class SeededRandom {
    * Reset the generator with a new seed
    */
   reset(seed: number): void {
-    this.seed = seed;
+    // Apply same validation as constructor
+    this.seed = Math.floor(Math.abs(seed)) % 2147483647;
+    if (this.seed === 0) this.seed = 1;
   }
 }
 
