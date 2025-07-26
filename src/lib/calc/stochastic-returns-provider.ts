@@ -23,6 +23,10 @@ import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
 class SeededRandom {
   private seed: number;
 
+  /**
+   * Creates a seeded random number generator
+   * @param seed - Initial seed value for random number generation
+   */
   constructor(seed: number) {
     // Ensure seed is a positive integer within valid range
     this.seed = Math.floor(Math.abs(seed)) % 2147483648; // 2^31
@@ -31,6 +35,7 @@ class SeededRandom {
 
   /**
    * Generate next random number in the interval [0, 1)
+   * @returns Random number between 0 (inclusive) and 1 (exclusive)
    */
   next(): number {
     // LCG parameters (same as glibc)
@@ -45,6 +50,7 @@ class SeededRandom {
   /**
    * Generate a random number from standard normal distribution (mean=0, std=1)
    * Uses Box-Muller transform
+   * @returns Standard normal random variable (mean=0, std=1)
    */
   nextGaussian(): number {
     let u1;
@@ -63,6 +69,7 @@ class SeededRandom {
 
   /**
    * Reset the generator with a new seed
+   * @param seed - New seed value for random number generation
    */
   reset(seed: number): void {
     // Apply same validation as constructor
@@ -75,10 +82,14 @@ class SeededRandom {
  * Market parameters with historical volatility estimates
  */
 interface MarketVolatility {
-  stocks: number; // Annual standard deviation
-  bonds: number; // Annual standard deviation
-  cash: number; // Annual standard deviation
-  inflation: number; // Annual standard deviation
+  /** Annual standard deviation for stock returns */
+  stocks: number;
+  /** Annual standard deviation for bond returns */
+  bonds: number;
+  /** Annual standard deviation for cash returns */
+  cash: number;
+  /** Annual standard deviation for inflation rates */
+  inflation: number;
 }
 
 /**
@@ -145,6 +156,11 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   private rng: SeededRandom;
   private volatility: MarketVolatility;
 
+  /**
+   * Creates a stochastic returns provider with seeded random generation
+   * @param inputs - User's financial planning inputs containing market assumptions
+   * @param seed - Base seed for random number generation to ensure reproducibility
+   */
   constructor(
     private inputs: QuickPlanInputs,
     private seed: number
@@ -158,8 +174,10 @@ export class StochasticReturnsProvider implements ReturnsProvider {
 
   /**
    * Generate correlated returns for a specific year
+   * @param _year - The simulation year (currently unused, returns are time-independent)
+   * @returns Real asset returns with inflation metadata
    */
-  getReturns(year: number): ReturnsWithMetadata {
+  getReturns(_year: number): ReturnsWithMetadata {
     // Generate independent standard normal random variables
     const independentRandoms = [this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian()];
 
@@ -197,6 +215,8 @@ export class StochasticReturnsProvider implements ReturnsProvider {
 
   /**
    * Apply correlation matrix using Cholesky decomposition
+   * @param independentRandoms - Array of 4 independent standard normal random variables
+   * @returns Array of 4 correlated random variables for [stocks, bonds, cash, inflation]
    */
   private applyCorrelation(independentRandoms: number[]): number[] {
     const correlated = [0, 0, 0, 0];
@@ -213,6 +233,10 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   /**
    * Generate return from log-normal distribution
    * Used for equity returns to prevent negative values and model realistic fat tails
+   * @param expectedReturn - Expected return rate as a decimal (e.g., 0.1 for 10%)
+   * @param volatility - Annual volatility as a decimal (e.g., 0.22 for 22%)
+   * @param z - Standard normal random variable
+   * @returns Log-normal distributed return rate as a decimal
    */
   private generateLogNormalReturn(expectedReturn: number, volatility: number, z: number): number {
     // Convert expected return to log-normal parameters
@@ -226,6 +250,10 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   /**
    * Generate return from normal distribution
    * Used for bonds, cash, and inflation
+   * @param expectedReturn - Expected return rate as a decimal (e.g., 0.05 for 5%)
+   * @param volatility - Annual volatility as a decimal (e.g., 0.06 for 6%)
+   * @param z - Standard normal random variable
+   * @returns Normal distributed return rate as a decimal
    */
   private generateNormalReturn(expectedReturn: number, volatility: number, z: number): number {
     return expectedReturn + volatility * z;
@@ -233,6 +261,8 @@ export class StochasticReturnsProvider implements ReturnsProvider {
 
   /**
    * Reset the random number generator for a new scenario
+   * @param scenarioNumber - Zero-based scenario index for deterministic seed generation
+   * @returns The new seed value used for this scenario
    */
   resetForNewScenario(scenarioNumber: number): number {
     // Use scenario number to create unique seed for each scenario
