@@ -26,8 +26,10 @@ import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { Portfolio } from './portfolio';
 import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
 import { StochasticReturnsProvider } from './stochastic-returns-provider';
+import { HistoricalBacktestReturnsProvider } from './historical-backtest-returns-provider';
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
 import { convertAllocationInputsToAssetAllocation } from './asset';
+import { getNyuDataRange } from './data/nyu-historical-data';
 
 /**
  * Simulation result containing success status, portfolio progression, and metadata
@@ -222,6 +224,90 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
     const getPercentile = (arr: number[], percentile: number) => {
       const index = Math.floor((percentile / 100) * arr.length);
       return arr[index];
+    };
+
+    return {
+      scenarios,
+      aggregateStats: {
+        successRate,
+        percentiles: {
+          p10: getPercentile(finalValues, 10),
+          p25: getPercentile(finalValues, 25),
+          p50: getPercentile(finalValues, 50),
+          p75: getPercentile(finalValues, 75),
+          p90: getPercentile(finalValues, 90),
+        },
+      },
+    };
+  }
+}
+
+/**
+ * Historical backtest simulation result with scenarios for each start year and aggregate statistics
+ */
+interface HistoricalBacktestResult {
+  scenarios: Array<[number /* startYear */, SimulationResult]>;
+  aggregateStats: {
+    successRate: number;
+    percentiles: {
+      p10: number;
+      p25: number;
+      p50: number;
+      p75: number;
+      p90: number;
+    };
+    // Other aggregate statistics
+  };
+}
+
+/**
+ * Historical Backtest Simulation Engine
+ * Extends the base simulation engine to run historical backtests across all available years
+ * Tests financial plans against real historical market sequences from 1928-2024
+ */
+export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngine {
+  /**
+   * Creates a historical backtest simulation engine
+   * @param inputs - User's financial planning inputs and assumptions
+   */
+  constructor(inputs: QuickPlanInputs) {
+    super(inputs);
+  }
+
+  /**
+   * Runs historical backtest simulations using all available start years
+   * Tests the financial plan against each historical period from 1928-2024
+   * @returns Aggregate results with success rates and percentiles based on historical outcomes
+   */
+  runHistoricalBacktest(): HistoricalBacktestResult {
+    const dataRange = getNyuDataRange();
+    const scenarios: Array<[number, SimulationResult]> = [];
+
+    // Run simulation for each possible start year
+    for (let startYear = dataRange.startYear; startYear <= dataRange.endYear; startYear++) {
+      const returnsProvider = new HistoricalBacktestReturnsProvider(startYear);
+      const result = this.runSimulation(returnsProvider);
+      scenarios.push([startYear, result]);
+    }
+
+    // Calculate aggregate statistics
+    const successCount = scenarios.filter(([_startYear, result]) => result.success).length;
+    const successRate = successCount / scenarios.length;
+
+    // Extract final portfolio values for percentile calculations
+    const finalValues = scenarios
+      .map(([_startYear, result]) => {
+        const dataPointsCount = result.data.length;
+        if (dataPointsCount === 0) throw new Error('No data points in simulation result');
+
+        return result.data[dataPointsCount - 1][1].getTotalValue();
+      })
+      .sort((a, b) => a - b);
+
+    // Calculate percentiles
+    const getPercentile = (arr: number[], percentile: number) => {
+      const index = Math.floor((percentile / 100) * arr.length);
+      return arr[Math.min(index, arr.length - 1)]; // Ensure we don't exceed array bounds
     };
 
     return {
