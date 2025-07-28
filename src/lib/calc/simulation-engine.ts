@@ -202,12 +202,12 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 
     // Create one returns provider and reset it for each scenario
     const returnsProvider = new StochasticReturnsProvider(this.inputs, this.baseSeed);
+    const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
+    const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
     // Run multiple scenarios using resetForNewScenario
     for (let i = 0; i < numScenarios; i++) {
       const scenarioSeed = returnsProvider.resetForNewScenario(i);
-      const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
-      const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
       scenarios.push([scenarioSeed, result]);
     }
@@ -289,11 +289,12 @@ export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngin
     const dataRange = getNyuDataRange();
     const scenarios: Array<[number, SimulationResult]> = [];
 
+    const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
+    const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
+
     // Run simulation for each possible start year
     for (let startYear = dataRange.startYear; startYear <= dataRange.endYear; startYear++) {
       const returnsProvider = new HistoricalBacktestReturnsProvider(startYear);
-      const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
-      const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
       scenarios.push([startYear, result]);
     }
