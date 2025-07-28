@@ -249,6 +249,16 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 }
 
 /**
+ * SORR stress test result for a specific historical event
+ */
+interface SorrEventResult {
+  year: number;
+  description: string;
+  worstStockReturn: number;
+  result: SimulationResult;
+}
+
+/**
  * Historical backtest simulation result with scenarios for each start year and aggregate statistics
  */
 interface HistoricalBacktestResult {
@@ -264,6 +274,7 @@ interface HistoricalBacktestResult {
     };
     // Other aggregate statistics
   };
+  sorrStressTests: SorrEventResult[] | null; // Results from SORR sensitivity stress testing
 }
 
 /**
@@ -272,6 +283,29 @@ interface HistoricalBacktestResult {
  * Tests financial plans against real historical market sequences from 1928-2024
  */
 export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngine {
+  /**
+   * Major historical market events for SORR stress testing
+   * Each event is tested from its starting year to capture the full sequence of returns
+   * worstStockReturn shows the worst annual return during the event period
+   */
+  private static readonly SORR_HISTORICAL_EVENTS = [
+    { year: 1929, description: 'Great Depression', worstStockReturn: -0.3807 }, // 1931 was worst
+    { year: 1937, description: 'Recession of 1937-38', worstStockReturn: -0.3713 }, // 1937 itself
+    { year: 1939, description: 'Pre-WWII Uncertainty', worstStockReturn: -0.2065 }, // 1941 was worst
+    { year: 1946, description: 'Post-War Inflation', worstStockReturn: -0.2248 }, // 1946 itself
+    { year: 1957, description: 'Eisenhower Recession', worstStockReturn: -0.1298 }, // 1957 itself
+    { year: 1962, description: 'Flash Crash of 1962', worstStockReturn: -0.1001 }, // 1962 itself
+    { year: 1966, description: 'Credit Crunch of 1966', worstStockReturn: -0.1298 }, // 1966 itself
+    { year: 1969, description: 'Nixon Recession', worstStockReturn: -0.136 }, // 1969 itself
+    { year: 1973, description: 'Oil Embargo & Stagflation', worstStockReturn: -0.3404 }, // 1974 was worst
+    { year: 1977, description: 'Stagflation Era', worstStockReturn: -0.1282 }, // 1977 itself
+    { year: 1981, description: 'Volcker Recession', worstStockReturn: -0.1251 }, // 1981 itself
+    { year: 1990, description: 'Gulf War Recession', worstStockReturn: -0.0864 }, // 1990 itself
+    { year: 2000, description: 'Dot-com Bubble Burst', worstStockReturn: -0.2378 }, // 2002 was worst
+    { year: 2008, description: 'Global Financial Crisis', worstStockReturn: -0.3661 }, // 2008 itself
+    { year: 2022, description: 'Inflation & Rate Hikes', worstStockReturn: -0.2301 }, // 2022 itself
+  ] as const;
+
   /**
    * Creates a historical backtest simulation engine
    * @param inputs - User's financial planning inputs and assumptions
@@ -319,6 +353,9 @@ export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngin
       return arr[Math.min(index, arr.length - 1)]; // Ensure we don't exceed array bounds
     };
 
+    // Run SORR stress tests on the scenarios
+    const sorrStressTests = this.runSorrHistoricalBacktest(scenarios);
+
     return {
       scenarios,
       aggregateStats: {
@@ -331,6 +368,55 @@ export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngin
           p90: getPercentile(finalValues, 90),
         },
       },
+      sorrStressTests,
     };
+  }
+
+  /**
+   * Runs SORR stress tests for all major historical events on a given portfolio and phase
+   * @param portfolio - Portfolio at the SORR-sensitive transition point
+   * @param phase - The SORR-sensitive phase to test
+   * @returns Array of SORR stress test results for each historical event
+   */
+  private runSorrStressTests(portfolio: Portfolio, phase: SimulationPhase): SorrEventResult[] {
+    const results: SorrEventResult[] = [];
+
+    for (const event of HistoricalBacktestSimulationEngine.SORR_HISTORICAL_EVENTS) {
+      const returnsProvider = new HistoricalBacktestReturnsProvider(event.year);
+      const simulationResult = this.runSimulation(returnsProvider, portfolio, phase);
+
+      results.push({
+        ...event,
+        result: simulationResult,
+      });
+    }
+
+    return results;
+  }
+
+  /**
+   * Runs supplemental SORR historical backtests by finding the first scenario with a SORR-sensitive phase
+   * and re-running simulations from various historical downturns at that vulnerable point
+   * @param scenarios - Array of historical backtest scenarios to analyze
+   * @returns SORR stress test results organized by risk category, or null if no SORR-sensitive phase found
+   */
+  private runSorrHistoricalBacktest(scenarios: Array<[number, SimulationResult]>): SorrEventResult[] | null {
+    // Find the first simulation where a SORR-sensitive phase is encountered
+    for (const [_startYear, result] of scenarios) {
+      // Look through phase transitions to find when SORR sensitivity begins
+      for (let i = 0; i < result.phasesMetadata.length; i++) {
+        const [timeInYears, phase] = result.phasesMetadata[i];
+
+        if (phase.isSensitiveToSORR()) {
+          // Extract the portfolio state at this transition point
+          const portfolioAtTransition = result.data.find(([time, _portfolio]) => time === timeInYears)![1];
+
+          // Run simulations for all risk categories
+          return this.runSorrStressTests(portfolioAtTransition, phase);
+        }
+      }
+    }
+
+    return null; // No SORR-sensitive phase found in any scenario
   }
 }
