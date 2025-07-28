@@ -32,6 +32,8 @@ export interface ReturnsWithMetadata {
   returns: AssetReturns;
   metadata: {
     inflationRate: number;
+    /** Optional extras that providers can add for simulation-specific data */
+    extras?: Record<string, unknown>;
   };
 }
 

@@ -77,6 +77,11 @@ export class HistoricalBacktestReturnsProvider implements ReturnsProvider {
       returns,
       metadata: {
         inflationRate: yearData.inflationRate * 100, // Convert to percentage for metadata
+        extras: {
+          historicalYear: adjustedYear,
+          originalStartYear: this.startYear,
+          simulationYear,
+        },
       },
     };
   }
