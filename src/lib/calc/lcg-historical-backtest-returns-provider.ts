@@ -36,6 +36,8 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   private historicalData: NyuHistoricalYearData[];
   private rng: SeededRandom;
   private selectedStartYear: number;
+  private currentSequenceStartYear: number;
+  private currentSequenceStartSimYear: number;
 
   /**
    * Creates an LCG historical backtest returns provider
@@ -48,6 +50,8 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
 
     // Generate random start year using LCG
     this.selectedStartYear = this.generateRandomStartYear();
+    this.currentSequenceStartYear = this.selectedStartYear;
+    this.currentSequenceStartSimYear = 1;
   }
 
   /**
@@ -66,13 +70,21 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
    * @returns Real asset returns with inflation metadata from historical data
    */
   getReturns(simulationYear: number): ReturnsWithMetadata {
-    // Calculate which historical year to use
-    // simulationYear 1 maps to selectedStartYear, simulationYear 2 maps to selectedStartYear + 1, etc.
-    const targetHistoricalYear = this.selectedStartYear + simulationYear - 1;
+    // Calculate years into the current sequence
+    const yearsIntoSequence = simulationYear - this.currentSequenceStartSimYear;
+    const targetHistoricalYear = this.currentSequenceStartYear + yearsIntoSequence;
 
-    // Handle looping when we exceed available data
-    const totalYearsAvailable = this.dataRange.endYear - this.dataRange.startYear + 1;
-    const adjustedYear = this.dataRange.startYear + ((targetHistoricalYear - this.dataRange.startYear) % totalYearsAvailable);
+    let adjustedYear: number;
+
+    if (targetHistoricalYear <= this.dataRange.endYear) {
+      // Within range, use the year directly
+      adjustedYear = targetHistoricalYear;
+    } else {
+      // We've hit the end of available data, start a new sequence
+      this.currentSequenceStartYear = this.generateRandomStartYear();
+      this.currentSequenceStartSimYear = simulationYear;
+      adjustedYear = this.currentSequenceStartYear;
+    }
 
     // Find the historical data for this year
     const yearData = this.historicalData.find((data) => data.year === adjustedYear);
@@ -113,6 +125,8 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
 
     // Generate new random start year for this scenario
     this.selectedStartYear = this.generateRandomStartYear();
+    this.currentSequenceStartYear = this.selectedStartYear;
+    this.currentSequenceStartSimYear = 1;
 
     return this.selectedStartYear;
   }
