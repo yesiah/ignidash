@@ -155,10 +155,10 @@ export class FinancialSimulationEngine {
 }
 
 /**
- * Monte Carlo simulation result with multiple scenarios and aggregate statistics
+ * Monte Carlo simulation result with multiple simulations and aggregate statistics
  */
 interface MonteCarloResult {
-  scenarios: Array<[number /* seed */, SimulationResult]>;
+  simulations: Array<[number /* seed */, SimulationResult]>;
   aggregateStats: {
     successRate: number;
     percentiles: {
@@ -174,7 +174,7 @@ interface MonteCarloResult {
 
 /**
  * Monte Carlo Simulation Engine
- * Extends the base simulation engine to run multiple stochastic scenarios
+ * Extends the base simulation engine to run multiple stochastic simulations
  * Provides probabilistic analysis with success rates and percentile outcomes
  */
 export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
@@ -191,30 +191,30 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
   }
 
   /**
-   * Runs multiple simulation scenarios for Monte Carlo analysis
-   * @param numSimulations - Number of scenarios to simulate
+   * Runs multiple simulations for Monte Carlo analysis
+   * @param numSimulations - Number of simulations
    * @returns Aggregate results with success rates and percentiles
    */
   runMonteCarloSimulation(numSimulations: number): MonteCarloResult {
-    const scenarios: Array<[number, SimulationResult]> = [];
+    const simulations: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
-    // Run multiple scenarios, creating a new provider for each
+    // Run multiple simulations, creating a new provider for each
     for (let i = 0; i < numSimulations; i++) {
-      const scenarioSeed = this.baseSeed + i * 1009;
-      const returnsProvider = new StochasticReturnsProvider(this.inputs, scenarioSeed);
+      const simulationSeed = this.baseSeed + i * 1009;
+      const returnsProvider = new StochasticReturnsProvider(this.inputs, simulationSeed);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
-      scenarios.push([scenarioSeed, result]);
+      simulations.push([simulationSeed, result]);
     }
 
     // Calculate aggregate statistics
-    const successCount = scenarios.filter(([_seed, result]) => result.success).length;
+    const successCount = simulations.filter(([_seed, result]) => result.success).length;
     const successRate = successCount / numSimulations;
 
     // Extract final portfolio values for percentile calculations
-    const finalValues = scenarios
+    const finalValues = simulations
       .map(([_seed, result]) => {
         const dataPointsCount = result.data.length;
         if (dataPointsCount === 0) throw new Error('No data points in simulation result');
@@ -230,7 +230,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
     };
 
     return {
-      scenarios,
+      simulations,
       aggregateStats: {
         successRate,
         percentiles: {
@@ -246,10 +246,10 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 }
 
 /**
- * LCG historical backtest simulation result with scenarios for each randomly selected start year
+ * LCG historical backtest simulation result with simulations for each randomly selected start year
  */
 interface LcgHistoricalBacktestResult {
-  scenarios: Array<[number /* startYear */, SimulationResult]>;
+  simulations: Array<[number /* startYear */, SimulationResult]>;
   aggregateStats: {
     successRate: number;
     percentiles: {
@@ -267,7 +267,7 @@ interface LcgHistoricalBacktestResult {
  * LCG Historical Backtest Simulation Engine
  * Extends the base simulation engine to run historical backtests with randomly selected start years
  * Uses Linear Congruential Generator (LCG) to choose start years and supports configurable
- * number of scenarios, similar to Monte Carlo simulation but with real historical data
+ * number of simulations, similar to Monte Carlo simulation but with real historical data
  */
 export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEngine {
   /**
@@ -283,33 +283,33 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
   }
 
   /**
-   * Runs multiple historical backtest scenarios with randomly selected start years
+   * Runs multiple historical backtest simulations with randomly selected start years
    * Uses LCG to choose different start years for each scenario, providing Monte Carlo-style
    * analysis with real historical data instead of synthetic returns
-   * @param numSimulations - Number of scenarios to simulate (each with a random start year)
+   * @param numSimulations - Number of simulations to simulate (each with a random start year)
    * @returns Aggregate results with success rates and percentiles based on historical outcomes
    */
   runLcgHistoricalBacktest(numSimulations: number): LcgHistoricalBacktestResult {
-    const scenarios: Array<[number, SimulationResult]> = [];
+    const simulations: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
-    // Run multiple scenarios, creating a new provider for each
+    // Run multiple simulations, creating a new provider for each
     for (let i = 0; i < numSimulations; i++) {
-      const scenarioSeed = this.baseSeed + i * 1009; // Prime multiplier for better distribution
-      const returnsProvider = new LcgHistoricalBacktestReturnsProvider(scenarioSeed);
+      const simulationSeed = this.baseSeed + i * 1009; // Prime multiplier for better distribution
+      const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
       const selectedStartYear = returnsProvider.getSelectedStartYear();
-      scenarios.push([selectedStartYear, result]);
+      simulations.push([selectedStartYear, result]);
     }
 
     // Calculate aggregate statistics
-    const successCount = scenarios.filter(([_startYear, result]) => result.success).length;
+    const successCount = simulations.filter(([_startYear, result]) => result.success).length;
     const successRate = successCount / numSimulations;
 
     // Extract final portfolio values for percentile calculations
-    const finalValues = scenarios
+    const finalValues = simulations
       .map(([_startYear, result]) => {
         const dataPointsCount = result.data.length;
         if (dataPointsCount === 0) throw new Error('No data points in simulation result');
@@ -325,7 +325,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     };
 
     return {
-      scenarios,
+      simulations,
       aggregateStats: {
         successRate,
         percentiles: {
