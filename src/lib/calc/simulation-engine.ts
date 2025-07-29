@@ -249,16 +249,6 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 }
 
 /**
- * SORR stress test result for a specific historical event
- */
-interface SorrEventResult {
-  year: number;
-  description: string;
-  worstStockReturn: number;
-  result: SimulationResult;
-}
-
-/**
  * Historical backtest simulation result with scenarios for each start year and aggregate statistics
  */
 interface HistoricalBacktestResult {
@@ -274,7 +264,6 @@ interface HistoricalBacktestResult {
     };
     // Other aggregate statistics
   };
-  sorrStressTests: SorrEventResult[] | null; // Results from SORR sensitivity stress testing
 }
 
 /**
@@ -309,8 +298,12 @@ export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngin
   /**
    * Creates a historical backtest simulation engine
    * @param inputs - User's financial planning inputs and assumptions
+   * @param baseSeed - Base seed for random number generation
    */
-  constructor(inputs: QuickPlanInputs) {
+  constructor(
+    inputs: QuickPlanInputs,
+    private baseSeed: number
+  ) {
     super(inputs);
   }
 
@@ -365,70 +358,6 @@ export class HistoricalBacktestSimulationEngine extends FinancialSimulationEngin
           p90: getPercentile(finalValues, 90),
         },
       },
-      sorrStressTests: this.runSorrHistoricalBacktest(scenarios),
     };
-  }
-
-  /**
-   * Runs SORR stress tests for all major historical events on a given portfolio and phase
-   * @param portfolio - Portfolio at the SORR-sensitive transition point
-   * @param phase - The SORR-sensitive phase to test
-   * @returns Array of SORR stress test results for each historical event
-   */
-  private runSorrStressTests(portfolio: Portfolio, phase: SimulationPhase): SorrEventResult[] {
-    const results: SorrEventResult[] = [];
-
-    for (const event of HistoricalBacktestSimulationEngine.SORR_HISTORICAL_EVENTS) {
-      const returnsProvider = new HistoricalBacktestReturnsProvider(event.year);
-      const simulationResult = this.runSimulation(returnsProvider, portfolio, phase);
-
-      results.push({
-        ...event,
-        result: simulationResult,
-      });
-    }
-
-    return results;
-  }
-
-  /**
-   * Runs supplemental SORR historical backtests using the median portfolio value at SORR-sensitive phase
-   * and re-running simulations from various historical downturns at that vulnerable point
-   * @param scenarios - Array of historical backtest scenarios to analyze
-   * @returns SORR stress test results, or null if no SORR-sensitive phase found
-   */
-  private runSorrHistoricalBacktest(scenarios: Array<[number, SimulationResult]>): SorrEventResult[] | null {
-    // Collect all portfolios at SORR-sensitive phase transitions
-    const sorrTransitions: Array<{ portfolio: Portfolio; phase: SimulationPhase }> = [];
-
-    for (const [_startYear, result] of scenarios) {
-      // Look through phase transitions to find when SORR sensitivity begins
-      for (let i = 0; i < result.phasesMetadata.length; i++) {
-        const [timeInYears, phase] = result.phasesMetadata[i];
-
-        if (phase.isSensitiveToSORR()) {
-          // Extract the portfolio state at this transition point
-          const portfolioAtTransition = result.data.find(([time, _portfolio]) => time === timeInYears)![1];
-          sorrTransitions.push({
-            portfolio: portfolioAtTransition,
-            phase: phase,
-          });
-          break; // Only take the first SORR-sensitive phase per scenario
-        }
-      }
-    }
-
-    // If no SORR-sensitive transitions found, return null
-    if (!sorrTransitions.length) {
-      return null;
-    }
-
-    // Sort transitions by portfolio value and find the median
-    const sortedTransitions = sorrTransitions.sort((a, b) => a.portfolio.getTotalValue() - b.portfolio.getTotalValue());
-    const medianIndex = Math.floor(sortedTransitions.length / 2);
-    const medianTransition = sortedTransitions[medianIndex];
-
-    // Run simulations using the median portfolio
-    return this.runSorrStressTests(medianTransition.portfolio, medianTransition.phase);
   }
 }
