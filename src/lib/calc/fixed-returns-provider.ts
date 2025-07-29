@@ -16,10 +16,10 @@ export class FixedReturnsProvider implements ReturnsProvider {
   /**
    * Calculates real asset returns using Fisher equation for inflation adjustment
    * Formula: real_return = (1 + nominal_return) / (1 + inflation_rate) - 1
-   * @param _year - Year parameter (unused in fixed return implementation)
+   * @param year - Year parameter (unused in fixed return implementation)
    * @returns Real asset returns as decimal rates for each asset class
    */
-  getReturns(_year: number): ReturnsWithMetadata {
+  getReturns(year: number): ReturnsWithMetadata {
     const { stockReturn, bondReturn, cashReturn, inflationRate } = this.inputs.marketAssumptions;
 
     const realStockReturn = (1 + stockReturn / 100) / (1 + inflationRate / 100) - 1;
