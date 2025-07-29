@@ -90,9 +90,8 @@ export class FinancialSimulationEngine {
       returnsMetadata.push([year, returns]);
 
       // Check for phase transition
-      if (currentPhase.shouldTransition(portfolio, this.inputs)) {
-        const nextPhase = currentPhase.getNextPhase(this.inputs);
-        if (!nextPhase) break; // Simulation complete
+      const nextPhase = currentPhase.getNextPhase(this.inputs);
+      if (nextPhase && nextPhase.canTransitionTo(portfolio, this.inputs)) {
         currentPhase = nextPhase;
         phasesMetadata.push([year, currentPhase]);
       }
@@ -144,11 +143,11 @@ export class FinancialSimulationEngine {
   static createDefaultInitialPhase(portfolio: Portfolio, inputs: QuickPlanInputs): SimulationPhase {
     let phase: SimulationPhase = new AccumulationPhase();
 
-    // Keep transitioning until we find a phase we can't transition out of yet
-    while (phase.shouldTransition(portfolio, inputs)) {
-      const nextPhase = phase.getNextPhase(inputs);
-      if (!nextPhase) break;
+    // Keep transitioning until we find a phase we can't transition to yet
+    let nextPhase = phase.getNextPhase(inputs);
+    while (nextPhase && nextPhase.canTransitionTo(portfolio, inputs)) {
       phase = nextPhase;
+      nextPhase = phase.getNextPhase(inputs);
     }
 
     return phase;

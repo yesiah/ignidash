@@ -38,12 +38,13 @@ export interface SimulationPhase {
   getCashFlows(inputs: QuickPlanInputs): CashFlow[];
 
   /**
-   * Determines if the simulation should transition to the next phase
+   * Determines if the portfolio and inputs meet the conditions to transition to this phase
+   * Each phase owns its own entry conditions, reducing coupling between phases
    * @param portfolio - Current portfolio state
    * @param inputs - User's financial planning inputs
-   * @returns True if phase transition should occur
+   * @returns True if transition to this phase is allowed
    */
-  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
+  canTransitionTo(portfolio: Portfolio, inputs: QuickPlanInputs): boolean;
 
   /**
    * Gets the next phase in the simulation sequence
@@ -79,21 +80,14 @@ export interface SimulationPhase {
 /**
  * Accumulation Phase Implementation
  * Models the working years with income generation and expense management
- * Transitions to retirement when portfolio reaches FIRE threshold
  */
 export class AccumulationPhase implements SimulationPhase {
   getCashFlows(inputs: QuickPlanInputs): CashFlow[] {
     return [new AnnualIncome(inputs), new AnnualExpenses(inputs)];
   }
 
-  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
-    const retirementExpenses = inputs.goals.retirementExpenses!;
-    const { safeWithdrawalRate, effectiveTaxRate } = inputs.retirementFunding;
-
-    const grossWithdrawal = retirementExpenses / (1 - effectiveTaxRate / 100);
-    const requiredPortfolio = grossWithdrawal / (safeWithdrawalRate / 100);
-
-    return portfolio.getTotalValue() >= requiredPortfolio;
+  canTransitionTo(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
+    return true;
   }
 
   getNextPhase(inputs: QuickPlanInputs): SimulationPhase | null {
@@ -138,8 +132,14 @@ export class RetirementPhase implements SimulationPhase {
     return [new PassiveRetirementIncome(inputs), new RetirementExpenses(inputs)];
   }
 
-  shouldTransition(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
-    return false;
+  canTransitionTo(portfolio: Portfolio, inputs: QuickPlanInputs): boolean {
+    const retirementExpenses = inputs.goals.retirementExpenses!;
+    const { safeWithdrawalRate, effectiveTaxRate } = inputs.retirementFunding;
+
+    const grossWithdrawal = retirementExpenses / (1 - effectiveTaxRate / 100);
+    const requiredPortfolio = grossWithdrawal / (safeWithdrawalRate / 100);
+
+    return portfolio.getTotalValue() >= requiredPortfolio;
   }
 
   getNextPhase(inputs: QuickPlanInputs): SimulationPhase | null {
