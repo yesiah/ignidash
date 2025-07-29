@@ -114,7 +114,7 @@ export class Portfolio {
       if (remainingToWithdraw <= 0) break;
 
       const assetIndex = updatedAssets.findIndex((a) => a.assetClass === assetClass);
-      if (assetIndex === -1) continue;
+      if (assetIndex === -1) throw new Error(`Asset class ${assetClass} not found in portfolio`);
 
       const asset = updatedAssets[assetIndex];
       const availableValue = asset.principal + asset.growth;
