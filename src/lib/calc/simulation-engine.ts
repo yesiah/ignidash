@@ -193,17 +193,17 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 
   /**
    * Runs multiple simulation scenarios for Monte Carlo analysis
-   * @param numScenarios - Number of scenarios to simulate
+   * @param numSimulations - Number of scenarios to simulate
    * @returns Aggregate results with success rates and percentiles
    */
-  runMonteCarloSimulation(numScenarios: number): MonteCarloResult {
+  runMonteCarloSimulation(numSimulations: number): MonteCarloResult {
     const scenarios: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
     // Run multiple scenarios, creating a new provider for each
-    for (let i = 0; i < numScenarios; i++) {
+    for (let i = 0; i < numSimulations; i++) {
       const scenarioSeed = this.baseSeed + i * 1009;
       const returnsProvider = new StochasticReturnsProvider(this.inputs, scenarioSeed);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
@@ -212,7 +212,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 
     // Calculate aggregate statistics
     const successCount = scenarios.filter(([_seed, result]) => result.success).length;
-    const successRate = successCount / numScenarios;
+    const successRate = successCount / numSimulations;
 
     // Extract final portfolio values for percentile calculations
     const finalValues = scenarios
@@ -287,17 +287,17 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
    * Runs multiple historical backtest scenarios with randomly selected start years
    * Uses LCG to choose different start years for each scenario, providing Monte Carlo-style
    * analysis with real historical data instead of synthetic returns
-   * @param numScenarios - Number of scenarios to simulate (each with a random start year)
+   * @param numSimulations - Number of scenarios to simulate (each with a random start year)
    * @returns Aggregate results with success rates and percentiles based on historical outcomes
    */
-  runLcgHistoricalBacktest(numScenarios: number): LcgHistoricalBacktestResult {
+  runLcgHistoricalBacktest(numSimulations: number): LcgHistoricalBacktestResult {
     const scenarios: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
     // Run multiple scenarios, creating a new provider for each
-    for (let i = 0; i < numScenarios; i++) {
+    for (let i = 0; i < numSimulations; i++) {
       const scenarioSeed = this.baseSeed + i * 1009; // Prime multiplier for better distribution
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(scenarioSeed);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
@@ -307,7 +307,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
 
     // Calculate aggregate statistics
     const successCount = scenarios.filter(([_startYear, result]) => result.success).length;
-    const successRate = successCount / numScenarios;
+    const successRate = successCount / numSimulations;
 
     // Extract final portfolio values for percentile calculations
     const finalValues = scenarios
