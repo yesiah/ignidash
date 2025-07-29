@@ -97,7 +97,7 @@ describe('StochasticReturnsProvider', () => {
         },
       };
 
-      const provider = new StochasticReturnsProvider(inputs, 42);
+      const baseSeed = 42;
       const numSimulations = 10000;
 
       const returns = {
@@ -112,11 +112,12 @@ describe('StochasticReturnsProvider', () => {
       const numScenarios = Math.floor(numSimulations / yearsPerScenario);
 
       for (let scenario = 0; scenario < numScenarios; scenario++) {
-        provider.resetForNewScenario(scenario);
+        const scenarioSeed = baseSeed + scenario * 1009;
+        const scenarioProvider = new StochasticReturnsProvider(inputs, scenarioSeed);
 
         // Simulate multiple years within each scenario
         for (let year = 1; year <= yearsPerScenario; year++) {
-          const result = provider.getReturns(year);
+          const result = scenarioProvider.getReturns(year);
 
           // Convert real returns back to nominal for statistical analysis
           const nominalStock = (1 + result.returns.stocks) * (1 + result.metadata.inflationRate / 100) - 1;

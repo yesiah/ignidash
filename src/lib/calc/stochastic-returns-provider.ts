@@ -113,10 +113,10 @@ export class StochasticReturnsProvider implements ReturnsProvider {
 
   /**
    * Generate correlated returns for a specific year
-   * @param _year - The simulation year (currently unused, returns are time-independent)
+   * @param year - The simulation year (currently unused, returns are time-independent)
    * @returns Real asset returns with inflation metadata
    */
-  getReturns(_year: number): ReturnsWithMetadata {
+  getReturns(year: number): ReturnsWithMetadata {
     // Generate independent standard normal random variables
     const independentRandoms = [this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian()];
 
@@ -196,17 +196,5 @@ export class StochasticReturnsProvider implements ReturnsProvider {
    */
   private generateNormalReturn(expectedReturn: number, volatility: number, z: number): number {
     return expectedReturn + volatility * z;
-  }
-
-  /**
-   * Reset the random number generator for a new scenario
-   * @param scenarioNumber - Zero-based scenario index for deterministic seed generation
-   * @returns The new seed value used for this scenario
-   */
-  resetForNewScenario(scenarioNumber: number): number {
-    // Use scenario number to create unique seed for each scenario
-    const newSeed = this.seed + scenarioNumber * 1000;
-    this.rng.reset(newSeed);
-    return newSeed;
   }
 }
