@@ -76,6 +76,9 @@ export class FinancialSimulationEngine {
       // Process cash flows first (throughout the year)
       portfolio = currentPhase.processYear(year, portfolio, this.inputs);
 
+      // Check if portfolio is depleted first
+      if (portfolio.getTotalValue() <= 0) break;
+
       // Rebalance portfolio to target allocation
       portfolio = portfolio.withRebalance(convertAllocationInputsToAssetAllocation(this.inputs.allocation));
 
@@ -85,9 +88,6 @@ export class FinancialSimulationEngine {
 
       data.push([year, portfolio]);
       returnsMetadata.push([year, returns]);
-
-      // Check if portfolio is depleted first
-      if (portfolio.getTotalValue() <= 0) break;
 
       // Check for phase transition
       if (currentPhase.shouldTransition(portfolio, this.inputs)) {
