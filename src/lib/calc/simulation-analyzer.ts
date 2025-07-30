@@ -111,7 +111,6 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   yearlyProgression: Array<
     MultiSimulationStats & {
       year: number;
-      chanceToReach: number;
     }
   >;
 }
@@ -385,7 +384,6 @@ export class SimulationAnalyzer {
   private buildYearlyProgression(results: SimulationResult[]): Array<
     MultiSimulationStats & {
       year: number;
-      chanceToReach: number;
     }
   > {
     if (results.length === 0) return [];
@@ -403,14 +401,13 @@ export class SimulationAnalyzer {
         .filter((metadata) => metadata !== undefined);
 
       const count = activePortfolios.length;
-      const chanceToReach = count / results.length;
       const values = this.calculatePortfolioStats(activePortfolios);
       const returns = this.calculateReturnsStats(activeReturnsMetadata);
 
       const yearlyValues = activePortfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
-      yearlyProgression.push({ year, count, chanceToReach, values, returns, percentiles });
+      yearlyProgression.push({ year, count, values, returns, percentiles });
     }
 
     return yearlyProgression;
