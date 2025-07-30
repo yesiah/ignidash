@@ -33,6 +33,10 @@ import { convertAllocationInputsToAssetAllocation } from './asset';
 /**
  * Simulation result containing success status, portfolio progression, and metadata
  * Tracks year-by-year portfolio values, phase transitions, and market returns applied
+ *
+ * Note: For failed simulations, the data array includes the depletion year but
+ * returnsMetadata does not (since no returns are applied after depletion).
+ * This means data.length may be 1 greater than returnsMetadata.length for failed simulations.
  */
 export interface SimulationResult {
   success: boolean;
@@ -76,8 +80,11 @@ export class FinancialSimulationEngine {
       // Process cash flows first (throughout the year)
       portfolio = currentPhase.processYear(year, portfolio, this.inputs);
 
-      // Check if portfolio is depleted first
-      if (portfolio.getTotalValue() <= 0) break;
+      // Check if portfolio is depleted
+      if (portfolio.getTotalValue() <= 0) {
+        data.push([year, portfolio]);
+        break;
+      }
 
       // Rebalance portfolio to target allocation
       portfolio = portfolio.withRebalance(convertAllocationInputsToAssetAllocation(this.inputs.allocation));

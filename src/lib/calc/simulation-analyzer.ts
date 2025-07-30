@@ -70,6 +70,17 @@ interface SimulationStats {
 }
 
 /**
+ * Percentile distribution for statistical analysis
+ */
+interface Percentiles {
+  p10: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p90: number;
+}
+
+/**
  * Aggregate statistics across multiple simulations
  * Used for Monte Carlo analysis and risk assessment
  */
@@ -78,13 +89,32 @@ interface AggregateSimulationStats {
   simulationCount: number;
   values: PortfolioStats;
   returns: ReturnsStats;
-  percentiles: {
-    p10: number;
-    p25: number;
-    p50: number;
-    p75: number;
-    p90: number;
-  };
+  percentiles: Percentiles;
+
+  // Segmented statistics for successful simulations
+  successStats: {
+    count: number;
+    values: PortfolioStats;
+    returns: ReturnsStats;
+    percentiles: Percentiles;
+  } | null;
+
+  // Segmented statistics for failed simulations
+  failStats: {
+    count: number;
+    values: PortfolioStats;
+    returns: ReturnsStats;
+    percentiles: Percentiles;
+    avgYearsToDepletion: number;
+  } | null;
+
+  // Yearly progression tracking
+  yearlyProgression: Array<{
+    year: number;
+    activeSimulations: number;
+    survivalRate: number;
+    values: PortfolioStats;
+  }>;
 }
 
 /**
@@ -124,9 +154,14 @@ export class SimulationAnalyzer {
     const simulationCount = results.length;
     if (simulationCount === 0) return null;
 
-    const successCount = results.filter((result) => result.success).length;
+    // Segment simulations into successful and failed
+    const successResults = results.filter((result) => result.success);
+    const failResults = results.filter((result) => !result.success);
+
+    const successCount = successResults.length;
     const successRate = successCount / simulationCount;
 
+    // Calculate overall statistics
     const finalValues = results
       .map((result) => {
         if (result.data.length === 0) throw new Error('No data points in simulation result');
@@ -136,8 +171,33 @@ export class SimulationAnalyzer {
         return lastDataPoint[1].getTotalValue();
       })
       .sort((a, b) => a - b);
-
     const allPortfolios = results.flatMap(({ data }) => data.map(([, portfolio]) => portfolio));
+
+    // Calculate success segment statistics
+    let successStats = null;
+
+    const successSegmentStats = this.calculateSegmentStats(successResults);
+    if (successSegmentStats) {
+      successStats = {
+        ...successSegmentStats,
+        count: successResults.length,
+      };
+    }
+
+    // Calculate fail segment statistics
+    let failStats = null;
+
+    const failSegmentStats = this.calculateSegmentStats(failResults);
+    if (failSegmentStats) {
+      failStats = {
+        ...failSegmentStats,
+        count: failResults.length,
+        avgYearsToDepletion: this.calculateAvgDepletion(failResults),
+      };
+    }
+
+    // Build yearly progression
+    const yearlyProgression = this.buildYearlyProgression(results);
 
     return {
       successRate,
@@ -151,6 +211,9 @@ export class SimulationAnalyzer {
         p75: this.calculatePercentile(finalValues, 75),
         p90: this.calculatePercentile(finalValues, 90),
       },
+      successStats,
+      failStats,
+      yearlyProgression,
     };
   }
 
@@ -302,5 +365,92 @@ export class SimulationAnalyzer {
     }
 
     return returns;
+  }
+
+  /**
+   * Calculates comprehensive statistics for a segment of simulations
+   *
+   * @param results - Array of simulation results to analyze
+   * @returns Statistics including values, returns, and percentiles
+   */
+  private calculateSegmentStats(segmentResults: SimulationResult[]): {
+    values: PortfolioStats;
+    returns: ReturnsStats;
+    percentiles: Percentiles;
+  } | null {
+    if (segmentResults.length === 0) return null;
+
+    // Extract segment portfolios from segment simulations
+    const segmentPortfolios = segmentResults.flatMap(({ data }) => data.map(([, portfolio]) => portfolio));
+
+    // Calculate portfolio and returns statistics
+    const values = this.calculatePortfolioStats(segmentPortfolios);
+    const returns = this.calculateReturnsStats(segmentPortfolios);
+
+    // Calculate percentiles based on final portfolio values
+    const finalValues = segmentResults
+      .map((result) => {
+        if (result.data.length === 0) return 0;
+
+        // Get the last portfolio value in the simulation
+        const lastDataPoint = result.data[result.data.length - 1];
+        return lastDataPoint[1].getTotalValue();
+      })
+      .sort((a, b) => a - b);
+
+    const percentiles: Percentiles = {
+      p10: this.calculatePercentile(finalValues, 10),
+      p25: this.calculatePercentile(finalValues, 25),
+      p50: this.calculatePercentile(finalValues, 50),
+      p75: this.calculatePercentile(finalValues, 75),
+      p90: this.calculatePercentile(finalValues, 90),
+    };
+
+    return { values, returns, percentiles };
+  }
+
+  /**
+   * Calculates average years to depletion for failed simulations
+   *
+   * @param failedResults - Array of failed simulation results
+   * @returns Average years until portfolio depletion
+   */
+  private calculateAvgDepletion(failedResults: SimulationResult[]): number {
+    if (failedResults.length === 0) throw new Error('No failed simulations to analyze');
+
+    const depletionYears = failedResults.map((result) => result.data[result.data.length - 1][0]);
+
+    const sum = depletionYears.reduce((acc, years) => acc + years, 0);
+    return sum / depletionYears.length;
+  }
+
+  /**
+   * Builds yearly progression statistics across all simulations
+   *
+   * @param results - Array of all simulation results
+   * @returns Yearly statistics including survival rate and portfolio values
+   */
+  private buildYearlyProgression(results: SimulationResult[]): Array<{
+    year: number;
+    activeSimulations: number;
+    survivalRate: number;
+    values: PortfolioStats;
+  }> {
+    if (results.length === 0) return [];
+
+    const maxYears = Math.max(...results.map((result) => result.data.length));
+    const yearlyProgression = [];
+
+    for (let year = 0; year < maxYears; year++) {
+      const activePortfolios = results.filter((result) => year < result.data.length).map((result) => result.data[year][1]);
+
+      const activeSimulations = activePortfolios.length;
+      const survivalRate = activeSimulations / results.length;
+      const values = this.calculatePortfolioStats(activePortfolios);
+
+      yearlyProgression.push({ year, activeSimulations, survivalRate, values });
+    }
+
+    return yearlyProgression;
   }
 }
