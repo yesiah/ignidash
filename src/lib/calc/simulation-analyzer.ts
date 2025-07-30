@@ -403,8 +403,8 @@ export class SimulationAnalyzer {
 
     for (let year = 0; year < maxYears; year++) {
       const activePortfolios = results
-        .filter((result) => year <= result.data[result.data.length - 1][0])
-        .map((result) => result.data.find(([time]) => time === year)![1]);
+        .map((result) => result.data.find(([time]) => time === year)?.[1])
+        .filter((portfolio) => portfolio !== undefined);
 
       const count = activePortfolios.length;
       const survivalRate = count / results.length;
