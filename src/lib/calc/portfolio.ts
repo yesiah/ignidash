@@ -62,7 +62,7 @@ export class Portfolio {
    */
   getCurrentAllocation(): AssetAllocation {
     const total = this.getTotalValue();
-    if (total === 0) throw new Error('Cannot calculate allocation for empty portfolio');
+    if (total <= 0) throw new Error('Cannot calculate allocation for empty portfolio');
 
     return {
       stocks: this.getAssetValue('stocks') / total,
