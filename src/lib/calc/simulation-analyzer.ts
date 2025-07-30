@@ -76,16 +76,14 @@ interface SimulationStats {
 interface AggregateSimulationStats {
   successRate: number;
   simulationCount: number;
+  values: PortfolioStats;
+  returns: ReturnsStats;
   percentiles: {
     p10: number;
     p25: number;
     p50: number;
     p75: number;
     p90: number;
-  };
-  overallStats: {
-    values: PortfolioStats;
-    returns: ReturnsStats;
   };
 }
 
@@ -144,16 +142,14 @@ export class SimulationAnalyzer {
     return {
       successRate,
       simulationCount,
+      values: this.calculatePortfolioStats(allPortfolios),
+      returns: this.calculateReturnsStats(allPortfolios),
       percentiles: {
         p10: this.calculatePercentile(finalValues, 10),
         p25: this.calculatePercentile(finalValues, 25),
         p50: this.calculatePercentile(finalValues, 50),
         p75: this.calculatePercentile(finalValues, 75),
         p90: this.calculatePercentile(finalValues, 90),
-      },
-      overallStats: {
-        values: this.calculatePortfolioStats(allPortfolios),
-        returns: this.calculateReturnsStats(allPortfolios),
       },
     };
   }
