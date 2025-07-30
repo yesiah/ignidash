@@ -25,7 +25,7 @@ import { SimulationResult } from './simulation-engine';
 /**
  * Core statistical measures for asset or portfolio values
  */
-interface Stats {
+export interface Stats {
   mean: number;
   median: number;
   min: number;
@@ -37,7 +37,7 @@ interface Stats {
  * Asset-specific statistical analysis
  * Provides statistics for each asset class (stocks, bonds, cash)
  */
-interface AssetStats {
+export interface AssetStats {
   stocks: Stats | null;
   bonds: Stats | null;
   cash: Stats | null;
@@ -47,7 +47,7 @@ interface AssetStats {
  * Portfolio-level statistical analysis
  * Includes both asset-level and overall portfolio statistics
  */
-interface PortfolioStats {
+export interface PortfolioStats {
   assets: AssetStats;
   overall: Stats | null;
 }
@@ -55,7 +55,7 @@ interface PortfolioStats {
 /**
  * Returns analysis for period-over-period performance
  */
-interface ReturnsStats {
+export interface ReturnsStats {
   assets: AssetStats;
   overall: Stats | null;
 }
@@ -64,7 +64,7 @@ interface ReturnsStats {
  * Comprehensive simulation analysis result
  * Includes both asset-level and portfolio-level simulation statistics
  */
-interface SimulationStats {
+export interface SimulationStats {
   values: PortfolioStats;
   returns: ReturnsStats;
 }
@@ -72,7 +72,7 @@ interface SimulationStats {
 /**
  * Percentile distribution for statistical analysis
  */
-interface Percentiles {
+export interface Percentiles {
   p10: number;
   p25: number;
   p50: number;
@@ -83,7 +83,7 @@ interface Percentiles {
 /**
  * Statistics for multiple simulations
  */
-interface MultiSimulationStats {
+export interface MultiSimulationStats {
   count: number;
   values: PortfolioStats;
   returns: ReturnsStats;
@@ -94,7 +94,7 @@ interface MultiSimulationStats {
  * Aggregate statistics across multiple simulations
  * Used for Monte Carlo analysis and risk assessment
  */
-interface AggregateSimulationStats extends MultiSimulationStats {
+export interface AggregateSimulationStats extends MultiSimulationStats {
   successRate: number;
 
   // Segmented statistics for successful simulations
@@ -203,13 +203,7 @@ export class SimulationAnalyzer {
       count,
       values: this.calculatePortfolioStats(allPortfolios),
       returns: this.calculateReturnsStats(allPortfolios),
-      percentiles: {
-        p10: this.calculatePercentile(finalValues, 10),
-        p25: this.calculatePercentile(finalValues, 25),
-        p50: this.calculatePercentile(finalValues, 50),
-        p75: this.calculatePercentile(finalValues, 75),
-        p90: this.calculatePercentile(finalValues, 90),
-      },
+      percentiles: this.calculatePercentilesFromValues(finalValues),
       successStats,
       failStats,
       yearlyProgression,
@@ -322,6 +316,22 @@ export class SimulationAnalyzer {
   }
 
   /**
+   * Calculates all standard percentiles from a sorted array
+   *
+   * @param sortedValues - Pre-sorted array of numerical values
+   * @returns Standard percentiles (p10, p25, p50, p75, p90)
+   */
+  private calculatePercentilesFromValues(sortedValues: number[]): Percentiles {
+    return {
+      p10: this.calculatePercentile(sortedValues, 10),
+      p25: this.calculatePercentile(sortedValues, 25),
+      p50: this.calculatePercentile(sortedValues, 50),
+      p75: this.calculatePercentile(sortedValues, 75),
+      p90: this.calculatePercentile(sortedValues, 90),
+    };
+  }
+
+  /**
    * Calculates period-over-period returns for a specific asset class
    *
    * @param portfolios - Array of portfolio instances in chronological order
@@ -393,13 +403,7 @@ export class SimulationAnalyzer {
       })
       .sort((a, b) => a - b);
 
-    const percentiles: Percentiles = {
-      p10: this.calculatePercentile(finalValues, 10),
-      p25: this.calculatePercentile(finalValues, 25),
-      p50: this.calculatePercentile(finalValues, 50),
-      p75: this.calculatePercentile(finalValues, 75),
-      p90: this.calculatePercentile(finalValues, 90),
-    };
+    const percentiles = this.calculatePercentilesFromValues(finalValues);
 
     return { values, returns, percentiles };
   }
