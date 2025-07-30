@@ -7,12 +7,11 @@
  *
  * Architecture:
  * - SimulationAnalyzer class for statistical computations
- * - Phase-aware analysis respecting simulation phases (accumulation vs. retirement)
  * - Aggregate analysis across multiple simulation runs
  * - Statistical measures: mean, median, min, max, standard deviation
  *
  * Key Features:
- * - Individual simulation analysis with phase-specific breakdowns
+ * - Individual simulation analysis with comprehensive statistical breakdowns
  * - Multi-simulation aggregate statistics with success rates and percentiles
  * - Asset-level and portfolio-level statistical analysis
  * - Returns analysis for period-over-period performance tracking
@@ -63,7 +62,7 @@ interface ReturnsStats {
 
 /**
  * Comprehensive simulation analysis result
- * Includes both phase-specific and overall simulation statistics
+ * Includes both asset-level and portfolio-level simulation statistics
  */
 interface SimulationStats {
   values: PortfolioStats;
@@ -94,16 +93,16 @@ interface AggregateSimulationStats {
  * SimulationAnalyzer - Statistical Analysis for Financial Simulations
  *
  * Provides comprehensive statistical analysis for individual simulations and aggregated
- * Monte Carlo results. Calculates key performance metrics, risk measures, and phase-aware
+ * Monte Carlo results. Calculates key performance metrics, risk measures, and statistical
  * breakdowns to support financial planning decision-making.
  */
 export class SimulationAnalyzer {
   /**
-   * Analyzes a single simulation result with phase-aware breakdown
+   * Analyzes a single simulation result
    * Calculates statistical measures for asset values, portfolio totals, and returns
    *
    * @param result - Individual simulation result from FinancialSimulationEngine
-   * @returns Comprehensive statistical analysis with phase-specific and overall metrics
+   * @returns Comprehensive statistical analysis with asset-level and portfolio-level metrics
    */
   analyzeSimulation(result: SimulationResult): SimulationStats | null {
     if (result.data.length === 0) return null;
@@ -161,6 +160,9 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates statistical measures for portfolio values across all asset classes
+   *
+   * @param portfolios - Array of portfolio instances to analyze
+   * @returns Portfolio statistics including asset-level and overall portfolio metrics
    */
   private calculatePortfolioStats(portfolios: Portfolio[]): PortfolioStats {
     const assetClasses: AssetClass[] = ['stocks', 'bonds', 'cash'];
@@ -181,6 +183,9 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates returns statistics for period-over-period performance
+   *
+   * @param portfolios - Array of portfolio instances to analyze
+   * @returns Returns statistics for each asset class and overall portfolio
    */
   private calculateReturnsStats(portfolios: Portfolio[]): ReturnsStats {
     const assetClasses: AssetClass[] = ['stocks', 'bonds', 'cash'];
@@ -201,6 +206,9 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates standard statistical measures for a dataset
+   *
+   * @param values - Array of numerical values to analyze
+   * @returns Statistical measures (mean, median, min, max, stdDev) or null if empty
    */
   private calculateStats(values: number[]): Stats | null {
     if (values.length === 0) return null;
@@ -218,6 +226,9 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates median value from a sorted array
+   *
+   * @param sortedValues - Pre-sorted array of numerical values
+   * @returns Median value
    */
   private calculateMedian(sortedValues: number[]): number {
     const length = sortedValues.length;
@@ -230,6 +241,10 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates standard deviation for a dataset
+   *
+   * @param values - Array of numerical values
+   * @param mean - Pre-calculated mean of the dataset
+   * @returns Standard deviation
    */
   private calculateStandardDeviation(values: number[], mean: number): number {
     const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (values.length - 1);
@@ -238,6 +253,10 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates percentile value from a sorted array
+   *
+   * @param sortedValues - Pre-sorted array of numerical values
+   * @param percentile - Percentile to calculate (0-100)
+   * @returns Value at the specified percentile
    */
   private calculatePercentile(sortedValues: number[], percentile: number): number {
     const index = Math.floor((percentile / 100) * sortedValues.length);
@@ -246,6 +265,10 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates period-over-period returns for a specific asset class
+   *
+   * @param portfolios - Array of portfolio instances in chronological order
+   * @param assetClass - Asset class to calculate returns for
+   * @returns Array of period-over-period return rates
    */
   private calculateAssetReturns(portfolios: Portfolio[], assetClass: AssetClass): number[] {
     const returns: number[] = [];
@@ -265,6 +288,9 @@ export class SimulationAnalyzer {
 
   /**
    * Calculates period-over-period returns for total portfolio
+   *
+   * @param portfolios - Array of portfolio instances in chronological order
+   * @returns Array of period-over-period return rates for total portfolio
    */
   private calculatePortfolioReturns(portfolios: Portfolio[]): number[] {
     const returns: number[] = [];
