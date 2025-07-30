@@ -58,7 +58,6 @@ export interface PortfolioStats {
  */
 export interface ReturnsStats {
   assets: AssetStats;
-  overall: Stats | null;
 }
 
 /**
@@ -253,10 +252,7 @@ export class SimulationAnalyzer {
       assets[assetClass] = this.calculateStats(returns);
     }
 
-    // Calculate overall portfolio returns (weighted average would be complex, so null for now)
-    const overall = null;
-
-    return { assets, overall };
+    return { assets };
   }
 
   /**
