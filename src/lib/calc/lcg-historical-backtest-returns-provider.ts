@@ -90,14 +90,11 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
       adjustedYear = this.currentSequenceStartYear;
     }
 
-    // Find the historical data for this year
     const yearData = this.historicalData.find((data) => data.year === adjustedYear);
-
     if (!yearData) {
       throw new Error(`Historical data not found for year ${adjustedYear}`);
     }
 
-    // Convert NYU historical data format to AssetReturns format
     const returns: AssetReturns = {
       stocks: yearData.stockReturn,
       bonds: yearData.bondReturn,
@@ -107,7 +104,7 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
     return {
       returns,
       metadata: {
-        inflationRate: yearData.inflationRate * 100, // Convert to percentage for metadata
+        inflationRate: yearData.inflationRate * 100,
         extras: {
           historicalYear: adjustedYear,
           selectedStartYear: this.selectedStartYear,
