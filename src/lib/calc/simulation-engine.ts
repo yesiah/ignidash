@@ -162,7 +162,9 @@ export class FinancialSimulationEngine {
 }
 
 /**
- * Monte Carlo simulation result with multiple simulations and aggregate statistics
+ * Multi-Simulation Result Interface
+ * Represents the results of multiple simulations, each with its own seed and corresponding result
+ * Used for aggregating Monte Carlo or historical backtest simulations
  */
 interface MultiSimulationResult {
   simulations: Array<[number /* seed */, SimulationResult]>;
@@ -171,7 +173,7 @@ interface MultiSimulationResult {
 /**
  * Monte Carlo Simulation Engine
  * Extends the base simulation engine to run multiple stochastic simulations
- * Provides probabilistic analysis with success rates and percentile outcomes
+ * Provides probabilistic analysis with simulation seeds and their corresponding results
  */
 export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
   /**
@@ -189,7 +191,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
   /**
    * Runs multiple simulations for Monte Carlo analysis
    * @param numSimulations - Number of simulations
-   * @returns Aggregate results with success rates and percentiles
+   * @returns Aggregate results with simulation seeds and their corresponding results
    */
   runMonteCarloSimulation(numSimulations: number): MultiSimulationResult {
     const simulations: Array<[number, SimulationResult]> = [];
@@ -197,7 +199,6 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
-    // Run multiple simulations, creating a new provider for each
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new StochasticReturnsProvider(this.inputs, simulationSeed);
@@ -235,7 +236,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
    * Uses LCG to choose different start years for each scenario, providing Monte Carlo-style
    * analysis with real historical data instead of synthetic returns
    * @param numSimulations - Number of simulations to simulate (each with a random start year)
-   * @returns Aggregate results with success rates and percentiles based on historical outcomes
+   * @returns Aggregate results with simulation seeds and their corresponding results
    */
   runLcgHistoricalBacktest(numSimulations: number): MultiSimulationResult {
     const simulations: Array<[number, SimulationResult]> = [];
@@ -243,7 +244,6 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
 
-    // Run multiple simulations, creating a new provider for each
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
