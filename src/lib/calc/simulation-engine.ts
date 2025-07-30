@@ -164,19 +164,8 @@ export class FinancialSimulationEngine {
 /**
  * Monte Carlo simulation result with multiple simulations and aggregate statistics
  */
-interface MonteCarloResult {
+interface MultiSimulationResult {
   simulations: Array<[number /* seed */, SimulationResult]>;
-  aggregateStats: {
-    successRate: number;
-    percentiles: {
-      p10: number;
-      p25: number;
-      p50: number;
-      p75: number;
-      p90: number;
-    };
-    // Other aggregate statistics
-  };
 }
 
 /**
@@ -202,7 +191,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
    * @param numSimulations - Number of simulations
    * @returns Aggregate results with success rates and percentiles
    */
-  runMonteCarloSimulation(numSimulations: number): MonteCarloResult {
+  runMonteCarloSimulation(numSimulations: number): MultiSimulationResult {
     const simulations: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
@@ -216,58 +205,10 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
       simulations.push([simulationSeed, result]);
     }
 
-    // Calculate aggregate statistics
-    const successCount = simulations.filter(([_seed, result]) => result.success).length;
-    const successRate = successCount / numSimulations;
-
-    // Extract final portfolio values for percentile calculations
-    const finalValues = simulations
-      .map(([_seed, result]) => {
-        const dataPointsCount = result.data.length;
-        if (dataPointsCount === 0) throw new Error('No data points in simulation result');
-
-        return result.data[dataPointsCount - 1][1].getTotalValue();
-      })
-      .sort((a, b) => a - b);
-
-    // Calculate percentiles
-    const getPercentile = (arr: number[], percentile: number) => {
-      const index = Math.floor((percentile / 100) * arr.length);
-      return arr[Math.min(index, arr.length - 1)]; // Ensure we don't exceed array bounds
-    };
-
     return {
       simulations,
-      aggregateStats: {
-        successRate,
-        percentiles: {
-          p10: getPercentile(finalValues, 10),
-          p25: getPercentile(finalValues, 25),
-          p50: getPercentile(finalValues, 50),
-          p75: getPercentile(finalValues, 75),
-          p90: getPercentile(finalValues, 90),
-        },
-      },
     };
   }
-}
-
-/**
- * LCG historical backtest simulation result with simulations for each randomly selected start year
- */
-interface LcgHistoricalBacktestResult {
-  simulations: Array<[number /* startYear */, SimulationResult]>;
-  aggregateStats: {
-    successRate: number;
-    percentiles: {
-      p10: number;
-      p25: number;
-      p50: number;
-      p75: number;
-      p90: number;
-    };
-    // Other aggregate statistics
-  };
 }
 
 /**
@@ -296,7 +237,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
    * @param numSimulations - Number of simulations to simulate (each with a random start year)
    * @returns Aggregate results with success rates and percentiles based on historical outcomes
    */
-  runLcgHistoricalBacktest(numSimulations: number): LcgHistoricalBacktestResult {
+  runLcgHistoricalBacktest(numSimulations: number): MultiSimulationResult {
     const simulations: Array<[number, SimulationResult]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
@@ -304,45 +245,14 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
 
     // Run multiple simulations, creating a new provider for each
     for (let i = 0; i < numSimulations; i++) {
-      const simulationSeed = this.baseSeed + i * 1009; // Prime multiplier for better distribution
+      const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
       const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
-      const selectedStartYear = returnsProvider.getSelectedStartYear();
-      simulations.push([selectedStartYear, result]);
+      simulations.push([simulationSeed, result]);
     }
-
-    // Calculate aggregate statistics
-    const successCount = simulations.filter(([_startYear, result]) => result.success).length;
-    const successRate = successCount / numSimulations;
-
-    // Extract final portfolio values for percentile calculations
-    const finalValues = simulations
-      .map(([_startYear, result]) => {
-        const dataPointsCount = result.data.length;
-        if (dataPointsCount === 0) throw new Error('No data points in simulation result');
-
-        return result.data[dataPointsCount - 1][1].getTotalValue();
-      })
-      .sort((a, b) => a - b);
-
-    // Calculate percentiles
-    const getPercentile = (arr: number[], percentile: number) => {
-      const index = Math.floor((percentile / 100) * arr.length);
-      return arr[Math.min(index, arr.length - 1)]; // Ensure we don't exceed array bounds
-    };
 
     return {
       simulations,
-      aggregateStats: {
-        successRate,
-        percentiles: {
-          p10: getPercentile(finalValues, 10),
-          p25: getPercentile(finalValues, 25),
-          p50: getPercentile(finalValues, 50),
-          p75: getPercentile(finalValues, 75),
-          p90: getPercentile(finalValues, 90),
-        },
-      },
     };
   }
 }
