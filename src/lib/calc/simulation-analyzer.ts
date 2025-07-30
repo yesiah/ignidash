@@ -398,6 +398,7 @@ export class SimulationAnalyzer {
 
       const activePortfolios = activeResults.map((result) => result.data.find(([time]) => time === year)![1]);
       const activeReturnsMetadata = activeResults
+        // Failed simulations won't have returns metadata for the last year
         .map((result) => result.returnsMetadata.find(([time]) => time === year)?.[1])
         .filter((metadata) => metadata !== undefined);
 
