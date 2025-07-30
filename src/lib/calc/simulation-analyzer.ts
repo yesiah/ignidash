@@ -448,6 +448,7 @@ export class SimulationAnalyzer {
       const values = this.calculatePortfolioStats(activePortfolios);
       const returns = this.calculateReturnsStats(activePortfolios);
 
+      // Calculate percentiles for this year's values
       const yearlyValues = activePortfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
