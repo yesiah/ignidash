@@ -103,7 +103,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   // Segmented statistics for failed simulations
   failStats:
     | (MultiSimulationStats & {
-        avgYearsToDepletion: number;
+        meanDuration: number;
       })
     | null;
 
@@ -111,7 +111,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   yearlyProgression: Array<
     MultiSimulationStats & {
       year: number;
-      survivalRate: number;
+      chanceToReach: number;
     }
   >;
 }
@@ -195,7 +195,7 @@ export class SimulationAnalyzer {
       failStats = {
         ...failSegmentStats,
         count: failResults.length,
-        avgYearsToDepletion: this.calculateAvgDepletion(failResults),
+        meanDuration: this.calculateAvgDepletion(failResults),
       };
     }
 
@@ -380,12 +380,12 @@ export class SimulationAnalyzer {
    * Builds yearly progression statistics across all simulations
    *
    * @param results - Array of all simulation results
-   * @returns Yearly statistics including survival rate and portfolio values
+   * @returns Yearly statistics including chance to reach and portfolio values
    */
   private buildYearlyProgression(results: SimulationResult[]): Array<
     MultiSimulationStats & {
       year: number;
-      survivalRate: number;
+      chanceToReach: number;
     }
   > {
     if (results.length === 0) return [];
@@ -403,14 +403,14 @@ export class SimulationAnalyzer {
         .filter((metadata) => metadata !== undefined);
 
       const count = activePortfolios.length;
-      const survivalRate = count / results.length;
+      const chanceToReach = count / results.length;
       const values = this.calculatePortfolioStats(activePortfolios);
       const returns = this.calculateReturnsStats(activeReturnsMetadata);
 
       const yearlyValues = activePortfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
-      yearlyProgression.push({ year, count, survivalRate, values, returns, percentiles });
+      yearlyProgression.push({ year, count, chanceToReach, values, returns, percentiles });
     }
 
     return yearlyProgression;
