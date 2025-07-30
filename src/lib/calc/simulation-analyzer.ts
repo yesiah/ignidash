@@ -113,6 +113,14 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
       year: number;
     }
   >;
+
+  // Phase-specific statistics for detailed analysis
+  phaseStats: Array<
+    MultiSimulationStats & {
+      phaseName: string;
+      meanDuration: number;
+    }
+  > | null;
 }
 
 /**
@@ -207,6 +215,7 @@ export class SimulationAnalyzer {
       successStats,
       failStats,
       yearlyProgression: this.buildYearlyProgression(results),
+      phaseStats: null, // Phase stats not implemented yet
     };
   }
 
