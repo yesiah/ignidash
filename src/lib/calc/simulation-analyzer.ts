@@ -220,6 +220,7 @@ export class SimulationAnalyzer {
    * Calculates median value from a sorted array
    */
   private calculateMedian(sortedValues: number[]): number {
+    const length = sortedValues.length;
     if (length % 2 === 0) {
       return (sortedValues[length / 2 - 1] + sortedValues[length / 2]) / 2;
     } else {
