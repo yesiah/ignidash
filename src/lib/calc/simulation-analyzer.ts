@@ -81,32 +81,31 @@ interface Percentiles {
 }
 
 /**
- * Aggregate statistics across multiple simulations
- * Used for Monte Carlo analysis and risk assessment
+ * Statistics for multiple simulations
  */
-interface AggregateSimulationStats {
-  successRate: number;
-  simulationCount: number;
+interface MultiSimulationStats {
+  count: number;
   values: PortfolioStats;
   returns: ReturnsStats;
   percentiles: Percentiles;
+}
+
+/**
+ * Aggregate statistics across multiple simulations
+ * Used for Monte Carlo analysis and risk assessment
+ */
+interface AggregateSimulationStats extends MultiSimulationStats {
+  successRate: number;
 
   // Segmented statistics for successful simulations
-  successStats: {
-    count: number;
-    values: PortfolioStats;
-    returns: ReturnsStats;
-    percentiles: Percentiles;
-  } | null;
+  successStats: MultiSimulationStats | null;
 
   // Segmented statistics for failed simulations
-  failStats: {
-    count: number;
-    values: PortfolioStats;
-    returns: ReturnsStats;
-    percentiles: Percentiles;
-    avgYearsToDepletion: number;
-  } | null;
+  failStats:
+    | (MultiSimulationStats & {
+        avgYearsToDepletion: number;
+      })
+    | null;
 
   // Yearly progression tracking
   yearlyProgression: Array<{
@@ -151,15 +150,15 @@ export class SimulationAnalyzer {
    * @returns Aggregate statistical analysis across all simulations
    */
   analyzeSimulations(results: SimulationResult[]): AggregateSimulationStats | null {
-    const simulationCount = results.length;
-    if (simulationCount === 0) return null;
+    const count = results.length;
+    if (count === 0) return null;
 
     // Segment simulations into successful and failed
     const successResults = results.filter((result) => result.success);
     const failResults = results.filter((result) => !result.success);
 
     const successCount = successResults.length;
-    const successRate = successCount / simulationCount;
+    const successRate = successCount / count;
 
     // Calculate overall statistics
     const finalValues = results
@@ -201,7 +200,7 @@ export class SimulationAnalyzer {
 
     return {
       successRate,
-      simulationCount,
+      count,
       values: this.calculatePortfolioStats(allPortfolios),
       returns: this.calculateReturnsStats(allPortfolios),
       percentiles: {
@@ -373,11 +372,7 @@ export class SimulationAnalyzer {
    * @param results - Array of simulation results to analyze
    * @returns Statistics including values, returns, and percentiles
    */
-  private calculateSegmentStats(segmentResults: SimulationResult[]): {
-    values: PortfolioStats;
-    returns: ReturnsStats;
-    percentiles: Percentiles;
-  } | null {
+  private calculateSegmentStats(segmentResults: SimulationResult[]): Omit<MultiSimulationStats, 'count'> | null {
     if (segmentResults.length === 0) return null;
 
     // Extract segment portfolios from segment simulations
