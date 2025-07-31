@@ -43,6 +43,7 @@ import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis } from '@/lib/c
 import { getFIREChartData } from '@/lib/calc/analysis/charts';
 import { FinancialSimulationEngine } from '@/lib/calc/simulation-engine';
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
+import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
 
 // ================================
 // TYPES & HELPERS
@@ -429,15 +430,10 @@ export const useFixedReturnsAnalysis = () => {
       }
     }
 
-    let requiredPortfolio = null;
-    if (yearsToFIRE !== null) {
-      requiredPortfolio = simulation.data[yearsToFIRE][1].getTotalValue();
-    }
-
     return {
       yearsToFIRE,
       fireAge,
-      requiredPortfolio,
+      requiredPortfolio: WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs),
     };
   }, [inputs, simulation]);
 };
