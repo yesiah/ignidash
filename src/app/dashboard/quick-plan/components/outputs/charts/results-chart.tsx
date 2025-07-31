@@ -40,11 +40,11 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-2)]/60 px-2 text-sm">
           <span className="mr-2">Bonds:</span>
-          <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3)}</span>
+          <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3)}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-3)]/60 px-2 text-sm">
           <span className="mr-2">Stocks:</span>
-          <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3)}</span>
+          <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3)}</span>
         </p>
       </div>
       <p className="border-foreground/50 mt-2 flex justify-between border-t pt-2 text-sm font-semibold">
