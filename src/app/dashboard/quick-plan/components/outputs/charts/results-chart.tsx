@@ -24,8 +24,6 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProps) => {
   if (!(active && payload && payload.length)) return null;
 
-  console.log('CustomTooltip payload:', payload);
-
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - currentAge);
 

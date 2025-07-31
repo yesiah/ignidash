@@ -41,8 +41,9 @@ import {
 } from '@/lib/schemas/quick-plan-schema';
 import { calculateYearsToFIRE, calculateFIREAge, getFIREAnalysis } from '@/lib/calc/analysis/calculator';
 import { getFIREChartData } from '@/lib/calc/analysis/charts';
-import { FinancialSimulationEngine } from '@/lib/calc/simulation-engine';
+import { FinancialSimulationEngine, MonteCarloSimulationEngine } from '@/lib/calc/simulation-engine';
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
+import { SimulationAnalyzer } from '@/lib/calc/simulation-analyzer';
 import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
 
 // ================================
@@ -405,6 +406,36 @@ export const useFixedReturnsSimulation = () => {
 
     return engine.runSimulation(returnsProvider, initialPortfolio, initialPhase);
   }, [inputs]);
+};
+
+export const useMonteCarloSimulation = () => {
+  const inputs = useQuickPlanStore((state) => state.inputs);
+
+  return useMemo(() => {
+    const baseSeed = Math.floor(Math.random() * 1000);
+    const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
+    return engine.runMonteCarloSimulation(2000);
+  }, [inputs]);
+};
+
+export const useMonteCarloChartData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useMonteCarloSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.map((data) => ({
+      age: data.year + currentAge,
+      p25: data.percentiles.p25,
+      p50: data.percentiles.p50,
+      p75: data.percentiles.p75,
+    }));
+  }, [currentAge, simulation]);
 };
 
 /**
