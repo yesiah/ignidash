@@ -78,9 +78,9 @@ export default function ResultsChart() {
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip />} />
-          <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fillOpacity={1} fill="url(#colorStocks)" />
-          <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fillOpacity={1} fill="url(#colorBonds)" />
-          <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fillOpacity={1} fill="url(#colorCash)" />
+          <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
+          <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
+          <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={{ r: 5 }} />
           {fireAnalysis.fireAge && (
             <ReferenceLine
               x={Math.round(fireAnalysis.fireAge!)}
