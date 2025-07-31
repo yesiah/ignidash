@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { ChartDataPoint } from '@/lib/calc/analysis/charts';
-import { useFixedReturnsChartData, useFixedReturnsAnalysis } from '@/lib/stores/quick-plan-store';
+import { useFixedReturnsChartData, useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -18,16 +18,23 @@ interface CustomTooltipProps {
     payload: ChartDataPoint;
   }>;
   label?: number;
+  currentAge: number;
 }
 
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProps) => {
   if (!(active && payload && payload.length)) return null;
 
   console.log('CustomTooltip payload:', payload);
 
+  const currentYear = new Date().getFullYear();
+  const yearForAge = currentYear + (label! - currentAge);
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-3 shadow-md">
-      <p className="mb-2 border-b pb-2 text-sm font-semibold">Age {label}</p>
+      <p className="mb-2 flex justify-between border-b pb-2 text-sm font-semibold">
+        <span>Age {label}</span>
+        <span className="text-muted-foreground">{yearForAge}</span>
+      </p>
       <div className="flex flex-col gap-2">
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-1)]/60 px-2 text-sm">
           <span className="mr-2">Cash:</span>
@@ -61,6 +68,7 @@ export default function ResultsChart() {
 
   const chartData = useFixedReturnsChartData();
   const fireAnalysis = useFixedReturnsAnalysis();
+  const currentAge = useCurrentAge();
 
   if (chartData.length === 0) {
     return null;
@@ -98,7 +106,7 @@ export default function ResultsChart() {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip currentAge={currentAge!} />} />
           <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
           <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
           <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={{ r: 5 }} />
