@@ -35,27 +35,18 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
       </p>
       <div className="flex flex-col gap-2">
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-1)]/60 px-2 text-sm">
-          <span className="mr-2">Cash:</span>
+          <span className="mr-2">P90:</span>
           <span className="ml-1 font-semibold">{formatNumber(payload[2].value, 3)}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-2)]/60 px-2 text-sm">
-          <span className="mr-2">Bonds:</span>
+          <span className="mr-2">Median (P50):</span>
           <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3)}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-3)]/60 px-2 text-sm">
-          <span className="mr-2">Stocks:</span>
+          <span className="mr-2">P10:</span>
           <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3)}</span>
         </p>
       </div>
-      <p className="border-foreground/50 mt-2 flex justify-between border-t pt-2 text-sm font-semibold">
-        <span className="mr-2">Total:</span>
-        <span className="ml-1 font-semibold">
-          {formatNumber(
-            payload.reduce((sum, item) => sum + item.value, 0),
-            3
-          )}
-        </span>
-      </p>
     </div>
   );
 };
