@@ -58,16 +58,16 @@ export default function ResultsChart() {
         <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="colorStocks" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={primaryColor} stopOpacity={0.8} />
+              <stop offset="5%" stopColor={primaryColor} stopOpacity={0.9} />
               <stop offset="95%" stopColor={primaryColor} stopOpacity={0.6} />
             </linearGradient>
             <linearGradient id="colorBonds" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={primaryColor} stopOpacity={0.6} />
-              <stop offset="95%" stopColor={primaryColor} stopOpacity={0.4} />
+              <stop offset="95%" stopColor={primaryColor} stopOpacity={0.3} />
             </linearGradient>
             <linearGradient id="colorCash" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={primaryColor} stopOpacity={0.4} />
-              <stop offset="95%" stopColor={primaryColor} stopOpacity={0.2} />
+              <stop offset="5%" stopColor={primaryColor} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={primaryColor} stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
