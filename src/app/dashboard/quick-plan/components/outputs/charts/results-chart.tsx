@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-3 shadow-md">
-      <p className="mb-2 flex justify-between border-b pb-2 text-sm font-semibold">
+      <p className="border-foreground/50 mb-2 flex justify-between border-b pb-2 text-sm font-semibold">
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
@@ -49,7 +49,7 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
           <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3)}</span>
         </p>
       </div>
-      <p className="mt-2 flex justify-between border-t pt-2 text-sm font-semibold">
+      <p className="border-foreground/50 mt-2 flex justify-between border-t pt-2 text-sm font-semibold">
         <span className="mr-2">Total:</span>
         <span className="ml-1 font-semibold">
           {formatNumber(
