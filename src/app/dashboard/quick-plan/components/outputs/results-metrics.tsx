@@ -1,11 +1,11 @@
 'use client';
 
 import Card from '@/components/ui/card';
-import { useFIREAnalysis } from '@/lib/stores/quick-plan-store';
+import { useFixedReturnsAnalysis } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 
 export default function ResultsMetrics() {
-  const fireAnalysis = useFIREAnalysis();
+  const fireAnalysis = useFixedReturnsAnalysis();
 
   const stats = [
     { name: 'FIRE Age', stat: fireAnalysis.fireAge, fractionDigits: 1 },

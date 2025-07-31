@@ -396,18 +396,15 @@ export const useResetSection = () => useQuickPlanStore((state) => state.actions.
  */
 export const useFixedReturnsSimulation = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
-  const isReady = useIsCalculationReady();
 
   return useMemo(() => {
-    if (!isReady) return null;
-
     const engine = new FinancialSimulationEngine(inputs);
     const returnsProvider = new FixedReturnsProvider(inputs);
     const initialPortfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(initialPortfolio, inputs);
 
     return engine.runSimulation(returnsProvider, initialPortfolio, initialPhase);
-  }, [inputs, isReady]);
+  }, [inputs]);
 };
 
 /**
@@ -419,8 +416,6 @@ export const useFixedReturnsAnalysis = () => {
   const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
-    if (!simulation) return null;
-
     let yearsToFIRE: number | null = null;
     let fireAge: number | null = null;
     for (const phase of simulation.phasesMetadata) {
