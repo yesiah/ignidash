@@ -84,6 +84,10 @@ export class FinancialSimulationEngine {
       // Check if portfolio is depleted
       if (portfolio.getTotalValue() <= 0) {
         data.push([year, portfolio]);
+        // Fill remaining years with the final (depleted) portfolio for statistics
+        for (let remainingYear = year + 1; remainingYear <= lifeExpectancy - startAge; remainingYear++) {
+          data.push([remainingYear, portfolio]);
+        }
         break;
       }
 

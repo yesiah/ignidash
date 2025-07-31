@@ -400,7 +400,7 @@ export class SimulationAnalyzer {
     const maxYears = Math.max(...results.map((result) => result.data[result.data.length - 1][0]));
     const yearlyProgression = [];
 
-    for (let year = 0; year < maxYears; year++) {
+    for (let year = 0; year <= maxYears; year++) {
       const activeResults = results.filter((result) => result.data.some(([time]) => time === year));
 
       const activePortfolios = activeResults.map((result) => result.data.find(([time]) => time === year)![1]);

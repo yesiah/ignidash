@@ -414,7 +414,7 @@ export const useMonteCarloSimulation = () => {
 
   return useMemo(() => {
     const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
-    return engine.runMonteCarloSimulation(500);
+    return engine.runMonteCarloSimulation(100);
   }, [inputs, baseSeed]);
 };
 
