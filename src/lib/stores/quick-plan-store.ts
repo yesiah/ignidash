@@ -436,10 +436,12 @@ export const useFixedReturnsAnalysis = () => {
 export const useFixedReturnsChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useFixedReturnsSimulation();
-
   return useMemo(() => {
     return simulation.data.map(([timeInYears, portfolio]) => ({
       age: timeInYears + currentAge,
+      stocks: portfolio.getAssetValue('stocks'),
+      bonds: portfolio.getAssetValue('bonds'),
+      cash: portfolio.getAssetValue('cash'),
       portfolioValue: portfolio.getTotalValue(),
     }));
   }, [currentAge, simulation]);

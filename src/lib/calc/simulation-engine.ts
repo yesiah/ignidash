@@ -71,6 +71,7 @@ export class FinancialSimulationEngine {
 
     const startAge = this.inputs.basics.currentAge!;
     const lifeExpectancy = this.inputs.retirementFunding.lifeExpectancy;
+    const assetAllocation = convertAllocationInputsToAssetAllocation(this.inputs.allocation);
 
     const data: Array<[number, Portfolio]> = [[0, portfolio]];
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
@@ -86,12 +87,15 @@ export class FinancialSimulationEngine {
         break;
       }
 
-      // Rebalance portfolio to target allocation
-      portfolio = portfolio.withRebalance(convertAllocationInputsToAssetAllocation(this.inputs.allocation));
+      // Rebalance portfolio to target allocation before applying returns
+      portfolio = portfolio.withRebalance(assetAllocation);
 
       // Apply returns at end of year (compounding on final balance)
       const returns = returnsProvider.getReturns(year);
       portfolio = portfolio.withReturns(returns.returns);
+
+      // Rebalance again after returns to maintain target allocation
+      portfolio = portfolio.withRebalance(assetAllocation);
 
       data.push([year, portfolio]);
       returnsMetadata.push([year, returns]);
