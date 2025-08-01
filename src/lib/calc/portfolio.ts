@@ -166,8 +166,7 @@ export class Portfolio {
    */
   withRebalance(targetAllocation: AssetAllocation): Portfolio {
     const totalValue = this.getTotalValue();
-    if (totalValue < 0) throw new Error('Cannot rebalance empty portfolio');
-    if (totalValue === 0) return this; // No change if empty portfolio
+    if (totalValue <= 0) return this; // No change if empty portfolio
 
     const totalPrincipal = this.assets.reduce((sum, asset) => sum + asset.principal, 0);
     const totalGrowth = this.assets.reduce((sum, asset) => sum + asset.growth, 0);
