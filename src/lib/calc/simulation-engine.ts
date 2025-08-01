@@ -111,12 +111,7 @@ export class FinancialSimulationEngine {
       phasesMetadata.push([year, currentPhase]);
     }
 
-    return {
-      success,
-      data,
-      phasesMetadata,
-      returnsMetadata,
-    };
+    return { success, data, phasesMetadata, returnsMetadata };
   }
 
   /**
