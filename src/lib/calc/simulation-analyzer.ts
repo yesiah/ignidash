@@ -530,16 +530,12 @@ export class SimulationAnalyzer {
 
       // Extract portfolio data for years when this phase was active
       for (const [year, portfolio] of result.data) {
-        if (phaseMap.get(year) === phaseName) {
-          portfolios.push(portfolio);
-        }
+        if (phaseMap.get(year) === phaseName) portfolios.push(portfolio);
       }
 
       // Extract returns metadata for years when this phase was active
       for (const [year, metadata] of result.returnsMetadata) {
-        if (phaseMap.get(year) === phaseName) {
-          returnsMetadata.push(metadata);
-        }
+        if (phaseMap.get(year) === phaseName) returnsMetadata.push(metadata);
       }
     }
 
