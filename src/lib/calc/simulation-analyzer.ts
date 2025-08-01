@@ -439,11 +439,11 @@ export class SimulationAnalyzer {
 
     // Extract all unique phase names across all simulations
     const allPhaseNames = new Set<string>();
-    results.forEach((result) => {
-      result.phasesMetadata.forEach(([, phase]) => {
+    for (const result of results) {
+      for (const [, phase] of result.phasesMetadata) {
         allPhaseNames.add(phase.getName());
-      });
-    });
+      }
+    }
 
     if (allPhaseNames.size === 0) return null;
 
