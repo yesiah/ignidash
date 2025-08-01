@@ -74,6 +74,10 @@ export default function ResultsChart() {
   const foregroundMutedColor = theme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
 
   const interval = isSmallScreen ? 4 : 3;
+  const showP10ReferenceLine =
+    fireAnalysis?.p10FireAge && fireAnalysis?.p50FireAge && fireAnalysis.p10FireAge < fireAnalysis.p50FireAge - 3;
+  const showP90ReferenceLine =
+    fireAnalysis?.p90FireAge && fireAnalysis?.p50FireAge && fireAnalysis.p90FireAge > 3 + fireAnalysis.p50FireAge;
 
   return (
     <div className="[&_svg:focus]:outline-primary h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:rounded-lg [&_svg:focus]:outline-2 [&_svg:focus]:outline-offset-2">
@@ -105,9 +109,9 @@ export default function ResultsChart() {
           <Area type="monotone" dataKey="p90" stroke="var(--chart-2)" fill="url(#colorP90)" activeDot={false} />
           <Area type="monotone" dataKey="p50" stroke="var(--chart-3)" fill="url(#colorP50)" activeDot={false} />
           <Area type="monotone" dataKey="p10" stroke="var(--chart-1)" fill="url(#colorP10)" activeDot={false} />
-          {fireAnalysis?.p10FireAge && (
+          {showP10ReferenceLine && (
             <ReferenceLine
-              x={Math.round(fireAnalysis.p10FireAge)}
+              x={Math.round(fireAnalysis.p10FireAge!)}
               stroke={foregroundColor}
               strokeDasharray="10 5"
               label={{ value: 'P10', position: 'insideBottomLeft', fill: foregroundColor }}
@@ -121,9 +125,9 @@ export default function ResultsChart() {
               label={{ value: 'P50', position: 'insideBottomLeft', fill: foregroundColor }}
             />
           )}
-          {fireAnalysis?.p90FireAge && (
+          {showP90ReferenceLine && (
             <ReferenceLine
-              x={Math.round(fireAnalysis.p90FireAge)}
+              x={Math.round(fireAnalysis.p90FireAge!)}
               stroke={foregroundColor}
               strokeDasharray="10 5"
               label={{ value: 'P90', position: 'insideBottomLeft', fill: foregroundColor }}
@@ -134,7 +138,7 @@ export default function ResultsChart() {
               y={Math.round(fireAnalysis.requiredPortfolio)}
               stroke={foregroundColor}
               strokeDasharray="10 5"
-              label={{ value: 'Required Portfolio', position: 'insideBottomLeft', fill: foregroundColor }}
+              label={{ value: 'Required Portfolio', position: 'insideBottom', fill: foregroundColor }}
             />
           )}
         </AreaChart>
