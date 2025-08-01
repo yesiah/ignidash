@@ -66,7 +66,7 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
   );
 };
 
-export default function ResultsChart() {
+export default function FixedResultsChart() {
   const { theme } = useTheme();
   const isSmallScreen = useIsMobile();
 

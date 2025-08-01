@@ -94,6 +94,7 @@ describe('StochasticReturnsProvider', () => {
           bondReturn: 5,
           cashReturn: 3,
           inflationRate: 2.5,
+          simulationMode: 'monteCarlo' as const,
         },
       };
 
