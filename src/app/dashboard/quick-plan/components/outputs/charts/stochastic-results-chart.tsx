@@ -3,7 +3,7 @@
 import { useTheme } from 'next-themes';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
-import { useMonteCarloChartData, useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
+import { useMonteCarloChartData, useMonteCarloAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -62,7 +62,7 @@ export default function ResultsChart() {
   const isSmallScreen = useIsMobile();
 
   const chartData = useMonteCarloChartData();
-  const fireAnalysis = useFixedReturnsAnalysis();
+  const fireAnalysis = useMonteCarloAnalysis();
   const currentAge = useCurrentAge();
 
   if (chartData.length === 0) {
@@ -105,12 +105,36 @@ export default function ResultsChart() {
           <Area type="monotone" dataKey="p90" stroke="var(--chart-2)" fill="url(#colorP90)" activeDot={false} />
           <Area type="monotone" dataKey="p50" stroke="var(--chart-3)" fill="url(#colorP50)" activeDot={false} />
           <Area type="monotone" dataKey="p10" stroke="var(--chart-1)" fill="url(#colorP10)" activeDot={false} />
-          {fireAnalysis.fireAge && (
+          {fireAnalysis?.p10FireAge && (
             <ReferenceLine
-              x={Math.round(fireAnalysis.fireAge!)}
+              x={Math.round(fireAnalysis.p10FireAge)}
               stroke={foregroundColor}
               strokeDasharray="10 5"
-              label={{ value: 'FIRE', position: 'insideBottomLeft', fill: foregroundColor }}
+              label={{ value: 'P10', position: 'insideBottomLeft', fill: foregroundColor }}
+            />
+          )}
+          {fireAnalysis?.p50FireAge && (
+            <ReferenceLine
+              x={Math.round(fireAnalysis.p50FireAge)}
+              stroke={foregroundColor}
+              strokeDasharray="10 5"
+              label={{ value: 'P50', position: 'insideBottomLeft', fill: foregroundColor }}
+            />
+          )}
+          {fireAnalysis?.p90FireAge && (
+            <ReferenceLine
+              x={Math.round(fireAnalysis.p90FireAge)}
+              stroke={foregroundColor}
+              strokeDasharray="10 5"
+              label={{ value: 'P90', position: 'insideBottomLeft', fill: foregroundColor }}
+            />
+          )}
+          {fireAnalysis?.requiredPortfolio && (
+            <ReferenceLine
+              y={Math.round(fireAnalysis.requiredPortfolio)}
+              stroke={foregroundColor}
+              strokeDasharray="10 5"
+              label={{ value: 'Required Portfolio', position: 'insideBottomLeft', fill: foregroundColor }}
             />
           )}
         </AreaChart>
