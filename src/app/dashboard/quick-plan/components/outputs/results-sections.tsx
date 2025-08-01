@@ -20,23 +20,23 @@ export default function ResultsSections() {
     );
   }
 
-  let resultsChart;
+  let resultsOverview;
   switch (marketAssumptions.simulationMode) {
     case 'fixedReturns':
-      resultsChart = <FixedReturnsOverview />;
+      resultsOverview = <FixedReturnsOverview />;
       break;
     case 'monteCarlo':
-      resultsChart = <MonteCarloOverview />;
+      resultsOverview = <MonteCarloOverview />;
       break;
     case 'historicalBacktest':
-      resultsChart = <HistoricalBacktestOverview />;
+      resultsOverview = <HistoricalBacktestOverview />;
       break;
   }
 
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
-      {resultsChart}
+      {resultsOverview}
     </SectionContainer>
   );
 }
