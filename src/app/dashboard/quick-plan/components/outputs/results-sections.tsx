@@ -6,8 +6,8 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 
 import ResultsMetrics from './results-metrics';
-import ResultsChart from './charts/results-chart';
-// import StochasticResultsChart from './charts/stochastic-results-chart';
+// import ResultsChart from './charts/results-chart';
+import StochasticResultsChart from './charts/stochastic-results-chart';
 
 export default function ResultsSections() {
   const isCalculationReady = useIsCalculationReady();
@@ -18,8 +18,8 @@ export default function ResultsSections() {
         <ResultsMetrics />
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
-          <ResultsChart />
-          {/* <StochasticResultsChart /> */}
+          {/* <ResultsChart /> */}
+          <StochasticResultsChart />
         </Card>
       </SectionContainer>
     );
