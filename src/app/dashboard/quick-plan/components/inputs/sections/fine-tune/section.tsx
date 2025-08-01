@@ -13,6 +13,22 @@ export default function FineTuneSection() {
   const updateMarketAssumptions = useUpdateMarketAssumptions();
   const marketAssumptionsHasErrors = useMarketAssumptionsHasErrors();
 
+  let simulationModeDesc;
+  switch (marketAssumptions.simulationMode) {
+    case 'fixedReturns':
+      simulationModeDesc = 'Uses your Expected Returns assumptions for a single deterministic projection.';
+      break;
+    case 'monteCarlo':
+      simulationModeDesc = 'Runs hundreds of simulations with random (but realistic) returns to show probability of success.';
+      break;
+    case 'historicalBacktest':
+      simulationModeDesc = 'Tests your plan against actual historical market data from different starting years.';
+      break;
+    default:
+      simulationModeDesc = 'Select a simulation mode for projections.';
+      break;
+  }
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -35,6 +51,7 @@ export default function FineTuneSection() {
                   { value: 'monteCarlo', label: 'Monte Carlo' },
                   { value: 'historicalBacktest', label: 'Historical Backtest' },
                 ]}
+                desc={simulationModeDesc}
               />
             </fieldset>
           </form>
