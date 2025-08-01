@@ -113,7 +113,7 @@ export default function ResultsChart() {
             <ReferenceLine
               x={Math.round(fireAnalysis.p10FireAge!)}
               stroke={foregroundColor}
-              strokeDasharray="10 5"
+              strokeDasharray="5 5"
               label={{ value: 'P10', position: 'insideBottomLeft', fill: foregroundColor }}
             />
           )}
@@ -121,7 +121,7 @@ export default function ResultsChart() {
             <ReferenceLine
               x={Math.round(fireAnalysis.p50FireAge)}
               stroke={foregroundColor}
-              strokeDasharray="10 5"
+              strokeDasharray="5 5"
               label={{ value: 'P50', position: 'insideBottomLeft', fill: foregroundColor }}
             />
           )}
@@ -129,7 +129,7 @@ export default function ResultsChart() {
             <ReferenceLine
               x={Math.round(fireAnalysis.p90FireAge!)}
               stroke={foregroundColor}
-              strokeDasharray="10 5"
+              strokeDasharray="5 5"
               label={{ value: 'P90', position: 'insideBottomLeft', fill: foregroundColor }}
             />
           )}
