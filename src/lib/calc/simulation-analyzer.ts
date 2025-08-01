@@ -476,7 +476,7 @@ export class SimulationAnalyzer {
       phaseStats.push({ phaseName, durationPercentiles, count: phaseData.simulationCount, values, returns, percentiles });
     }
 
-    return phaseStats.length > 0 ? phaseStats : null;
+    return phaseStats;
   }
 
   /**
