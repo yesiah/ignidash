@@ -34,7 +34,7 @@ export default function ResultsSections() {
   }
 
   const comingSoon = (
-    <div className="text-muted-foreground ml-2 py-10 font-semibold italic">
+    <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
       <p>Coming soon...</p>
     </div>
   );
