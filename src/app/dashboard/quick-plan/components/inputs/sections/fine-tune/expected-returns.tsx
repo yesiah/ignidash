@@ -38,8 +38,26 @@ export default function ExpectedReturns() {
   const bondsRealReturn = useBondsRealReturn();
   const cashRealReturn = useCashRealReturn();
 
+  if (marketAssumptions.simulationMode === 'historicalBacktest') {
+    // In historical backtest mode, we don't allow manual input of expected returns
+    return null;
+  }
+
+  let cardTitle;
+  let cardDesc;
+  switch (marketAssumptions.simulationMode) {
+    case 'fixedReturns':
+      cardTitle = 'Expected Returns & Inflation';
+      cardDesc = 'Expected inflation rate and nominal returns for each asset class.';
+      break;
+    case 'monteCarlo':
+      cardTitle = 'Average Returns & Inflation';
+      cardDesc = 'Average inflation rate and nominal returns for each asset class.';
+      break;
+  }
+
   return (
-    <DisclosureCard title="Expected Returns" desc="Expected nominal returns for each asset class." icon={ChartBarIcon}>
+    <DisclosureCard title={cardTitle} desc={cardDesc} icon={ChartBarIcon}>
       <form onSubmit={(e) => e.preventDefault()}>
         <fieldset className="space-y-4">
           <legend className="sr-only">Expected investment returns configuration</legend>
