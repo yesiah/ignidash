@@ -93,13 +93,15 @@ export class FinancialSimulationEngine {
 
       data.push([year, portfolio]);
       returnsMetadata.push([year, returns]);
-      phasesMetadata.push([year, currentPhase]);
 
       // Check for phase transition
       const nextPhase = currentPhase.getNextPhase(this.inputs);
       if (nextPhase && nextPhase.canTransitionTo(portfolio, this.inputs)) {
         currentPhase = nextPhase;
       }
+
+      // Record phase metadata for this year
+      phasesMetadata.push([year, currentPhase]);
     }
 
     return {

@@ -433,6 +433,7 @@ export const useFixedReturnsAnalysis = () => {
       if (phase[1].getName() === 'Retirement Phase') {
         yearsToFIRE = phase[0];
         fireAge = inputs.basics.currentAge! + yearsToFIRE;
+        break;
       }
     }
 
