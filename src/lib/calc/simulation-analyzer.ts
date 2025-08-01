@@ -439,19 +439,19 @@ export class SimulationAnalyzer {
     if (results.length === 0) return null;
 
     // Extract all unique phase names across all simulations
-    const allPhaseNames = new Set<string>();
+    const phaseNames = new Set<string>();
     for (const result of results) {
       for (const [, phase] of result.phasesMetadata) {
-        allPhaseNames.add(phase.getName());
+        phaseNames.add(phase.getName());
       }
     }
 
-    if (allPhaseNames.size === 0) return null;
+    if (phaseNames.size === 0) return null;
 
     // Build statistics for each phase
     const phaseStats = [];
 
-    for (const phaseName of Array.from(allPhaseNames)) {
+    for (const phaseName of Array.from(phaseNames)) {
       // Extract data for this specific phase across all simulations
       const phaseData = this.extractPhaseData(results, phaseName);
 
@@ -462,8 +462,8 @@ export class SimulationAnalyzer {
       const returns = this.calculateReturnsStats(phaseData.returnsMetadata);
 
       // Calculate percentiles from phase-specific portfolio values
-      const phasePortfolioValues = phaseData.portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
-      const percentiles = this.calculatePercentilesFromValues(phasePortfolioValues);
+      const sortedPhasePortfolioValues = phaseData.portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
+      const percentiles = this.calculatePercentilesFromValues(sortedPhasePortfolioValues);
 
       // Calculate percentiles for duration in this phase
       const sortedDurations = phaseData.durations.sort((a, b) => a - b);
@@ -491,9 +491,9 @@ export class SimulationAnalyzer {
     durations: number[];
     simulationCount: number;
   } {
-    const portfolios: Portfolio[] = [];
-    const returnsMetadata: ReturnsWithMetadata[] = [];
-    const durations: number[] = [];
+    const portfolios = [];
+    const returnsMetadata = [];
+    const durations = [];
 
     let simulationCount = 0;
 
