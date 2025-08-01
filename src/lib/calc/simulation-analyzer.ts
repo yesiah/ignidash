@@ -448,12 +448,7 @@ export class SimulationAnalyzer {
     if (allPhaseNames.size === 0) return null;
 
     // Build statistics for each phase
-    const phaseStats: Array<
-      MultiSimulationStats & {
-        phaseName: string;
-        durationPercentiles: Percentiles;
-      }
-    > = [];
+    const phaseStats = [];
 
     for (const phaseName of Array.from(allPhaseNames)) {
       // Extract data for this specific phase across all simulations
