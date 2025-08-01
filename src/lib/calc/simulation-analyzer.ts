@@ -408,10 +408,12 @@ export class SimulationAnalyzer {
       // Returns metadata starts at year 1
       const returnsMetadata = year > 0 ? results.map((result) => result.returnsMetadata[year - 1][1]) : [];
 
+      // Calculate statistics for this year
       const count = portfolios.length;
       const values = this.calculatePortfolioStats(portfolios);
       const returns = this.calculateReturnsStats(returnsMetadata);
 
+      // Calculate percentiles from portfolio values for this year
       const yearlyValues = portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
