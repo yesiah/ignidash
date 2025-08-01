@@ -17,7 +17,7 @@ export default function SelectMenu({ id, label, value, onChange, options, desc }
       <label htmlFor={id} className="block text-sm/6 font-medium">
         {label}
       </label>
-      <div className="mt-2 grid grid-cols-1">
+      <div className="grid grid-cols-1">
         <select
           id={id}
           name={id}
@@ -36,7 +36,7 @@ export default function SelectMenu({ id, label, value, onChange, options, desc }
           className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end sm:size-4"
         />
       </div>
-      {desc && <p className="text-muted-foreground mt-2 text-xs">{desc}</p>}
+      {desc && <p className="text-muted-foreground mt-2 text-sm">{desc}</p>}
     </div>
   );
 }
