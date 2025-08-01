@@ -412,7 +412,7 @@ export const useMonteCarloSimulation = () => {
   return useMemo(() => {
     const baseSeed = Math.floor(Math.random() * 1000);
     const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
-    return engine.runMonteCarloSimulation(100);
+    return engine.runMonteCarloSimulation(500);
   }, [inputs]);
 };
 
@@ -422,7 +422,7 @@ export const useHistoricalBacktestSimulation = () => {
   return useMemo(() => {
     const baseSeed = Math.floor(Math.random() * 1000);
     const engine = new LcgHistoricalBacktestSimulationEngine(inputs, baseSeed);
-    return engine.runLcgHistoricalBacktest(100);
+    return engine.runLcgHistoricalBacktest(500);
   }, [inputs]);
 };
 

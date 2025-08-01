@@ -378,7 +378,7 @@ export class SimulationAnalyzer {
   private calculatePercentilesOfDepletion(failedResults: SimulationResult[]): Percentiles {
     if (failedResults.length === 0) throw new Error('No failed simulations to analyze');
 
-    const depletionYears = failedResults.map((result) => result.data.find(([, portfolio]) => portfolio.getTotalValue() <= 0)![0]);
+    const depletionYears = failedResults.map((result) => result.data.find(([, portfolio]) => portfolio.getTotalValue() <= 1)![0]);
     const sortedYears = depletionYears.sort((a, b) => a - b);
 
     return this.calculatePercentilesFromValues(sortedYears);
