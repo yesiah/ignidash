@@ -8,10 +8,10 @@ interface ResultsMetricsProps {
 
 export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
   const stats = [
-    { name: 'Success Rate', stat: (fireAnalysis?.successRate ?? 0) * 100, fractionDigits: 0 },
+    { name: 'Success Rate', stat: (fireAnalysis?.successRate ?? 0) * 100, fractionDigits: 0, suffix: '%' },
     { name: 'Median FIRE Age', stat: fireAnalysis?.p50FireAge, fractionDigits: 0 },
     { name: 'Median Years to FIRE', stat: fireAnalysis?.p50YearsToFIRE, fractionDigits: 0 },
-    { name: 'Required Portfolio Size', stat: fireAnalysis?.requiredPortfolio, fractionDigits: 2 },
+    { name: 'Required Portfolio Size', stat: fireAnalysis?.requiredPortfolio, fractionDigits: 2, prefix: '$' },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
           <Card key={item.name} className="text-center sm:text-left">
             <dt className="text-muted-foreground truncate text-sm font-medium">{item.name}</dt>
             <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
-              {item.stat ? formatNumber(item.stat, item.fractionDigits) : 'N/A'}
+              {item.stat ? `${item.prefix || ''}${formatNumber(item.stat, item.fractionDigits)}${item.suffix || ''}` : 'N/A'}
             </dd>
           </Card>
         ))}

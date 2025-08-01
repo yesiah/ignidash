@@ -10,7 +10,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
   const stats = [
     { name: 'FIRE Age', stat: fireAnalysis.fireAge, fractionDigits: 1 },
     { name: 'Years to FIRE', stat: fireAnalysis.yearsToFIRE, fractionDigits: 1 },
-    { name: 'Required Portfolio Size', stat: fireAnalysis.requiredPortfolio, fractionDigits: 2 },
+    { name: 'Required Portfolio Size', stat: fireAnalysis.requiredPortfolio, fractionDigits: 2, prefix: '$' },
   ];
 
   return (
@@ -20,7 +20,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
           <Card key={item.name} className="text-center sm:text-left">
             <dt className="text-muted-foreground truncate text-sm font-medium">{item.name}</dt>
             <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
-              {item.stat ? formatNumber(item.stat, item.fractionDigits) : 'N/A'}
+              {item.stat ? `${item.prefix || ''}${formatNumber(item.stat, item.fractionDigits)}` : 'N/A'}
             </dd>
           </Card>
         ))}
