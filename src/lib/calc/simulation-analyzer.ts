@@ -103,7 +103,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   // Segmented statistics for failed simulations
   failStats:
     | (MultiSimulationStats & {
-        meanDuration: number;
+        durationPercentiles: Percentiles;
       })
     | null;
 
@@ -118,7 +118,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   phaseStats: Array<
     MultiSimulationStats & {
       phaseName: string;
-      meanDuration: number;
+      durationPercentiles: Percentiles;
     }
   > | null;
 }
@@ -202,7 +202,7 @@ export class SimulationAnalyzer {
       failStats = {
         ...failSegmentStats,
         count: failResults.length,
-        meanDuration: this.calculateAvgDepletion(failResults),
+        durationPercentiles: this.calculatePercentilesOfDepletion(failResults),
       };
     }
 
@@ -373,15 +373,15 @@ export class SimulationAnalyzer {
    * Calculates average years to depletion for failed simulations
    *
    * @param failedResults - Array of failed simulation results
-   * @returns Average years until portfolio depletion
+   * @returns Percentiles of years until portfolio depletion
    */
-  private calculateAvgDepletion(failedResults: SimulationResult[]): number {
+  private calculatePercentilesOfDepletion(failedResults: SimulationResult[]): Percentiles {
     if (failedResults.length === 0) throw new Error('No failed simulations to analyze');
 
-    const depletionYears = failedResults.map((result) => result.data[result.data.length - 1][0]);
+    const depletionYears = failedResults.map((result) => result.data.find(([, portfolio]) => portfolio.getTotalValue() <= 0)![0]);
+    const sortedYears = depletionYears.sort((a, b) => a - b);
 
-    const sum = depletionYears.reduce((acc, years) => acc + years, 0);
-    return sum / depletionYears.length;
+    return this.calculatePercentilesFromValues(sortedYears);
   }
 
   /**
@@ -432,7 +432,7 @@ export class SimulationAnalyzer {
   private buildPhaseStats(results: SimulationResult[]): Array<
     MultiSimulationStats & {
       phaseName: string;
-      meanDuration: number;
+      durationPercentiles: Percentiles;
     }
   > | null {
     if (results.length === 0) return null;
@@ -451,7 +451,7 @@ export class SimulationAnalyzer {
     const phaseStats: Array<
       MultiSimulationStats & {
         phaseName: string;
-        meanDuration: number;
+        durationPercentiles: Percentiles;
       }
     > = [];
 
@@ -469,11 +469,11 @@ export class SimulationAnalyzer {
       const phasePortfolioValues = phaseData.portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(phasePortfolioValues);
 
-      // Calculate mean duration for this phase
-      const meanDuration =
-        phaseData.durations.length > 0 ? phaseData.durations.reduce((sum, duration) => sum + duration, 0) / phaseData.durations.length : 0;
+      // Calculate percentiles for duration in this phase
+      const sortedDurations = phaseData.durations.sort((a, b) => a - b);
+      const durationPercentiles = this.calculatePercentilesFromValues(sortedDurations);
 
-      phaseStats.push({ phaseName, meanDuration, count: phaseData.simulationCount, values, returns, percentiles });
+      phaseStats.push({ phaseName, durationPercentiles, count: phaseData.simulationCount, values, returns, percentiles });
     }
 
     return phaseStats.length > 0 ? phaseStats : null;

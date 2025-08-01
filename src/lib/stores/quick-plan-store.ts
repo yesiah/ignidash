@@ -410,32 +410,12 @@ export const useFixedReturnsSimulation = () => {
 
 export const useMonteCarloSimulation = () => {
   const inputs = useQuickPlanStore((state) => state.inputs);
-  const baseSeed = Math.floor(Math.random() * 1000);
 
   return useMemo(() => {
+    const baseSeed = Math.floor(Math.random() * 1000);
     const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
     return engine.runMonteCarloSimulation(100);
-  }, [inputs, baseSeed]);
-};
-
-export const useMonteCarloChartData = () => {
-  const currentAge = useCurrentAge()!;
-  const simulation = useMonteCarloSimulation();
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.map((data) => ({
-      age: data.year + currentAge,
-      p10: data.percentiles.p10,
-      p50: data.percentiles.p50,
-      p90: data.percentiles.p90,
-    }));
-  }, [currentAge, simulation]);
+  }, [inputs]);
 };
 
 /**
@@ -464,9 +444,37 @@ export const useFixedReturnsAnalysis = () => {
   }, [inputs, simulation]);
 };
 
+export const useMonteCarloAnalysis = () => {
+  const inputs = useQuickPlanStore((state) => state.inputs);
+  const simulation = useMonteCarloSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return null;
+
+    const successRate = analysis.successRate;
+
+    const yearsToFIRE: number | null = null;
+    const fireAge: number | null = null;
+
+    // TODO: Extract percentile-based yearsToFIRE and fireAge from analysis
+
+    return {
+      successRate,
+      yearsToFIRE,
+      fireAge,
+      requiredPortfolio: WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs),
+    };
+  }, [inputs, simulation]);
+};
+
 export const useFixedReturnsChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useFixedReturnsSimulation();
+
   return useMemo(() => {
     return simulation.data.map(([timeInYears, portfolio]) => ({
       age: timeInYears + currentAge,
@@ -474,6 +482,26 @@ export const useFixedReturnsChartData = () => {
       bonds: portfolio.getAssetValue('bonds'),
       cash: portfolio.getAssetValue('cash'),
       portfolioValue: portfolio.getTotalValue(),
+    }));
+  }, [currentAge, simulation]);
+};
+
+export const useMonteCarloChartData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useMonteCarloSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.map((data) => ({
+      age: data.year + currentAge,
+      p10: data.percentiles.p10,
+      p50: data.percentiles.p50,
+      p90: data.percentiles.p90,
     }));
   }, [currentAge, simulation]);
 };
