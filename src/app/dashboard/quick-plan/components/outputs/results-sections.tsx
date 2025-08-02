@@ -43,7 +43,7 @@ export default function ResultsSections() {
   return (
     <>
       <SectionContainer showBottomBorder>
-        <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
+        <SectionHeader title="Overview" desc="Key metrics, charts, and your simulation data in one view." />
         {resultsOverview}
         <Table />
       </SectionContainer>
