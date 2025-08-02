@@ -45,13 +45,6 @@ export default function ResultsSections() {
       <SectionContainer showBottomBorder>
         <SectionHeader title="Overview" desc="Timeline, milestones, and portfolio projections in one view." />
         {resultsOverview}
-      </SectionContainer>
-      <SectionContainer showBottomBorder>
-        <SectionHeader title="Metrics" desc="Key performance indicators and detailed statistics about your projections." />
-        {comingSoon}
-      </SectionContainer>
-      <SectionContainer showBottomBorder>
-        <SectionHeader title="Tables" desc="Tabular view of your simulation data at different levels of granularity." />
         <Table />
       </SectionContainer>
       <SectionContainer showBottomBorder>
