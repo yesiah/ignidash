@@ -430,6 +430,7 @@ export interface FixedReturnsAnalysis {
   yearsToFIRE: number | null;
   fireAge: number | null;
   requiredPortfolio: number;
+  finalPortfolio: number;
 }
 
 export const useFixedReturnsAnalysis = () => {
@@ -451,6 +452,7 @@ export const useFixedReturnsAnalysis = () => {
       yearsToFIRE,
       fireAge,
       requiredPortfolio: WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs),
+      finalPortfolio: simulation.data[simulation.data.length - 1][1].getTotalValue(),
     };
   }, [inputs, simulation]);
 };
