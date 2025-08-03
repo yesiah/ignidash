@@ -8,7 +8,7 @@ interface ResultsMetricsProps {
 
 export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
   const fireAgeCard = (
-    <Card className="text-center sm:text-left">
+    <Card className="my-0 text-center sm:text-left">
       <dt className="text-muted-foreground truncate text-sm font-medium">FIRE Age</dt>
       <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
         {fireAnalysis.fireAge !== null ? `${formatNumber(fireAnalysis.fireAge, 0)}` : '∞'}
@@ -16,7 +16,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
     </Card>
   );
   const yearsToFireCard = (
-    <Card className="text-center sm:text-left">
+    <Card className="my-0 text-center sm:text-left">
       <dt className="text-muted-foreground truncate text-sm font-medium">Years to FIRE</dt>
       <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
         {fireAnalysis.yearsToFIRE !== null ? `${formatNumber(fireAnalysis.yearsToFIRE, 0)}` : '∞'}
@@ -24,7 +24,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
     </Card>
   );
   const requiredPortfolioCard = (
-    <Card className="text-center sm:text-left">
+    <Card className="my-0 text-center sm:text-left">
       <dt className="text-muted-foreground truncate text-sm font-medium">Required Portfolio</dt>
       <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">
         {`$${formatNumber(fireAnalysis.requiredPortfolio, 2)}`}
@@ -32,14 +32,14 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
     </Card>
   );
   const finalPortfolioCard = (
-    <Card className="text-center sm:text-left">
+    <Card className="my-0 text-center sm:text-left">
       <dt className="text-muted-foreground truncate text-sm font-medium">Final Portfolio</dt>
       <dd className="text-foreground mt-1 text-3xl font-semibold tracking-tight">{`$${formatNumber(fireAnalysis.finalPortfolio, 2)}`}</dd>
     </Card>
   );
 
   return (
-    <dl className="grid grid-cols-1 sm:grid-cols-3 sm:gap-2">
+    <dl className="my-4 grid grid-cols-1 sm:grid-cols-3 sm:gap-2">
       {fireAgeCard}
       {yearsToFireCard}
       {requiredPortfolioCard}
