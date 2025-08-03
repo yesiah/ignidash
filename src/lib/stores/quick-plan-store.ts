@@ -427,6 +427,7 @@ export const useHistoricalBacktestSimulation = () => {
 };
 
 export interface FixedReturnsAnalysis {
+  success: boolean;
   progressToFIRE: number;
   yearsToFIRE: number | null;
   fireAge: number | null;
@@ -454,15 +455,9 @@ export const useFixedReturnsAnalysis = () => {
     const progressToFIRE = Math.min(inputs.basics.investedAssets! / requiredPortfolio, 1);
     const finalPortfolio = simulation.data[simulation.data.length - 1][1].getTotalValue();
     const performance = simulation.data[simulation.data.length - 1][1].getPerformance();
+    const success = finalPortfolio >= 0.1 && yearsToFIRE !== null;
 
-    return {
-      progressToFIRE,
-      yearsToFIRE,
-      fireAge,
-      requiredPortfolio,
-      finalPortfolio,
-      performance,
-    };
+    return { success, progressToFIRE, yearsToFIRE, fireAge, requiredPortfolio, finalPortfolio, performance };
   }, [inputs, simulation]);
 };
 

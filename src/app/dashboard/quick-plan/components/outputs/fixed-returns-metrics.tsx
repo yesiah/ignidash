@@ -13,11 +13,10 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
   const yearsToFIRE = fireAnalysis.yearsToFIRE !== null ? `${formatNumber(fireAnalysis.yearsToFIRE, 0)}` : '∞';
   const requiredPortfolio = `$${formatNumber(fireAnalysis.requiredPortfolio, 2)}`;
   const finalPortfolio = `$${formatNumber(fireAnalysis.finalPortfolio, 2)}`;
-  const returnOnInvestment = `${((fireAnalysis.performance ?? 0) * 100).toFixed(1)}%`;
 
   return (
     <dl className="mt-4 mb-8 grid grid-cols-2 gap-2 2xl:grid-cols-3">
-      <MetricsCard name="Return on Investment" stat={returnOnInvestment} />
+      <MetricsCard name="Success" stat={fireAnalysis.success ? 'Yes!' : 'No'} />
       <MetricsCard name="Progress to FIRE" stat={progressToFIRE} />
       <MetricsCard name="FIRE Age" stat={fireAge} statContext={` (in ${yearsToFIRE} years)`} className="sm:col-span-2 2xl:col-span-1" />
       <MetricsCard name="Required Portfolio" stat={requiredPortfolio} className="2xl:col-span-2" />
