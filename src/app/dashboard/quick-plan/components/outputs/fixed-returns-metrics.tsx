@@ -39,7 +39,7 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
   );
 
   return (
-    <dl className="my-4 grid grid-cols-1 sm:grid-cols-3 sm:gap-2">
+    <dl className="mt-4 mb-8 grid grid-cols-1 gap-2 sm:grid-cols-2 2xl:grid-cols-4">
       {fireAgeCard}
       {yearsToFireCard}
       {requiredPortfolioCard}
