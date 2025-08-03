@@ -432,6 +432,7 @@ export interface FixedReturnsAnalysis {
   fireAge: number | null;
   requiredPortfolio: number;
   finalPortfolio: number;
+  performance: number;
 }
 
 export const useFixedReturnsAnalysis = () => {
@@ -452,6 +453,7 @@ export const useFixedReturnsAnalysis = () => {
     const requiredPortfolio = WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs);
     const progressToFIRE = Math.min(inputs.basics.investedAssets! / requiredPortfolio, 1);
     const finalPortfolio = simulation.data[simulation.data.length - 1][1].getTotalValue();
+    const performance = simulation.data[simulation.data.length - 1][1].getPerformance();
 
     return {
       progressToFIRE,
@@ -459,6 +461,7 @@ export const useFixedReturnsAnalysis = () => {
       fireAge,
       requiredPortfolio,
       finalPortfolio,
+      performance,
     };
   }, [inputs, simulation]);
 };
