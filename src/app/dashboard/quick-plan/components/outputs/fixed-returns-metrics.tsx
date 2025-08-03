@@ -17,12 +17,11 @@ export default function ResultsMetrics({ fireAnalysis }: ResultsMetricsProps) {
 
   return (
     <dl className="mt-4 mb-8 grid grid-cols-2 gap-2 2xl:grid-cols-3">
-      <MetricsCard name="Progress to FIRE" stat={progressToFIRE} />
-      <MetricsCard name="FIRE Age" stat={fireAge} />
-      <MetricsCard name="Years to FIRE" stat={yearsToFIRE} />
-      <MetricsCard name="Required Portfolio" stat={requiredPortfolio} />
-      <MetricsCard name="Final Portfolio" stat={finalPortfolio} />
       <MetricsCard name="Return on Investment" stat={returnOnInvestment} />
+      <MetricsCard name="Progress to FIRE" stat={progressToFIRE} />
+      <MetricsCard name="FIRE Age" stat={fireAge} statContext={` (in ${yearsToFIRE} years)`} className="sm:col-span-2 2xl:col-span-1" />
+      <MetricsCard name="Required Portfolio" stat={requiredPortfolio} className="2xl:col-span-2" />
+      <MetricsCard name="Final Portfolio" stat={finalPortfolio} className="col-span-2 sm:col-span-1" />
     </dl>
   );
 }
