@@ -126,18 +126,15 @@ export class FinancialSimulationEngine {
     return Portfolio.create([
       {
         assetClass: 'stocks',
-        principal: investedAssets! * (stockAllocation / 100),
-        growth: 0,
+        value: investedAssets! * (stockAllocation / 100),
       },
       {
         assetClass: 'bonds',
-        principal: investedAssets! * (bondAllocation / 100),
-        growth: 0,
+        value: investedAssets! * (bondAllocation / 100),
       },
       {
         assetClass: 'cash',
-        principal: investedAssets! * (cashAllocation / 100),
-        growth: 0,
+        value: investedAssets! * (cashAllocation / 100),
       },
     ]);
   }

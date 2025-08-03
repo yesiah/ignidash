@@ -35,12 +35,10 @@ export type AssetAllocation = Record<AssetClass, number>;
  * All monetary values are in real (inflation-adjusted) dollars relative to simulation start date
  */
 export interface Asset {
-  /** Original contributions/cost basis in real dollars */
-  principal: number;
-  /** Capital gains & losses, inflation-adjusted in real dollars */
-  growth: number;
   /** The asset class category for this holding */
   assetClass: AssetClass;
+  /** The asset's current market value in real dollars */
+  value: number;
 }
 
 /**

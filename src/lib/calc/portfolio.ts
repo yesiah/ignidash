@@ -41,18 +41,18 @@ export class Portfolio {
   /**
    * Calculates the total value of assets in a specific asset class
    * @param assetClass - The asset class to calculate value for
-   * @returns Total value (principal + growth) for the asset class
+   * @returns Total market value for the asset class
    */
   getAssetValue(assetClass: AssetClass): number {
-    return this.assets.filter((asset) => asset.assetClass === assetClass).reduce((sum, asset) => sum + asset.principal + asset.growth, 0);
+    return this.assets.filter((asset) => asset.assetClass === assetClass).reduce((sum, asset) => sum + asset.value, 0);
   }
 
   /**
    * Calculates the total portfolio value across all assets
-   * @returns Total portfolio value (principal + growth)
+   * @returns Total portfolio market value
    */
   getTotalValue(): number {
-    return this.assets.reduce((sum, asset) => sum + asset.principal + asset.growth, 0);
+    return this.assets.reduce((sum, asset) => sum + asset.value, 0);
   }
 
   /**
@@ -72,7 +72,7 @@ export class Portfolio {
   }
 
   /**
-   * Applies market returns to the portfolio, increasing growth values
+   * Applies market returns to the portfolio, increasing asset values
    * Returns are applied proportionally to each asset's current value
    * @param returns - Asset class return rates as decimals
    * @returns New portfolio instance with returns applied
@@ -80,12 +80,11 @@ export class Portfolio {
   withReturns(returns: AssetReturns): Portfolio {
     const updatedAssets = this.assets.map((asset) => {
       const returnRate = returns[asset.assetClass];
-      const currentValue = asset.principal + asset.growth;
-      const returnAmount = currentValue * returnRate;
+      const returnAmount = asset.value * returnRate;
 
       return {
         ...asset,
-        growth: asset.growth + returnAmount, // Returns go to growth
+        value: asset.value + returnAmount,
       };
     });
 
@@ -95,7 +94,6 @@ export class Portfolio {
   /**
    * Withdraws money from the portfolio using priority ordering
    * Withdrawal order: cash first, then bonds, then stocks
-   * Withdrawals are taken pro-rata from principal and growth
    * @param amount - Amount to withdraw (must be positive)
    * @returns New portfolio instance with withdrawal applied
    * @throws Error if withdrawal amount is negative
@@ -117,19 +115,13 @@ export class Portfolio {
       if (assetIndex === -1) throw new Error(`Asset class ${assetClass} not found in portfolio`);
 
       const asset = updatedAssets[assetIndex];
-      const availableValue = asset.principal + asset.growth;
 
-      if (availableValue > 0) {
-        const withdrawFromThisAsset = Math.min(remainingToWithdraw, availableValue);
-
-        // Withdraw pro-rata from principal and growth
-        const principalRatio = asset.principal / availableValue;
-        const growthRatio = asset.growth / availableValue;
+      if (asset.value > 0) {
+        const withdrawFromThisAsset = Math.min(remainingToWithdraw, asset.value);
 
         updatedAssets[assetIndex] = {
           ...asset,
-          principal: asset.principal - withdrawFromThisAsset * principalRatio,
-          growth: asset.growth - withdrawFromThisAsset * growthRatio,
+          value: asset.value - withdrawFromThisAsset,
         };
 
         remainingToWithdraw -= withdrawFromThisAsset;
@@ -141,7 +133,6 @@ export class Portfolio {
 
   /**
    * Adds cash to the portfolio (typically for income or contributions)
-   * Cash is added to the principal of the cash asset class
    * @param amount - Cash amount to add (must be positive)
    * @returns New portfolio instance with cash added
    * @throws Error if cash amount is negative
@@ -150,16 +141,14 @@ export class Portfolio {
     if (amount < 0) throw new Error('Cash amount must be positive');
     if (amount === 0) return this; // No change if zero or negative
 
-    const updatedAssets = this.assets.map((asset) =>
-      asset.assetClass === 'cash' ? { ...asset, principal: asset.principal + amount } : asset
-    );
+    const updatedAssets = this.assets.map((asset) => (asset.assetClass === 'cash' ? { ...asset, value: asset.value + amount } : asset));
 
     return Portfolio.create(updatedAssets);
   }
 
   /**
    * Rebalances the portfolio to match target asset allocation
-   * Preserves the overall ratio of principal to growth across the portfolio
+   * Preserves total contributions and withdrawals for accurate performance tracking
    * @param targetAllocation - Target allocation percentages as decimals
    * @returns New portfolio instance with target allocation
    * @throws Error if portfolio has negative total value
@@ -168,19 +157,10 @@ export class Portfolio {
     const totalValue = this.getTotalValue();
     if (totalValue <= 0) return this; // No change if empty portfolio
 
-    const totalPrincipal = this.assets.reduce((sum, asset) => sum + asset.principal, 0);
-    const totalGrowth = this.assets.reduce((sum, asset) => sum + asset.growth, 0);
-
     const updatedAssets = this.assets.map((asset) => {
       const targetValue = totalValue * targetAllocation[asset.assetClass];
-      const principalRatio = totalPrincipal / totalValue;
-      const growthRatio = totalGrowth / totalValue;
 
-      return {
-        ...asset,
-        principal: targetValue * principalRatio,
-        growth: targetValue * growthRatio,
-      };
+      return { ...asset, value: targetValue };
     });
 
     return Portfolio.create(updatedAssets);
