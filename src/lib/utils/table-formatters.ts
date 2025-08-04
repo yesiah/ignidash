@@ -25,8 +25,6 @@ export const formatValue = (value: SimulationTableRow[keyof SimulationTableRow],
     case 'currency':
       return currencyFormatter.format(value as number);
     case 'percentage':
-      return `${((value as number) * 100).toFixed(1)}%`;
-    case 'inflation':
       return `${(value as number).toFixed(1)}%`;
     case 'number':
       return String(value);

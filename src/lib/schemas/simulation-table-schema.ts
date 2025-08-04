@@ -33,7 +33,7 @@ export const simulationTableRowSchema = z.object({
 export type SimulationTableRow = z.infer<typeof simulationTableRowSchema>;
 
 // Format types for different data presentations
-export type ColumnFormat = 'number' | 'currency' | 'percentage' | 'inflation' | 'string';
+export type ColumnFormat = 'number' | 'currency' | 'percentage' | 'string';
 
 // Table configuration with presentation metadata
 export const SIMULATION_TABLE_CONFIG = {
@@ -47,7 +47,7 @@ export const SIMULATION_TABLE_CONFIG = {
   bondsReturn: { title: 'Bonds Return', format: 'percentage' as const },
   cashValue: { title: 'Cash Value', format: 'currency' as const },
   cashReturn: { title: 'Cash Return', format: 'percentage' as const },
-  inflationRate: { title: 'Inflation Rate', format: 'inflation' as const },
+  inflationRate: { title: 'Inflation Rate', format: 'percentage' as const },
 } as const satisfies Record<keyof SimulationTableRow, { title: string; format: ColumnFormat }>;
 
 // Type for table configuration

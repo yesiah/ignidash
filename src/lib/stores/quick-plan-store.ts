@@ -664,12 +664,12 @@ export const useFixedReturnsTableData = (): SimulationTableRow[] => {
         phaseName,
         portfolioValue: portfolio.getTotalValue(),
         stocksValue: portfolio.getAssetValue('stocks'),
-        stocksReturn: returns?.returns.stocks || 0,
+        stocksReturn: (returns?.returns.stocks || 0) * 100, // Convert to percentage
         bondsValue: portfolio.getAssetValue('bonds'),
-        bondsReturn: returns?.returns.bonds || 0,
+        bondsReturn: (returns?.returns.bonds || 0) * 100, // Convert to percentage
         cashValue: portfolio.getAssetValue('cash'),
-        cashReturn: returns?.returns.cash || 0,
-        inflationRate: returns?.metadata.inflationRate || 0,
+        cashReturn: (returns?.returns.cash || 0) * 100, // Convert to percentage
+        inflationRate: returns?.metadata.inflationRate || 0, // Already in percentage form
       };
     });
 
