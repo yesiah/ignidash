@@ -1,12 +1,3 @@
-const people = [
-  { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-  { name: 'Courtney Henry', title: 'Designer', email: 'courtney.henry@example.com', role: 'Admin' },
-  { name: 'Tom Cook', title: 'Director of Product', email: 'tom.cook@example.com', role: 'Member' },
-  { name: 'Whitney Francis', title: 'Copywriter', email: 'whitney.francis@example.com', role: 'Admin' },
-  { name: 'Leonard Krasner', title: 'Senior Designer', email: 'leonard.krasner@example.com', role: 'Owner' },
-  { name: 'Floyd Miles', title: 'Principal Designer', email: 'floyd.miles@example.com', role: 'Member' },
-];
-
 interface TableColumn<T> {
   key: keyof T;
   title: string;
@@ -49,15 +40,32 @@ export default function Table<T extends Record<string, unknown>>({ columns, data
                 </tr>
               </thead>
               <tbody className="divide-border/50 divide-y">
-                {people.map((person) => (
-                  <tr key={person.email}>
-                    <td className="text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8">{person.name}</td>
-                    <td className="text-muted-foreground px-3 py-4 text-sm whitespace-nowrap">{person.title}</td>
-                    <td className="text-muted-foreground px-3 py-4 text-sm whitespace-nowrap">{person.email}</td>
-                    <td className="text-muted-foreground px-3 py-4 text-sm whitespace-nowrap">{person.role}</td>
-                    <td className="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8">
+                {data.map((row) => (
+                  <tr key={String(row[keyField])}>
+                    {columns.map((col, index) => {
+                      const rawVal = row[col.key];
+                      const displayVal = col.format ? col.format(rawVal) : String(rawVal);
+
+                      if (index === 0) {
+                        return (
+                          <td
+                            key={String(col.key)}
+                            className="text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8"
+                          >
+                            {displayVal}
+                          </td>
+                        );
+                      }
+
+                      return (
+                        <td key={String(col.key)} className="text-muted-foreground px-3 py-4 text-sm whitespace-nowrap">
+                          {displayVal}
+                        </td>
+                      );
+                    })}
+                    <td key="Edit" className="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8">
                       <a href="#" className="text-primary hover:text-primary/75">
-                        Edit<span className="sr-only">, {person.name}</span>
+                        Edit {/* <span className="sr-only">, {person.name}</span> */}
                       </a>
                     </td>
                   </tr>
