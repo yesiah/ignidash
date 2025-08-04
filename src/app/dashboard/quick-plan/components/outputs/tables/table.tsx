@@ -1,12 +1,39 @@
+import { useState, useMemo } from 'react';
 import { type TableColumn } from '@/lib/types/table';
+import Pagination from '@/components/ui/pagination';
 
 interface TableProps<T extends Record<string, unknown>> {
   columns: TableColumn<T>[];
   data: T[];
   keyField: keyof T;
+  itemsPerPage?: number;
+  showPagination?: boolean;
 }
 
-export default function Table<T extends Record<string, unknown>>({ columns, data, keyField }: TableProps<T>) {
+export default function Table<T extends Record<string, unknown>>({
+  columns,
+  data,
+  keyField,
+  itemsPerPage = 10,
+  showPagination = true,
+}: TableProps<T>) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { paginatedData, totalPages } = useMemo(() => {
+    if (!showPagination) {
+      return { paginatedData: data, totalPages: 1 };
+    }
+
+    const total = Math.ceil(data.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginated = data.slice(startIndex, endIndex);
+
+    return { paginatedData: paginated, totalPages: total };
+  }, [data, currentPage, itemsPerPage, showPagination]);
+
+  const handlePageChange = (page: number) => setCurrentPage(page);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mt-8 flow-root">
@@ -36,7 +63,7 @@ export default function Table<T extends Record<string, unknown>>({ columns, data
                 </tr>
               </thead>
               <tbody className="divide-border/50 divide-y">
-                {data.map((row) => (
+                {paginatedData.map((row) => (
                   <tr key={String(row[keyField])}>
                     {columns.map((col, index) => {
                       const rawVal = row[col.key];
@@ -71,6 +98,7 @@ export default function Table<T extends Record<string, unknown>>({ columns, data
           </div>
         </div>
       </div>
+      {showPagination && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </div>
   );
 }
