@@ -40,6 +40,7 @@ import { convertAllocationInputsToAssetAllocation } from './asset';
  */
 export interface SimulationResult {
   success: boolean;
+  bankruptcyAge: number | null;
   data: Array<[number /* timeInYears */, Portfolio]>;
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
   returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
@@ -78,6 +79,7 @@ export class FinancialSimulationEngine {
     const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
 
     let success = true;
+    let bankruptcyAge = null;
 
     for (let year = 1; year <= lifeExpectancy - startAge; year++) {
       // Process cash flows first (throughout the year)
@@ -86,6 +88,9 @@ export class FinancialSimulationEngine {
       // Ensure portfolio is still valid after cash flows
       if (!(portfolio.getTotalValue() > 0.1)) {
         success = false;
+        if (bankruptcyAge === null) {
+          bankruptcyAge = startAge + year;
+        }
       }
 
       // Rebalance portfolio to target allocation before applying returns
@@ -111,7 +116,7 @@ export class FinancialSimulationEngine {
       phasesMetadata.push([year, currentPhase]);
     }
 
-    return { success, data, phasesMetadata, returnsMetadata };
+    return { success, bankruptcyAge, data, phasesMetadata, returnsMetadata };
   }
 
   /**

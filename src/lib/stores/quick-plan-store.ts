@@ -740,6 +740,7 @@ export const useMonteCarloTableData = (): MonteCarloTableRow[] => {
         seed,
         success: simulationResult.success,
         fireAge,
+        bankruptcyAge: simulationResult.bankruptcyAge,
         finalPhaseName,
         finalPortfolioValue,
         averageStocksReturn,
