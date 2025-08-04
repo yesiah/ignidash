@@ -1,8 +1,11 @@
+'use client';
+
 import { useState, useMemo } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 
 import { type TableColumn } from '@/lib/types/table';
 import Pagination from '@/components/ui/pagination';
+import { cn } from '@/lib/utils';
 
 interface TableProps<T extends Record<string, unknown>> {
   columns: TableColumn<T>[];
@@ -31,6 +34,7 @@ export default function Table<T extends Record<string, unknown>>({
     column: null,
     direction: null,
   });
+  const [hoveredColumn, setHoveredColumn] = useState<keyof T | null>(null);
 
   const handleSort = (column: keyof T) => {
     setSortState((prev) => {
@@ -109,14 +113,26 @@ export default function Table<T extends Record<string, unknown>>({
 
                     if (index === 0) {
                       return (
-                        <th key={String(col.key)} scope="col" className="py-3.5 pr-3 pl-4 sm:pl-6 lg:pl-8">
+                        <th
+                          key={String(col.key)}
+                          scope="col"
+                          className={cn('py-3.5 pr-3 pl-4 sm:pl-6 lg:pl-8', hoveredColumn === col.key && 'bg-emphasized-background/50')}
+                          onMouseEnter={() => setHoveredColumn(col.key)}
+                          onMouseLeave={() => setHoveredColumn(null)}
+                        >
                           {sortableButton}
                         </th>
                       );
                     }
 
                     return (
-                      <th key={String(col.key)} scope="col" className="border-border/50 border-l px-3 py-3.5">
+                      <th
+                        key={String(col.key)}
+                        scope="col"
+                        className={cn('border-border/50 border-l px-3 py-3.5', hoveredColumn === col.key && 'bg-emphasized-background/50')}
+                        onMouseEnter={() => setHoveredColumn(col.key)}
+                        onMouseLeave={() => setHoveredColumn(null)}
+                      >
                         {sortableButton}
                       </th>
                     );
@@ -137,7 +153,10 @@ export default function Table<T extends Record<string, unknown>>({
                         return (
                           <td
                             key={String(col.key)}
-                            className="text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8"
+                            className={cn(
+                              'text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8',
+                              hoveredColumn === col.key && 'bg-emphasized-background/50'
+                            )}
                           >
                             {displayVal}
                           </td>
@@ -147,7 +166,10 @@ export default function Table<T extends Record<string, unknown>>({
                       return (
                         <td
                           key={String(col.key)}
-                          className="text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap"
+                          className={cn(
+                            'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap',
+                            hoveredColumn === col.key && 'bg-emphasized-background/50'
+                          )}
                         >
                           {displayVal}
                         </td>
