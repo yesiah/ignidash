@@ -84,12 +84,12 @@ const MONTE_CARLO_COLUMNS = {
   seed: { title: 'Seed', format: 'number' },
   success: { title: 'Success', format: 'string' },
   fireAge: { title: 'FIRE Age', format: 'number' },
-  finalPhaseName: { title: 'Final Phase Name', format: 'string' },
-  finalPortfolioValue: { title: 'Final Portfolio Value', format: 'currency' },
-  averageStocksReturn: { title: 'Average Stocks Return', format: 'percentage' },
-  averageBondsReturn: { title: 'Average Bonds Return', format: 'percentage' },
-  averageCashReturn: { title: 'Average Cash Return', format: 'percentage' },
-  averageInflationRate: { title: 'Average Inflation Rate', format: 'percentage' },
+  finalPhaseName: { title: 'Final Phase', format: 'string' },
+  finalPortfolioValue: { title: 'Final Portfolio', format: 'currency' },
+  averageStocksReturn: { title: 'Mean Stocks Return', format: 'percentage' },
+  averageBondsReturn: { title: 'Mean Bonds Return', format: 'percentage' },
+  averageCashReturn: { title: 'Mean Cash Return', format: 'percentage' },
+  averageInflationRate: { title: 'Mean Inflation Rate', format: 'percentage' },
 } as const;
 
 // Type-safe config for Monte Carlo table
