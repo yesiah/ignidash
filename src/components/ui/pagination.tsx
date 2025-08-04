@@ -18,8 +18,8 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
     <nav aria-label="Pagination" className="border-border my-3 flex items-center justify-between border-t py-3">
       <div className="hidden sm:block">
         <p className="text-muted-foreground text-sm">
-          Showing <span className="font-medium">{startItem}</span> to <span className="font-medium">{endItem}</span> of{' '}
-          <span className="font-medium">{totalItems}</span> results
+          Showing <span className="font-bold">{startItem}</span> to <span className="font-bold">{endItem}</span> of{' '}
+          <span className="font-bold">{totalItems}</span> results
         </p>
       </div>
       <div className="flex flex-1 justify-between sm:justify-end sm:gap-2">
