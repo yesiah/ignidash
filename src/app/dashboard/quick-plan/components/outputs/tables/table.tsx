@@ -7,7 +7,19 @@ const people = [
   { name: 'Floyd Miles', title: 'Principal Designer', email: 'floyd.miles@example.com', role: 'Member' },
 ];
 
-export default function Table() {
+interface TableColumn<T> {
+  key: keyof T;
+  title: string;
+  format?: (value: T[keyof T]) => string;
+}
+
+interface TableProps<T extends Record<string, unknown>> {
+  columns: TableColumn<T>[];
+  data: T[];
+  keyField: keyof T;
+}
+
+export default function Table<T extends Record<string, unknown>>({ columns, data, keyField }: TableProps<T>) {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mt-8 flow-root">
@@ -16,18 +28,21 @@ export default function Table() {
             <table className="divide-border relative min-w-full divide-y">
               <thead>
                 <tr className="text-foreground">
-                  <th scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6 lg:pl-8">
-                    Name
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
-                    Title
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
-                    Email
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
-                    Role
-                  </th>
+                  {columns.map((col, index) => {
+                    if (index === 0) {
+                      return (
+                        <th key={String(col.key)} scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6 lg:pl-8">
+                          {col.title}
+                        </th>
+                      );
+                    }
+
+                    return (
+                      <th key={String(col.key)} scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
+                        {col.title}
+                      </th>
+                    );
+                  })}
                   <th scope="col" className="py-3.5 pr-4 pl-3 sm:pr-6 lg:pr-8">
                     <span className="sr-only">Edit</span>
                   </th>
