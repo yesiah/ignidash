@@ -637,6 +637,43 @@ export const useHistoricalBacktestChartData = () => {
   }, [currentAge, simulation]);
 };
 
+export const useFixedReturnsTableData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useFixedReturnsSimulation();
+
+  return useMemo(() => {
+    // Create a map for efficient phase lookup
+    const phaseMap = new Map<number, string>();
+    for (const [year, phase] of simulation.phasesMetadata) {
+      phaseMap.set(year, phase.getName());
+    }
+
+    // Map through simulation data to create table rows
+    return simulation.data.map(([year, portfolio], index) => {
+      // Get phase name for this year
+      const phaseName = phaseMap.get(year) || '';
+
+      // Get returns from previous year (returns are applied at end of year)
+      // For year 0, there are no returns yet
+      const returns = index > 0 && simulation.returnsMetadata[index - 1] ? simulation.returnsMetadata[index - 1][1] : null;
+
+      return {
+        year,
+        age: currentAge + year,
+        phaseName,
+        portfolioValue: portfolio.getTotalValue(),
+        stocksValue: portfolio.getAssetValue('stocks'),
+        stocksReturn: returns?.returns.stocks || 0,
+        bondsValue: portfolio.getAssetValue('bonds'),
+        bondsReturn: returns?.returns.bonds || 0,
+        cashValue: portfolio.getAssetValue('cash'),
+        cashReturn: returns?.returns.cash || 0,
+        inflationRate: returns?.metadata.inflationRate || 0,
+      };
+    });
+  }, [currentAge, simulation]);
+};
+
 /**
  * Asset Allocation Calculations
  * These hooks provide computed dollar amounts for each asset class based on allocation percentages
