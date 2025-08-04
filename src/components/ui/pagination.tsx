@@ -5,16 +5,21 @@ import { Button } from '@/components/catalyst/button';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
   onPageChange: (page: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export default function Pagination({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange }: PaginationProps) {
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
   return (
     <nav aria-label="Pagination" className="border-border flex items-center justify-between border-t py-3">
       <div className="hidden sm:block">
         <p className="text-muted-foreground text-sm">
-          Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
-          <span className="font-medium">20</span> results
+          Showing <span className="font-medium">{startItem}</span> to <span className="font-medium">{endItem}</span> of{' '}
+          <span className="font-medium">{totalItems}</span> results
         </p>
       </div>
       <div className="flex flex-1 justify-between sm:justify-end sm:gap-2">
