@@ -43,6 +43,7 @@ import { FinancialSimulationEngine, MonteCarloSimulationEngine, LcgHistoricalBac
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
 import { SimulationAnalyzer } from '@/lib/calc/simulation-analyzer';
 import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
+import { type SimulationTableRow, validateSimulationTableData } from '@/lib/schemas/simulation-table-schema';
 
 // ================================
 // TYPES & HELPERS
@@ -637,21 +638,7 @@ export const useHistoricalBacktestChartData = () => {
   }, [currentAge, simulation]);
 };
 
-export interface SimulationDataRow extends Record<string, unknown> {
-  year: number;
-  age: number;
-  phaseName: string;
-  portfolioValue: number;
-  stocksValue: number;
-  stocksReturn: number;
-  bondsValue: number;
-  bondsReturn: number;
-  cashValue: number;
-  cashReturn: number;
-  inflationRate: number;
-}
-
-export const useFixedReturnsTableData = (): SimulationDataRow[] => {
+export const useFixedReturnsTableData = (): SimulationTableRow[] => {
   const currentAge = useCurrentAge()!;
   const simulation = useFixedReturnsSimulation();
 
@@ -663,7 +650,7 @@ export const useFixedReturnsTableData = (): SimulationDataRow[] => {
     }
 
     // Map through simulation data to create table rows
-    return simulation.data.map(([year, portfolio], index) => {
+    const rawData = simulation.data.map(([year, portfolio], index) => {
       // Get phase name for this year
       const phaseName = phaseMap.get(year) || '';
 
@@ -685,6 +672,9 @@ export const useFixedReturnsTableData = (): SimulationDataRow[] => {
         inflationRate: returns?.metadata.inflationRate || 0,
       };
     });
+
+    // Validate data against schema
+    return validateSimulationTableData(rawData);
   }, [currentAge, simulation]);
 };
 
