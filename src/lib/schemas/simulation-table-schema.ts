@@ -50,9 +50,6 @@ export const SIMULATION_TABLE_CONFIG = {
   inflationRate: { title: 'Inflation Rate', format: 'percentage' as const },
 } as const satisfies Record<keyof SimulationTableRow, { title: string; format: ColumnFormat }>;
 
-// Type for table configuration
-export type SimulationTableConfig = typeof SIMULATION_TABLE_CONFIG;
-
 // Helper to validate simulation data at runtime
 export const validateSimulationTableRow = (data: unknown): SimulationTableRow => {
   return simulationTableRowSchema.parse(data);
