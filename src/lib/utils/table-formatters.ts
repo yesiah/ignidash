@@ -58,7 +58,7 @@ export const formatHistoricalRanges = (ranges: Array<{ startYear: number; endYea
 
   return ranges
     .map((range) => (range.startYear === range.endYear ? `${range.startYear}` : `${range.startYear}—${range.endYear}`))
-    .join(',\n');
+    .join(', ');
 };
 
 // Generate table columns from schema configuration
