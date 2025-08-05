@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import { ArrowLongLeftIcon } from '@heroicons/react/20/solid';
+
+import { Button } from '@/components/catalyst/button';
 import { useMonteCarloChartData, useMonteCarloAnalysis, useMonteCarloSimulation } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
@@ -10,6 +14,7 @@ import ResultsMetrics from '../stochastic-metrics';
 import MonteCarloDataTable from '../tables/monte-carlo-data-table';
 
 export default function MonteCarloOverview() {
+  const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const simulation = useMonteCarloSimulation();
   const chartData = useMonteCarloChartData();
   const fireAnalysis = useMonteCarloAnalysis();
@@ -32,8 +37,17 @@ export default function MonteCarloOverview() {
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>
-        <SectionHeader title="Tables" desc="Detailed data tables for in-depth analysis." />
-        <MonteCarloDataTable simulation={simulation} />
+        <SectionHeader
+          title="Tables"
+          desc="Detailed data tables for in-depth analysis."
+          rightAddOn={
+            <Button disabled={selectedSeed === null} onClick={() => setSelectedSeed(null)} plain>
+              <ArrowLongLeftIcon className="h-5 w-5" />
+              <span>Return</span>
+            </Button>
+          }
+        />
+        <MonteCarloDataTable simulation={simulation} selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />
       </SectionContainer>
     </>
   );

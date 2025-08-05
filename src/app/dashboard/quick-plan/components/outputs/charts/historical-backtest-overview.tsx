@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import { ArrowLongLeftIcon } from '@heroicons/react/20/solid';
+
+import { Button } from '@/components/catalyst/button';
 import {
   useHistoricalBacktestChartData,
   useHistoricalBacktestAnalysis,
@@ -14,6 +18,7 @@ import ResultsMetrics from '../stochastic-metrics';
 import HistoricalBacktestDataTable from '../tables/historical-backtest-data-table';
 
 export default function HistoricalBacktestOverview() {
+  const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
@@ -36,8 +41,17 @@ export default function HistoricalBacktestOverview() {
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>
-        <SectionHeader title="Tables" desc="Detailed data tables for in-depth analysis." />
-        <HistoricalBacktestDataTable simulation={simulation} />
+        <SectionHeader
+          title="Tables"
+          desc="Detailed data tables for in-depth analysis."
+          rightAddOn={
+            <Button disabled={selectedSeed === null} onClick={() => setSelectedSeed(null)} plain>
+              <ArrowLongLeftIcon className="h-5 w-5" />
+              <span>Return</span>
+            </Button>
+          }
+        />
+        <HistoricalBacktestDataTable simulation={simulation} selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />
       </SectionContainer>
     </>
   );
