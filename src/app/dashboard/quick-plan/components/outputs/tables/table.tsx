@@ -88,12 +88,12 @@ export default function Table<T extends Record<string, unknown>>({
 
   return (
     <>
-      <Card className="bg-background" removeInternalPadding>
+      <Card removeInternalPadding>
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle">
-                <table className="divide-border relative min-w-full divide-y">
+                <table className="divide-border bg-background relative min-w-full divide-y">
                   <thead className="bg-emphasized-background">
                     <tr className="text-foreground">
                       {columns.map((col, index) => {
