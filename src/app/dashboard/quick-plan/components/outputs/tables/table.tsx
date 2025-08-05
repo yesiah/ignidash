@@ -142,9 +142,6 @@ export default function Table<T extends Record<string, unknown>>({
                           </th>
                         );
                       })}
-                      <th scope="col" className="border-border/50 border-l py-3.5 pr-4 pl-3 sm:pr-6 lg:pr-8">
-                        <span className="sr-only">Edit</span>
-                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-border/50 bg-emphasized-background/50 divide-y">
@@ -184,14 +181,6 @@ export default function Table<T extends Record<string, unknown>>({
                             </td>
                           );
                         })}
-                        <td
-                          key="Edit"
-                          className="border-border/50 border-l py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8"
-                        >
-                          <a href="#" className="text-primary hover:text-primary/75">
-                            Edit {/* <span className="sr-only">, {person.name}</span> */}
-                          </a>
-                        </td>
                       </tr>
                     ))}
                     {/* Empty rows to maintain consistent height */}
