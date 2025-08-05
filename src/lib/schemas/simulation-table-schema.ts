@@ -119,7 +119,7 @@ export const historicalBacktestTableRowSchema = z.object({
   averageBondsReturn: z.number().nullable(),
   averageCashReturn: z.number().nullable(),
   averageInflationRate: z.number().nullable(),
-  historicalPeriods: z.array(z.object({ startYear: z.number(), endYear: z.number() })), // Raw range data
+  historicalRanges: z.array(z.object({ startYear: z.number(), endYear: z.number() })), // Raw range data
 });
 
 // Infer TypeScript type from Historical Backtest schema
@@ -137,7 +137,7 @@ const HISTORICAL_BACKTEST_COLUMNS = {
   averageBondsReturn: { title: 'Mean Bonds Return', format: 'percentage' },
   averageCashReturn: { title: 'Mean Cash Return', format: 'percentage' },
   averageInflationRate: { title: 'Mean Inflation Rate', format: 'percentage' },
-  historicalPeriods: { title: 'Historical Periods', format: 'historicalRanges' },
+  historicalRanges: { title: 'Historical Ranges', format: 'historicalRanges' },
 } as const;
 
 // Type-safe config for Historical Backtest table

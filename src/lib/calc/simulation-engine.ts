@@ -26,7 +26,7 @@ import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { Portfolio } from './portfolio';
 import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
 import { StochasticReturnsProvider } from './stochastic-returns-provider';
-import { LcgHistoricalBacktestReturnsProvider, LcgHistoricalBacktestExtras } from './lcg-historical-backtest-returns-provider';
+import { LcgHistoricalBacktestReturnsProvider } from './lcg-historical-backtest-returns-provider';
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
 import { convertAllocationInputsToAssetAllocation } from './asset';
 
@@ -38,12 +38,12 @@ import { convertAllocationInputsToAssetAllocation } from './asset';
  * returnsMetadata does not (since no returns are applied after depletion).
  * This means data.length may be 1 greater than returnsMetadata.length for failed simulations.
  */
-export interface SimulationResult<TExtras extends Record<string, unknown> = Record<string, unknown>> {
+export interface SimulationResult {
   success: boolean;
   bankruptcyAge: number | null;
   data: Array<[number /* timeInYears */, Portfolio]>;
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
-  returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata<TExtras>]>;
+  returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
 }
 
 /**
@@ -66,11 +66,7 @@ export class FinancialSimulationEngine {
    * @param initialPhase - Starting simulation phase
    * @returns Simulation result with success status and portfolio progression
    */
-  runSimulation<TExtras extends Record<string, unknown> = Record<string, unknown>>(
-    returnsProvider: ReturnsProvider<TExtras>,
-    initialPortfolio: Portfolio,
-    initialPhase: SimulationPhase
-  ): SimulationResult<TExtras> {
+  runSimulation(returnsProvider: ReturnsProvider, initialPortfolio: Portfolio, initialPhase: SimulationPhase): SimulationResult {
     let portfolio = initialPortfolio;
     let currentPhase = initialPhase;
 
@@ -80,7 +76,7 @@ export class FinancialSimulationEngine {
 
     const data: Array<[number, Portfolio]> = [[0, portfolio]];
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
-    const returnsMetadata: Array<[number, ReturnsWithMetadata<TExtras>]> = [];
+    const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
 
     let success = true;
     let bankruptcyAge = null;
@@ -178,8 +174,8 @@ export class FinancialSimulationEngine {
  * Represents the results of multiple simulations, each with its own seed and corresponding result
  * Used for aggregating Monte Carlo or historical backtest simulations
  */
-interface MultiSimulationResult<TExtras extends Record<string, unknown> = Record<string, unknown>> {
-  simulations: Array<[number /* seed */, SimulationResult<TExtras>]>;
+interface MultiSimulationResult {
+  simulations: Array<[number /* seed */, SimulationResult]>;
 }
 
 /**
@@ -229,10 +225,8 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
  * Extends MultiSimulationResult to include historical range information
  * Each simulation includes the historical year ranges used for returns
  */
-export interface LcgHistoricalBacktestResult extends MultiSimulationResult<LcgHistoricalBacktestExtras> {
-  simulations: Array<
-    [number /* seed */, SimulationResult<LcgHistoricalBacktestExtras> & { historicalRanges: Array<{ startYear: number; endYear: number }> }]
-  >;
+export interface LcgHistoricalBacktestResult extends MultiSimulationResult {
+  simulations: Array<[number /* seed */, SimulationResult & { historicalRanges: Array<{ startYear: number; endYear: number }> }]>;
 }
 
 /**
@@ -259,12 +253,10 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
    * Uses LCG to choose different start years for each scenario, providing Monte Carlo-style
    * analysis with real historical data instead of synthetic returns
    * @param numSimulations - Number of simulations to simulate (each with a random start year)
-   * @returns Aggregate results with simulation seeds, results, and historical periods used
+   * @returns Aggregate results with simulation seeds, results, and historical ranges used
    */
   runLcgHistoricalBacktest(numSimulations: number): LcgHistoricalBacktestResult {
-    const simulations: Array<
-      [number, SimulationResult<LcgHistoricalBacktestExtras> & { historicalRanges: Array<{ startYear: number; endYear: number }> }]
-    > = [];
+    const simulations: Array<[number, SimulationResult & { historicalRanges: Array<{ startYear: number; endYear: number }> }]> = [];
 
     const portfolio = FinancialSimulationEngine.createDefaultInitialPortfolio(this.inputs);
     const initialPhase = FinancialSimulationEngine.createDefaultInitialPhase(portfolio, this.inputs);
@@ -272,7 +264,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
-      const result = this.runSimulation<LcgHistoricalBacktestExtras>(returnsProvider, portfolio, initialPhase);
+      const result = this.runSimulation(returnsProvider, portfolio, initialPhase);
 
       // Get historical ranges from the returns provider
       const historicalRanges = returnsProvider.getHistoricalRanges();

@@ -805,9 +805,6 @@ export const useHistoricalBacktestTableData = (): HistoricalBacktestTableRow[] =
         averageInflationRate = inflationRates.length > 0 ? inflationRates.reduce((sum, r) => sum + r, 0) / inflationRates.length : null;
       }
 
-      // Pass raw historical ranges data (formatting happens in table-formatters)
-      const historicalPeriods = simulationResult.historicalRanges;
-
       return {
         seed,
         success: simulationResult.success,
@@ -819,7 +816,7 @@ export const useHistoricalBacktestTableData = (): HistoricalBacktestTableRow[] =
         averageBondsReturn,
         averageCashReturn,
         averageInflationRate,
-        historicalPeriods,
+        historicalRanges: simulationResult.historicalRanges,
       };
     });
 
