@@ -33,7 +33,7 @@ export default function MonteCarloDataTable({ simulation, selectedSeed, setSelec
   const handleRowClick = (row: MonteCarloTableRow) => setSelectedSeed(row.seed);
 
   return selectedSeed !== null ? (
-    <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
+    <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" onEscPressed={() => setSelectedSeed(null)} />
   ) : (
     <Table<MonteCarloTableRow> columns={tableDataColumns} data={tableData} keyField="seed" onRowClick={handleRowClick} />
   );

@@ -33,7 +33,7 @@ export default function HistoricalBacktestDataTable({ simulation, selectedSeed, 
   const handleRowClick = (row: HistoricalBacktestTableRow) => setSelectedSeed(row.seed);
 
   return selectedSeed !== null ? (
-    <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
+    <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" onEscPressed={() => setSelectedSeed(null)} />
   ) : (
     <Table<HistoricalBacktestTableRow> columns={tableDataColumns} data={tableData} keyField="seed" onRowClick={handleRowClick} />
   );
