@@ -45,9 +45,9 @@ export default function MonteCarloDataTable({ simulation }: MonteCarloDataTableP
 
   return (
     <>
-      <div className="sm:flex sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold">{headerText}</h3>
-        <div className="mt-3 sm:mt-0 sm:ml-4">
+        <div className="ml-2">
           <Button disabled={selectedSeed === null} onClick={handleBack} plain>
             <ArrowLongLeftIcon className="h-5 w-5" />
             <span>Return</span>
