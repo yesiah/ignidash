@@ -160,7 +160,7 @@ export default function Table<T extends Record<string, unknown>>({
                           <td
                             key={String(col.key)}
                             className={cn(
-                              'text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8',
+                              'text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-pre-line sm:pl-6 lg:pl-8',
                               hoveredColumn === col.key && 'bg-emphasized-background/50'
                             )}
                           >
@@ -173,7 +173,7 @@ export default function Table<T extends Record<string, unknown>>({
                         <td
                           key={String(col.key)}
                           className={cn(
-                            'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap',
+                            'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-pre-line',
                             hoveredColumn === col.key && 'bg-emphasized-background/50'
                           )}
                         >
@@ -183,7 +183,7 @@ export default function Table<T extends Record<string, unknown>>({
                     })}
                     <td
                       key="Edit"
-                      className="border-border/50 border-l py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8"
+                      className="border-border/50 border-l py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-pre-line sm:pr-6 lg:pr-8"
                     >
                       <a href="#" className="text-primary hover:text-primary/75">
                         Edit {/* <span className="sr-only">, {person.name}</span> */}
@@ -196,7 +196,7 @@ export default function Table<T extends Record<string, unknown>>({
                   showPagination &&
                   Array.from({ length: emptyRows }).map((_, index) => (
                     <tr key={`empty-${index}`}>
-                      <td colSpan={columns.length + 1} className="py-4 text-sm whitespace-nowrap">
+                      <td colSpan={columns.length + 1} className="py-4 text-sm whitespace-pre-line">
                         &nbsp;
                       </td>
                     </tr>
