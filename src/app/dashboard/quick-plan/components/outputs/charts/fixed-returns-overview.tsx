@@ -19,7 +19,7 @@ export default function FixedReturnsOverview() {
         <ResultsMetrics fireAnalysis={fireAnalysis} />
       </SectionContainer>
       <SectionContainer showBottomBorder>
-        <SectionHeader title="Data Visualization" desc="Interactive charts to explore your financial independence projection." />
+        <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
           <FixedResultsChart />
