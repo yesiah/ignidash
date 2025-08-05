@@ -34,26 +34,31 @@ export default function MonteCarloDataTable({ simulation }: MonteCarloDataTableP
   const handleRowClick = (row: MonteCarloTableRow) => setSelectedSeed(row.seed);
   const handleBack = () => setSelectedSeed(null);
 
-  if (selectedSeed !== null) {
-    return (
-      <>
-        <div className="border-border border-b py-5 sm:flex sm:items-center sm:justify-between">
-          <h3 className="text-base font-semibold">Simulation #{selectedSeed} Details</h3>
-          <div className="mt-3 sm:mt-0 sm:ml-4">
-            <button
-              onClick={handleBack}
-              type="button"
-              className="inline-flex items-center gap-2 rounded-md bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
-            >
-              <ArrowLongLeftIcon className="h-5 w-5" />
-              <span>Go back</span>
-            </button>
-          </div>
-        </div>
-        <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
-      </>
+  const headerText = selectedSeed !== null ? `Simulation #${selectedSeed} Details` : 'Monte Carlo Simulations';
+  const tableComponent =
+    selectedSeed !== null ? (
+      <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
+    ) : (
+      <Table<MonteCarloTableRow> columns={tableDataColumns} data={tableData} keyField="seed" onRowClick={handleRowClick} />
     );
-  }
 
-  return <Table<MonteCarloTableRow> columns={tableDataColumns} data={tableData} keyField="seed" onRowClick={handleRowClick} />;
+  return (
+    <>
+      <div className="border-border border-b py-5 sm:flex sm:items-center sm:justify-between">
+        <h3 className="text-base font-semibold">{headerText}</h3>
+        <div className="mt-3 sm:mt-0 sm:ml-4">
+          <button
+            disabled={selectedSeed === null}
+            onClick={handleBack}
+            type="button"
+            className="inline-flex items-center gap-2 rounded-md bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+          >
+            <ArrowLongLeftIcon className="h-5 w-5" />
+            <span>Go back</span>
+          </button>
+        </div>
+      </div>
+      {tableComponent}
+    </>
+  );
 }
