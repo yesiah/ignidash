@@ -7,6 +7,7 @@ import { useMonteCarloTableData, useSimulationDetailData } from '@/lib/stores/qu
 import { type SimulationTableRow, type MonteCarloTableRow } from '@/lib/schemas/simulation-table-schema';
 import { generateMonteCarloTableColumns, generateSimulationTableColumns } from '@/lib/utils/table-formatters';
 import type { MultiSimulationResult } from '@/lib/calc/simulation-engine';
+import { Button } from '@/components/catalyst/button';
 
 import Table from './table';
 
@@ -47,15 +48,10 @@ export default function MonteCarloDataTable({ simulation }: MonteCarloDataTableP
       <div className="border-border border-b py-5 sm:flex sm:items-center sm:justify-between">
         <h3 className="text-base font-semibold">{headerText}</h3>
         <div className="mt-3 sm:mt-0 sm:ml-4">
-          <button
-            disabled={selectedSeed === null}
-            onClick={handleBack}
-            type="button"
-            className="inline-flex items-center gap-2 rounded-md bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
-          >
+          <Button disabled={selectedSeed === null} onClick={handleBack} plain>
             <ArrowLongLeftIcon className="h-5 w-5" />
-            <span>Go back</span>
-          </button>
+            <span>Return</span>
+          </Button>
         </div>
       </div>
       {tableComponent}
