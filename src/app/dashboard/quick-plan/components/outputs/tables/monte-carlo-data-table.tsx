@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { ChevronLeftIcon } from '@heroicons/react/16/solid';
 
 import { useMonteCarloTableData, useSimulationDetailData } from '@/lib/stores/quick-plan-store';
-import { type MonteCarloTableRow } from '@/lib/schemas/simulation-table-schema';
+import { type SimulationTableRow, type MonteCarloTableRow } from '@/lib/schemas/simulation-table-schema';
 import { generateMonteCarloTableColumns, generateSimulationTableColumns } from '@/lib/utils/table-formatters';
 import type { MultiSimulationResult } from '@/lib/calc/simulation-engine';
 
@@ -44,7 +44,7 @@ export default function MonteCarloDataTable({ simulation }: MonteCarloDataTableP
           </button>
           <h3 className="text-foreground mt-2 text-base font-semibold">Simulation #{selectedSeed} Details</h3>
         </div>
-        <Table columns={detailDataColumns} data={detailData} keyField="year" />
+        <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
       </div>
     );
   }

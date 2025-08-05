@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { ChevronLeftIcon } from '@heroicons/react/16/solid';
 
 import { useHistoricalBacktestTableData, useSimulationDetailData } from '@/lib/stores/quick-plan-store';
-import { type HistoricalBacktestTableRow } from '@/lib/schemas/simulation-table-schema';
+import { type SimulationTableRow, type HistoricalBacktestTableRow } from '@/lib/schemas/simulation-table-schema';
 import { generateHistoricalBacktestTableColumns, generateSimulationTableColumns } from '@/lib/utils/table-formatters';
 import type { LcgHistoricalBacktestResult } from '@/lib/calc/simulation-engine';
 
@@ -44,7 +44,7 @@ export default function HistoricalBacktestDataTable({ simulation }: HistoricalBa
           </button>
           <h3 className="text-foreground mt-2 text-base font-semibold">Simulation #{selectedSeed} Details</h3>
         </div>
-        <Table columns={detailDataColumns} data={detailData} keyField="year" />
+        <Table<SimulationTableRow> columns={detailDataColumns} data={detailData} keyField="year" />
       </div>
     );
   }
