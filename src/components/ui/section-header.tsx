@@ -4,7 +4,7 @@ export type SectionStatus = 'complete' | 'in-progress' | 'not-started' | 'error'
 
 interface SectionHeaderProps {
   title: string | React.ReactNode;
-  desc: string | React.ReactNode;
+  desc?: string | React.ReactNode;
   status?: SectionStatus;
   rightAddOn?: React.ReactNode;
 }
@@ -44,7 +44,7 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
         <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
         {rightAddOn ? rightAddOn : status && <Badge color={badgeColor} text={badgeText} />}
       </div>
-      <p className="text-muted-foreground mt-2 text-base">{desc}</p>
+      {desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>}
     </div>
   );
 }

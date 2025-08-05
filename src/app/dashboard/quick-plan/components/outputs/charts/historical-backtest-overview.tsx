@@ -27,6 +27,8 @@ export default function HistoricalBacktestOverview() {
     return null;
   }
 
+  const headerText = selectedSeed !== null ? `Simulation #${selectedSeed} Details` : 'Historical Backtest Simulations';
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -42,8 +44,7 @@ export default function HistoricalBacktestOverview() {
       </SectionContainer>
       <SectionContainer showBottomBorder>
         <SectionHeader
-          title="Tables"
-          desc="Detailed data tables for in-depth analysis."
+          title={headerText}
           rightAddOn={
             <Button disabled={selectedSeed === null} onClick={() => setSelectedSeed(null)} plain>
               <ArrowLongLeftIcon className="h-5 w-5" />
