@@ -26,7 +26,7 @@ export default function FixedReturnsOverview() {
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>
-        <SectionHeader title="Tables" desc="Detailed data tables for in-depth analysis." />
+        <SectionHeader title="Simulation Table" />
         <FixedReturnsDataTable />
       </SectionContainer>
     </>

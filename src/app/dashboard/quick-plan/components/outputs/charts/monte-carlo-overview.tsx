@@ -23,7 +23,7 @@ export default function MonteCarloOverview() {
     return null;
   }
 
-  const headerText = selectedSeed !== null ? `Simulation #${selectedSeed} Details` : 'Monte Carlo Simulations';
+  const headerText = selectedSeed !== null ? `Simulation #${selectedSeed} Details` : 'Simulations Table';
 
   return (
     <>
