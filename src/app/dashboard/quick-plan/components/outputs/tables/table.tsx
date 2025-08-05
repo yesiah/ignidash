@@ -86,40 +86,57 @@ export default function Table<T extends Record<string, unknown>>({
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle">
-            <table className="divide-border relative min-w-full divide-y">
-              <thead>
-                <tr className="text-foreground">
-                  {columns.map((col, index) => {
-                    const isSorted = sortState.column === col.key;
-                    const sortableButton = (
-                      <button
-                        onClick={() => handleSort(col.key)}
-                        className="inline-flex w-full cursor-pointer items-center text-left text-sm font-semibold whitespace-nowrap"
-                      >
-                        {col.title}
-                        <span className="ml-2 flex-none rounded-sm text-gray-400">
-                          {isSorted && sortState.direction === 'asc' ? (
-                            <ChevronUpIcon aria-hidden="true" className="size-5" />
-                          ) : isSorted && sortState.direction === 'desc' ? (
-                            <ChevronDownIcon aria-hidden="true" className="size-5" />
-                          ) : (
-                            <ChevronDownIcon aria-hidden="true" className="invisible size-5 group-hover:visible" />
-                          )}
-                        </span>
-                      </button>
-                    );
+    <>
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="mt-8 flow-root">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle">
+              <table className="divide-border relative min-w-full divide-y">
+                <thead>
+                  <tr className="text-foreground">
+                    {columns.map((col, index) => {
+                      const isSorted = sortState.column === col.key;
+                      const sortableButton = (
+                        <button
+                          onClick={() => handleSort(col.key)}
+                          className="inline-flex w-full cursor-pointer items-center text-left text-sm font-semibold whitespace-nowrap"
+                        >
+                          {col.title}
+                          <span className="ml-2 flex-none rounded-sm text-gray-400">
+                            {isSorted && sortState.direction === 'asc' ? (
+                              <ChevronUpIcon aria-hidden="true" className="size-5" />
+                            ) : isSorted && sortState.direction === 'desc' ? (
+                              <ChevronDownIcon aria-hidden="true" className="size-5" />
+                            ) : (
+                              <ChevronDownIcon aria-hidden="true" className="invisible size-5 group-hover:visible" />
+                            )}
+                          </span>
+                        </button>
+                      );
 
-                    if (index === 0) {
+                      if (index === 0) {
+                        return (
+                          <th
+                            key={String(col.key)}
+                            scope="col"
+                            className={cn(
+                              'group py-3.5 pr-3 pl-4 sm:pl-6 lg:pl-8',
+                              hoveredColumn === col.key && 'bg-emphasized-background/50'
+                            )}
+                            onMouseEnter={() => setHoveredColumn(col.key)}
+                            onMouseLeave={() => setHoveredColumn(null)}
+                          >
+                            {sortableButton}
+                          </th>
+                        );
+                      }
+
                       return (
                         <th
                           key={String(col.key)}
                           scope="col"
                           className={cn(
-                            'group py-3.5 pr-3 pl-4 sm:pl-6 lg:pl-8',
+                            'group border-border/50 border-l px-3 py-3.5',
                             hoveredColumn === col.key && 'bg-emphasized-background/50'
                           )}
                           onMouseEnter={() => setHoveredColumn(col.key)}
@@ -128,87 +145,72 @@ export default function Table<T extends Record<string, unknown>>({
                           {sortableButton}
                         </th>
                       );
-                    }
+                    })}
+                    <th scope="col" className="border-border/50 border-l py-3.5 pr-4 pl-3 sm:pr-6 lg:pr-8">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-border/50 divide-y">
+                  {paginatedData.map((row) => (
+                    <tr
+                      key={String(row[keyField])}
+                      className={cn('hover:bg-emphasized-background/50', onRowClick && 'cursor-pointer')}
+                      onClick={() => onRowClick?.(row)}
+                    >
+                      {columns.map((col, index) => {
+                        const rawVal = row[col.key];
+                        const displayVal = col.format ? col.format(rawVal) : String(rawVal);
 
-                    return (
-                      <th
-                        key={String(col.key)}
-                        scope="col"
-                        className={cn(
-                          'group border-border/50 border-l px-3 py-3.5',
-                          hoveredColumn === col.key && 'bg-emphasized-background/50'
-                        )}
-                        onMouseEnter={() => setHoveredColumn(col.key)}
-                        onMouseLeave={() => setHoveredColumn(null)}
-                      >
-                        {sortableButton}
-                      </th>
-                    );
-                  })}
-                  <th scope="col" className="border-border/50 border-l py-3.5 pr-4 pl-3 sm:pr-6 lg:pr-8">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-border/50 divide-y">
-                {paginatedData.map((row) => (
-                  <tr
-                    key={String(row[keyField])}
-                    className={cn('hover:bg-emphasized-background/50', onRowClick && 'cursor-pointer')}
-                    onClick={() => onRowClick?.(row)}
-                  >
-                    {columns.map((col, index) => {
-                      const rawVal = row[col.key];
-                      const displayVal = col.format ? col.format(rawVal) : String(rawVal);
+                        if (index === 0) {
+                          return (
+                            <td
+                              key={String(col.key)}
+                              className={cn(
+                                'text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8',
+                                hoveredColumn === col.key && 'bg-emphasized-background/50'
+                              )}
+                            >
+                              {displayVal}
+                            </td>
+                          );
+                        }
 
-                      if (index === 0) {
                         return (
                           <td
                             key={String(col.key)}
                             className={cn(
-                              'text-foreground py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6 lg:pl-8',
+                              'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap',
                               hoveredColumn === col.key && 'bg-emphasized-background/50'
                             )}
                           >
                             {displayVal}
                           </td>
                         );
-                      }
-
-                      return (
-                        <td
-                          key={String(col.key)}
-                          className={cn(
-                            'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap',
-                            hoveredColumn === col.key && 'bg-emphasized-background/50'
-                          )}
-                        >
-                          {displayVal}
-                        </td>
-                      );
-                    })}
-                    <td
-                      key="Edit"
-                      className="border-border/50 border-l py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8"
-                    >
-                      <a href="#" className="text-primary hover:text-primary/75">
-                        Edit {/* <span className="sr-only">, {person.name}</span> */}
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-                {/* Empty rows to maintain consistent height */}
-                {emptyRows > 0 &&
-                  showPagination &&
-                  Array.from({ length: emptyRows }).map((_, index) => (
-                    <tr key={`empty-${index}`}>
-                      <td colSpan={columns.length + 1} className="py-4 text-sm whitespace-nowrap">
-                        &nbsp;
+                      })}
+                      <td
+                        key="Edit"
+                        className="border-border/50 border-l py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6 lg:pr-8"
+                      >
+                        <a href="#" className="text-primary hover:text-primary/75">
+                          Edit {/* <span className="sr-only">, {person.name}</span> */}
+                        </a>
                       </td>
                     </tr>
                   ))}
-              </tbody>
-            </table>
+                  {/* Empty rows to maintain consistent height */}
+                  {emptyRows > 0 &&
+                    showPagination &&
+                    Array.from({ length: emptyRows }).map((_, index) => (
+                      <tr key={`empty-${index}`}>
+                        <td colSpan={columns.length + 1} className="py-4 text-sm whitespace-nowrap">
+                          &nbsp;
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -221,6 +223,6 @@ export default function Table<T extends Record<string, unknown>>({
           onPageChange={handlePageChange}
         />
       )}
-    </div>
+    </>
   );
 }
