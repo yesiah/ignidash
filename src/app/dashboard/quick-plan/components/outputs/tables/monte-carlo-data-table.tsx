@@ -45,7 +45,7 @@ export default function MonteCarloDataTable({ simulation }: MonteCarloDataTableP
 
   return (
     <>
-      <div className="border-border border-b py-5 sm:flex sm:items-center sm:justify-between">
+      <div className="sm:flex sm:items-center sm:justify-between">
         <h3 className="text-base font-semibold">{headerText}</h3>
         <div className="mt-3 sm:mt-0 sm:ml-4">
           <Button disabled={selectedSeed === null} onClick={handleBack} plain>
