@@ -27,11 +27,20 @@ import { AssetReturns } from './asset';
 import { SeededRandom } from './seeded-random';
 
 /**
+ * Metadata extras specific to LCG historical backtest returns
+ */
+export interface LcgHistoricalBacktestExtras extends Record<string, unknown> {
+  historicalYear: number;
+  selectedStartYear: number;
+  simulationYear: number;
+}
+
+/**
  * LCG Historical Backtest Returns Provider Implementation
  * Provides returns based on real historical data with randomly selected start years
  * Automatically loops back to beginning of data when simulation extends beyond available years
  */
-export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
+export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider<LcgHistoricalBacktestExtras> {
   private dataRange: { startYear: number; endYear: number };
   private historicalData: NyuHistoricalYearData[];
   private rng: SeededRandom;
@@ -74,7 +83,7 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
    * @param simulationYear - The year within the simulation (1-based, e.g., year 1 = first year of simulation)
    * @returns Real asset returns with inflation metadata from historical data
    */
-  getReturns(simulationYear: number): ReturnsWithMetadata {
+  getReturns(simulationYear: number): ReturnsWithMetadata<LcgHistoricalBacktestExtras> {
     // Calculate years into the current sequence
     const yearsIntoSequence = simulationYear - this.currentSequenceStartSimYear;
     const targetHistoricalYear = this.currentSequenceStartYear + yearsIntoSequence;
@@ -109,7 +118,7 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
           historicalYear: adjustedYear,
           selectedStartYear: this.selectedStartYear,
           simulationYear,
-        },
+        } satisfies LcgHistoricalBacktestExtras,
       },
     };
   }

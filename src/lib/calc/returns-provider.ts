@@ -26,12 +26,12 @@ import { AssetReturns } from './asset';
  * This interface is used to encapsulate the returns along with any additional
  * information that may be needed for tracking or display purposes.
  */
-export interface ReturnsWithMetadata {
+export interface ReturnsWithMetadata<TExtras extends Record<string, unknown> = Record<string, unknown>> {
   returns: AssetReturns;
   metadata: {
     inflationRate: number;
     /** Optional extras that providers can add for simulation-specific data */
-    extras?: Record<string, unknown>;
+    extras?: TExtras;
   };
 }
 
@@ -39,11 +39,11 @@ export interface ReturnsWithMetadata {
  * Returns provider interface for asset return calculations
  * Defines the contract for all return calculation strategies
  */
-export interface ReturnsProvider {
+export interface ReturnsProvider<TExtras extends Record<string, unknown> = Record<string, unknown>> {
   /**
    * Get the real returns for a specific year.
    * @param year The year for which to get the returns.
    * @returns The real asset returns for the specified year.
    */
-  getReturns(year: number): ReturnsWithMetadata;
+  getReturns(year: number): ReturnsWithMetadata<TExtras>;
 }
