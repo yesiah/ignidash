@@ -48,7 +48,7 @@ import {
   type LcgHistoricalBacktestResult,
 } from '@/lib/calc/simulation-engine';
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
-import { SimulationAnalyzer } from '@/lib/calc/simulation-analyzer';
+import { SimulationAnalyzer, type MultiSimulationStats } from '@/lib/calc/simulation-analyzer';
 import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
 import {
   type SimulationTableRow,
@@ -882,12 +882,77 @@ export const useSimulationDetailData = (simulation: SimulationResult | null): Si
   }, [currentAge, simulation]);
 };
 
+type YearlyProgressionData = MultiSimulationStats & {
+  year: number;
+  phasePercentages: {
+    accumulation: number;
+    retirement: number;
+    bankrupt: number;
+  };
+};
+
 export const useHistoricalBacktestYearlyResultsTableData = (simulation: LcgHistoricalBacktestResult): YearlyAggregateTableRow[] => {
-  return validateYearlyAggregateTableData([]);
+  const currentAge = useCurrentAge()!;
+
+  return useMemo(() => {
+    // Use SimulationAnalyzer to get yearly progression statistics
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    // Transform yearly progression data to match YearlyAggregateTableRow schema
+    const rawData = analysis.yearlyProgression.map((yearData: YearlyProgressionData) => ({
+      year: yearData.year,
+      age: currentAge + yearData.year,
+      percentAccumulation: yearData.phasePercentages.accumulation,
+      percentRetirement: yearData.phasePercentages.retirement,
+      percentBankrupt: yearData.phasePercentages.bankrupt,
+      p10Portfolio: yearData.percentiles.p10,
+      p25Portfolio: yearData.percentiles.p25,
+      p50Portfolio: yearData.percentiles.p50,
+      p75Portfolio: yearData.percentiles.p75,
+      p90Portfolio: yearData.percentiles.p90,
+      minPortfolio: yearData.values.overall?.min ?? 0,
+      maxPortfolio: yearData.values.overall?.max ?? 0,
+    }));
+
+    // Validate data against schema
+    return validateYearlyAggregateTableData(rawData);
+  }, [currentAge, simulation]);
 };
 
 export const useMonteCarloYearlyResultsTableData = (simulation: MultiSimulationResult): YearlyAggregateTableRow[] => {
-  return validateYearlyAggregateTableData([]);
+  const currentAge = useCurrentAge()!;
+
+  return useMemo(() => {
+    // Use SimulationAnalyzer to get yearly progression statistics
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    // Transform yearly progression data to match YearlyAggregateTableRow schema
+    const rawData = analysis.yearlyProgression.map((yearData: YearlyProgressionData) => ({
+      year: yearData.year,
+      age: currentAge + yearData.year,
+      percentAccumulation: yearData.phasePercentages.accumulation,
+      percentRetirement: yearData.phasePercentages.retirement,
+      percentBankrupt: yearData.phasePercentages.bankrupt,
+      p10Portfolio: yearData.percentiles.p10,
+      p25Portfolio: yearData.percentiles.p25,
+      p50Portfolio: yearData.percentiles.p50,
+      p75Portfolio: yearData.percentiles.p75,
+      p90Portfolio: yearData.percentiles.p90,
+      minPortfolio: yearData.values.overall?.min ?? 0,
+      maxPortfolio: yearData.values.overall?.max ?? 0,
+    }));
+
+    // Validate data against schema
+    return validateYearlyAggregateTableData(rawData);
+  }, [currentAge, simulation]);
 };
 
 /**

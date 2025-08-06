@@ -111,6 +111,11 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
   yearlyProgression: Array<
     MultiSimulationStats & {
       year: number;
+      phasePercentages: {
+        accumulation: number;
+        retirement: number;
+        bankrupt: number;
+      };
     }
   >;
 
@@ -393,6 +398,11 @@ export class SimulationAnalyzer {
   private buildYearlyProgression(results: SimulationResult[]): Array<
     MultiSimulationStats & {
       year: number;
+      phasePercentages: {
+        accumulation: number;
+        retirement: number;
+        bankrupt: number;
+      };
     }
   > {
     if (results.length === 0) return [];
@@ -417,7 +427,37 @@ export class SimulationAnalyzer {
       const yearlyValues = portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
-      yearlyProgression.push({ year, count, values, returns, percentiles });
+      // Calculate phase percentages for this year
+      let accumulationCount = 0;
+      let retirementCount = 0;
+      let bankruptCount = 0;
+
+      for (const result of results) {
+        const portfolio = result.data[year][1];
+        const portfolioValue = portfolio.getTotalValue();
+
+        // Check if simulation is bankrupt
+        if (portfolioValue <= 1) {
+          bankruptCount++;
+        }
+
+        const phaseName = result.phasesMetadata.find(([phaseYear]) => phaseYear === year)![1].getName();
+        if (phaseName === 'Accumulation') {
+          accumulationCount++;
+        } else if (phaseName === 'Retirement') {
+          retirementCount++;
+        } else {
+          throw new Error(`Unknown phase name: ${phaseName}`);
+        }
+      }
+
+      const phasePercentages = {
+        accumulation: (accumulationCount / count) * 100,
+        retirement: (retirementCount / count) * 100,
+        bankrupt: (bankruptCount / count) * 100,
+      };
+
+      yearlyProgression.push({ year, count, values, returns, percentiles, phasePercentages });
     }
 
     return yearlyProgression;
