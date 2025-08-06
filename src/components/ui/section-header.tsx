@@ -39,12 +39,15 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
   }
 
   return (
-    <div className="ml-2">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
-        {status && <Badge color={badgeColor} text={badgeText} />}
+    <div className="ml-2 flex items-end justify-between gap-x-2">
+      <div>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+          {status && <Badge color={badgeColor} text={badgeText} />}
+        </div>
+        {desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>}
       </div>
-      {desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>}
+      {rightAddOn}
     </div>
   );
 }
