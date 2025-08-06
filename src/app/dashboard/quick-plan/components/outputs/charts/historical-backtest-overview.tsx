@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -23,6 +23,9 @@ export default function HistoricalBacktestOverview() {
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
+
+  // Reset selectedSeed when simulation changes
+  useEffect(() => setSelectedSeed(null), [simulation]);
 
   if (chartData.length === 0) {
     return null;

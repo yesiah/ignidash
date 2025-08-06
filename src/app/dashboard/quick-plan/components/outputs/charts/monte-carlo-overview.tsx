@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -19,6 +19,9 @@ export default function MonteCarloOverview() {
   const simulation = useMonteCarloSimulation();
   const chartData = useMonteCarloChartData();
   const fireAnalysis = useMonteCarloAnalysis();
+
+  // Reset selectedSeed when simulation changes
+  useEffect(() => setSelectedSeed(null), [simulation]);
 
   if (chartData.length === 0) {
     return null;
