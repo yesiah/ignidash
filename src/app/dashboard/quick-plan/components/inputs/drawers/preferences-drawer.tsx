@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { Button } from '@/components/catalyst/button';
 import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
@@ -8,6 +10,8 @@ import Card from '@/components/ui/card';
 import SelectMenu from '@/components/ui/select-menu';
 
 export default function PreferencesDrawer() {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const preferences = usePreferencesData();
   const updatePreferences = useUpdatePreferences();
   const resetStore = useResetStore();
@@ -65,8 +69,19 @@ export default function PreferencesDrawer() {
               />
 
               <div>
-                <Button type="button" color="red" onClick={() => resetStore()} className="focus-outline w-full">
-                  Delete Saved Data
+                <Button
+                  type="button"
+                  color="red"
+                  onClick={async () => {
+                    setIsDeleting(true);
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    resetStore();
+                    setIsDeleting(false);
+                  }}
+                  className="focus-outline w-full"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Saved Data'}
                 </Button>
                 <p className="text-muted-foreground mt-2 text-sm">This will permanently delete all saved data and reset to defaults.</p>
               </div>
