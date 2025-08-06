@@ -36,7 +36,7 @@ interface MarketVolatility {
  * Based on long-term historical data
  */
 const DEFAULT_VOLATILITY: MarketVolatility = {
-  stocks: 0.22, // 22% annual volatility
+  stocks: 0.2, // 20% annual volatility
   bonds: 0.06, // 6% annual volatility
   cash: 0.01, // 1% annual volatility
   inflation: 0.03, // 3% annual volatility
@@ -173,7 +173,7 @@ export class StochasticReturnsProvider implements ReturnsProvider {
    * Generate return from log-normal distribution
    * Used for equity returns to prevent negative values and model realistic fat tails
    * @param expectedReturn - Expected return rate as a decimal (e.g., 0.1 for 10%)
-   * @param volatility - Annual volatility as a decimal (e.g., 0.22 for 22%)
+   * @param volatility - Annual volatility as a decimal (e.g., 0.2 for 20%)
    * @param z - Standard normal random variable
    * @returns Log-normal distributed return rate as a decimal
    */
