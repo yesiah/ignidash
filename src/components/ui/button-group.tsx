@@ -8,13 +8,13 @@ import { cn } from '@/lib/utils';
 interface ButtonGroupProps {
   className?: string;
   firstButtonText: string;
-  firstButtonIcon?: ReactNode;
+  firstButtonIcon: ReactNode;
   firstButtonOnClick: () => void;
   middleButtonText?: string;
   middleButtonIcon?: ReactNode;
   middleButtonOnClick?: () => void;
   lastButtonText: string;
-  lastButtonIcon?: ReactNode;
+  lastButtonIcon: ReactNode;
   lastButtonOnClick: () => void;
   defaultActiveButton?: 'first' | 'middle' | 'last' | null;
 }
@@ -59,8 +59,8 @@ export default function ButtonGroup({
           { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'first' }
         )}
       >
-        {firstButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{firstButtonIcon}</span>}
-        <span className="hidden sm:inline">{firstButtonText}</span>
+        <span className="text-primary h-5 w-5 md:mr-1.5">{firstButtonIcon}</span>
+        <span className="hidden whitespace-nowrap md:inline">{firstButtonText}</span>
       </button>
       {middleButtonText && middleButtonOnClick && (
         <button
@@ -71,8 +71,8 @@ export default function ButtonGroup({
             { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'middle' }
           )}
         >
-          {middleButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{middleButtonIcon}</span>}
-          <span className="hidden sm:inline">{middleButtonText}</span>
+          {middleButtonIcon && <span className="text-primary h-5 w-5 md:mr-1.5">{middleButtonIcon}</span>}
+          <span className="hidden whitespace-nowrap md:inline">{middleButtonText}</span>
         </button>
       )}
       <button
@@ -83,8 +83,8 @@ export default function ButtonGroup({
           { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'last' }
         )}
       >
-        {lastButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{lastButtonIcon}</span>}
-        <span className="hidden sm:inline">{lastButtonText}</span>
+        <span className="text-primary h-5 w-5 md:mr-1.5">{lastButtonIcon}</span>
+        <span className="hidden whitespace-nowrap md:inline">{lastButtonText}</span>
       </button>
     </span>
   );
