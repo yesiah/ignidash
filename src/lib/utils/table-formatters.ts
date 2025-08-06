@@ -13,6 +13,8 @@ import {
   MONTE_CARLO_TABLE_CONFIG,
   type HistoricalBacktestTableRow,
   HISTORICAL_BACKTEST_TABLE_CONFIG,
+  type YearlyAggregateTableRow,
+  YEARLY_AGGREGATE_TABLE_CONFIG,
 } from '@/lib/schemas/simulation-table-schema';
 import { type TableColumn } from '@/lib/types/table';
 
@@ -85,5 +87,14 @@ export const generateHistoricalBacktestTableColumns = (): TableColumn<Historical
     key: key as keyof HistoricalBacktestTableRow,
     title: config.title,
     format: (value: HistoricalBacktestTableRow[keyof HistoricalBacktestTableRow]) => formatValue(value, config.format),
+  }));
+};
+
+// Generate Yearly Aggregate table columns from schema configuration
+export const generateYearlyAggregateTableColumns = (): TableColumn<YearlyAggregateTableRow>[] => {
+  return Object.entries(YEARLY_AGGREGATE_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof YearlyAggregateTableRow,
+    title: config.title,
+    format: (value: YearlyAggregateTableRow[keyof YearlyAggregateTableRow]) => formatValue(value, config.format),
   }));
 };

@@ -12,6 +12,7 @@ interface ButtonGroupProps {
   middleButtonOnClick?: () => void;
   lastButtonText: string;
   lastButtonOnClick: () => void;
+  defaultActiveButton?: 'first' | 'middle' | 'last' | null;
 }
 
 export default function ButtonGroup({
@@ -22,8 +23,9 @@ export default function ButtonGroup({
   middleButtonOnClick,
   lastButtonText,
   lastButtonOnClick,
+  defaultActiveButton = null,
 }: ButtonGroupProps) {
-  const [activeButton, setActiveButton] = useState<'first' | 'middle' | 'last' | null>(null);
+  const [activeButton, setActiveButton] = useState<'first' | 'middle' | 'last' | null>(defaultActiveButton);
 
   const handleFirstClick = () => {
     setActiveButton('first');

@@ -21,23 +21,32 @@ import HistoricalBacktestDataTable from '../tables/historical-backtest-data-tabl
 
 export default function HistoricalBacktestOverview() {
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'all' | 'yearly'>('all');
 
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
 
   // Reset selectedSeed when simulation changes
-  useEffect(() => setSelectedSeed(null), [simulation]);
+  useEffect(() => setSelectedSeed(null), [simulation, viewMode]);
 
   if (chartData.length === 0) {
     return null;
   }
 
-  const headerText = selectedSeed !== null ? `Simulation #${selectedSeed} Details` : 'Simulations Table';
-  const headerDesc =
-    selectedSeed !== null
-      ? 'Year-by-year progression and outcomes for this specific simulation.'
-      : 'Browse all simulation runs and select one to explore further.';
+  let headerText: string;
+  let headerDesc: string;
+
+  if (selectedSeed !== null) {
+    headerText = `Simulation #${selectedSeed} Details`;
+    headerDesc = 'Year-by-year progression and outcomes for this specific simulation.';
+  } else if (viewMode === 'yearly') {
+    headerText = 'Yearly Results';
+    headerDesc = 'Aggregated statistics across all simulations by year.';
+  } else {
+    headerText = 'Simulations Table';
+    headerDesc = 'Browse all simulation runs and select one to explore further.';
+  }
 
   return (
     <>
@@ -64,13 +73,19 @@ export default function HistoricalBacktestOverview() {
           rightAddOn={
             <ButtonGroup
               firstButtonText="All simulations"
-              firstButtonOnClick={() => {}}
+              firstButtonOnClick={() => setViewMode('all')}
               lastButtonText="Yearly results"
-              lastButtonOnClick={() => {}}
+              lastButtonOnClick={() => setViewMode('yearly')}
+              defaultActiveButton="first"
             />
           }
         />
-        <HistoricalBacktestDataTable simulation={simulation} selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />
+        <HistoricalBacktestDataTable
+          simulation={simulation}
+          selectedSeed={selectedSeed}
+          setSelectedSeed={setSelectedSeed}
+          viewMode={viewMode}
+        />
       </SectionContainer>
     </>
   );
