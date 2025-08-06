@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronLeftIcon } from '@heroicons/react/20/solid';
+import { ChevronLeftIcon, TableCellsIcon, CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
 import { useMonteCarloChartData, useMonteCarloAnalysis, useMonteCarloSimulation } from '@/lib/stores/quick-plan-store';
@@ -68,9 +68,11 @@ export default function MonteCarloOverview() {
               </Button>
             ) : (
               <ButtonGroup
-                firstButtonText="All simulations"
+                firstButtonText="Simulations"
+                firstButtonIcon={<TableCellsIcon />}
                 firstButtonOnClick={() => setViewMode('all')}
                 lastButtonText="Yearly results"
+                lastButtonIcon={<CalendarDaysIcon />}
                 lastButtonOnClick={() => setViewMode('yearly')}
                 defaultActiveButton="first"
               />

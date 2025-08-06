@@ -1,16 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
 interface ButtonGroupProps {
   className?: string;
   firstButtonText: string;
+  firstButtonIcon?: ReactNode;
   firstButtonOnClick: () => void;
   middleButtonText?: string;
+  middleButtonIcon?: ReactNode;
   middleButtonOnClick?: () => void;
   lastButtonText: string;
+  lastButtonIcon?: ReactNode;
   lastButtonOnClick: () => void;
   defaultActiveButton?: 'first' | 'middle' | 'last' | null;
 }
@@ -18,10 +22,13 @@ interface ButtonGroupProps {
 export default function ButtonGroup({
   className,
   firstButtonText,
+  firstButtonIcon,
   firstButtonOnClick,
   middleButtonText,
+  middleButtonIcon,
   middleButtonOnClick,
   lastButtonText,
+  lastButtonIcon,
   lastButtonOnClick,
   defaultActiveButton = null,
 }: ButtonGroupProps) {
@@ -52,7 +59,8 @@ export default function ButtonGroup({
           { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'first' }
         )}
       >
-        {firstButtonText}
+        {firstButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{firstButtonIcon}</span>}
+        <span className="hidden sm:inline">{firstButtonText}</span>
       </button>
       {middleButtonText && middleButtonOnClick && (
         <button
@@ -63,7 +71,8 @@ export default function ButtonGroup({
             { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'middle' }
           )}
         >
-          {middleButtonText}
+          {middleButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{middleButtonIcon}</span>}
+          <span className="hidden sm:inline">{middleButtonText}</span>
         </button>
       )}
       <button
@@ -74,7 +83,8 @@ export default function ButtonGroup({
           { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'last' }
         )}
       >
-        {lastButtonText}
+        {lastButtonIcon && <span className="text-primary mr-1.5 h-5 w-5">{lastButtonIcon}</span>}
+        <span className="hidden sm:inline">{lastButtonText}</span>
       </button>
     </span>
   );

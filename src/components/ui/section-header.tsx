@@ -38,16 +38,30 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
       break;
   }
 
-  return (
-    <div className="ml-2 flex items-end justify-between gap-x-2">
-      <div>
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
-          {status && <Badge color={badgeColor} text={badgeText} />}
+  const headlineComponent = (
+    <div className="flex items-center justify-between">
+      <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+      {status && <Badge color={badgeColor} text={badgeText} />}
+    </div>
+  );
+  const descComponent = desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>;
+
+  if (rightAddOn) {
+    return (
+      <div className="ml-2 flex items-end justify-between gap-x-2">
+        <div>
+          {headlineComponent}
+          {descComponent}
         </div>
-        {desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>}
+        {rightAddOn}
       </div>
-      {rightAddOn}
+    );
+  }
+
+  return (
+    <div className="ml-2">
+      {headlineComponent}
+      {descComponent}
     </div>
   );
 }
