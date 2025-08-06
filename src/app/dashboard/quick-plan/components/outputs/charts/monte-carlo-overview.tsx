@@ -57,7 +57,14 @@ export default function MonteCarloOverview() {
               <span>Return</span>
             </Button>
           }
-          rightAddOn={<ButtonGroup />}
+          rightAddOn={
+            <ButtonGroup
+              firstButtonText="View simulations"
+              firstButtonOnClick={() => {}}
+              lastButtonText="View yearly results"
+              lastButtonOnClick={() => {}}
+            />
+          }
         />
         <MonteCarloDataTable simulation={simulation} selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />
       </SectionContainer>

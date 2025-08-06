@@ -61,7 +61,14 @@ export default function HistoricalBacktestOverview() {
               <span>Return</span>
             </Button>
           }
-          rightAddOn={<ButtonGroup />}
+          rightAddOn={
+            <ButtonGroup
+              firstButtonText="View simulations"
+              firstButtonOnClick={() => {}}
+              lastButtonText="View yearly results"
+              lastButtonOnClick={() => {}}
+            />
+          }
         />
         <HistoricalBacktestDataTable simulation={simulation} selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />
       </SectionContainer>
