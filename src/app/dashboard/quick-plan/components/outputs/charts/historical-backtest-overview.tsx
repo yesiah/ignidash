@@ -19,6 +19,7 @@ import HistoricalBacktestDataTable from '../tables/historical-backtest-data-tabl
 
 export default function HistoricalBacktestOverview() {
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
+
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
   const fireAnalysis = useHistoricalBacktestAnalysis();

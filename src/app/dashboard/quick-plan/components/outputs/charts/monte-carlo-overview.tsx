@@ -15,6 +15,7 @@ import MonteCarloDataTable from '../tables/monte-carlo-data-table';
 
 export default function MonteCarloOverview() {
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
+
   const simulation = useMonteCarloSimulation();
   const chartData = useMonteCarloChartData();
   const fireAnalysis = useMonteCarloAnalysis();
