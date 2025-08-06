@@ -12,6 +12,16 @@ export default function PreferencesDrawer() {
   const updatePreferences = useUpdatePreferences();
   const resetStore = useResetStore();
 
+  let displayFormatDesc;
+  switch (preferences.displayFormat) {
+    case 'today':
+      displayFormatDesc = "Display results in today's dollars, without inflation adjustments.";
+      break;
+    case 'future':
+      displayFormatDesc = 'Display results adjusted for projected inflation over time.';
+      break;
+  }
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -29,7 +39,7 @@ export default function PreferencesDrawer() {
                   { value: 'today', label: "Today's Currency" },
                   { value: 'future', label: 'Future Inflated Currency' },
                 ]}
-                desc="Today's currency shows values in current dollars. Future inflated currency shows values adjusted for inflation."
+                desc={displayFormatDesc}
               />
             </fieldset>
           </form>
@@ -51,14 +61,14 @@ export default function PreferencesDrawer() {
                   { value: 'localStorage', label: 'Local Storage' },
                   { value: 'none', label: 'No Data Persistence' },
                 ]}
-                desc="Local storage saves your data on this device. No data persistence means your data is lost when you close or refresh the page."
+                desc="Save your data locally on this device, or work without saving between sessions."
               />
 
               <div>
                 <Button type="button" color="red" onClick={() => resetStore()} className="focus-outline w-full">
                   Delete Saved Data
                 </Button>
-                <p className="text-muted-foreground mt-2 text-xs">This will permanently delete all saved data and reset to defaults.</p>
+                <p className="text-muted-foreground mt-2 text-sm">This will permanently delete all saved data and reset to defaults.</p>
               </div>
             </fieldset>
           </form>
