@@ -59,9 +59,9 @@ export default function MonteCarloOverview() {
           }
           rightAddOn={
             <ButtonGroup
-              firstButtonText="View simulations"
+              firstButtonText="All simulations"
               firstButtonOnClick={() => {}}
-              lastButtonText="View yearly results"
+              lastButtonText="Yearly results"
               lastButtonOnClick={() => {}}
             />
           }

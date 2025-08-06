@@ -63,9 +63,9 @@ export default function HistoricalBacktestOverview() {
           }
           rightAddOn={
             <ButtonGroup
-              firstButtonText="View simulations"
+              firstButtonText="All simulations"
               firstButtonOnClick={() => {}}
-              lastButtonText="View yearly results"
+              lastButtonText="Yearly results"
               lastButtonOnClick={() => {}}
             />
           }
