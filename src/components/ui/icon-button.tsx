@@ -30,7 +30,7 @@ export default function IconButton({ className, icon: Icon, label, onClick, surf
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={cn(`focus-outline border-border rounded-full border p-2 ${hoverClass}`, className)}
+      className={cn(`focus-outline border-border rounded-full border p-2 transition-transform hover:scale-110 ${hoverClass}`, className)}
     >
       <Icon aria-hidden="true" className="size-5" />
     </button>
