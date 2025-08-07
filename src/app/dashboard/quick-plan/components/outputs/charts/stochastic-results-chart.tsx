@@ -79,9 +79,9 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
   const interval = isSmallScreen ? 4 : 3;
 
   return (
-    <div className="h-64 w-full sm:h-80 lg:h-96">
+    <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }}>
+        <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
           <defs>
             <linearGradient id="colorP90" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
