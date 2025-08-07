@@ -13,7 +13,7 @@
 
   --chart-1: hsl(346 77% 65%); /* Darker pink (top) */
   --chart-2: hsl(346 77% 80%); /* Medium pink (middle) */
-  --chart-3: hsl(346 77% 95%); /* Very light pink (bottom) */
+  --chart-3: hsl(346 77% 90%); /* Light pink (bottom) */
 }
 
 @theme inline {
