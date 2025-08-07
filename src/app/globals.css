@@ -36,7 +36,7 @@
 
   --chart-1: hsl(346 80% 50%); /* Brighter red (top) */
   --chart-2: hsl(346 75% 35%); /* Deep burgundy (middle) */
-  --chart-3: hsl(346 70% 20%); /* Very dark maroon (bottom) */
+  --chart-3: hsl(346 70% 25%); /* Dark maroon (bottom) */
 }
 
 html {
