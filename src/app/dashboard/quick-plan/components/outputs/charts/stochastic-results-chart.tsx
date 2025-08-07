@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { useRef, useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { useCurrentAge, StochasticAnalysis } from '@/lib/stores/quick-plan-store';
@@ -25,10 +26,11 @@ interface CustomTooltipProps {
   }>;
   label?: number;
   currentAge: number;
+  disabled: boolean;
 }
 
-const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProps) => {
-  if (!(active && payload && payload.length)) return null;
+const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomTooltipProps) => {
+  if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - currentAge);
@@ -63,10 +65,31 @@ interface StochasticResultsChartProps {
 }
 
 export default function ResultsChart({ fireAnalysis, chartData }: StochasticResultsChartProps) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
+
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
   const currentAge = useCurrentAge();
+
+  useEffect(() => {
+    const handleInteractionStart = (event: MouseEvent | TouchEvent) => {
+      if (chartRef.current && !chartRef.current.contains(event.target as Node)) {
+        setClickedOutsideChart(true);
+      } else {
+        setClickedOutsideChart(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleInteractionStart);
+    document.addEventListener('touchstart', handleInteractionStart);
+
+    return () => {
+      document.removeEventListener('mousedown', handleInteractionStart);
+      document.removeEventListener('touchstart', handleInteractionStart);
+    };
+  }, []);
 
   if (chartData.length === 0) {
     return null;
@@ -79,7 +102,7 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
   const interval = isSmallScreen ? 4 : 3;
 
   return (
-    <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+    <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
           <defs>
@@ -104,7 +127,7 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <Tooltip content={<CustomTooltip currentAge={currentAge!} />} />
+          <Tooltip content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />} />
           <Area type="monotone" dataKey="p75" stroke="var(--chart-2)" fill="url(#colorP75)" activeDot={false} />
           <Area type="monotone" dataKey="p50" stroke="var(--chart-3)" fill="url(#colorP50)" activeDot={false} />
           <Area type="monotone" dataKey="p25" stroke="var(--chart-1)" fill="url(#colorP25)" activeDot={false} />
