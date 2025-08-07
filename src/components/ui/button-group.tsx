@@ -55,8 +55,8 @@ export default function ButtonGroup({
         onClick={handleFirstClick}
         type="button"
         className={cn(
-          'text-muted-foreground bg-emphasized-background ring-border hover:bg-background dark:bg-background dark:hover:bg-emphasized-background focus-outline relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
-          { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'first' }
+          'text-muted-foreground ring-border bg-background hover:bg-emphasized-background focus-outline relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
+          { 'text-foreground bg-emphasized-background': activeButton === 'first' }
         )}
       >
         <span className="text-primary h-5 w-5 md:mr-1.5">{firstButtonIcon}</span>
@@ -67,8 +67,8 @@ export default function ButtonGroup({
           onClick={handleMiddleClick}
           type="button"
           className={cn(
-            'text-muted-foreground bg-emphasized-background ring-border hover:bg-background dark:bg-background dark:hover:bg-emphasized-background focus-outline relative -ml-px inline-flex items-center px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
-            { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'middle' }
+            'text-muted-foreground ring-border bg-background hover:bg-emphasized-background focus-outline relative -ml-px inline-flex items-center px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
+            { 'text-foreground bg-emphasized-background': activeButton === 'middle' }
           )}
         >
           {middleButtonIcon && <span className="text-primary h-5 w-5 md:mr-1.5">{middleButtonIcon}</span>}
@@ -79,8 +79,8 @@ export default function ButtonGroup({
         onClick={handleLastClick}
         type="button"
         className={cn(
-          'text-muted-foreground bg-emphasized-background ring-border hover:bg-background dark:bg-background dark:hover:bg-emphasized-background focus-outline relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
-          { 'text-foreground bg-background dark:bg-emphasized-background': activeButton === 'last' }
+          'text-muted-foreground ring-border bg-background hover:bg-emphasized-background focus-outline relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold ring-1 ring-inset focus:z-10',
+          { 'text-foreground bg-emphasized-background': activeButton === 'last' }
         )}
       >
         <span className="text-primary h-5 w-5 md:mr-1.5">{lastButtonIcon}</span>
