@@ -25,7 +25,7 @@ import { useMemo } from 'react';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-// import { useShallow } from 'zustand/react/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 import {
   type QuickPlanInputs,
@@ -96,7 +96,13 @@ const createSimpleUpdateAction = <T extends keyof QuickPlanInputs>(
   shouldUpdateTouchedState: boolean = true
 ) => {
   return (field: keyof QuickPlanInputs[T], value: unknown): UpdateResult => {
-    const result = validateField(section, field, value, get().inputs[section]);
+    const currentSection = get().inputs[section];
+    const currentValue = currentSection[field];
+
+    // Skip update if the new value is equivalent to the current value
+    if (value == currentValue) return { success: true };
+
+    const result = validateField(section, field, value, currentSection);
 
     if (result.valid && result.data) {
       set((state) => {
@@ -411,7 +417,7 @@ export const useResetSection = () => useQuickPlanStore((state) => state.actions.
  * These hooks provide access to simulation and analysis functions
  */
 export const useFixedReturnsSimulation = () => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
 
   return useMemo(() => {
     const engine = new FinancialSimulationEngine(inputs);
@@ -424,7 +430,7 @@ export const useFixedReturnsSimulation = () => {
 };
 
 export const useMonteCarloSimulation = (baseSeed?: number) => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
 
   return useMemo(() => {
     const seed = baseSeed ?? Math.floor(Math.random() * 1000);
@@ -434,7 +440,7 @@ export const useMonteCarloSimulation = (baseSeed?: number) => {
 };
 
 export const useHistoricalBacktestSimulation = (baseSeed?: number) => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
 
   return useMemo(() => {
     const seed = baseSeed ?? Math.floor(Math.random() * 1000);
@@ -454,7 +460,7 @@ export interface FixedReturnsAnalysis {
 }
 
 export const useFixedReturnsAnalysis = () => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
   const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
@@ -492,7 +498,7 @@ export interface StochasticAnalysis {
 }
 
 export const useMonteCarloAnalysis = () => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
   const simulation = useMonteCarloSimulation();
 
   return useMemo(() => {
@@ -546,7 +552,7 @@ export const useMonteCarloAnalysis = () => {
 };
 
 export const useHistoricalBacktestAnalysis = () => {
-  const inputs = useQuickPlanStore((state) => state.inputs);
+  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
   const simulation = useHistoricalBacktestSimulation();
 
   return useMemo(() => {
