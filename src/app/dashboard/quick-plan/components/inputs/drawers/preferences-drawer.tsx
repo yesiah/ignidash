@@ -52,10 +52,10 @@ export default function PreferencesDrawer() {
 
       <SectionContainer showBottomBorder={false}>
         <SectionHeader title="Data Storage" desc="Control how your data is saved and managed." />
-        <Card>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <fieldset className="space-y-4">
-              <legend className="sr-only">Data storage configuration</legend>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <fieldset className="space-y-4">
+            <legend className="sr-only">Data storage configuration</legend>
+            <Card>
               <SelectMenu
                 id="data-storage"
                 label="Data Persistence"
@@ -67,27 +67,27 @@ export default function PreferencesDrawer() {
                 ]}
                 desc="Save your data locally on this device, or work without saving between sessions."
               />
+            </Card>
 
-              <div>
-                <Button
-                  type="button"
-                  color="red"
-                  onClick={async () => {
-                    setIsDeleting(true);
-                    await new Promise((resolve) => setTimeout(resolve, 500));
-                    resetStore();
-                    setIsDeleting(false);
-                  }}
-                  className="focus-outline w-full"
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? 'Deleting...' : 'Delete Saved Data'}
-                </Button>
-                <p className="text-muted-foreground mt-2 text-sm">This will permanently delete all saved data and reset to defaults.</p>
-              </div>
-            </fieldset>
-          </form>
-        </Card>
+            <Card>
+              <Button
+                type="button"
+                color="red"
+                onClick={async () => {
+                  setIsDeleting(true);
+                  await new Promise((resolve) => setTimeout(resolve, 500));
+                  resetStore();
+                  setIsDeleting(false);
+                }}
+                className="focus-outline w-full"
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Saved Data'}
+              </Button>
+              <p className="text-muted-foreground mt-2 text-sm">This will permanently delete all saved data and reset to defaults.</p>
+            </Card>
+          </fieldset>
+        </form>
       </SectionContainer>
     </>
   );
