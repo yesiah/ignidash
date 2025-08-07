@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { useRef, useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { useFixedReturnsChartData, useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
@@ -25,10 +26,11 @@ interface CustomTooltipProps {
   }>;
   label?: number;
   currentAge: number;
+  disabled: boolean;
 }
 
-const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProps) => {
-  if (!(active && payload && payload.length)) return null;
+const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomTooltipProps) => {
+  if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - currentAge);
@@ -67,12 +69,33 @@ const CustomTooltip = ({ active, payload, label, currentAge }: CustomTooltipProp
 };
 
 export default function FixedResultsChart() {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
+
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
   const chartData = useFixedReturnsChartData();
   const fireAnalysis = useFixedReturnsAnalysis();
   const currentAge = useCurrentAge();
+
+  useEffect(() => {
+    const handleInteractionStart = (event: MouseEvent | TouchEvent) => {
+      if (chartRef.current && !chartRef.current.contains(event.target as Node)) {
+        setClickedOutsideChart(true);
+      } else {
+        setClickedOutsideChart(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleInteractionStart);
+    document.addEventListener('touchstart', handleInteractionStart);
+
+    return () => {
+      document.removeEventListener('mousedown', handleInteractionStart);
+      document.removeEventListener('touchstart', handleInteractionStart);
+    };
+  }, []);
 
   if (chartData.length === 0) {
     return null;
@@ -85,7 +108,7 @@ export default function FixedResultsChart() {
   const interval = isSmallScreen ? 4 : 3;
 
   return (
-    <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+    <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
           <defs>
@@ -110,7 +133,7 @@ export default function FixedResultsChart() {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <Tooltip content={<CustomTooltip currentAge={currentAge!} />} />
+          <Tooltip content={<CustomTooltip currentAge={currentAge!} disabled={clickedOutsideChart} />} />
           <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
           <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
           <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={false} />
