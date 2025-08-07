@@ -61,6 +61,12 @@ export default function HistoricalBacktestOverview() {
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>
+        <SectionHeader title="Quick Stats" desc="A brief overview of your simulation's key statistics." />
+        <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
+          <p>Coming soon...</p>
+        </div>
+      </SectionContainer>
+      <SectionContainer showBottomBorder>
         <SectionHeader
           title={headerText}
           desc={headerDesc}
