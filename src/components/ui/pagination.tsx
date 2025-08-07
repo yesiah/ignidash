@@ -23,11 +23,11 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
         </p>
       </div>
       <div className="flex flex-1 justify-between sm:justify-end sm:gap-2">
-        <Button onClick={() => onPageChange(currentPage - 1)} plain disabled={currentPage === 1}>
+        <Button onClick={() => onPageChange(currentPage - 1)} plain disabled={currentPage === 1} className="focus-outline">
           <ArrowLongLeftIcon className="h-5 w-5" />
           Previous
         </Button>
-        <Button onClick={() => onPageChange(currentPage + 1)} plain disabled={currentPage === totalPages}>
+        <Button onClick={() => onPageChange(currentPage + 1)} plain disabled={currentPage === totalPages} className="focus-outline">
           Next
           <ArrowLongRightIcon className="h-5 w-5" />
         </Button>
