@@ -107,12 +107,12 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
         <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
           <defs>
             <linearGradient id="colorP75" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorP50" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
               <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
+            </linearGradient>
+            <linearGradient id="colorP50" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
+              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
             </linearGradient>
             <linearGradient id="colorP25" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
@@ -128,8 +128,8 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <Tooltip content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />} />
-          <Area type="monotone" dataKey="p75" stroke="var(--chart-2)" fill="url(#colorP75)" activeDot={false} />
-          <Area type="monotone" dataKey="p50" stroke="var(--chart-3)" fill="url(#colorP50)" activeDot={false} />
+          <Area type="monotone" dataKey="p75" stroke="var(--chart-3)" fill="url(#colorP75)" activeDot={false} />
+          <Area type="monotone" dataKey="p50" stroke="var(--chart-2)" fill="url(#colorP50)" activeDot={false} />
           <Area type="monotone" dataKey="p25" stroke="var(--chart-1)" fill="url(#colorP25)" activeDot={false} />
           {fireAnalysis?.p50FireAge && (
             <ReferenceLine
