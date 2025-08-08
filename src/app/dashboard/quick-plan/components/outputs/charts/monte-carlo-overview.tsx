@@ -40,7 +40,7 @@ export default function MonteCarloOverview() {
     headerDesc = 'Aggregated statistics across all simulations by year.';
   } else {
     headerText = 'Simulations Table';
-    headerDesc = 'Browse all simulation runs and select one to explore further.';
+    headerDesc = 'Browse all simulation runs. Select one to explore further.';
   }
 
   return (
