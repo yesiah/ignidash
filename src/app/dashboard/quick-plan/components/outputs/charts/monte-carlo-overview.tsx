@@ -34,7 +34,7 @@ export default function MonteCarloOverview() {
 
   if (selectedSeed !== null) {
     headerText = `Simulation #${selectedSeed} Details`;
-    headerDesc = 'Year-by-year progression and outcomes for this specific simulation.';
+    headerDesc = 'Year-by-year progression and outcome for this specific simulation.';
   } else if (viewMode === 'yearly') {
     headerText = 'Yearly Results';
     headerDesc = 'Aggregated statistics across all simulations by year.';
