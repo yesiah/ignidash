@@ -2,6 +2,8 @@ import { FireIcon } from '@heroicons/react/24/solid';
 
 import ModeToggle from '@/components/mode-toggle';
 
+import SidebarToggle from './sidebar-toggle';
+
 export default function SidebarBrand() {
   return (
     <div className="border-border -mx-6 flex h-16 shrink-0 items-center justify-between gap-2 border-b">
@@ -10,7 +12,10 @@ export default function SidebarBrand() {
           <FireIcon className="text-primary h-8 w-8" aria-hidden="true" />
           <span className="text-2xl font-extrabold tracking-tight">Ignidash</span>
         </div>
-        <ModeToggle />
+        <div className="flex items-center gap-2">
+          <ModeToggle />
+          <SidebarToggle />
+        </div>
       </div>
     </div>
   );
