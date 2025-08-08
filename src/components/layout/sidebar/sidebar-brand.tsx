@@ -12,7 +12,7 @@ export default function SidebarBrand() {
           <FireIcon className="text-primary h-8 w-8" aria-hidden="true" />
           <span className="text-2xl font-extrabold tracking-tight">Ignidash</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <ModeToggle />
           <SidebarToggle />
         </div>
