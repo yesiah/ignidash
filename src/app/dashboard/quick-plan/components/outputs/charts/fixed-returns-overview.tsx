@@ -6,6 +6,7 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 
 import FixedResultsChart from './fixed-results-chart';
+import FixedCashFlowChart from './fixed-cash-flow-chart';
 import FixedReturnsDataTable from '../tables/fixed-returns-data-table';
 import ResultsMetrics from '../fixed-returns-metrics';
 
@@ -23,6 +24,10 @@ export default function FixedReturnsOverview() {
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
           <FixedResultsChart />
+        </Card>
+        <Card>
+          <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Cash Flow</h4>
+          <FixedCashFlowChart />
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>

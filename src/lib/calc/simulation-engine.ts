@@ -83,7 +83,7 @@ export class FinancialSimulationEngine {
 
     for (let year = 1; year <= lifeExpectancy - startAge; year++) {
       // Process cash flows first (throughout the year)
-      portfolio = currentPhase.processYear(year, portfolio, this.inputs);
+      [portfolio] = currentPhase.processYear(year, portfolio, this.inputs);
 
       // Ensure portfolio is still valid after cash flows
       if (!(portfolio.getTotalValue() > 0.1)) {
