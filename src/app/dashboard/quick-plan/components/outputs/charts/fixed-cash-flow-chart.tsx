@@ -32,20 +32,6 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
     <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
-          <defs>
-            <linearGradient id="color1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
-            </linearGradient>
-            {/* <linearGradient id="color2" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="color3" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
-            </linearGradient> */}
-          </defs>
           <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="name" />
           <YAxis
             tick={{ fill: foregroundMutedColor }}
@@ -54,7 +40,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-3)" fill="url(#color1)" />
+          <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-1)" fill="var(--chart-3)" />
           {/* <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-2)" fill="url(#color2)" />
           <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-1)" fill="url(#color3)" /> */}
         </BarChart>
