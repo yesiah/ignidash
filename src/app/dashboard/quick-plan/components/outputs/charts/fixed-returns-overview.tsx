@@ -37,7 +37,10 @@ export default function FixedReturnsOverview() {
           />
         </Card>
         <Card>
-          <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Cash Flow</h4>
+          <h4 className="text-foreground mb-4 flex items-center justify-center text-lg font-semibold sm:justify-between">
+            <span className="mr-2">Cash Flow</span>
+            <span className="text-muted-foreground">Age {selectedAge}</span>
+          </h4>
           <FixedCashFlowChart age={selectedAge} />
         </Card>
       </SectionContainer>
