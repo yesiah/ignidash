@@ -1,7 +1,6 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useRef, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell /* Tooltip */ } from 'recharts';
 
 import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store';
@@ -45,37 +44,39 @@ const _CustomTooltip = ({ active, payload, label, selectedAge, disabled }: Custo
   );
 };
 
+interface CustomLabelProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  value: number;
+}
+
+const CustomLabel = ({ x, y, width, height, value }: CustomLabelProps) => {
+  return (
+    <text
+      x={x + width / 2}
+      y={y + height / 2}
+      fill="currentColor"
+      textAnchor="middle"
+      dominantBaseline="middle"
+      className="text-sm font-semibold sm:text-base"
+    >
+      {formatNumber(value, 1, '$')}
+    </text>
+  );
+};
+
 interface FixedCashFlowChartProps {
   age: number;
 }
 
 export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [_, setClickedOutsideChart] = useState(false);
-
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
   const allChartData = useFixedReturnsCashFlowChartData();
   const chartData = allChartData.filter((item) => item.age === age);
-
-  useEffect(() => {
-    const handleInteractionStart = (event: MouseEvent | TouchEvent) => {
-      if (chartRef.current && !chartRef.current.contains(event.target as Node)) {
-        setClickedOutsideChart(true);
-      } else {
-        setClickedOutsideChart(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleInteractionStart);
-    document.addEventListener('touchstart', handleInteractionStart);
-
-    return () => {
-      document.removeEventListener('mousedown', handleInteractionStart);
-      document.removeEventListener('touchstart', handleInteractionStart);
-    };
-  }, []);
 
   if (chartData.length === 0) {
     return null;
@@ -86,7 +87,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
   const barColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+    <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -98,7 +99,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           {/* <Tooltip cursor={false} content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} /> */}
-          <Bar dataKey="amount" onClick={() => {}}>
+          <Bar dataKey="amount" onClick={() => {}} label={CustomLabel}>
             {chartData.map((item, index) => (
               <Cell cursor="pointer" fill={barColors[(index + 2) % barColors.length]} key={`cell-${index}`} />
             ))}
