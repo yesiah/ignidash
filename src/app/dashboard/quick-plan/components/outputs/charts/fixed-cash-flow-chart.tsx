@@ -38,7 +38,7 @@ const _CustomTooltip = ({ active, payload, label, selectedAge, disabled }: Custo
       </p>
       <p className="flex justify-between text-sm font-semibold">
         <span className="mr-2">{label}:</span>
-        <span className="ml-1 font-semibold">{formatNumber(payload[0].payload.amount, 3)}</span>
+        <span className="ml-1 font-semibold">{formatNumber(payload[0].payload.amount, 3, '$')}</span>
       </p>
     </div>
   );
@@ -96,7 +96,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             tick={{ fill: foregroundMutedColor }}
             axisLine={false}
             hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1)}
+            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
           />
           {/* <Tooltip cursor={false} content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} /> */}
           <Bar dataKey="amount" onClick={() => {}} label={CustomLabel} radius={[8, 8, 0, 0]}>
