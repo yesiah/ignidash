@@ -84,7 +84,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
 
   const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
-  const barColors = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
+  const barColors = ['var(--chart-2)', 'var(--chart-3)'];
 
   return (
     <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
@@ -99,9 +99,9 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           {/* <Tooltip cursor={false} content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} /> */}
-          <Bar dataKey="amount" onClick={() => {}} label={CustomLabel}>
+          <Bar dataKey="amount" onClick={() => {}} label={CustomLabel} radius={[8, 8, 0, 0]}>
             {chartData.map((item, index) => (
-              <Cell cursor="pointer" fill={barColors[(index + 2) % barColors.length]} key={`cell-${index}`} />
+              <Cell fill={barColors[(index + 2) % barColors.length]} stroke="var(--chart-1)" key={`cell-${index}`} />
             ))}
           </Bar>
         </BarChart>
