@@ -97,7 +97,7 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             hide={isSmallScreen}
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
-          <Tooltip content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} />
+          <Tooltip cursor={false} content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} />
           <Bar dataKey="amount" onClick={() => {}}>
             {chartData.map((item, index) => (
               <Cell cursor="pointer" fill={barColors[(index + 2) % barColors.length]} key={`cell-${index}`} />
