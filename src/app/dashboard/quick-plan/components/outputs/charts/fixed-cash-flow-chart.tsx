@@ -88,25 +88,27 @@ const CustomXAxisTick = ({ x, y, payload }: CustomXAxisTickProps) => {
 
 interface FixedCashFlowChartProps {
   age: number;
+  mode: 'inflowOutflow' | 'net';
 }
 
-export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
+export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
   const allChartData = useFixedReturnsCashFlowChartData();
-  const chartData = allChartData.filter((item) => item.age === age);
+
+  let chartData = allChartData.filter((item) => item.age === age);
+  if (mode === 'net') {
+    chartData = [{ age, name: 'Net', amount: chartData.reduce((sum, item) => sum + item.amount, 0) }];
+  }
 
   if (chartData.length === 0) {
     return null;
   }
 
-  const _netCashFlow = chartData.reduce((sum, item) => sum + item.amount, 0);
-
   const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
-  const _foregroundColor = resolvedTheme === 'dark' ? '#f3f4f6' : '#111827'; // gray-100 : gray-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
-  const barColors = ['var(--chart-2)', 'var(--chart-3)'];
+  const barColors = ['var(--chart-3)', 'var(--chart-2)'];
 
   return (
     <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">

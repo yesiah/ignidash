@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { ArrowsUpDownIcon, ScaleIcon } from '@heroicons/react/20/solid';
 
 import { useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import { useIsXSmallMobile } from '@/hooks/use-mobile';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
+import ButtonGroup from '@/components/ui/button-group';
 
 import FixedResultsChart from './fixed-results-chart';
 import FixedCashFlowChart from './fixed-cash-flow-chart';
@@ -20,6 +22,7 @@ export default function FixedReturnsOverview() {
 
   // Track selected age for cash flow chart
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
+  const [viewMode, setViewMode] = useState<'inflowOutflow' | 'net'>('inflowOutflow');
 
   return (
     <>
@@ -41,11 +44,22 @@ export default function FixedReturnsOverview() {
         </Card>
         {!isXSmallScreen && (
           <Card>
-            <h4 className="text-foreground mb-4 flex items-center justify-center text-lg font-semibold sm:justify-between">
-              <span className="mr-2">Cash Flow</span>
-              <span className="text-muted-foreground">Age {selectedAge}</span>
-            </h4>
-            <FixedCashFlowChart age={selectedAge} />
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-foreground flex items-center text-lg font-semibold">
+                <span className="mr-2">Cash Flow</span>
+                <span className="text-muted-foreground">Age {selectedAge}</span>
+              </h4>
+              <ButtonGroup
+                firstButtonText="Inflow & Outflow"
+                firstButtonIcon={<ArrowsUpDownIcon />}
+                firstButtonOnClick={() => setViewMode('inflowOutflow')}
+                lastButtonText="Net"
+                lastButtonIcon={<ScaleIcon />}
+                lastButtonOnClick={() => setViewMode('net')}
+                defaultActiveButton="first"
+              />
+            </div>
+            <FixedCashFlowChart age={selectedAge} mode={viewMode} />
           </Card>
         )}
       </SectionContainer>
