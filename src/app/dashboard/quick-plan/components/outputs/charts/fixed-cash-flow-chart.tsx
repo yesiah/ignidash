@@ -7,43 +7,6 @@ import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store'
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface CashFlowChartDataPoint {
-  age: number;
-  amount: number;
-  name: string;
-}
-
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    value: number;
-    name: string;
-    color: string;
-    dataKey: keyof CashFlowChartDataPoint;
-    payload: CashFlowChartDataPoint;
-  }>;
-  label?: number;
-  selectedAge: number;
-  disabled: boolean;
-}
-
-const _CustomTooltip = ({ active, payload, label, selectedAge, disabled }: CustomTooltipProps) => {
-  if (!(active && payload && payload.length) || disabled) return null;
-
-  return (
-    <div className="text-foreground bg-background rounded-lg border p-3 shadow-md">
-      <p className="border-foreground/50 mb-2 flex justify-between border-b pb-2 text-sm font-semibold">
-        <span>Age</span>
-        <span className="text-muted-foreground">{selectedAge}</span>
-      </p>
-      <p className="flex justify-between text-sm font-semibold">
-        <span className="mr-2">{label}:</span>
-        <span className="ml-1 font-semibold">{formatNumber(payload[0].payload.amount, 3, '$')}</span>
-      </p>
-    </div>
-  );
-};
-
 interface CustomLabelProps {
   x: number;
   y: number;
@@ -113,7 +76,6 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
             hide={isSmallScreen}
             tickFormatter={(value: number) => formatNumber(value, 1, '$')}
           />
-          {/* <Tooltip cursor={false} content={<CustomTooltip selectedAge={age} disabled={isSmallScreen && clickedOutsideChart} />} /> */}
           <Bar
             dataKey="amount"
             onClick={() => {}}
