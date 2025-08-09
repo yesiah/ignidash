@@ -68,14 +68,17 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       });
 
       chartData = [inflowData, outflowData] as typeof chartData;
+      const barColors = ['var(--chart-3)', 'var(--chart-2)', 'var(--chart-1)'];
 
       inflowBar = Array.from(inflowBarKeys).map((key, index) => {
+        const barColor = barColors[index % barColors.length];
         const barRadius: [number, number, number, number] | undefined = index === inflowBarKeys.size - 1 ? [8, 8, 0, 0] : undefined;
-        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill="var(--chart-3)" />;
+        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor} />;
       });
       outflowBar = Array.from(outflowBarKeys).map((key, index) => {
+        const barColor = barColors[index % barColors.length];
         const barRadius: [number, number, number, number] | undefined = index === outflowBarKeys.size - 1 ? [8, 8, 0, 0] : undefined;
-        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill="var(--chart-3)" />;
+        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor} />;
       });
       break;
     case 'net':
