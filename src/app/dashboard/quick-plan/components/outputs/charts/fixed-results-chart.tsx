@@ -136,7 +136,10 @@ export default function FixedResultsChart() {
           <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
           <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
           <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={false} />
-          <Tooltip content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />} />
+          <Tooltip
+            content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
+            cursor={{ stroke: foregroundMutedColor }}
+          />
           {fireAnalysis.fireAge && (
             <ReferenceLine
               x={Math.round(fireAnalysis.fireAge!)}
