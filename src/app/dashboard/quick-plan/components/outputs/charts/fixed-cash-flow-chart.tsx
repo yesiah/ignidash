@@ -40,9 +40,14 @@ export default function FixedCashFlowChart({ age }: FixedCashFlowChartProps) {
             tickFormatter={(value: number) => formatNumber(value, 1)}
           />
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-1)" fill="var(--chart-3)" />
-          {/* <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-2)" fill="url(#color2)" />
-          <Bar type="monotone" dataKey="amount" stackId="1" stroke="var(--chart-1)" fill="url(#color3)" /> */}
+          <Bar type="monotone" dataKey="amount" stroke="var(--chart-1)" fill="var(--chart-3)" />
+          {/* <Bar type="monotone" dataKey="amount" stroke="var(--chart-2)" fill="url(#color2)" />
+          <Bar type="monotone" dataKey="amount" stroke="var(--chart-1)" fill="url(#color3)" /> */}
+          {/* <Bar dataKey="uv" onClick={handleClick}>
+            {data.map((entry, index) => (
+              <Cell cursor="pointer" fill={index === activeIndex ? '#82ca9d' : '#8884d8'} key={`cell-${index}`} />
+            ))}
+          </Bar> */}
         </BarChart>
       </ResponsiveContainer>
     </div>
