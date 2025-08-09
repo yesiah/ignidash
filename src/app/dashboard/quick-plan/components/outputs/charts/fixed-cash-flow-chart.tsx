@@ -7,29 +7,6 @@ import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store'
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface CustomLabelProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  value: number;
-}
-
-const CustomLabel = ({ x, y, width, height, value }: CustomLabelProps) => {
-  return (
-    <text
-      x={x + width / 2}
-      y={y + height / 2}
-      fill="currentColor"
-      textAnchor="middle"
-      dominantBaseline="middle"
-      className="text-sm font-semibold sm:text-base"
-    >
-      {formatNumber(value, 1, '$')}
-    </text>
-  );
-};
-
 interface FixedCashFlowChartProps {
   age: number;
   mode: 'inflowOutflow' | 'net';
@@ -91,7 +68,11 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       break;
     case 'net':
       chartData = [{ age, name: 'Net', amount: chartData.reduce((sum, item) => sum + item.amount, 0) }];
-      netBar = <Bar dataKey="amount" label={CustomLabel} radius={[8, 8, 0, 0]} stroke="var(--chart-1)" fill="var(--chart-3)" />;
+      netBar = (
+        <Bar dataKey="amount" radius={[8, 8, 0, 0]} stroke="var(--chart-1)" fill="var(--chart-3)">
+          <LabelList dataKey="amount" position="middle" />
+        </Bar>
+      );
       break;
   }
 
