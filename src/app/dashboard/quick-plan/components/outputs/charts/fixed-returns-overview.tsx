@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
@@ -14,6 +15,9 @@ export default function FixedReturnsOverview() {
   const fireAnalysis = useFixedReturnsAnalysis();
   const currentAge = useCurrentAge();
 
+  // Track selected age for cash flow chart
+  const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -24,11 +28,17 @@ export default function FixedReturnsOverview() {
         <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
-          <FixedResultsChart />
+          <FixedResultsChart
+            selectedAge={selectedAge}
+            onAgeSelect={(age) => {
+              // Prevent selecting current age or lower
+              if (age >= currentAge! + 1) setSelectedAge(age);
+            }}
+          />
         </Card>
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Cash Flow</h4>
-          <FixedCashFlowChart age={currentAge! + 1} />
+          <FixedCashFlowChart age={selectedAge} />
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>
