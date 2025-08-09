@@ -44,15 +44,15 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
       <div className="flex flex-col gap-2">
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-3)]/60 px-2 text-sm">
           <span className="mr-2">P75:</span>
-          <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3)}</span>
+          <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3, '$')}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-2)]/60 px-2 text-sm">
           <span className="mr-2">P50:</span>
-          <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3)}</span>
+          <span className="ml-1 font-semibold">{formatNumber(payload[1].value, 3, '$')}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-1)]/60 px-2 text-sm">
           <span className="mr-2">P25:</span>
-          <span className="ml-1 font-semibold">{formatNumber(payload[2].value, 3)}</span>
+          <span className="ml-1 font-semibold">{formatNumber(payload[2].value, 3, '$')}</span>
         </p>
       </div>
     </div>
@@ -125,7 +125,7 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
             tick={{ fill: foregroundMutedColor }}
             axisLine={false}
             hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1)}
+            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
           />
           <Area type="monotone" dataKey="p75" stroke="var(--chart-3)" fill="url(#colorP75)" activeDot={false} />
           <Area type="monotone" dataKey="p50" stroke="var(--chart-2)" fill="url(#colorP50)" activeDot={false} />
