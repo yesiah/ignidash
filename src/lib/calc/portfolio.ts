@@ -79,12 +79,16 @@ export class Portfolio {
    * Applies market returns to the portfolio, increasing asset values
    * Returns are applied proportionally to each asset's current value
    * @param returns - Asset class return rates as decimals
-   * @returns New portfolio instance with returns applied
+   * @returns Array containing new portfolio instance and total returns amount
    */
-  withReturns(returns: AssetReturns): Portfolio {
+  withReturns(returns: AssetReturns): [Portfolio, number] {
+    let totalReturnsAmount = 0;
+
     const updatedAssets = this.assets.map((asset) => {
       const returnRate = returns[asset.assetClass];
       const returnAmount = asset.value * returnRate;
+
+      totalReturnsAmount += returnAmount;
 
       return {
         ...asset,
@@ -92,7 +96,7 @@ export class Portfolio {
       };
     });
 
-    return Portfolio.create(updatedAssets, this.contributions, this.withdrawals);
+    return [Portfolio.create(updatedAssets, this.contributions, this.withdrawals), totalReturnsAmount];
   }
 
   /**
