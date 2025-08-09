@@ -620,6 +620,17 @@ export const useFixedReturnsChartData = () => {
   }, [currentAge, simulation]);
 };
 
+export const useFixedReturnsCashFlowChartData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useFixedReturnsSimulation();
+
+  return useMemo(() => {
+    return simulation.cashFlowsMetadata.flatMap(([timeInYears, cashFlows]) =>
+      cashFlows.map(({ name, amount }) => ({ age: timeInYears + currentAge, name, amount }))
+    );
+  }, [currentAge, simulation]);
+};
+
 export const useMonteCarloChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useMonteCarloSimulation();

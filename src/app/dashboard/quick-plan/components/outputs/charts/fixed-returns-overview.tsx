@@ -1,6 +1,6 @@
 'use client';
 
-import { useFixedReturnsAnalysis } from '@/lib/stores/quick-plan-store';
+import { useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
@@ -12,6 +12,7 @@ import ResultsMetrics from '../fixed-returns-metrics';
 
 export default function FixedReturnsOverview() {
   const fireAnalysis = useFixedReturnsAnalysis();
+  const currentAge = useCurrentAge();
 
   return (
     <>
@@ -27,7 +28,7 @@ export default function FixedReturnsOverview() {
         </Card>
         <Card>
           <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Cash Flow</h4>
-          <FixedCashFlowChart />
+          <FixedCashFlowChart age={currentAge! + 1} />
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>

@@ -65,9 +65,9 @@ export interface SimulationPhase {
    * @param year - Current simulation year
    * @param portfolio - Current portfolio state
    * @param inputs - User's financial planning inputs
-   * @returns Tuple with updated portfolio and map of cash flow names to amounts
+   * @returns Tuple with updated portfolio and array of cash flows
    */
-  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Map<string, number>];
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Array<{ name: string; amount: number }>];
 
   /**
    * Determines if this phase is sensitive to sequence of returns risk
@@ -99,17 +99,17 @@ export class AccumulationPhase implements SimulationPhase {
     return 'Accumulation';
   }
 
-  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Map<string, number>] {
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Array<{ name: string; amount: number }>] {
     const currentAge = inputs.basics.currentAge! + year;
 
     let totalCashFlow = 0;
-    const cashFlowMap = new Map<string, number>();
+    const cashFlows: Array<{ name: string; amount: number }> = [];
 
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {
         const amount = cashFlow.calculateAmount(year, currentAge);
         totalCashFlow += amount;
-        cashFlowMap.set(cashFlow.name, amount);
+        cashFlows.push({ name: cashFlow.name, amount });
       }
     }
 
@@ -120,7 +120,7 @@ export class AccumulationPhase implements SimulationPhase {
       updatedPortfolio = portfolio.withWithdrawal(Math.abs(totalCashFlow));
     }
 
-    return [updatedPortfolio, cashFlowMap];
+    return [updatedPortfolio, cashFlows];
   }
 
   isSensitiveToSORR(): boolean {
@@ -150,24 +150,24 @@ export class RetirementPhase implements SimulationPhase {
     return 'Retirement';
   }
 
-  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Map<string, number>] {
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, Array<{ name: string; amount: number }>] {
     const currentAge = inputs.basics.currentAge! + year;
 
     let totalCashFlow = 0;
-    const cashFlowMap = new Map<string, number>();
+    const cashFlows: Array<{ name: string; amount: number }> = [];
 
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {
         const amount = cashFlow.calculateAmount(year, currentAge);
         totalCashFlow += amount;
-        cashFlowMap.set(cashFlow.name, amount);
+        cashFlows.push({ name: cashFlow.name, amount });
       }
     }
 
     let updatedPortfolio;
     if (totalCashFlow >= 0) {
       updatedPortfolio = portfolio.withCash(totalCashFlow);
-      return [updatedPortfolio, cashFlowMap];
+      return [updatedPortfolio, cashFlows];
     }
 
     const shortfall = Math.abs(totalCashFlow);
@@ -175,7 +175,7 @@ export class RetirementPhase implements SimulationPhase {
     const grossWithdrawal = shortfall / (1 - effectiveTaxRate / 100);
     updatedPortfolio = portfolio.withWithdrawal(grossWithdrawal);
 
-    return [updatedPortfolio, cashFlowMap];
+    return [updatedPortfolio, cashFlows];
   }
 
   isSensitiveToSORR(): boolean {

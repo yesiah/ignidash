@@ -44,7 +44,7 @@ export interface SimulationResult {
   data: Array<[number /* timeInYears */, Portfolio]>;
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
   returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
-  cashFlowsMetadata: Array<[number /* timeInYears */, Map<string, number>]>;
+  cashFlowsMetadata: Array<[number /* timeInYears */, Array<{ name: string; amount: number }>]>;
 }
 
 /**
@@ -78,14 +78,14 @@ export class FinancialSimulationEngine {
     const data: Array<[number, Portfolio]> = [[0, portfolio]];
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
     const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
-    const cashFlowsMetadata: Array<[number, Map<string, number>]> = [];
+    const cashFlowsMetadata: Array<[number, Array<{ name: string; amount: number }>]> = [];
 
     let success = true;
     let bankruptcyAge = null;
 
     for (let year = 1; year <= lifeExpectancy - startAge; year++) {
       // Process cash flows first (throughout the year)
-      const [updatedPortfolio, cashFlowMap] = currentPhase.processYear(year, portfolio, this.inputs);
+      const [updatedPortfolio, cashFlows] = currentPhase.processYear(year, portfolio, this.inputs);
       portfolio = updatedPortfolio;
 
       // Ensure portfolio is still valid after cash flows
@@ -108,7 +108,7 @@ export class FinancialSimulationEngine {
 
       data.push([year, portfolio]);
       returnsMetadata.push([year, returns]);
-      cashFlowsMetadata.push([year, cashFlowMap]);
+      cashFlowsMetadata.push([year, cashFlows]);
 
       // Check for phase transition
       const nextPhase = currentPhase.getNextPhase(this.inputs);
