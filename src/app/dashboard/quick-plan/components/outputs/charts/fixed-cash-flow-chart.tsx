@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList /* Tooltip */ } from 'recharts';
 
 import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
@@ -73,12 +73,20 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       inflowBar = Array.from(inflowBarKeys).map((key, index) => {
         const barColor = barColors[index % barColors.length];
         const barRadius: [number, number, number, number] | undefined = index === inflowBarKeys.size - 1 ? [8, 8, 0, 0] : undefined;
-        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor} />;
+        return (
+          <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor}>
+            <LabelList dataKey={key} position="middle" />
+          </Bar>
+        );
       });
       outflowBar = Array.from(outflowBarKeys).map((key, index) => {
         const barColor = barColors[index % barColors.length];
         const barRadius: [number, number, number, number] | undefined = index === outflowBarKeys.size - 1 ? [8, 8, 0, 0] : undefined;
-        return <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor} />;
+        return (
+          <Bar key={key} dataKey={key} stackId="a" radius={barRadius} stroke="var(--chart-1)" fill={barColor}>
+            <LabelList dataKey={key} position="middle" />
+          </Bar>
+        );
       });
       break;
     case 'net':
