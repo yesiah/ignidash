@@ -79,8 +79,12 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
   const allChartData = useFixedReturnsCashFlowChartData();
 
   let chartData = allChartData.filter((item) => item.age === age);
-  if (mode === 'net') {
-    chartData = [{ age, name: 'Net', amount: chartData.reduce((sum, item) => sum + item.amount, 0) }];
+  switch (mode) {
+    case 'inflowOutflow':
+      break;
+    case 'net':
+      chartData = [{ age, name: 'Net', amount: chartData.reduce((sum, item) => sum + item.amount, 0) }];
+      break;
   }
 
   if (chartData.length === 0) {
