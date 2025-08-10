@@ -13,6 +13,7 @@ import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
+import { Switch } from '@/components/catalyst/switch';
 
 import StochasticResultsChart from './stochastic-results-chart';
 import ResultsMetrics from '../stochastic-metrics';
@@ -21,6 +22,7 @@ import HistoricalBacktestDataTable from '../tables/historical-backtest-data-tabl
 export default function HistoricalBacktestOverview() {
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'all' | 'yearly'>('all');
+  const [showReferenceLines, setShowReferenceLines] = useState<boolean>(true);
 
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
@@ -56,8 +58,16 @@ export default function HistoricalBacktestOverview() {
       <SectionContainer showBottomBorder>
         <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
         <Card>
-          <h4 className="text-foreground mb-4 text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
-          <StochasticResultsChart fireAnalysis={fireAnalysis} chartData={chartData} />
+          <div className="mb-4 flex items-center justify-between">
+            <h4 className="text-foreground text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
+            <Switch
+              color="rose"
+              checked={showReferenceLines}
+              onChange={() => setShowReferenceLines(!showReferenceLines)}
+              aria-label="Toggle reference lines"
+            />
+          </div>
+          <StochasticResultsChart fireAnalysis={fireAnalysis} chartData={chartData} showReferenceLines={showReferenceLines} />
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder>

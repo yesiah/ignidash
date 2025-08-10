@@ -62,9 +62,10 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
 interface StochasticResultsChartProps {
   fireAnalysis: StochasticAnalysis | null;
   chartData: StochasticChartDataPoint[];
+  showReferenceLines: boolean;
 }
 
-export default function ResultsChart({ fireAnalysis, chartData }: StochasticResultsChartProps) {
+export default function ResultsChart({ fireAnalysis, chartData, showReferenceLines }: StochasticResultsChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
 
@@ -134,10 +135,10 @@ export default function ResultsChart({ fireAnalysis, chartData }: StochasticResu
             content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
             cursor={{ stroke: foregroundMutedColor }}
           />
-          {fireAnalysis?.p50FireAge && (
+          {fireAnalysis?.p50FireAge && showReferenceLines && (
             <ReferenceLine x={Math.round(fireAnalysis.p50FireAge)} stroke={foregroundColor} strokeDasharray="10 5" />
           )}
-          {fireAnalysis?.requiredPortfolio && (
+          {fireAnalysis?.requiredPortfolio && showReferenceLines && (
             <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
           )}
         </AreaChart>
