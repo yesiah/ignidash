@@ -39,7 +39,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
 
   let yAxisDomain: [number, number] | undefined = undefined;
   let chartData = useFixedReturnsCashFlowChartData()
-    .filter((item) => item.age === age)
+    .filter((item) => item.age === age && item.amount !== 0)
     .sort((a, b) => b.amount - a.amount);
   let bar = null;
 
