@@ -100,6 +100,12 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
   const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
 
+  let yAxisDomain: [number, number] | undefined = undefined;
+  if (mode === 'net') {
+    const netValue = chartData[0].amount;
+    yAxisDomain = [Math.min(0, netValue * 1.25), Math.max(0, netValue * 1.25)];
+  }
+
   return (
     <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
@@ -111,6 +117,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
             axisLine={false}
             hide={isSmallScreen}
             tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+            domain={yAxisDomain}
           />
           {inflowBar}
           {outflowBar}
