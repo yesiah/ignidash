@@ -21,9 +21,10 @@ const CustomLabelListContent = (props: any) => {
       fill="currentColor"
       textAnchor="middle"
       dominantBaseline="middle"
-      className="text-xs font-medium sm:text-sm"
+      className="text-xs sm:text-sm"
     >
-      {label ? `${label}: ${formatNumber(value, 1, '$')}` : formatNumber(value, 1, '$')}
+      {label && <tspan>{label}: </tspan>}
+      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
     </text>
   );
 };
