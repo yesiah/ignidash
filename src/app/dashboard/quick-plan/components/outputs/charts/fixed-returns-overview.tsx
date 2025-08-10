@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ArrowsUpDownIcon, ScaleIcon } from '@heroicons/react/20/solid';
 
 import { useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
@@ -25,6 +25,8 @@ export default function FixedReturnsOverview() {
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
   const [viewMode, setViewMode] = useState<'inflowOutflow' | 'net'>('inflowOutflow');
   const [showReferenceLines, setShowReferenceLines] = useState<boolean>(true);
+
+  const memoizedCashFlowChart = useMemo(() => <FixedCashFlowChart age={selectedAge} mode={viewMode} />, [selectedAge, viewMode]);
 
   return (
     <>
@@ -70,7 +72,7 @@ export default function FixedReturnsOverview() {
                 defaultActiveButton="first"
               />
             </div>
-            <FixedCashFlowChart age={selectedAge} mode={viewMode} />
+            {memoizedCashFlowChart}
           </Card>
         )}
       </SectionContainer>
