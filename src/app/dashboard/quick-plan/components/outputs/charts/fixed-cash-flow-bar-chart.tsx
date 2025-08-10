@@ -97,7 +97,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}>
+      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`} role="group" aria-label="Chart legend">
         <div className="flex items-center gap-x-1 text-sm font-medium">
           <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-3)] stroke-[var(--chart-1)] stroke-[0.4]">
             <circle r={2.5} cx={3} cy={3} />
