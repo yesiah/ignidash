@@ -80,21 +80,37 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
 
   return (
-    <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="name" />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
-            domain={yAxisDomain}
-          />
-          {bar}
-        </BarChart>
-      </ResponsiveContainer>
+    <div>
+      <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="name" />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+              domain={yAxisDomain}
+            />
+            {bar}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-4 fill-[var(--chart-3)]">
+            <circle r={3} cx={3} cy={3} />
+          </svg>
+          Inflow
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-4 fill-[var(--chart-2)]">
+            <circle r={3} cx={3} cy={3} />
+          </svg>
+          Outflow
+        </div>
+      </div>
     </div>
   );
 }
