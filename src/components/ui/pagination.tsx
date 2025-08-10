@@ -22,11 +22,27 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
           <span className="font-extrabold">{totalItems}</span> results
         </p>
       </div>
-      <div className="flex flex-1 justify-between sm:justify-end sm:gap-2">
+      <div className="flex flex-1 items-center justify-between sm:justify-end sm:gap-2">
         <Button onClick={() => onPageChange(currentPage - 1)} plain disabled={currentPage === 1} className="focus-outline">
           <ArrowLongLeftIcon className="h-5 w-5" />
           Previous
         </Button>
+        <div className="block sm:hidden">
+          <p className="text-muted-foreground text-sm whitespace-nowrap">
+            <span className="font-extrabold" aria-hidden="true">
+              {currentPage}
+            </span>
+            <span className="mx-1" aria-hidden="true">
+              |
+            </span>
+            <span className="font-extrabold" aria-hidden="true">
+              {totalPages}
+            </span>
+            <span className="sr-only">
+              Page {currentPage} of {totalPages}
+            </span>
+          </p>
+        </div>
         <Button onClick={() => onPageChange(currentPage + 1)} plain disabled={currentPage === totalPages} className="focus-outline">
           Next
           <ArrowLongRightIcon className="h-5 w-5" />
