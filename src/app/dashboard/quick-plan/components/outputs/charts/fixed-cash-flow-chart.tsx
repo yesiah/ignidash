@@ -4,13 +4,13 @@ import { useTheme } from 'next-themes';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList /* Tooltip */ } from 'recharts';
 
 import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store';
-import { formatNumber, formatNumberAsNumber } from '@/lib/utils';
+import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
   const { x, y, width, height, value, label } = props;
-  if (!x || !y || !width || !height || !value || value === 0) {
+  if (!value || value === 0) {
     return null;
   }
 
@@ -54,7 +54,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       const inflowBarKeys = new Set<string>();
 
       inflows.forEach((item) => {
-        inflowData[item.name] = formatNumberAsNumber(item.amount);
+        inflowData[item.name] = item.amount;
         inflowBarKeys.add(item.name);
       });
 
@@ -62,7 +62,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       const outflowBarKeys = new Set<string>();
 
       outflows.forEach((item) => {
-        outflowData[item.name] = formatNumberAsNumber(Math.abs(item.amount));
+        outflowData[item.name] = Math.abs(item.amount);
         outflowBarKeys.add(item.name);
       });
 
@@ -84,7 +84,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
       });
       break;
     case 'net':
-      chartData = [{ age, name: 'Net', amount: formatNumberAsNumber(chartData.reduce((sum, item) => sum + item.amount, 0)) }];
+      chartData = [{ age, name: 'Net', amount: chartData.reduce((sum, item) => sum + item.amount, 0) }];
       netBar = (
         <Bar dataKey="amount" stroke="var(--chart-1)" fill="var(--chart-3)" maxBarSize={250}>
           <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent label="Net" />} />
