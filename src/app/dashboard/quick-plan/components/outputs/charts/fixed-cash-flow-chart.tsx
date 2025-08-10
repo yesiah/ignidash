@@ -70,14 +70,14 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
 
       inflowBar = Array.from(inflowBarKeys).map((key, index) => {
         return (
-          <Bar key={key} dataKey={key} stackId="a" stroke="var(--chart-1)" fill="var(--chart-3)">
+          <Bar key={key} dataKey={key} stackId="a" stroke="var(--chart-1)" fill="var(--chart-3)" maxBarSize={250}>
             <LabelList dataKey={key} position="middle" content={<CustomLabelListContent label={key} />} />
           </Bar>
         );
       });
       outflowBar = Array.from(outflowBarKeys).map((key, index) => {
         return (
-          <Bar key={key} dataKey={key} stackId="a" stroke="var(--chart-1)" fill="var(--chart-3)">
+          <Bar key={key} dataKey={key} stackId="a" stroke="var(--chart-1)" fill="var(--chart-3)" maxBarSize={250}>
             <LabelList dataKey={key} position="middle" content={<CustomLabelListContent label={key} />} />
           </Bar>
         );
@@ -86,7 +86,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
     case 'net':
       chartData = [{ age, name: 'Net', amount: formatNumberAsNumber(chartData.reduce((sum, item) => sum + item.amount, 0)) }];
       netBar = (
-        <Bar dataKey="amount" stroke="var(--chart-1)" fill="var(--chart-3)">
+        <Bar dataKey="amount" stroke="var(--chart-1)" fill="var(--chart-3)" maxBarSize={250}>
           <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent />} />
         </Bar>
       );
