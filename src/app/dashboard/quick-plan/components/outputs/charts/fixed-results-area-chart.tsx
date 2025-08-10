@@ -121,47 +121,75 @@ export default function FixedResultsChart({ onAgeSelect, selectedAge, showRefere
   };
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1} onClick={onClick}>
-          <defs>
-            <linearGradient id="colorStocks" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorBonds" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorCash" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
-          />
-          <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
-          <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
-          <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={false} />
-          <Tooltip
-            content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
-            cursor={{ stroke: foregroundMutedColor }}
-          />
-          {fireAnalysis.fireAge && showReferenceLines && (
-            <ReferenceLine x={Math.round(fireAnalysis.fireAge!)} stroke={foregroundColor} strokeDasharray="10 5" />
-          )}
-          {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
-          {showReferenceLines && (
-            <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
-          )}
-        </AreaChart>
-      </ResponsiveContainer>
+    <div>
+      <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={chartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+            tabIndex={-1}
+            onClick={onClick}
+          >
+            <defs>
+              <linearGradient id="colorStocks" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorBonds" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorCash" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+            />
+            <Area type="monotone" dataKey="stocks" stackId="1" stroke="var(--chart-3)" fill="url(#colorStocks)" activeDot={false} />
+            <Area type="monotone" dataKey="bonds" stackId="1" stroke="var(--chart-2)" fill="url(#colorBonds)" activeDot={false} />
+            <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={false} />
+            <Tooltip
+              content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
+              cursor={{ stroke: foregroundMutedColor }}
+            />
+            {fireAnalysis.fireAge && showReferenceLines && (
+              <ReferenceLine x={Math.round(fireAnalysis.fireAge!)} stroke={foregroundColor} strokeDasharray="10 5" />
+            )}
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
+            {showReferenceLines && (
+              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
+            )}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-3)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Stocks
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-2)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Bonds
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-1)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Cash
+        </div>
+      </div>
     </div>
   );
 }

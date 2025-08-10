@@ -103,46 +103,68 @@ export default function ResultsChart({ fireAnalysis, chartData, showReferenceLin
   const interval = isSmallScreen ? 4 : 3;
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
-          <defs>
-            <linearGradient id="colorP75" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorP50" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorP25" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
-          />
-          <Area type="monotone" dataKey="p75" stroke="var(--chart-3)" fill="url(#colorP75)" activeDot={false} />
-          <Area type="monotone" dataKey="p50" stroke="var(--chart-2)" fill="url(#colorP50)" activeDot={false} />
-          <Area type="monotone" dataKey="p25" stroke="var(--chart-1)" fill="url(#colorP25)" activeDot={false} />
-          <Tooltip
-            content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
-            cursor={{ stroke: foregroundMutedColor }}
-          />
-          {fireAnalysis?.p50FireAge && showReferenceLines && (
-            <ReferenceLine x={Math.round(fireAnalysis.p50FireAge)} stroke={foregroundColor} strokeDasharray="10 5" />
-          )}
-          {fireAnalysis?.requiredPortfolio && showReferenceLines && (
-            <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
-          )}
-        </AreaChart>
-      </ResponsiveContainer>
+    <div>
+      <div ref={chartRef} className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
+            <defs>
+              <linearGradient id="colorP75" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorP50" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorP25" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+            />
+            <Area type="monotone" dataKey="p75" stroke="var(--chart-3)" fill="url(#colorP75)" activeDot={false} />
+            <Area type="monotone" dataKey="p50" stroke="var(--chart-2)" fill="url(#colorP50)" activeDot={false} />
+            <Area type="monotone" dataKey="p25" stroke="var(--chart-1)" fill="url(#colorP25)" activeDot={false} />
+            <Tooltip
+              content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
+              cursor={{ stroke: foregroundMutedColor }}
+            />
+            {fireAnalysis?.p50FireAge && showReferenceLines && (
+              <ReferenceLine x={Math.round(fireAnalysis.p50FireAge)} stroke={foregroundColor} strokeDasharray="10 5" />
+            )}
+            {fireAnalysis?.requiredPortfolio && showReferenceLines && (
+              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
+            )}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-3)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          P75
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-2)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          P50
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-1)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          P25
+        </div>
+      </div>
     </div>
   );
 }
