@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
-  const { x, y, width, height, value } = props;
+  const { x, y, width, height, offset, value, isSmallScreen } = props;
   if (!value || value === 0) {
     return null;
   }
@@ -17,7 +17,7 @@ const CustomLabelListContent = (props: any) => {
   return (
     <text
       x={x + width / 2}
-      y={y + height / 2}
+      y={y + height / 2 + (isSmallScreen ? offset : 0)}
       fill="currentColor"
       textAnchor="middle"
       dominantBaseline="middle"
@@ -51,7 +51,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
             const fillColor = entry.amount >= 0 ? 'var(--chart-3)' : 'var(--chart-2)';
             return <Cell key={`cell-${index}`} fill={fillColor} stroke="var(--chart-1)" />;
           })}
-          <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent />} />
+          <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
         </Bar>
       );
       break;
@@ -66,7 +66,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
             const fillColor = entry.amount >= 0 ? 'var(--chart-3)' : 'var(--chart-2)';
             return <Cell key={`cell-${index}`} fill={fillColor} stroke="var(--chart-1)" />;
           })}
-          <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent />} />
+          <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
         </Bar>
       );
       break;
