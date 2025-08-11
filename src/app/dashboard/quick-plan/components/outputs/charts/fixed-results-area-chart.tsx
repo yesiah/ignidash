@@ -158,14 +158,14 @@ export default function FixedResultsChart({ onAgeSelect, selectedAge, showRefere
             <Area type="monotone" dataKey="cash" stackId="1" stroke="var(--chart-1)" fill="url(#colorCash)" activeDot={false} />
             <Tooltip
               content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
-              cursor={{ stroke: foregroundMutedColor }}
+              cursor={{ stroke: foregroundColor }}
             />
             {fireAnalysis.fireAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(fireAnalysis.fireAge!)} stroke={foregroundColor} strokeDasharray="10 5" />
+              <ReferenceLine x={Math.round(fireAnalysis.fireAge!)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
             {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
             {showReferenceLines && (
-              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
+              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
           </AreaChart>
         </ResponsiveContainer>
