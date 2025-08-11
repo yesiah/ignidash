@@ -48,7 +48,7 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
 
   if (rightAddOn) {
     return (
-      <div className="ml-2 flex items-end justify-between gap-x-2">
+      <div className="mx-2 flex items-end justify-between gap-x-2">
         <div>
           {headlineComponent}
           {descComponent}
@@ -59,7 +59,7 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
   }
 
   return (
-    <div className="ml-2">
+    <div className="mx-2">
       {headlineComponent}
       {descComponent}
     </div>
