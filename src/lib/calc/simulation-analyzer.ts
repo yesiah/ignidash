@@ -61,6 +61,13 @@ export interface ReturnsStats {
 }
 
 /**
+ * Cash flows statistics for analyzing income and expenses
+ */
+export interface CashFlowsStats {
+  byName: Record<string, Stats | null>;
+}
+
+/**
  * Comprehensive simulation analysis result
  * Includes both asset-level and portfolio-level simulation statistics
  */
@@ -116,6 +123,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
         retirement: number;
         bankrupt: number;
       };
+      cashFlows: CashFlowsStats;
     }
   >;
 
@@ -267,6 +275,43 @@ export class SimulationAnalyzer {
   }
 
   /**
+   * Calculates cash flows statistics from cash flows metadata
+   *
+   * @param cashFlowsMetadata - Array of cash flows metadata containing name/amount pairs
+   * @returns Cash flows statistics grouped by name
+   */
+  private calculateCashFlowsStats(cashFlowsMetadata: Array<Array<{ name: string; amount: number }>>): CashFlowsStats {
+    const byName: Record<string, Stats | null> = {};
+
+    // First, collect all unique names
+    const names = new Set<string>();
+    for (const cashFlows of cashFlowsMetadata) {
+      for (const flow of cashFlows) {
+        names.add(flow.name);
+      }
+    }
+
+    // Calculate statistics for each name
+    for (const name of names) {
+      const amounts: number[] = [];
+
+      // Collect amounts for this specific name across all periods
+      for (const cashFlows of cashFlowsMetadata) {
+        // Sum amounts for this name in this period (in case of multiple entries with same name)
+        const nameTotal = cashFlows.filter((flow) => flow.name === name).reduce((sum, flow) => sum + flow.amount, 0);
+
+        if (nameTotal !== 0 || cashFlows.some((flow) => flow.name === name)) {
+          amounts.push(nameTotal);
+        }
+      }
+
+      byName[name] = this.calculateStats(amounts);
+    }
+
+    return { byName };
+  }
+
+  /**
    * Calculates standard statistical measures for a dataset
    *
    * @param values - Array of numerical values to analyze
@@ -403,6 +448,7 @@ export class SimulationAnalyzer {
         retirement: number;
         bankrupt: number;
       };
+      cashFlows: CashFlowsStats;
     }
   > {
     if (results.length === 0) return [];
@@ -418,10 +464,14 @@ export class SimulationAnalyzer {
       // Returns metadata starts at year 1
       const returnsMetadata = year > 0 ? results.map((result) => result.returnsMetadata[year - 1][1]) : [];
 
+      // Cash flows metadata starts at year 1
+      const cashFlowsMetadata = year > 0 ? results.map((result) => result.cashFlowsMetadata[year - 1][1]) : [];
+
       // Calculate statistics for this year
       const count = portfolios.length;
       const values = this.calculatePortfolioStats(portfolios);
       const returns = this.calculateReturnsStats(returnsMetadata);
+      const cashFlows = this.calculateCashFlowsStats(cashFlowsMetadata);
 
       // Calculate percentiles from portfolio values for this year
       const yearlyValues = portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
@@ -457,7 +507,7 @@ export class SimulationAnalyzer {
         bankrupt: (bankruptCount / count) * 100,
       };
 
-      yearlyProgression.push({ year, count, values, returns, percentiles, phasePercentages });
+      yearlyProgression.push({ year, count, values, returns, percentiles, phasePercentages, cashFlows });
     }
 
     return yearlyProgression;
