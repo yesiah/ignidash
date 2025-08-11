@@ -75,7 +75,7 @@ export default function FixedReturnsOverview() {
                   <span className="text-muted-foreground">Age {selectedAge}</span>
                 </h4>
                 <ButtonGroup
-                  firstButtonText="Inflow & Outflow"
+                  firstButtonText="All Flows"
                   firstButtonIcon={<ArrowsUpDownIcon />}
                   firstButtonOnClick={() => setViewMode('inflowOutflow')}
                   lastButtonText="Net"
