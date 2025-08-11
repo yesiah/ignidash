@@ -75,14 +75,12 @@ export default function InvestmentPortfolio() {
             <NumberInput
               id="stock-allocation"
               label={
-                stocksDollarAmount > 0 ? (
-                  <div className="flex w-full items-center justify-between">
-                    <span>Stocks (%)</span>
-                    <span className="text-muted-foreground text-sm/6">${formatNumber(stocksDollarAmount, 1)}</span>
-                  </div>
-                ) : (
-                  'Stocks (%)'
-                )
+                <div className="flex w-full items-center justify-between">
+                  <span>Stocks (%)</span>
+                  <span className="text-muted-foreground text-sm/6">
+                    {stocksDollarAmount > 0 ? `$${formatNumber(stocksDollarAmount, 1)}` : '—'}
+                  </span>
+                </div>
               }
               value={localAllocation.stockAllocation}
               onBlur={(value) => handleAllocationBlur('stockAllocation', value)}
@@ -93,14 +91,12 @@ export default function InvestmentPortfolio() {
             <NumberInput
               id="bond-allocation"
               label={
-                bondsDollarAmount > 0 ? (
-                  <div className="flex w-full items-center justify-between">
-                    <span>Bonds (%)</span>
-                    <span className="text-muted-foreground text-sm/6">${formatNumber(bondsDollarAmount, 1)}</span>
-                  </div>
-                ) : (
-                  'Bonds (%)'
-                )
+                <div className="flex w-full items-center justify-between">
+                  <span>Bonds (%)</span>
+                  <span className="text-muted-foreground text-sm/6">
+                    {bondsDollarAmount > 0 ? `$${formatNumber(bondsDollarAmount, 1)}` : '—'}
+                  </span>
+                </div>
               }
               value={localAllocation.bondAllocation}
               onBlur={(value) => handleAllocationBlur('bondAllocation', value)}
@@ -111,14 +107,12 @@ export default function InvestmentPortfolio() {
             <NumberInput
               id="cash-allocation"
               label={
-                cashDollarAmount > 0 ? (
-                  <div className="flex w-full items-center justify-between">
-                    <span>Cash (%)</span>
-                    <span className="text-muted-foreground text-sm/6">${formatNumber(cashDollarAmount, 1)}</span>
-                  </div>
-                ) : (
-                  'Cash (%)'
-                )
+                <div className="flex w-full items-center justify-between">
+                  <span>Cash (%)</span>
+                  <span className="text-muted-foreground text-sm/6">
+                    {cashDollarAmount > 0 ? `$${formatNumber(cashDollarAmount, 1)}` : '—'}
+                  </span>
+                </div>
               }
               value={localAllocation.cashAllocation}
               onBlur={(value) => handleAllocationBlur('cashAllocation', value)}
