@@ -134,13 +134,13 @@ export default function ResultsChart({ fireAnalysis, chartData, showReferenceLin
             <Area type="monotone" dataKey="p25" stroke="var(--chart-1)" fill="url(#colorP25)" activeDot={false} />
             <Tooltip
               content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
-              cursor={{ stroke: foregroundMutedColor }}
+              cursor={{ stroke: foregroundColor }}
             />
             {fireAnalysis?.p50FireAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(fireAnalysis.p50FireAge)} stroke={foregroundColor} strokeDasharray="10 5" />
+              <ReferenceLine x={Math.round(fireAnalysis.p50FireAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
             {fireAnalysis?.requiredPortfolio && showReferenceLines && (
-              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundColor} strokeDasharray="10 5" />
+              <ReferenceLine y={Math.round(fireAnalysis.requiredPortfolio)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
           </AreaChart>
         </ResponsiveContainer>
