@@ -81,7 +81,7 @@ export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProp
 
   return (
     <div>
-      <div className="h-64 w-full sm:h-80 lg:h-96 [&_svg:focus]:outline-none">
+      <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
