@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect } from 'react';
 import { useIsMobile } from './use-mobile';
 
 interface UseDrawerHistoryProps {
@@ -11,40 +11,27 @@ interface UseDrawerHistoryProps {
 
 export function useDrawerHistory({ isOpen, onClose, drawerName = 'drawer' }: UseDrawerHistoryProps) {
   const isMobile = useIsMobile();
-  const closedByPopstate = useRef(false);
-
-  const handlePopState = useCallback(
-    (event: PopStateEvent) => {
-      if (event.state?.drawer === drawerName && !isOpen) {
-        return;
-      }
-
-      if (isOpen && (!event.state || event.state.drawer !== drawerName)) {
-        closedByPopstate.current = true;
-        onClose();
-      }
-    },
-    [isOpen, onClose, drawerName]
-  );
 
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobile || !isOpen) return;
 
-    if (isOpen) {
-      const state = { drawer: drawerName };
-      window.history.pushState(state, '', window.location.href);
-      closedByPopstate.current = false;
-    }
+    // Push a new history state when drawer opens
+    const state = { drawer: drawerName, timestamp: Date.now() };
+    window.history.pushState(state, '', window.location.href);
+
+    // Handle back button press
+    const handlePopState = (event: PopStateEvent) => {
+      // Check if we're navigating away from our drawer state
+      const currentState = window.history.state;
+      if (!currentState || currentState.drawer !== drawerName) {
+        onClose();
+      }
+    };
 
     window.addEventListener('popstate', handlePopState);
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
-
-      // Only go back if we pushed a state and the drawer wasn't closed by popstate
-      if (isOpen && !closedByPopstate.current && window.history.state?.drawer === drawerName) {
-        window.history.back();
-      }
     };
-  }, [isOpen, isMobile, handlePopState, drawerName]);
+  }, [isOpen, isMobile, onClose, drawerName]);
 }
