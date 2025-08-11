@@ -15,16 +15,12 @@ export function useDrawerHistory({ isOpen, onClose, drawerName = 'drawer' }: Use
   useEffect(() => {
     if (!isMobile || !isOpen) return;
 
-    // Push a new history state when drawer opens
     const state = { drawer: drawerName, timestamp: Date.now() };
     window.history.pushState(state, '', window.location.href);
 
-    // Handle back button press
     const handlePopState = (event: PopStateEvent) => {
-      // Check if we're navigating away from our drawer state
       const currentState = window.history.state;
       if (!currentState || currentState.drawer !== drawerName) {
-        // Small delay to let browser navigation complete first
         setTimeout(onClose, 0);
       }
     };
