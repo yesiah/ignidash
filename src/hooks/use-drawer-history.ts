@@ -24,7 +24,8 @@ export function useDrawerHistory({ isOpen, onClose, drawerName = 'drawer' }: Use
       // Check if we're navigating away from our drawer state
       const currentState = window.history.state;
       if (!currentState || currentState.drawer !== drawerName) {
-        onClose();
+        // Small delay to let browser navigation complete first
+        setTimeout(onClose, 0);
       }
     };
 
