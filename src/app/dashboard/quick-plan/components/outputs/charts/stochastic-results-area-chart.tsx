@@ -36,8 +36,8 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
   const yearForAge = currentYear + (label! - currentAge);
 
   return (
-    <div className="text-foreground bg-background rounded-lg border p-3 shadow-md">
-      <p className="border-foreground/50 mb-2 flex justify-between border-b pb-2 text-sm font-semibold">
+    <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
+      <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
