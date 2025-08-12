@@ -10,6 +10,7 @@ import {
   useHistoricalBacktestAnalysis,
   useHistoricalBacktestSimulation,
   useHistoricalBacktestCashFlowChartData,
+  useHistoricalBacktestPhasePercentAreaChartData,
   useShowReferenceLinesPreference,
   useUpdatePreferences,
 } from '@/lib/stores/quick-plan-store';
@@ -23,6 +24,7 @@ import { Switch } from '@/components/catalyst/switch';
 import StochasticResultsChart from '../charts/stochastic-results-area-chart';
 import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
+import StochasticPhasePercentAreaChart from '../charts/stochastic-phase-percent-area-chart';
 import ResultsMetrics from '../stochastic-metrics';
 import HistoricalBacktestDataTable from '../tables/historical-backtest-data-table';
 
@@ -43,6 +45,7 @@ export default function HistoricalBacktestOverview() {
   const chartData = useHistoricalBacktestChartData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
   const cashFlowChartData = useHistoricalBacktestCashFlowChartData();
+  const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData();
 
   // Reset selectedSeed when simulation changes
   useEffect(() => setSelectedSeed(null), [simulation, viewMode]);
@@ -62,6 +65,18 @@ export default function HistoricalBacktestOverview() {
       />
     ),
     [cashFlowChartData, currentAge, selectedAge]
+  );
+  const memoizedPhasePercentChart = useMemo(
+    () => (
+      <StochasticPhasePercentAreaChart
+        onAgeSelect={(age) => {
+          if (age >= currentAge! + 1) setSelectedAge(age);
+        }}
+        selectedAge={selectedAge}
+        chartData={phasePercentChartData}
+      />
+    ),
+    [selectedAge, phasePercentChartData, currentAge]
   );
 
   if (chartData.length === 0) {
@@ -143,6 +158,15 @@ export default function HistoricalBacktestOverview() {
               </h4>
             </div>
             {memoizedCashFlowLineChart}
+          </Card>
+          <Card className="my-0">
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-foreground flex items-center text-lg font-semibold">
+                <span className="mr-2">Phase Percent</span>
+                <span className="text-muted-foreground">Time Series</span>
+              </h4>
+            </div>
+            {memoizedPhasePercentChart}
           </Card>
         </div>
       </SectionContainer>

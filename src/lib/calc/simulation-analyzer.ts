@@ -489,15 +489,16 @@ export class SimulationAnalyzer {
         // Check if simulation is bankrupt
         if (portfolioValue <= 1) {
           bankruptCount++;
-        }
-
-        const phaseName = result.phasesMetadata.find(([phaseYear]) => phaseYear === year)![1].getName();
-        if (phaseName === 'Accumulation') {
-          accumulationCount++;
-        } else if (phaseName === 'Retirement') {
-          retirementCount++;
         } else {
-          throw new Error(`Unknown phase name: ${phaseName}`);
+          // Only count phase if not bankrupt
+          const phaseName = result.phasesMetadata.find(([phaseYear]) => phaseYear === year)![1].getName();
+          if (phaseName === 'Accumulation') {
+            accumulationCount++;
+          } else if (phaseName === 'Retirement') {
+            retirementCount++;
+          } else {
+            throw new Error(`Unknown phase name: ${phaseName}`);
+          }
         }
       }
 

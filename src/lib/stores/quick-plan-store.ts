@@ -679,6 +679,46 @@ export const useMonteCarloCashFlowChartData = () => {
   }, [currentAge, simulation]);
 };
 
+export const useMonteCarloPhasePercentAreaChartData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useMonteCarloSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.map((data) => ({
+      age: data.year + currentAge,
+      percentAccumulation: data.phasePercentages.accumulation,
+      percentRetirement: data.phasePercentages.retirement,
+      percentBankrupt: data.phasePercentages.bankrupt,
+    }));
+  }, [currentAge, simulation]);
+};
+
+export const useHistoricalBacktestPhasePercentAreaChartData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useHistoricalBacktestSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.map((data) => ({
+      age: data.year + currentAge,
+      percentAccumulation: data.phasePercentages.accumulation,
+      percentRetirement: data.phasePercentages.retirement,
+      percentBankrupt: data.phasePercentages.bankrupt,
+    }));
+  }, [currentAge, simulation]);
+};
+
 export const useHistoricalBacktestChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useHistoricalBacktestSimulation();
