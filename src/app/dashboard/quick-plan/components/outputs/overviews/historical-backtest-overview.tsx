@@ -138,7 +138,7 @@ export default function HistoricalBacktestOverview() {
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">
-                <span className="mr-2">Cash Flow</span>
+                <span className="mr-2">Net Cash Flow</span>
                 <span className="text-muted-foreground">Time Series</span>
               </h4>
             </div>
