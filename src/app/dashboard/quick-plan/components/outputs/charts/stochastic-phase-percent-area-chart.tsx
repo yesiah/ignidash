@@ -50,7 +50,7 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
           <span className="ml-1 font-semibold">{`${payload[1].value.toFixed(0)}%`}</span>
         </p>
         <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-1)]/60 px-2 text-sm">
-          <span className="mr-2">Bankruptcy:</span>
+          <span className="mr-2">Bankrupt:</span>
           <span className="ml-1 font-semibold">{`${payload[2].value.toFixed(0)}%`}</span>
         </p>
       </div>
@@ -108,62 +108,90 @@ export default function StochasticPhasePercentAreaChart({ chartData, onAgeSelect
   };
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1} onClick={onClick}>
-          <defs>
-            <linearGradient id="colorPercentAccumulation" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorPercentRetirement" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="colorPercentBankrupt" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
-              <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => `${value}%`}
-          />
-          <Area
-            type="monotone"
-            dataKey="percentAccumulation"
-            stackId="1"
-            stroke="var(--chart-3)"
-            fill="url(#colorPercentAccumulation)"
-            activeDot={false}
-          />
-          <Area
-            type="monotone"
-            dataKey="percentRetirement"
-            stackId="1"
-            stroke="var(--chart-2)"
-            fill="url(#colorPercentRetirement)"
-            activeDot={false}
-          />
-          <Area
-            type="monotone"
-            dataKey="percentBankrupt"
-            stackId="1"
-            stroke="var(--chart-1)"
-            fill="url(#colorPercentBankrupt)"
-            activeDot={false}
-          />
-          <Tooltip
-            content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
-            cursor={{ stroke: foregroundColor }}
-          />
-          {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
-        </AreaChart>
-      </ResponsiveContainer>
+    <div>
+      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={chartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+            tabIndex={-1}
+            onClick={onClick}
+          >
+            <defs>
+              <linearGradient id="colorPercentAccumulation" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorPercentRetirement" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={1} />
+              </linearGradient>
+              <linearGradient id="colorPercentBankrupt" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={1} />
+                <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={1} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => `${value}%`}
+            />
+            <Area
+              type="monotone"
+              dataKey="percentAccumulation"
+              stackId="1"
+              stroke="var(--chart-3)"
+              fill="url(#colorPercentAccumulation)"
+              activeDot={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="percentRetirement"
+              stackId="1"
+              stroke="var(--chart-2)"
+              fill="url(#colorPercentRetirement)"
+              activeDot={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="percentBankrupt"
+              stackId="1"
+              stroke="var(--chart-1)"
+              fill="url(#colorPercentBankrupt)"
+              activeDot={false}
+            />
+            <Tooltip
+              content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
+              cursor={{ stroke: foregroundColor }}
+            />
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className={`mt-2 flex justify-center gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`} role="group" aria-label="Chart legend">
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-3)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Accumulation
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-2)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Retirement
+        </div>
+        <div className="flex items-center gap-x-1 text-sm font-medium">
+          <svg viewBox="0 0 6 6" aria-hidden="true" className="size-5 fill-[var(--chart-1)]">
+            <circle r={2.5} cx={3} cy={3} />
+          </svg>
+          Bankrupt
+        </div>
+      </div>
     </div>
   );
 }
