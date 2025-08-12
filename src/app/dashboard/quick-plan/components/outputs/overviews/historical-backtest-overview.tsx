@@ -22,6 +22,7 @@ import { Switch } from '@/components/catalyst/switch';
 
 import StochasticResultsChart from '../charts/stochastic-results-area-chart';
 import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
+import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
 import ResultsMetrics from '../stochastic-metrics';
 import HistoricalBacktestDataTable from '../tables/historical-backtest-data-table';
 
@@ -49,6 +50,18 @@ export default function HistoricalBacktestOverview() {
   const memoizedCashFlowChart = useMemo(
     () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
     [selectedAge, cashFlowViewMode, cashFlowChartData]
+  );
+  const memoizedCashFlowLineChart = useMemo(
+    () => (
+      <StochasticCashFlowLineChart
+        onAgeSelect={(age) => {
+          if (age >= currentAge! + 1) setSelectedAge(age);
+        }}
+        selectedAge={selectedAge}
+        rawChartData={cashFlowChartData}
+      />
+    ),
+    [cashFlowChartData, currentAge, selectedAge]
   );
 
   if (chartData.length === 0) {
@@ -122,6 +135,15 @@ export default function HistoricalBacktestOverview() {
               {memoizedCashFlowChart}
             </Card>
           )}
+          <Card className="my-0">
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-foreground flex items-center text-lg font-semibold">
+                <span className="mr-2">Cash Flow</span>
+                <span className="text-muted-foreground">Time Series</span>
+              </h4>
+            </div>
+            {memoizedCashFlowLineChart}
+          </Card>
         </div>
       </SectionContainer>
       <SectionContainer showBottomBorder>

@@ -114,7 +114,7 @@ export class AnnualExpenses implements CashFlow {
  */
 export class PassiveRetirementIncome implements CashFlow {
   readonly id = 'passive-retirement-income';
-  readonly name = 'Income';
+  readonly name = 'Retirement Income';
 
   private readonly inputs: QuickPlanInputs;
 
@@ -139,7 +139,7 @@ export class PassiveRetirementIncome implements CashFlow {
  */
 export class RetirementExpenses implements CashFlow {
   readonly id = 'retirement-expenses';
-  readonly name = 'Expenses';
+  readonly name = 'Retirement Expenses';
 
   private readonly inputs: QuickPlanInputs;
 
