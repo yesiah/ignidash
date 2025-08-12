@@ -27,6 +27,9 @@ export type AssetClass = 'stocks' | 'bonds' | 'cash';
 /** Asset return rates mapped by asset class (as decimal rates) */
 export type AssetReturnRates = Record<AssetClass, number>;
 
+/** Asset return amounts mapped by asset class (in real dollars) */
+export type AssetReturnAmounts = Record<AssetClass, number>;
+
 /** Asset allocation percentages mapped by asset class (as decimal percentages) */
 export type AssetAllocation = Record<AssetClass, number>;
 

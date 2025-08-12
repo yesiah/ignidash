@@ -19,7 +19,7 @@
  * - Fisher equation implementation for accurate real return conversion
  */
 
-import { AssetReturnRates } from './asset';
+import { AssetReturnRates, AssetReturnAmounts } from './asset';
 
 /**
  * Represents asset returns data combined with relevant metadata.
@@ -28,6 +28,7 @@ import { AssetReturnRates } from './asset';
  */
 export interface ReturnsWithMetadata<TExtras extends Record<string, unknown> = Record<string, unknown>> {
   returns: AssetReturnRates;
+  amounts?: AssetReturnAmounts;
   metadata: {
     inflationRate: number;
     /** Optional extras that providers can add for simulation-specific data */

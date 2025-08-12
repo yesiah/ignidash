@@ -101,7 +101,7 @@ export class FinancialSimulationEngine {
 
       // Apply returns at end of year (compounding on final balance)
       const returns = returnsProvider.getReturns(year);
-      const [portfolioWithReturns, totalReturnsAmount] = portfolio.withReturns(returns.returns);
+      const [portfolioWithReturns, totalReturnsAmount, returnAmounts] = portfolio.withReturns(returns.returns);
       portfolio = portfolioWithReturns;
       cashFlows.push({ name: 'Returns', amount: totalReturnsAmount });
 
@@ -109,7 +109,7 @@ export class FinancialSimulationEngine {
       portfolio = portfolio.withRebalance(assetAllocation);
 
       data.push([year, portfolio]);
-      returnsMetadata.push([year, returns]);
+      returnsMetadata.push([year, { ...returns, amounts: returnAmounts }]);
       cashFlowsMetadata.push([year, cashFlows]);
 
       // Check for phase transition

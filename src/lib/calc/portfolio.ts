@@ -20,7 +20,7 @@
  * - Error handling for edge cases (empty portfolios, negative values)
  */
 
-import { Asset, AssetClass, AssetReturnRates, AssetAllocation } from './asset';
+import { Asset, AssetClass, AssetReturnRates, AssetAllocation, AssetReturnAmounts } from './asset';
 
 /**
  * Portfolio class for managing investment assets
@@ -81,14 +81,16 @@ export class Portfolio {
    * @param returns - Asset class return rates as decimals
    * @returns Array containing new portfolio instance and total returns amount
    */
-  withReturns(returns: AssetReturnRates): [Portfolio, number] {
+  withReturns(returns: AssetReturnRates): [Portfolio, number, AssetReturnAmounts] {
     let totalReturnsAmount = 0;
+    const returnAmounts = { stocks: 0, bonds: 0, cash: 0 };
 
     const updatedAssets = this.assets.map((asset) => {
       const returnRate = returns[asset.assetClass];
       const returnAmount = asset.value * returnRate;
 
       totalReturnsAmount += returnAmount;
+      returnAmounts[asset.assetClass] += returnAmount;
 
       return {
         ...asset,
@@ -96,7 +98,7 @@ export class Portfolio {
       };
     });
 
-    return [Portfolio.create(updatedAssets, this.contributions, this.withdrawals), totalReturnsAmount];
+    return [Portfolio.create(updatedAssets, this.contributions, this.withdrawals), totalReturnsAmount, returnAmounts];
   }
 
   /**
