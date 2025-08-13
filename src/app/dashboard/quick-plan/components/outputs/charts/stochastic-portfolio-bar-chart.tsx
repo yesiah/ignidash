@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelL
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface StochasticPortfolioChartDataPoint {
+interface StochasticPortfolioBarChartDataPoint {
   age: number;
   name: string;
   amount: number;
@@ -43,13 +43,13 @@ const CustomLabelListContent = (props: any) => {
   );
 };
 
-interface StochasticPortfolioChartProps {
+interface StochasticPortfolioBarChartProps {
   age: number;
   mode: 'percentiles' | 'counts';
-  rawChartData: StochasticPortfolioChartDataPoint[];
+  rawChartData: StochasticPortfolioBarChartDataPoint[];
 }
 
-export default function StochasticPortfolioChart({ age, mode, rawChartData }: StochasticPortfolioChartProps) {
+export default function StochasticPortfolioBarChart({ age, mode, rawChartData }: StochasticPortfolioBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 

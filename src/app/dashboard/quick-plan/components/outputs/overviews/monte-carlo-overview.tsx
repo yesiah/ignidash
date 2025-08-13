@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { ArrowsUpDownIcon, ScaleIcon, ReceiptPercentIcon, DocumentCurrencyDollarIcon, ChartBarSquareIcon } from '@heroicons/react/20/solid';
+import { ArrowsUpDownIcon, ScaleIcon, ReceiptPercentIcon, DocumentCurrencyDollarIcon } from '@heroicons/react/20/solid';
 
 import {
   useCurrentAge,
   useMonteCarloChartData,
-  useMonteCarloPortfolioHistogramData,
-  useMonteCarloPortfolioDistributionHistogramData,
   useMonteCarloAnalysis,
   useMonteCarloSimulation,
   useMonteCarloCashFlowChartData,
@@ -21,7 +19,6 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
 
-import StochasticPortfolioChart from '../charts/stochastic-portfolio-bar-chart';
 import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
 import StochasticPhasePercentAreaChart from '../charts/stochastic-phase-percent-area-chart';
@@ -31,6 +28,7 @@ import StochasticWithdrawalsChart from '../charts/stochastic-withdrawals-bar-cha
 import StochasticWithdrawalsLineChart from '../charts/stochastic-withdrawals-line-chart';
 import ResultsMetrics from '../stochastic-metrics';
 import StochasticPortfolioAreaChartCard from '../cards/stochastic-portfolio-area-chart-card';
+import StochasticPortfolioBarChartCard from '../cards/stochastic-portfolio-bar-chart-card';
 import StochasticDataTableSection from '../sections/stochastic-data-table-section';
 
 export default function MonteCarloOverview() {
@@ -42,24 +40,15 @@ export default function MonteCarloOverview() {
 
   const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
-  const [portfolioDistributionViewMode, setPortfolioDistributionViewMode] = useState<'percentiles' | 'counts'>('percentiles');
 
   const simulation = useMonteCarloSimulation();
   const chartData = useMonteCarloChartData(simulation);
-  const portfolioHistogramData = useMonteCarloPortfolioHistogramData(simulation);
-  const portfolioDistributionHistogramData = useMonteCarloPortfolioDistributionHistogramData(simulation);
   const fireAnalysis = useMonteCarloAnalysis(simulation);
   const cashFlowChartData = useMonteCarloCashFlowChartData(simulation);
   const phasePercentChartData = useMonteCarloPhasePercentAreaChartData(simulation);
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
   const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
 
-  const rawPortfolioChartData =
-    portfolioDistributionViewMode === 'percentiles' ? portfolioHistogramData : portfolioDistributionHistogramData;
-  const memoizedPortfolioChart = useMemo(
-    () => <StochasticPortfolioChart age={selectedAge} mode={portfolioDistributionViewMode} rawChartData={rawPortfolioChartData} />,
-    [selectedAge, portfolioDistributionViewMode, rawPortfolioChartData]
-  );
   const memoizedCashFlowChart = useMemo(
     () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
     [selectedAge, cashFlowViewMode, cashFlowChartData]
@@ -140,24 +129,12 @@ export default function MonteCarloOverview() {
             setSelectedAge={setSelectedAge}
             selectedAge={selectedAge}
           />
-          <Card className="my-0">
-            <div className="mb-4 flex items-center justify-between">
-              <h4 className="text-foreground flex items-center text-lg font-semibold">
-                <span className="mr-2">Portfolio Distribution</span>
-                <span className="text-muted-foreground">Age {selectedAge}</span>
-              </h4>
-              <ButtonGroup
-                firstButtonText="Percentiles"
-                firstButtonIcon={<ReceiptPercentIcon />}
-                firstButtonOnClick={() => setPortfolioDistributionViewMode('percentiles')}
-                lastButtonText="Counts"
-                lastButtonIcon={<ChartBarSquareIcon />}
-                lastButtonOnClick={() => setPortfolioDistributionViewMode('counts')}
-                defaultActiveButton="first"
-              />
-            </div>
-            {memoizedPortfolioChart}
-          </Card>
+          <StochasticPortfolioBarChartCard
+            simulation={simulation}
+            simulationType="monteCarlo"
+            setSelectedAge={setSelectedAge}
+            selectedAge={selectedAge}
+          />
           {!isXSmallScreen && (
             <Card className="my-0">
               <div className="mb-4 flex items-center justify-between">
