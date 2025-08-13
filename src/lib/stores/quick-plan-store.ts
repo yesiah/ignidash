@@ -653,7 +653,7 @@ export const useMonteCarloPortfolioAreaChartData = (simulation: MultiSimulationR
   }, [currentAge, simulation]);
 };
 
-export const useMonteCarloPortfolioPercentilesData = (simulation: MultiSimulationResult) => {
+export const useMonteCarloPortfolioPercentilesChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -673,7 +673,7 @@ export const useMonteCarloPortfolioPercentilesData = (simulation: MultiSimulatio
   }, [currentAge, simulation]);
 };
 
-export const useMonteCarloPortfolioDistributionData = (simulation: MultiSimulationResult) => {
+export const useMonteCarloPortfolioDistributionChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -921,7 +921,7 @@ export const useHistoricalBacktestPortfolioAreaChartData = (simulation: MultiSim
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestPortfolioPercentilesData = (simulation: MultiSimulationResult) => {
+export const useHistoricalBacktestPortfolioPercentilesChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -941,7 +941,7 @@ export const useHistoricalBacktestPortfolioPercentilesData = (simulation: MultiS
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestPortfolioDistributionData = (simulation: MultiSimulationResult) => {
+export const useHistoricalBacktestPortfolioDistributionChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {

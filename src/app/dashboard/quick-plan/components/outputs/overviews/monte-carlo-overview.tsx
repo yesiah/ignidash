@@ -7,8 +7,8 @@ import {
   useMonteCarloSimulation,
   useMonteCarloAnalysis,
   useMonteCarloPortfolioAreaChartData,
-  useMonteCarloPortfolioPercentilesData,
-  useMonteCarloPortfolioDistributionData,
+  useMonteCarloPortfolioPercentilesChartData,
+  useMonteCarloPortfolioDistributionChartData,
   useMonteCarloCashFlowChartData,
   useMonteCarloPhasePercentAreaChartData,
   useMonteCarloReturnsChartData,
@@ -34,11 +34,11 @@ export default function MonteCarloOverview() {
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
 
   const simulation = useMonteCarloSimulation();
-
   const analysis = useMonteCarloAnalysis(simulation);
+
   const portfolioAreaChartData = useMonteCarloPortfolioAreaChartData(simulation);
-  const portfolioPercentilesData = useMonteCarloPortfolioPercentilesData(simulation);
-  const portfolioDistributionData = useMonteCarloPortfolioDistributionData(simulation);
+  const portfolioPercentilesChartData = useMonteCarloPortfolioPercentilesChartData(simulation);
+  const portfolioDistributionChartData = useMonteCarloPortfolioDistributionChartData(simulation);
   const cashFlowChartData = useMonteCarloCashFlowChartData(simulation);
   const phasePercentChartData = useMonteCarloPhasePercentAreaChartData(simulation);
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
@@ -60,8 +60,8 @@ export default function MonteCarloOverview() {
             selectedAge={selectedAge}
           />
           <StochasticPortfolioBarChartCard
-            percentilesData={portfolioPercentilesData}
-            distributionData={portfolioDistributionData}
+            percentilesData={portfolioPercentilesChartData}
+            distributionData={portfolioDistributionChartData}
             selectedAge={selectedAge}
           />
           <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />

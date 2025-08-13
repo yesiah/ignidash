@@ -7,8 +7,8 @@ import {
   useHistoricalBacktestSimulation,
   useHistoricalBacktestAnalysis,
   useHistoricalBacktestPortfolioAreaChartData,
-  useHistoricalBacktestPortfolioPercentilesData,
-  useHistoricalBacktestPortfolioDistributionData,
+  useHistoricalBacktestPortfolioPercentilesChartData,
+  useHistoricalBacktestPortfolioDistributionChartData,
   useHistoricalBacktestCashFlowChartData,
   useHistoricalBacktestPhasePercentAreaChartData,
   useHistoricalBacktestReturnsChartData,
@@ -34,11 +34,11 @@ export default function HistoricalBacktestOverview() {
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
 
   const simulation = useHistoricalBacktestSimulation();
-
   const analysis = useHistoricalBacktestAnalysis(simulation);
+
   const portfolioAreaChartData = useHistoricalBacktestPortfolioAreaChartData(simulation);
-  const portfolioPercentilesData = useHistoricalBacktestPortfolioPercentilesData(simulation);
-  const portfolioDistributionData = useHistoricalBacktestPortfolioDistributionData(simulation);
+  const portfolioPercentilesChartData = useHistoricalBacktestPortfolioPercentilesChartData(simulation);
+  const portfolioDistributionChartData = useHistoricalBacktestPortfolioDistributionChartData(simulation);
   const cashFlowChartData = useHistoricalBacktestCashFlowChartData(simulation);
   const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData(simulation);
   const returnsChartData = useHistoricalBacktestReturnsChartData(simulation);
@@ -60,8 +60,8 @@ export default function HistoricalBacktestOverview() {
             selectedAge={selectedAge}
           />
           <StochasticPortfolioBarChartCard
-            percentilesData={portfolioPercentilesData}
-            distributionData={portfolioDistributionData}
+            percentilesData={portfolioPercentilesChartData}
+            distributionData={portfolioDistributionChartData}
             selectedAge={selectedAge}
           />
           <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />
