@@ -14,9 +14,19 @@ interface StochasticPortfolioChartDataPoint {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
-  const { x, y, width, height, offset, value, isSmallScreen } = props;
+  const { x, y, width, height, offset, value, isSmallScreen, mode } = props;
   if (!value || value === 0) {
     return null;
+  }
+
+  let displayValue = value;
+  switch (mode) {
+    case 'percentiles':
+      displayValue = formatNumber(value, 1, '$');
+      break;
+    case 'counts':
+      displayValue = value.toFixed(0);
+      break;
   }
 
   return (
@@ -28,21 +38,31 @@ const CustomLabelListContent = (props: any) => {
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
     >
-      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
+      <tspan className="font-semibold">{displayValue}</tspan>
     </text>
   );
 };
 
 interface StochasticPortfolioChartProps {
   age: number;
+  mode: 'percentiles' | 'counts';
   rawChartData: StochasticPortfolioChartDataPoint[];
 }
 
-export default function StochasticPortfolioChart({ age, rawChartData }: StochasticPortfolioChartProps) {
+export default function StochasticPortfolioChart({ age, mode, rawChartData }: StochasticPortfolioChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  let formatter;
+  switch (mode) {
+    case 'percentiles':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'counts':
+      formatter = (value: number) => value.toFixed(0);
+      break;
+  }
+
   const chartData = rawChartData.filter((item) => item.age === age);
   if (chartData.length === 0) {
     return null;
@@ -59,7 +79,7 @@ export default function StochasticPortfolioChart({ age, rawChartData }: Stochast
           <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="name" />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} hide={isSmallScreen} tickFormatter={formatter} />
           <Bar dataKey="amount" fill="var(--chart-3)" stroke="var(--chart-1)" maxBarSize={250} minPointSize={20}>
-            <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
+            <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent mode={mode} isSmallScreen={isSmallScreen} />} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

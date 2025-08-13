@@ -9,6 +9,7 @@ import {
   ScaleIcon,
   ReceiptPercentIcon,
   DocumentCurrencyDollarIcon,
+  ChartBarSquareIcon,
 } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -16,6 +17,7 @@ import {
   useCurrentAge,
   useMonteCarloChartData,
   useMonteCarloPortfolioHistogramData,
+  useMonteCarloPortfolioDistributionHistogramData,
   useMonteCarloAnalysis,
   useMonteCarloSimulation,
   useMonteCarloCashFlowChartData,
@@ -56,6 +58,7 @@ export default function MonteCarloOverview() {
 
   const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
+  const [portfolioDistributionViewMode, setPortfolioDistributionViewMode] = useState<'percentiles' | 'counts'>('percentiles');
 
   const showReferenceLines = useShowReferenceLinesPreference();
   const updatePreferences = useUpdatePreferences();
@@ -63,6 +66,7 @@ export default function MonteCarloOverview() {
   const simulation = useMonteCarloSimulation();
   const chartData = useMonteCarloChartData();
   const portfolioHistogramData = useMonteCarloPortfolioHistogramData();
+  const portfolioDistributionHistogramData = useMonteCarloPortfolioDistributionHistogramData();
   const fireAnalysis = useMonteCarloAnalysis();
   const cashFlowChartData = useMonteCarloCashFlowChartData();
   const phasePercentChartData = useMonteCarloPhasePercentAreaChartData();
@@ -72,9 +76,11 @@ export default function MonteCarloOverview() {
   // Reset selectedSeed when simulation changes
   useEffect(() => setSelectedSeed(null), [simulation, viewMode]);
 
+  const rawPortfolioChartData =
+    portfolioDistributionViewMode === 'percentiles' ? portfolioHistogramData : portfolioDistributionHistogramData;
   const memoizedPortfolioChart = useMemo(
-    () => <StochasticPortfolioChart age={selectedAge} rawChartData={portfolioHistogramData} />,
-    [selectedAge, portfolioHistogramData]
+    () => <StochasticPortfolioChart age={selectedAge} mode={portfolioDistributionViewMode} rawChartData={rawPortfolioChartData} />,
+    [selectedAge, portfolioDistributionViewMode, rawPortfolioChartData]
   );
   const memoizedCashFlowChart = useMemo(
     () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
@@ -194,6 +200,15 @@ export default function MonteCarloOverview() {
                 <span className="mr-2">Portfolio Distribution</span>
                 <span className="text-muted-foreground">Age {selectedAge}</span>
               </h4>
+              <ButtonGroup
+                firstButtonText="Percentiles"
+                firstButtonIcon={<ReceiptPercentIcon />}
+                firstButtonOnClick={() => setPortfolioDistributionViewMode('percentiles')}
+                lastButtonText="Counts"
+                lastButtonIcon={<ChartBarSquareIcon />}
+                lastButtonOnClick={() => setPortfolioDistributionViewMode('counts')}
+                defaultActiveButton="first"
+              />
             </div>
             {memoizedPortfolioChart}
           </Card>

@@ -96,6 +96,18 @@ export interface Percentiles {
 }
 
 /**
+ * Distribution data showing how many values fall between percentile ranges
+ */
+export interface PercentileDistribution {
+  belowP10: number;
+  p10toP25: number;
+  p25toP50: number;
+  p50toP75: number;
+  p75toP90: number;
+  aboveP90: number;
+}
+
+/**
  * Statistics for multiple simulations
  */
 export interface MultiSimulationStats {
@@ -132,6 +144,7 @@ export interface AggregateSimulationStats extends MultiSimulationStats {
         retirement: number;
         bankrupt: number;
       };
+      distribution: PercentileDistribution;
       cashFlows: CashFlowsStats;
     }
   >;
@@ -418,6 +431,24 @@ export class SimulationAnalyzer {
   }
 
   /**
+   * Calculates distribution of values across percentile ranges
+   *
+   * @param sortedValues - Pre-sorted array of numerical values
+   * @param percentiles - Calculated percentile values
+   * @returns Count of values in each percentile range
+   */
+  private calculatePercentileDistribution(sortedValues: number[], percentiles: Percentiles): PercentileDistribution {
+    return {
+      belowP10: sortedValues.filter((v) => v <= percentiles.p10).length,
+      p10toP25: sortedValues.filter((v) => v > percentiles.p10 && v <= percentiles.p25).length,
+      p25toP50: sortedValues.filter((v) => v > percentiles.p25 && v <= percentiles.p50).length,
+      p50toP75: sortedValues.filter((v) => v > percentiles.p50 && v <= percentiles.p75).length,
+      p75toP90: sortedValues.filter((v) => v > percentiles.p75 && v <= percentiles.p90).length,
+      aboveP90: sortedValues.filter((v) => v > percentiles.p90).length,
+    };
+  }
+
+  /**
    * Calculates comprehensive statistics for a segment of simulations
    *
    * @param results - Array of simulation results to analyze
@@ -483,6 +514,7 @@ export class SimulationAnalyzer {
         retirement: number;
         bankrupt: number;
       };
+      distribution: PercentileDistribution;
       cashFlows: CashFlowsStats;
     }
   > {
@@ -516,6 +548,9 @@ export class SimulationAnalyzer {
       const yearlyValues = portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
       const percentiles = this.calculatePercentilesFromValues(yearlyValues);
 
+      // Calculate distribution - how many values fall in each percentile range
+      const distribution = this.calculatePercentileDistribution(yearlyValues, percentiles);
+
       // Calculate phase percentages for this year
       let accumulationCount = 0;
       let retirementCount = 0;
@@ -547,7 +582,7 @@ export class SimulationAnalyzer {
         bankrupt: (bankruptCount / count) * 100,
       };
 
-      yearlyProgression.push({ year, count, values, returns, withdrawals, percentiles, phasePercentages, cashFlows });
+      yearlyProgression.push({ year, count, values, returns, withdrawals, percentiles, phasePercentages, distribution, cashFlows });
     }
 
     return yearlyProgression;

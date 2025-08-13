@@ -9,6 +9,7 @@ import {
   ScaleIcon,
   ReceiptPercentIcon,
   DocumentCurrencyDollarIcon,
+  ChartBarSquareIcon,
 } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -16,6 +17,7 @@ import {
   useCurrentAge,
   useHistoricalBacktestChartData,
   useHistoricalBacktestPortfolioHistogramData,
+  useHistoricalBacktestPortfolioDistributionHistogramData,
   useHistoricalBacktestAnalysis,
   useHistoricalBacktestSimulation,
   useHistoricalBacktestCashFlowChartData,
@@ -56,6 +58,7 @@ export default function HistoricalBacktestOverview() {
 
   const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
+  const [portfolioDistributionViewMode, setPortfolioDistributionViewMode] = useState<'percentiles' | 'counts'>('percentiles');
 
   const showReferenceLines = useShowReferenceLinesPreference();
   const updatePreferences = useUpdatePreferences();
@@ -63,6 +66,7 @@ export default function HistoricalBacktestOverview() {
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
   const portfolioHistogramData = useHistoricalBacktestPortfolioHistogramData();
+  const portfolioDistributionHistogramData = useHistoricalBacktestPortfolioDistributionHistogramData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
   const cashFlowChartData = useHistoricalBacktestCashFlowChartData();
   const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData();
@@ -72,9 +76,11 @@ export default function HistoricalBacktestOverview() {
   // Reset selectedSeed when simulation changes
   useEffect(() => setSelectedSeed(null), [simulation, viewMode]);
 
+  const rawPortfolioChartData =
+    portfolioDistributionViewMode === 'percentiles' ? portfolioHistogramData : portfolioDistributionHistogramData;
   const memoizedPortfolioChart = useMemo(
-    () => <StochasticPortfolioChart age={selectedAge} rawChartData={portfolioHistogramData} />,
-    [selectedAge, portfolioHistogramData]
+    () => <StochasticPortfolioChart age={selectedAge} mode={portfolioDistributionViewMode} rawChartData={rawPortfolioChartData} />,
+    [selectedAge, portfolioDistributionViewMode, rawPortfolioChartData]
   );
   const memoizedCashFlowChart = useMemo(
     () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
@@ -194,6 +200,15 @@ export default function HistoricalBacktestOverview() {
                 <span className="mr-2">Portfolio Distribution</span>
                 <span className="text-muted-foreground">Age {selectedAge}</span>
               </h4>
+              <ButtonGroup
+                firstButtonText="Percentiles"
+                firstButtonIcon={<ReceiptPercentIcon />}
+                firstButtonOnClick={() => setPortfolioDistributionViewMode('percentiles')}
+                lastButtonText="Counts"
+                lastButtonIcon={<ChartBarSquareIcon />}
+                lastButtonOnClick={() => setPortfolioDistributionViewMode('counts')}
+                defaultActiveButton="first"
+              />
             </div>
             {memoizedPortfolioChart}
           </Card>
