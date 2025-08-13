@@ -21,6 +21,15 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 /**
+ * Metadata for portfolio withdrawals during retirement
+ * Tracks both absolute and percentage-based withdrawal information
+ */
+export interface WithdrawalsWithMetadata {
+  withdrawalAmount: number;
+  withdrawalPercentage: number;
+}
+
+/**
  * WithdrawalStrategy - Abstract Base for Retirement Withdrawal Calculations
  *
  * Provides strategic calculations for determining the minimum portfolio size required

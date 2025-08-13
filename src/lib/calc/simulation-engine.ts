@@ -29,6 +29,7 @@ import { StochasticReturnsProvider } from './stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from './lcg-historical-backtest-returns-provider';
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
 import { convertAllocationInputsToAssetAllocation } from './asset';
+import { WithdrawalsWithMetadata } from './withdrawal-strategy';
 
 /**
  * Simulation result containing success status, portfolio progression, and metadata
@@ -45,7 +46,7 @@ export interface SimulationResult {
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
   returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
   cashFlowsMetadata: Array<[number /* timeInYears */, Array<{ name: string; amount: number }>]>;
-  withdrawalsMetadata: Array<[number /* timeInYears */, number]>;
+  withdrawalsMetadata: Array<[number /* timeInYears */, WithdrawalsWithMetadata]>;
 }
 
 /**
@@ -80,7 +81,7 @@ export class FinancialSimulationEngine {
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
     const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
     const cashFlowsMetadata: Array<[number, Array<{ name: string; amount: number }>]> = [];
-    const withdrawalsMetadata: Array<[number, number]> = [];
+    const withdrawalsMetadata: Array<[number, WithdrawalsWithMetadata]> = [];
 
     let success = true;
     let bankruptcyAge = null;
