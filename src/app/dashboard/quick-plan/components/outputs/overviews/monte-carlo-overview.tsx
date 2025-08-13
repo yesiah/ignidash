@@ -18,7 +18,6 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
 
-import StochasticReturnsLineChart from '../charts/stochastic-returns-line-chart';
 import StochasticWithdrawalsChart from '../charts/stochastic-withdrawals-bar-chart';
 import StochasticWithdrawalsLineChart from '../charts/stochastic-withdrawals-line-chart';
 import ResultsMetrics from '../stochastic-metrics';
@@ -28,6 +27,7 @@ import StochasticCashFlowBarChartCard from '../cards/stochastic-cash-flow-bar-ch
 import StochasticCashFlowLineChartCard from '../cards/stochastic-cash-flow-line-chart-card';
 import StochasticPhasePercentAreaChartCard from '../cards/stochastic-phase-percent-area-chart-card';
 import StochasticReturnsBarChartCard from '../cards/stochastic-returns-bar-chart-card';
+import StochasticReturnsLineChartCard from '../cards/stochastic-returns-line-chart-card';
 import StochasticDataTableSection from '../sections/stochastic-data-table-section';
 
 export default function MonteCarloOverview() {
@@ -45,18 +45,6 @@ export default function MonteCarloOverview() {
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
   const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
 
-  const memoizedReturnsLineChart = useMemo(
-    () => (
-      <StochasticReturnsLineChart
-        onAgeSelect={(age) => {
-          if (age >= currentAge! + 1) setSelectedAge(age);
-        }}
-        selectedAge={selectedAge}
-        rawChartData={returnsChartData}
-      />
-    ),
-    [returnsChartData, selectedAge, currentAge]
-  );
   const memoizedWithdrawalsChart = useMemo(
     () => <StochasticWithdrawalsChart age={selectedAge} mode={withdrawalsViewMode} rawChartData={withdrawalsChartData} />,
     [withdrawalsChartData, selectedAge, withdrawalsViewMode]
@@ -107,15 +95,7 @@ export default function MonteCarloOverview() {
             rawChartData={phasePercentChartData}
           />
           <StochasticReturnsBarChartCard selectedAge={selectedAge} rawChartData={returnsChartData} />
-          <Card className="my-0">
-            <div className="mb-4 flex items-center justify-between">
-              <h4 className="text-foreground flex items-center text-lg font-semibold">
-                <span className="mr-2">Returns</span>
-                <span className="text-muted-foreground">Time Series</span>
-              </h4>
-            </div>
-            {memoizedReturnsLineChart}
-          </Card>
+          <StochasticReturnsLineChartCard setSelectedAge={setSelectedAge} selectedAge={selectedAge} rawChartData={returnsChartData} />
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">

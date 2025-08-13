@@ -7,7 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tool
 import { useCurrentAge } from '@/lib/stores/quick-plan-store';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface StochasticReturnsLineChartDataPoint {
+export interface StochasticReturnsLineChartDataPoint {
   age: number;
   name: string;
   rate: number | null;
