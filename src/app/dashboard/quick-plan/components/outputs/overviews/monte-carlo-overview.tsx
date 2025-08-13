@@ -18,7 +18,6 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
 
-import StochasticReturnsChart from '../charts/stochastic-returns-bar-chart';
 import StochasticReturnsLineChart from '../charts/stochastic-returns-line-chart';
 import StochasticWithdrawalsChart from '../charts/stochastic-withdrawals-bar-chart';
 import StochasticWithdrawalsLineChart from '../charts/stochastic-withdrawals-line-chart';
@@ -28,6 +27,7 @@ import StochasticPortfolioBarChartCard from '../cards/stochastic-portfolio-bar-c
 import StochasticCashFlowBarChartCard from '../cards/stochastic-cash-flow-bar-chart-card';
 import StochasticCashFlowLineChartCard from '../cards/stochastic-cash-flow-line-chart-card';
 import StochasticPhasePercentAreaChartCard from '../cards/stochastic-phase-percent-area-chart-card';
+import StochasticReturnsBarChartCard from '../cards/stochastic-returns-bar-chart-card';
 import StochasticDataTableSection from '../sections/stochastic-data-table-section';
 
 export default function MonteCarloOverview() {
@@ -35,7 +35,6 @@ export default function MonteCarloOverview() {
 
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
 
-  const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
 
   const simulation = useMonteCarloSimulation();
@@ -46,10 +45,6 @@ export default function MonteCarloOverview() {
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
   const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
 
-  const memoizedReturnsChart = useMemo(
-    () => <StochasticReturnsChart age={selectedAge} mode={returnsViewMode} rawChartData={returnsChartData} />,
-    [returnsChartData, selectedAge, returnsViewMode]
-  );
   const memoizedReturnsLineChart = useMemo(
     () => (
       <StochasticReturnsLineChart
@@ -111,24 +106,7 @@ export default function MonteCarloOverview() {
             selectedAge={selectedAge}
             rawChartData={phasePercentChartData}
           />
-          <Card className="my-0">
-            <div className="mb-4 flex items-center justify-between">
-              <h4 className="text-foreground flex items-center text-lg font-semibold">
-                <span className="mr-2">Returns</span>
-                <span className="text-muted-foreground">Age {selectedAge}</span>
-              </h4>
-              <ButtonGroup
-                firstButtonText="Rates"
-                firstButtonIcon={<ReceiptPercentIcon />}
-                firstButtonOnClick={() => setReturnsViewMode('rates')}
-                lastButtonText="Amounts"
-                lastButtonIcon={<DocumentCurrencyDollarIcon />}
-                lastButtonOnClick={() => setReturnsViewMode('amounts')}
-                defaultActiveButton="first"
-              />
-            </div>
-            {memoizedReturnsChart}
-          </Card>
+          <StochasticReturnsBarChartCard selectedAge={selectedAge} rawChartData={returnsChartData} />
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">

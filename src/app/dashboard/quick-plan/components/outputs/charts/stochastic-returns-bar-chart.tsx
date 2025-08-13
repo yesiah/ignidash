@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelL
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface StochasticReturnsChartDataPoint {
+export interface StochasticReturnsBarChartDataPoint {
   age: number;
   name: string;
   rate: number | null;
@@ -44,17 +44,17 @@ const CustomLabelListContent = (props: any) => {
   );
 };
 
-interface StochasticReturnsChartProps {
-  age: number;
+interface StochasticReturnsBarChartProps {
+  selectedAge: number;
   mode: 'amounts' | 'rates';
-  rawChartData: StochasticReturnsChartDataPoint[];
+  rawChartData: StochasticReturnsBarChartDataPoint[];
 }
 
-export default function StochasticReturnsChart({ age, mode, rawChartData }: StochasticReturnsChartProps) {
+export default function StochasticReturnsBarChart({ selectedAge, mode, rawChartData }: StochasticReturnsBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
-  let chartData = rawChartData.filter((item) => item.age === age);
+  let chartData = rawChartData.filter((item) => item.age === selectedAge);
 
   let bar = null;
   let formatter = undefined;
