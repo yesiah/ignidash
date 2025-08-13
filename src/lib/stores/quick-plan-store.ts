@@ -656,6 +656,27 @@ export const useMonteCarloChartData = () => {
   }, [currentAge, simulation]);
 };
 
+export const useMonteCarloPortfolioHistogramData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useMonteCarloSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.flatMap((data) => [
+      { age: data.year + currentAge, name: 'P10', amount: data.percentiles.p10 },
+      { age: data.year + currentAge, name: 'P25', amount: data.percentiles.p25 },
+      { age: data.year + currentAge, name: 'P50', amount: data.percentiles.p50 },
+      { age: data.year + currentAge, name: 'P75', amount: data.percentiles.p75 },
+      { age: data.year + currentAge, name: 'P90', amount: data.percentiles.p90 },
+    ]);
+  }, [currentAge, simulation]);
+};
+
 export const useMonteCarloCashFlowChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useMonteCarloSimulation();
@@ -888,6 +909,27 @@ export const useHistoricalBacktestChartData = () => {
       p50: data.percentiles.p50,
       p75: data.percentiles.p75,
     }));
+  }, [currentAge, simulation]);
+};
+
+export const useHistoricalBacktestPortfolioHistogramData = () => {
+  const currentAge = useCurrentAge()!;
+  const simulation = useHistoricalBacktestSimulation();
+
+  return useMemo(() => {
+    const analyzer = new SimulationAnalyzer();
+    const simulationData = simulation.simulations.map(([, result]) => result);
+
+    const analysis = analyzer.analyzeSimulations(simulationData);
+    if (!analysis) return [];
+
+    return analysis.yearlyProgression.flatMap((data) => [
+      { age: data.year + currentAge, name: 'P10', amount: data.percentiles.p10 },
+      { age: data.year + currentAge, name: 'P25', amount: data.percentiles.p25 },
+      { age: data.year + currentAge, name: 'P50', amount: data.percentiles.p50 },
+      { age: data.year + currentAge, name: 'P75', amount: data.percentiles.p75 },
+      { age: data.year + currentAge, name: 'P90', amount: data.percentiles.p90 },
+    ]);
   }, [currentAge, simulation]);
 };
 

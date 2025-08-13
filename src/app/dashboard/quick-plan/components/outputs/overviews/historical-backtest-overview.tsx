@@ -15,6 +15,7 @@ import { Button } from '@/components/catalyst/button';
 import {
   useCurrentAge,
   useHistoricalBacktestChartData,
+  useHistoricalBacktestPortfolioHistogramData,
   useHistoricalBacktestAnalysis,
   useHistoricalBacktestSimulation,
   useHistoricalBacktestCashFlowChartData,
@@ -32,6 +33,7 @@ import ButtonGroup from '@/components/ui/button-group';
 import { Switch } from '@/components/catalyst/switch';
 
 import StochasticResultsChart from '../charts/stochastic-results-area-chart';
+import StochasticPortfolioChart from '../charts/stochastic-portfolio-bar-chart';
 import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
 import StochasticPhasePercentAreaChart from '../charts/stochastic-phase-percent-area-chart';
@@ -60,6 +62,7 @@ export default function HistoricalBacktestOverview() {
 
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData();
+  const portfolioHistogramData = useHistoricalBacktestPortfolioHistogramData();
   const fireAnalysis = useHistoricalBacktestAnalysis();
   const cashFlowChartData = useHistoricalBacktestCashFlowChartData();
   const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData();
@@ -69,6 +72,10 @@ export default function HistoricalBacktestOverview() {
   // Reset selectedSeed when simulation changes
   useEffect(() => setSelectedSeed(null), [simulation, viewMode]);
 
+  const memoizedPortfolioChart = useMemo(
+    () => <StochasticPortfolioChart age={selectedAge} rawChartData={portfolioHistogramData} />,
+    [selectedAge, portfolioHistogramData]
+  );
   const memoizedCashFlowChart = useMemo(
     () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
     [selectedAge, cashFlowViewMode, cashFlowChartData]
@@ -180,6 +187,15 @@ export default function HistoricalBacktestOverview() {
               }}
               selectedAge={selectedAge}
             />
+          </Card>
+          <Card className="my-0">
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-foreground flex items-center text-lg font-semibold">
+                <span className="mr-2">Portfolio Distribution</span>
+                <span className="text-muted-foreground">Age {selectedAge}</span>
+              </h4>
+            </div>
+            {memoizedPortfolioChart}
           </Card>
           {!isXSmallScreen && (
             <Card className="my-0">
