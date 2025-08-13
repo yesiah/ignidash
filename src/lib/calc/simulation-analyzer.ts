@@ -22,6 +22,7 @@ import { AssetClass } from './asset';
 import { Portfolio } from './portfolio';
 import { SimulationResult } from './simulation-engine';
 import { ReturnsWithMetadata } from './returns-provider';
+import { WithdrawalsWithMetadata } from './withdrawal-strategy';
 
 /**
  * Core statistical measures for asset or portfolio values
@@ -62,6 +63,11 @@ export interface ReturnsStats {
   inflation: Stats | null;
 }
 
+export interface WithdrawalStats {
+  amount: Stats | null;
+  percentage: Stats | null;
+}
+
 /**
  * Cash flows statistics for analyzing income and expenses
  */
@@ -96,6 +102,7 @@ export interface MultiSimulationStats {
   count: number;
   values: PortfolioStats;
   returns: ReturnsStats;
+  withdrawals: WithdrawalStats;
   percentiles: Percentiles;
 }
 
@@ -197,6 +204,7 @@ export class SimulationAnalyzer {
     // Aggregate all portfolios and returns metadata for overall statistics
     const allPortfolios = results.flatMap(({ data }) => data.map(([, portfolio]) => portfolio));
     const allReturnsMetadata = results.flatMap(({ returnsMetadata }) => returnsMetadata.map(([, metadata]) => metadata));
+    const allWithdrawalsMetadata = results.flatMap(({ withdrawalsMetadata }) => withdrawalsMetadata.map(([, metadata]) => metadata));
 
     // Calculate success segment statistics
     let successStats = null;
@@ -226,6 +234,7 @@ export class SimulationAnalyzer {
       count,
       values: this.calculatePortfolioStats(allPortfolios),
       returns: this.calculateReturnsStats(allReturnsMetadata),
+      withdrawals: this.calculateWithdrawalsStats(allWithdrawalsMetadata),
       percentiles: this.calculatePercentilesFromValues(finalValues),
       successStats,
       failStats,
@@ -281,6 +290,19 @@ export class SimulationAnalyzer {
     const inflation = this.calculateStats(returnsMetadata.map((metadata) => metadata.metadata.inflationRate));
 
     return { rates, amounts, inflation };
+  }
+
+  /**
+   * Calculates withdrawal statistics from withdrawals metadata
+   *
+   * @param withdrawalsMetadata - Array of withdrawals metadata from simulations
+   * @returns Withdrawal statistics including total amounts and percentages
+   */
+  private calculateWithdrawalsStats(withdrawalsMetadata: WithdrawalsWithMetadata[]): WithdrawalStats {
+    const amounts = withdrawalsMetadata.map((metadata) => metadata.withdrawalAmount);
+    const percentages = withdrawalsMetadata.map((metadata) => metadata.withdrawalPercentage);
+
+    return { amount: this.calculateStats(amounts), percentage: this.calculateStats(percentages) };
   }
 
   /**
@@ -407,10 +429,14 @@ export class SimulationAnalyzer {
     // Extract segment portfolios, metadata from segment simulations
     const segmentPortfolios = segmentResults.flatMap(({ data }) => data.map(([, portfolio]) => portfolio));
     const segmentReturnsMetadata = segmentResults.flatMap(({ returnsMetadata }) => returnsMetadata.map(([, metadata]) => metadata));
+    const segmentWithdrawalsMetadata = segmentResults.flatMap(({ withdrawalsMetadata }) =>
+      withdrawalsMetadata.map(([, metadata]) => metadata)
+    );
 
     // Calculate portfolio and returns statistics
     const values = this.calculatePortfolioStats(segmentPortfolios);
     const returns = this.calculateReturnsStats(segmentReturnsMetadata);
+    const withdrawals = this.calculateWithdrawalsStats(segmentWithdrawalsMetadata);
 
     // Calculate percentiles based on final portfolio values
     const finalValues = segmentResults
@@ -425,7 +451,7 @@ export class SimulationAnalyzer {
 
     const percentiles = this.calculatePercentilesFromValues(finalValues);
 
-    return { values, returns, percentiles };
+    return { values, returns, withdrawals, percentiles };
   }
 
   /**
@@ -473,6 +499,9 @@ export class SimulationAnalyzer {
       // Returns metadata starts at year 1
       const returnsMetadata = year > 0 ? results.map((result) => result.returnsMetadata[year - 1][1]) : [];
 
+      // Withdrawals metadata starts at year 1
+      const withdrawalsMetadata = year > 0 ? results.map((result) => result.withdrawalsMetadata[year - 1][1]) : [];
+
       // Cash flows metadata starts at year 1
       const cashFlowsMetadata = year > 0 ? results.map((result) => result.cashFlowsMetadata[year - 1][1]) : [];
 
@@ -480,6 +509,7 @@ export class SimulationAnalyzer {
       const count = portfolios.length;
       const values = this.calculatePortfolioStats(portfolios);
       const returns = this.calculateReturnsStats(returnsMetadata);
+      const withdrawals = this.calculateWithdrawalsStats(withdrawalsMetadata);
       const cashFlows = this.calculateCashFlowsStats(cashFlowsMetadata);
 
       // Calculate percentiles from portfolio values for this year
@@ -517,7 +547,7 @@ export class SimulationAnalyzer {
         bankrupt: (bankruptCount / count) * 100,
       };
 
-      yearlyProgression.push({ year, count, values, returns, percentiles, phasePercentages, cashFlows });
+      yearlyProgression.push({ year, count, values, returns, withdrawals, percentiles, phasePercentages, cashFlows });
     }
 
     return yearlyProgression;
@@ -560,6 +590,7 @@ export class SimulationAnalyzer {
       // Calculate statistics for this phase
       const values = this.calculatePortfolioStats(phaseData.portfolios);
       const returns = this.calculateReturnsStats(phaseData.returnsMetadata);
+      const withdrawals = this.calculateWithdrawalsStats(phaseData.withdrawalsMetadata);
 
       // Calculate percentiles from phase-specific portfolio values
       const sortedPhasePortfolioValues = phaseData.portfolios.map((portfolio) => portfolio.getTotalValue()).sort((a, b) => a - b);
@@ -569,7 +600,7 @@ export class SimulationAnalyzer {
       const sortedDurations = phaseData.durations.sort((a, b) => a - b);
       const durationPercentiles = this.calculatePercentilesFromValues(sortedDurations);
 
-      phaseStats.push({ phaseName, durationPercentiles, count: phaseData.simulationCount, values, returns, percentiles });
+      phaseStats.push({ phaseName, durationPercentiles, count: phaseData.simulationCount, values, returns, withdrawals, percentiles });
     }
 
     return phaseStats;
@@ -588,11 +619,13 @@ export class SimulationAnalyzer {
   ): {
     portfolios: Portfolio[];
     returnsMetadata: ReturnsWithMetadata[];
+    withdrawalsMetadata: WithdrawalsWithMetadata[];
     durations: number[];
     simulationCount: number;
   } {
     const portfolios = [];
     const returnsMetadata = [];
+    const withdrawalsMetadata = [];
     const durations = [];
 
     let simulationCount = 0;
@@ -634,11 +667,17 @@ export class SimulationAnalyzer {
       for (const [year, metadata] of result.returnsMetadata) {
         if (phaseMap.get(year) === phaseName) returnsMetadata.push(metadata);
       }
+
+      // Extract withdrawals metadata for years when this phase was active
+      for (const [year, metadata] of result.withdrawalsMetadata) {
+        if (phaseMap.get(year) === phaseName) withdrawalsMetadata.push(metadata);
+      }
     }
 
     return {
       portfolios,
       returnsMetadata,
+      withdrawalsMetadata,
       durations,
       simulationCount,
     };
