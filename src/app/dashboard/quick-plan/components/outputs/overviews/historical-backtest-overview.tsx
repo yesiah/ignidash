@@ -51,14 +51,14 @@ export default function HistoricalBacktestOverview() {
   const updatePreferences = useUpdatePreferences();
 
   const simulation = useHistoricalBacktestSimulation();
-  const chartData = useHistoricalBacktestChartData();
-  const portfolioHistogramData = useHistoricalBacktestPortfolioHistogramData();
-  const portfolioDistributionHistogramData = useHistoricalBacktestPortfolioDistributionHistogramData();
-  const fireAnalysis = useHistoricalBacktestAnalysis();
-  const cashFlowChartData = useHistoricalBacktestCashFlowChartData();
-  const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData();
-  const returnsChartData = useHistoricalBacktestReturnsChartData();
-  const withdrawalsChartData = useHistoricalBacktestWithdrawalsChartData();
+  const chartData = useHistoricalBacktestChartData(simulation);
+  const portfolioHistogramData = useHistoricalBacktestPortfolioHistogramData(simulation);
+  const portfolioDistributionHistogramData = useHistoricalBacktestPortfolioDistributionHistogramData(simulation);
+  const fireAnalysis = useHistoricalBacktestAnalysis(simulation);
+  const cashFlowChartData = useHistoricalBacktestCashFlowChartData(simulation);
+  const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData(simulation);
+  const returnsChartData = useHistoricalBacktestReturnsChartData(simulation);
+  const withdrawalsChartData = useHistoricalBacktestWithdrawalsChartData(simulation);
 
   const rawPortfolioChartData =
     portfolioDistributionViewMode === 'percentiles' ? portfolioHistogramData : portfolioDistributionHistogramData;

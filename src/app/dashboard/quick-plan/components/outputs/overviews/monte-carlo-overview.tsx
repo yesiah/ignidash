@@ -51,14 +51,14 @@ export default function MonteCarloOverview() {
   const updatePreferences = useUpdatePreferences();
 
   const simulation = useMonteCarloSimulation();
-  const chartData = useMonteCarloChartData();
-  const portfolioHistogramData = useMonteCarloPortfolioHistogramData();
-  const portfolioDistributionHistogramData = useMonteCarloPortfolioDistributionHistogramData();
-  const fireAnalysis = useMonteCarloAnalysis();
-  const cashFlowChartData = useMonteCarloCashFlowChartData();
-  const phasePercentChartData = useMonteCarloPhasePercentAreaChartData();
-  const returnsChartData = useMonteCarloReturnsChartData();
-  const withdrawalsChartData = useMonteCarloWithdrawalsChartData();
+  const chartData = useMonteCarloChartData(simulation);
+  const portfolioHistogramData = useMonteCarloPortfolioHistogramData(simulation);
+  const portfolioDistributionHistogramData = useMonteCarloPortfolioDistributionHistogramData(simulation);
+  const fireAnalysis = useMonteCarloAnalysis(simulation);
+  const cashFlowChartData = useMonteCarloCashFlowChartData(simulation);
+  const phasePercentChartData = useMonteCarloPhasePercentAreaChartData(simulation);
+  const returnsChartData = useMonteCarloReturnsChartData(simulation);
+  const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
 
   const rawPortfolioChartData =
     portfolioDistributionViewMode === 'percentiles' ? portfolioHistogramData : portfolioDistributionHistogramData;
