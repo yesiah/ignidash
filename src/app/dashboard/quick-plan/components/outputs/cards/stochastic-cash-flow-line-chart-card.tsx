@@ -7,11 +7,15 @@ import StochasticCashFlowLineChart, { type StochasticCashFlowLineChartDataPoint 
 
 interface StochasticCashFlowLineChartCardProps {
   setSelectedAge: (age: number) => void;
-  age: number;
+  selectedAge: number;
   rawChartData: StochasticCashFlowLineChartDataPoint[];
 }
 
-export default function StochasticCashFlowLineChartCard({ setSelectedAge, age, rawChartData }: StochasticCashFlowLineChartCardProps) {
+export default function StochasticCashFlowLineChartCard({
+  setSelectedAge,
+  selectedAge,
+  rawChartData,
+}: StochasticCashFlowLineChartCardProps) {
   const currentAge = useCurrentAge();
 
   return (
@@ -23,10 +27,10 @@ export default function StochasticCashFlowLineChartCard({ setSelectedAge, age, r
         </h4>
       </div>
       <StochasticCashFlowLineChart
-        onAgeSelect={(newAge) => {
-          if (newAge >= currentAge! + 1) setSelectedAge(newAge);
+        onAgeSelect={(age) => {
+          if (age >= currentAge! + 1) setSelectedAge(age);
         }}
-        age={age}
+        selectedAge={selectedAge}
         rawChartData={rawChartData}
       />
     </Card>

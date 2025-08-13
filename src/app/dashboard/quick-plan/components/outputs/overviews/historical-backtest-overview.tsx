@@ -117,7 +117,7 @@ export default function HistoricalBacktestOverview() {
             selectedAge={selectedAge}
           />
           <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />
-          <StochasticCashFlowLineChartCard setSelectedAge={setSelectedAge} age={selectedAge} rawChartData={cashFlowChartData} />
+          <StochasticCashFlowLineChartCard setSelectedAge={setSelectedAge} selectedAge={selectedAge} rawChartData={cashFlowChartData} />
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">
