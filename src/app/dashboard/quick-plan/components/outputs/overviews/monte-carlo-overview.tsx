@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { ArrowsUpDownIcon, ScaleIcon, ReceiptPercentIcon, DocumentCurrencyDollarIcon } from '@heroicons/react/20/solid';
+import { ReceiptPercentIcon, DocumentCurrencyDollarIcon } from '@heroicons/react/20/solid';
 
 import {
   useCurrentAge,
@@ -13,13 +13,11 @@ import {
   useMonteCarloReturnsChartData,
   useMonteCarloWithdrawalsChartData,
 } from '@/lib/stores/quick-plan-store';
-import { useIsXSmallMobile } from '@/hooks/use-mobile';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
 
-import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
 import StochasticPhasePercentAreaChart from '../charts/stochastic-phase-percent-area-chart';
 import StochasticReturnsChart from '../charts/stochastic-returns-bar-chart';
@@ -29,14 +27,13 @@ import StochasticWithdrawalsLineChart from '../charts/stochastic-withdrawals-lin
 import ResultsMetrics from '../stochastic-metrics';
 import StochasticPortfolioAreaChartCard from '../cards/stochastic-portfolio-area-chart-card';
 import StochasticPortfolioBarChartCard from '../cards/stochastic-portfolio-bar-chart-card';
+import StochasticCashFlowBarChartCard from '../cards/stochastic-cash-flow-bar-chart-card';
 import StochasticDataTableSection from '../sections/stochastic-data-table-section';
 
 export default function MonteCarloOverview() {
   const currentAge = useCurrentAge();
-  const isXSmallScreen = useIsXSmallMobile();
 
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
-  const [cashFlowViewMode, setCashFlowViewMode] = useState<'inflowOutflow' | 'net'>('inflowOutflow');
 
   const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
@@ -49,10 +46,6 @@ export default function MonteCarloOverview() {
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
   const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
 
-  const memoizedCashFlowChart = useMemo(
-    () => <StochasticCashFlowChart age={selectedAge} mode={cashFlowViewMode} rawChartData={cashFlowChartData} />,
-    [selectedAge, cashFlowViewMode, cashFlowChartData]
-  );
   const memoizedCashFlowLineChart = useMemo(
     () => (
       <StochasticCashFlowLineChart
@@ -135,26 +128,7 @@ export default function MonteCarloOverview() {
             setSelectedAge={setSelectedAge}
             selectedAge={selectedAge}
           />
-          {!isXSmallScreen && (
-            <Card className="my-0">
-              <div className="mb-4 flex items-center justify-between">
-                <h4 className="text-foreground flex items-center text-lg font-semibold">
-                  <span className="mr-2">Cash Flow</span>
-                  <span className="text-muted-foreground">Age {selectedAge}</span>
-                </h4>
-                <ButtonGroup
-                  firstButtonText="All Flows"
-                  firstButtonIcon={<ArrowsUpDownIcon />}
-                  firstButtonOnClick={() => setCashFlowViewMode('inflowOutflow')}
-                  lastButtonText="Net"
-                  lastButtonIcon={<ScaleIcon />}
-                  lastButtonOnClick={() => setCashFlowViewMode('net')}
-                  defaultActiveButton="first"
-                />
-              </div>
-              {memoizedCashFlowChart}
-            </Card>
-          )}
+          <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">

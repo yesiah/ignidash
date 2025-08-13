@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelL
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface StochasticCashFlowChartDataPoint {
+export interface StochasticCashFlowBarChartDataPoint {
   age: number;
   name: string;
   amount: number;
@@ -33,13 +33,13 @@ const CustomLabelListContent = (props: any) => {
   );
 };
 
-interface StochasticCashFlowChartProps {
+interface StochasticCashFlowBarChartProps {
   age: number;
   mode: 'inflowOutflow' | 'net';
-  rawChartData: StochasticCashFlowChartDataPoint[];
+  rawChartData: StochasticCashFlowBarChartDataPoint[];
 }
 
-export default function StochasticCashFlowChart({ age, mode, rawChartData }: StochasticCashFlowChartProps) {
+export default function StochasticCashFlowBarChart({ age, mode, rawChartData }: StochasticCashFlowBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
