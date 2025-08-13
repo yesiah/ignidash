@@ -8,7 +8,7 @@ import { useCurrentAge, StochasticAnalysis } from '@/lib/stores/quick-plan-store
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface StochasticChartDataPoint {
+export interface StochasticChartDataPoint {
   age: number;
   p25: number;
   p50: number;

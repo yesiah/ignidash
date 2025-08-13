@@ -14,17 +14,13 @@ import {
   useHistoricalBacktestPhasePercentAreaChartData,
   useHistoricalBacktestReturnsChartData,
   useHistoricalBacktestWithdrawalsChartData,
-  useShowReferenceLinesPreference,
-  useUpdatePreferences,
 } from '@/lib/stores/quick-plan-store';
 import { useIsXSmallMobile } from '@/hooks/use-mobile';
 import Card from '@/components/ui/card';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import ButtonGroup from '@/components/ui/button-group';
-import { Switch } from '@/components/catalyst/switch';
 
-import StochasticResultsChart from '../charts/stochastic-results-area-chart';
 import StochasticPortfolioChart from '../charts/stochastic-portfolio-bar-chart';
 import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
@@ -34,6 +30,7 @@ import StochasticReturnsLineChart from '../charts/stochastic-returns-line-chart'
 import StochasticWithdrawalsChart from '../charts/stochastic-withdrawals-bar-chart';
 import StochasticWithdrawalsLineChart from '../charts/stochastic-withdrawals-line-chart';
 import ResultsMetrics from '../stochastic-metrics';
+import StochasticPortfolioAreaChartSection from '../sections/stochastic-portfolio-area-chart-section';
 import StochasticDataTableSection from '../sections/stochastic-data-table-section';
 
 export default function HistoricalBacktestOverview() {
@@ -46,9 +43,6 @@ export default function HistoricalBacktestOverview() {
   const [returnsViewMode, setReturnsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [withdrawalsViewMode, setWithdrawalsViewMode] = useState<'amounts' | 'rates'>('rates');
   const [portfolioDistributionViewMode, setPortfolioDistributionViewMode] = useState<'percentiles' | 'counts'>('percentiles');
-
-  const showReferenceLines = useShowReferenceLinesPreference();
-  const updatePreferences = useUpdatePreferences();
 
   const simulation = useHistoricalBacktestSimulation();
   const chartData = useHistoricalBacktestChartData(simulation);
@@ -140,30 +134,12 @@ export default function HistoricalBacktestOverview() {
       <SectionContainer showBottomBorder>
         <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
         <div className="my-4 grid grid-cols-1 gap-2 [@media(min-width:1920px)]:grid-cols-2">
-          <Card className="my-0">
-            <div className="mb-4 flex items-center justify-between">
-              <h4 className="text-foreground text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
-              <Switch
-                className="focus-outline"
-                color="rose"
-                checked={showReferenceLines}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') updatePreferences('showReferenceLines', !showReferenceLines);
-                }}
-                onChange={() => updatePreferences('showReferenceLines', !showReferenceLines)}
-                aria-label="Toggle reference lines"
-              />
-            </div>
-            <StochasticResultsChart
-              fireAnalysis={fireAnalysis}
-              chartData={chartData}
-              showReferenceLines={showReferenceLines}
-              onAgeSelect={(age) => {
-                if (age >= currentAge! + 1) setSelectedAge(age);
-              }}
-              selectedAge={selectedAge}
-            />
-          </Card>
+          <StochasticPortfolioAreaChartSection
+            fireAnalysis={fireAnalysis}
+            chartData={chartData}
+            setSelectedAge={setSelectedAge}
+            selectedAge={selectedAge}
+          />
           <Card className="my-0">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-foreground flex items-center text-lg font-semibold">
