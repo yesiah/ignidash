@@ -19,7 +19,7 @@ export default function StochasticPortfolioBarChartCard({
   distributionData,
   selectedAge,
 }: StochasticPortfolioBarChartCardProps) {
-  const [viewMode, setViewMode] = useState<'percentiles' | 'counts'>('percentiles');
+  const [viewMode, setViewMode] = useState<'percentiles' | 'distribution'>('percentiles');
 
   let title = '';
   let rawChartData = [];
@@ -29,8 +29,8 @@ export default function StochasticPortfolioBarChartCard({
       title = 'Percentiles';
       rawChartData = percentilesData;
       break;
-    case 'counts':
-      title = 'Distributions';
+    case 'distribution':
+      title = 'Distribution';
       rawChartData = distributionData;
       break;
   }
@@ -46,9 +46,9 @@ export default function StochasticPortfolioBarChartCard({
           firstButtonText="Percentiles"
           firstButtonIcon={<ReceiptPercentIcon />}
           firstButtonOnClick={() => setViewMode('percentiles')}
-          lastButtonText="Counts"
+          lastButtonText="Distribution"
           lastButtonIcon={<ChartBarSquareIcon />}
-          lastButtonOnClick={() => setViewMode('counts')}
+          lastButtonOnClick={() => setViewMode('distribution')}
           defaultActiveButton="first"
         />
       </div>

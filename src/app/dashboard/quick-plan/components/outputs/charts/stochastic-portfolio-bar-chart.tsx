@@ -45,7 +45,7 @@ const CustomLabelListContent = (props: any) => {
 
 interface StochasticPortfolioBarChartProps {
   selectedAge: number;
-  mode: 'percentiles' | 'counts';
+  mode: 'percentiles' | 'distribution';
   rawChartData: StochasticPortfolioBarChartDataPoint[];
 }
 
@@ -58,7 +58,7 @@ export default function StochasticPortfolioBarChart({ selectedAge, mode, rawChar
     case 'percentiles':
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'counts':
+    case 'distribution':
       formatter = (value: number) => value.toFixed(0);
       break;
   }
