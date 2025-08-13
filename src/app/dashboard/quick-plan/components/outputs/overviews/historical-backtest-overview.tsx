@@ -35,6 +35,7 @@ import StochasticCashFlowChart from '../charts/stochastic-cash-flow-bar-chart';
 import StochasticCashFlowLineChart from '../charts/stochastic-cash-flow-line-chart';
 import StochasticPhasePercentAreaChart from '../charts/stochastic-phase-percent-area-chart';
 import StochasticReturnsChart from '../charts/stochastic-returns-bar-chart';
+import StochasticReturnsLineChart from '../charts/stochastic-returns-line-chart';
 import ResultsMetrics from '../stochastic-metrics';
 import HistoricalBacktestDataTable from '../tables/historical-backtest-data-table';
 
@@ -94,6 +95,18 @@ export default function HistoricalBacktestOverview() {
   const memoizedReturnsChart = useMemo(
     () => <StochasticReturnsChart age={selectedAge} mode={returnsViewMode} rawChartData={returnsChartData} />,
     [returnsChartData, selectedAge, returnsViewMode]
+  );
+  const memoizedReturnsLineChart = useMemo(
+    () => (
+      <StochasticReturnsLineChart
+        onAgeSelect={(age) => {
+          if (age >= currentAge! + 1) setSelectedAge(age);
+        }}
+        selectedAge={selectedAge}
+        rawChartData={returnsChartData}
+      />
+    ),
+    [returnsChartData, selectedAge, currentAge]
   );
 
   if (chartData.length === 0) {
@@ -202,6 +215,15 @@ export default function HistoricalBacktestOverview() {
               />
             </div>
             {memoizedReturnsChart}
+          </Card>
+          <Card className="my-0">
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-foreground flex items-center text-lg font-semibold">
+                <span className="mr-2">Returns</span>
+                <span className="text-muted-foreground">Time Series</span>
+              </h4>
+            </div>
+            {memoizedReturnsLineChart}
           </Card>
         </div>
       </SectionContainer>
