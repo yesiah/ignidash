@@ -4,9 +4,11 @@ import { useState } from 'react';
 
 import {
   useCurrentAge,
-  useMonteCarloPortfolioAreaChartData,
-  useMonteCarloAnalysis,
   useMonteCarloSimulation,
+  useMonteCarloAnalysis,
+  useMonteCarloPortfolioAreaChartData,
+  useMonteCarloPortfolioPercentilesData,
+  useMonteCarloPortfolioDistributionData,
   useMonteCarloCashFlowChartData,
   useMonteCarloPhasePercentAreaChartData,
   useMonteCarloReturnsChartData,
@@ -35,6 +37,8 @@ export default function MonteCarloOverview() {
 
   const analysis = useMonteCarloAnalysis(simulation);
   const portfolioAreaChartData = useMonteCarloPortfolioAreaChartData(simulation);
+  const portfolioPercentilesData = useMonteCarloPortfolioPercentilesData(simulation);
+  const portfolioDistributionData = useMonteCarloPortfolioDistributionData(simulation);
   const cashFlowChartData = useMonteCarloCashFlowChartData(simulation);
   const phasePercentChartData = useMonteCarloPhasePercentAreaChartData(simulation);
   const returnsChartData = useMonteCarloReturnsChartData(simulation);
@@ -56,9 +60,8 @@ export default function MonteCarloOverview() {
             selectedAge={selectedAge}
           />
           <StochasticPortfolioBarChartCard
-            simulation={simulation}
-            simulationType="monteCarlo"
-            setSelectedAge={setSelectedAge}
+            percentilesData={portfolioPercentilesData}
+            distributionData={portfolioDistributionData}
             selectedAge={selectedAge}
           />
           <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />

@@ -4,9 +4,11 @@ import { useState } from 'react';
 
 import {
   useCurrentAge,
-  useHistoricalBacktestPortfolioAreaChartData,
-  useHistoricalBacktestAnalysis,
   useHistoricalBacktestSimulation,
+  useHistoricalBacktestAnalysis,
+  useHistoricalBacktestPortfolioAreaChartData,
+  useHistoricalBacktestPortfolioPercentilesData,
+  useHistoricalBacktestPortfolioDistributionData,
   useHistoricalBacktestCashFlowChartData,
   useHistoricalBacktestPhasePercentAreaChartData,
   useHistoricalBacktestReturnsChartData,
@@ -35,6 +37,8 @@ export default function HistoricalBacktestOverview() {
 
   const analysis = useHistoricalBacktestAnalysis(simulation);
   const portfolioAreaChartData = useHistoricalBacktestPortfolioAreaChartData(simulation);
+  const portfolioPercentilesData = useHistoricalBacktestPortfolioPercentilesData(simulation);
+  const portfolioDistributionData = useHistoricalBacktestPortfolioDistributionData(simulation);
   const cashFlowChartData = useHistoricalBacktestCashFlowChartData(simulation);
   const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData(simulation);
   const returnsChartData = useHistoricalBacktestReturnsChartData(simulation);
@@ -56,9 +60,8 @@ export default function HistoricalBacktestOverview() {
             selectedAge={selectedAge}
           />
           <StochasticPortfolioBarChartCard
-            simulation={simulation}
-            simulationType="historicalBacktest"
-            setSelectedAge={setSelectedAge}
+            percentilesData={portfolioPercentilesData}
+            distributionData={portfolioDistributionData}
             selectedAge={selectedAge}
           />
           <StochasticCashFlowBarChartCard selectedAge={selectedAge} rawChartData={cashFlowChartData} />
