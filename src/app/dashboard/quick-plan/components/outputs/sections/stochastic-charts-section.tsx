@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useCurrentAge, type StochasticAnalysis } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
+import type { MultiSimulationResult } from '@/lib/calc/simulation-engine';
 import {
   useStochasticPortfolioAreaChartData,
   useStochasticPortfolioPercentilesChartData,
@@ -14,7 +15,6 @@ import {
   useStochasticReturnsChartData,
   useStochasticWithdrawalsChartData,
 } from '@/lib/stores/quick-plan-store';
-import type { MultiSimulationResult } from '@/lib/calc/simulation-engine';
 
 import StochasticPortfolioAreaChartCard from '../cards/stochastic-portfolio-area-chart-card';
 import StochasticPortfolioBarChartCard from '../cards/stochastic-portfolio-bar-chart-card';
