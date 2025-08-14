@@ -49,7 +49,7 @@ import {
   type HistoricalRangeInfo,
 } from '@/lib/calc/simulation-engine';
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
-import { SimulationAnalyzer, type MultiSimulationStats, type AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
+import { SimulationAnalyzer, type AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
 import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
 import { getSimulationWorker } from '@/lib/workers/simulation-worker-api';
 import type { MultiSimulationResultDTO } from '@/lib/workers/simulation-dto';
@@ -907,14 +907,7 @@ export const useStochasticTableData = (simulation: MultiSimulationResult): Stoch
         averageStocksReturn = analysis.returns.rates.stocks?.mean ? analysis.returns.rates.stocks.mean * 100 : null;
         averageBondsReturn = analysis.returns.rates.bonds?.mean ? analysis.returns.rates.bonds.mean * 100 : null;
         averageCashReturn = analysis.returns.rates.cash?.mean ? analysis.returns.rates.cash.mean * 100 : null;
-      }
-
-      // Calculate average inflation rate (not available in analyzer)
-      if (simulationResult.returnsMetadata.length > 0) {
-        const inflationRates = simulationResult.returnsMetadata
-          .map(([, returns]) => returns.metadata.inflationRate)
-          .filter((r) => r !== null && r !== undefined);
-        averageInflationRate = inflationRates.length > 0 ? inflationRates.reduce((sum, r) => sum + r, 0) / inflationRates.length : null;
+        averageInflationRate = analysis.returns.inflation?.mean ? analysis.returns.inflation.mean : null;
       }
 
       return {
@@ -987,15 +980,6 @@ export const useSimulationDetailTableData = (simulation: SimulationResult | null
   }, [currentAge, simulation]);
 };
 
-type YearlyProgressionData = MultiSimulationStats & {
-  year: number;
-  phasePercentages: {
-    accumulation: number;
-    retirement: number;
-    bankrupt: number;
-  };
-};
-
 export const useStochasticYearlyResultsTableData = (simulation: MultiSimulationResult): YearlyAggregateTableRow[] => {
   const currentAge = useCurrentAge()!;
 
@@ -1008,7 +992,7 @@ export const useStochasticYearlyResultsTableData = (simulation: MultiSimulationR
     if (!analysis) return [];
 
     // Transform yearly progression data to match YearlyAggregateTableRow schema
-    const rawData = analysis.yearlyProgression.map((yearData: YearlyProgressionData) => ({
+    const rawData = analysis.yearlyProgression.map((yearData) => ({
       year: yearData.year,
       age: currentAge + yearData.year,
       percentAccumulation: yearData.phasePercentages.accumulation,
