@@ -35,6 +35,12 @@ export default function FixedReturnsOverview() {
 
   const memoizedCashFlowChart = useMemo(() => <FixedCashFlowChart age={selectedAge} mode={viewMode} />, [selectedAge, viewMode]);
 
+  const comingSoon = (
+    <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
+      <p>Coming soon...</p>
+    </div>
+  );
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -90,13 +96,15 @@ export default function FixedReturnsOverview() {
       </SectionContainer>
       <SectionContainer showBottomBorder>
         <SectionHeader title="Quick Stats" desc="A brief overview of your simulation's statistics." />
-        <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
-          <p>Coming soon...</p>
-        </div>
+        {comingSoon}
       </SectionContainer>
       <SectionContainer showBottomBorder>
         <SectionHeader title="Simulation Table" desc="Year-by-year progression showing portfolio value, asset allocation, and returns." />
         <FixedReturnsDataTable />
+      </SectionContainer>
+      <SectionContainer showBottomBorder={false}>
+        <SectionHeader title="Summary" desc="AI-powered insights and recommendations based on your simulation results." />
+        {comingSoon}
       </SectionContainer>
     </>
   );

@@ -12,6 +12,12 @@ export default function HistoricalBacktestOverview() {
   const simulation = useHistoricalBacktestSimulation();
   const analysis = useStochasticAnalysis(simulation);
 
+  const comingSoon = (
+    <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
+      <p>Coming soon...</p>
+    </div>
+  );
+
   return (
     <>
       <SectionContainer showBottomBorder>
@@ -21,11 +27,13 @@ export default function HistoricalBacktestOverview() {
       <StochasticChartsSection analysis={analysis} simulation={simulation} />
       <SectionContainer showBottomBorder>
         <SectionHeader title="Quick Stats" desc="A brief overview of your simulation's statistics." />
-        <div className="text-muted-foreground ml-2 py-10 text-center font-semibold italic">
-          <p>Coming soon...</p>
-        </div>
+        {comingSoon}
       </SectionContainer>
       <StochasticDataTableSection simulation={simulation} simulationType="historicalBacktest" />
+      <SectionContainer showBottomBorder={false}>
+        <SectionHeader title="Summary" desc="AI-powered insights and recommendations based on your simulation results." />
+        {comingSoon}
+      </SectionContainer>
     </>
   );
 }
