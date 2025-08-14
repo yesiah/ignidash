@@ -19,14 +19,16 @@ export default function FixedReturnsPortfolioAreaChartCard({
   selectedAge,
 }: FixedReturnsPortfolioAreaChartCardProps) {
   const currentAge = useCurrentAge();
-
   const showReferenceLines = useShowReferenceLinesPreference();
   const updatePreferences = useUpdatePreferences();
 
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-foreground text-center text-lg font-semibold sm:text-left">Portfolio Projection</h4>
+        <h4 className="text-foreground flex items-center text-lg font-semibold">
+          <span className="mr-2">Portfolio Projection</span>
+          <span className="text-muted-foreground">Time Series</span>
+        </h4>
         <Switch
           className="focus-outline"
           color="rose"
@@ -40,11 +42,11 @@ export default function FixedReturnsPortfolioAreaChartCard({
       </div>
       <FixedReturnsPortfolioAreaChart
         simulation={simulation}
+        showReferenceLines={showReferenceLines}
         onAgeSelect={(age) => {
           if (age >= currentAge! + 1) setSelectedAge(age);
         }}
         selectedAge={selectedAge}
-        showReferenceLines={showReferenceLines}
       />
     </Card>
   );
