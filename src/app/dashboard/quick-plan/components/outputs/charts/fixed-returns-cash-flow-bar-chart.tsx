@@ -28,12 +28,12 @@ const CustomLabelListContent = (props: any) => {
   );
 };
 
-interface FixedCashFlowChartProps {
+interface FixedReturnsCashFlowBarChartProps {
   age: number;
   mode: 'inflowOutflow' | 'net';
 }
 
-export default function FixedCashFlowChart({ age, mode }: FixedCashFlowChartProps) {
+export default function FixedReturnsCashFlowBarChart({ age, mode }: FixedReturnsCashFlowBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
