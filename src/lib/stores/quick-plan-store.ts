@@ -183,6 +183,7 @@ interface QuickPlanState {
     displayFormat: 'today' | 'future';
     dataStorage: 'localStorage' | 'none';
     showReferenceLines: boolean;
+    simulationSeed: number;
   };
 
   actions: {
@@ -199,7 +200,8 @@ interface QuickPlanState {
     updateFlexiblePaths: (field: keyof FlexiblePathsInputs, value: unknown) => UpdateResult;
 
     // Preferences actions
-    updatePreferences: (field: keyof QuickPlanState['preferences'], value: string | boolean) => void;
+    updatePreferences: (field: keyof QuickPlanState['preferences'], value: unknown) => void;
+    generateNewSeed: () => void;
 
     // Utility actions
     resetStore: () => void;
@@ -259,6 +261,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     displayFormat: 'today',
     dataStorage: 'localStorage',
     showReferenceLines: true,
+    simulationSeed: Math.floor(Math.random() * 1000),
   },
 };
 
@@ -351,7 +354,14 @@ export const useQuickPlanStore = create<QuickPlanState>()(
                 state.preferences.dataStorage = value as 'localStorage' | 'none';
               } else if (field === 'showReferenceLines') {
                 state.preferences.showReferenceLines = value as boolean;
+              } else if (field === 'simulationSeed') {
+                state.preferences.simulationSeed = value as number;
               }
+            }),
+
+          generateNewSeed: () =>
+            set((state) => {
+              state.preferences.simulationSeed = Math.floor(Math.random() * 1000);
             }),
 
           /** Utility actions */
@@ -373,7 +383,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       })),
       {
         name: 'quick-plan-storage',
-        version: 3,
+        version: 1,
         // Simple migration: just use defaults for any version change
         migrate: () => ({ ...defaultState }),
         // Only persist the inputs and preferences state, not the actions
@@ -443,7 +453,9 @@ export const useUpdateFlexiblePaths = () => useQuickPlanStore((state) => state.a
  */
 export const usePreferencesData = () => useQuickPlanStore((state) => state.preferences);
 export const useShowReferenceLinesPreference = () => useQuickPlanStore((state) => state.preferences.showReferenceLines);
+export const useSimulationSeed = () => useQuickPlanStore((state) => state.preferences.simulationSeed);
 export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
+export const useGenerateNewSeed = () => useQuickPlanStore((state) => state.actions.generateNewSeed);
 
 /**
  * Utility selectors
@@ -469,25 +481,25 @@ export const useFixedReturnsSimulation = () => {
   }, [inputs]);
 };
 
-export const useMonteCarloSimulation = (baseSeed?: number) => {
+export const useMonteCarloSimulation = () => {
   const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
+  const simulationSeed = useSimulationSeed();
 
   return useMemo(() => {
-    const seed = baseSeed ?? Math.floor(Math.random() * 1000);
-    const engine = new MonteCarloSimulationEngine(inputs, seed);
+    const engine = new MonteCarloSimulationEngine(inputs, simulationSeed);
     return engine.runMonteCarloSimulation(100);
-  }, [inputs, baseSeed]);
+  }, [inputs, simulationSeed]);
 };
 
-export const useMonteCarloSimulationWithWorker = (baseSeed?: number) => {
+export const useMonteCarloSimulationWithWorker = () => {
   const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
+  const simulationSeed = useSimulationSeed();
 
   return useSWR(
-    ['monteCarlo', inputs, baseSeed],
+    ['monteCarlo', inputs, simulationSeed],
     async () => {
-      const seed = baseSeed ?? Math.floor(Math.random() * 1000);
       const worker = getSimulationWorker();
-      const dto = await worker.runMonteCarloSimulation(inputs, seed, 100);
+      const dto = await worker.runMonteCarloSimulation(inputs, simulationSeed, 100);
 
       return reconstructSimulationResult(dto);
     },
@@ -495,14 +507,14 @@ export const useMonteCarloSimulationWithWorker = (baseSeed?: number) => {
   );
 };
 
-export const useHistoricalBacktestSimulation = (baseSeed?: number) => {
+export const useHistoricalBacktestSimulation = () => {
   const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
+  const simulationSeed = useSimulationSeed();
 
   return useMemo(() => {
-    const seed = baseSeed ?? Math.floor(Math.random() * 1000);
-    const engine = new LcgHistoricalBacktestSimulationEngine(inputs, seed);
+    const engine = new LcgHistoricalBacktestSimulationEngine(inputs, simulationSeed);
     return engine.runLcgHistoricalBacktest(100);
-  }, [inputs, baseSeed]);
+  }, [inputs, simulationSeed]);
 };
 
 export interface FixedReturnsAnalysis {
