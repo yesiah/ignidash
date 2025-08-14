@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink';
-import { SimulationAnalyzer } from '@/lib/calc/simulation-analyzer';
-import { MonteCarloSimulationEngine, LcgHistoricalBacktestSimulationEngine, type SimulationResult } from '@/lib/calc/simulation-engine';
+import { SimulationAnalyzer, type AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
+import { MonteCarloSimulationEngine, LcgHistoricalBacktestSimulationEngine } from '@/lib/calc/simulation-engine';
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import type { MultiSimulationResultDTO } from './simulation-dto';
@@ -44,14 +44,32 @@ const simulationAPI = {
     };
   },
 
-  async analyzeSimulations(simulationResults: SimulationResult[]) {
+  async analyzeMonteCarloSimulation(
+    inputs: QuickPlanInputs,
+    baseSeed: number,
+    numSimulations: number
+  ): Promise<AggregateSimulationStats | null> {
+    const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
+    const result = engine.runMonteCarloSimulation(numSimulations);
+
     const analyzer = new SimulationAnalyzer();
-    return analyzer.analyzeSimulations(simulationResults);
+    const simulationData = result.simulations.map(([, result]) => result);
+
+    return analyzer.analyzeSimulations(simulationData);
   },
 
-  async analyzeSimulation(simulationResult: SimulationResult) {
+  async analyzeHistoricalBacktestSimulation(
+    inputs: QuickPlanInputs,
+    baseSeed: number,
+    numSimulations: number
+  ): Promise<AggregateSimulationStats | null> {
+    const engine = new LcgHistoricalBacktestSimulationEngine(inputs, baseSeed);
+    const result = engine.runLcgHistoricalBacktest(numSimulations);
+
     const analyzer = new SimulationAnalyzer();
-    return analyzer.analyzeSimulation(simulationResult);
+    const simulationData = result.simulations.map(([, result]) => result);
+
+    return analyzer.analyzeSimulations(simulationData);
   },
 };
 
