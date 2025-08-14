@@ -2,14 +2,14 @@
 
 import {
   useMonteCarloSimulation,
-  useMonteCarloAnalysis,
-  useMonteCarloPortfolioAreaChartData,
-  useMonteCarloPortfolioPercentilesChartData,
-  useMonteCarloPortfolioDistributionChartData,
-  useMonteCarloCashFlowChartData,
-  useMonteCarloPhasePercentAreaChartData,
-  useMonteCarloReturnsChartData,
-  useMonteCarloWithdrawalsChartData,
+  useStochasticAnalysis,
+  useStochasticPortfolioAreaChartData,
+  useStochasticPortfolioPercentilesChartData,
+  useStochasticPortfolioDistributionChartData,
+  useStochasticCashFlowChartData,
+  useStochasticPhasePercentAreaChartData,
+  useStochasticReturnsChartData,
+  useStochasticWithdrawalsChartData,
 } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
@@ -20,15 +20,15 @@ import StochasticChartsSection from '../sections/stochastic-charts-section';
 
 export default function MonteCarloOverview() {
   const simulation = useMonteCarloSimulation();
-  const analysis = useMonteCarloAnalysis(simulation);
+  const analysis = useStochasticAnalysis(simulation);
 
-  const portfolioAreaChartData = useMonteCarloPortfolioAreaChartData(simulation);
-  const portfolioPercentilesChartData = useMonteCarloPortfolioPercentilesChartData(simulation);
-  const portfolioDistributionChartData = useMonteCarloPortfolioDistributionChartData(simulation);
-  const cashFlowChartData = useMonteCarloCashFlowChartData(simulation);
-  const phasePercentChartData = useMonteCarloPhasePercentAreaChartData(simulation);
-  const returnsChartData = useMonteCarloReturnsChartData(simulation);
-  const withdrawalsChartData = useMonteCarloWithdrawalsChartData(simulation);
+  const portfolioAreaChartData = useStochasticPortfolioAreaChartData(simulation);
+  const portfolioPercentilesChartData = useStochasticPortfolioPercentilesChartData(simulation);
+  const portfolioDistributionChartData = useStochasticPortfolioDistributionChartData(simulation);
+  const cashFlowChartData = useStochasticCashFlowChartData(simulation);
+  const phasePercentChartData = useStochasticPhasePercentAreaChartData(simulation);
+  const returnsChartData = useStochasticReturnsChartData(simulation);
+  const withdrawalsChartData = useStochasticWithdrawalsChartData(simulation);
 
   return (
     <>

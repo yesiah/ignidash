@@ -2,14 +2,14 @@
 
 import {
   useHistoricalBacktestSimulation,
-  useHistoricalBacktestAnalysis,
-  useHistoricalBacktestPortfolioAreaChartData,
-  useHistoricalBacktestPortfolioPercentilesChartData,
-  useHistoricalBacktestPortfolioDistributionChartData,
-  useHistoricalBacktestCashFlowChartData,
-  useHistoricalBacktestPhasePercentAreaChartData,
-  useHistoricalBacktestReturnsChartData,
-  useHistoricalBacktestWithdrawalsChartData,
+  useStochasticAnalysis,
+  useStochasticPortfolioAreaChartData,
+  useStochasticPortfolioPercentilesChartData,
+  useStochasticPortfolioDistributionChartData,
+  useStochasticCashFlowChartData,
+  useStochasticPhasePercentAreaChartData,
+  useStochasticReturnsChartData,
+  useStochasticWithdrawalsChartData,
 } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
@@ -20,15 +20,15 @@ import StochasticChartsSection from '../sections/stochastic-charts-section';
 
 export default function HistoricalBacktestOverview() {
   const simulation = useHistoricalBacktestSimulation();
-  const analysis = useHistoricalBacktestAnalysis(simulation);
+  const analysis = useStochasticAnalysis(simulation);
 
-  const portfolioAreaChartData = useHistoricalBacktestPortfolioAreaChartData(simulation);
-  const portfolioPercentilesChartData = useHistoricalBacktestPortfolioPercentilesChartData(simulation);
-  const portfolioDistributionChartData = useHistoricalBacktestPortfolioDistributionChartData(simulation);
-  const cashFlowChartData = useHistoricalBacktestCashFlowChartData(simulation);
-  const phasePercentChartData = useHistoricalBacktestPhasePercentAreaChartData(simulation);
-  const returnsChartData = useHistoricalBacktestReturnsChartData(simulation);
-  const withdrawalsChartData = useHistoricalBacktestWithdrawalsChartData(simulation);
+  const portfolioAreaChartData = useStochasticPortfolioAreaChartData(simulation);
+  const portfolioPercentilesChartData = useStochasticPortfolioPercentilesChartData(simulation);
+  const portfolioDistributionChartData = useStochasticPortfolioDistributionChartData(simulation);
+  const cashFlowChartData = useStochasticCashFlowChartData(simulation);
+  const phasePercentChartData = useStochasticPhasePercentAreaChartData(simulation);
+  const returnsChartData = useStochasticReturnsChartData(simulation);
+  const withdrawalsChartData = useStochasticWithdrawalsChartData(simulation);
 
   return (
     <>

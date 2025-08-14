@@ -502,60 +502,7 @@ export interface StochasticAnalysis {
   finalPortfolio: number;
 }
 
-export const useMonteCarloAnalysis = (simulation: MultiSimulationResult) => {
-  const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return null;
-
-    const successRate = analysis.successRate;
-    const requiredPortfolio = WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs);
-    const progressToFIRE = Math.min(inputs.basics.investedAssets! / requiredPortfolio, 1);
-    const finalPortfolio = analysis.yearlyProgression[analysis.yearlyProgression.length - 1].percentiles.p50;
-
-    let p10YearsToFIRE: number | null = null;
-    let p10FireAge: number | null = null;
-
-    let p50YearsToFIRE: number | null = null;
-    let p50FireAge: number | null = null;
-
-    let p90YearsToFIRE: number | null = null;
-    let p90FireAge: number | null = null;
-
-    for (const phase of analysis.phaseStats ?? []) {
-      if (phase.phaseName === 'Accumulation') {
-        p10YearsToFIRE = phase.durationPercentiles.p10;
-        p10FireAge = inputs.basics.currentAge! + p10YearsToFIRE;
-
-        p50YearsToFIRE = phase.durationPercentiles.p50;
-        p50FireAge = inputs.basics.currentAge! + p50YearsToFIRE;
-
-        p90YearsToFIRE = phase.durationPercentiles.p90;
-        p90FireAge = inputs.basics.currentAge! + p90YearsToFIRE;
-        break;
-      }
-    }
-
-    return {
-      successRate,
-      progressToFIRE,
-      p10YearsToFIRE,
-      p10FireAge,
-      p50YearsToFIRE,
-      p50FireAge,
-      p90YearsToFIRE,
-      p90FireAge,
-      requiredPortfolio,
-      finalPortfolio,
-    };
-  }, [inputs, simulation]);
-};
-
-export const useHistoricalBacktestAnalysis = (simulation: MultiSimulationResult) => {
+export const useStochasticAnalysis = (simulation: MultiSimulationResult) => {
   const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
 
   return useMemo(() => {
@@ -634,26 +581,7 @@ export const useFixedReturnsCashFlowChartData = () => {
   }, [currentAge, simulation]);
 };
 
-export const useMonteCarloPortfolioAreaChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.map((data) => ({
-      age: data.year + currentAge,
-      p25: data.percentiles.p25,
-      p50: data.percentiles.p50,
-      p75: data.percentiles.p75,
-    }));
-  }, [currentAge, simulation]);
-};
-
-export const useMonteCarloPortfolioPercentilesChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticPortfolioPercentilesChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -673,28 +601,7 @@ export const useMonteCarloPortfolioPercentilesChartData = (simulation: MultiSimu
   }, [currentAge, simulation]);
 };
 
-export const useMonteCarloPortfolioDistributionChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.flatMap((data) => [
-      { age: data.year + currentAge, name: '<P10', amount: data.distribution.belowP10 },
-      { age: data.year + currentAge, name: 'P10—P25', amount: data.distribution.p10toP25 },
-      { age: data.year + currentAge, name: 'P25—P50', amount: data.distribution.p25toP50 },
-      { age: data.year + currentAge, name: 'P50—P75', amount: data.distribution.p50toP75 },
-      { age: data.year + currentAge, name: 'P75—P90', amount: data.distribution.p75toP90 },
-      { age: data.year + currentAge, name: '>P90', amount: data.distribution.aboveP90 },
-    ]);
-  }, [currentAge, simulation]);
-};
-
-export const useMonteCarloCashFlowChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticCashFlowChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -716,7 +623,7 @@ export const useMonteCarloCashFlowChartData = (simulation: MultiSimulationResult
   }, [currentAge, simulation]);
 };
 
-export const useMonteCarloPhasePercentAreaChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticPhasePercentAreaChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -735,26 +642,7 @@ export const useMonteCarloPhasePercentAreaChartData = (simulation: MultiSimulati
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestPhasePercentAreaChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.map((data) => ({
-      age: data.year + currentAge,
-      percentAccumulation: data.phasePercentages.accumulation,
-      percentRetirement: data.phasePercentages.retirement,
-      percentBankrupt: data.phasePercentages.bankrupt,
-    }));
-  }, [currentAge, simulation]);
-};
-
-export const useMonteCarloReturnsChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticReturnsChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -809,62 +697,7 @@ export const useMonteCarloReturnsChartData = (simulation: MultiSimulationResult)
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestReturnsChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.flatMap((data) => {
-      const results = [];
-
-      const stocksAmountMean = data.returns.amounts.stocks?.mean;
-      if (stocksAmountMean) {
-        results.push({
-          age: data.year + currentAge,
-          name: 'Stocks',
-          rate: data.returns.rates.stocks?.mean ?? null,
-          amount: stocksAmountMean,
-        });
-      }
-
-      const bondsAmountMean = data.returns.amounts.bonds?.mean;
-      if (bondsAmountMean) {
-        results.push({
-          age: data.year + currentAge,
-          name: 'Bonds',
-          rate: data.returns.rates.bonds?.mean ?? null,
-          amount: bondsAmountMean,
-        });
-      }
-
-      const cashAmountMean = data.returns.amounts.cash?.mean;
-      if (cashAmountMean) {
-        results.push({
-          age: data.year + currentAge,
-          name: 'Cash',
-          rate: data.returns.rates.cash?.mean ?? null,
-          amount: cashAmountMean,
-        });
-      }
-
-      results.push({
-        age: data.year + currentAge,
-        name: 'Inflation',
-        rate: data.returns.inflation?.mean ? data.returns.inflation.mean / 100 : null,
-        amount: null,
-      });
-
-      return results;
-    });
-  }, [currentAge, simulation]);
-};
-
-export const useMonteCarloWithdrawalsChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticWithdrawalsChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -883,26 +716,7 @@ export const useMonteCarloWithdrawalsChartData = (simulation: MultiSimulationRes
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestWithdrawalsChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.map((data) => ({
-      age: data.year + currentAge,
-      name: 'Withdrawals',
-      rate: data.withdrawals.percentage?.mean ?? null,
-      amount: data.withdrawals.amount?.mean ?? null,
-    }));
-  }, [currentAge, simulation]);
-};
-
-export const useHistoricalBacktestPortfolioAreaChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticPortfolioAreaChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -921,27 +735,7 @@ export const useHistoricalBacktestPortfolioAreaChartData = (simulation: MultiSim
   }, [currentAge, simulation]);
 };
 
-export const useHistoricalBacktestPortfolioPercentilesChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.flatMap((data) => [
-      { age: data.year + currentAge, name: 'P10', amount: data.percentiles.p10 },
-      { age: data.year + currentAge, name: 'P25', amount: data.percentiles.p25 },
-      { age: data.year + currentAge, name: 'P50', amount: data.percentiles.p50 },
-      { age: data.year + currentAge, name: 'P75', amount: data.percentiles.p75 },
-      { age: data.year + currentAge, name: 'P90', amount: data.percentiles.p90 },
-    ]);
-  }, [currentAge, simulation]);
-};
-
-export const useHistoricalBacktestPortfolioDistributionChartData = (simulation: MultiSimulationResult) => {
+export const useStochasticPortfolioDistributionChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
@@ -959,28 +753,6 @@ export const useHistoricalBacktestPortfolioDistributionChartData = (simulation: 
       { age: data.year + currentAge, name: 'P75—P90', amount: data.distribution.p75toP90 },
       { age: data.year + currentAge, name: '>P90', amount: data.distribution.aboveP90 },
     ]);
-  }, [currentAge, simulation]);
-};
-
-export const useHistoricalBacktestCashFlowChartData = (simulation: MultiSimulationResult) => {
-  const currentAge = useCurrentAge()!;
-
-  return useMemo(() => {
-    const analyzer = new SimulationAnalyzer();
-    const simulationData = simulation.simulations.map(([, result]) => result);
-
-    const analysis = analyzer.analyzeSimulations(simulationData);
-    if (!analysis) return [];
-
-    return analysis.yearlyProgression.flatMap((data) =>
-      Object.entries(data.cashFlows.byName)
-        .filter(([, stats]) => stats !== null)
-        .map(([name, stats]) => ({
-          age: data.year + currentAge,
-          name,
-          amount: stats!.mean,
-        }))
-    );
   }, [currentAge, simulation]);
 };
 
