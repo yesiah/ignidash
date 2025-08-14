@@ -5,11 +5,16 @@ import { useState } from 'react';
 import { useCurrentAge, type StochasticAnalysis } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
-import type {
-  StochasticCashFlowChartDataPoint,
-  StochasticReturnsChartDataPoint,
-  StochasticWithdrawalsChartDataPoint,
-} from '@/lib/types/chart-data-points';
+import {
+  useStochasticPortfolioAreaChartData,
+  useStochasticPortfolioPercentilesChartData,
+  useStochasticPortfolioDistributionChartData,
+  useStochasticCashFlowChartData,
+  useStochasticPhasePercentAreaChartData,
+  useStochasticReturnsChartData,
+  useStochasticWithdrawalsChartData,
+} from '@/lib/stores/quick-plan-store';
+import type { MultiSimulationResult } from '@/lib/calc/simulation-engine';
 
 import StochasticPortfolioAreaChartCard from '../cards/stochastic-portfolio-area-chart-card';
 import StochasticPortfolioBarChartCard from '../cards/stochastic-portfolio-bar-chart-card';
@@ -21,33 +26,22 @@ import StochasticReturnsLineChartCard from '../cards/stochastic-returns-line-cha
 import StochasticWithdrawalsBarChartCard from '../cards/stochastic-withdrawals-bar-chart-card';
 import StochasticWithdrawalsLineChartCard from '../cards/stochastic-withdrawals-line-chart-card';
 
-import type { StochasticPortfolioAreaChartDataPoint } from '../charts/stochastic-portfolio-area-chart';
-import type { StochasticPortfolioBarChartDataPoint } from '../charts/stochastic-portfolio-bar-chart';
-import type { StochasticPhasePercentAreaChartDataPoint } from '../charts/stochastic-phase-percent-area-chart';
-
 interface StochasticChartsSectionProps {
   analysis: StochasticAnalysis | null;
-  portfolioAreaChartData: StochasticPortfolioAreaChartDataPoint[];
-  portfolioPercentilesChartData: StochasticPortfolioBarChartDataPoint[];
-  portfolioDistributionChartData: StochasticPortfolioBarChartDataPoint[];
-  cashFlowChartData: StochasticCashFlowChartDataPoint[];
-  phasePercentChartData: StochasticPhasePercentAreaChartDataPoint[];
-  returnsChartData: StochasticReturnsChartDataPoint[];
-  withdrawalsChartData: StochasticWithdrawalsChartDataPoint[];
+  simulation: MultiSimulationResult;
 }
 
-export default function StochasticChartsSection({
-  analysis,
-  portfolioAreaChartData,
-  portfolioPercentilesChartData,
-  portfolioDistributionChartData,
-  cashFlowChartData,
-  phasePercentChartData,
-  returnsChartData,
-  withdrawalsChartData,
-}: StochasticChartsSectionProps) {
+export default function StochasticChartsSection({ analysis, simulation }: StochasticChartsSectionProps) {
   const currentAge = useCurrentAge();
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
+
+  const portfolioAreaChartData = useStochasticPortfolioAreaChartData(simulation);
+  const portfolioPercentilesChartData = useStochasticPortfolioPercentilesChartData(simulation);
+  const portfolioDistributionChartData = useStochasticPortfolioDistributionChartData(simulation);
+  const cashFlowChartData = useStochasticCashFlowChartData(simulation);
+  const phasePercentChartData = useStochasticPhasePercentAreaChartData(simulation);
+  const returnsChartData = useStochasticReturnsChartData(simulation);
+  const withdrawalsChartData = useStochasticWithdrawalsChartData(simulation);
 
   return (
     <SectionContainer showBottomBorder>
