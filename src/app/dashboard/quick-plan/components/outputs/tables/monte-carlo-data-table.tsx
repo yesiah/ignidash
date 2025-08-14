@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-import { useMonteCarloTableData, useSimulationDetailData, useMonteCarloYearlyResultsTableData } from '@/lib/stores/quick-plan-store';
+import { useMonteCarloTableData, useSimulationDetailTableData, useMonteCarloYearlyResultsTableData } from '@/lib/stores/quick-plan-store';
 import { type SimulationTableRow, type MonteCarloTableRow, type YearlyAggregateTableRow } from '@/lib/schemas/simulation-table-schema';
 import {
   generateMonteCarloTableColumns,
@@ -31,7 +31,7 @@ export default function MonteCarloDataTable({ simulation, selectedSeed, setSelec
 
   const allSimulationData = useMonteCarloTableData(simulation);
   const yearlyData = useMonteCarloYearlyResultsTableData(simulation);
-  const detailData = useSimulationDetailData(selectedSimulation);
+  const detailData = useSimulationDetailTableData(selectedSimulation);
 
   const allSimulationColumns = useMemo(() => generateMonteCarloTableColumns(), []);
   const yearlyColumns = useMemo(() => generateYearlyAggregateTableColumns(), []);

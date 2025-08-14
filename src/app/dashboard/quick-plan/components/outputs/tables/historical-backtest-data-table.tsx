@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import {
   useHistoricalBacktestTableData,
-  useSimulationDetailData,
+  useSimulationDetailTableData,
   useHistoricalBacktestYearlyResultsTableData,
 } from '@/lib/stores/quick-plan-store';
 import {
@@ -44,7 +44,7 @@ export default function HistoricalBacktestDataTable({
 
   const allSimulationData = useHistoricalBacktestTableData(simulation);
   const yearlyData = useHistoricalBacktestYearlyResultsTableData(simulation);
-  const detailData = useSimulationDetailData(selectedSimulation);
+  const detailData = useSimulationDetailTableData(selectedSimulation);
 
   const allSimulationColumns = useMemo(() => generateHistoricalBacktestTableColumns(), []);
   const yearlyColumns = useMemo(() => generateYearlyAggregateTableColumns(), []);

@@ -555,6 +555,10 @@ export const useStochasticAnalysis = (simulation: MultiSimulationResult) => {
   }, [inputs, simulation]);
 };
 
+/**
+ * Fixed Returns Chart Hooks
+ * These hooks provide access to fixed returns simulation chart data
+ */
 export const useFixedReturnsChartData = () => {
   const currentAge = useCurrentAge()!;
   const simulation = useFixedReturnsSimulation();
@@ -581,6 +585,10 @@ export const useFixedReturnsCashFlowChartData = () => {
   }, [currentAge, simulation]);
 };
 
+/**
+ * Stochastic Chart Hooks
+ * These hooks provide access to stochastic simulation chart data
+ */
 export const useStochasticPortfolioAreaChartData = (simulation: MultiSimulationResult) => {
   const currentAge = useCurrentAge()!;
 
@@ -756,6 +764,10 @@ export const useStochasticWithdrawalsChartData = (simulation: MultiSimulationRes
   }, [currentAge, simulation]);
 };
 
+/**
+ * Fixed Returns Table Hooks
+ * These hooks provide access to fixed returns simulation table data
+ */
 export const useFixedReturnsTableData = (): SimulationTableRow[] => {
   const currentAge = useCurrentAge()!;
   const simulation = useFixedReturnsSimulation();
@@ -801,6 +813,10 @@ export const useFixedReturnsTableData = (): SimulationTableRow[] => {
   }, [currentAge, simulation]);
 };
 
+/**
+ * Stochastic Table Hooks
+ * These hooks provide access to stochastic simulation table data
+ */
 export const useMonteCarloTableData = (simulation: MultiSimulationResult): MonteCarloTableRow[] => {
   const currentAge = useCurrentAge()!;
 
@@ -938,7 +954,7 @@ export const useHistoricalBacktestTableData = (simulation: MultiSimulationResult
  * Hook to convert a single SimulationResult to SimulationTableRow[] format
  * Used for drill-down functionality in Monte Carlo and Historical Backtest tables
  */
-export const useSimulationDetailData = (simulation: SimulationResult | null): SimulationTableRow[] => {
+export const useSimulationDetailTableData = (simulation: SimulationResult | null): SimulationTableRow[] => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {
