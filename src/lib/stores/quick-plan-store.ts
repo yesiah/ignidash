@@ -464,9 +464,8 @@ export interface FixedReturnsAnalysis {
   performance: number | null;
 }
 
-export const useFixedReturnsAnalysis = () => {
+export const useFixedReturnsAnalysis = (simulation: SimulationResult) => {
   const inputs = useQuickPlanStore(useShallow((state) => state.inputs));
-  const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
     let yearsToFIRE: number | null = null;
@@ -559,9 +558,8 @@ export const useStochasticAnalysis = (simulation: MultiSimulationResult) => {
  * Fixed Returns Chart Hooks
  * These hooks provide access to fixed returns simulation chart data
  */
-export const useFixedReturnsChartData = () => {
+export const useFixedReturnsChartData = (simulation: SimulationResult) => {
   const currentAge = useCurrentAge()!;
-  const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
     return simulation.data.map(([timeInYears, portfolio]) => ({
@@ -574,9 +572,8 @@ export const useFixedReturnsChartData = () => {
   }, [currentAge, simulation]);
 };
 
-export const useFixedReturnsCashFlowChartData = () => {
+export const useFixedReturnsCashFlowChartData = (simulation: SimulationResult) => {
   const currentAge = useCurrentAge()!;
-  const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
     return simulation.cashFlowsMetadata.flatMap(([timeInYears, cashFlows]) =>
@@ -768,9 +765,8 @@ export const useStochasticWithdrawalsChartData = (simulation: MultiSimulationRes
  * Fixed Returns Table Hooks
  * These hooks provide access to fixed returns simulation table data
  */
-export const useFixedReturnsTableData = (): SimulationTableRow[] => {
+export const useFixedReturnsTableData = (simulation: SimulationResult): SimulationTableRow[] => {
   const currentAge = useCurrentAge()!;
-  const simulation = useFixedReturnsSimulation();
 
   return useMemo(() => {
     // Create a map for efficient phase lookup

@@ -3,15 +3,21 @@
 import { useCurrentAge, useShowReferenceLinesPreference, useUpdatePreferences } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import { Switch } from '@/components/catalyst/switch';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 
 import FixedReturnsPortfolioAreaChart from '../charts/fixed-returns-portfolio-area-chart';
 
 interface FixedReturnsPortfolioAreaChartCardProps {
+  simulation: SimulationResult;
   setSelectedAge: (age: number) => void;
   selectedAge: number;
 }
 
-export default function FixedReturnsPortfolioAreaChartCard({ setSelectedAge, selectedAge }: FixedReturnsPortfolioAreaChartCardProps) {
+export default function FixedReturnsPortfolioAreaChartCard({
+  simulation,
+  setSelectedAge,
+  selectedAge,
+}: FixedReturnsPortfolioAreaChartCardProps) {
   const currentAge = useCurrentAge();
 
   const showReferenceLines = useShowReferenceLinesPreference();
@@ -33,6 +39,7 @@ export default function FixedReturnsPortfolioAreaChartCard({ setSelectedAge, sel
         />
       </div>
       <FixedReturnsPortfolioAreaChart
+        simulation={simulation}
         onAgeSelect={(age) => {
           if (age >= currentAge! + 1) setSelectedAge(age);
         }}

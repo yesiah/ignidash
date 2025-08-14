@@ -2,11 +2,7 @@
 
 import { useState } from 'react';
 
-import {
-  // useFixedReturnsSimulation,
-  useFixedReturnsAnalysis,
-  useCurrentAge,
-} from '@/lib/stores/quick-plan-store';
+import { useFixedReturnsSimulation, useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 
@@ -16,8 +12,8 @@ import FixedReturnsDataTable from '../tables/fixed-returns-data-table';
 import ResultsMetrics from '../fixed-returns-metrics';
 
 export default function FixedReturnsOverview() {
-  // const simulation = useFixedReturnsSimulation();
-  const analysis = useFixedReturnsAnalysis();
+  const simulation = useFixedReturnsSimulation();
+  const analysis = useFixedReturnsAnalysis(simulation);
 
   const currentAge = useCurrentAge();
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
@@ -37,8 +33,8 @@ export default function FixedReturnsOverview() {
       <SectionContainer showBottomBorder>
         <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
         <div className="my-4 grid grid-cols-1 gap-2 [@media(min-width:1920px)]:grid-cols-2">
-          <FixedReturnsPortfolioAreaChartCard setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
-          <FixedReturnsCashFlowBarChartCard selectedAge={selectedAge} />
+          <FixedReturnsPortfolioAreaChartCard simulation={simulation} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+          <FixedReturnsCashFlowBarChartCard simulation={simulation} selectedAge={selectedAge} />
         </div>
       </SectionContainer>
       <SectionContainer showBottomBorder>
@@ -47,7 +43,7 @@ export default function FixedReturnsOverview() {
       </SectionContainer>
       <SectionContainer showBottomBorder>
         <SectionHeader title="Simulation Table" desc="Year-by-year progression showing portfolio value, asset allocation, and returns." />
-        <FixedReturnsDataTable />
+        <FixedReturnsDataTable simulation={simulation} />
       </SectionContainer>
       <SectionContainer showBottomBorder={false}>
         <SectionHeader title="Summary" desc="AI-powered insights and recommendations based on your simulation results." />

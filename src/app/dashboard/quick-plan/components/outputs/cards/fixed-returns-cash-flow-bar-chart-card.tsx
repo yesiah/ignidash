@@ -5,14 +5,16 @@ import { ArrowsUpDownIcon, ScaleIcon } from '@heroicons/react/20/solid';
 
 import Card from '@/components/ui/card';
 import ButtonGroup from '@/components/ui/button-group';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 
 import FixedReturnsCashFlowBarChart from '../charts/fixed-returns-cash-flow-bar-chart';
 
 interface FixedReturnsCashFlowBarChartCardProps {
+  simulation: SimulationResult;
   selectedAge: number;
 }
 
-export default function FixedReturnsCashFlowBarChartCard({ selectedAge }: FixedReturnsCashFlowBarChartCardProps) {
+export default function FixedReturnsCashFlowBarChartCard({ simulation, selectedAge }: FixedReturnsCashFlowBarChartCardProps) {
   const [viewMode, setViewMode] = useState<'inflowOutflow' | 'net'>('inflowOutflow');
 
   return (
@@ -32,7 +34,7 @@ export default function FixedReturnsCashFlowBarChartCard({ selectedAge }: FixedR
           defaultActiveButton="first"
         />
       </div>
-      <FixedReturnsCashFlowBarChart age={selectedAge} mode={viewMode} />
+      <FixedReturnsCashFlowBarChart simulation={simulation} selectedAge={selectedAge} mode={viewMode} />
     </Card>
   );
 }

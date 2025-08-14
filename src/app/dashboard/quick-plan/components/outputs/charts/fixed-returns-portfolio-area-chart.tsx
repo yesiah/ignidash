@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { useFixedReturnsChartData, useFixedReturnsAnalysis, useCurrentAge } from '@/lib/stores/quick-plan-store';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -70,12 +71,14 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
 };
 
 interface FixedReturnsPortfolioAreaChartProps {
+  simulation: SimulationResult;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   showReferenceLines: boolean;
 }
 
 export default function FixedReturnsPortfolioAreaChart({
+  simulation,
   onAgeSelect,
   selectedAge,
   showReferenceLines,
@@ -86,8 +89,8 @@ export default function FixedReturnsPortfolioAreaChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
-  const chartData = useFixedReturnsChartData();
-  const fireAnalysis = useFixedReturnsAnalysis();
+  const chartData = useFixedReturnsChartData(simulation);
+  const fireAnalysis = useFixedReturnsAnalysis(simulation);
   const currentAge = useCurrentAge();
 
   useEffect(() => {

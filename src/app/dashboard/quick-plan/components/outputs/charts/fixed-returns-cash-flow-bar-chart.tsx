@@ -4,6 +4,7 @@ import { useTheme } from 'next-themes';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
 
 import { useFixedReturnsCashFlowChartData } from '@/lib/stores/quick-plan-store';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -29,17 +30,18 @@ const CustomLabelListContent = (props: any) => {
 };
 
 interface FixedReturnsCashFlowBarChartProps {
-  age: number;
+  simulation: SimulationResult;
+  selectedAge: number;
   mode: 'inflowOutflow' | 'net';
 }
 
-export default function FixedReturnsCashFlowBarChart({ age, mode }: FixedReturnsCashFlowBarChartProps) {
+export default function FixedReturnsCashFlowBarChart({ simulation, selectedAge, mode }: FixedReturnsCashFlowBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
   let yAxisDomain: [number, number] | undefined = undefined;
-  let chartData = useFixedReturnsCashFlowChartData()
-    .filter((item) => item.age === age && item.amount !== 0)
+  let chartData = useFixedReturnsCashFlowChartData(simulation)
+    .filter((item) => item.age === selectedAge && item.amount !== 0)
     .sort((a, b) => b.amount - a.amount);
   let bar = null;
 
@@ -59,7 +61,7 @@ export default function FixedReturnsCashFlowBarChart({ age, mode }: FixedReturns
       const netAmount = chartData.reduce((sum, item) => sum + item.amount, 0);
 
       yAxisDomain = [Math.min(0, netAmount * 1.25), Math.max(0, netAmount * 1.25)];
-      chartData = [{ age, name: 'Net Cash Flow', amount: netAmount }];
+      chartData = [{ age: selectedAge, name: 'Net Cash Flow', amount: netAmount }];
       bar = (
         <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
           {chartData.map((entry, index) => {
