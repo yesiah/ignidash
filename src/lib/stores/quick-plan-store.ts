@@ -959,7 +959,7 @@ export const useStochasticTableData = (simulation: MultiSimulationResult): Stoch
  * Hook to convert a single SimulationResult to SimulationTableRow[] format
  * Used for drill-down functionality in Monte Carlo and Historical Backtest tables
  */
-export const useSimulationDetailTableData = (simulation: SimulationResult | null): SimulationTableRow[] => {
+export const useStochasticDrillDownTableData = (simulation: SimulationResult | null): SimulationTableRow[] => {
   const currentAge = useCurrentAge()!;
 
   return useMemo(() => {

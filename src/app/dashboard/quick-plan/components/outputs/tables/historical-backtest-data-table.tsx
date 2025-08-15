@@ -6,7 +6,7 @@ import {
   useHistoricalBacktestSimulationWithWorker,
   useSingleHistoricalBacktestSimulation,
   useStochasticTableData,
-  useSimulationDetailTableData,
+  useStochasticDrillDownTableData,
   useStochasticYearlyResultsTableData,
 } from '@/lib/stores/quick-plan-store';
 import type { SimulationTableRow, StochasticTableRow, YearlyAggregateTableRow } from '@/lib/schemas/simulation-table-schema';
@@ -39,7 +39,7 @@ function HistoricalBacktestDataTableImpl({
 
   const allSimulationData = useStochasticTableData(simulation);
   const yearlyData = useStochasticYearlyResultsTableData(simStats);
-  const detailData = useSimulationDetailTableData(selectedSimulation);
+  const detailData = useStochasticDrillDownTableData(selectedSimulation);
 
   const allSimulationColumns = useMemo(() => generateStochasticTableColumns(), []);
   const yearlyColumns = useMemo(() => generateYearlyAggregateTableColumns(), []);
