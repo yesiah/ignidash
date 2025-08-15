@@ -600,9 +600,12 @@ export const useFixedReturnsAnalysis = (simulation: SimulationResult) => {
 
     const requiredPortfolio = WithdrawalStrategy.getConstantDollarRequiredPortfolio(inputs);
     const progressToFIRE = Math.min(inputs.basics.investedAssets! / requiredPortfolio, 1);
-    const finalPortfolio = simulation.data[simulation.data.length - 1][1].getTotalValue();
-    const performance = simulation.data[simulation.data.length - 1][1].getPerformance();
-    const success = finalPortfolio >= 0.1 && yearsToFIRE !== null;
+
+    const finalPortfolioInstance = simulation.data[simulation.data.length - 1][1];
+
+    const finalPortfolio = finalPortfolioInstance.getTotalValue();
+    const performance = finalPortfolioInstance.getPerformance();
+    const success = !finalPortfolioInstance.getIsDepleted() && yearsToFIRE !== null;
 
     return { success, progressToFIRE, yearsToFIRE, fireAge, requiredPortfolio, finalPortfolio, performance };
   }, [inputs, simulation]);

@@ -93,7 +93,7 @@ export class FinancialSimulationEngine {
       portfolio = updatedPortfolio;
 
       // Ensure portfolio is still valid after cash flows
-      if (!(portfolio.getTotalValue() > 0.1)) {
+      if (portfolio.getIsDepleted()) {
         success = false;
         if (bankruptcyAge === null) {
           bankruptcyAge = startAge + year;
