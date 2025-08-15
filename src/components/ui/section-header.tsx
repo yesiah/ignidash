@@ -44,7 +44,7 @@ export default function SectionHeader({ title, desc, status, rightAddOn }: Secti
       {status && <Badge color={badgeColor} text={badgeText} />}
     </div>
   );
-  const descComponent = desc && <p className="text-muted-foreground mt-2 text-base">{desc}</p>;
+  const descComponent = desc && <p className="text-muted-foreground mt-1 text-base">{desc}</p>;
 
   if (rightAddOn) {
     return (
