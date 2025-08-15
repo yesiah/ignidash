@@ -512,7 +512,7 @@ export const useMonteCarloSimulationWithWorker = () => {
     ['monteCarloSim', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      const dto = await worker.runMonteCarloSimulation(inputs, simulationSeed, 500);
+      const dto = await worker.runMonteCarloSimulation(inputs, simulationSeed, 1000);
 
       return reconstructSimulationResult(dto);
     },
@@ -528,7 +528,7 @@ export const useMonteCarloAnalysisWithWorker = () => {
     ['monteCarloSimAndAnalyze', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      return await worker.analyzeMonteCarloSimulation(inputs, simulationSeed, 500);
+      return await worker.analyzeMonteCarloSimulation(inputs, simulationSeed, 1000);
     },
     { revalidateOnFocus: false }
   );
@@ -552,7 +552,7 @@ export const useHistoricalBacktestSimulationWithWorker = () => {
     ['historicalBacktestSim', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      const dto = await worker.runHistoricalBacktestSimulation(inputs, simulationSeed, 500);
+      const dto = await worker.runHistoricalBacktestSimulation(inputs, simulationSeed, 1000);
 
       return reconstructSimulationResult(dto);
     },
@@ -568,7 +568,7 @@ export const useHistoricalBacktestAnalysisWithWorker = () => {
     ['historicalBacktestSimAndAnalyze', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      return await worker.analyzeHistoricalBacktestSimulation(inputs, simulationSeed, 500);
+      return await worker.analyzeHistoricalBacktestSimulation(inputs, simulationSeed, 1000);
     },
     { revalidateOnFocus: false }
   );
@@ -861,7 +861,7 @@ export const useMonteCarloTableDataWithWorker = () => {
     ['monteCarloTableData', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      return await worker.generateMonteCarloTableData(inputs, simulationSeed, 500);
+      return await worker.generateMonteCarloTableData(inputs, simulationSeed, 1000);
     },
     { revalidateOnFocus: false }
   );
@@ -875,7 +875,7 @@ export const useHistoricalBacktestTableDataWithWorker = () => {
     ['historicalBacktestTableData', inputs, simulationSeed],
     async () => {
       const worker = getSimulationWorker();
-      return await worker.generateHistoricalBacktestTableData(inputs, simulationSeed, 500);
+      return await worker.generateHistoricalBacktestTableData(inputs, simulationSeed, 1000);
     },
     { revalidateOnFocus: false }
   );
