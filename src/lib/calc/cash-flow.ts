@@ -20,6 +20,8 @@
 
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
+export type CashFlowsWithMetadata = Array<{ name: string; amount: number }>;
+
 /**
  * Cash flow calculation interface
  * Defines the contract for all cash flow components in the financial model

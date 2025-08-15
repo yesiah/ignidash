@@ -25,6 +25,8 @@ import type { ReturnsWithMetadata as SourceReturnsWithMetadata } from '@/lib/cal
 import type { WithdrawalsWithMetadata as SourceWithdrawalsWithMetadata } from '@/lib/calc/withdrawal-strategy';
 import type { Asset as SourceAsset, AssetClass as SourceAssetClass } from '@/lib/calc/asset';
 import type { HistoricalRangeInfo as SourceHistoricalRangeInfo } from '@/lib/calc/simulation-engine';
+import type { Portfolio } from '@/lib/calc/portfolio';
+import type { CashFlowsWithMetadata } from '@/lib/calc/cash-flow';
 
 // ================================
 // CORE TYPE SCHEMAS
@@ -53,12 +55,13 @@ export const assetSchema = z.object({
 
 /**
  * Portfolio DTO schema - validates portfolio data for transfer
+ * Ensures structural compatibility with Portfolio class
  */
 export const portfolioDTOSchema = z.object({
   assets: z.array(assetSchema),
   contributions: z.number(),
   withdrawals: z.number(),
-});
+}) satisfies z.ZodType<Pick<Portfolio, 'assets' | 'contributions' | 'withdrawals'>>;
 
 // ================================
 // METADATA SCHEMAS
@@ -87,12 +90,15 @@ export const withdrawalsWithMetadataSchema = z.object({
 }) satisfies z.ZodType<SourceWithdrawalsWithMetadata>;
 
 /**
- * Cash flow schema - validates individual cash flow entries
+ * Cash flows with metadata schema - validates arrays of cash flow entries
+ * Ensures consistency with CashFlowsWithMetadata type
  */
-export const cashFlowSchema = z.object({
-  name: z.string(),
-  amount: z.number(),
-});
+export const cashFlowsWithMetadataSchema = z.array(
+  z.object({
+    name: z.string(),
+    amount: z.number(),
+  })
+) satisfies z.ZodType<CashFlowsWithMetadata>;
 
 /**
  * Historical range info schema - validates historical backtest range data
@@ -120,7 +126,7 @@ export const simulationResultDTOSchema = z.object({
   data: z.array(z.tuple([z.number(), portfolioDTOSchema])),
   phasesMetadata: z.array(z.tuple([z.number(), phaseTypeSchema])),
   returnsMetadata: z.array(z.tuple([z.number(), returnsWithMetadataSchema])),
-  cashFlowsMetadata: z.array(z.tuple([z.number(), z.array(cashFlowSchema)])),
+  cashFlowsMetadata: z.array(z.tuple([z.number(), cashFlowsWithMetadataSchema])),
   withdrawalsMetadata: z.array(z.tuple([z.number(), withdrawalsWithMetadataSchema])),
 });
 

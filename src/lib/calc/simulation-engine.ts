@@ -30,6 +30,7 @@ import { LcgHistoricalBacktestReturnsProvider } from './lcg-historical-backtest-
 import { SimulationPhase, AccumulationPhase } from './simulation-phase';
 import { convertAllocationInputsToAssetAllocation } from './asset';
 import { WithdrawalsWithMetadata } from './withdrawal-strategy';
+import { CashFlowsWithMetadata } from './cash-flow';
 
 /**
  * Simulation result containing success status, portfolio progression, and metadata
@@ -45,7 +46,7 @@ export interface SimulationResult {
   data: Array<[number /* timeInYears */, Portfolio]>;
   phasesMetadata: Array<[number /* timeInYears */, SimulationPhase]>;
   returnsMetadata: Array<[number /* timeInYears */, ReturnsWithMetadata]>;
-  cashFlowsMetadata: Array<[number /* timeInYears */, Array<{ name: string; amount: number }>]>;
+  cashFlowsMetadata: Array<[number /* timeInYears */, CashFlowsWithMetadata]>;
   withdrawalsMetadata: Array<[number /* timeInYears */, WithdrawalsWithMetadata]>;
 }
 
@@ -80,7 +81,7 @@ export class FinancialSimulationEngine {
     const data: Array<[number, Portfolio]> = [[0, portfolio]];
     const phasesMetadata: Array<[number, SimulationPhase]> = [[0, currentPhase]];
     const returnsMetadata: Array<[number, ReturnsWithMetadata]> = [];
-    const cashFlowsMetadata: Array<[number, Array<{ name: string; amount: number }>]> = [];
+    const cashFlowsMetadata: Array<[number, CashFlowsWithMetadata]> = [];
     const withdrawalsMetadata: Array<[number, WithdrawalsWithMetadata]> = [];
 
     let success = true;

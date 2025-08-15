@@ -23,7 +23,7 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
 import { Portfolio } from './portfolio';
-import { CashFlow, AnnualIncome, AnnualExpenses, PassiveRetirementIncome, RetirementExpenses } from './cash-flow';
+import { CashFlow, AnnualIncome, AnnualExpenses, PassiveRetirementIncome, RetirementExpenses, CashFlowsWithMetadata } from './cash-flow';
 import WithdrawalStrategy, { WithdrawalsWithMetadata } from './withdrawal-strategy';
 
 /** Supported simulation phase types */
@@ -72,11 +72,7 @@ export interface SimulationPhase {
    * @param inputs - User's financial planning inputs
    * @returns Tuple with updated portfolio, array of cash flows, and withdrawal amount
    */
-  processYear(
-    year: number,
-    portfolio: Portfolio,
-    inputs: QuickPlanInputs
-  ): [Portfolio, Array<{ name: string; amount: number }>, WithdrawalsWithMetadata];
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, CashFlowsWithMetadata, WithdrawalsWithMetadata];
 
   /**
    * Determines if this phase is sensitive to sequence of returns risk
@@ -110,15 +106,11 @@ export class AccumulationPhase implements SimulationPhase {
     return 'Accumulation';
   }
 
-  processYear(
-    year: number,
-    portfolio: Portfolio,
-    inputs: QuickPlanInputs
-  ): [Portfolio, Array<{ name: string; amount: number }>, WithdrawalsWithMetadata] {
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, CashFlowsWithMetadata, WithdrawalsWithMetadata] {
     const currentAge = inputs.basics.currentAge! + year;
 
     let totalCashFlow = 0;
-    const cashFlows: Array<{ name: string; amount: number }> = [];
+    const cashFlows: CashFlowsWithMetadata = [];
 
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {
@@ -170,15 +162,11 @@ export class RetirementPhase implements SimulationPhase {
     return 'Retirement';
   }
 
-  processYear(
-    year: number,
-    portfolio: Portfolio,
-    inputs: QuickPlanInputs
-  ): [Portfolio, Array<{ name: string; amount: number }>, WithdrawalsWithMetadata] {
+  processYear(year: number, portfolio: Portfolio, inputs: QuickPlanInputs): [Portfolio, CashFlowsWithMetadata, WithdrawalsWithMetadata] {
     const currentAge = inputs.basics.currentAge! + year;
 
     let totalCashFlow = 0;
-    const cashFlows: Array<{ name: string; amount: number }> = [];
+    const cashFlows: CashFlowsWithMetadata = [];
 
     for (const cashFlow of this.getCashFlows(inputs)) {
       if (cashFlow.shouldApply(year, currentAge)) {

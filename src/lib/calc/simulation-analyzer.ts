@@ -23,6 +23,7 @@ import { Portfolio } from './portfolio';
 import { SimulationResult } from './simulation-engine';
 import { ReturnsWithMetadata } from './returns-provider';
 import { WithdrawalsWithMetadata } from './withdrawal-strategy';
+import { CashFlowsWithMetadata } from './cash-flow';
 
 /**
  * Core statistical measures for asset or portfolio values
@@ -324,7 +325,7 @@ export class SimulationAnalyzer {
    * @param cashFlowsMetadata - Array of cash flows metadata containing name/amount pairs
    * @returns Cash flows statistics grouped by name
    */
-  private calculateCashFlowsStats(cashFlowsMetadata: Array<Array<{ name: string; amount: number }>>): CashFlowsStats {
+  private calculateCashFlowsStats(cashFlowsMetadata: Array<CashFlowsWithMetadata>): CashFlowsStats {
     const byName: Record<string, Stats | null> = {};
 
     // First, collect all unique names
