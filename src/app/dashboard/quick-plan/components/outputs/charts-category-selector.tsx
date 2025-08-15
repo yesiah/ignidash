@@ -24,7 +24,7 @@ interface ChartsCategorySelectorProps {
 
 export default function ChartsCategorySelector({ className, onCategoryChange, currentCategory }: ChartsCategorySelectorProps) {
   return (
-    <div className={cn('isolate flex overflow-x-auto pb-2', className)}>
+    <div className={cn('isolate flex overflow-x-auto py-2', className)}>
       {Object.values(ChartsCategory).map((category) => (
         <button
           key={category}

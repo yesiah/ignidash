@@ -49,7 +49,7 @@ function StochasticChartsSection({ simStats, analysis }: StochasticChartsSection
     <SectionContainer showBottomBorder>
       <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
       <ChartsCategorySelector currentCategory={currentCategory} onCategoryChange={setCurrentCategory} />
-      <div className="my-4 grid grid-cols-1 gap-2 [@media(min-width:1920px)]:grid-cols-2">
+      <div className="mb-4 grid grid-cols-1 gap-2 [@media(min-width:1920px)]:grid-cols-2">
         <StochasticPortfolioAreaChartCard
           analysis={analysis}
           rawChartData={portfolioAreaChartData}
