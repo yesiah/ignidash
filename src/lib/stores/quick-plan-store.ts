@@ -52,7 +52,7 @@ import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
 import { SimulationAnalyzer, type AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
 import WithdrawalStrategy from '@/lib/calc/withdrawal-strategy';
 import { getSimulationWorker } from '@/lib/workers/simulation-worker-api';
-import type { MultiSimulationResultDTO } from '@/lib/workers/simulation-dto';
+import type { MultiSimulationResultDTO } from '@/lib/schemas/simulation-dto-schema';
 import {
   type SimulationTableRow,
   validateSimulationTableData,
