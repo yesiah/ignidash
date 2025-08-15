@@ -25,6 +25,7 @@ import StochasticReturnsBarChartCard from '../cards/stochastic-returns-bar-chart
 import StochasticReturnsLineChartCard from '../cards/stochastic-returns-line-chart-card';
 import StochasticWithdrawalsBarChartCard from '../cards/stochastic-withdrawals-bar-chart-card';
 import StochasticWithdrawalsLineChartCard from '../cards/stochastic-withdrawals-line-chart-card';
+import ChartsCategorySelector, { ChartsCategory } from '../charts-category-selector';
 
 interface StochasticChartsSectionProps {
   simStats: AggregateSimulationStats;
@@ -34,6 +35,7 @@ interface StochasticChartsSectionProps {
 function StochasticChartsSection({ simStats, analysis }: StochasticChartsSectionProps) {
   const currentAge = useCurrentAge();
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
+  const [currentCategory, setCurrentCategory] = useState<ChartsCategory>(ChartsCategory.Portfolio);
 
   const portfolioAreaChartData = useStochasticPortfolioAreaChartData(simStats);
   const portfolioPercentilesChartData = useStochasticPortfolioPercentilesChartData(simStats);
@@ -46,6 +48,7 @@ function StochasticChartsSection({ simStats, analysis }: StochasticChartsSection
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title="Data Visualization" desc="Interactive charts to explore your projection." />
+      <ChartsCategorySelector currentCategory={currentCategory} onCategoryChange={setCurrentCategory} />
       <div className="my-4 grid grid-cols-1 gap-2 [@media(min-width:1920px)]:grid-cols-2">
         <StochasticPortfolioAreaChartCard
           analysis={analysis}
