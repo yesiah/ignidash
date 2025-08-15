@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { ChevronLeftIcon, TableCellsIcon, CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -15,7 +15,7 @@ interface StochasticDataTableSectionProps {
   simulationType: 'monteCarlo' | 'historicalBacktest';
 }
 
-export default function StochasticDataTableSection({ simulationType }: StochasticDataTableSectionProps) {
+function StochasticDataTableSection({ simulationType }: StochasticDataTableSectionProps) {
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'all' | 'yearly'>('all');
 
@@ -71,3 +71,6 @@ export default function StochasticDataTableSection({ simulationType }: Stochasti
     </SectionContainer>
   );
 }
+
+// Memoize to prevent re-renders when simulationType hasn't changed
+export default memo(StochasticDataTableSection);

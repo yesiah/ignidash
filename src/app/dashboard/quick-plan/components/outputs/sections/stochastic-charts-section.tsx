@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
 import { useCurrentAge, type StochasticAnalysis } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
@@ -31,7 +31,7 @@ interface StochasticChartsSectionProps {
   analysis: StochasticAnalysis | null;
 }
 
-export default function StochasticChartsSection({ simStats, analysis }: StochasticChartsSectionProps) {
+function StochasticChartsSection({ simStats, analysis }: StochasticChartsSectionProps) {
   const currentAge = useCurrentAge();
   const [selectedAge, setSelectedAge] = useState<number>(currentAge! + 1);
 
@@ -73,3 +73,6 @@ export default function StochasticChartsSection({ simStats, analysis }: Stochast
     </SectionContainer>
   );
 }
+
+// Memoize the entire section to prevent re-renders when props haven't changed
+export default memo(StochasticChartsSection);
