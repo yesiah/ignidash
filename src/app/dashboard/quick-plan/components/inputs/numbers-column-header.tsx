@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CalculatorIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { CalculatorIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
@@ -18,7 +18,12 @@ export default function NumbersColumnHeader() {
         title="Numbers"
         icon={CalculatorIcon}
         iconButton={
-          <IconButton icon={Cog6ToothIcon} label="Preferences" onClick={() => setPreferencesOpen(true)} surfaceColor="emphasized" />
+          <IconButton
+            icon={AdjustmentsHorizontalIcon}
+            label="Preferences"
+            onClick={() => setPreferencesOpen(true)}
+            surfaceColor="emphasized"
+          />
         }
       />
 

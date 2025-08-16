@@ -1,6 +1,6 @@
 'use client';
 
-import { Cog6ToothIcon, CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
+import { AdjustmentsHorizontalIcon, CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -61,12 +61,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             ))}
           </nav>
           {activeSection === 'your-numbers' && (
-            <IconButton
-              icon={Cog6ToothIcon}
-              label="Preferences"
-              onClick={() => setPreferencesOpen(true)}
-              className="transition-transform duration-300 hover:-rotate-180"
-            />
+            <IconButton icon={AdjustmentsHorizontalIcon} label="Preferences" onClick={() => setPreferencesOpen(true)} />
           )}
           {activeSection === 'results' && <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className)} />}
         </div>
