@@ -64,12 +64,10 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
               icon={Cog6ToothIcon}
               label="Preferences"
               onClick={() => setPreferencesOpen(true)}
-              className="text-muted-foreground transition-transform duration-300 hover:-rotate-180"
+              className="transition-transform duration-300 hover:-rotate-180"
             />
           )}
-          {activeSection === 'results' && (
-            <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className, 'text-muted-foreground')} />
-          )}
+          {activeSection === 'results' && <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className)} />}
         </div>
       </div>
 
