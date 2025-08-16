@@ -1,7 +1,6 @@
 'use client';
 
-import { Cog6ToothIcon } from '@heroicons/react/20/solid';
-import { CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -37,7 +36,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
 
   return (
     <>
-      <div className="border-border -mx-4 mt-4 mb-5 border-b pb-5 sm:-mx-6 lg:-mx-8 xl:mt-0">
+      <div className="border-border -mx-4 mt-4 mb-5 border-b pt-2 pb-5 sm:-mx-6 lg:-mx-8 xl:mt-0">
         <div className="mx-4 flex items-center justify-between sm:mx-6 lg:mx-8">
           <nav aria-label="Tabs" className="-mb-px flex space-x-8">
             {tabs.map((tab) => (
