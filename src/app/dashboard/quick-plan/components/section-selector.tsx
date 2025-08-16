@@ -61,9 +61,16 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             ))}
           </nav>
           {activeSection === 'your-numbers' && (
-            <IconButton icon={AdjustmentsHorizontalIcon} label="Preferences" onClick={() => setPreferencesOpen(true)} />
+            <IconButton
+              icon={AdjustmentsHorizontalIcon}
+              label="Preferences"
+              onClick={() => setPreferencesOpen(true)}
+              surfaceColor="emphasized"
+            />
           )}
-          {activeSection === 'results' && <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className)} />}
+          {activeSection === 'results' && (
+            <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className)} surfaceColor="emphasized" />
+          )}
         </div>
       </div>
 
