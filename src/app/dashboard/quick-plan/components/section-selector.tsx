@@ -36,42 +36,33 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
 
   return (
     <>
-      <div className="border-border mb-5 flex items-center justify-between border-b">
-        <nav aria-label="Tabs" className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab.name}
-              onClick={() => setActiveSection(tab.value)}
-              aria-current={tab.value === activeSection ? 'page' : undefined}
-              className={cn(
-                tab.value === activeSection
-                  ? 'border-primary text-primary'
-                  : 'hover:border-primary/75 hover:text-primary/75 text-muted-foreground border-transparent',
-                'group focus-outline inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium'
-              )}
-            >
-              <tab.icon
-                aria-hidden="true"
-                className={cn(
-                  tab.value === activeSection ? 'text-primary' : 'group-hover:text-primary/75 text-muted-foreground',
-                  'mr-2 -ml-0.5 size-5'
-                )}
-              />
-              <span>{tab.name}</span>
-            </button>
-          ))}
-        </nav>
-        {activeSection === 'your-numbers' && (
-          <IconButton
-            icon={Cog6ToothIcon}
-            label="Preferences"
-            onClick={() => setPreferencesOpen(true)}
-            className="text-muted-foreground transition-transform duration-300 hover:-rotate-180"
-          />
-        )}
-        {activeSection === 'results' && (
-          <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className, 'text-muted-foreground')} />
-        )}
+      <div className="border-border -mx-4 mt-4 mb-5 border-b pb-5 sm:-mx-6 lg:-mx-8 xl:mt-0">
+        <div className="mx-4 flex items-center justify-between sm:mx-6 lg:mx-8">
+          <nav aria-label="Tabs" className="-mb-px flex space-x-8">
+            {tabs.map((tab) => (
+              <button
+                key={tab.name}
+                onClick={() => setActiveSection(tab.value)}
+                aria-current={tab.value === activeSection ? 'page' : undefined}
+                className="flex items-center gap-2 text-2xl font-extrabold tracking-tight"
+              >
+                <tab.icon className="text-primary h-8 w-8" aria-hidden="true" />
+                {tab.name}
+              </button>
+            ))}
+          </nav>
+          {activeSection === 'your-numbers' && (
+            <IconButton
+              icon={Cog6ToothIcon}
+              label="Preferences"
+              onClick={() => setPreferencesOpen(true)}
+              className="text-muted-foreground transition-transform duration-300 hover:-rotate-180"
+            />
+          )}
+          {activeSection === 'results' && (
+            <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className, 'text-muted-foreground')} />
+          )}
+        </div>
       </div>
 
       <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title="Preferences">
