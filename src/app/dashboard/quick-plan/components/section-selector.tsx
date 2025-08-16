@@ -1,6 +1,7 @@
 'use client';
 
-import { CalculatorIcon, PresentationChartLineIcon, Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { CalculatorIcon, PresentationChartLineIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -44,9 +45,16 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 key={tab.name}
                 onClick={() => setActiveSection(tab.value)}
                 aria-current={tab.value === activeSection ? 'page' : undefined}
-                className="flex items-center gap-2 text-2xl font-extrabold tracking-tight"
+                className={cn('text-muted-foreground flex items-center gap-2 text-2xl font-extrabold tracking-tight', {
+                  'text-foreground': tab.value === activeSection,
+                })}
               >
-                <tab.icon className="text-primary h-8 w-8" aria-hidden="true" />
+                <tab.icon
+                  className={cn('h-8 w-8', {
+                    'text-primary': tab.value === activeSection,
+                  })}
+                  aria-hidden="true"
+                />
                 {tab.name}
               </button>
             ))}
