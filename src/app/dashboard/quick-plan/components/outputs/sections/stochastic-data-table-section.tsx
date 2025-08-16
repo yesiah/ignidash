@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, memo } from 'react';
-import { ChevronLeftIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
-import { Button } from '@/components/catalyst/button';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import type { AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
@@ -11,6 +10,37 @@ import type { AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
 import MonteCarloDataTable from '../tables/monte-carlo-data-table';
 import HistoricalBacktestDataTable from '../tables/historical-backtest-data-table';
 import TableTypeSelector, { TableType } from '../table-type-selector';
+
+interface DrillDownBreadcrumbProps {
+  selectedSeed: number | null;
+  setSelectedSeed: (seed: number | null) => void;
+}
+
+function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed }: DrillDownBreadcrumbProps) {
+  return (
+    <nav aria-label="Breadcrumb" className="flex">
+      <ol role="list" className="flex items-center space-x-2">
+        <li>
+          <div>
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground focus-outline"
+              onClick={() => setSelectedSeed(null)}
+            >
+              <span>All Simulations</span>
+            </button>
+          </div>
+        </li>
+        <li>
+          <div className="flex items-center">
+            <ChevronRightIcon aria-hidden="true" className="text-muted-foreground size-5 shrink-0" />
+            <span className="ml-2">{`Simulation #${selectedSeed}`}</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+  );
+}
 
 interface StochasticDataTableSectionProps {
   simulationType: 'monteCarlo' | 'historicalBacktest';
@@ -21,17 +51,17 @@ function StochasticDataTableSection({ simulationType, simStats }: StochasticData
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const [currentTableType, setCurrentTableType] = useState<TableType>(TableType.AllSimulations);
 
-  let headerText: string;
+  let headerText: string | React.ReactNode;
   let headerDesc: string;
 
   if (selectedSeed !== null) {
-    headerText = `Simulation #${selectedSeed} Details`;
+    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />;
     headerDesc = 'Year-by-year progression and outcome for this specific simulation.';
   } else if (currentTableType === TableType.YearlyResults) {
     headerText = 'Yearly Results';
     headerDesc = 'Aggregated statistics across all simulations by year.';
   } else {
-    headerText = 'Simulations Table';
+    headerText = 'All Simulations';
     headerDesc = 'Browse all simulation runs. Select one to explore further.';
   }
 
@@ -62,14 +92,7 @@ function StochasticDataTableSection({ simulationType, simStats }: StochasticData
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title={headerText} desc={headerDesc} className="mb-4" />
-      {selectedSeed !== null ? (
-        <Button disabled={selectedSeed === null} onClick={() => setSelectedSeed(null)} plain>
-          <ChevronLeftIcon className="h-5 w-5" />
-          <span>Return</span>
-        </Button>
-      ) : (
-        <TableTypeSelector currentType={currentTableType} setCurrentType={setCurrentTableType} />
-      )}
+      <TableTypeSelector currentType={currentTableType} setCurrentType={setCurrentTableType} />
       {tableComponent}
     </SectionContainer>
   );
