@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 
 export enum TableType {
-  AllSimulations = 'Simulations',
+  AllSimulations = 'All Simulations',
   YearlyResults = 'Yearly Results',
 }
 
