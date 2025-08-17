@@ -10,8 +10,8 @@ export default function SectionContainer({ children, showBottomBorder, location 
 
   switch (location) {
     case 'drawer':
-      outerXMarginClass = '-mx-4 sm:-mx-6';
-      innerXMarginClass = 'mx-4 sm:mx-6';
+      outerXMarginClass = '-mx-2 sm:-mx-3';
+      innerXMarginClass = 'mx-2 sm:mx-3';
       break;
     default:
       outerXMarginClass = '-mx-2 sm:-mx-3 lg:-mx-4';
