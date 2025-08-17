@@ -45,12 +45,12 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 onClick={() => setActiveSection(tab.value)}
                 aria-current={tab.value === activeSection ? 'page' : undefined}
                 className={cn(
-                  'flex items-center gap-2 p-2 lg:p-4',
-                  { 'bg-background': tab.value === activeSection },
+                  'text-muted-foreground flex items-center gap-2 p-2 lg:p-4',
+                  { 'text-foreground': tab.value === activeSection },
                   { 'hover:bg-background': tab.value !== activeSection }
                 )}
               >
-                <tab.icon className="text-primary size-5 lg:size-6" aria-hidden="true" />
+                <tab.icon className={cn('size-5 lg:size-6', { 'text-primary': tab.value === activeSection })} aria-hidden="true" />
                 <span className="text-sm/6 font-semibold lg:text-lg lg:font-bold lg:tracking-tight">{tab.name}</span>
               </button>
             ))}
