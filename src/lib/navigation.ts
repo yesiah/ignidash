@@ -1,4 +1,4 @@
-import { BoltIcon, RocketLaunchIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, BoltIcon, RocketLaunchIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 
 export interface NavigationItem {
   name: string;
@@ -11,6 +11,7 @@ export interface NavigationItem {
 
 export const navigationItems: Omit<NavigationItem, 'current'>[] = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+  { name: 'Portfolio', href: '/dashboard/portfolio', icon: BanknotesIcon },
   { name: 'Quick Plan', href: '/dashboard/quick-plan', icon: BoltIcon },
   { name: 'Pro', href: '/dashboard/pro', icon: RocketLaunchIcon },
 ];
@@ -29,5 +30,5 @@ export function getCurrentPageTitle(currentPath: string): string {
 
 export function getCurrentPageIcon(currentPath: string): NavigationItem['icon'] {
   const item = navigationItems.find((item) => item.href === currentPath);
-  return item?.icon || BoltIcon;
+  return item?.icon || HomeIcon;
 }
