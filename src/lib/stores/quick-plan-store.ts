@@ -175,6 +175,7 @@ interface QuickPlanState {
     dataStorage: 'localStorage' | 'none';
     showReferenceLines: boolean;
     simulationSeed: number;
+    sidebarCollapsed: boolean;
   };
 
   actions: {
@@ -253,6 +254,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     dataStorage: 'localStorage',
     showReferenceLines: true,
     simulationSeed: Math.floor(Math.random() * 1000),
+    sidebarCollapsed: false,
   },
 };
 
@@ -347,6 +349,8 @@ export const useQuickPlanStore = create<QuickPlanState>()(
                 state.preferences.showReferenceLines = value as boolean;
               } else if (field === 'simulationSeed') {
                 state.preferences.simulationSeed = value as number;
+              } else if (field === 'sidebarCollapsed') {
+                state.preferences.sidebarCollapsed = value as boolean;
               }
             }),
 
@@ -445,6 +449,7 @@ export const useUpdateFlexiblePaths = () => useQuickPlanStore((state) => state.a
 export const usePreferencesData = () => useQuickPlanStore((state) => state.preferences);
 export const useShowReferenceLinesPreference = () => useQuickPlanStore((state) => state.preferences.showReferenceLines);
 export const useSimulationSeed = () => useQuickPlanStore((state) => state.preferences.simulationSeed);
+export const useSidebarCollapsed = () => useQuickPlanStore((state) => state.preferences.sidebarCollapsed);
 export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
 export const useGenerateNewSeed = () => useQuickPlanStore((state) => state.actions.generateNewSeed);
 

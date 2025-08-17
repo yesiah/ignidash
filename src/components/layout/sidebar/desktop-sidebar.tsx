@@ -11,7 +11,7 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col group-data-[state=collapsed]:lg:w-20">
       <div className="border-border bg-emphasized-background flex grow flex-col overflow-y-auto border-r px-6">
         <SidebarBrand />
         <nav className="flex flex-1 flex-col">
@@ -22,7 +22,7 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                   <li key={item.name}>
                     <SidebarLink href={item.href} current={item.current}>
                       <item.icon aria-hidden="true" className="text-primary size-6 shrink-0" />
-                      {item.name}
+                      <span className="inline group-data-[state=collapsed]:hidden">{item.name}</span>
                     </SidebarLink>
                   </li>
                 ))}
@@ -41,7 +41,9 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                   height={32}
                 />
                 <span className="sr-only">Your profile</span>
-                <span aria-hidden="true">Tom Cook</span>
+                <span className="inline group-data-[state=collapsed]:hidden" aria-hidden="true">
+                  Tom Cook
+                </span>
               </a>
             </li>
           </ul>

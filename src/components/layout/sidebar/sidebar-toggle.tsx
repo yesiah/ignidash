@@ -1,9 +1,28 @@
+'use client';
+
 import { PanelLeft } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
+import { cn } from '@/lib/utils';
+import { useSidebarCollapsed, useUpdatePreferences } from '@/lib/stores/quick-plan-store';
 
-export default function SidebarToggle() {
+interface SidebarToggleProps {
+  className?: string;
+}
+
+export default function SidebarToggle({ className }: SidebarToggleProps) {
+  const sidebarCollapsed = useSidebarCollapsed();
+
+  const updatePreferences = useUpdatePreferences();
+  const handleToggle = () => updatePreferences('sidebarCollapsed', !sidebarCollapsed);
+
   return (
-    <IconButton icon={PanelLeft} label="Toggle sidebar" onClick={() => {}} surfaceColor="emphasized" className="hidden lg:inline-block" />
+    <IconButton
+      icon={PanelLeft}
+      label="Toggle sidebar"
+      onClick={handleToggle}
+      surfaceColor="emphasized"
+      className={cn('hidden lg:inline-block', className)}
+    />
   );
 }
