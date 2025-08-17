@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
-import { SunMediumIcon, MoonIcon } from 'lucide-react';
+import { SunMediumIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 
@@ -20,16 +20,14 @@ export default function ModeToggle() {
     return null;
   }
 
-  let icon;
+  const icon = SunMediumIcon;
   let label;
   let newTheme;
 
   if (isDark) {
-    icon = SunMediumIcon;
     label = 'Switch to light mode';
     newTheme = 'light';
   } else {
-    icon = MoonIcon;
     label = 'Switch to dark mode';
     newTheme = 'dark';
   }
