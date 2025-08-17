@@ -1,4 +1,4 @@
-import { HomeIcon, BoltIcon, RocketLaunchIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { HouseIcon, LandmarkIcon, ZapIcon, RocketIcon } from 'lucide-react';
 
 export interface NavigationItem {
   name: string;
@@ -10,10 +10,10 @@ export interface NavigationItem {
 }
 
 export const navigationItems: Omit<NavigationItem, 'current'>[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Portfolio', href: '/dashboard/portfolio', icon: BanknotesIcon },
-  { name: 'Quick Plan', href: '/dashboard/quick-plan', icon: BoltIcon },
-  { name: 'Pro', href: '/dashboard/pro', icon: RocketLaunchIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: HouseIcon },
+  { name: 'Portfolio', href: '/dashboard/portfolio', icon: LandmarkIcon },
+  { name: 'Quick Plan', href: '/dashboard/quick-plan', icon: ZapIcon },
+  { name: 'Pro', href: '/dashboard/pro', icon: RocketIcon },
 ];
 
 export function getNavigation(currentPath: string): NavigationItem[] {
@@ -30,5 +30,5 @@ export function getCurrentPageTitle(currentPath: string): string {
 
 export function getCurrentPageIcon(currentPath: string): NavigationItem['icon'] {
   const item = navigationItems.find((item) => item.href === currentPath);
-  return item?.icon || HomeIcon;
+  return item?.icon || HouseIcon;
 }
