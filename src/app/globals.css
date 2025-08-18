@@ -24,6 +24,7 @@
   --color-primary: var(--primary);
   --color-border: var(--border);
   --font-sans: var(--font-figtree);
+  --font-mono: var(--font-geist-mono);
 }
 
 .dark {

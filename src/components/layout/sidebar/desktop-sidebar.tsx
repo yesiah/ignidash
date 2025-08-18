@@ -11,7 +11,7 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col group-data-[state=collapsed]:lg:w-16">
+    <div className="hidden font-mono lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col group-data-[state=collapsed]:lg:w-16">
       <div className="border-border bg-emphasized-background flex grow flex-col overflow-y-auto border-r px-3">
         <SidebarBrand />
         <nav className="flex flex-1 flex-col">
