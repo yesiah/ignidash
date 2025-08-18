@@ -17,10 +17,10 @@ export default function DisclosureSection({ title, desc, icon: Icon, children }:
         <div className="flex w-full items-center justify-between text-left">
           <div className="flex flex-col gap-2 transition-opacity duration-150 group-data-hover:opacity-75">
             <div className="flex items-center gap-2 font-medium">
-              <Icon className="text-primary h-5 w-5" aria-hidden="true" />
-              <span>{title}</span>
+              <Icon className="text-primary size-6" aria-hidden="true" />
+              <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
             </div>
-            <p className="text-muted-foreground text-sm">{desc}</p>
+            <p className="text-muted-foreground mt-1 text-base">{desc}</p>
           </div>
           <ChevronDownIcon
             className="text-muted-foreground ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
