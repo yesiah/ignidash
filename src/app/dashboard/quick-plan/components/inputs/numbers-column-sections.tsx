@@ -10,23 +10,21 @@ import FineTuneSection from './sections/fine-tune/section';
 export default function NumbersColumnSections() {
   return (
     <>
-      <div className="divide-border divide-y">
-        <DisclosureSection title="Basic Info" icon={CircleUserRoundIcon}>
-          <p>Hello</p>
-        </DisclosureSection>
-        <DisclosureSection title="Portfolio" icon={LandmarkIcon}>
-          <p>Hello</p>
-        </DisclosureSection>
-        <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
-          <p>Hello</p>
-        </DisclosureSection>
-        <DisclosureSection title="Withdrawals" icon={FileDigitIcon}>
-          <p>Hello</p>
-        </DisclosureSection>
-        <DisclosureSection title="Assumptions" icon={TrendingUpDownIcon}>
-          <p>Hello</p>
-        </DisclosureSection>
-      </div>
+      <DisclosureSection title="Basic Info" icon={CircleUserRoundIcon}>
+        <p>Hello</p>
+      </DisclosureSection>
+      <DisclosureSection title="Portfolio" icon={LandmarkIcon}>
+        <p>Hello</p>
+      </DisclosureSection>
+      <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
+        <p>Hello</p>
+      </DisclosureSection>
+      <DisclosureSection title="Withdrawals" icon={FileDigitIcon}>
+        <p>Hello</p>
+      </DisclosureSection>
+      <DisclosureSection title="Assumptions" icon={TrendingUpDownIcon}>
+        <p>Hello</p>
+      </DisclosureSection>
       <div className="h-lvh"></div>
       <BasicsSection />
       <GoalSection />
