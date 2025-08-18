@@ -10,16 +10,18 @@ interface MobileSidebarContentProps {
 
 export default function MobileSidebarContent({ navigation, onClose }: MobileSidebarContentProps) {
   return (
-    <div className="bg-emphasized-background border-border flex grow flex-col overflow-y-auto border-r px-6 pb-2">
+    <div className="bg-emphasized-background border-border flex grow flex-col overflow-y-auto border-r px-3">
       <SidebarBrand />
       <nav className="flex flex-1 flex-col">
         <ul role="list" className="flex flex-1 flex-col">
           <li>
-            <ul role="list" className="-mx-2 space-y-2">
+            <ul role="list" className="space-y-2">
               {navigation.map((item) => (
                 <li key={item.name} onClick={onClose}>
                   <SidebarLink href={item.href} current={item.current}>
-                    <item.icon aria-hidden="true" className="text-primary size-6 shrink-0" />
+                    <div className="p-2">
+                      <item.icon aria-hidden="true" className="text-primary size-6 shrink-0" />
+                    </div>
                     {item.name}
                   </SidebarLink>
                 </li>
