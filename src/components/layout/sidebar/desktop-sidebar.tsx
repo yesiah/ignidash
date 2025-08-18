@@ -30,10 +30,10 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                 ))}
               </ul>
             </li>
-            <li className="-mx-5 mt-auto">
+            <li className="-mx-3 mt-auto">
               <a
                 href="#"
-                className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-6 text-sm/6 font-semibold"
+                className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-4 text-sm/6 font-semibold"
               >
                 <Image
                   alt=""
