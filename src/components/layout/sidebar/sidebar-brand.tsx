@@ -11,7 +11,7 @@ export default function SidebarBrand() {
         <SidebarToggle />
       </div>
       <div className="mx-5 flex w-full items-center justify-between group-data-[state=collapsed]:hidden">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <div className="px-1">
             <FireIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
           </div>
