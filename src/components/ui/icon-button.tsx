@@ -9,12 +9,13 @@ interface IconButtonProps {
   icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
   >;
+  iconClassName?: string;
   label: string;
   onClick?: () => void;
   surfaceColor?: SurfaceColor;
 }
 
-export default function IconButton({ className, icon: Icon, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
+export default function IconButton({ className, icon: Icon, iconClassName, label, onClick, surfaceColor = 'default' }: IconButtonProps) {
   let hoverClass;
   switch (surfaceColor) {
     case 'default':
@@ -32,7 +33,7 @@ export default function IconButton({ className, icon: Icon, label, onClick, surf
       onClick={onClick}
       className={cn(`ring-border focus-outline rounded-full p-2 transition-transform hover:ring ${hoverClass}`, className)}
     >
-      <Icon aria-hidden="true" className="size-5" />
+      <Icon aria-hidden="true" className={cn('size-5', iconClassName)} />
     </button>
   );
 }
