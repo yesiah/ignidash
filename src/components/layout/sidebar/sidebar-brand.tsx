@@ -16,7 +16,7 @@ export default function SidebarBrand({ onClose }: SidebarBrandProps) {
         <SidebarToggle />
       </div>
       <div className="mx-3 flex w-full items-center justify-between group-data-[state=collapsed]:hidden">
-        <Link href="/dashboard" className="flex items-center" onClick={onClose}>
+        <Link href="/dashboard" className="focus-outline flex items-center" onClick={onClose}>
           <div className="px-1">
             <FireIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
           </div>
