@@ -33,17 +33,17 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
             <li className="-mx-5 mt-auto">
               <a
                 href="#"
-                className="hover:bg-background focus-outline border-border flex items-center gap-x-4 border-t px-5 py-3 text-sm/6 font-semibold"
+                className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-6 text-sm/6 font-semibold"
               >
                 <Image
                   alt=""
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  className="size-8 rounded-full"
+                  className="size-8 shrink-0 rounded-full"
                   width={32}
                   height={32}
                 />
                 <span className="sr-only">Your profile</span>
-                <span className="inline group-data-[state=collapsed]:hidden" aria-hidden="true">
+                <span className="ml-3 inline group-data-[state=collapsed]:hidden" aria-hidden="true">
                   Tom Cook
                 </span>
               </a>
