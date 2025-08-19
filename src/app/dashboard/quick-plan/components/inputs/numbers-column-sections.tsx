@@ -1,6 +1,6 @@
 'use client';
 
-import { HourglassIcon, LandmarkIcon, HandCoinsIcon, ArmchairIcon, TrendingUpDownIcon } from 'lucide-react';
+import { HourglassIcon, LandmarkIcon, HandCoinsIcon, BanknoteArrowDownIcon, TrendingUpDownIcon } from 'lucide-react';
 
 import {
   useBasicsData,
@@ -92,7 +92,7 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <p>I am cash flow.</p>
       </DisclosureSection>
-      <DisclosureSection title="Withdrawal Strategy" icon={ArmchairIcon}>
+      <DisclosureSection title="Withdrawal Strategy" icon={BanknoteArrowDownIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <FieldGroup>
