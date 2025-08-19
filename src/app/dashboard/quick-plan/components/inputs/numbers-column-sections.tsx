@@ -56,33 +56,37 @@ export default function NumbersColumnSections() {
 
   return (
     <>
-      <DisclosureSection title="Basic Info" icon={CircleUserRoundIcon} defaultOpen>
+      <DisclosureSection title="About You" icon={CircleUserRoundIcon} defaultOpen>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset aria-label="Age and life expectancy">
-            <FieldGroup>
-              <Field>
-                <Label>Age</Label>
-                <NumberInput
-                  id="current-age"
-                  value={basics.currentAge}
-                  onBlur={(value) => updateBasics('currentAge', value)}
-                  inputMode="numeric"
-                  placeholder="28"
-                  decimalScale={0}
-                />
-              </Field>
-              <Field>
-                <Label>Life Expectancy</Label>
-                <NumberInput
-                  id="life-expectancy"
-                  value={retirementFunding.lifeExpectancy}
-                  onBlur={(value) => updateRetirementFunding('lifeExpectancy', value)}
-                  inputMode="numeric"
-                  placeholder="85"
-                  decimalScale={0}
-                />
-              </Field>
-            </FieldGroup>
+            <Legend className="mx-2">Basic Info</Legend>
+            <Text className="mx-2">Your simulation will start at your current age and end at your life expectancy.</Text>
+            <Card>
+              <FieldGroup>
+                <Field>
+                  <Label>Age</Label>
+                  <NumberInput
+                    id="current-age"
+                    value={basics.currentAge}
+                    onBlur={(value) => updateBasics('currentAge', value)}
+                    inputMode="numeric"
+                    placeholder="28"
+                    decimalScale={0}
+                  />
+                </Field>
+                <Field>
+                  <Label>Life Expectancy</Label>
+                  <NumberInput
+                    id="life-expectancy"
+                    value={retirementFunding.lifeExpectancy}
+                    onBlur={(value) => updateRetirementFunding('lifeExpectancy', value)}
+                    inputMode="numeric"
+                    placeholder="85"
+                    decimalScale={0}
+                  />
+                </Field>
+              </FieldGroup>
+            </Card>
           </Fieldset>
         </form>
       </DisclosureSection>
