@@ -204,7 +204,6 @@ interface QuickPlanState {
 export const defaultState: Omit<QuickPlanState, 'actions'> = {
   inputs: {
     basics: {
-      name: 'Anonymous',
       currentAge: null,
       annualIncome: null,
       annualExpenses: null,
@@ -379,7 +378,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       })),
       {
         name: 'quick-plan-storage',
-        version: 1,
+        version: 2,
         // Simple migration: just use defaults for any version change
         migrate: () => ({ ...defaultState }),
         // Only persist the inputs and preferences state, not the actions
@@ -425,7 +424,6 @@ export const useFlexiblePathsData = () => useQuickPlanStore((state) => state.inp
  * Individual field selectors for performance optimization
  * Use these for components that only need specific fields to minimize re-renders
  */
-export const useName = () => useQuickPlanStore((state) => state.inputs.basics.name);
 export const useCurrentAge = () => useQuickPlanStore((state) => state.inputs.basics.currentAge);
 export const useAnnualIncome = () => useQuickPlanStore((state) => state.inputs.basics.annualIncome);
 export const useAnnualExpenses = () => useQuickPlanStore((state) => state.inputs.basics.annualExpenses);
