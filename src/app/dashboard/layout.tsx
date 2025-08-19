@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarCollapsed = useSidebarCollapsed();
 
   return (
-    <div className="group" data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}>
+    <div className="group/sidebar" data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}>
       <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} navigation={navigation} />
       <DesktopSidebar navigation={navigation} />
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} currentPageTitle={currentPageTitle} currentPageIcon={currentPageIcon} />
