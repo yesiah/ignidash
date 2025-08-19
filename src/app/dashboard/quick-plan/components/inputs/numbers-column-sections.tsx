@@ -69,6 +69,7 @@ export default function NumbersColumnSections() {
                   placeholder="28"
                   decimalScale={0}
                 />
+                <Description className="mt-2">The age your simulation will start at.</Description>
               </Field>
               <Divider />
               <Field>
@@ -81,6 +82,7 @@ export default function NumbersColumnSections() {
                   placeholder="85"
                   decimalScale={0}
                 />
+                <Description className="mt-2">The age your simulation will end at.</Description>
               </Field>
             </FieldGroup>
           </Fieldset>
