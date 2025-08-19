@@ -121,6 +121,7 @@ const ageField = (min = 16, max = 100, customMessages?: { min?: string; max?: st
  * Core user data including age, income, expenses, and current assets
  */
 export const basicsSchema = z.object({
+  name: z.string().trim().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
   currentAge: ageField(16, 100, {
     min: 'You must be at least 16 years old to use this calculator',
     max: 'Age cannot exceed 100 years',
