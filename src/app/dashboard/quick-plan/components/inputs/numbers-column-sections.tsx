@@ -59,8 +59,8 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="About You" icon={CircleUserRoundIcon} defaultOpen>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2">Duration</Legend>
-            <Text className="mx-2">When your simulation should start and end.</Text>
+            <Legend className="mx-2 sm:text-lg/6">Duration</Legend>
+            <Text className="mx-2 sm:text-base/6">When your simulation should start and end.</Text>
             <Card>
               <FieldGroup>
                 <Field>
@@ -99,8 +99,8 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="Retirement" icon={ArmchairIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2">Withdrawal Strategy</Legend>
-            <Text className="mx-2">How you&apos;ll withdraw funds to cover retirement expenses.</Text>
+            <Legend className="mx-2 sm:text-lg/6">Withdrawal Strategy</Legend>
+            <Text className="mx-2 sm:text-base/6">How you&apos;ll withdraw funds to cover retirement expenses.</Text>
             <Card>
               <FieldGroup>
                 <Field>
@@ -123,8 +123,8 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="Market Assumptions" icon={TrendingUpDownIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2">Expected Returns</Legend>
-            <Text className="mx-2">Expected inflation rate and nominal returns for each asset class.</Text>
+            <Legend className="mx-2 sm:text-lg/6">Expected Returns</Legend>
+            <Text className="mx-2 sm:text-base/6">Expected inflation rate and nominal returns for each asset class.</Text>
             <Card>
               <FieldGroup>
                 <Field>
