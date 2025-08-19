@@ -16,6 +16,7 @@ import {
 import DisclosureSection from '@/components/ui/disclosure-section';
 import NumberInput from '@/components/ui/number-input';
 import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
+import { Divider } from '@/components/catalyst/divider';
 
 // import BasicsSection from './sections/basics/section';
 // import GoalSection from './sections/retirement-goal/section';
@@ -69,6 +70,7 @@ export default function NumbersColumnSections() {
                   decimalScale={0}
                 />
               </Field>
+              <Divider soft />
               <Field>
                 <Label>Life Expectancy</Label>
                 <NumberInput
@@ -128,6 +130,7 @@ export default function NumbersColumnSections() {
                   suffix="%"
                 />
               </Field>
+              <Divider soft />
               <Field>
                 <Label className="flex w-full items-center justify-between">
                   <span>Bond Returns</span>
@@ -142,6 +145,7 @@ export default function NumbersColumnSections() {
                   suffix="%"
                 />
               </Field>
+              <Divider soft />
               <Field>
                 <Label className="flex w-full items-center justify-between">
                   <span>Cash Returns</span>
@@ -156,6 +160,7 @@ export default function NumbersColumnSections() {
                   suffix="%"
                 />
               </Field>
+              <Divider soft />
               <Field>
                 <Label className="flex w-full items-center justify-between">
                   <span>Inflation Rate</span>
