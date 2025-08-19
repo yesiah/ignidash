@@ -14,9 +14,7 @@ export default function QuickPlanPage() {
         <DesktopMainArea />
       </MainArea>
       <SecondaryColumn>
-        <div className="sticky top-0 z-10">
-          <NumbersColumnHeader />
-        </div>
+        <NumbersColumnHeader />
         <NumbersColumnSections />
       </SecondaryColumn>
     </>
