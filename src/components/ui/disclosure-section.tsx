@@ -7,11 +7,12 @@ interface DisclosureSectionProps {
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
   >;
   children: React.ReactNode;
+  defaultOpen?: boolean;
 }
 
-export default function DisclosureSection({ title, icon: Icon, children }: DisclosureSectionProps) {
+export default function DisclosureSection({ title, icon: Icon, children, defaultOpen }: DisclosureSectionProps) {
   return (
-    <Disclosure as="div" className="border-border -mx-2 border-b sm:-mx-3 lg:-mx-4">
+    <Disclosure as="div" className="border-border -mx-2 border-b sm:-mx-3 lg:-mx-4" defaultOpen={defaultOpen}>
       <DisclosureButton className="group data-open:border-border focus-outline flex w-full items-center justify-between px-4 py-8 data-open:border-b">
         <div className="flex w-full items-center justify-between text-left transition-opacity duration-150 group-data-hover:opacity-75">
           <div className="flex items-center gap-2 font-medium">

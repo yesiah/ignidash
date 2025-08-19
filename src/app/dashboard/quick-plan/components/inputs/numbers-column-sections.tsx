@@ -10,7 +10,7 @@ import FineTuneSection from './sections/fine-tune/section';
 export default function NumbersColumnSections() {
   return (
     <>
-      <DisclosureSection title="Basic Info" icon={CircleUserRoundIcon}>
+      <DisclosureSection title="Basic Info" icon={CircleUserRoundIcon} defaultOpen>
         <p>I am basic info.</p>
       </DisclosureSection>
       <DisclosureSection title="Portfolio" icon={LandmarkIcon}>
