@@ -1,4 +1,4 @@
-import { CircleUserRoundIcon, LandmarkIcon, HandCoinsIcon, FileDigitIcon, TrendingUpDownIcon } from 'lucide-react';
+import { CircleUserRoundIcon, LandmarkIcon, HandCoinsIcon, ArmchairIcon, TrendingUpDownIcon } from 'lucide-react';
 
 import DisclosureSection from '@/components/ui/disclosure-section';
 
@@ -19,7 +19,7 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <p>Hello</p>
       </DisclosureSection>
-      <DisclosureSection title="Withdrawals" icon={FileDigitIcon}>
+      <DisclosureSection title="Retirement" icon={ArmchairIcon}>
         <p>Hello</p>
       </DisclosureSection>
       <DisclosureSection title="Assumptions" icon={TrendingUpDownIcon}>
