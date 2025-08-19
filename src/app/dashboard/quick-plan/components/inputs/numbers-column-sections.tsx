@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleUserRoundIcon, LandmarkIcon, HandCoinsIcon, ArmchairIcon, TrendingUpDownIcon } from 'lucide-react';
+import { HourglassIcon, LandmarkIcon, HandCoinsIcon, ArmchairIcon, TrendingUpDownIcon } from 'lucide-react';
 
 import {
   useBasicsData,
@@ -15,9 +15,7 @@ import {
 } from '@/lib/stores/quick-plan-store';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import NumberInput from '@/components/ui/number-input';
-import { Field, FieldGroup, Fieldset, Label, Description, Legend } from '@/components/catalyst/fieldset';
-import { Text } from '@/components/catalyst/text';
-import Card from '@/components/ui/card';
+import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
 
 // import BasicsSection from './sections/basics/section';
 // import GoalSection from './sections/retirement-goal/section';
@@ -56,37 +54,33 @@ export default function NumbersColumnSections() {
 
   return (
     <>
-      <DisclosureSection title="About You" icon={CircleUserRoundIcon} defaultOpen>
+      <DisclosureSection title="Duration" icon={HourglassIcon} defaultOpen>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2 sm:text-lg/6">Duration</Legend>
-            <Text className="mx-2 sm:text-base/6">When your simulation should start and end.</Text>
-            <Card>
-              <FieldGroup>
-                <Field>
-                  <Label>Age</Label>
-                  <NumberInput
-                    id="current-age"
-                    value={basics.currentAge}
-                    onBlur={(value) => updateBasics('currentAge', value)}
-                    inputMode="numeric"
-                    placeholder="28"
-                    decimalScale={0}
-                  />
-                </Field>
-                <Field>
-                  <Label>Life Expectancy</Label>
-                  <NumberInput
-                    id="life-expectancy"
-                    value={retirementFunding.lifeExpectancy}
-                    onBlur={(value) => updateRetirementFunding('lifeExpectancy', value)}
-                    inputMode="numeric"
-                    placeholder="85"
-                    decimalScale={0}
-                  />
-                </Field>
-              </FieldGroup>
-            </Card>
+            <FieldGroup>
+              <Field>
+                <Label>Age</Label>
+                <NumberInput
+                  id="current-age"
+                  value={basics.currentAge}
+                  onBlur={(value) => updateBasics('currentAge', value)}
+                  inputMode="numeric"
+                  placeholder="28"
+                  decimalScale={0}
+                />
+              </Field>
+              <Field>
+                <Label>Life Expectancy</Label>
+                <NumberInput
+                  id="life-expectancy"
+                  value={retirementFunding.lifeExpectancy}
+                  onBlur={(value) => updateRetirementFunding('lifeExpectancy', value)}
+                  inputMode="numeric"
+                  placeholder="85"
+                  decimalScale={0}
+                />
+              </Field>
+            </FieldGroup>
           </Fieldset>
         </form>
       </DisclosureSection>
@@ -96,95 +90,87 @@ export default function NumbersColumnSections() {
       <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <p>I am cash flow.</p>
       </DisclosureSection>
-      <DisclosureSection title="Retirement" icon={ArmchairIcon}>
+      <DisclosureSection title="Withdrawal Strategy" icon={ArmchairIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2 sm:text-lg/6">Withdrawal Strategy</Legend>
-            <Text className="mx-2 sm:text-base/6">How you&apos;ll withdraw funds to cover retirement expenses.</Text>
-            <Card>
-              <FieldGroup>
-                <Field>
-                  <Label>Safe Withdrawal Rate</Label>
-                  <NumberInput
-                    id="safe-withdrawal-rate"
-                    value={retirementFunding.safeWithdrawalRate}
-                    onBlur={(value) => updateRetirementFunding('safeWithdrawalRate', value)}
-                    inputMode="decimal"
-                    placeholder="4%"
-                    suffix="%"
-                  />
-                  <Description className="mt-2">{getSafeWithdrawalRateDescription()}</Description>
-                </Field>
-              </FieldGroup>
-            </Card>
+            <FieldGroup>
+              <Field>
+                <Label>Safe Withdrawal Rate</Label>
+                <NumberInput
+                  id="safe-withdrawal-rate"
+                  value={retirementFunding.safeWithdrawalRate}
+                  onBlur={(value) => updateRetirementFunding('safeWithdrawalRate', value)}
+                  inputMode="decimal"
+                  placeholder="4%"
+                  suffix="%"
+                />
+                <Description className="mt-2">{getSafeWithdrawalRateDescription()}</Description>
+              </Field>
+            </FieldGroup>
           </Fieldset>
         </form>
       </DisclosureSection>
-      <DisclosureSection title="Market Assumptions" icon={TrendingUpDownIcon}>
+      <DisclosureSection title="Expected Returns" icon={TrendingUpDownIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend className="mx-2 sm:text-lg/6">Expected Returns</Legend>
-            <Text className="mx-2 sm:text-base/6">Expected inflation rate and nominal returns for each asset class.</Text>
-            <Card>
-              <FieldGroup>
-                <Field>
-                  <Label className="flex w-full items-center justify-between">
-                    <span>Investment Returns</span>
-                    <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
-                  </Label>
-                  <NumberInput
-                    id="stock-return"
-                    value={marketAssumptions.stockReturn}
-                    onBlur={(value) => updateMarketAssumptions('stockReturn', value)}
-                    inputMode="decimal"
-                    placeholder="10%"
-                    suffix="%"
-                  />
-                </Field>
-                <Field>
-                  <Label className="flex w-full items-center justify-between">
-                    <span>Bond Returns</span>
-                    <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
-                  </Label>
-                  <NumberInput
-                    id="bond-return"
-                    value={marketAssumptions.bondReturn}
-                    onBlur={(value) => updateMarketAssumptions('bondReturn', value)}
-                    inputMode="decimal"
-                    placeholder="5%"
-                    suffix="%"
-                  />
-                </Field>
-                <Field>
-                  <Label className="flex w-full items-center justify-between">
-                    <span>Cash Returns</span>
-                    <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
-                  </Label>
-                  <NumberInput
-                    id="cash-return"
-                    value={marketAssumptions.cashReturn}
-                    onBlur={(value) => updateMarketAssumptions('cashReturn', value)}
-                    inputMode="decimal"
-                    placeholder="3%"
-                    suffix="%"
-                  />
-                </Field>
-                <Field>
-                  <Label className="flex w-full items-center justify-between">
-                    <span>Inflation Rate</span>
-                    <span className="text-muted-foreground text-sm/6">—</span>
-                  </Label>
-                  <NumberInput
-                    id="inflation-rate"
-                    value={marketAssumptions.inflationRate}
-                    onBlur={(value) => updateMarketAssumptions('inflationRate', value)}
-                    inputMode="decimal"
-                    placeholder="3%"
-                    suffix="%"
-                  />
-                </Field>
-              </FieldGroup>
-            </Card>
+            <FieldGroup>
+              <Field>
+                <Label className="flex w-full items-center justify-between">
+                  <span>Investment Returns</span>
+                  <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
+                </Label>
+                <NumberInput
+                  id="stock-return"
+                  value={marketAssumptions.stockReturn}
+                  onBlur={(value) => updateMarketAssumptions('stockReturn', value)}
+                  inputMode="decimal"
+                  placeholder="10%"
+                  suffix="%"
+                />
+              </Field>
+              <Field>
+                <Label className="flex w-full items-center justify-between">
+                  <span>Bond Returns</span>
+                  <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
+                </Label>
+                <NumberInput
+                  id="bond-return"
+                  value={marketAssumptions.bondReturn}
+                  onBlur={(value) => updateMarketAssumptions('bondReturn', value)}
+                  inputMode="decimal"
+                  placeholder="5%"
+                  suffix="%"
+                />
+              </Field>
+              <Field>
+                <Label className="flex w-full items-center justify-between">
+                  <span>Cash Returns</span>
+                  <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
+                </Label>
+                <NumberInput
+                  id="cash-return"
+                  value={marketAssumptions.cashReturn}
+                  onBlur={(value) => updateMarketAssumptions('cashReturn', value)}
+                  inputMode="decimal"
+                  placeholder="3%"
+                  suffix="%"
+                />
+              </Field>
+              <Field>
+                <Label className="flex w-full items-center justify-between">
+                  <span>Inflation Rate</span>
+                  <span className="text-muted-foreground text-sm/6">—</span>
+                </Label>
+                <NumberInput
+                  id="inflation-rate"
+                  value={marketAssumptions.inflationRate}
+                  onBlur={(value) => updateMarketAssumptions('inflationRate', value)}
+                  inputMode="decimal"
+                  placeholder="3%"
+                  suffix="%"
+                />
+              </Field>
+            </FieldGroup>
           </Fieldset>
         </form>
       </DisclosureSection>
