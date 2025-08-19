@@ -19,9 +19,9 @@ import { Field, FieldGroup, Fieldset, Label, Description, Legend } from '@/compo
 import { Text } from '@/components/catalyst/text';
 import Card from '@/components/ui/card';
 
-import BasicsSection from './sections/basics/section';
-import GoalSection from './sections/retirement-goal/section';
-import FineTuneSection from './sections/fine-tune/section';
+// import BasicsSection from './sections/basics/section';
+// import GoalSection from './sections/retirement-goal/section';
+// import FineTuneSection from './sections/fine-tune/section';
 
 function getSafeWithdrawalRateDescription() {
   return (
@@ -188,9 +188,9 @@ export default function NumbersColumnSections() {
           </Fieldset>
         </form>
       </DisclosureSection>
-      <BasicsSection />
+      {/* <BasicsSection />
       <GoalSection />
-      <FineTuneSection />
+      <FineTuneSection /> */}
     </>
   );
 }
