@@ -1,4 +1,12 @@
-import { HouseIcon, LandmarkIcon, HandCoinsIcon, ChartNoAxesCombinedIcon, Layers2Icon, ZapIcon } from 'lucide-react';
+import {
+  HouseIcon,
+  LandmarkIcon,
+  HandCoinsIcon,
+  ChartNoAxesCombinedIcon,
+  Layers2Icon,
+  ZapIcon,
+  CircleQuestionMarkIcon,
+} from 'lucide-react';
 
 export interface NavigationItem {
   name: string;
@@ -18,10 +26,19 @@ export const navigationItems: Omit<NavigationItem, 'current'>[] = [
   { name: 'Insights', href: '/dashboard/insights', icon: ZapIcon },
 ];
 
+export const secondaryNavigationItems: Omit<NavigationItem, 'current'>[] = [{ name: 'Help', href: '/help', icon: CircleQuestionMarkIcon }];
+
 export function getNavigation(currentPath: string): NavigationItem[] {
   return navigationItems.map((item) => ({
     ...item,
     current: currentPath === item.href,
+  }));
+}
+
+export function getSecondaryNavigation(): NavigationItem[] {
+  return secondaryNavigationItems.map((item) => ({
+    ...item,
+    current: false,
   }));
 }
 

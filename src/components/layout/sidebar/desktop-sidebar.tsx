@@ -1,15 +1,18 @@
 import Image from 'next/image';
+import { SunIcon } from 'lucide-react';
 
 import type { NavigationItem } from '@/lib/navigation';
+import { SidebarModeToggle } from '@/components/mode-toggle';
 
 import SidebarLink from './sidebar-link';
 import SidebarBrand from './sidebar-brand';
 
 interface DesktopSidebarProps {
   navigation: NavigationItem[];
+  secondaryNavigation: NavigationItem[];
 }
 
-export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
+export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSidebarProps) {
   return (
     <div className="hidden font-mono lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col group-data-[state=collapsed]/sidebar:lg:w-16">
       <div className="bg-emphasized-background border-border flex grow flex-col border-r">
@@ -32,7 +35,29 @@ export function DesktopSidebar({ navigation }: DesktopSidebarProps) {
                 ))}
               </ul>
             </li>
-            <li className="-mx-3 mt-auto">
+            <li className="mt-auto">
+              <ul role="list" className="space-y-1">
+                <li key="dark-mode">
+                  <SidebarModeToggle>
+                    <div className="p-2">
+                      <SunIcon aria-hidden="true" className="size-6 shrink-0" />
+                    </div>
+                    <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">Dark Mode</span>
+                  </SidebarModeToggle>
+                </li>
+                {secondaryNavigation.map((item) => (
+                  <li key={item.name}>
+                    <SidebarLink href={item.href} current={item.current}>
+                      <div className="p-2">
+                        <item.icon aria-hidden="true" className="size-6 shrink-0" />
+                      </div>
+                      <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{item.name}</span>
+                    </SidebarLink>
+                  </li>
+                ))}
+              </ul>
+            </li>
+            <li className="-mx-3">
               <a
                 href="#"
                 className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-4 text-sm/6 font-semibold"
