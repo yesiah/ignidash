@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html lang="en" className="h-full scheme-light dark:scheme-dark" suppressHydrationWarning>
       <body className={`${figtree.variable} ${geistMono.variable} h-full antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
