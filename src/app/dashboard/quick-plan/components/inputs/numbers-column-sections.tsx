@@ -139,7 +139,7 @@ export default function NumbersColumnSections() {
                   placeholder="28"
                   decimalScale={0}
                 />
-                <Description className="mt-2">The age your simulation will start at.</Description>
+                <Description>The age your simulation will start at.</Description>
               </Field>
               <Divider />
               <Field>
@@ -152,7 +152,7 @@ export default function NumbersColumnSections() {
                   placeholder="85"
                   decimalScale={0}
                 />
-                <Description className="mt-2">The age your simulation will end at.</Description>
+                <Description>The age your simulation will end at.</Description>
               </Field>
             </FieldGroup>
           </Fieldset>
@@ -173,7 +173,7 @@ export default function NumbersColumnSections() {
                     placeholder="$75,000"
                     prefix="$"
                   />
-                  <Description className="mt-2">Placeholder text.</Description>
+                  <Description>Placeholder text.</Description>
                 </Field>
                 <Divider />
                 <Field>
@@ -191,7 +191,7 @@ export default function NumbersColumnSections() {
                     placeholder="70%"
                     suffix="%"
                   />
-                  <Description className="mt-2">Placeholder text.</Description>
+                  <Description>Placeholder text.</Description>
                 </Field>
                 <Divider />
                 <Field>
@@ -209,7 +209,7 @@ export default function NumbersColumnSections() {
                     placeholder="30%"
                     suffix="%"
                   />
-                  <Description className="mt-2">Placeholder text.</Description>
+                  <Description>Placeholder text.</Description>
                 </Field>
                 <Divider />
                 <Field>
@@ -227,7 +227,7 @@ export default function NumbersColumnSections() {
                     placeholder="0%"
                     suffix="%"
                   />
-                  <Description className="mt-2">Placeholder text.</Description>
+                  <Description>Placeholder text.</Description>
                 </Field>
               </FieldGroup>
             </Fieldset>
@@ -249,7 +249,7 @@ export default function NumbersColumnSections() {
                   placeholder="$85,000"
                   prefix="$"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
               <Divider />
               <Field>
@@ -268,7 +268,7 @@ export default function NumbersColumnSections() {
                   placeholder="$50,000"
                   prefix="$"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
               <Divider />
               <Field>
@@ -281,7 +281,7 @@ export default function NumbersColumnSections() {
                   placeholder="$0"
                   prefix="$"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
               <Divider />
               <Field>
@@ -294,7 +294,7 @@ export default function NumbersColumnSections() {
                   placeholder="$50,000"
                   prefix="$"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
               <Divider />
               <Field>
@@ -310,7 +310,7 @@ export default function NumbersColumnSections() {
                   placeholder="3%"
                   suffix="%"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
               <Divider />
               <Field>
@@ -326,7 +326,7 @@ export default function NumbersColumnSections() {
                   placeholder="3%"
                   suffix="%"
                 />
-                <Description className="mt-2">Placeholder text.</Description>
+                <Description>Placeholder text.</Description>
               </Field>
             </FieldGroup>
           </Fieldset>
@@ -346,7 +346,7 @@ export default function NumbersColumnSections() {
                   placeholder="4%"
                   suffix="%"
                 />
-                <Description className="mt-2">{getSafeWithdrawalRateDescription()}</Description>
+                <Description>{getSafeWithdrawalRateDescription()}</Description>
               </Field>
             </FieldGroup>
           </Fieldset>
@@ -369,7 +369,7 @@ export default function NumbersColumnSections() {
                   placeholder="10%"
                   suffix="%"
                 />
-                <Description className="mt-2">Expected annual return for stocks and other volatile investments.</Description>
+                <Description>Expected annual return for stocks and other volatile investments.</Description>
               </Field>
               <Divider />
               <Field>
@@ -385,7 +385,7 @@ export default function NumbersColumnSections() {
                   placeholder="5%"
                   suffix="%"
                 />
-                <Description className="mt-2">Expected annual return for bonds.</Description>
+                <Description>Expected annual return for bonds.</Description>
               </Field>
               <Divider />
               <Field>
@@ -401,7 +401,7 @@ export default function NumbersColumnSections() {
                   placeholder="3%"
                   suffix="%"
                 />
-                <Description className="mt-2">Expected annual interest rate for cash savings and money market accounts.</Description>
+                <Description>Expected annual interest rate for cash savings and money market accounts.</Description>
               </Field>
               <Divider />
               <Field>
@@ -417,7 +417,7 @@ export default function NumbersColumnSections() {
                   placeholder="3%"
                   suffix="%"
                 />
-                <Description className="mt-2">Expected annual inflation rate, used to calculate real returns.</Description>
+                <Description>Expected annual inflation rate, used to calculate real returns.</Description>
               </Field>
             </FieldGroup>
           </Fieldset>
