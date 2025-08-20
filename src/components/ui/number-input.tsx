@@ -66,6 +66,7 @@ export default function NumberInput({ id, value, onBlur, inputMode, placeholder,
         allowLeadingZeros={false}
         customInput={Input}
         aria-invalid={!!error}
+        invalid={!!error}
         isAllowed={({ value }) => value.length <= 12}
       />
       {error && <ErrorMessage>{error}</ErrorMessage>}
