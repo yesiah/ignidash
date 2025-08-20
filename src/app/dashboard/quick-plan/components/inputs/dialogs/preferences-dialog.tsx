@@ -10,8 +10,7 @@ import {
   useMarketAssumptionsData,
   useUpdateMarketAssumptions,
 } from '@/lib/stores/quick-plan-store';
-import Card from '@/components/ui/card';
-import SelectMenu from '@/components/ui/select-menu';
+// import Card from '@/components/ui/card';
 import { DialogTitle, DialogBody } from '@/components/catalyst/dialog';
 import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
 // import { Divider } from '@/components/catalyst/divider';
@@ -67,22 +66,20 @@ export default function PreferencesDialog() {
           </Fieldset>
         </form>
         <form onSubmit={(e) => e.preventDefault()}>
-          <fieldset className="space-y-4">
-            <legend className="sr-only">Data storage configuration</legend>
-            <Card>
-              <SelectMenu
-                id="data-storage"
-                label="Data Persistence"
-                value={preferences.dataStorage}
-                onChange={(e) => updatePreferences('dataStorage', e.target.value)}
-                options={[
-                  { value: 'localStorage', label: 'Local Storage' },
-                  { value: 'none', label: 'No Data Persistence' },
-                ]}
-                desc="Save your data locally on this device, or work without saving between sessions."
-              />
-            </Card>
-            <Card>
+          <Fieldset aria-label="Data storage configuration">
+            <FieldGroup>
+              <Field>
+                <Label>Data Persistence</Label>
+                <Select
+                  name="data-storage"
+                  value={preferences.dataStorage}
+                  onChange={(e) => updatePreferences('dataStorage', e.target.value)}
+                >
+                  <option value="localStorage">Local Storage</option>
+                  <option value="none">No Data Persistence</option>
+                </Select>
+                <Description>Save your data locally on this device, or work without saving between sessions.</Description>
+              </Field>
               <Button
                 type="button"
                 color="red"
@@ -98,8 +95,8 @@ export default function PreferencesDialog() {
                 {isDeleting ? 'Deleting...' : 'Delete Saved Data'}
               </Button>
               <p className="text-muted-foreground mt-2 text-sm">This will permanently delete all saved data and reset to defaults.</p>
-            </Card>
-          </fieldset>
+            </FieldGroup>
+          </Fieldset>
         </form>
       </DialogBody>
     </>
