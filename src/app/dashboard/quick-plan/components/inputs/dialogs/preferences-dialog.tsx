@@ -50,8 +50,9 @@ export default function PreferencesDialog() {
           <Fieldset aria-label="Simulation methodology">
             <FieldGroup>
               <Field>
-                <Label>Simulation Mode</Label>
+                <Label htmlFor="simulation-mode">Simulation Mode</Label>
                 <Select
+                  id="simulation-mode"
                   name="simulation-mode"
                   value={marketAssumptions.simulationMode}
                   onChange={(e) => updateMarketAssumptions('simulationMode', e.target.value)}
@@ -69,8 +70,9 @@ export default function PreferencesDialog() {
           <Fieldset aria-label="Data storage configuration">
             <FieldGroup>
               <Field>
-                <Label>Data Persistence</Label>
+                <Label htmlFor="data-storage">Data Persistence</Label>
                 <Select
+                  id="data-storage"
                   name="data-storage"
                   value={preferences.dataStorage}
                   onChange={(e) => updatePreferences('dataStorage', e.target.value)}
