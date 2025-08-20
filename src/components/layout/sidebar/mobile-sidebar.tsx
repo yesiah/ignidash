@@ -11,9 +11,10 @@ interface MobileSidebarProps {
   open: boolean;
   onClose: () => void;
   navigation: NavigationItem[];
+  secondaryNavigation: NavigationItem[];
 }
 
-export default function MobileSidebar({ open, onClose, navigation }: MobileSidebarProps) {
+export default function MobileSidebar({ open, onClose, navigation, secondaryNavigation }: MobileSidebarProps) {
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50 font-mono lg:hidden">
       <DialogBackdrop
@@ -34,7 +35,7 @@ export default function MobileSidebar({ open, onClose, navigation }: MobileSideb
               </button>
             </div>
           </TransitionChild>
-          <MobileSidebarContent navigation={navigation} onClose={onClose} />
+          <MobileSidebarContent navigation={navigation} secondaryNavigation={secondaryNavigation} onClose={onClose} />
         </DialogPanel>
       </div>
     </Dialog>

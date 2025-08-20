@@ -20,7 +20,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="group/sidebar" data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}>
-      <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} navigation={navigation} />
+      <MobileSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        navigation={navigation}
+        secondaryNavigation={secondaryNavigation}
+      />
       <DesktopSidebar navigation={navigation} secondaryNavigation={secondaryNavigation} />
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} currentPageTitle={currentPageTitle} currentPageIcon={currentPageIcon} />
       {children}
