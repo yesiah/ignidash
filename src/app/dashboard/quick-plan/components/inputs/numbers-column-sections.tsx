@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { HourglassIcon, LandmarkIcon, HandCoinsIcon, BanknoteArrowDownIcon, TrendingUpDownIcon } from 'lucide-react';
 
 import {
@@ -20,11 +21,18 @@ import {
   useUpdateGoals,
   useGoalsTouched,
   useUpdateGoalsWithoutTouched,
+  useAllocationData,
+  useUpdateAllocation,
+  useStocksDollarAmount,
+  useBondsDollarAmount,
+  useCashDollarAmount,
 } from '@/lib/stores/quick-plan-store';
+import { formatNumber } from '@/lib/utils';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import NumberInput from '@/components/ui/number-input';
 import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
 import { Divider } from '@/components/catalyst/divider';
+import InvalidInputError from '@/components/ui/invalid-input-error';
 
 // import BasicsSection from './sections/basics/section';
 // import GoalSection from './sections/retirement-goal/section';
@@ -71,6 +79,54 @@ export default function NumbersColumnSections() {
   const incomeRealGrowthRate = useIncomeRealGrowthRate();
   const expenseRealGrowthRate = useExpenseRealGrowthRate();
 
+  const allocation = useAllocationData();
+  const updateAllocation = useUpdateAllocation();
+  const stocksDollarAmount = useStocksDollarAmount();
+  const bondsDollarAmount = useBondsDollarAmount();
+  const cashDollarAmount = useCashDollarAmount();
+
+  // Local state for allocation tracking
+  const [localAllocation, setLocalAllocation] = useState({
+    stockAllocation: allocation.stockAllocation,
+    bondAllocation: allocation.bondAllocation,
+    cashAllocation: allocation.cashAllocation,
+  });
+
+  // Sync store changes to local state
+  useEffect(() => {
+    setLocalAllocation({
+      stockAllocation: allocation.stockAllocation,
+      bondAllocation: allocation.bondAllocation,
+      cashAllocation: allocation.cashAllocation,
+    });
+  }, [allocation]);
+
+  // Error state for allocation validation
+  const [allocationError, setAllocationError] = useState<string | undefined>(undefined);
+
+  // Handler for allocation field changes
+  const handleAllocationBlur = (field: keyof typeof localAllocation, value: unknown) => {
+    const updatedAllocation = {
+      ...localAllocation,
+      [field]: value,
+    };
+
+    setLocalAllocation(updatedAllocation);
+
+    const result = updateAllocation(updatedAllocation);
+    if (!result.success) {
+      setAllocationError(result.error);
+    } else {
+      setAllocationError(undefined);
+    }
+
+    /*
+     * HACK: Always return success to prevent field-level errors, relying on section-level validation instead.
+     * TODO: Properly route field-specific vs form-level errors to appropriate UI locations.
+     */
+    return { success: true };
+  };
+
   return (
     <>
       <DisclosureSection title="Duration" icon={HourglassIcon} defaultOpen>
@@ -107,7 +163,81 @@ export default function NumbersColumnSections() {
         </form>
       </DisclosureSection>
       <DisclosureSection title="Portfolio" icon={LandmarkIcon}>
-        <p>I am portfolio.</p>
+        <>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Fieldset>
+              <FieldGroup>
+                <Field>
+                  <Label>Invested Assets</Label>
+                  <NumberInput
+                    id="invested-assets"
+                    value={basics.investedAssets}
+                    onBlur={(value) => updateBasics('investedAssets', value)}
+                    inputMode="decimal"
+                    placeholder="$75,000"
+                    prefix="$"
+                  />
+                  <Description className="mt-2">Placeholder text.</Description>
+                </Field>
+                <Divider />
+                <Field>
+                  <Label className="flex w-full items-center justify-between">
+                    <span>Stocks Allocation</span>
+                    <span className="text-muted-foreground text-sm/6">
+                      {stocksDollarAmount > 0 ? `$${formatNumber(stocksDollarAmount, 1)}` : '—'}
+                    </span>
+                  </Label>
+                  <NumberInput
+                    id="stock-allocation"
+                    value={localAllocation.stockAllocation}
+                    onBlur={(value) => handleAllocationBlur('stockAllocation', value)}
+                    inputMode="decimal"
+                    placeholder="70%"
+                    suffix="%"
+                  />
+                  <Description className="mt-2">Placeholder text.</Description>
+                </Field>
+                <Divider />
+                <Field>
+                  <Label className="flex w-full items-center justify-between">
+                    <span>Bonds Allocation</span>
+                    <span className="text-muted-foreground text-sm/6">
+                      {bondsDollarAmount > 0 ? `$${formatNumber(bondsDollarAmount, 1)}` : '—'}
+                    </span>
+                  </Label>
+                  <NumberInput
+                    id="bond-allocation"
+                    value={localAllocation.bondAllocation}
+                    onBlur={(value) => handleAllocationBlur('bondAllocation', value)}
+                    inputMode="decimal"
+                    placeholder="30%"
+                    suffix="%"
+                  />
+                  <Description className="mt-2">Placeholder text.</Description>
+                </Field>
+                <Divider />
+                <Field>
+                  <Label className="flex w-full items-center justify-between">
+                    <span>Cash Allocation</span>
+                    <span className="text-muted-foreground text-sm/6">
+                      {cashDollarAmount > 0 ? `$${formatNumber(cashDollarAmount, 1)}` : '—'}
+                    </span>
+                  </Label>
+                  <NumberInput
+                    id="cash-allocation"
+                    value={localAllocation.cashAllocation}
+                    onBlur={(value) => handleAllocationBlur('cashAllocation', value)}
+                    inputMode="decimal"
+                    placeholder="0%"
+                    suffix="%"
+                  />
+                  <Description className="mt-2">Placeholder text.</Description>
+                </Field>
+              </FieldGroup>
+            </Fieldset>
+          </form>
+          {allocationError && <InvalidInputError title="Asset Allocation Error" desc={allocationError} />}
+        </>
       </DisclosureSection>
       <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
