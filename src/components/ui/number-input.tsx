@@ -7,29 +7,16 @@ import { Input } from '@/components/catalyst/input';
 
 interface NumberInputProps {
   id: string;
-  label?: string | React.ReactNode;
   value: number | null;
   onBlur: (value: string | null) => { success: boolean; error?: string };
   inputMode: 'numeric' | 'decimal';
   placeholder: string;
-  desc?: string | React.ReactNode;
   prefix?: string;
   suffix?: string;
   decimalScale?: number;
 }
 
-export default function NumberInput({
-  id,
-  label,
-  value,
-  onBlur,
-  inputMode,
-  placeholder,
-  desc,
-  prefix,
-  suffix,
-  decimalScale = 2,
-}: NumberInputProps) {
+export default function NumberInput({ id, value, onBlur, inputMode, placeholder, prefix, suffix, decimalScale = 2 }: NumberInputProps) {
   // Local string state that allows incomplete inputs
   const [localValue, setLocalValue] = useState<string>(() => `${value ?? ''}`);
 
@@ -60,11 +47,6 @@ export default function NumberInput({
 
   return (
     <div>
-      {label && (
-        <label htmlFor={id} className="block text-sm/6 font-medium">
-          {label}
-        </label>
-      )}
       <NumericFormat
         id={id}
         value={localValue}
@@ -82,19 +64,12 @@ export default function NumberInput({
         allowLeadingZeros={false}
         customInput={Input}
         aria-invalid={!!error}
-        aria-describedby={error || desc ? `${id}-message` : undefined}
         isAllowed={({ value }) => value.length <= 12}
       />
-      {error ? (
+      {error ?? (
         <p id={`${id}-message`} className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
           {error}
         </p>
-      ) : (
-        desc && (
-          <p id={`${id}-message`} className="text-muted-foreground mt-2 text-sm">
-            {desc}
-          </p>
-        )
       )}
     </div>
   );
