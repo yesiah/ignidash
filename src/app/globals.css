@@ -9,7 +9,7 @@
   --foreground: #1c1917; /* stone-900 */
   --muted-foreground: #78716c; /* stone-500 */
   --primary: #e11d48; /* rose-600 */
-  --border: #d6d3d1; /* stone-300 */
+  --border: #a8a29e; /* stone-400 */
 
   --chart-1: hsl(346 77% 65%); /* Darker pink (top) */
   --chart-2: hsl(346 77% 80%); /* Medium pink (middle) */
@@ -33,7 +33,7 @@
   --foreground: #f5f5f4; /* stone-100 */
   --muted-foreground: #a8a29e; /* stone-400 */
   --primary: #fb7185; /* rose-400 */
-  --border: #44403c; /* stone-700 */
+  --border: #57534e; /* stone-600 */
 
   --chart-1: hsl(346 80% 50%); /* Brighter red (top) */
   --chart-2: hsl(346 75% 35%); /* Deep burgundy (middle) */
