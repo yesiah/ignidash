@@ -3,7 +3,13 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/catalyst/button';
-import { usePreferencesData, useUpdatePreferences, useResetStore } from '@/lib/stores/quick-plan-store';
+import {
+  usePreferencesData,
+  useUpdatePreferences,
+  useResetStore,
+  useMarketAssumptionsData,
+  useUpdateMarketAssumptions,
+} from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
@@ -16,8 +22,49 @@ export default function PreferencesDrawer() {
   const updatePreferences = useUpdatePreferences();
   const resetStore = useResetStore();
 
+  const marketAssumptions = useMarketAssumptionsData();
+  const updateMarketAssumptions = useUpdateMarketAssumptions();
+
+  let simulationModeDesc;
+  switch (marketAssumptions.simulationMode) {
+    case 'fixedReturns':
+      simulationModeDesc = 'Uses your Expected Returns assumptions for a single deterministic projection.';
+      break;
+    case 'monteCarlo':
+      simulationModeDesc = 'Runs many simulations with your Average Returns assumptions to show success probability.';
+      break;
+    case 'historicalBacktest':
+      simulationModeDesc = 'Tests your plan against actual historical market data from different starting years.';
+      break;
+    default:
+      simulationModeDesc = 'Select a simulation mode for projections.';
+      break;
+  }
+
   return (
     <>
+      <SectionContainer showBottomBorder location="drawer">
+        <SectionHeader title="Simulation Settings" desc="Select a simulation methodology for your projections." />
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <fieldset className="space-y-4">
+              <legend className="sr-only">Simulation methodology</legend>
+              <SelectMenu
+                id="simulation-mode"
+                label="Simulation Mode"
+                value={marketAssumptions.simulationMode}
+                onChange={(e) => updateMarketAssumptions('simulationMode', e.target.value)}
+                options={[
+                  { value: 'fixedReturns', label: 'Fixed Returns' },
+                  { value: 'monteCarlo', label: 'Monte Carlo' },
+                  { value: 'historicalBacktest', label: 'Historical Backtest' },
+                ]}
+                desc={simulationModeDesc}
+              />
+            </fieldset>
+          </form>
+        </Card>
+      </SectionContainer>
       <SectionContainer showBottomBorder={false} location="drawer">
         <SectionHeader title="Data Storage" desc="Control how your data is saved and managed." />
         <form onSubmit={(e) => e.preventDefault()}>
