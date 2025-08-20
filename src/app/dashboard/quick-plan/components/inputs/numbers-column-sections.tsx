@@ -125,7 +125,7 @@ export default function NumbersColumnSections() {
 
   return (
     <>
-      <DisclosureSection title="Duration" icon={HourglassIcon} defaultOpen>
+      <DisclosureSection title="Duration" icon={HourglassIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <FieldGroup>
@@ -158,7 +158,7 @@ export default function NumbersColumnSections() {
           </Fieldset>
         </form>
       </DisclosureSection>
-      <DisclosureSection title="Portfolio" icon={LandmarkIcon} defaultOpen>
+      <DisclosureSection title="Portfolio" icon={LandmarkIcon}>
         <>
           <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset>
@@ -235,7 +235,7 @@ export default function NumbersColumnSections() {
           {allocationError && <InvalidInputError title="Asset Allocation Error" desc={allocationError} />}
         </>
       </DisclosureSection>
-      <DisclosureSection title="Cash Flow" icon={HandCoinsIcon} defaultOpen>
+      <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <FieldGroup>
