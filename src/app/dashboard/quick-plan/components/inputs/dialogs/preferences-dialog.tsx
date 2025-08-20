@@ -88,7 +88,6 @@ export default function PreferencesDialog() {
                   desc="Save your data locally on this device, or work without saving between sessions."
                 />
               </Card>
-
               <Card>
                 <Button
                   type="button"
