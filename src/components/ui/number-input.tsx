@@ -46,9 +46,10 @@ export default function NumberInput({ id, value, onBlur, inputMode, placeholder,
   };
 
   return (
-    <div>
+    <>
       <NumericFormat
         id={id}
+        name={id}
         value={localValue}
         onValueChange={handleValueChange}
         onBlur={handleBlur}
@@ -66,11 +67,11 @@ export default function NumberInput({ id, value, onBlur, inputMode, placeholder,
         aria-invalid={!!error}
         isAllowed={({ value }) => value.length <= 12}
       />
-      {error ?? (
+      {error && (
         <p id={`${id}-message`} className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
           {error}
         </p>
       )}
-    </div>
+    </>
   );
 }

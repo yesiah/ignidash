@@ -130,7 +130,7 @@ export default function NumbersColumnSections() {
           <Fieldset>
             <FieldGroup>
               <Field>
-                <Label>Age</Label>
+                <Label htmlFor="current-age">Age</Label>
                 <NumberInput
                   id="current-age"
                   value={basics.currentAge}
@@ -143,7 +143,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label>Life Expectancy</Label>
+                <Label htmlFor="life-expectancy">Life Expectancy</Label>
                 <NumberInput
                   id="life-expectancy"
                   value={retirementFunding.lifeExpectancy}
@@ -164,7 +164,7 @@ export default function NumbersColumnSections() {
             <Fieldset>
               <FieldGroup>
                 <Field>
-                  <Label>Invested Assets</Label>
+                  <Label htmlFor="invested-assets">Invested Assets</Label>
                   <NumberInput
                     id="invested-assets"
                     value={basics.investedAssets}
@@ -177,7 +177,7 @@ export default function NumbersColumnSections() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label className="flex w-full items-center justify-between">
+                  <Label htmlFor="stock-allocation" className="flex w-full items-center justify-between">
                     <span>Stocks Allocation</span>
                     <span className="text-muted-foreground text-sm/6">
                       {stocksDollarAmount > 0 ? `$${formatNumber(stocksDollarAmount, 1)}` : '—'}
@@ -195,7 +195,7 @@ export default function NumbersColumnSections() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label className="flex w-full items-center justify-between">
+                  <Label htmlFor="bond-allocation" className="flex w-full items-center justify-between">
                     <span>Bonds Allocation</span>
                     <span className="text-muted-foreground text-sm/6">
                       {bondsDollarAmount > 0 ? `$${formatNumber(bondsDollarAmount, 1)}` : '—'}
@@ -213,7 +213,7 @@ export default function NumbersColumnSections() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label className="flex w-full items-center justify-between">
+                  <Label htmlFor="cash-allocation" className="flex w-full items-center justify-between">
                     <span>Cash Allocation</span>
                     <span className="text-muted-foreground text-sm/6">
                       {cashDollarAmount > 0 ? `$${formatNumber(cashDollarAmount, 1)}` : '—'}
@@ -240,7 +240,7 @@ export default function NumbersColumnSections() {
           <Fieldset>
             <FieldGroup>
               <Field>
-                <Label>Annual Income</Label>
+                <Label htmlFor="annual-income">Annual Income</Label>
                 <NumberInput
                   id="annual-income"
                   value={basics.annualIncome}
@@ -253,7 +253,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label>Annual Expenses</Label>
+                <Label htmlFor="annual-expenses">Annual Expenses</Label>
                 <NumberInput
                   id="annual-expenses"
                   value={basics.annualExpenses}
@@ -272,7 +272,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label>Retirement Income</Label>
+                <Label htmlFor="retirement-income">Retirement Income</Label>
                 <NumberInput
                   id="retirement-income"
                   value={retirementFunding.retirementIncome}
@@ -285,7 +285,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label>Retirement Expenses</Label>
+                <Label htmlFor="retirement-expenses">Retirement Expenses</Label>
                 <NumberInput
                   id="retirement-expenses"
                   value={goals.retirementExpenses}
@@ -298,7 +298,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="income-growth-rate" className="flex w-full items-center justify-between">
                   <span>Income Growth Rate</span>
                   <span className="text-muted-foreground text-sm/6">{incomeRealGrowthRate.toFixed(1)}% real</span>
                 </Label>
@@ -314,7 +314,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="expense-growth-rate" className="flex w-full items-center justify-between">
                   <span>Expenses Growth Rate</span>
                   <span className="text-muted-foreground text-sm/6">{expenseRealGrowthRate.toFixed(1)}% real</span>
                 </Label>
@@ -337,7 +337,7 @@ export default function NumbersColumnSections() {
           <Fieldset>
             <FieldGroup>
               <Field>
-                <Label>Safe Withdrawal Rate</Label>
+                <Label htmlFor="safe-withdrawal-rate">Safe Withdrawal Rate</Label>
                 <NumberInput
                   id="safe-withdrawal-rate"
                   value={retirementFunding.safeWithdrawalRate}
@@ -357,7 +357,7 @@ export default function NumbersColumnSections() {
           <Fieldset>
             <FieldGroup>
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="stock-return" className="flex w-full items-center justify-between">
                   <span>Stock Return</span>
                   <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
                 </Label>
@@ -373,7 +373,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="bond-return" className="flex w-full items-center justify-between">
                   <span>Bond Return</span>
                   <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
                 </Label>
@@ -389,7 +389,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="cash-return" className="flex w-full items-center justify-between">
                   <span>Cash Interest Rate</span>
                   <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
                 </Label>
@@ -405,7 +405,7 @@ export default function NumbersColumnSections() {
               </Field>
               <Divider />
               <Field>
-                <Label className="flex w-full items-center justify-between">
+                <Label htmlFor="inflation-rate" className="flex w-full items-center justify-between">
                   <span>Inflation Rate</span>
                   <span className="text-muted-foreground text-sm/6">—</span>
                 </Label>
