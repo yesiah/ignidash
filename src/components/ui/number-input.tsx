@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { NumericFormat } from 'react-number-format';
 
+import { ErrorMessage } from '@/components/catalyst/fieldset';
 import { Input } from '@/components/catalyst/input';
 
 interface NumberInputProps {
@@ -67,11 +68,7 @@ export default function NumberInput({ id, value, onBlur, inputMode, placeholder,
         aria-invalid={!!error}
         isAllowed={({ value }) => value.length <= 12}
       />
-      {error && (
-        <p id={`${id}-message`} className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </>
   );
 }
