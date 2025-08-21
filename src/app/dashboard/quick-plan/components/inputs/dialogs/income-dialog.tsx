@@ -1,6 +1,10 @@
 'use client';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
+import NumberInput from '@/components/ui/number-input';
+import { Field, FieldGroup, Fieldset, Label /* Description */ } from '@/components/catalyst/fieldset';
+// import { Divider } from '@/components/catalyst/divider';
+import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 
 interface IncomeDialogProps {
@@ -12,7 +16,38 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
   return (
     <>
       <DialogTitle>Income</DialogTitle>
-      <DialogBody className="space-y-4"></DialogBody>
+      <DialogBody className="space-y-4">
+        <form onSubmit={(e) => e.preventDefault()}>
+          <Fieldset aria-label="Income details">
+            <FieldGroup>
+              <Field>
+                <Label htmlFor="amount">Amount</Label>
+                <NumberInput
+                  id="amount"
+                  value={85000}
+                  onBlur={(value) => {
+                    return { success: true };
+                  }}
+                  inputMode="decimal"
+                  placeholder="$85,000"
+                  prefix="$"
+                />
+              </Field>
+            </FieldGroup>
+            <FieldGroup>
+              <Field>
+                <Label htmlFor="frequency">Frequency</Label>
+                <Select id="frequency" name="frequency">
+                  <option value="one-time">One-time</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </Select>
+              </Field>
+            </FieldGroup>
+          </Fieldset>
+        </form>
+      </DialogBody>
       <DialogActions>
         <Button plain onClick={() => setIncomeDialogOpen(false)}>
           Cancel
