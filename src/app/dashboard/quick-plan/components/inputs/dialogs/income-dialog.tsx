@@ -2,7 +2,7 @@
 
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
-import { CoinsIcon, CalendarIcon } from 'lucide-react';
+import { CoinsIcon, CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
@@ -20,7 +20,12 @@ interface IncomeDialogProps {
 export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: IncomeDialogProps) {
   return (
     <>
-      <DialogTitle>Income</DialogTitle>
+      <DialogTitle>
+        <div className="flex items-center gap-4">
+          <BanknoteArrowUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
+          <span>New Income</span>
+        </div>
+      </DialogTitle>
       <DialogBody className="space-y-4">
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset aria-label="Income details">
