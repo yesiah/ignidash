@@ -1,4 +1,4 @@
-import { NumericFormat } from 'react-number-format';
+import { NumericFormat, type NumberFormatValues } from 'react-number-format';
 import { Input } from '@/components/catalyst/input';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -19,11 +19,17 @@ export default function NumberInputV2({
   suffix,
   decimalScale = 2,
   ref,
+  onChange,
   ...otherProps
 }: NumberInputV2Props & UseFormRegisterReturn) {
+  const handleValueChange = (values: NumberFormatValues) => {
+    onChange({ target: { name: otherProps.name, value: values.value } });
+  };
+
   return (
     <NumericFormat
       {...otherProps}
+      onValueChange={handleValueChange}
       getInputRef={ref}
       id={id}
       placeholder={placeholder}
