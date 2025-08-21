@@ -45,7 +45,7 @@ const growthSchema = z.object({
 
 export const incomeFormSchema = z
   .object({
-    name: z.string().min(2).max(50),
+    name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
     amount: currencyFieldAllowsZero('Annual income cannot be negative (enter 0 if no current income)'),
     growth: growthSchema,
   })

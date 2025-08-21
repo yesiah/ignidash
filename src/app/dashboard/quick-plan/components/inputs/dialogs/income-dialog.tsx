@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { incomeFormSchema, type IncomeInputs } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
-import { Field, FieldGroup, Fieldset, Label /* Description */ } from '@/components/catalyst/fieldset';
+import { Field, Fieldset, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
@@ -20,7 +20,11 @@ interface IncomeDialogProps {
 }
 
 export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: IncomeDialogProps) {
-  const { register, handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(incomeFormSchema),
   });
 
@@ -37,109 +41,117 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogBody className="space-y-4">
-          <Fieldset aria-label="Income details">
-            <FieldGroup>
-              <div className="mb-8 grid grid-cols-2 gap-4">
+        <Fieldset aria-label="Income details">
+          <DialogBody data-slot="control" className="space-y-4">
+            <div className="mb-8 grid grid-cols-2 gap-4">
+              <Field>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  {...register('name')}
+                  id="name"
+                  name="name"
+                  placeholder="My Salary"
+                  autoComplete="off"
+                  inputMode="text"
+                  invalid={!!errors.name}
+                  aria-invalid={!!errors.name}
+                />
+                {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
+              </Field>
+              <Field>
+                <Label htmlFor="amount">Amount</Label>
+                <NumberInput
+                  {...register('amount')}
+                  id="amount"
+                  value={null}
+                  onBlur={(value) => {
+                    return { success: true };
+                  }}
+                  inputMode="decimal"
+                  placeholder="$85,000"
+                  prefix="$"
+                />
+              </Field>
+              <div className="col-span-2">
                 <Field>
-                  <Label htmlFor="name">Name</Label>
-                  <Input {...register('name')} id="name" name="name" placeholder="My Salary" autoComplete="off" inputMode="text" />
+                  <Label htmlFor="frequency">Frequency</Label>
+                  <Select {...register('frequency')} id="frequency" name="frequency">
+                    <option value="yearly">Yearly</option>
+                    <option value="one-time">One-time</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="biweekly">Biweekly</option>
+                    <option value="weekly">Weekly</option>
+                  </Select>
                 </Field>
-                <Field>
-                  <Label htmlFor="amount">Amount</Label>
-                  <NumberInput
-                    {...register('amount')}
-                    id="amount"
-                    value={null}
-                    onBlur={(value) => {
-                      return { success: true };
-                    }}
-                    inputMode="decimal"
-                    placeholder="$85,000"
-                    prefix="$"
-                  />
-                </Field>
-                <div className="col-span-2">
-                  <Field>
-                    <Label htmlFor="frequency">Frequency</Label>
-                    <Select {...register('frequency')} id="frequency" name="frequency">
-                      <option value="yearly">Yearly</option>
-                      <option value="one-time">One-time</option>
-                      <option value="quarterly">Quarterly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="biweekly">Biweekly</option>
-                      <option value="weekly">Weekly</option>
-                    </Select>
-                  </Field>
-                </div>
               </div>
-              <Disclosure as="div" className="border-border/50 border-y py-4">
-                <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
-                  <div className="flex items-center gap-2">
-                    <CalendarIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                    <span className="text-base/7 font-semibold">Timeframe</span>
+            </div>
+            <Disclosure as="div" className="border-border/50 border-y py-4">
+              <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                  <span className="text-base/7 font-semibold">Timeframe</span>
+                </div>
+                <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                  <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                  <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                </span>
+              </DisclosureButton>
+              <DisclosurePanel className="py-4">...</DisclosurePanel>
+            </Disclosure>
+            <Disclosure as="div">
+              <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
+                <div className="flex items-center gap-2">
+                  <ArrowTrendingUpIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                  <span className="text-base/7 font-semibold">Rate of Change</span>
+                </div>
+                <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                  <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                  <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                </span>
+              </DisclosureButton>
+              <DisclosurePanel className="py-4">
+                <div className="grid grid-cols-5 gap-4">
+                  <div className="col-span-3">
+                    <Field>
+                      <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
+                        <span>Growth Rate</span>
+                        <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
+                      </Label>
+                      <NumberInput
+                        {...register('growth.growthRate')}
+                        id="growth-rate"
+                        value={null}
+                        onBlur={(value) => {
+                          return { success: true };
+                        }}
+                        inputMode="decimal"
+                        placeholder="3%"
+                        suffix="%"
+                      />
+                    </Field>
                   </div>
-                  <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                    <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                    <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                  </span>
-                </DisclosureButton>
-                <DisclosurePanel className="py-4">...</DisclosurePanel>
-              </Disclosure>
-              <Disclosure as="div">
-                <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
-                  <div className="flex items-center gap-2">
-                    <ArrowTrendingUpIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                    <span className="text-base/7 font-semibold">Rate of Change</span>
+                  <div className="col-span-2">
+                    <Field>
+                      <Label htmlFor="growth-limit">Limit</Label>
+                      <NumberInput
+                        {...register('growth.growthLimit')}
+                        id="growth-limit"
+                        value={null}
+                        onBlur={(value) => {
+                          return { success: true };
+                        }}
+                        inputMode="decimal"
+                        placeholder="$120,000"
+                        prefix="$"
+                      />
+                    </Field>
                   </div>
-                  <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                    <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                    <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                  </span>
-                </DisclosureButton>
-                <DisclosurePanel className="py-4">
-                  <div className="grid grid-cols-5 gap-4">
-                    <div className="col-span-3">
-                      <Field>
-                        <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
-                          <span>Growth Rate</span>
-                          <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
-                        </Label>
-                        <NumberInput
-                          {...register('growth.growthRate')}
-                          id="growth-rate"
-                          value={null}
-                          onBlur={(value) => {
-                            return { success: true };
-                          }}
-                          inputMode="decimal"
-                          placeholder="3%"
-                          suffix="%"
-                        />
-                      </Field>
-                    </div>
-                    <div className="col-span-2">
-                      <Field>
-                        <Label htmlFor="growth-limit">Limit</Label>
-                        <NumberInput
-                          {...register('growth.growthLimit')}
-                          id="growth-limit"
-                          value={null}
-                          onBlur={(value) => {
-                            return { success: true };
-                          }}
-                          inputMode="decimal"
-                          placeholder="$120,000"
-                          prefix="$"
-                        />
-                      </Field>
-                    </div>
-                  </div>
-                </DisclosurePanel>
-              </Disclosure>
-            </FieldGroup>
-          </Fieldset>
-        </DialogBody>
+                </div>
+              </DisclosurePanel>
+            </Disclosure>
+          </DialogBody>
+        </Fieldset>
         <DialogActions>
           <Button plain onClick={() => setIncomeDialogOpen(false)}>
             Cancel
