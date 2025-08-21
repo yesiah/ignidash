@@ -55,7 +55,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 </div>
               </div>
               <Divider />
-              <Disclosure as="div" className="py-6 first:pt-0 last:pb-0">
+              <Disclosure as="div">
                 <DisclosureButton className="group flex w-full items-start justify-between text-left">
                   <span className="text-base/7 font-semibold">Rate of Change</span>
                   <span className="ml-6 flex h-7 items-center">
@@ -63,45 +63,44 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                     <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
                   </span>
                 </DisclosureButton>
-                <DisclosurePanel className="mt-2 pr-12">
-                  <p className="text-muted-foreground text-base/7">...</p>
+                <DisclosurePanel className="mt-2">
+                  <div className="grid grid-cols-5 gap-4">
+                    <div className="col-span-3">
+                      <Field>
+                        <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
+                          <span>Growth Rate</span>
+                          <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
+                        </Label>
+                        <NumberInput
+                          id="growth-rate"
+                          value={3}
+                          onBlur={(value) => {
+                            return { success: true };
+                          }}
+                          inputMode="decimal"
+                          placeholder="3%"
+                          suffix="%"
+                        />
+                      </Field>
+                    </div>
+                    <div className="col-span-2">
+                      <Field>
+                        <Label htmlFor="growth-limit">Limit</Label>
+                        <NumberInput
+                          id="growth-limit"
+                          value={null}
+                          onBlur={(value) => {
+                            return { success: true };
+                          }}
+                          inputMode="decimal"
+                          placeholder="$120,000"
+                          prefix="$"
+                        />
+                      </Field>
+                    </div>
+                  </div>
                 </DisclosurePanel>
               </Disclosure>
-              <div className="grid grid-cols-5 gap-4">
-                <div className="col-span-3">
-                  <Field>
-                    <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
-                      <span>Growth Rate</span>
-                      <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
-                    </Label>
-                    <NumberInput
-                      id="growth-rate"
-                      value={3}
-                      onBlur={(value) => {
-                        return { success: true };
-                      }}
-                      inputMode="decimal"
-                      placeholder="3%"
-                      suffix="%"
-                    />
-                  </Field>
-                </div>
-                <div className="col-span-2">
-                  <Field>
-                    <Label htmlFor="growth-limit">Limit</Label>
-                    <NumberInput
-                      id="growth-limit"
-                      value={null}
-                      onBlur={(value) => {
-                        return { success: true };
-                      }}
-                      inputMode="decimal"
-                      placeholder="$120,000"
-                      prefix="$"
-                    />
-                  </Field>
-                </div>
-              </div>
               <Divider />
             </FieldGroup>
           </Fieldset>
