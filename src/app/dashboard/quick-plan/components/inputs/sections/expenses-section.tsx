@@ -1,0 +1,17 @@
+import { BanknoteArrowDownIcon } from 'lucide-react';
+
+import DisclosureSection from '@/components/ui/disclosure-section';
+
+export default function ExpensesSection() {
+  return (
+    <DisclosureSection title="Expenses" icon={BanknoteArrowDownIcon}>
+      <button
+        type="button"
+        className="focus-outline relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
+      >
+        <BanknoteArrowDownIcon aria-hidden="true" className="text-primary mx-auto size-12" />
+        <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Create an expense</span>
+      </button>
+    </DisclosureSection>
+  );
+}

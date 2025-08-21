@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { HourglassIcon, LandmarkIcon, HandCoinsIcon, BanknoteArrowDownIcon, BanknoteArrowUpIcon, TrendingUpDownIcon } from 'lucide-react';
+import { HourglassIcon, LandmarkIcon, HandCoinsIcon, BanknoteArrowDownIcon, TrendingUpDownIcon } from 'lucide-react';
 
 import {
   useBasicsData,
@@ -33,6 +33,9 @@ import NumberInput from '@/components/ui/number-input';
 import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
 import { Divider } from '@/components/catalyst/divider';
 import InvalidInputError from '@/components/ui/invalid-input-error';
+
+import IncomeSection from './sections/income-section';
+import ExpensesSection from './sections/expenses-section';
 
 function getSafeWithdrawalRateDescription() {
   return (
@@ -235,24 +238,8 @@ export default function NumbersColumnSections() {
           {allocationError && <InvalidInputError title="Asset Allocation Error" desc={allocationError} />}
         </>
       </DisclosureSection>
-      <DisclosureSection title="Income" icon={BanknoteArrowUpIcon}>
-        <button
-          type="button"
-          className="focus-outline relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
-        >
-          <BanknoteArrowUpIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-          <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Create an income</span>
-        </button>
-      </DisclosureSection>
-      <DisclosureSection title="Expenses" icon={BanknoteArrowDownIcon}>
-        <button
-          type="button"
-          className="focus-outline relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
-        >
-          <BanknoteArrowDownIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-          <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Create an expense</span>
-        </button>
-      </DisclosureSection>
+      <IncomeSection />
+      <ExpensesSection />
       <DisclosureSection title="Cash Flow" icon={HandCoinsIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
