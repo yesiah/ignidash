@@ -6,6 +6,7 @@ import { Field, FieldGroup, Fieldset, Label /* Description */ } from '@/componen
 // import { Divider } from '@/components/catalyst/divider';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
+import { Input } from '@/components/catalyst/input';
 
 interface IncomeDialogProps {
   incomeDialogOpen: boolean;
@@ -21,6 +22,10 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
           <Fieldset aria-label="Income details">
             <FieldGroup>
               <Field>
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" name="name" placeholder="My Salary" autoComplete="off" inputMode="text" />
+              </Field>
+              <Field>
                 <Label htmlFor="amount">Amount</Label>
                 <NumberInput
                   id="amount"
@@ -33,8 +38,6 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                   prefix="$"
                 />
               </Field>
-            </FieldGroup>
-            <FieldGroup>
               <Field>
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select id="frequency" name="frequency">
