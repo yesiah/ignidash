@@ -39,6 +39,22 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 />
               </Field>
               <Field>
+                <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
+                  <span>Rate of Change</span>
+                  <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
+                </Label>
+                <NumberInput
+                  id="growth-rate"
+                  value={3}
+                  onBlur={(value) => {
+                    return { success: true };
+                  }}
+                  inputMode="decimal"
+                  placeholder="3%"
+                  suffix="%"
+                />
+              </Field>
+              <Field>
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select id="frequency" name="frequency">
                   <option value="one-time">One-time</option>
