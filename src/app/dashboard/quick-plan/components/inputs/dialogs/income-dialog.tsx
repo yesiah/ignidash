@@ -56,7 +56,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               </div>
               <Divider />
               <Disclosure as="div">
-                <DisclosureButton className="group flex w-full items-start justify-between text-left">
+                <DisclosureButton className="group data-open:border-border/50 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
                   <span className="text-base/7 font-semibold">Rate of Change</span>
                   <span className="ml-6 flex h-7 items-center">
                     <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
