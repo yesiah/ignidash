@@ -94,7 +94,7 @@ export default function PreferencesDrawer() {
                   resetStore();
                   setIsDeleting(false);
                 }}
-                className="focus-outline w-full"
+                className="w-full"
                 disabled={isDeleting}
               >
                 {isDeleting ? 'Deleting...' : 'Delete Saved Data'}

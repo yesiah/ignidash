@@ -94,7 +94,7 @@ export default function PreferencesDialog() {
                     resetStore();
                     setIsDeleting(false);
                   }}
-                  className="focus-outline w-full"
+                  className="w-full"
                   disabled={isDeleting}
                 >
                   {isDeleting ? 'Deleting...' : 'Delete'}

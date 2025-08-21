@@ -23,7 +23,7 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
         </p>
       </div>
       <div className="flex flex-1 items-center justify-between sm:justify-end sm:gap-2">
-        <Button onClick={() => onPageChange(currentPage - 1)} plain disabled={currentPage === 1} className="focus-outline">
+        <Button onClick={() => onPageChange(currentPage - 1)} plain disabled={currentPage === 1}>
           <ArrowLongLeftIcon className="h-5 w-5" />
           Previous
         </Button>
@@ -43,7 +43,7 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
             </span>
           </p>
         </div>
-        <Button onClick={() => onPageChange(currentPage + 1)} plain disabled={currentPage === totalPages} className="focus-outline">
+        <Button onClick={() => onPageChange(currentPage + 1)} plain disabled={currentPage === totalPages}>
           Next
           <ArrowLongRightIcon className="h-5 w-5" />
         </Button>
