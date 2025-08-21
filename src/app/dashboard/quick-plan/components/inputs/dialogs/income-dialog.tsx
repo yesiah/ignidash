@@ -60,7 +60,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 </div>
               </div>
               <Disclosure as="div" className="border-border/50 border-y py-4">
-                <DisclosureButton className="group data-open:border-border/50 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
+                <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
                   <div className="flex items-center gap-2">
                     <CalendarIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                     <span className="text-base/7 font-semibold">Timeframe</span>
@@ -73,7 +73,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 <DisclosurePanel className="py-4">...</DisclosurePanel>
               </Disclosure>
               <Disclosure as="div">
-                <DisclosureButton className="group data-open:border-border/50 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
+                <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
                   <div className="flex items-center gap-2">
                     <ArrowTrendingUpIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                     <span className="text-base/7 font-semibold">Rate of Change</span>
@@ -122,7 +122,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 </DisclosurePanel>
               </Disclosure>
               {/* <Disclosure as="div">
-                <DisclosureButton className="group data-open:border-border/50 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
+                <DisclosureButton className="group data-open:border-border/25 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
                   <div className="flex items-center gap-2">
                     <CoinsIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                     <span className="text-base/7 font-semibold">Taxes</span>
