@@ -24,7 +24,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset aria-label="Income details">
             <FieldGroup>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="mb-8 grid grid-cols-2 gap-4">
                 <Field>
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" name="name" placeholder="My Salary" autoComplete="off" inputMode="text" />
@@ -66,7 +66,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                     <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
                   </span>
                 </DisclosureButton>
-                <DisclosurePanel className="mt-2">
+                <DisclosurePanel className="py-4">
                   <div className="grid grid-cols-5 gap-4">
                     <div className="col-span-3">
                       <Field>
