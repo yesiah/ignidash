@@ -2,7 +2,7 @@
 
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
-import { CoinsIcon, CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react';
+import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
@@ -124,8 +124,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                   </div>
                 </DisclosurePanel>
               </Disclosure>
-              <Divider />
-              <Disclosure as="div">
+              {/* <Disclosure as="div">
                 <DisclosureButton className="group data-open:border-border/50 flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4">
                   <div className="flex items-center gap-2">
                     <CoinsIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
@@ -137,8 +136,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                   </span>
                 </DisclosureButton>
                 <DisclosurePanel className="py-4">...</DisclosurePanel>
-              </Disclosure>
-              <Divider />
+              </Disclosure> */}
             </FieldGroup>
           </Fieldset>
         </form>
