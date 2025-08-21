@@ -31,7 +31,7 @@ export default function NumberInputV2<
   const {
     field: { onChange, onBlur, value, ref },
     fieldState: { error },
-  } = useController<TFieldValues, TName>({
+  } = useController({
     name,
     rules,
     shouldUnregister,
