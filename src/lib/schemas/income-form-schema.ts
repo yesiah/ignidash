@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
+import { currencyFieldForbidsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
 
 const timePointSchema = z.discriminatedUnion('type', [
   z.object({
@@ -46,7 +46,7 @@ const growthSchema = z.object({
 export const incomeFormSchema = z
   .object({
     name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
-    amount: currencyFieldAllowsZero('Annual income cannot be negative (enter 0 if no current income)'),
+    amount: currencyFieldForbidsZero('Income cannot be negative or zero'),
     growth: growthSchema,
   })
   .extend(frequencyTimeframeSchema.shape)
