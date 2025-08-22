@@ -150,12 +150,18 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               </Field>
             </div>
             <Disclosure as="div" className="border-border/50 border-y py-4">
-              {(panel) => (
+              {({ open, close }) => (
                 <>
                   <DisclosureButton
                     onClick={() => {
                       if (!open) close();
-                      togglePanels({ ...panel, key: 'timeframe' });
+                      togglePanels({ open, close, key: 'timeframe' });
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        if (!open) close();
+                        togglePanels({ open, close, key: 'timeframe' });
+                      }
                     }}
                     className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4"
                   >
@@ -304,12 +310,18 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               )}
             </Disclosure>
             <Disclosure as="div">
-              {(panel) => (
+              {({ open, close }) => (
                 <>
                   <DisclosureButton
                     onClick={() => {
                       if (!open) close();
-                      togglePanels({ ...panel, key: 'rateOfChange' });
+                      togglePanels({ open, close, key: 'rateOfChange' });
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        if (!open) close();
+                        togglePanels({ open, close, key: 'rateOfChange' });
+                      }
                     }}
                     className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4"
                   >
