@@ -1,7 +1,7 @@
 'use client';
 
 import * as Headless from '@headlessui/react';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import type React from 'react';
 import { Button } from './button';
 import { Link } from './link';
@@ -27,7 +27,7 @@ export function DropdownMenu({
       {...props}
       transition
       anchor={anchor}
-      className={clsx(
+      className={cn(
         className,
         // Anchor positioning
         '[--anchor-gap:--spacing(2)] [--anchor-padding:--spacing(1)] data-[anchor~=end]:[--anchor-offset:6px] data-[anchor~=start]:[--anchor-offset:-6px] sm:data-[anchor~=end]:[--anchor-offset:4px] sm:data-[anchor~=start]:[--anchor-offset:-4px]',
@@ -57,7 +57,7 @@ export function DropdownItem({
   | Omit<Headless.MenuItemProps<'button'>, 'as' | 'className'>
   | Omit<Headless.MenuItemProps<typeof Link>, 'as' | 'className'>
 )) {
-  const classes = clsx(
+  const classes = cn(
     className,
     // Base styles
     'group cursor-default rounded-lg px-3.5 py-2.5 focus:outline-hidden sm:px-3 sm:py-1.5',
@@ -86,14 +86,14 @@ export function DropdownItem({
 }
 
 export function DropdownHeader({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} className={clsx(className, 'col-span-5 px-3.5 pt-2.5 pb-1 sm:px-3')} />;
+  return <div {...props} className={cn(className, 'col-span-5 px-3.5 pt-2.5 pb-1 sm:px-3')} />;
 }
 
 export function DropdownSection({ className, ...props }: { className?: string } & Omit<Headless.MenuSectionProps, 'as' | 'className'>) {
   return (
     <Headless.MenuSection
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Define grid at the section level instead of the item level if subgrid is supported
         'col-span-full supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[auto_1fr_1.5rem_0.5rem_auto]'
@@ -106,7 +106,7 @@ export function DropdownHeading({ className, ...props }: { className?: string } 
   return (
     <Headless.MenuHeading
       {...props}
-      className={clsx(
+      className={cn(
         className,
         'col-span-full grid grid-cols-[1fr_auto] gap-x-12 px-3.5 pt-2 pb-1 text-sm/5 font-medium text-zinc-500 sm:px-3 sm:text-xs/5 dark:text-zinc-400'
       )}
@@ -118,7 +118,7 @@ export function DropdownDivider({ className, ...props }: { className?: string } 
   return (
     <Headless.MenuSeparator
       {...props}
-      className={clsx(
+      className={cn(
         className,
         'col-span-full mx-3.5 my-1 h-px border-0 bg-zinc-950/5 sm:mx-3 dark:bg-white/10 forced-colors:bg-[CanvasText]'
       )}
@@ -127,7 +127,7 @@ export function DropdownDivider({ className, ...props }: { className?: string } 
 }
 
 export function DropdownLabel({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} data-slot="label" className={clsx(className, 'col-start-2 row-start-1')} {...props} />;
+  return <div {...props} data-slot="label" className={cn(className, 'col-start-2 row-start-1')} {...props} />;
 }
 
 export function DropdownDescription({ className, ...props }: { className?: string } & Omit<Headless.DescriptionProps, 'as' | 'className'>) {
@@ -135,7 +135,7 @@ export function DropdownDescription({ className, ...props }: { className?: strin
     <Headless.Description
       data-slot="description"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         'col-span-2 col-start-2 row-start-2 text-sm/5 text-zinc-500 group-data-focus:text-white sm:text-xs/5 dark:text-zinc-400 forced-colors:group-data-focus:text-[HighlightText]'
       )}
@@ -149,11 +149,11 @@ export function DropdownShortcut({
   ...props
 }: { keys: string | string[]; className?: string } & Omit<Headless.DescriptionProps<'kbd'>, 'as' | 'className'>) {
   return (
-    <Headless.Description as="kbd" {...props} className={clsx(className, 'col-start-5 row-start-1 flex justify-self-end')}>
+    <Headless.Description as="kbd" {...props} className={cn(className, 'col-start-5 row-start-1 flex justify-self-end')}>
       {(Array.isArray(keys) ? keys : keys.split('')).map((char, index) => (
         <kbd
           key={index}
-          className={clsx([
+          className={cn([
             'min-w-[2ch] text-center font-sans text-zinc-400 capitalize group-data-focus:text-white forced-colors:group-data-focus:text-[HighlightText]',
             // Make sure key names that are longer than one character (like "Tab") have extra space
             index > 0 && char.length > 1 && 'pl-1',

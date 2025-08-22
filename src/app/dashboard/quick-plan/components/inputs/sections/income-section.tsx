@@ -7,6 +7,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { useIncomesData } from '@/lib/stores/quick-plan-store';
 import { cn, formatNumber } from '@/lib/utils';
 
@@ -44,13 +45,16 @@ export default function IncomeSection() {
                       <p className="text-muted-foreground">{formatNumber(income.amount, 2, '$') + ` ${income.frequency}`}</p>
                     </div>
                     <div className="shrink-0 pr-2">
-                      <button
-                        type="button"
-                        className="inline-flex size-8 items-center justify-center rounded-full text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-rose-600 dark:hover:text-white dark:focus:outline-white"
-                      >
-                        <span className="sr-only">Open options</span>
-                        <EllipsisVerticalIcon aria-hidden="true" className="size-5" />
-                      </button>
+                      <Dropdown>
+                        <DropdownButton plain aria-label="Open options">
+                          <EllipsisVerticalIcon />
+                        </DropdownButton>
+                        <DropdownMenu>
+                          <DropdownItem href="#">View</DropdownItem>
+                          <DropdownItem href="#">Edit</DropdownItem>
+                          <DropdownItem onClick={() => {}}>Delete</DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
                     </div>
                   </div>
                 </li>
