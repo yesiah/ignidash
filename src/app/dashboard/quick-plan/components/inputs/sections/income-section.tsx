@@ -22,7 +22,7 @@ export default function IncomeSection() {
   const [selectedIncomeID, setSelectedIncomeID] = useState<string | null>(null);
 
   const [deleteIncomeAlertOpen, setDeleteIncomeAlertOpen] = useState(false);
-  const [incomeIDToDelete, setIncomeIDToDelete] = useState<string | null>(null);
+  const [incomeToDelete, setIncomeToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const incomes = useIncomesData();
   const hasIncomes = Object.keys(incomes).length > 0;
@@ -69,7 +69,7 @@ export default function IncomeSection() {
                           <DropdownItem
                             onClick={() => {
                               setDeleteIncomeAlertOpen(true);
-                              setIncomeIDToDelete(id);
+                              setIncomeToDelete({ id, name: income.name });
                             }}
                           >
                             Delete
@@ -114,11 +114,11 @@ export default function IncomeSection() {
       <Alert
         open={deleteIncomeAlertOpen}
         onClose={() => {
-          setIncomeIDToDelete(null);
+          setIncomeToDelete(null);
           setDeleteIncomeAlertOpen(false);
         }}
       >
-        <AlertTitle>Are you sure you want to delete this income?</AlertTitle>
+        <AlertTitle>Are you sure you want to delete {`"${incomeToDelete?.name}"` || 'this income'}?</AlertTitle>
         <AlertDescription>This action cannot be undone.</AlertDescription>
         <AlertActions>
           <Button plain onClick={() => setDeleteIncomeAlertOpen(false)}>
@@ -127,7 +127,7 @@ export default function IncomeSection() {
           <Button
             color="red"
             onClick={() => {
-              deleteIncome(incomeIDToDelete!);
+              deleteIncome(incomeToDelete!.id);
               setDeleteIncomeAlertOpen(false);
             }}
           >
