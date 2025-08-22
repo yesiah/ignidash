@@ -23,7 +23,7 @@ export default function IncomeSection() {
       <DisclosureSection title="Income" icon={BanknoteArrowUpIcon}>
         {hasIncomes && (
           <>
-            <ul role="list" className="mt-3 grid grid-cols-1 gap-5">
+            <ul role="list" className="grid grid-cols-1 gap-3">
               {Object.entries(incomes).map(([name, income]) => (
                 <li key={name} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
                   <div className="flex w-16 shrink-0 items-center justify-center rounded-l-md bg-rose-500 text-sm font-medium text-white">
