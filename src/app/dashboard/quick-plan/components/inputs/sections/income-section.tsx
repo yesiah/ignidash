@@ -34,7 +34,7 @@ export default function IncomeSection() {
                       <a href="#" className="font-medium text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-200">
                         {income.name}
                       </a>
-                      <p className="text-gray-500 dark:text-gray-400">{formatNumber(income.amount, 2, '$') + ` ${income.frequency}`}</p>
+                      <p className="text-muted-foreground">{formatNumber(income.amount, 2, '$') + ` ${income.frequency}`}</p>
                     </div>
                     <div className="shrink-0 pr-2">
                       <button
