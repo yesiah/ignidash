@@ -154,9 +154,12 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                             <Combobox
                               name={name}
                               options={months}
-                              displayValue={(month) => month!.name}
-                              value={months.find((m) => m.value === value)}
-                              onChange={(month) => onChange(month!.value)}
+                              displayValue={(month) => month?.name || currentMonth.name}
+                              value={months.find((m) => m.value === value) || currentMonth}
+                              onChange={(month) => onChange(month?.value || currentMonth.value)}
+                              filter={(month, query) =>
+                                month.name.toLowerCase().includes(query.toLowerCase()) || String(month.value).includes(query)
+                              }
                             >
                               {(month) => (
                                 <ComboboxOption value={month}>
@@ -177,9 +180,9 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                             <Combobox
                               name={name}
                               options={years}
-                              displayValue={(year) => String(year)}
-                              value={value}
-                              onChange={(year) => onChange(year)}
+                              displayValue={(year) => String(year || currentYear)}
+                              value={value || currentYear}
+                              onChange={(year) => onChange(year || currentYear)}
                             >
                               {(year) => (
                                 <ComboboxOption value={year}>
@@ -215,9 +218,12 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                                 <Combobox
                                   name={name}
                                   options={months}
-                                  displayValue={(month) => month!.name}
-                                  value={months.find((m) => m.value === value)}
-                                  onChange={(month) => onChange(month!.value)}
+                                  displayValue={(month) => month?.name || currentMonth.name}
+                                  value={months.find((m) => m.value === value) || currentMonth}
+                                  onChange={(month) => onChange(month?.value || currentMonth.value)}
+                                  filter={(month, query) =>
+                                    month.name.toLowerCase().includes(query.toLowerCase()) || String(month.value).includes(query)
+                                  }
                                 >
                                   {(month) => (
                                     <ComboboxOption value={month}>
@@ -238,9 +244,9 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                                 <Combobox
                                   name={name}
                                   options={years}
-                                  displayValue={(year) => String(year)}
-                                  value={value}
-                                  onChange={(year) => onChange(year)}
+                                  displayValue={(year) => String(year || currentYear)}
+                                  value={value || currentYear}
+                                  onChange={(year) => onChange(year || currentYear)}
                                 >
                                   {(year) => (
                                     <ComboboxOption value={year}>
