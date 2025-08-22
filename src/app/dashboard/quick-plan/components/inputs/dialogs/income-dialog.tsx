@@ -150,6 +150,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               </Field>
             </div>
             <Disclosure as="div" className="border-border/50 border-y py-4">
+              {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
               {({ open, close }) => (
                 <>
                   <DisclosureButton
@@ -310,6 +311,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               )}
             </Disclosure>
             <Disclosure as="div">
+              {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
               {({ open, close }) => (
                 <>
                   <DisclosureButton
