@@ -56,15 +56,15 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
   const endType = useWatch({ control, name: 'timeframe.end.type' });
 
   const getStartColSpan = () => {
-    if (startType === 'custom-date') return 'col-span-1';
-    if (startType === 'custom-age') return 'col-span-2';
-    return 'col-span-3';
+    if (startType === 'custom-date') return 'col-span-2';
+    if (startType === 'custom-age') return 'col-span-1';
+    return 'col-span-2';
   };
 
   const getEndColSpan = () => {
-    if (endType === 'custom-date') return 'col-span-1';
-    if (endType === 'custom-age') return 'col-span-2';
-    return 'col-span-3';
+    if (endType === 'custom-date') return 'col-span-2';
+    if (endType === 'custom-age') return 'col-span-1';
+    return 'col-span-2';
   };
 
   const months = [
@@ -175,7 +175,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <Field className={getStartColSpan()}>
                         <Label htmlFor="start">Start</Label>
                         <Select {...register('timeframe.start.type')} id="start" name="timeframe.start.type">
@@ -188,7 +188,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                       {startType === 'custom-date' && (
                         <>
                           <Field>
-                            <Label>Month</Label>
+                            <Label className="sr-only">Month</Label>
                             <Controller
                               name="timeframe.start.month"
                               defaultValue={currentMonth.value}
@@ -214,7 +214,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                             />
                           </Field>
                           <Field>
-                            <Label>Year</Label>
+                            <Label className="sr-only">Year</Label>
                             <Controller
                               name="timeframe.start.year"
                               defaultValue={currentYear}
@@ -252,7 +252,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                           {endType === 'custom-date' && (
                             <>
                               <Field>
-                                <Label>Month</Label>
+                                <Label className="sr-only">Month</Label>
                                 <Controller
                                   name="timeframe.end.month"
                                   defaultValue={currentMonth.value}
@@ -278,7 +278,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                                 />
                               </Field>
                               <Field>
-                                <Label>Year</Label>
+                                <Label className="sr-only">Year</Label>
                                 <Controller
                                   name="timeframe.end.year"
                                   defaultValue={currentYear}
