@@ -56,14 +56,12 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
   const endType = useWatch({ control, name: 'timeframe.end.type' });
 
   const getStartColSpan = () => {
-    console.log(startType);
     if (startType === 'custom-date') return 'col-span-1';
     if (startType === 'custom-age') return 'col-span-2';
     return 'col-span-3';
   };
 
   const getEndColSpan = () => {
-    console.log(endType);
     if (endType === 'custom-date') return 'col-span-1';
     if (endType === 'custom-age') return 'col-span-2';
     return 'col-span-3';
