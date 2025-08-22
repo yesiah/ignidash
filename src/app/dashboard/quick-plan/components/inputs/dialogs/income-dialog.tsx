@@ -180,7 +180,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 items-end gap-4">
                       <Field className={getStartColSpan()}>
                         <Label htmlFor="start">Start</Label>
                         <Select {...register('timeframe.start.type')} id="start" name="timeframe.start.type">
@@ -308,29 +308,31 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                             </>
                           )}
                           {endType === 'custom-age' && (
-                            <Field>
-                              <Label className="sr-only">Age</Label>
-                              <Controller
-                                name="timeframe.end.age"
-                                defaultValue={currentAge}
-                                control={control}
-                                render={({ field: { onChange, value, name } }) => (
-                                  <Combobox
-                                    name={name}
-                                    options={ages}
-                                    displayValue={(age) => String(age || currentAge)}
-                                    value={value || currentAge}
-                                    onChange={(age) => onChange(age || currentAge)}
-                                  >
-                                    {(age) => (
-                                      <ComboboxOption value={age}>
-                                        <ComboboxLabel>{age}</ComboboxLabel>
-                                      </ComboboxOption>
-                                    )}
-                                  </Combobox>
-                                )}
-                              />
-                            </Field>
+                            <>
+                              <Field>
+                                <Label className="sr-only">Age</Label>
+                                <Controller
+                                  name="timeframe.end.age"
+                                  defaultValue={currentAge}
+                                  control={control}
+                                  render={({ field: { onChange, value, name } }) => (
+                                    <Combobox
+                                      name={name}
+                                      options={ages}
+                                      displayValue={(age) => String(age || currentAge)}
+                                      value={value || currentAge}
+                                      onChange={(age) => onChange(age || currentAge)}
+                                    >
+                                      {(age) => (
+                                        <ComboboxOption value={age}>
+                                          <ComboboxLabel>{age}</ComboboxLabel>
+                                        </ComboboxOption>
+                                      )}
+                                    </Combobox>
+                                  )}
+                                />
+                              </Field>
+                            </>
                           )}
                         </>
                       )}
