@@ -8,7 +8,7 @@ import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
-import { useIncomesData } from '@/lib/stores/quick-plan-store';
+import { useIncomesData, useDeleteIncome } from '@/lib/stores/quick-plan-store';
 import { cn, formatNumber } from '@/lib/utils';
 
 import IncomeDialog from '../dialogs/income-dialog';
@@ -20,6 +20,8 @@ export default function IncomeSection() {
 
   const incomes = useIncomesData();
   const hasIncomes = Object.keys(incomes).length > 0;
+
+  const deleteIncome = useDeleteIncome();
 
   return (
     <>
@@ -50,9 +52,8 @@ export default function IncomeSection() {
                           <EllipsisVerticalIcon />
                         </DropdownButton>
                         <DropdownMenu>
-                          <DropdownItem href="#">View</DropdownItem>
-                          <DropdownItem href="#">Edit</DropdownItem>
-                          <DropdownItem onClick={() => {}}>Delete</DropdownItem>
+                          <DropdownItem onClick={() => setIncomeDialogOpen(true)}>Edit</DropdownItem>
+                          <DropdownItem onClick={() => deleteIncome(income.name)}>Delete</DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
                     </div>
