@@ -245,7 +245,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                       )}
                     </div>
                     {frequency !== 'one-time' && (
-                      <div className="mt-6 grid grid-cols-2 items-end gap-2">
+                      <div className="mt-4 grid grid-cols-2 items-end gap-2">
                         <Field className={getEndColSpan()}>
                           <Label htmlFor="end">End</Label>
                           <Select {...register('timeframe.end.type')} id="end" name="timeframe.end.type">
