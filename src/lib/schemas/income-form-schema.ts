@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { currencyFieldForbidsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
+import { coerceNumber, currencyFieldForbidsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
 
 const timePointSchema = z
   .object({
@@ -50,7 +50,7 @@ const frequencyTimeframeSchema = z
 
 const growthSchema = z.object({
   growthRate: percentageField(-50, 50, 'Income growth rate'),
-  growthLimit: z.number('Must be a valid growth limit').min(0).optional(),
+  growthLimit: coerceNumber(z.number('Must be a valid growth limit').min(0)).optional(),
 });
 
 export const incomeFormSchema = z
