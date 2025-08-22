@@ -45,7 +45,7 @@ export function Combobox<T>({
           // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
           'dark:before:hidden',
           // Focus ring
-          'after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-blue-500',
+          'sm:focus-within:after:ring-primary after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset sm:focus-within:after:ring-2',
           // Disabled state
           'has-data-disabled:opacity-50 has-data-disabled:before:bg-zinc-950/5 has-data-disabled:before:shadow-none',
           // Invalid state
@@ -68,7 +68,7 @@ export function Combobox<T>({
             // Typography
             'text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white',
             // Border
-            'border border-zinc-950/10 data-hover:border-zinc-950/20 dark:border-white/10 dark:data-hover:border-white/20',
+            'border border-zinc-950/25 data-hover:border-zinc-950/50 dark:border-white/25 dark:data-hover:border-white/50',
             // Background color
             'bg-transparent dark:bg-white/5',
             // Hide default focus styles
