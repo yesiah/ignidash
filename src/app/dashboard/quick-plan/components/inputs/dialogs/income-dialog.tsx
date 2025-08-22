@@ -113,7 +113,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
         <Fieldset aria-label="Income details">
           <DialogBody data-slot="control" className="space-y-4">
             <div className="mb-8 grid grid-cols-2 gap-4">
-              <Field>
+              <Field className="col-span-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   {...register('name')}
@@ -132,7 +132,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                 <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="$85,000" prefix="$" />
                 {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
               </Field>
-              <Field className="col-span-2">
+              <Field>
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select {...register('frequency')} id="frequency" name="frequency">
                   <optgroup label="Single Payment">
