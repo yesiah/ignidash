@@ -29,7 +29,6 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
     formState: { errors },
   } = useForm({
     resolver: zodResolver(incomeFormSchema),
-    mode: 'onBlur',
   });
 
   const onSubmit = (data: IncomeInputs) => {
