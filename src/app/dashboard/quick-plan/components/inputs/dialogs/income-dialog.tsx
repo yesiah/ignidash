@@ -16,7 +16,7 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
-interface ActiveDisclosurePanelData {
+interface DisclosureState {
   open: boolean;
   close: () => void;
   key: string;
@@ -86,17 +86,15 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 2100 - currentYear + 1 }, (_, i) => currentYear + i);
 
-  const [activeDisclosurePanel, setActiveDisclosurePanel] = useState<ActiveDisclosurePanelData | null>(null);
-  function togglePanels(newPanel: ActiveDisclosurePanelData) {
-    if (activeDisclosurePanel) {
-      if (activeDisclosurePanel.key !== newPanel.key && activeDisclosurePanel.open) {
-        activeDisclosurePanel.close();
-      }
+  const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
+  function toggleDisclosure(newDisclosure: DisclosureState) {
+    if (activeDisclosure && activeDisclosure.key !== newDisclosure.key && activeDisclosure.open) {
+      activeDisclosure.close();
     }
 
-    setActiveDisclosurePanel({
-      ...newPanel,
-      open: !newPanel.open,
+    setActiveDisclosure({
+      ...newDisclosure,
+      open: !newDisclosure.open,
     });
   }
 
@@ -154,12 +152,12 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                   <DisclosureButton
                     onClick={() => {
                       if (!open) close();
-                      togglePanels({ open, close, key: 'timeframe' });
+                      toggleDisclosure({ open, close, key: 'timeframe' });
                     }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         if (!open) close();
-                        togglePanels({ open, close, key: 'timeframe' });
+                        toggleDisclosure({ open, close, key: 'timeframe' });
                       }
                     }}
                     className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4"
@@ -315,12 +313,12 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                   <DisclosureButton
                     onClick={() => {
                       if (!open) close();
-                      togglePanels({ open, close, key: 'rateOfChange' });
+                      toggleDisclosure({ open, close, key: 'rateOfChange' });
                     }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         if (!open) close();
-                        togglePanels({ open, close, key: 'rateOfChange' });
+                        toggleDisclosure({ open, close, key: 'rateOfChange' });
                       }
                     }}
                     className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left data-open:border-b data-open:pb-4"
