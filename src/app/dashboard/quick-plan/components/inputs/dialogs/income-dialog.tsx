@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
@@ -46,6 +46,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
 
   const {
     register,
+    unregister,
     control,
     handleSubmit,
     formState: { errors },
@@ -64,6 +65,40 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
   const frequency = useWatch({ control, name: 'frequency' });
   const startType = useWatch({ control, name: 'timeframe.start.type' });
   const endType = useWatch({ control, name: 'timeframe.end.type' });
+
+  useEffect(() => {
+    if (frequency === 'one-time') {
+      // Unregister end time point fields
+      unregister('timeframe.end');
+      unregister('timeframe.end.type');
+      unregister('timeframe.end.age');
+      unregister('timeframe.end.month');
+      unregister('timeframe.end.year');
+
+      // Unregister growth fields
+      unregister('growth');
+      unregister('growth.growthRate');
+      unregister('growth.growthLimit');
+    }
+
+    if (startType !== 'custom-date') {
+      unregister('timeframe.start.month');
+      unregister('timeframe.start.year');
+    }
+
+    if (startType !== 'custom-age') {
+      unregister('timeframe.start.age');
+    }
+
+    if (endType !== 'custom-date') {
+      unregister('timeframe.end.month');
+      unregister('timeframe.end.year');
+    }
+
+    if (endType !== 'custom-age') {
+      unregister('timeframe.end.age');
+    }
+  }, [frequency, startType, endType, unregister]);
 
   const getStartColSpan = () => {
     if (startType === 'custom-date') return 'col-span-2';
