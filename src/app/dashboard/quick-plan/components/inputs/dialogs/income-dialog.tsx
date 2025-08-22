@@ -88,7 +88,7 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
 
   const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
   function toggleDisclosure(newDisclosure: DisclosureState) {
-    if (activeDisclosure && activeDisclosure.key !== newDisclosure.key && activeDisclosure.open) {
+    if (activeDisclosure?.open && activeDisclosure.key !== newDisclosure.key) {
       activeDisclosure.close();
     }
 
