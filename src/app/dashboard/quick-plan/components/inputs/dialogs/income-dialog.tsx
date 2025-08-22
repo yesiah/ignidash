@@ -172,6 +172,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
               </Field>
             </div>
             <Disclosure as="div" className="border-border/50 border-y py-4">
+              {/* <Disclosure as="div" className={`border-border/50 ${frequency !== 'one-time' ? 'border-y' : 'border-t'} py-4`}> */}
               {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
               {({ open, close }) => (
                 <>
