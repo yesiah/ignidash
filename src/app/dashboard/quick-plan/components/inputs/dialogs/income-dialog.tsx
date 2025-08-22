@@ -6,6 +6,7 @@ import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/ou
 import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCurrentAge, useLifeExpectancy } from '@/lib/stores/quick-plan-store';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import { incomeFormSchema, type IncomeInputs } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
@@ -85,6 +86,10 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
   const currentMonth = months[new Date().getMonth()];
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 2100 - currentYear + 1 }, (_, i) => currentYear + i);
+
+  const currentAge = useCurrentAge()!;
+  const lifeExpectancy = useLifeExpectancy();
+  const ages = Array.from({ length: lifeExpectancy - currentAge + 1 }, (_, i) => currentAge + i);
 
   const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
   const toggleDisclosure = useCallback(
@@ -301,6 +306,31 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
                                 />
                               </Field>
                             </>
+                          )}
+                          {endType === 'custom-age' && (
+                            <Field>
+                              <Label className="sr-only">Age</Label>
+                              <Controller
+                                name="timeframe.end.age"
+                                defaultValue={currentAge}
+                                control={control}
+                                render={({ field: { onChange, value, name } }) => (
+                                  <Combobox
+                                    name={name}
+                                    options={ages}
+                                    displayValue={(age) => String(age || currentAge)}
+                                    value={value || currentAge}
+                                    onChange={(age) => onChange(age || currentAge)}
+                                  >
+                                    {(age) => (
+                                      <ComboboxOption value={age}>
+                                        <ComboboxLabel>{age}</ComboboxLabel>
+                                      </ComboboxOption>
+                                    )}
+                                  </Combobox>
+                                )}
+                              />
+                            </Field>
                           )}
                         </>
                       )}
