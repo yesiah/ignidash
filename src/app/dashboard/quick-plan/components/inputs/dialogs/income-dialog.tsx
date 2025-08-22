@@ -67,13 +67,17 @@ export default function IncomeDialog({ incomeDialogOpen, setIncomeDialogOpen }: 
               <div className="col-span-2">
                 <Field>
                   <Label htmlFor="frequency">Frequency</Label>
-                  <Select {...register('frequency')} id="frequency" name="frequency">
-                    <option value="yearly">Yearly</option>
-                    <option value="one-time">One-time</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="biweekly">Biweekly</option>
-                    <option value="weekly">Weekly</option>
+                  <Select {...register('frequency')} id="frequency" name="frequency" defaultValue="yearly">
+                    <optgroup label="Single Payment">
+                      <option value="one-time">One-time</option>
+                    </optgroup>
+                    <optgroup label="Pay Schedule">
+                      <option value="yearly">Yearly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="biweekly">Biweekly</option>
+                      <option value="weekly">Weekly</option>
+                    </optgroup>
                   </Select>
                 </Field>
               </div>
