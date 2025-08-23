@@ -12,10 +12,10 @@ const timePointSchema = z
   .refine(
     (data) => {
       if (data.type === 'custom-date') {
-        return data.month !== undefined && data.year !== undefined;
+        return data.month !== undefined && data.year !== undefined && data.age === undefined;
       }
       if (data.type === 'custom-age') {
-        return data.age !== undefined;
+        return data.age !== undefined && data.month === undefined && data.year === undefined;
       }
       return true;
     },
