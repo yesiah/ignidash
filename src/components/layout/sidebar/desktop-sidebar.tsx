@@ -54,7 +54,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
             <li className="-mx-3">
               <a
                 href="#"
-                className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-4 text-sm/6 font-semibold"
+                className="hover:bg-background focus-outline border-border flex items-center border-t py-3 pl-4 text-base/6 font-semibold"
               >
                 <Image
                   alt=""
