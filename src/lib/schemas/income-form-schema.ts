@@ -73,12 +73,10 @@ export const incomeFormSchema = z
   .extend(frequencyTimeframeSchema.shape)
   .refine(
     (data) => {
-      // Skip if no limit, growth is 0, or growth is negative
-      if (!data.growth?.growthLimit || !data.growth.growthRate || data.growth.growthRate <= 0) {
+      if (data.growth?.growthLimit === undefined || data.growth?.growthRate === undefined || data.growth.growthRate <= 0) {
         return true;
       }
 
-      // Positive growth: limit must be greater than current amount
       return data.growth.growthLimit > data.amount;
     },
     {
@@ -88,12 +86,10 @@ export const incomeFormSchema = z
   )
   .refine(
     (data) => {
-      // Skip if no limit, growth is 0, or growth is positive
-      if (!data.growth?.growthLimit || !data.growth.growthRate || data.growth.growthRate >= 0) {
+      if (data.growth?.growthLimit === undefined || data.growth?.growthRate === undefined || data.growth.growthRate >= 0) {
         return true;
       }
 
-      // Negative growth: limit must be less than current amount
       return data.growth.growthLimit < data.amount;
     },
     {
