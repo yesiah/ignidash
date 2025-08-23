@@ -43,7 +43,8 @@ export default function NumberInputV2<
   });
 
   const handleValueChange = (values: NumberFormatValues) => {
-    onChange(values.value);
+    const value = values.value;
+    onChange(value !== '' ? value : undefined);
   };
 
   return (
