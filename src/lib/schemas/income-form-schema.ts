@@ -48,10 +48,24 @@ const frequencyTimeframeSchema = z
     }
   );
 
-const growthSchema = z.object({
-  growthRate: percentageField(-50, 50, 'Income growth rate').optional(),
-  growthLimit: coerceNumber(z.number('Must be a valid growth limit').min(0)).optional(),
-});
+const growthSchema = z
+  .object({
+    growthRate: percentageField(-50, 50, 'Income growth rate').optional(),
+    growthLimit: coerceNumber(z.number('Must be a valid growth limit').min(0)).optional(),
+  })
+  .refine(
+    (data) => {
+      // If there's a growth limit, there must be a growth rate
+      if (data.growthLimit !== undefined) {
+        return data.growthRate !== undefined;
+      }
+      return true;
+    },
+    {
+      message: 'Growth limit requires a growth rate to be set',
+      path: ['growthLimit'],
+    }
+  );
 
 export const incomeFormSchema = z
   .object({
