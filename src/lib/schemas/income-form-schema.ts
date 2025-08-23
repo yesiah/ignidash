@@ -49,7 +49,7 @@ const frequencyTimeframeSchema = z
   );
 
 const growthSchema = z.object({
-  growthRate: percentageField(-50, 50, 'Income growth rate'),
+  growthRate: percentageField(-50, 50, 'Income growth rate').optional(),
   growthLimit: coerceNumber(z.number('Must be a valid growth limit').min(0)).optional(),
 });
 
@@ -63,7 +63,7 @@ export const incomeFormSchema = z
   .refine(
     (data) => {
       // Skip if no limit, growth is 0, or growth is negative
-      if (!data.growth?.growthLimit || data.growth.growthRate <= 0) {
+      if (!data.growth?.growthLimit || !data.growth.growthRate || data.growth.growthRate <= 0) {
         return true;
       }
 
@@ -78,7 +78,7 @@ export const incomeFormSchema = z
   .refine(
     (data) => {
       // Skip if no limit, growth is 0, or growth is positive
-      if (!data.growth?.growthLimit || data.growth.growthRate >= 0) {
+      if (!data.growth?.growthLimit || !data.growth.growthRate || data.growth.growthRate >= 0) {
         return true;
       }
 
