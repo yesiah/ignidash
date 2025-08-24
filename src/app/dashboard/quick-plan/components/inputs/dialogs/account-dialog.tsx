@@ -36,7 +36,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
   };
 
   const type = useWatch({ control, name: 'type' });
-  const percentBonds = useWatch({ control, name: 'percentBonds' });
+  const percentBonds = Number(useWatch({ control, name: 'percentBonds' }) || 0);
 
   const getBalanceColSpan = () => {
     if (type === 'taxable-brokerage' || type === 'roth-401k' || type === 'roth-ira') return 'col-span-1';
@@ -140,7 +140,9 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                       <HandshakeIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                       <span className="text-base/7 font-semibold">Bonds</span>
                       <span className="hidden sm:inline">|</span>
-                      <span className="text-muted-foreground hidden truncate sm:inline">{`Placeholder Bond Text.`}</span>
+                      <span className="text-muted-foreground hidden truncate sm:inline">
+                        {percentBonds !== 0 ? `${percentBonds}% Bonds, ${100 - percentBonds}% Stocks` : 'All Stocks, No Bonds'}
+                      </span>
                     </div>
                     <span className="text-muted-foreground ml-6 flex h-7 items-center">
                       <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
@@ -154,9 +156,10 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                         name="percentBonds"
                         control={control}
                         id="percentBonds"
-                        inputMode="decimal"
+                        inputMode="numeric"
                         placeholder="20%"
                         suffix="%"
+                        decimalScale={0}
                       />
                     </Field>
                     <div aria-hidden="true" className="mt-4">
