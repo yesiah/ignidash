@@ -5,11 +5,12 @@ import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon } from 'lucide-react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
-import { useAccountsData } from '@/lib/stores/quick-plan-store';
+import { useAccountsData, useDeleteAccount } from '@/lib/stores/quick-plan-store';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 import { cn, formatNumber } from '@/lib/utils';
 
 import AccountDialog from '../dialogs/account-dialog';
@@ -24,8 +25,12 @@ export default function PortfolioSection() {
   const [savingsDialogOpen, setSavingsDialogOpen] = useState(false);
   const [selectedSavingsID, setSelectedSavingsID] = useState<string | null>(null);
 
+  const [accountToDelete, setAccountToDelete] = useState<{ id: string; name: string } | null>(null);
+
   const accounts = useAccountsData();
   const hasAccounts = Object.keys(accounts).length > 0;
+
+  const deleteAccount = useDeleteAccount();
 
   return (
     <>
@@ -57,7 +62,13 @@ export default function PortfolioSection() {
                         </DropdownButton>
                         <DropdownMenu>
                           <DropdownItem onClick={() => {}}>Edit</DropdownItem>
-                          <DropdownItem onClick={() => {}}>Delete</DropdownItem>
+                          <DropdownItem
+                            onClick={() => {
+                              setAccountToDelete({ id, name: account.name });
+                            }}
+                          >
+                            Delete
+                          </DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
                     </div>
@@ -93,27 +104,50 @@ export default function PortfolioSection() {
             </button>
           </div>
         )}
-        <Dialog
-          size="xl"
-          open={accountDialogOpen}
-          onClose={() => {
-            setSelectedAccountID(null);
-            setAccountDialogOpen(false);
-          }}
-        >
-          <AccountDialog setAccountDialogOpen={setAccountDialogOpen} selectedAccountID={selectedAccountID} />
-        </Dialog>
-        <Dialog
-          size="xl"
-          open={savingsDialogOpen}
-          onClose={() => {
-            setSelectedSavingsID(null);
-            setSavingsDialogOpen(false);
-          }}
-        >
-          <SavingsDialog setSavingsDialogOpen={setSavingsDialogOpen} selectedAccountID={selectedSavingsID} />
-        </Dialog>
       </DisclosureSection>
+      <Dialog
+        size="xl"
+        open={accountDialogOpen}
+        onClose={() => {
+          setSelectedAccountID(null);
+          setAccountDialogOpen(false);
+        }}
+      >
+        <AccountDialog setAccountDialogOpen={setAccountDialogOpen} selectedAccountID={selectedAccountID} />
+      </Dialog>
+      <Dialog
+        size="xl"
+        open={savingsDialogOpen}
+        onClose={() => {
+          setSelectedSavingsID(null);
+          setSavingsDialogOpen(false);
+        }}
+      >
+        <SavingsDialog setSavingsDialogOpen={setSavingsDialogOpen} selectedAccountID={selectedSavingsID} />
+      </Dialog>
+      <Alert
+        open={!!accountToDelete}
+        onClose={() => {
+          setAccountToDelete(null);
+        }}
+      >
+        <AlertTitle>Are you sure you want to delete {accountToDelete ? `"${accountToDelete.name}"` : 'this account'}?</AlertTitle>
+        <AlertDescription>This action cannot be undone.</AlertDescription>
+        <AlertActions>
+          <Button plain onClick={() => setAccountToDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            color="red"
+            onClick={() => {
+              deleteAccount(accountToDelete!.id);
+              setAccountToDelete(null);
+            }}
+          >
+            Delete
+          </Button>
+        </AlertActions>
+      </Alert>
     </>
   );
 }
