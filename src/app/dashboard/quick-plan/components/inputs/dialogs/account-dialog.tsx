@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors /* Controller */ } from 'react-hook-form';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import { accountFormSchema, type AccountInputs } from '@/lib/schemas/account-form-schema';
+import { accountFormSchema, type AccountInputs, isRothAccount, type RothAccountType } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import { Fieldset, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 // import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox';
@@ -113,9 +113,9 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                     </Field>
                   );
                 })()}
-              {(type === 'roth-401k' || type === 'roth-ira') &&
+              {isRothAccount(type) &&
                 (() => {
-                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'roth-401k' | 'roth-ira' }>>).contributions?.message;
+                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message;
                   return (
                     <Field>
                       <Label htmlFor="contributions">Contributions</Label>
