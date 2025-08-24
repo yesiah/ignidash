@@ -1,12 +1,13 @@
 'use client';
 
 import { TrendingUpIcon, HandshakeIcon } from 'lucide-react';
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
+import { useUpdateAccounts } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs, isRothAccount, type RothAccountType } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -23,6 +24,7 @@ interface AccountDialogProps {
 export default function AccountDialog({ setAccountDialogOpen, selectedAccountID }: AccountDialogProps) {
   const {
     register,
+    //  unregister,
     control,
     handleSubmit,
     formState: { errors },
@@ -33,8 +35,11 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
     },
   });
 
+  const updateAccounts = useUpdateAccounts();
   const onSubmit = (data: AccountInputs) => {
-    console.log(data);
+    const accountID = selectedAccountID ?? uuidv4();
+    updateAccounts(accountID, data);
+    setAccountDialogOpen(false);
   };
 
   const type = useWatch({ control, name: 'type' });
