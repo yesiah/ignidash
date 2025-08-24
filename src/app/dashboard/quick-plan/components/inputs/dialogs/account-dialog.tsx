@@ -1,6 +1,6 @@
 'use client';
 
-import { LandmarkIcon, HandshakeIcon } from 'lucide-react';
+import { TrendingUpIcon, HandshakeIcon } from 'lucide-react';
 // import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
@@ -35,7 +35,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
   } = useForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
-      type: 'savings',
+      type: 'taxable-brokerage',
     },
   });
 
@@ -58,8 +58,8 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
     <>
       <DialogTitle>
         <div className="flex items-center gap-4">
-          <LandmarkIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>New Account</span>
+          <TrendingUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
+          <span>New Investment</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -72,7 +72,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                   {...register('name')}
                   id="name"
                   name="name"
-                  placeholder="My Account"
+                  placeholder="My Investment"
                   autoComplete="off"
                   inputMode="text"
                   invalid={!!errors.name}
@@ -84,7 +84,6 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
               <Field className="col-span-2">
                 <Label htmlFor="type">Account Type</Label>
                 <Select {...register('type')} id="type" name="type">
-                  <option value="savings">Savings</option>
                   <option value="taxable-brokerage">Taxable Brokerage</option>
                   <option value="401k">401(k)</option>
                   <option value="ira">IRA</option>

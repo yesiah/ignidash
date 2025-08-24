@@ -51,7 +51,7 @@ export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID 
                 {...register('name')}
                 id="name"
                 name="name"
-                placeholder="My Account"
+                placeholder="My Savings"
                 autoComplete="off"
                 inputMode="text"
                 invalid={!!errors.name}
