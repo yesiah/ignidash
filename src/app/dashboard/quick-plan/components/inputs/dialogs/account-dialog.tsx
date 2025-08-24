@@ -6,7 +6,7 @@ import { LandmarkIcon } from 'lucide-react';
 // import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 // import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm /* useWatch, Controller */ } from 'react-hook-form';
+import { useForm, useWatch, type FieldErrors /* Controller */ } from 'react-hook-form';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs } from '@/lib/schemas/account-form-schema';
@@ -35,6 +35,8 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
   const onSubmit = (data: AccountInputs) => {
     console.log(data);
   };
+
+  const type = useWatch({ control, name: 'type' });
 
   return (
     <>
@@ -82,12 +84,30 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                   control={control}
                   id="balance"
                   inputMode="decimal"
-                  placeholder="$85,000"
+                  placeholder="$15,000"
                   prefix="$"
                   autoFocus={selectedAccountID !== null}
                 />
                 {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
               </Field>
+              {type === 'taxable-brokerage' &&
+                (() => {
+                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxable-brokerage' }>>).costBasis?.message;
+                  return (
+                    <Field>
+                      <Label htmlFor="costBasis">Cost Basis</Label>
+                      <NumberInputV2
+                        name="costBasis"
+                        control={control}
+                        id="costBasis"
+                        inputMode="decimal"
+                        placeholder="$15,000"
+                        prefix="$"
+                      />
+                      {error && <ErrorMessage>{error}</ErrorMessage>}
+                    </Field>
+                  );
+                })()}
             </div>
           </DialogBody>
         </Fieldset>
