@@ -48,7 +48,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
         <Fieldset aria-label="Account details">
           <DialogBody data-slot="control" className="space-y-4">
             <div className="mb-8 grid grid-cols-2 gap-4">
-              <Field className="col-span-2">
+              <Field>
                 <Label htmlFor="name">Name</Label>
                 <Input
                   {...register('name')}
@@ -64,6 +64,18 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                 {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
               </Field>
               <Field>
+                <Label htmlFor="type">Account Type</Label>
+                <Select {...register('type')} id="type" name="type">
+                  <option value="savings">Savings</option>
+                  <option value="taxable-brokerage">Taxable Brokerage</option>
+                  <option value="401k">401(k)</option>
+                  <option value="ira">IRA</option>
+                  <option value="roth-401k">Roth 401(k)</option>
+                  <option value="roth-ira">Roth IRA</option>
+                  <option value="hsa">HSA</option>
+                </Select>
+              </Field>
+              <Field className="col-span-2">
                 <Label htmlFor="balance">Balance</Label>
                 <NumberInputV2
                   name="balance"
@@ -75,18 +87,6 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                   autoFocus={selectedAccountID !== null}
                 />
                 {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
-              </Field>
-              <Field>
-                <Label htmlFor="type">Account Type</Label>
-                <Select {...register('type')} id="type" name="type">
-                  <option value="savings">Savings</option>
-                  <option value="taxable-brokerage">Taxable Brokerage</option>
-                  <option value="401k">401(k)</option>
-                  <option value="ira">IRA</option>
-                  <option value="roth-401k">Roth 401(k)</option>
-                  <option value="roth-ira">Roth IRA</option>
-                  <option value="hsa">HSA</option>
-                </Select>
               </Field>
             </div>
           </DialogBody>
