@@ -1,10 +1,9 @@
 'use client';
 
-import { LandmarkIcon } from 'lucide-react';
-// import { useState, useCallback, useEffect, useRef, MutableRefObject } from 'react';
+import { LandmarkIcon, HandshakeIcon } from 'lucide-react';
 // import { v4 as uuidv4 } from 'uuid';
-// import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-// import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors /* Controller */ } from 'react-hook-form';
 
@@ -132,6 +131,25 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                   );
                 })()}
             </div>
+            <Disclosure as="div" className="border-border/50 border-y py-4">
+              {({ open, close }) => (
+                <>
+                  <DisclosureButton className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4">
+                    <div className="flex items-center gap-2">
+                      <HandshakeIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                      <span className="text-base/7 font-semibold">Bonds</span>
+                      <span className="hidden sm:inline">|</span>
+                      <span className="text-muted-foreground hidden truncate sm:inline">{`Placeholder Bond Text.`}</span>
+                    </div>
+                    <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                      <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                      <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                    </span>
+                  </DisclosureButton>
+                  <DisclosurePanel className="py-4"></DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
           </DialogBody>
         </Fieldset>
         <DialogActions>
