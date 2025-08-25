@@ -30,7 +30,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="relative rounded-md text-white hover:text-stone-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-hidden"
+                    className="relative rounded-md text-white hover:text-stone-300 focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-hidden dark:focus-visible:ring-white"
                   >
                     <span className="absolute -inset-2.5" />
                     <span className="sr-only">Close panel</span>
