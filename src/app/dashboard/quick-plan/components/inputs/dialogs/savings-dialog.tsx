@@ -13,6 +13,10 @@ import { Fieldset, Field, Label, ErrorMessage } from '@/components/catalyst/fiel
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
+const newAccountDefaultValues = {
+  type: 'savings' as AccountInputs['type'],
+} as const satisfies Partial<AccountInputs>;
+
 interface SavingsDialogProps {
   setSavingsDialogOpen: (open: boolean) => void;
   selectedAccountID: string | null;
@@ -20,6 +24,7 @@ interface SavingsDialogProps {
 
 export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID }: SavingsDialogProps) {
   const existingAccountData = useSavingsData(selectedAccountID);
+  const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
   const {
     register,
@@ -28,9 +33,7 @@ export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID 
     formState: { errors },
   } = useForm({
     resolver: zodResolver(accountFormSchema),
-    defaultValues: existingAccountData || {
-      type: 'savings',
-    },
+    defaultValues,
   });
 
   const updateAccounts = useUpdateAccounts();

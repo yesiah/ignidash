@@ -25,7 +25,7 @@ import { Input } from '@/components/catalyst/input';
 
 const newAccountDefaultValues = {
   type: 'taxable-brokerage' as AccountInputs['type'],
-};
+} as const satisfies Partial<AccountInputs>;
 
 interface AccountDialogProps {
   setAccountDialogOpen: (open: boolean) => void;
