@@ -5,10 +5,10 @@ import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
-import { Dialog } from '@/components/catalyst/dialog';
+import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 
-import PreferencesDialog from './inputs/dialogs/preferences-dialog';
+import PreferencesDrawer from './inputs/drawers/preferences-drawer';
 
 type ActiveSection = 'results' | 'your-numbers';
 
@@ -69,9 +69,9 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
         </div>
       </div>
 
-      <Dialog open={preferencesOpen} onClose={setPreferencesOpen}>
-        <PreferencesDialog />
-      </Dialog>
+      <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title="Preferences">
+        <PreferencesDrawer />
+      </Drawer>
     </>
   );
 }

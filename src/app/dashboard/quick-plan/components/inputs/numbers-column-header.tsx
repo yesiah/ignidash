@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { CalculatorIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 import IconButton from '@/components/ui/icon-button';
-import { Dialog } from '@/components/catalyst/dialog';
+import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
 
-import PreferencesDialog from './dialogs/preferences-dialog';
+import PreferencesDrawer from './drawers/preferences-drawer';
 
 export default function NumbersColumnHeader() {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
@@ -27,9 +27,9 @@ export default function NumbersColumnHeader() {
         }
       />
 
-      <Dialog open={preferencesOpen} onClose={setPreferencesOpen}>
-        <PreferencesDialog />
-      </Dialog>
+      <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title="Preferences">
+        <PreferencesDrawer />
+      </Drawer>
     </>
   );
 }
