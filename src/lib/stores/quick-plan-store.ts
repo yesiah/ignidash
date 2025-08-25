@@ -56,7 +56,7 @@ import type { MultiSimulationResultDTO } from '@/lib/schemas/simulation-dto-sche
 import type { SimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/simulation-table-schema';
 import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
-import type { ExpenseInputs } from '@/lib/schemas/expenses-form-schema';
+import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
 import { Portfolio } from '@/lib/calc/portfolio';
 import { SimulationPhase, AccumulationPhase, RetirementPhase, type PhaseType } from '@/lib/calc/simulation-phase';
 

@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
 import { useCurrentAge, useLifeExpectancy, useUpdateExpenses, useExpenseData } from '@/lib/stores/quick-plan-store';
-import { expensesFormSchema, type ExpenseInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/expenses-form-schema';
+import { expenseFormSchema, type ExpenseInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/expense-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import { Field, Fieldset, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
@@ -51,7 +51,7 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(expensesFormSchema),
+    resolver: zodResolver(expenseFormSchema),
     defaultValues,
   });
 

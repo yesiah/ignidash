@@ -65,7 +65,7 @@ const growthSchema = z
     }
   );
 
-export const expensesFormSchema = z
+export const expenseFormSchema = z
   .object({
     name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
     amount: currencyFieldForbidsZero('Expense cannot be negative or zero'),
@@ -99,7 +99,7 @@ export const expensesFormSchema = z
     }
   );
 
-export type ExpenseInputs = z.infer<typeof expensesFormSchema>;
+export type ExpenseInputs = z.infer<typeof expenseFormSchema>;
 
 export const timeFrameForDisplay = (
   startType: ExpenseInputs['timeframe']['start']['type'],
