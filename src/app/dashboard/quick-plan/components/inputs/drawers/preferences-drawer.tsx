@@ -33,7 +33,7 @@ export default function PreferencesDrawer() {
       simulationModeDesc = 'Uses your Expected Returns assumptions for a single deterministic projection.';
       break;
     case 'monteCarlo':
-      simulationModeDesc = 'Runs many simulations with your Average Returns assumptions to show success probability.';
+      simulationModeDesc = 'Runs many simulations with your Expected Returns assumptions as averages to show success probability.';
       break;
     case 'historicalBacktest':
       simulationModeDesc = 'Tests your plan against actual historical market data from different starting years.';
