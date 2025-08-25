@@ -6,11 +6,11 @@ import { X } from 'lucide-react';
 interface DrawerProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  title?: string;
+  title: string | React.ReactNode;
   children?: React.ReactNode;
 }
 
-export default function Drawer({ open, setOpen, title = 'Settings', children }: DrawerProps) {
+export default function Drawer({ open, setOpen, title, children }: DrawerProps) {
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-50">
       <DialogBackdrop
@@ -39,7 +39,7 @@ export default function Drawer({ open, setOpen, title = 'Settings', children }: 
                 </div>
               </TransitionChild>
               <div className="border-border flex h-full flex-col overflow-y-auto sm:border-l">
-                <div className="bg-emphasized-background border-border flex items-center justify-between border-b px-4 py-6 sm:px-6">
+                <div className="bg-emphasized-background border-border flex items-center justify-between border-b px-4 py-6 sm:px-5">
                   <DialogTitle className="text-xl font-semibold tracking-tight">{title}</DialogTitle>
                   <button
                     type="button"

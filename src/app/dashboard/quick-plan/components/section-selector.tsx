@@ -34,6 +34,13 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const { icon, label, handleClick, className } = useRegenSimulation();
 
+  const titleComponent = (
+    <div className="flex items-center gap-2">
+      <AdjustmentsHorizontalIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+      <span>Preferences</span>
+    </div>
+  );
+
   return (
     <>
       <div className="border-border bg-emphasized-background -mx-2 border-b py-2 shadow-md sm:-mx-3 lg:sticky lg:top-0 lg:z-30 lg:-mx-4 lg:py-4 dark:shadow-black/30">
@@ -69,7 +76,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
         </div>
       </div>
 
-      <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title="Preferences">
+      <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title={titleComponent}>
         <PreferencesDrawer />
       </Drawer>
     </>
