@@ -1,18 +1,18 @@
 'use client';
 
 // import { useState, useEffect } from 'react';
-import { HourglassIcon /* LandmarkIcon, HandCoinsIcon, */, BanknoteArrowDownIcon, TrendingUpDownIcon } from 'lucide-react';
+import { HourglassIcon /* LandmarkIcon, HandCoinsIcon, BanknoteArrowDownIcon, TrendingUpDownIcon */ } from 'lucide-react';
 
 import {
   useBasicsData,
   useUpdateBasics,
   useRetirementFundingData,
   useUpdateRetirementFunding,
-  useMarketAssumptionsData,
-  useUpdateMarketAssumptions,
-  useStocksRealReturn,
-  useBondsRealReturn,
-  useCashRealReturn,
+  // useMarketAssumptionsData,
+  // useUpdateMarketAssumptions,
+  // useStocksRealReturn,
+  // useBondsRealReturn,
+  // useCashRealReturn,
   // useGrowthRatesData,
   // useUpdateGrowthRates,
   // useIncomeRealGrowthRate,
@@ -39,22 +39,22 @@ import ExpensesSection from './sections/expenses-section';
 import PortfolioSection from './sections/portfolio-section';
 import ContributionsSection from './sections/contributions-section';
 
-function getSafeWithdrawalRateDescription() {
-  return (
-    <>
-      Annual portfolio withdrawal percentage in retirement. The{' '}
-      <a
-        href="https://www.investopedia.com/terms/f/four-percent-rule.asp"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-foreground hover:text-foreground/80 underline"
-      >
-        4% rule
-      </a>{' '}
-      is standard.
-    </>
-  );
-}
+// function getSafeWithdrawalRateDescription() {
+//   return (
+//     <>
+//       Annual portfolio withdrawal percentage in retirement. The{' '}
+//       <a
+//         href="https://www.investopedia.com/terms/f/four-percent-rule.asp"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="text-foreground hover:text-foreground/80 underline"
+//       >
+//         4% rule
+//       </a>{' '}
+//       is standard.
+//     </>
+//   );
+// }
 
 export default function NumbersColumnSections() {
   const basics = useBasicsData();
@@ -63,12 +63,12 @@ export default function NumbersColumnSections() {
   const retirementFunding = useRetirementFundingData();
   const updateRetirementFunding = useUpdateRetirementFunding();
 
-  const marketAssumptions = useMarketAssumptionsData();
-  const updateMarketAssumptions = useUpdateMarketAssumptions();
+  // const marketAssumptions = useMarketAssumptionsData();
+  // const updateMarketAssumptions = useUpdateMarketAssumptions();
 
-  const stocksRealReturn = useStocksRealReturn();
-  const bondsRealReturn = useBondsRealReturn();
-  const cashRealReturn = useCashRealReturn();
+  // const stocksRealReturn = useStocksRealReturn();
+  // const bondsRealReturn = useBondsRealReturn();
+  // const cashRealReturn = useCashRealReturn();
 
   // const goals = useGoalsData();
   // const updateGoals = useUpdateGoals();
@@ -130,7 +130,7 @@ export default function NumbersColumnSections() {
 
   return (
     <>
-      <DisclosureSection title="Duration" icon={HourglassIcon}>
+      <DisclosureSection title="Timeline" icon={HourglassIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <FieldGroup>
@@ -341,7 +341,7 @@ export default function NumbersColumnSections() {
           </Fieldset>
         </form>
       </DisclosureSection> */}
-      <DisclosureSection title="Withdrawal Strategy" icon={BanknoteArrowDownIcon}>
+      {/* <DisclosureSection title="Withdrawal Strategy" icon={BanknoteArrowDownIcon}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <FieldGroup>
@@ -431,7 +431,7 @@ export default function NumbersColumnSections() {
             </FieldGroup>
           </Fieldset>
         </form>
-      </DisclosureSection>
+      </DisclosureSection> */}
     </>
   );
 }
