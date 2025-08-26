@@ -72,6 +72,6 @@ export const accountTypeForDisplay = (type: AccountInputs['type']): string => {
     case 'ira':
       return 'IRA';
     case 'hsa':
-      return 'Health Savings Account';
+      return 'HSA';
   }
 };
