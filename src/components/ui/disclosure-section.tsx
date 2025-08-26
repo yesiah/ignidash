@@ -12,19 +12,21 @@ interface DisclosureSectionProps {
 
 export default function DisclosureSection({ title, icon: Icon, children, defaultOpen }: DisclosureSectionProps) {
   return (
-    <Disclosure as="div" className="border-border/50 -mx-2 border-b sm:-mx-3 lg:-mx-4" defaultOpen={defaultOpen}>
-      <DisclosureButton className="group data-open:border-border/50 focus-outline from-emphasized-background flex w-full items-center justify-between bg-gradient-to-r px-4 py-4 hover:to-rose-500/50 data-open:border-b lg:py-8">
-        <div className="flex w-full items-center justify-between text-left">
-          <div className="flex items-center gap-2 font-medium">
-            <Icon className="text-primary size-5 shrink-0 lg:size-6" aria-hidden="true" />
-            <h3 className="text-lg font-semibold tracking-tight whitespace-nowrap lg:text-xl">{title}</h3>
+    <Disclosure defaultOpen={defaultOpen}>
+      <div className="border-border/50 -mx-2 border-b sm:-mx-3 lg:-mx-4">
+        <DisclosureButton className="group focus-outline from-emphasized-background flex w-full items-center justify-between bg-gradient-to-r px-4 py-4 hover:to-rose-500/50 lg:py-8">
+          <div className="flex w-full items-center justify-between text-left">
+            <div className="flex items-center gap-2 font-medium">
+              <Icon className="text-primary size-5 shrink-0 lg:size-6" aria-hidden="true" />
+              <h3 className="text-lg font-semibold tracking-tight whitespace-nowrap lg:text-xl">{title}</h3>
+            </div>
+            <ChevronDownIcon
+              className="ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
+              aria-hidden="true"
+            />
           </div>
-          <ChevronDownIcon
-            className="ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
-            aria-hidden="true"
-          />
-        </div>
-      </DisclosureButton>
+        </DisclosureButton>
+      </div>
       <DisclosurePanel>
         <div className="px-4 py-5 sm:py-6">{children}</div>
       </DisclosurePanel>
