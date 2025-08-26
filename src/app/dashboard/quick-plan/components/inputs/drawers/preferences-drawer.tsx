@@ -54,9 +54,9 @@ export default function PreferencesDrawer() {
   return (
     <>
       <SectionContainer showBottomBorder location="drawer">
-        <SectionHeader title="Simulation Settings" desc="Select a simulation methodology and set Expected Returns for your projections." />
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Card>
+        <SectionHeader title="Simulation Settings" />
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset aria-label="Simulation methodology">
               <FieldGroup>
                 <Field>
@@ -75,8 +75,13 @@ export default function PreferencesDrawer() {
                 </Field>
               </FieldGroup>
             </Fieldset>
-          </Card>
-          <Card>
+          </form>
+        </Card>
+      </SectionContainer>
+      <SectionContainer showBottomBorder location="drawer">
+        <SectionHeader title="Expected Returns" />
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset aria-label="Expected Returns">
               <FieldGroup>
                 <Field>
@@ -144,11 +149,11 @@ export default function PreferencesDrawer() {
                 </Field>
               </FieldGroup>
             </Fieldset>
-          </Card>
-        </form>
+          </form>
+        </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Data Storage" desc="Control how your data is saved and managed." />
+        <SectionHeader title="Data Storage" />
         <Card>
           <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset aria-label="Data storage configuration">
