@@ -1,10 +1,11 @@
 'use client';
 
 import { HourglassIcon } from 'lucide-react';
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+import { useUpdateTimelines, useTimelineData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { timelineFormSchema, type TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -17,16 +18,22 @@ interface TimelineDialogProps {
 }
 
 export default function TimelineDialog({ setTimelineDialogOpen, selectedTimelineID }: TimelineDialogProps) {
+  const existingTimelineData = useTimelineData(selectedTimelineID);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(timelineFormSchema),
+    defaultValues: existingTimelineData || undefined,
   });
 
+  const updateTimelines = useUpdateTimelines();
   const onSubmit = (data: TimelineInputs) => {
-    console.log(data);
+    const timelineID = selectedTimelineID ?? uuidv4();
+    updateTimelines(timelineID, data);
+    setTimelineDialogOpen(false);
   };
 
   return (

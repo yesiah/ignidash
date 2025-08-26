@@ -25,6 +25,7 @@ import { z } from 'zod';
 
 import { currencyFieldAllowsZero, currencyFieldForbidsZero, percentageField, ageField } from '@/lib/utils/zod-schema-helpers';
 
+import { timelineFormSchema } from './timeline-form-schema';
 import { incomeFormSchema } from './income-form-schema';
 import { accountFormSchema } from './account-form-schema';
 import { expenseFormSchema } from './expense-form-schema';
@@ -124,6 +125,7 @@ export const quickPlanSchema = z.object({
   goals: goalsSchema,
   marketAssumptions: marketAssumptionsSchema,
   retirementFunding: retirementFundingSchema,
+  timelines: z.record(z.string(), timelineFormSchema),
   incomes: z.record(z.string(), incomeFormSchema),
   accounts: z.record(z.string(), accountFormSchema),
   expenses: z.record(z.string(), expenseFormSchema),

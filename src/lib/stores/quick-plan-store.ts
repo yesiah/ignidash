@@ -56,6 +56,7 @@ import type { SimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/
 import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
+import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import { Portfolio } from '@/lib/calc/portfolio';
 import { SimulationPhase, AccumulationPhase, RetirementPhase, type PhaseType } from '@/lib/calc/simulation-phase';
 
@@ -189,6 +190,9 @@ interface QuickPlanState {
     updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
     updateRetirementFunding: (field: keyof RetirementFundingInputs, value: unknown) => UpdateResult;
 
+    updateTimelines: (id: string, data: TimelineInputs) => UpdateResult;
+    deleteTimeline: (id: string) => UpdateResult;
+
     updateIncomes: (id: string, data: IncomeInputs) => UpdateResult;
     deleteIncome: (id: string) => UpdateResult;
 
@@ -241,6 +245,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
       lifeExpectancy: 78,
       effectiveTaxRate: 0,
     },
+    timelines: {},
     incomes: {},
     expenses: {},
     accounts: {},
@@ -252,6 +257,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     goals: false,
     marketAssumptions: false,
     retirementFunding: false,
+    timelines: false,
     incomes: false,
     expenses: false,
     accounts: false,
@@ -342,6 +348,24 @@ export const useQuickPlanStore = create<QuickPlanState>()(
               success: result.valid,
               error: result.error,
             };
+          },
+
+          updateTimelines: (id: string, data: TimelineInputs) => {
+            set((state) => {
+              state.touched.timelines = true;
+              state.inputs.timelines = { ...state.inputs.timelines, [id]: data };
+            });
+
+            return { success: true };
+          },
+
+          deleteTimeline: (id: string) => {
+            set((state) => {
+              state.touched.timelines = true;
+              delete state.inputs.timelines[id];
+            });
+
+            return { success: true };
           },
 
           updateIncomes: (id: string, data: IncomeInputs) => {
@@ -477,6 +501,9 @@ export const useGoalsData = () => useQuickPlanStore((state) => state.inputs.goal
 export const useMarketAssumptionsData = () => useQuickPlanStore((state) => state.inputs.marketAssumptions);
 export const useRetirementFundingData = () => useQuickPlanStore((state) => state.inputs.retirementFunding);
 
+export const useTimelinesData = () => useQuickPlanStore((state) => state.inputs.timelines);
+export const useTimelineData = (id: string | null) => useQuickPlanStore((state) => (id !== null ? state.inputs.timelines[id] : null));
+
 export const useIncomesData = () => useQuickPlanStore((state) => state.inputs.incomes);
 export const useIncomeData = (id: string | null) => useQuickPlanStore((state) => (id !== null ? state.inputs.incomes[id] : null));
 
@@ -523,6 +550,8 @@ export const useUpdateGoals = () => useQuickPlanStore((state) => state.actions.u
 export const useUpdateGoalsWithoutTouched = () => useQuickPlanStore((state) => state.actions.updateGoalsWithoutTouched);
 export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
 export const useUpdateRetirementFunding = () => useQuickPlanStore((state) => state.actions.updateRetirementFunding);
+export const useUpdateTimelines = () => useQuickPlanStore((state) => state.actions.updateTimelines);
+export const useDeleteTimeline = () => useQuickPlanStore((state) => state.actions.deleteTimeline);
 export const useUpdateIncomes = () => useQuickPlanStore((state) => state.actions.updateIncomes);
 export const useDeleteIncome = () => useQuickPlanStore((state) => state.actions.deleteIncome);
 export const useUpdateExpenses = () => useQuickPlanStore((state) => state.actions.updateExpenses);
