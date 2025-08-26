@@ -46,7 +46,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
         disclosureKey={disclosureKey}
       >
         {hasIncomes && (
-          <>
+          <div className="flex h-full flex-col">
             <ul role="list" className="grid grid-cols-1 gap-3">
               {Object.entries(incomes).map(([id, income], index) => (
                 <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
@@ -93,13 +93,13 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
                 </li>
               ))}
             </ul>
-            <div className="mt-6 flex items-center justify-end">
+            <div className="mt-auto flex items-center justify-end">
               <Button outline onClick={() => setIncomeDialogOpen(true)}>
                 <PlusIcon />
                 Income
               </Button>
             </div>
-          </>
+          </div>
         )}
         {!hasIncomes && (
           <div className="flex h-full flex-col">

@@ -50,7 +50,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
         disclosureKey={disclosureKey}
       >
         {hasAccounts && (
-          <>
+          <div className="flex h-full flex-col">
             <ul role="list" className="grid grid-cols-1 gap-3">
               {Object.entries(accounts).map(([id, account], index) => (
                 <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
@@ -102,7 +102,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
                 </li>
               ))}
             </ul>
-            <div className="mt-6 flex items-center justify-end gap-x-2">
+            <div className="mt-auto flex items-center justify-end gap-x-2">
               <Button outline onClick={() => setSavingsDialogOpen(true)}>
                 <PlusIcon />
                 Savings
@@ -112,7 +112,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
                 Investment
               </Button>
             </div>
-          </>
+          </div>
         )}
         {!hasAccounts && (
           <div className="flex h-full flex-col gap-2">

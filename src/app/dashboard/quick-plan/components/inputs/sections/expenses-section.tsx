@@ -46,7 +46,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
         disclosureKey={disclosureKey}
       >
         {hasExpenses && (
-          <>
+          <div className="flex h-full flex-col">
             <ul role="list" className="grid grid-cols-1 gap-3">
               {Object.entries(expenses).map(([id, expense], index) => (
                 <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
@@ -93,13 +93,13 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
                 </li>
               ))}
             </ul>
-            <div className="mt-6 flex items-center justify-end">
+            <div className="mt-auto flex items-center justify-end">
               <Button outline onClick={() => setExpenseDialogOpen(true)}>
                 <PlusIcon />
                 Expenses
               </Button>
             </div>
-          </>
+          </div>
         )}
         {!hasExpenses && (
           <div className="flex h-full flex-col">
