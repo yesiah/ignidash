@@ -51,7 +51,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
       >
         {hasAccounts && (
           <div className="flex h-full flex-col">
-            <ul role="list" className="grid grid-cols-1 gap-3">
+            <ul role="list" className="mb-6 grid grid-cols-1 gap-3">
               {Object.entries(accounts).map(([id, account], index) => (
                 <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
                   <div

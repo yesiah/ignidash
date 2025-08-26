@@ -47,7 +47,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
       >
         {hasExpenses && (
           <div className="flex h-full flex-col">
-            <ul role="list" className="grid grid-cols-1 gap-3">
+            <ul role="list" className="mb-6 grid grid-cols-1 gap-3">
               {Object.entries(expenses).map(([id, expense], index) => (
                 <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
                   <div
