@@ -28,10 +28,10 @@ export default function DisclosureSection({ title, icon: Icon, children, default
           </div>
         </DisclosureButton>
       </div>
-      <DisclosurePanel
-        className={`border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4 ${centerPanelContent ? 'justify-center' : 'justify-start'}`}
-      >
-        <div className="px-4 py-5 sm:py-6">{children}</div>
+      <DisclosurePanel className="border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4">
+        <div className={`flex h-full flex-col px-4 py-5 sm:py-6 ${centerPanelContent ? 'justify-center' : 'justify-start'}`}>
+          {children}
+        </div>
       </DisclosurePanel>
     </Disclosure>
   );
