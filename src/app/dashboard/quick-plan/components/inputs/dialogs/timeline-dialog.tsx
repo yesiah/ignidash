@@ -9,7 +9,7 @@ import { useUpdateTimelines, useTimelineData } from '@/lib/stores/quick-plan-sto
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { timelineFormSchema, type TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
-import { Fieldset, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
+import { Fieldset, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
 
 interface TimelineDialogProps {
@@ -48,14 +48,16 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
         <Fieldset aria-label="Timeline details">
           <DialogBody data-slot="control" className="space-y-4">
             <Field>
-              <Label htmlFor="currentAge">Current Age</Label>
+              <Label htmlFor="currentAge">Age</Label>
               <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
               {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
+              <Description>The age your simulation will start at.</Description>
             </Field>
             <Field>
               <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
               <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
               {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
+              <Description>The age your simulation will end at.</Description>
             </Field>
           </DialogBody>
         </Fieldset>
