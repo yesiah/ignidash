@@ -361,77 +361,7 @@ export default function NumbersColumnSections() {
           </Fieldset>
         </form>
       </DisclosureSection>
-      <DisclosureSection title="Expected Returns" icon={TrendingUpDownIcon}>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Fieldset>
-            <FieldGroup>
-              <Field>
-                <Label htmlFor="stock-return" className="flex w-full items-center justify-between">
-                  <span>Stock Return</span>
-                  <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
-                </Label>
-                <NumberInput
-                  id="stock-return"
-                  value={marketAssumptions.stockReturn}
-                  onBlur={(value) => updateMarketAssumptions('stockReturn', value)}
-                  inputMode="decimal"
-                  placeholder="10%"
-                  suffix="%"
-                />
-                <Description>Expected annual return for stocks and other volatile investments.</Description>
-              </Field>
-              <Divider />
-              <Field>
-                <Label htmlFor="bond-return" className="flex w-full items-center justify-between">
-                  <span>Bond Return</span>
-                  <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
-                </Label>
-                <NumberInput
-                  id="bond-return"
-                  value={marketAssumptions.bondReturn}
-                  onBlur={(value) => updateMarketAssumptions('bondReturn', value)}
-                  inputMode="decimal"
-                  placeholder="5%"
-                  suffix="%"
-                />
-                <Description>Expected annual return for bonds.</Description>
-              </Field>
-              <Divider />
-              <Field>
-                <Label htmlFor="cash-return" className="flex w-full items-center justify-between">
-                  <span>Cash Return</span>
-                  <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
-                </Label>
-                <NumberInput
-                  id="cash-return"
-                  value={marketAssumptions.cashReturn}
-                  onBlur={(value) => updateMarketAssumptions('cashReturn', value)}
-                  inputMode="decimal"
-                  placeholder="3%"
-                  suffix="%"
-                />
-                <Description>Expected annual interest rate for cash savings and money market accounts.</Description>
-              </Field>
-              <Divider />
-              <Field>
-                <Label htmlFor="inflation-rate" className="flex w-full items-center justify-between">
-                  <span>Inflation Rate</span>
-                  <span className="text-muted-foreground text-sm/6">—</span>
-                </Label>
-                <NumberInput
-                  id="inflation-rate"
-                  value={marketAssumptions.inflationRate}
-                  onBlur={(value) => updateMarketAssumptions('inflationRate', value)}
-                  inputMode="decimal"
-                  placeholder="3%"
-                  suffix="%"
-                />
-                <Description>Expected annual inflation rate, used to calculate real returns.</Description>
-              </Field>
-            </FieldGroup>
-          </Fieldset>
-        </form>
-      </DisclosureSection> */}
+      */}
     </>
   );
 }
