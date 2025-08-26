@@ -88,14 +88,16 @@ export default function IncomeSection() {
           </>
         )}
         {!hasIncomes && (
-          <button
-            type="button"
-            className="focus-outline relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-8 text-center hover:border-gray-400 sm:p-12 dark:border-white/15 dark:hover:border-white/25"
-            onClick={() => setIncomeDialogOpen(true)}
-          >
-            <BanknoteArrowUpIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-            <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add income</span>
-          </button>
+          <div className="flex h-full flex-col">
+            <button
+              type="button"
+              className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-gray-300 p-8 text-center hover:border-gray-400 sm:p-12 dark:border-white/15 dark:hover:border-white/25"
+              onClick={() => setIncomeDialogOpen(true)}
+            >
+              <BanknoteArrowUpIcon aria-hidden="true" className="text-primary mx-auto size-12" />
+              <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add income</span>
+            </button>
+          </div>
         )}
       </DisclosureSection>
 
