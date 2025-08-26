@@ -54,7 +54,7 @@ export default function PreferencesDrawer() {
   return (
     <>
       <SectionContainer showBottomBorder location="drawer">
-        <SectionHeader title="Simulation Settings" />
+        <SectionHeader title="Simulation Settings" desc="Select your preferred simulation methodology for projections." />
         <Card>
           <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset aria-label="Simulation methodology">
@@ -79,7 +79,7 @@ export default function PreferencesDrawer() {
         </Card>
       </SectionContainer>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Expected Returns" />
+        <SectionHeader title="Expected Returns" desc="Set expected inflation rate and annual returns for each asset class." />
         <Card>
           <form onSubmit={(e) => e.preventDefault()}>
             <Fieldset aria-label="Expected Returns">
