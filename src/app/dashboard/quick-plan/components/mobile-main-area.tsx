@@ -22,7 +22,7 @@ export default function MobileMainArea() {
   }
 
   return (
-    <div className="block xl:hidden">
+    <div className="flex h-full flex-col xl:hidden">
       <SectionSelector activeSection={activeSection} setActiveSection={setActiveSection} />
       {activeSectionComponent}
     </div>

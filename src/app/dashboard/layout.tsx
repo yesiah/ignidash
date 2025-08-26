@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarCollapsed = useSidebarCollapsed();
 
   return (
-    <div className="group/sidebar" data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}>
+    <div className="group/sidebar h-full" data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}>
       <MobileSidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -27,8 +27,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         secondaryNavigation={secondaryNavigation}
       />
       <DesktopSidebar navigation={navigation} secondaryNavigation={secondaryNavigation} />
-      <MobileHeader onMenuClick={() => setSidebarOpen(true)} currentPageTitle={currentPageTitle} currentPageIcon={currentPageIcon} />
-      {children}
+      <div className="flex h-full flex-col">
+        <MobileHeader onMenuClick={() => setSidebarOpen(true)} currentPageTitle={currentPageTitle} currentPageIcon={currentPageIcon} />
+        {children}
+      </div>
     </div>
   );
 }
