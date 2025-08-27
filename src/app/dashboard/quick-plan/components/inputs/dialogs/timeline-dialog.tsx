@@ -12,7 +12,7 @@ import { useUpdateTimelines, useTimelineData } from '@/lib/stores/quick-plan-sto
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
-import { Fieldset, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
@@ -108,19 +108,21 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Timeline details">
-          <DialogBody data-slot="control" className="space-y-4">
-            <Field>
-              <Label htmlFor="currentAge">Current Age</Label>
-              <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
-              {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
-              <Description>The age your simulations will start at.</Description>
-            </Field>
-            <Field>
-              <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
-              <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
-              {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
-              <Description>The age your simulations will end at.</Description>
-            </Field>
+          <DialogBody>
+            <FieldGroup className="mb-4">
+              <Field>
+                <Label htmlFor="currentAge">Current Age</Label>
+                <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
+                {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
+                <Description>The age your simulations will start at.</Description>
+              </Field>
+              <Field>
+                <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
+                <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
+                {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
+                <Description>The age your simulations will end at.</Description>
+              </Field>
+            </FieldGroup>
             <Disclosure as="div" className="border-border/50 border-t py-4">
               {({ open, close }) => (
                 <>
@@ -137,9 +139,9 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div className="grid grid-cols-1 gap-4">
+                    <FieldGroup>
                       <Field>
-                        <Label htmlFor="retirementStrategy.type">Strategy</Label>
+                        <Label htmlFor="retirementStrategy.type">Retirement Strategy</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixed-age">Fixed Age</option>
                           <option value="dynamic-age">Dynamic Age</option>
@@ -216,7 +218,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                           </Field> */}
                         </>
                       )}
-                    </div>
+                    </FieldGroup>
                   </DisclosurePanel>
                 </>
               )}
