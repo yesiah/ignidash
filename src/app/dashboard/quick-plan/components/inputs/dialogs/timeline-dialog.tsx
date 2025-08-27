@@ -21,7 +21,7 @@ const newTimelineDefaultValues = {
   retirementStrategy: {
     type: 'dynamic-age',
     safeWithdrawalRate: 4,
-    expenseMetric: 'median',
+    // expenseMetric: 'median',
   },
 } as const satisfies Partial<TimelineInputs>;
 
@@ -76,7 +76,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
   useEffect(() => {
     if (retirementStrategyType !== 'dynamic-age') {
       unregister('retirementStrategy.safeWithdrawalRate');
-      unregister('retirementStrategy.expenseMetric');
+      // unregister('retirementStrategy.expenseMetric');
     }
 
     if (retirementStrategyType !== 'fixed-age') {
@@ -208,7 +208,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                             )}
                             <Description>{getSafeWithdrawalRateDescription()}</Description>
                           </Field>
-                          <Field>
+                          {/* <Field>
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
                             <Select
                               {...register('retirementStrategy.expenseMetric')}
@@ -219,7 +219,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               <option value="mean">Mean</option>
                             </Select>
                             <Description>Placeholder Text.</Description>
-                          </Field>
+                          </Field> */}
                         </>
                       )}
                     </div>
