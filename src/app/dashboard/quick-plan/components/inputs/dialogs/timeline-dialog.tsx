@@ -25,23 +25,6 @@ const newTimelineDefaultValues = {
   },
 } as const satisfies Partial<TimelineInputs>;
 
-function getSafeWithdrawalRateDescription() {
-  return (
-    <>
-      Annual portfolio withdrawal percentage in retirement. The{' '}
-      <a
-        href="https://www.investopedia.com/terms/f/four-percent-rule.asp"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-foreground hover:text-foreground/80 underline"
-      >
-        4% rule
-      </a>{' '}
-      is standard.
-    </>
-  );
-}
-
 interface TimelineDialogProps {
   setTimelineDialogOpen: (open: boolean) => void;
   selectedTimelineID: string | null;
@@ -130,13 +113,13 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
               <Label htmlFor="currentAge">Current Age</Label>
               <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
               {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
-              <Description>The age your simulation will start at.</Description>
+              <Description>The age your simulations will start at.</Description>
             </Field>
             <Field>
               <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
               <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
               {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
-              <Description>The age your simulation will end at.</Description>
+              <Description>The age your simulations will end at.</Description>
             </Field>
             <Disclosure as="div" className="border-border/50 border-t py-4">
               {({ open, close }) => (
@@ -182,13 +165,13 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               }
                             </ErrorMessage>
                           )}
-                          <Description>Your simulation will always retire at this age.</Description>
+                          <Description>Your simulations will always retire at this age.</Description>
                         </Field>
                       )}
                       {retirementStrategyType === 'dynamic-age' && (
                         <>
                           <Field>
-                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">Safe Withdrawal Rate</Label>
+                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
                             <NumberInputV2
                               name="retirementStrategy.safeWithdrawalRate"
                               control={control}
@@ -206,7 +189,10 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                                 }
                               </ErrorMessage>
                             )}
-                            <Description>{getSafeWithdrawalRateDescription()}</Description>
+                            <Description>
+                              Your simulations will retire when your portfolio can sustainably support your typical annual expenses at this
+                              withdrawal rate.
+                            </Description>
                           </Field>
                           {/* <Field>
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
