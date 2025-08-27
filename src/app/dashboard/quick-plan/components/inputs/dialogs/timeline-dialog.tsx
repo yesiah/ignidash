@@ -149,7 +149,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                   <DisclosureButton className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4">
                     <div className="flex items-center gap-2">
                       <ArmchairIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                      <span className="text-base/7 font-semibold">Retirement</span>
+                      <span className="text-base/7 font-semibold">Retirement Age</span>
                       <span className="hidden sm:inline">|</span>
                       <span className="text-muted-foreground hidden truncate sm:inline">{getRetirementDisclosureDesc()}</span>
                     </div>
@@ -159,8 +159,8 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div data-slot="control" className="grid grid-cols-3 gap-4">
-                      <Field className="col-span-2">
+                    <div data-slot="control" className="grid grid-cols-5 items-end gap-4">
+                      <Field className="col-span-3">
                         <Label htmlFor="retirementStrategy.type">Retirement Trigger</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixedAge">Fixed Age</option>
@@ -168,7 +168,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                         </Select>
                       </Field>
                       {retirementStrategyType === 'fixedAge' && (
-                        <Field>
+                        <Field className="col-span-2">
                           <Label htmlFor="retirementStrategy.retirementAge">Retirement Age</Label>
                           <NumberInputV2
                             name="retirementStrategy.retirementAge"
@@ -190,7 +190,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                       )}
                       {retirementStrategyType === 'swrTarget' && (
                         <>
-                          <Field>
+                          <Field className="col-span-2">
                             <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
                             <NumberInputV2
                               name="retirementStrategy.safeWithdrawalRate"
