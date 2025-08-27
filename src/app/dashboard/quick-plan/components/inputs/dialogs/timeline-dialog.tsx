@@ -145,7 +145,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                       <Field className={getRetirementStrategyTypeSpan()}>
                         <Label htmlFor="retirementStrategy.type">Strategy</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
@@ -176,7 +176,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                       )}
                       {retirementStrategyType === 'dynamic-age' && (
                         <>
-                          <Field className="col-span-2">
+                          <Field>
                             <Label htmlFor="retirementStrategy.safeWithdrawalRate">Safe Withdrawal Rate</Label>
                             <NumberInputV2
                               name="retirementStrategy.safeWithdrawalRate"
@@ -196,7 +196,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               </ErrorMessage>
                             )}
                           </Field>
-                          <Field className="col-span-2">
+                          <Field>
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
                             <Select
                               {...register('retirementStrategy.expenseMetric')}
