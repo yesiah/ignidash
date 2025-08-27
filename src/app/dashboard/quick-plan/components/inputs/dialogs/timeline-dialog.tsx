@@ -106,8 +106,6 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
     }
   };
 
-  console.log(errors);
-
   return (
     <>
       <DialogTitle>
@@ -166,11 +164,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                             placeholder="62"
                           />
                           {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>)
-                            .retirementAge?.message && (
+                            ?.retirementAge?.message && (
                             <ErrorMessage>
                               {
                                 (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>)
-                                  .retirementAge?.message
+                                  ?.retirementAge?.message
                               }
                             </ErrorMessage>
                           )}
@@ -189,11 +187,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               suffix="%"
                             />
                             {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>)
-                              .safeWithdrawalRate?.message && (
+                              ?.safeWithdrawalRate?.message && (
                               <ErrorMessage>
                                 {
                                   (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>)
-                                    .safeWithdrawalRate?.message
+                                    ?.safeWithdrawalRate?.message
                                 }
                               </ErrorMessage>
                             )}
