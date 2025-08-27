@@ -145,13 +145,14 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+                    <div className="grid grid-cols-2 gap-4">
                       <Field className={getRetirementStrategyTypeSpan()}>
                         <Label htmlFor="retirementStrategy.type">Strategy</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixed-age">Fixed Age</option>
                           <option value="dynamic-age">Dynamic Age</option>
                         </Select>
+                        <Description>Placeholder Text.</Description>
                       </Field>
                       {retirementStrategyType === 'fixed-age' && (
                         <Field>
@@ -195,6 +196,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                                 }
                               </ErrorMessage>
                             )}
+                            <Description>Placeholder Text.</Description>
                           </Field>
                           <Field>
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
@@ -206,6 +208,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               <option value="median">Median</option>
                               <option value="mean">Mean</option>
                             </Select>
+                            <Description>Placeholder Text.</Description>
                           </Field>
                         </>
                       )}
