@@ -24,7 +24,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
 const newAccountDefaultValues = {
-  type: 'taxable-brokerage' as AccountInputs['type'],
+  type: 'taxableBrokerage' as AccountInputs['type'],
 } as const satisfies Partial<AccountInputs>;
 
 interface AccountDialogProps {
@@ -61,7 +61,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
       unregister('contributions');
     }
 
-    if (type !== 'taxable-brokerage') {
+    if (type !== 'taxableBrokerage') {
       unregister('costBasis');
     }
   }, [type, unregister]);
@@ -70,7 +70,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
   const percentBonds = clamp(Number(useWatch({ control, name: 'percentBonds' }) || 0), 0, 100);
 
   const getBalanceColSpan = () => {
-    if (type === 'taxable-brokerage' || type === 'roth-401k' || type === 'roth-ira') return 'col-span-1';
+    if (type === 'taxableBrokerage' || type === 'roth401k' || type === 'rothIra') return 'col-span-1';
     return 'col-span-2';
   };
 
@@ -104,11 +104,11 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
               <Field className="col-span-2">
                 <Label htmlFor="type">Account Type</Label>
                 <Select {...register('type')} id="type" name="type">
-                  <option value="taxable-brokerage">Taxable Brokerage</option>
+                  <option value="taxableBrokerage">Taxable Brokerage</option>
                   <option value="401k">401(k)</option>
                   <option value="ira">IRA</option>
-                  <option value="roth-401k">Roth 401(k)</option>
-                  <option value="roth-ira">Roth IRA</option>
+                  <option value="roth401k">Roth 401(k)</option>
+                  <option value="rothIra">Roth IRA</option>
                   <option value="hsa">HSA</option>
                 </Select>
               </Field>
@@ -125,9 +125,9 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
                 />
                 {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
               </Field>
-              {type === 'taxable-brokerage' &&
+              {type === 'taxableBrokerage' &&
                 (() => {
-                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxable-brokerage' }>>).costBasis?.message;
+                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message;
                   return (
                     <Field>
                       <Label htmlFor="costBasis">Cost Basis</Label>

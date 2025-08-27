@@ -5,17 +5,17 @@ import { coerceNumber, currencyFieldForbidsZero, percentageField } from '@/lib/u
 
 const timePointSchema = z
   .object({
-    type: z.enum(['now', 'at-retirement', 'at-life-expectancy', 'custom-date', 'custom-age']),
+    type: z.enum(['now', 'atRetirement', 'atLifeExpectancy', 'customDate', 'customAge']),
     month: z.number().int().min(1).max(12).optional(),
     year: z.number().int().min(1900).max(2100).optional(),
     age: z.number().int().min(0).max(120).optional(),
   })
   .refine(
     (data) => {
-      if (data.type === 'custom-date') {
+      if (data.type === 'customDate') {
         return data.month !== undefined && data.year !== undefined && data.age === undefined;
       }
-      if (data.type === 'custom-age') {
+      if (data.type === 'customAge') {
         return data.age !== undefined && data.month === undefined && data.year === undefined;
       }
       return true;
@@ -27,7 +27,7 @@ const timePointSchema = z
 
 const frequencyTimeframeSchema = z
   .object({
-    frequency: z.enum(['yearly', 'one-time', 'quarterly', 'monthly', 'biweekly', 'weekly']),
+    frequency: z.enum(['yearly', 'oneTime', 'quarterly', 'monthly', 'biweekly', 'weekly']),
     timeframe: z.object({
       start: timePointSchema,
       end: timePointSchema.optional(),
@@ -35,7 +35,7 @@ const frequencyTimeframeSchema = z
   })
   .refine(
     (data) => {
-      const isOneTime = data.frequency === 'one-time';
+      const isOneTime = data.frequency === 'oneTime';
       const hasEndTime = !!data.timeframe.end;
 
       return isOneTime ? !hasEndTime : hasEndTime;
@@ -109,13 +109,13 @@ export const timeFrameForDisplay = (
     switch (type) {
       case 'now':
         return 'Now';
-      case 'at-retirement':
+      case 'atRetirement':
         return 'Retirement';
-      case 'at-life-expectancy':
+      case 'atLifeExpectancy':
         return 'Life Expectancy';
-      case 'custom-date':
+      case 'customDate':
         return 'Custom Date';
-      case 'custom-age':
+      case 'customAge':
         return 'Custom Age';
     }
   }

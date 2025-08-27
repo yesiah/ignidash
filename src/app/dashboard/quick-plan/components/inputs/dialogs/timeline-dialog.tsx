@@ -16,11 +16,11 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 
-function getRetirementStrategyDesc(retirementStrategyType: 'fixed-age' | 'swr-target') {
+function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarget') {
   switch (retirementStrategyType) {
-    case 'fixed-age':
+    case 'fixedAge':
       return <>Your simulations will always retire at this age.</>;
-    case 'swr-target':
+    case 'swrTarget':
       return (
         <>
           Your simulations will retire when your portfolio can sustainably support your typical annual expenses at this withdrawal rate.{' '}
@@ -39,7 +39,7 @@ function getRetirementStrategyDesc(retirementStrategyType: 'fixed-age' | 'swr-ta
 
 const newTimelineDefaultValues = {
   retirementStrategy: {
-    type: 'swr-target',
+    type: 'swrTarget',
     safeWithdrawalRate: 4,
     // expenseMetric: 'median',
   },
@@ -77,19 +77,19 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
   const fixedRetirementAge = useWatch({ control, name: 'retirementStrategy.retirementAge' });
 
   useEffect(() => {
-    if (retirementStrategyType !== 'swr-target') {
+    if (retirementStrategyType !== 'swrTarget') {
       unregister('retirementStrategy.safeWithdrawalRate');
       // unregister('retirementStrategy.expenseMetric');
     }
 
-    if (retirementStrategyType !== 'fixed-age') {
+    if (retirementStrategyType !== 'fixedAge') {
       unregister('retirementStrategy.retirementAge');
     }
   }, [retirementStrategyType, unregister]);
 
   const getRetirementDisclosureDesc = () => {
     switch (retirementStrategyType) {
-      case 'swr-target':
+      case 'swrTarget':
         if (!safeWithdrawalRate) {
           return 'SWR: N/A';
         }
@@ -102,7 +102,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
         }
 
         return `SWR: ${swrAsNum + '%'}`;
-      case 'fixed-age':
+      case 'fixedAge':
         if (!fixedRetirementAge) {
           return 'At Age: N/A';
         }
@@ -163,11 +163,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                       <Field className="col-span-2">
                         <Label htmlFor="retirementStrategy.type">Retirement Trigger</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
-                          <option value="fixed-age">Fixed Age</option>
-                          <option value="swr-target">SWR Target</option>
+                          <option value="fixedAge">Fixed Age</option>
+                          <option value="swrTarget">SWR Target</option>
                         </Select>
                       </Field>
-                      {retirementStrategyType === 'fixed-age' && (
+                      {retirementStrategyType === 'fixedAge' && (
                         <Field>
                           <Label htmlFor="retirementStrategy.retirementAge">Retirement Age</Label>
                           <NumberInputV2
@@ -177,18 +177,18 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                             inputMode="numeric"
                             placeholder="62"
                           />
-                          {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>)
+                          {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixedAge' }>>)
                             ?.retirementAge?.message && (
                             <ErrorMessage>
                               {
-                                (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>)
+                                (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixedAge' }>>)
                                   ?.retirementAge?.message
                               }
                             </ErrorMessage>
                           )}
                         </Field>
                       )}
-                      {retirementStrategyType === 'swr-target' && (
+                      {retirementStrategyType === 'swrTarget' && (
                         <>
                           <Field>
                             <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
@@ -200,11 +200,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               placeholder="4%"
                               suffix="%"
                             />
-                            {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swr-target' }>>)
+                            {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swrTarget' }>>)
                               ?.safeWithdrawalRate?.message && (
                               <ErrorMessage>
                                 {
-                                  (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swr-target' }>>)
+                                  (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swrTarget' }>>)
                                     ?.safeWithdrawalRate?.message
                                 }
                               </ErrorMessage>

@@ -21,14 +21,14 @@ export const accountFormSchema = z.discriminatedUnion('type', [
   // Taxable - investments with cost basis
   z.object({
     ...investmentAccountSchema.shape,
-    type: z.literal('taxable-brokerage'),
+    type: z.literal('taxableBrokerage'),
     costBasis: currencyFieldAllowsZero('Cost basis cannot be negative').optional(),
   }),
 
   // Roth - investments with contributions
   z.object({
     ...investmentAccountSchema.shape,
-    type: z.enum(['roth-401k', 'roth-ira']),
+    type: z.enum(['roth401k', 'rothIra']),
     contributions: currencyFieldAllowsZero('Contributions cannot be negative').optional(),
   }),
 
@@ -48,24 +48,24 @@ export const accountFormSchema = z.discriminatedUnion('type', [
 export type AccountInputs = z.infer<typeof accountFormSchema>;
 
 // Helper type unions
-export type RothAccountType = 'roth-401k' | 'roth-ira';
+export type RothAccountType = 'roth401k' | 'rothIra';
 export type TraditionalAccountType = '401k' | 'ira';
 export type InvestmentAccountType = Exclude<AccountInputs['type'], 'savings'>;
 
 // Helper functions
-export const isRothAccount = (type: AccountInputs['type']): type is RothAccountType => type === 'roth-401k' || type === 'roth-ira';
+export const isRothAccount = (type: AccountInputs['type']): type is RothAccountType => type === 'roth401k' || type === 'rothIra';
 export const isInvestmentAccount = (type: AccountInputs['type']): type is InvestmentAccountType => type !== 'savings';
-export const hasContributionLimit = (type: AccountInputs['type']): boolean => type !== 'savings' && type !== 'taxable-brokerage';
+export const hasContributionLimit = (type: AccountInputs['type']): boolean => type !== 'savings' && type !== 'taxableBrokerage';
 
 export const accountTypeForDisplay = (type: AccountInputs['type']): string => {
   switch (type) {
     case 'savings':
       return 'Savings';
-    case 'taxable-brokerage':
+    case 'taxableBrokerage':
       return 'Taxable Brokerage';
-    case 'roth-401k':
+    case 'roth401k':
       return 'Roth 401(k)';
-    case 'roth-ira':
+    case 'rothIra':
       return 'Roth IRA';
     case '401k':
       return '401(k)';

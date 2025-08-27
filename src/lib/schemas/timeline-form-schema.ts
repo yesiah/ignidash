@@ -8,12 +8,12 @@ export const retirementStrategySchema = z.discriminatedUnion('type', [
       min: 'Retirement age must be at least 17 years',
       max: 'Retirement age must be at most 73 years',
     }),
-    type: z.literal('fixed-age'),
+    type: z.literal('fixedAge'),
   }),
   z.object({
     safeWithdrawalRate: percentageField(2, 6, 'Safe withdrawal rate'),
     // expenseMetric: z.enum(['median', 'mean']),
-    type: z.literal('swr-target'),
+    type: z.literal('swrTarget'),
   }),
 ]);
 

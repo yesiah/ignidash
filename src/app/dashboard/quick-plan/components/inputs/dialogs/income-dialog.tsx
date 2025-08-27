@@ -22,7 +22,7 @@ const newIncomeDefaultValues = {
   frequency: 'yearly',
   timeframe: {
     start: { type: 'now' },
-    end: { type: 'at-retirement' },
+    end: { type: 'atRetirement' },
   },
   growth: {
     growthRate: 3,
@@ -69,7 +69,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
   const growthLimit = useWatch({ control, name: 'growth.growthLimit' }) as number | undefined;
 
   useEffect(() => {
-    if (frequency === 'one-time') {
+    if (frequency === 'oneTime') {
       // Unregister end time point fields
       unregister('timeframe.end');
       unregister('timeframe.end.type');
@@ -83,34 +83,34 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
       unregister('growth.growthLimit');
     }
 
-    if (startType !== 'custom-date') {
+    if (startType !== 'customDate') {
       unregister('timeframe.start.month');
       unregister('timeframe.start.year');
     }
 
-    if (startType !== 'custom-age') {
+    if (startType !== 'customAge') {
       unregister('timeframe.start.age');
     }
 
-    if (endType !== 'custom-date') {
+    if (endType !== 'customDate') {
       unregister('timeframe.end.month');
       unregister('timeframe.end.year');
     }
 
-    if (endType !== 'custom-age') {
+    if (endType !== 'customAge') {
       unregister('timeframe.end.age');
     }
   }, [frequency, startType, endType, unregister]);
 
   const getStartColSpan = () => {
-    if (startType === 'custom-date') return 'col-span-2';
-    if (startType === 'custom-age') return 'col-span-1';
+    if (startType === 'customDate') return 'col-span-2';
+    if (startType === 'customAge') return 'col-span-1';
     return 'col-span-2';
   };
 
   const getEndColSpan = () => {
-    if (endType === 'custom-date') return 'col-span-2';
-    if (endType === 'custom-age') return 'col-span-1';
+    if (endType === 'customDate') return 'col-span-2';
+    if (endType === 'customAge') return 'col-span-1';
     return 'col-span-2';
   };
 
@@ -209,7 +209,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select {...register('frequency')} id="frequency" name="frequency">
                   <optgroup label="Single Payment">
-                    <option value="one-time">One-time</option>
+                    <option value="oneTime">One-time</option>
                   </optgroup>
                   <optgroup label="Income Schedule">
                     <option value="yearly">Yearly</option>
@@ -222,7 +222,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
               </Field>
             </div>
             <Disclosure as="div" className="border-border/50 border-y py-4">
-              {/* <Disclosure as="div" className={`border-border/50 ${frequency !== 'one-time' ? 'border-y' : 'border-t'} py-4`}> */}
+              {/* <Disclosure as="div" className={`border-border/50 ${frequency !== 'oneTime' ? 'border-y' : 'border-t'} py-4`}> */}
               {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
               {({ open, close }) => (
                 <>
@@ -257,12 +257,12 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                         <Label htmlFor="start">Start</Label>
                         <Select {...register('timeframe.start.type')} id="start" name="timeframe.start.type">
                           <option value="now">Now</option>
-                          <option value="at-retirement">At Retirement</option>
-                          <option value="custom-date">Custom Date</option>
-                          <option value="custom-age">Custom Age</option>
+                          <option value="atRetirement">At Retirement</option>
+                          <option value="customDate">Custom Date</option>
+                          <option value="customAge">Custom Age</option>
                         </Select>
                       </Field>
-                      {startType === 'custom-date' && (
+                      {startType === 'customDate' && (
                         <>
                           <Field>
                             <Label className="sr-only">Month</Label>
@@ -315,7 +315,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                           </Field>
                         </>
                       )}
-                      {startType === 'custom-age' && (
+                      {startType === 'customAge' && (
                         <Field>
                           <Label className="sr-only">Age</Label>
                           <Controller
@@ -341,18 +341,18 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                         </Field>
                       )}
                     </div>
-                    {frequency !== 'one-time' && (
+                    {frequency !== 'oneTime' && (
                       <div className="mt-4 grid grid-cols-2 items-end gap-x-4 gap-y-2">
                         <Field className={getEndColSpan()}>
                           <Label htmlFor="end">End</Label>
                           <Select {...register('timeframe.end.type')} id="end" name="timeframe.end.type">
-                            <option value="at-retirement">At Retirement</option>
-                            <option value="at-life-expectancy">At Life Expectancy</option>
-                            <option value="custom-date">Custom Date</option>
-                            <option value="custom-age">Custom Age</option>
+                            <option value="atRetirement">At Retirement</option>
+                            <option value="atLifeExpectancy">At Life Expectancy</option>
+                            <option value="customDate">Custom Date</option>
+                            <option value="customAge">Custom Age</option>
                           </Select>
                         </Field>
-                        {endType === 'custom-date' && (
+                        {endType === 'customDate' && (
                           <>
                             <Field>
                               <Label className="sr-only">Month</Label>
@@ -405,7 +405,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                             </Field>
                           </>
                         )}
-                        {endType === 'custom-age' && (
+                        {endType === 'customAge' && (
                           <Field>
                             <Label className="sr-only">Age</Label>
                             <Controller
@@ -436,7 +436,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                 </>
               )}
             </Disclosure>
-            {frequency !== 'one-time' && (
+            {frequency !== 'oneTime' && (
               <Disclosure as="div">
                 {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
                 {({ open, close }) => (
