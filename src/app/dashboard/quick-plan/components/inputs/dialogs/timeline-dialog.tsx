@@ -16,11 +16,11 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 
-function getRetirementStrategyDesc(retirementStrategyType: 'fixed-age' | 'dynamic-age') {
+function getRetirementStrategyDesc(retirementStrategyType: 'fixed-age' | 'swr-target') {
   switch (retirementStrategyType) {
     case 'fixed-age':
       return <>Your simulations will always retire at this age.</>;
-    case 'dynamic-age':
+    case 'swr-target':
       return (
         <>
           Your simulations will retire when your portfolio can sustainably support your typical annual expenses at this withdrawal rate.{' '}
@@ -39,7 +39,7 @@ function getRetirementStrategyDesc(retirementStrategyType: 'fixed-age' | 'dynami
 
 const newTimelineDefaultValues = {
   retirementStrategy: {
-    type: 'dynamic-age',
+    type: 'swr-target',
     safeWithdrawalRate: 4,
     // expenseMetric: 'median',
   },
@@ -77,7 +77,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
   const fixedRetirementAge = useWatch({ control, name: 'retirementStrategy.retirementAge' });
 
   useEffect(() => {
-    if (retirementStrategyType !== 'dynamic-age') {
+    if (retirementStrategyType !== 'swr-target') {
       unregister('retirementStrategy.safeWithdrawalRate');
       // unregister('retirementStrategy.expenseMetric');
     }
@@ -89,7 +89,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
 
   const getRetirementDisclosureDesc = () => {
     switch (retirementStrategyType) {
-      case 'dynamic-age':
+      case 'swr-target':
         if (!safeWithdrawalRate) {
           return 'SWR: N/A';
         }
@@ -161,10 +161,10 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                   <DisclosurePanel className="py-4">
                     <div data-slot="control" className="grid grid-cols-3 gap-4">
                       <Field className="col-span-2">
-                        <Label htmlFor="retirementStrategy.type">Retirement Strategy</Label>
+                        <Label htmlFor="retirementStrategy.type">Retirement Trigger</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixed-age">Fixed Age</option>
-                          <option value="dynamic-age">Dynamic Age</option>
+                          <option value="swr-target">SWR Target</option>
                         </Select>
                       </Field>
                       {retirementStrategyType === 'fixed-age' && (
@@ -188,7 +188,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                           )}
                         </Field>
                       )}
-                      {retirementStrategyType === 'dynamic-age' && (
+                      {retirementStrategyType === 'swr-target' && (
                         <>
                           <Field>
                             <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
@@ -200,11 +200,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               placeholder="4%"
                               suffix="%"
                             />
-                            {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>)
+                            {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swr-target' }>>)
                               ?.safeWithdrawalRate?.message && (
                               <ErrorMessage>
                                 {
-                                  (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>)
+                                  (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swr-target' }>>)
                                     ?.safeWithdrawalRate?.message
                                 }
                               </ErrorMessage>

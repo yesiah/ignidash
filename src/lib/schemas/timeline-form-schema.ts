@@ -13,7 +13,7 @@ export const retirementStrategySchema = z.discriminatedUnion('type', [
   z.object({
     safeWithdrawalRate: percentageField(2, 6, 'Safe withdrawal rate'),
     // expenseMetric: z.enum(['median', 'mean']),
-    type: z.literal('dynamic-age'),
+    type: z.literal('swr-target'),
   }),
 ]);
 
