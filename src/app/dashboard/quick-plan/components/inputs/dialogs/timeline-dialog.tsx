@@ -37,6 +37,16 @@ function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarg
   }
 }
 
+function getRetirementStrategyError(errors: FieldErrors, retirementStrategyType: 'fixedAge' | 'swrTarget') {
+  switch (retirementStrategyType) {
+    case 'fixedAge':
+      return (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixedAge' }>>)?.retirementAge?.message;
+    case 'swrTarget':
+      return (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swrTarget' }>>)?.safeWithdrawalRate
+        ?.message;
+  }
+}
+
 const newTimelineDefaultValues = {
   retirementStrategy: {
     type: 'swrTarget',
@@ -177,15 +187,6 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                             inputMode="numeric"
                             placeholder="62"
                           />
-                          {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixedAge' }>>)
-                            ?.retirementAge?.message && (
-                            <ErrorMessage>
-                              {
-                                (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixedAge' }>>)
-                                  ?.retirementAge?.message
-                              }
-                            </ErrorMessage>
-                          )}
                         </Field>
                       )}
                       {retirementStrategyType === 'swrTarget' && (
@@ -200,15 +201,6 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               placeholder="4%"
                               suffix="%"
                             />
-                            {(errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swrTarget' }>>)
-                              ?.safeWithdrawalRate?.message && (
-                              <ErrorMessage>
-                                {
-                                  (errors.retirementStrategy as FieldErrors<Extract<RetirementStrategyInputs, { type: 'swrTarget' }>>)
-                                    ?.safeWithdrawalRate?.message
-                                }
-                              </ErrorMessage>
-                            )}
                           </Field>
                           {/* <Field>
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
@@ -225,9 +217,16 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                         </>
                       )}
                     </div>
-                    <p className="mt-2 text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400">
-                      {getRetirementStrategyDesc(retirementStrategyType)}
-                    </p>
+                    <div className="mt-2">
+                      {getRetirementStrategyError(errors, retirementStrategyType) ? (
+                        <p className="text-base/6 text-red-600 data-disabled:opacity-50 sm:text-sm/6 dark:text-red-500">
+                          {getRetirementStrategyError(errors, retirementStrategyType)}
+                        </p>
+                      ) : null}
+                      <p className="text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400">
+                        {getRetirementStrategyDesc(retirementStrategyType)}
+                      </p>
+                    </div>
                   </DisclosurePanel>
                 </>
               )}
