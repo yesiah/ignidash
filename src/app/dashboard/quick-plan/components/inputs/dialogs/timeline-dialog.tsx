@@ -147,7 +147,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                           <option value="dynamic-age">Dynamic Age</option>
                         </Select>
                       </Field>
-                      <Divider />
+                      <Divider soft />
                       {retirementStrategyType === 'fixed-age' && (
                         <Field>
                           <Label htmlFor="retirementStrategy.retirementAge">Retirement Age</Label>
