@@ -6,11 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
 import { useUpdateTimelines, useTimelineData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import { timelineFormSchema, type TimelineInputs } from '@/lib/schemas/timeline-form-schema';
+import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import { Fieldset, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
@@ -163,7 +163,11 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                             inputMode="numeric"
                             placeholder="62"
                           />
-                          {errors.retirementStrategy && <ErrorMessage>{errors.retirementStrategy?.message}</ErrorMessage>}
+                          {(errors as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>).retirementAge?.message && (
+                            <ErrorMessage>
+                              {(errors as FieldErrors<Extract<RetirementStrategyInputs, { type: 'fixed-age' }>>).retirementAge?.message}
+                            </ErrorMessage>
+                          )}
                         </Field>
                       )}
                       {retirementStrategyType === 'dynamic-age' && (
@@ -178,7 +182,15 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                               placeholder="4"
                               suffix="%"
                             />
-                            {errors.retirementStrategy && <ErrorMessage>{errors.retirementStrategy?.message}</ErrorMessage>}
+                            {(errors as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>).safeWithdrawalRate
+                              ?.message && (
+                              <ErrorMessage>
+                                {
+                                  (errors as FieldErrors<Extract<RetirementStrategyInputs, { type: 'dynamic-age' }>>).safeWithdrawalRate
+                                    ?.message
+                                }
+                              </ErrorMessage>
+                            )}
                           </Field>
                           <Field className="col-span-2">
                             <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>

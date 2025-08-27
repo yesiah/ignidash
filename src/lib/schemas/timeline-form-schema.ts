@@ -2,6 +2,21 @@ import { z } from 'zod';
 
 import { ageField, percentageField } from '@/lib/utils/zod-schema-helpers';
 
+export const retirementStrategySchema = z.discriminatedUnion('type', [
+  z.object({
+    retirementAge: ageField(17, 73, {
+      min: 'Retirement age must be at least 17 years',
+      max: 'Retirement age must be at most 73 years',
+    }),
+    type: z.literal('fixed-age'),
+  }),
+  z.object({
+    safeWithdrawalRate: percentageField(2, 6, 'Safe withdrawal rate'),
+    expenseMetric: z.enum(['median', 'mean']),
+    type: z.literal('dynamic-age'),
+  }),
+]);
+
 export const timelineFormSchema = z.object({
   lifeExpectancy: ageField(50, 110, {
     min: 'Life expectancy must be at least 50 years',
@@ -11,20 +26,8 @@ export const timelineFormSchema = z.object({
     min: 'You must be at least 16 years old to use this calculator',
     max: 'Age cannot exceed 100 years',
   }),
-  retirementStrategy: z.discriminatedUnion('type', [
-    z.object({
-      retirementAge: ageField(17, 73, {
-        min: 'Retirement age must be at least 17 years',
-        max: 'Retirement age must be at most 73 years',
-      }),
-      type: z.literal('fixed-age'),
-    }),
-    z.object({
-      safeWithdrawalRate: percentageField(2, 6, 'Safe withdrawal rate'),
-      expenseMetric: z.enum(['median', 'mean']),
-      type: z.literal('dynamic-age'),
-    }),
-  ]),
+  retirementStrategy: retirementStrategySchema,
 });
 
+export type RetirementStrategyInputs = z.infer<typeof retirementStrategySchema>;
 export type TimelineInputs = z.infer<typeof timelineFormSchema>;
