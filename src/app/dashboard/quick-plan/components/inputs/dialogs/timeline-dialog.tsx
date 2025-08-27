@@ -147,7 +147,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                   <DisclosurePanel className="py-4">
                     <div className="grid grid-cols-2 items-end gap-4">
                       <Field className={getRetirementStrategyTypeSpan()}>
-                        <Label htmlFor="retirementStrategy.type">Retirement Age</Label>
+                        <Label htmlFor="retirementStrategy.type">Strategy</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixed-age">Fixed Age</option>
                           <option value="dynamic-age">Dynamic Age</option>
