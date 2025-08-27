@@ -23,7 +23,7 @@ function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarg
     case 'swrTarget':
       return (
         <>
-          Your simulations will retire when your portfolio can support your typical annual expenses at this withdrawal rate.{' '}
+          Your simulations will retire when your portfolio can support your typical annual expenses at this SWR.{' '}
           <a
             href="https://www.investopedia.com/terms/s/safe-withdrawal-rate-swr-method.asp"
             target="_blank"
@@ -193,7 +193,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                       {retirementStrategyType === 'swrTarget' && (
                         <>
                           <Field className="col-span-2">
-                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
+                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">SWR</Label>
                             <NumberInputV2
                               name="retirementStrategy.safeWithdrawalRate"
                               control={control}
