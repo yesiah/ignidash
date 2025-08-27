@@ -52,6 +52,8 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
   };
 
   const retirementStrategyType = useWatch({ control, name: 'retirementStrategy.type' });
+  const safeWithdrawalRate = useWatch({ control, name: 'retirementStrategy.safeWithdrawalRate' });
+  const fixedRetirementAge = useWatch({ control, name: 'retirementStrategy.retirementAge' });
 
   useEffect(() => {
     if (retirementStrategyType !== 'dynamic-age') {
@@ -70,6 +72,37 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
         return 'col-span-1';
       case 'dynamic-age':
         return 'col-span-2';
+    }
+  };
+
+  const getRetirementDisclosureDesc = () => {
+    switch (retirementStrategyType) {
+      case 'dynamic-age':
+        if (!safeWithdrawalRate) {
+          return 'SWR: N/A';
+        }
+
+        const swrAsNum = Number(safeWithdrawalRate);
+        if (swrAsNum < 2) {
+          return 'SWR: Too Low!';
+        } else if (swrAsNum > 6) {
+          return 'SWR: Too High!';
+        }
+
+        return `SWR: ${swrAsNum + '%'}`;
+      case 'fixed-age':
+        if (!fixedRetirementAge) {
+          return 'At Age: N/A';
+        }
+
+        const fixedRetirementAgeAsNum = Number(fixedRetirementAge);
+        if (fixedRetirementAgeAsNum < 17) {
+          return 'At Age: Too Early!';
+        } else if (fixedRetirementAgeAsNum > 73) {
+          return 'At Age: Too Late!';
+        }
+
+        return `At Age: ${fixedRetirementAge}`;
     }
   };
 
@@ -103,6 +136,8 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     <div className="flex items-center gap-2">
                       <ArmchairIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                       <span className="text-base/7 font-semibold">Retirement</span>
+                      <span className="hidden sm:inline">|</span>
+                      <span className="text-muted-foreground hidden truncate sm:inline">{getRetirementDisclosureDesc()}</span>
                     </div>
                     <span className="text-muted-foreground ml-6 flex h-7 items-center">
                       <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
