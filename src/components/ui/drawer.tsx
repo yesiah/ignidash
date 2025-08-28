@@ -38,7 +38,7 @@ export default function Drawer({ open, setOpen, title, children }: DrawerProps) 
                   </button>
                 </div>
               </TransitionChild>
-              <div className="border-border flex h-full flex-col overflow-y-auto sm:border-l">
+              <div className="border-border flex h-full flex-col sm:border-l">
                 <div className="bg-emphasized-background border-border flex items-center justify-between border-b px-4 py-6 sm:px-5">
                   <DialogTitle className="text-xl font-semibold tracking-tight">{title}</DialogTitle>
                   <button
@@ -50,7 +50,7 @@ export default function Drawer({ open, setOpen, title, children }: DrawerProps) 
                     <X aria-hidden="true" className="size-6" />
                   </button>
                 </div>
-                <div className="bg-background relative flex-1 px-2 sm:px-3">{children}</div>
+                <div className="bg-background relative flex-1 overflow-y-auto px-2 sm:px-3">{children}</div>
               </div>
             </DialogPanel>
           </div>
