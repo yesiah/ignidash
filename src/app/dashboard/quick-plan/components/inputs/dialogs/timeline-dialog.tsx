@@ -19,11 +19,12 @@ import { Button } from '@/components/catalyst/button';
 function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarget') {
   switch (retirementStrategyType) {
     case 'fixedAge':
-      return <>Your simulations will always retire at this age.</>;
+      return <>Simulations will always retire at this age.</>;
     case 'swrTarget':
       return (
         <>
-          Your simulations will retire when your portfolio can support your typical annual expenses at this SWR.{' '}
+          Simulations will retire when your portfolio can support your typical annual expenses at this SWR.
+          <br />
           <a
             href="https://www.investopedia.com/terms/s/safe-withdrawal-rate-swr-method.asp"
             target="_blank"
@@ -101,17 +102,17 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
     switch (retirementStrategyType) {
       case 'swrTarget':
         if (!safeWithdrawalRate) {
-          return 'SWR: N/A';
+          return 'SWR Target: N/A';
         }
 
         const swrAsNum = Number(safeWithdrawalRate);
         if (swrAsNum < 2) {
-          return 'SWR: Too Low!';
+          return 'SWR Target: Too Low!';
         } else if (swrAsNum > 6) {
-          return 'SWR: Too High!';
+          return 'SWR Target: Too High!';
         }
 
-        return `SWR: ${swrAsNum + '%'}`;
+        return `SWR Target: ${swrAsNum + '%'}`;
       case 'fixedAge':
         if (!fixedRetirementAge) {
           return 'At Age: N/A';
@@ -144,13 +145,13 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                 <Label htmlFor="currentAge">Current Age</Label>
                 <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
                 {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
-                <Description>The age your simulations will start at.</Description>
+                <Description>Simulations will start at this age.</Description>
               </Field>
               <Field>
                 <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
                 <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
                 {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
-                <Description>The age your simulations will end at.</Description>
+                <Description>Simulations will end at this age.</Description>
               </Field>
             </FieldGroup>
             <Disclosure as="div" className="border-border/50 border-t py-4">
@@ -169,16 +170,16 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                     </span>
                   </DisclosureButton>
                   <DisclosurePanel className="py-4">
-                    <div data-slot="control" className="grid grid-cols-5 gap-4">
-                      <Field className="col-span-3">
-                        <Label htmlFor="retirementStrategy.type">Retirement Trigger</Label>
+                    <div data-slot="control" className="grid grid-cols-2 gap-4">
+                      <Field>
+                        <Label htmlFor="retirementStrategy.type">Trigger</Label>
                         <Select {...register('retirementStrategy.type')} id="retirementStrategy.type" name="retirementStrategy.type">
                           <option value="fixedAge">Fixed Age</option>
                           <option value="swrTarget">SWR Target</option>
                         </Select>
                       </Field>
                       {retirementStrategyType === 'fixedAge' && (
-                        <Field className="col-span-2">
+                        <Field>
                           <Label htmlFor="retirementStrategy.retirementAge">Retirement Age</Label>
                           <NumberInputV2
                             name="retirementStrategy.retirementAge"
@@ -192,8 +193,8 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
                       )}
                       {retirementStrategyType === 'swrTarget' && (
                         <>
-                          <Field className="col-span-2">
-                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">SWR</Label>
+                          <Field>
+                            <Label htmlFor="retirementStrategy.safeWithdrawalRate">Withdrawal Rate</Label>
                             <NumberInputV2
                               name="retirementStrategy.safeWithdrawalRate"
                               control={control}
