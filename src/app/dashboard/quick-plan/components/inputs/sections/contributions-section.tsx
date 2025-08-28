@@ -5,6 +5,7 @@ import { HandCoinsIcon } from 'lucide-react';
 
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { DisclosureState } from '@/lib/types/disclosure-state';
+import { Divider } from '@/components/catalyst/divider';
 
 interface ContributionsSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -31,6 +32,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
             <HandCoinsIcon aria-hidden="true" className="text-primary mx-auto size-12" />
             <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add contribution</span>
           </button>
+          <Divider className="my-4" />
         </div>
       </DisclosureSection>
     </>
