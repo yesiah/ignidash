@@ -141,7 +141,10 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                 )}
               </div>
               <Field>
-                <Label htmlFor="maxValue">Maximum Total Value</Label>
+                <Label htmlFor="maxValue" className="flex w-full items-center justify-between">
+                  <span className="whitespace-nowrap">Maximum Total Value</span>
+                  <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                </Label>
                 <NumberInputV2
                   name="maxValue"
                   control={control}
@@ -152,9 +155,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                   autoFocus={selectedContributionRuleID !== null}
                 />
                 {errors.maxValue && <ErrorMessage>{errors.maxValue?.message}</ErrorMessage>}
-                <Description>
-                  Set an optional limit on the total value of this account. Contributions will stop after this is reached.
-                </Description>
+                <Description>Set a limit on the total value of this account. Contributions stop once reached.</Description>
               </Field>
             </FieldGroup>
           </DialogBody>
