@@ -29,7 +29,6 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
         <div className="flex h-full flex-col">
           <Field>
             <Label>Base Contribution Rule</Label>
-            <Description>Allocate any leftover cash after your contribution rules are applied.</Description>
             <Listbox name="status" defaultValue="spend">
               <ListboxOption value="spend">
                 <BanknoteArrowDownIcon data-slot="icon" className="text-primary" />
@@ -42,6 +41,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                 <ListboxDescription>Save anything left</ListboxDescription>
               </ListboxOption>
             </Listbox>
+            <Description>Allocate any leftover cash after your contribution rules are applied.</Description>
           </Field>
           <Divider className="my-4" />
           <button
