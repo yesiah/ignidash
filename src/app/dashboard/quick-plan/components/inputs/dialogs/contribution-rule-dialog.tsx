@@ -5,13 +5,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 
-import { useUpdateContributionRules, useContributionRuleData, useAccountsData } from '@/lib/stores/quick-plan-store';
+import {
+  useUpdateContributionRules,
+  useContributionRuleData,
+  useContributionRulesData,
+  useAccountsData,
+} from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { contributionFormSchema, type ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Combobox, ComboboxLabel, ComboboxDescription, ComboboxOption } from '@/components/catalyst/combobox';
+import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 
 interface ContributionRuleDialogProps {
@@ -21,9 +27,18 @@ interface ContributionRuleDialogProps {
 
 export default function ContributionRuleDialog({ setContributionRuleDialogOpen, selectedContributionRuleID }: ContributionRuleDialogProps) {
   const existingContributionRuleData = useContributionRuleData(selectedContributionRuleID);
-  const defaultValues = (existingContributionRuleData || undefined) as never;
+
+  const contributionRules = useContributionRulesData();
+  const contributionRulesCount = Object.entries(contributionRules).length;
+  const defaultRank = contributionRulesCount + 1;
+  const newContributionRuleDefaultValues = {
+    rank: defaultRank,
+  } as const satisfies Partial<ContributionInputs>;
+
+  const defaultValues = (existingContributionRuleData || newContributionRuleDefaultValues) as never;
 
   const {
+    register,
     control,
     handleSubmit,
     formState: { errors },
@@ -86,6 +101,14 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                     </Combobox>
                   )}
                 />
+              </Field>
+              <Field>
+                <Label htmlFor="allocationType">Allocation</Label>
+                <Select {...register('allocationType')} id="allocationType" name="allocationType">
+                  <option value="fixed">Dollar Amount</option>
+                  <option value="percentage">Percent Remaining</option>
+                  <option value="unlimited">Unlimited</option>
+                </Select>
               </Field>
               <Field>
                 <Label htmlFor="maxValue">Maximum Value</Label>
