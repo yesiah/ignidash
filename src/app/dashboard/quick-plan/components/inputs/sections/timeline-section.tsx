@@ -24,7 +24,7 @@ function getRetirementStrategyDesc(retirementStrategy: RetirementStrategyInputs)
     case 'fixedAge':
       return 'Retire at ' + retirementStrategy.retirementAge;
     case 'swrTarget':
-      return retirementStrategy.safeWithdrawalRate + '% SWR';
+      return retirementStrategy.safeWithdrawalRate + '% SWR Target';
   }
 }
 
