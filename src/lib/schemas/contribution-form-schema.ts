@@ -4,7 +4,7 @@ import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema
 const baseContributionSchema = z.object({
   accountId: z.string(),
   rank: z.number().int().min(0),
-  targetBalance: currencyFieldAllowsZero('Target balance cannot be negative').optional(),
+  maxValue: currencyFieldAllowsZero('Max value cannot be negative').optional(),
   incomeId: z.string().optional(),
 });
 

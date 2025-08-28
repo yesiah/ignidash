@@ -50,17 +50,17 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
           <DialogBody>
             <FieldGroup>
               <Field>
-                <Label htmlFor="targetBalance">Target Balance</Label>
+                <Label htmlFor="maxValue">Maximum Value</Label>
                 <NumberInputV2
-                  name="targetBalance"
+                  name="maxValue"
                   control={control}
-                  id="targetBalance"
+                  id="maxValue"
                   inputMode="decimal"
                   placeholder="$15,000"
                   prefix="$"
                   autoFocus={selectedContributionRuleID !== null}
                 />
-                {errors.targetBalance && <ErrorMessage>{errors.targetBalance?.message}</ErrorMessage>}
+                {errors.maxValue && <ErrorMessage>{errors.maxValue?.message}</ErrorMessage>}
               </Field>
             </FieldGroup>
           </DialogBody>
