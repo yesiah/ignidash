@@ -467,8 +467,8 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                       </span>
                     </DisclosureButton>
                     <DisclosurePanel className="py-4">
-                      <div className="grid grid-cols-5 gap-4">
-                        <Field className="col-span-3">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Field>
                           <Label htmlFor="growth-rate" className="flex w-full items-center justify-between">
                             <span>Growth Rate</span>
                             <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
@@ -483,7 +483,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                           />
                           {errors.growth?.growthRate && <ErrorMessage>{errors.growth?.growthRate?.message}</ErrorMessage>}
                         </Field>
-                        <Field className="col-span-2">
+                        <Field>
                           <Label htmlFor="growth-limit">Limit</Label>
                           <NumberInputV2
                             name="growth.growthLimit"
