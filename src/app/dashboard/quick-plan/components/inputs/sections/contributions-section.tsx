@@ -1,11 +1,13 @@
 'use client';
 
 import { RefObject } from 'react';
-import { HandCoinsIcon } from 'lucide-react';
+import { HandCoinsIcon, PiggyBankIcon, BanknoteArrowDownIcon } from 'lucide-react';
 
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
+import { Field } from '@/components/catalyst/fieldset';
+import { Listbox, ListboxLabel, ListboxDescription, ListboxOption } from '@/components/catalyst/listbox';
 
 interface ContributionsSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -34,6 +36,20 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
           </button>
           <Divider className="my-4" />
         </div>
+        <Field>
+          <Listbox name="status" defaultValue="spend" aria-label="Leftover contribution rule">
+            <ListboxOption value="spend">
+              <BanknoteArrowDownIcon data-slot="icon" className="text-primary" />
+              <ListboxLabel>Spend</ListboxLabel>
+              <ListboxDescription>Spend anything left</ListboxDescription>
+            </ListboxOption>
+            <ListboxOption value="save">
+              <PiggyBankIcon data-slot="icon" className="text-primary" />
+              <ListboxLabel>Save</ListboxLabel>
+              <ListboxDescription>Save anything left</ListboxDescription>
+            </ListboxOption>
+          </Listbox>
+        </Field>
       </DisclosureSection>
     </>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import * as Headless from '@headlessui/react';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import { Fragment } from 'react';
 
 export function Listbox<T>({
@@ -24,8 +24,7 @@ export function Listbox<T>({
         autoFocus={autoFocus}
         data-slot="control"
         aria-label={ariaLabel}
-        className={clsx([
-          className,
+        className={cn([
           // Basic layout
           'group relative block w-full',
           // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
@@ -38,13 +37,14 @@ export function Listbox<T>({
           'after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset data-focus:after:ring-2 data-focus:after:ring-blue-500',
           // Disabled state
           'data-disabled:opacity-50 data-disabled:before:bg-zinc-950/5 data-disabled:before:shadow-none',
+          className,
         ])}
       >
         <Headless.ListboxSelectedOption
           as="span"
           options={options}
           placeholder={placeholder && <span className="block truncate text-zinc-500">{placeholder}</span>}
-          className={clsx([
+          className={cn([
             // Basic layout
             'relative block w-full appearance-none rounded-lg py-[calc(--spacing(2.5)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
             // Set minimum height for when no value is selected
@@ -78,7 +78,7 @@ export function Listbox<T>({
       <Headless.ListboxOptions
         transition
         anchor="selection start"
-        className={clsx(
+        className={cn(
           // Anchor positioning
           '[--anchor-offset:-1.625rem] [--anchor-padding:--spacing(4)] sm:[--anchor-offset:-1.375rem]',
           // Base styles
@@ -106,7 +106,7 @@ export function ListboxOption<T>({
   className,
   ...props
 }: { className?: string; children?: React.ReactNode } & Omit<Headless.ListboxOptionProps<'div', T>, 'as' | 'className'>) {
-  const sharedClasses = clsx(
+  const sharedClasses = cn(
     // Base
     'flex min-w-0 items-center',
     // Icons
@@ -121,12 +121,12 @@ export function ListboxOption<T>({
     <Headless.ListboxOption as={Fragment} {...props}>
       {({ selectedOption }) => {
         if (selectedOption) {
-          return <div className={clsx(className, sharedClasses)}>{children}</div>;
+          return <div className={cn(sharedClasses, className)}>{children}</div>;
         }
 
         return (
           <div
-            className={clsx(
+            className={cn(
               // Basic layout
               'group/option grid cursor-default grid-cols-[--spacing(5)_1fr] items-baseline gap-x-2 rounded-lg py-2.5 pr-3.5 pl-2 sm:grid-cols-[--spacing(4)_1fr] sm:py-1.5 sm:pr-3 sm:pl-1.5',
               // Typography
@@ -147,7 +147,7 @@ export function ListboxOption<T>({
             >
               <path d="M4 8.5l3 3L12 4" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span className={clsx(className, sharedClasses, 'col-start-2')}>{children}</span>
+            <span className={cn(sharedClasses, className, 'col-start-2')}>{children}</span>
           </div>
         );
       }}
@@ -156,16 +156,16 @@ export function ListboxOption<T>({
 }
 
 export function ListboxLabel({ className, ...props }: React.ComponentPropsWithoutRef<'span'>) {
-  return <span {...props} className={clsx(className, 'ml-2.5 truncate first:ml-0 sm:ml-2 sm:first:ml-0')} />;
+  return <span {...props} className={cn('ml-2.5 truncate first:ml-0 sm:ml-2 sm:first:ml-0', className)} />;
 }
 
 export function ListboxDescription({ className, children, ...props }: React.ComponentPropsWithoutRef<'span'>) {
   return (
     <span
       {...props}
-      className={clsx(
-        className,
-        'flex flex-1 overflow-hidden text-zinc-500 group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink dark:text-zinc-400'
+      className={cn(
+        'flex flex-1 overflow-hidden text-zinc-500 group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink dark:text-zinc-400',
+        className
       )}
     >
       <span className="flex-1 truncate">{children}</span>
