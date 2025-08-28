@@ -63,10 +63,10 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                     <Combobox
                       name={name}
                       options={accountOptions}
-                      displayValue={(account) => account?.name || ''}
+                      displayValue={(account) => account?.name}
+                      placeholder="Select account&hellip;"
                       value={accountOptions.find((account) => account.id === value) || null}
                       onChange={(account) => onChange(account?.id || null)}
-                      placeholder="Select account&hellip;"
                       autoFocus={selectedContributionRuleID === null}
                       filter={(account, query) => {
                         if (!account) return false;
