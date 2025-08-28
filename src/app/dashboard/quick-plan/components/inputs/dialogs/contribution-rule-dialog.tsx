@@ -16,7 +16,7 @@ import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/di
 import { contributionFormSchema, type ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
-import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Combobox, ComboboxLabel, ComboboxDescription, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
@@ -63,6 +63,11 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
     if (allocationType === 'unlimited') unregister('amount');
   }, [allocationType, unregister]);
 
+  const getAllocationTypeColSpan = () => {
+    if (allocationType === 'fixed' || allocationType === 'percentage') return 'col-span-1';
+    return 'col-span-2';
+  };
+
   const accounts = useAccountsData();
   const accountOptions = Object.entries(accounts).map(([id, account]) => ({ id, name: account.name, type: account.type }));
 
@@ -79,7 +84,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
           <DialogBody>
             <FieldGroup>
               <Field>
-                <Label>To Account</Label>
+                <Label>For Account</Label>
                 <Controller
                   name="accountId"
                   control={control}
@@ -111,28 +116,32 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                   )}
                 />
               </Field>
-              <Field>
-                <Label htmlFor="allocationType">Allocation</Label>
-                <Select {...register('allocationType')} id="allocationType" name="allocationType">
-                  <option value="fixed">Dollar Amount</option>
-                  <option value="percentage">Percent Remaining</option>
-                  <option value="unlimited">Unlimited</option>
-                </Select>
-              </Field>
-              {allocationType === 'fixed' && (
-                <Field>
-                  <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="$2,500" prefix="$" />
-                  {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
+              <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2">
+                <Field className={getAllocationTypeColSpan()}>
+                  <Label htmlFor="allocationType">Allocation Strategy</Label>
+                  <Select {...register('allocationType')} id="allocationType" name="allocationType">
+                    <option value="fixed">Dollar Amount</option>
+                    <option value="percentage">Percent Remaining</option>
+                    <option value="unlimited">Unlimited</option>
+                  </Select>
                 </Field>
-              )}
-              {allocationType === 'percentage' && (
-                <Field>
-                  <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="25%" suffix="%" />
-                  {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
-                </Field>
-              )}
+                {allocationType === 'fixed' && (
+                  <Field>
+                    <Label className="sr-only">Dollar Amount</Label>
+                    <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="$2,500" prefix="$" />
+                    {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
+                  </Field>
+                )}
+                {allocationType === 'percentage' && (
+                  <Field>
+                    <Label className="sr-only">Percent Remaining</Label>
+                    <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="25%" suffix="%" />
+                    {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
+                  </Field>
+                )}
+              </div>
               <Field>
-                <Label htmlFor="maxValue">Maximum Value</Label>
+                <Label htmlFor="maxValue">Maximum Total Value</Label>
                 <NumberInputV2
                   name="maxValue"
                   control={control}
@@ -143,6 +152,9 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                   autoFocus={selectedContributionRuleID !== null}
                 />
                 {errors.maxValue && <ErrorMessage>{errors.maxValue?.message}</ErrorMessage>}
+                <Description>
+                  Set an optional limit on the total value of this account. Contributions will stop after this is reached.
+                </Description>
               </Field>
             </FieldGroup>
           </DialogBody>
