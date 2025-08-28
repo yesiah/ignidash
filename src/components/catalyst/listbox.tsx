@@ -54,7 +54,7 @@ export function Listbox<T>({
             // Typography
             'text-left text-base/6 text-stone-950 placeholder:text-stone-500 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
             // Border
-            'border border-stone-950/10 group-data-active:border-stone-950/20 group-data-hover:border-stone-950/20 dark:border-white/10 dark:group-data-active:border-white/20 dark:group-data-hover:border-white/20',
+            'border border-stone-950/25 group-data-active:border-stone-950/50 group-data-hover:border-stone-950/50 dark:border-white/25 dark:group-data-active:border-white/50 dark:group-data-hover:border-white/50',
             // Background color
             'bg-transparent dark:bg-white/5',
             // Invalid state
