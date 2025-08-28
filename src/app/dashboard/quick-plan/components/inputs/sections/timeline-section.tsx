@@ -6,6 +6,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 import { useTimelinesData, useDeleteTimeline } from '@/lib/stores/quick-plan-store';
+import { type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
@@ -17,6 +18,15 @@ import type { DisclosureState } from '@/lib/types/disclosure-state';
 import TimelineDialog from '../dialogs/timeline-dialog';
 
 const colors = ['bg-rose-500/50', 'bg-rose-500/75', 'bg-rose-500'];
+
+function getRetirementStrategyDesc(retirementStrategy: RetirementStrategyInputs) {
+  switch (retirementStrategy.type) {
+    case 'fixedAge':
+      return 'Retire at ' + retirementStrategy.retirementAge;
+    case 'swrTarget':
+      return retirementStrategy.safeWithdrawalRate + '% SWR';
+  }
+}
 
 interface TimelineSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -63,7 +73,7 @@ export default function TimelineSection({ toggleDisclosure, disclosureButtonRef,
                       <span className="font-medium text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-200">
                         {'Timeline ' + (index + 1)}
                       </span>
-                      <p className="text-muted-foreground">{`Age ${timeline.currentAge} to Age ${timeline.lifeExpectancy}`}</p>
+                      <p className="text-muted-foreground">{`${timeline.currentAge} to ${timeline.lifeExpectancy} | ${getRetirementStrategyDesc(timeline.retirementStrategy)}`}</p>
                     </div>
                     <div className="shrink-0 pr-2">
                       <Dropdown>
