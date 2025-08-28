@@ -1,9 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
 import { PiggyBankIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form';
 
 import {
   useUpdateContributionRules,
@@ -33,12 +34,14 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
   const defaultRank = contributionRulesCount + 1;
   const newContributionRuleDefaultValues = {
     rank: defaultRank,
+    allocationType: 'fixed' as ContributionInputs['allocationType'],
   } as const satisfies Partial<ContributionInputs>;
 
   const defaultValues = (existingContributionRuleData || newContributionRuleDefaultValues) as never;
 
   const {
     register,
+    unregister,
     control,
     handleSubmit,
     formState: { errors },
@@ -53,6 +56,12 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
     updateContributionRules(contributionRuleID, data);
     setContributionRuleDialogOpen(false);
   };
+
+  const allocationType = useWatch({ control, name: 'allocationType' });
+
+  useEffect(() => {
+    if (allocationType === 'unlimited') unregister('amount');
+  }, [allocationType, unregister]);
 
   const accounts = useAccountsData();
   const accountOptions = Object.entries(accounts).map(([id, account]) => ({ id, name: account.name, type: account.type }));
@@ -110,6 +119,18 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
                   <option value="unlimited">Unlimited</option>
                 </Select>
               </Field>
+              {allocationType === 'fixed' && (
+                <Field>
+                  <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="$2,500" prefix="$" />
+                  {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
+                </Field>
+              )}
+              {allocationType === 'percentage' && (
+                <Field>
+                  <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="25%" suffix="%" />
+                  {/* {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>} */}
+                </Field>
+              )}
               <Field>
                 <Label htmlFor="maxValue">Maximum Value</Label>
                 <NumberInputV2
