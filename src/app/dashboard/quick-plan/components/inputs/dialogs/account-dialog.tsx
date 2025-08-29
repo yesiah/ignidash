@@ -23,7 +23,7 @@ import { Input } from '@/components/catalyst/input';
 
 const newAccountDefaultValues = {
   id: '',
-  type: 'taxableBrokerage' as AccountInputs['type'],
+  type: '401k' as AccountInputs['type'],
 } as const satisfies Partial<AccountInputs>;
 
 interface AccountDialogProps {
