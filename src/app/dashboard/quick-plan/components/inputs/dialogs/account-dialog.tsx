@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { TrendingUpIcon, HandshakeIcon } from 'lucide-react';
+import { TrendingUpIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
@@ -18,10 +16,11 @@ import {
   type InvestmentAccountType,
 } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
-import { Fieldset, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
+import { Divider } from '@/components/catalyst/divider';
 
 const newAccountDefaultValues = {
   id: '',
@@ -85,130 +84,111 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Account details">
-          <DialogBody data-slot="control" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Field className="col-span-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  {...register('name')}
-                  id="name"
-                  name="name"
-                  placeholder="My Investment"
-                  autoComplete="off"
-                  inputMode="text"
-                  invalid={!!errors.name}
-                  aria-invalid={!!errors.name}
-                  autoFocus={selectedAccountID === null}
-                />
-                {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
-              </Field>
-              <Field className="col-span-2">
-                <Label htmlFor="type">Account Type</Label>
-                <Select {...register('type')} id="type" name="type">
-                  <option value="taxableBrokerage">Taxable Brokerage</option>
-                  <option value="401k">401(k)</option>
-                  <option value="ira">IRA</option>
-                  <option value="roth401k">Roth 401(k)</option>
-                  <option value="rothIra">Roth IRA</option>
-                  <option value="hsa">HSA</option>
-                </Select>
-              </Field>
-              <Field className={getBalanceColSpan()}>
-                <Label htmlFor="currentValue">Market Value</Label>
+          <DialogBody>
+            <FieldGroup>
+              <div className="grid grid-cols-2 gap-4">
+                <Field className="col-span-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    {...register('name')}
+                    id="name"
+                    name="name"
+                    placeholder="My Investment"
+                    autoComplete="off"
+                    inputMode="text"
+                    invalid={!!errors.name}
+                    aria-invalid={!!errors.name}
+                    autoFocus={selectedAccountID === null}
+                  />
+                  {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
+                </Field>
+                <Field className="col-span-2">
+                  <Label htmlFor="type">Account Type</Label>
+                  <Select {...register('type')} id="type" name="type">
+                    <option value="taxableBrokerage">Taxable Brokerage</option>
+                    <option value="401k">401(k)</option>
+                    <option value="ira">IRA</option>
+                    <option value="roth401k">Roth 401(k)</option>
+                    <option value="rothIra">Roth IRA</option>
+                    <option value="hsa">HSA</option>
+                  </Select>
+                </Field>
+                <Field className={getBalanceColSpan()}>
+                  <Label htmlFor="currentValue">Market Value</Label>
+                  <NumberInputV2
+                    name="currentValue"
+                    control={control}
+                    id="currentValue"
+                    inputMode="decimal"
+                    placeholder="$15,000"
+                    prefix="$"
+                    autoFocus={selectedAccountID !== null}
+                  />
+                  {errors.currentValue && <ErrorMessage>{errors.currentValue?.message}</ErrorMessage>}
+                </Field>
+                {type === 'taxableBrokerage' &&
+                  (() => {
+                    const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message;
+                    return (
+                      <Field>
+                        <Label htmlFor="costBasis" className="flex w-full items-center justify-between">
+                          <span className="whitespace-nowrap">Cost Basis</span>
+                          <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                        </Label>
+                        <NumberInputV2 name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
+                        {error && <ErrorMessage>{error}</ErrorMessage>}
+                      </Field>
+                    );
+                  })()}
+                {isRothAccount(type) &&
+                  (() => {
+                    const error = (errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message;
+                    return (
+                      <Field>
+                        <Label htmlFor="contributions">Contributions</Label>
+                        <NumberInputV2
+                          name="contributions"
+                          control={control}
+                          id="contributions"
+                          inputMode="decimal"
+                          placeholder="—"
+                          prefix="$"
+                        />
+                        {error && <ErrorMessage>{error}</ErrorMessage>}
+                      </Field>
+                    );
+                  })()}
+              </div>
+              <Divider />
+              <Field>
+                <Label htmlFor="percentBonds" className="flex w-full items-center justify-between">
+                  <span className="whitespace-nowrap">Bond Allocation</span>
+                  <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                </Label>
                 <NumberInputV2
-                  name="currentValue"
+                  name="percentBonds"
                   control={control}
-                  id="currentValue"
-                  inputMode="decimal"
-                  placeholder="$15,000"
-                  prefix="$"
-                  autoFocus={selectedAccountID !== null}
+                  id="percentBonds"
+                  inputMode="numeric"
+                  placeholder="20%"
+                  suffix="%"
+                  decimalScale={0}
+                  step={1}
+                  min={0}
+                  max={100}
                 />
-                {errors.currentValue && <ErrorMessage>{errors.currentValue?.message}</ErrorMessage>}
+                {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message && (
+                  <ErrorMessage>
+                    {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message}
+                  </ErrorMessage>
+                )}
               </Field>
-              {type === 'taxableBrokerage' &&
-                (() => {
-                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message;
-                  return (
-                    <Field>
-                      <Label htmlFor="costBasis" className="flex w-full items-center justify-between">
-                        <span className="whitespace-nowrap">Cost Basis</span>
-                        <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                      </Label>
-                      <NumberInputV2 name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
-                      {error && <ErrorMessage>{error}</ErrorMessage>}
-                    </Field>
-                  );
-                })()}
-              {isRothAccount(type) &&
-                (() => {
-                  const error = (errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message;
-                  return (
-                    <Field>
-                      <Label htmlFor="contributions">Contributions</Label>
-                      <NumberInputV2
-                        name="contributions"
-                        control={control}
-                        id="contributions"
-                        inputMode="decimal"
-                        placeholder="—"
-                        prefix="$"
-                      />
-                      {error && <ErrorMessage>{error}</ErrorMessage>}
-                    </Field>
-                  );
-                })()}
+            </FieldGroup>
+            <div aria-hidden="true" className="mt-2">
+              <div className="overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
+                <div style={{ width: `${percentBonds}%` }} className="bg-primary h-2 rounded-full" />
+              </div>
             </div>
-            <Disclosure as="div" className="border-border/50 border-t pt-4">
-              {({ open, close }) => (
-                <>
-                  <DisclosureButton className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4">
-                    <div className="flex items-center gap-2">
-                      <HandshakeIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                      <span className="text-base/7 font-semibold">Bonds</span>
-                      <span className="hidden sm:inline">|</span>
-                      <span className="text-muted-foreground hidden truncate sm:inline">
-                        {percentBonds !== 0 ? `${percentBonds}% Bonds, ${100 - percentBonds}% Stocks` : 'All Stocks, No Bonds'}
-                      </span>
-                    </div>
-                    <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                      <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                      <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                    </span>
-                  </DisclosureButton>
-                  <DisclosurePanel className="pt-4">
-                    <Field>
-                      <Label htmlFor="percentBonds" className="flex w-full items-center justify-between">
-                        <span className="whitespace-nowrap">Bond Allocation</span>
-                        <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                      </Label>
-                      <NumberInputV2
-                        name="percentBonds"
-                        control={control}
-                        id="percentBonds"
-                        inputMode="numeric"
-                        placeholder="20%"
-                        suffix="%"
-                        decimalScale={0}
-                        step={1}
-                        min={0}
-                        max={100}
-                      />
-                      {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message && (
-                        <ErrorMessage>
-                          {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message}
-                        </ErrorMessage>
-                      )}
-                    </Field>
-                    <div aria-hidden="true" className="mt-2">
-                      <div className="overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
-                        <div style={{ width: `${percentBonds}%` }} className="bg-primary h-2 rounded-full" />
-                      </div>
-                    </div>
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
           </DialogBody>
         </Fieldset>
         <DialogActions>
