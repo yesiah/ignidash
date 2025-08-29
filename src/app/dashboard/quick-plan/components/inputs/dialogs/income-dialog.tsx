@@ -251,7 +251,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                       <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
                     </span>
                   </DisclosureButton>
-                  <DisclosurePanel className="py-4">
+                  <DisclosurePanel className="pt-4">
                     <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2">
                       <Field className={getStartColSpan()}>
                         <Label htmlFor="start">Start</Label>
@@ -466,7 +466,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
                         <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
                       </span>
                     </DisclosureButton>
-                    <DisclosurePanel className="py-4">
+                    <DisclosurePanel className="pt-4">
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Field>
                           <Label htmlFor="growthRate" className="flex w-full items-center justify-between">
