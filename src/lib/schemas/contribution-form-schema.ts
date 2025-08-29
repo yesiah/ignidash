@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
+import { currencyFieldForbidsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
 
 const baseContributionSchema = z.object({
   id: z.string(),
   accountId: z.string(),
   rank: z.number().int().min(0),
-  maxValue: currencyFieldAllowsZero('Max value cannot be negative').optional(),
+  maxValue: currencyFieldForbidsZero('Max value must be greater than zero').optional(),
   incomeIds: z.array(z.string()).optional(),
 });
 
@@ -13,7 +13,7 @@ export const contributionFormSchema = z.discriminatedUnion('allocationType', [
   z.object({
     ...baseContributionSchema.shape,
     allocationType: z.literal('fixed'),
-    amount: currencyFieldAllowsZero('Amount must be positive'),
+    amount: currencyFieldForbidsZero('Amount must be greater than zero'),
   }),
 
   z.object({
