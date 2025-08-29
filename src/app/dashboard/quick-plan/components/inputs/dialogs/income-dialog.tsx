@@ -175,7 +175,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
       <DialogTitle>
         <div className="flex items-center gap-4">
           <BanknoteArrowUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>New Income</span>
+          <span>{selectedIncomeID ? 'Edit Income' : 'New Income'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>

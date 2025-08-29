@@ -78,7 +78,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
       <DialogTitle>
         <div className="flex items-center gap-4">
           <TrendingUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>New Investment</span>
+          <span>{selectedAccountID ? 'Edit Investment' : 'New Investment'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>

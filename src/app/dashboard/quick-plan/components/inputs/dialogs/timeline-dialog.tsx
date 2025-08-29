@@ -98,7 +98,7 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
       <DialogTitle>
         <div className="flex items-center gap-4">
           <HourglassIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>New Timeline</span>
+          <span>{selectedTimelineID ? 'Edit Timeline' : 'New Timeline'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>

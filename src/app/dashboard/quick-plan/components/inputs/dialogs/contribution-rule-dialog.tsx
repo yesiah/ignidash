@@ -93,7 +93,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
       <DialogTitle>
         <div className="flex items-center gap-4">
           <PiggyBankIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>New Contribution Rule</span>
+          <span>{selectedContributionRuleID ? 'Edit Contribution Rule' : 'New Contribution Rule'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
