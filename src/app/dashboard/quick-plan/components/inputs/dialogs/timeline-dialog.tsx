@@ -14,6 +14,7 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
+import { Input } from '@/components/catalyst/input';
 
 function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarget') {
   switch (retirementStrategyType) {
@@ -105,16 +106,33 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
         <Fieldset aria-label="Timeline details">
           <DialogBody>
             <FieldGroup>
-              <Field>
-                <Label htmlFor="currentAge">Current Age</Label>
-                <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" autoFocus />
-                {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
-              </Field>
-              <Field>
-                <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
-                <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
-                {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
-              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field className="col-span-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    {...register('name')}
+                    id="name"
+                    name="name"
+                    placeholder="My Timeline"
+                    autoComplete="off"
+                    inputMode="text"
+                    invalid={!!errors.name}
+                    aria-invalid={!!errors.name}
+                    autoFocus={selectedTimelineID === null}
+                  />
+                  {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
+                </Field>
+                <Field>
+                  <Label htmlFor="currentAge">Current Age</Label>
+                  <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
+                  {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
+                </Field>
+                <Field>
+                  <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
+                  <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
+                  {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
+                </Field>
+              </div>
               <Divider />
               <Field>
                 <Label htmlFor="retirementStrategy.type">Retirement Trigger</Label>
@@ -132,6 +150,7 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
                     id="retirementStrategy.retirementAge"
                     inputMode="numeric"
                     placeholder="62"
+                    autoFocus={selectedTimelineID !== null}
                   />
                   <ErrorMessage>{getRetirementStrategyError(errors, retirementStrategyType)}</ErrorMessage>
                   <Description>{getRetirementStrategyDesc(retirementStrategyType)}</Description>
@@ -147,6 +166,7 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
                     inputMode="decimal"
                     placeholder="4%"
                     suffix="%"
+                    autoFocus={selectedTimelineID !== null}
                   />
                   <ErrorMessage>{getRetirementStrategyError(errors, retirementStrategyType)}</ErrorMessage>
                   <Description>{getRetirementStrategyDesc(retirementStrategyType)}</Description>
