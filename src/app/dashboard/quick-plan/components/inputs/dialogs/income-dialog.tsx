@@ -8,7 +8,7 @@ import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
-import { useCurrentAge, useLifeExpectancy, useUpdateIncomes, useIncomeData } from '@/lib/stores/quick-plan-store';
+import { useCurrentAge, useLifeExpectancy, useUpdateIncomes, useIncomeData, useMarketAssumptionsData } from '@/lib/stores/quick-plan-store';
 import { incomeFormSchema, type IncomeInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -165,6 +165,10 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
     },
     [activeDisclosure]
   );
+
+  const marketAssumptions = useMarketAssumptionsData();
+  const inflationRate = marketAssumptions.inflationRate;
+  const realGrowthRate = String(((1 + (growthRate || 0) / 100) / (1 + inflationRate / 100) - 1) * 100);
 
   return (
     <>
@@ -472,7 +476,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                           <Field>
                             <Label htmlFor="growthRate" className="flex w-full items-center justify-between">
                               <span>Growth Rate</span>
-                              <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
+                              <span className="text-muted-foreground text-sm/6">{Number(realGrowthRate).toFixed(1)}% real</span>
                             </Label>
                             <NumberInputV2
                               name="growth.growthRate"
