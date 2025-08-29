@@ -17,18 +17,23 @@ export const retirementStrategySchema = z.discriminatedUnion('type', [
   }),
 ]);
 
-export const timelineFormSchema = z.object({
-  id: z.string(),
-  lifeExpectancy: ageField(50, 110, {
-    min: 'Life expectancy must be at least 50 years',
-    max: 'Life expectancy must be at most 110 years',
-  }),
-  currentAge: ageField(16, 100, {
-    min: 'You must be at least 16 years old to use this calculator',
-    max: 'Age cannot exceed 100 years',
-  }),
-  retirementStrategy: retirementStrategySchema,
-});
+export const timelineFormSchema = z
+  .object({
+    id: z.string(),
+    lifeExpectancy: ageField(50, 110, {
+      min: 'Life expectancy must be at least 50 years',
+      max: 'Life expectancy must be at most 110 years',
+    }),
+    currentAge: ageField(16, 100, {
+      min: 'You must be at least 16 years old to use this calculator',
+      max: 'Age cannot exceed 100 years',
+    }),
+    retirementStrategy: retirementStrategySchema,
+  })
+  .refine((data) => data.currentAge < data.lifeExpectancy, {
+    message: 'Life expectancy must be greater than current age',
+    path: ['currentAge'],
+  });
 
 export type RetirementStrategyInputs = z.infer<typeof retirementStrategySchema>;
 export type TimelineInputs = z.infer<typeof timelineFormSchema>;
