@@ -166,7 +166,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
               </div>
               <Field>
                 <Label htmlFor="maxValue" className="flex w-full items-center justify-between">
-                  <span className="whitespace-nowrap">Maximum Total Value</span>
+                  <span className="whitespace-nowrap">Max Total Value</span>
                   <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                 </Label>
                 <NumberInputV2
