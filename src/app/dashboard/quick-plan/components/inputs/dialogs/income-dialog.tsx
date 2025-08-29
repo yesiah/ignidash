@@ -12,7 +12,7 @@ import { useCurrentAge, useLifeExpectancy, useUpdateIncomes, useIncomeData } fro
 import { incomeFormSchema, type IncomeInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInputV2 from '@/components/ui/number-input-v2';
-import { Field, Fieldset, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
+import { Field, Fieldset, FieldGroup, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
@@ -176,189 +176,98 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Income details">
-          <DialogBody data-slot="control" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Field className="col-span-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  {...register('name')}
-                  id="name"
-                  name="name"
-                  placeholder="My Salary"
-                  autoComplete="off"
-                  inputMode="text"
-                  invalid={!!errors.name}
-                  aria-invalid={!!errors.name}
-                  autoFocus={selectedIncomeID === null}
-                />
-                {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
-              </Field>
-              <Field>
-                <Label htmlFor="amount">Amount</Label>
-                <NumberInputV2
-                  name="amount"
-                  control={control}
-                  id="amount"
-                  inputMode="decimal"
-                  placeholder="$85,000"
-                  prefix="$"
-                  autoFocus={selectedIncomeID !== null}
-                />
-                {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
-              </Field>
-              <Field>
-                <Label htmlFor="frequency">Frequency</Label>
-                <Select {...register('frequency')} id="frequency" name="frequency">
-                  <optgroup label="Single Payment">
-                    <option value="oneTime">One-time</option>
-                  </optgroup>
-                  <optgroup label="Income Schedule">
-                    <option value="yearly">Yearly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="biweekly">Biweekly</option>
-                    <option value="weekly">Weekly</option>
-                  </optgroup>
-                </Select>
-              </Field>
-            </div>
-            <Disclosure as="div" className="border-border/50 border-t pt-4">
-              {/* <Disclosure as="div" className={`border-border/50 ${frequency !== 'oneTime' ? 'border-y' : 'border-t'} py-4`}> */}
-              {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
-              {({ open, close }) => (
-                <>
-                  <DisclosureButton
-                    ref={timeFrameButtonRef}
-                    onClick={() => {
-                      if (!open) close();
-                      toggleDisclosure({ open, close, key: 'timeframe' });
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
+          <DialogBody>
+            <FieldGroup>
+              <div className="grid grid-cols-2 gap-4">
+                <Field className="col-span-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    {...register('name')}
+                    id="name"
+                    name="name"
+                    placeholder="My Salary"
+                    autoComplete="off"
+                    inputMode="text"
+                    invalid={!!errors.name}
+                    aria-invalid={!!errors.name}
+                    autoFocus={selectedIncomeID === null}
+                  />
+                  {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
+                </Field>
+                <Field>
+                  <Label htmlFor="amount">Amount</Label>
+                  <NumberInputV2
+                    name="amount"
+                    control={control}
+                    id="amount"
+                    inputMode="decimal"
+                    placeholder="$85,000"
+                    prefix="$"
+                    autoFocus={selectedIncomeID !== null}
+                  />
+                  {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
+                </Field>
+                <Field>
+                  <Label htmlFor="frequency">Frequency</Label>
+                  <Select {...register('frequency')} id="frequency" name="frequency">
+                    <optgroup label="Single Payment">
+                      <option value="oneTime">One-time</option>
+                    </optgroup>
+                    <optgroup label="Income Schedule">
+                      <option value="yearly">Yearly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="biweekly">Biweekly</option>
+                      <option value="weekly">Weekly</option>
+                    </optgroup>
+                  </Select>
+                </Field>
+              </div>
+              <Disclosure as="div" className="border-border/50 border-t pt-4">
+                {({ open, close }) => (
+                  <>
+                    <DisclosureButton
+                      ref={timeFrameButtonRef}
+                      onClick={() => {
                         if (!open) close();
                         toggleDisclosure({ open, close, key: 'timeframe' });
-                      }
-                    }}
-                    className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                      <span className="text-base/7 font-semibold">Timeframe</span>
-                      <span className="hidden sm:inline">|</span>
-                      <span className="text-muted-foreground hidden truncate sm:inline">{timeFrameForDisplay(startType, endType)}</span>
-                    </div>
-                    <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                      <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                      <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                    </span>
-                  </DisclosureButton>
-                  <DisclosurePanel className="pt-4">
-                    <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2">
-                      <Field className={getStartColSpan()}>
-                        <Label htmlFor="start">Start</Label>
-                        <Select {...register('timeframe.start.type')} id="start" name="timeframe.start.type">
-                          <option value="now">Now</option>
-                          <option value="atRetirement">At Retirement</option>
-                          <option value="customDate">Custom Date</option>
-                          <option value="customAge">Custom Age</option>
-                        </Select>
-                      </Field>
-                      {startType === 'customDate' && (
-                        <>
-                          <Field>
-                            <Label className="sr-only">Month</Label>
-                            <Controller
-                              name="timeframe.start.month"
-                              defaultValue={currentMonth.value}
-                              control={control}
-                              render={({ field: { onChange, value, name } }) => (
-                                <Combobox
-                                  name={name}
-                                  options={months}
-                                  displayValue={(month) => month?.name || currentMonth.name}
-                                  value={months.find((m) => m.value === value) || currentMonth}
-                                  onChange={(month) => onChange(month?.value || currentMonth.value)}
-                                  filter={(month, query) =>
-                                    month.name.toLowerCase().includes(query.toLowerCase()) || String(month.value).includes(query)
-                                  }
-                                >
-                                  {(month) => (
-                                    <ComboboxOption value={month}>
-                                      <ComboboxLabel>{month.name}</ComboboxLabel>
-                                    </ComboboxOption>
-                                  )}
-                                </Combobox>
-                              )}
-                            />
-                          </Field>
-                          <Field>
-                            <Label className="sr-only">Year</Label>
-                            <Controller
-                              name="timeframe.start.year"
-                              defaultValue={currentYear}
-                              control={control}
-                              render={({ field: { onChange, value, name } }) => (
-                                <Combobox
-                                  name={name}
-                                  options={years}
-                                  displayValue={(year) => String(year || currentYear)}
-                                  value={value || currentYear}
-                                  onChange={(year) => onChange(year || currentYear)}
-                                >
-                                  {(year) => (
-                                    <ComboboxOption value={year}>
-                                      <ComboboxLabel>{year}</ComboboxLabel>
-                                    </ComboboxOption>
-                                  )}
-                                </Combobox>
-                              )}
-                            />
-                          </Field>
-                        </>
-                      )}
-                      {startType === 'customAge' && (
-                        <Field>
-                          <Label className="sr-only">Age</Label>
-                          <Controller
-                            name="timeframe.start.age"
-                            defaultValue={currentAge}
-                            control={control}
-                            render={({ field: { onChange, value, name } }) => (
-                              <Combobox
-                                name={name}
-                                options={ages}
-                                displayValue={(age) => String(age || currentAge) + ' y/o'}
-                                value={value || currentAge}
-                                onChange={(age) => onChange(age || currentAge)}
-                              >
-                                {(age) => (
-                                  <ComboboxOption value={age}>
-                                    <ComboboxLabel>{age}</ComboboxLabel>
-                                  </ComboboxOption>
-                                )}
-                              </Combobox>
-                            )}
-                          />
-                        </Field>
-                      )}
-                    </div>
-                    {frequency !== 'oneTime' && (
-                      <div className="mt-4 grid grid-cols-2 items-end gap-x-4 gap-y-2">
-                        <Field className={getEndColSpan()}>
-                          <Label htmlFor="end">End</Label>
-                          <Select {...register('timeframe.end.type')} id="end" name="timeframe.end.type">
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          if (!open) close();
+                          toggleDisclosure({ open, close, key: 'timeframe' });
+                        }
+                      }}
+                      className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
+                    >
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                        <span className="text-base/7 font-semibold">Timeframe</span>
+                        <span className="hidden sm:inline">|</span>
+                        <span className="text-muted-foreground hidden truncate sm:inline">{timeFrameForDisplay(startType, endType)}</span>
+                      </div>
+                      <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                        <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                        <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                      </span>
+                    </DisclosureButton>
+                    <DisclosurePanel className="pt-4">
+                      <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2">
+                        <Field className={getStartColSpan()}>
+                          <Label htmlFor="start">Start</Label>
+                          <Select {...register('timeframe.start.type')} id="start" name="timeframe.start.type">
+                            <option value="now">Now</option>
                             <option value="atRetirement">At Retirement</option>
-                            <option value="atLifeExpectancy">At Life Expectancy</option>
                             <option value="customDate">Custom Date</option>
                             <option value="customAge">Custom Age</option>
                           </Select>
                         </Field>
-                        {endType === 'customDate' && (
+                        {startType === 'customDate' && (
                           <>
                             <Field>
                               <Label className="sr-only">Month</Label>
                               <Controller
-                                name="timeframe.end.month"
+                                name="timeframe.start.month"
                                 defaultValue={currentMonth.value}
                                 control={control}
                                 render={({ field: { onChange, value, name } }) => (
@@ -384,7 +293,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                             <Field>
                               <Label className="sr-only">Year</Label>
                               <Controller
-                                name="timeframe.end.year"
+                                name="timeframe.start.year"
                                 defaultValue={currentYear}
                                 control={control}
                                 render={({ field: { onChange, value, name } }) => (
@@ -406,11 +315,11 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                             </Field>
                           </>
                         )}
-                        {endType === 'customAge' && (
+                        {startType === 'customAge' && (
                           <Field>
                             <Label className="sr-only">Age</Label>
                             <Controller
-                              name="timeframe.end.age"
+                              name="timeframe.start.age"
                               defaultValue={currentAge}
                               control={control}
                               render={({ field: { onChange, value, name } }) => (
@@ -432,79 +341,171 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                           </Field>
                         )}
                       </div>
-                    )}
-                  </DisclosurePanel>
-                </>
-              )}
-            </Disclosure>
-            {frequency !== 'oneTime' && (
-              <Disclosure as="div" className="border-border/50 border-t pt-4">
-                {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
-                {({ open, close }) => (
-                  <>
-                    <DisclosureButton
-                      ref={rateOfChangeButtonRef}
-                      onClick={() => {
-                        if (!open) close();
-                        toggleDisclosure({ open, close, key: 'rateOfChange' });
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          if (!open) close();
-                          toggleDisclosure({ open, close, key: 'rateOfChange' });
-                        }
-                      }}
-                      className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
-                    >
-                      <div className="flex items-center gap-2">
-                        <ArrowTrendingUpIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                        <span className="text-base/7 font-semibold">Rate of Change</span>
-                        <span className="hidden sm:inline">|</span>
-                        <span className="text-muted-foreground hidden truncate sm:inline">{growthForDisplay(growthRate, growthLimit)}</span>
-                      </div>
-                      <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                        <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                        <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                      </span>
-                    </DisclosureButton>
-                    <DisclosurePanel className="pt-4">
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Field>
-                          <Label htmlFor="growthRate" className="flex w-full items-center justify-between">
-                            <span>Growth Rate</span>
-                            <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
-                          </Label>
-                          <NumberInputV2
-                            name="growth.growthRate"
-                            control={control}
-                            id="growthRate"
-                            inputMode="decimal"
-                            placeholder="3%"
-                            suffix="%"
-                          />
-                          {errors.growth?.growthRate && <ErrorMessage>{errors.growth?.growthRate?.message}</ErrorMessage>}
-                        </Field>
-                        <Field>
-                          <Label htmlFor="growthLimit" className="flex w-full items-center justify-between">
-                            <span className="whitespace-nowrap">Limit</span>
-                            <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                          </Label>
-                          <NumberInputV2
-                            name="growth.growthLimit"
-                            control={control}
-                            id="growthLimit"
-                            inputMode="decimal"
-                            placeholder="$120,000"
-                            prefix="$"
-                          />
-                          {errors.growth?.growthLimit && <ErrorMessage>{errors.growth?.growthLimit?.message}</ErrorMessage>}
-                        </Field>
-                      </div>
+                      {frequency !== 'oneTime' && (
+                        <div className="mt-4 grid grid-cols-2 items-end gap-x-4 gap-y-2">
+                          <Field className={getEndColSpan()}>
+                            <Label htmlFor="end">End</Label>
+                            <Select {...register('timeframe.end.type')} id="end" name="timeframe.end.type">
+                              <option value="atRetirement">At Retirement</option>
+                              <option value="atLifeExpectancy">At Life Expectancy</option>
+                              <option value="customDate">Custom Date</option>
+                              <option value="customAge">Custom Age</option>
+                            </Select>
+                          </Field>
+                          {endType === 'customDate' && (
+                            <>
+                              <Field>
+                                <Label className="sr-only">Month</Label>
+                                <Controller
+                                  name="timeframe.end.month"
+                                  defaultValue={currentMonth.value}
+                                  control={control}
+                                  render={({ field: { onChange, value, name } }) => (
+                                    <Combobox
+                                      name={name}
+                                      options={months}
+                                      displayValue={(month) => month?.name || currentMonth.name}
+                                      value={months.find((m) => m.value === value) || currentMonth}
+                                      onChange={(month) => onChange(month?.value || currentMonth.value)}
+                                      filter={(month, query) =>
+                                        month.name.toLowerCase().includes(query.toLowerCase()) || String(month.value).includes(query)
+                                      }
+                                    >
+                                      {(month) => (
+                                        <ComboboxOption value={month}>
+                                          <ComboboxLabel>{month.name}</ComboboxLabel>
+                                        </ComboboxOption>
+                                      )}
+                                    </Combobox>
+                                  )}
+                                />
+                              </Field>
+                              <Field>
+                                <Label className="sr-only">Year</Label>
+                                <Controller
+                                  name="timeframe.end.year"
+                                  defaultValue={currentYear}
+                                  control={control}
+                                  render={({ field: { onChange, value, name } }) => (
+                                    <Combobox
+                                      name={name}
+                                      options={years}
+                                      displayValue={(year) => String(year || currentYear)}
+                                      value={value || currentYear}
+                                      onChange={(year) => onChange(year || currentYear)}
+                                    >
+                                      {(year) => (
+                                        <ComboboxOption value={year}>
+                                          <ComboboxLabel>{year}</ComboboxLabel>
+                                        </ComboboxOption>
+                                      )}
+                                    </Combobox>
+                                  )}
+                                />
+                              </Field>
+                            </>
+                          )}
+                          {endType === 'customAge' && (
+                            <Field>
+                              <Label className="sr-only">Age</Label>
+                              <Controller
+                                name="timeframe.end.age"
+                                defaultValue={currentAge}
+                                control={control}
+                                render={({ field: { onChange, value, name } }) => (
+                                  <Combobox
+                                    name={name}
+                                    options={ages}
+                                    displayValue={(age) => String(age || currentAge) + ' y/o'}
+                                    value={value || currentAge}
+                                    onChange={(age) => onChange(age || currentAge)}
+                                  >
+                                    {(age) => (
+                                      <ComboboxOption value={age}>
+                                        <ComboboxLabel>{age}</ComboboxLabel>
+                                      </ComboboxOption>
+                                    )}
+                                  </Combobox>
+                                )}
+                              />
+                            </Field>
+                          )}
+                        </div>
+                      )}
                     </DisclosurePanel>
                   </>
                 )}
               </Disclosure>
-            )}
+              {frequency !== 'oneTime' && (
+                <Disclosure as="div" className="border-border/50 border-t pt-4">
+                  {({ open, close }) => (
+                    <>
+                      <DisclosureButton
+                        ref={rateOfChangeButtonRef}
+                        onClick={() => {
+                          if (!open) close();
+                          toggleDisclosure({ open, close, key: 'rateOfChange' });
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            if (!open) close();
+                            toggleDisclosure({ open, close, key: 'rateOfChange' });
+                          }
+                        }}
+                        className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
+                      >
+                        <div className="flex items-center gap-2">
+                          <ArrowTrendingUpIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                          <span className="text-base/7 font-semibold">Rate of Change</span>
+                          <span className="hidden sm:inline">|</span>
+                          <span className="text-muted-foreground hidden truncate sm:inline">
+                            {growthForDisplay(growthRate, growthLimit)}
+                          </span>
+                        </div>
+                        <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                          <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                          <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                        </span>
+                      </DisclosureButton>
+                      <DisclosurePanel className="pt-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <Field>
+                            <Label htmlFor="growthRate" className="flex w-full items-center justify-between">
+                              <span>Growth Rate</span>
+                              <span className="text-muted-foreground text-sm/6">{Number(3).toFixed(1)}% real</span>
+                            </Label>
+                            <NumberInputV2
+                              name="growth.growthRate"
+                              control={control}
+                              id="growthRate"
+                              inputMode="decimal"
+                              placeholder="3%"
+                              suffix="%"
+                            />
+                            {errors.growth?.growthRate && <ErrorMessage>{errors.growth?.growthRate?.message}</ErrorMessage>}
+                          </Field>
+                          <Field>
+                            <Label htmlFor="growthLimit" className="flex w-full items-center justify-between">
+                              <span className="whitespace-nowrap">Limit</span>
+                              <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                            </Label>
+                            <NumberInputV2
+                              name="growth.growthLimit"
+                              control={control}
+                              id="growthLimit"
+                              inputMode="decimal"
+                              placeholder="$120,000"
+                              prefix="$"
+                            />
+                            {errors.growth?.growthLimit && <ErrorMessage>{errors.growth?.growthLimit?.message}</ErrorMessage>}
+                          </Field>
+                        </div>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+              )}
+            </FieldGroup>
           </DialogBody>
         </Fieldset>
         <DialogActions>
