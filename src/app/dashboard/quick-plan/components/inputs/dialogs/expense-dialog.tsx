@@ -37,11 +37,11 @@ interface DisclosureState {
 }
 
 interface ExpenseDialogProps {
-  setExpenseDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedExpenseID: string | null;
 }
 
-export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID }: ExpenseDialogProps) {
+export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDialogProps) {
   const existingExpenseData = useExpenseData(selectedExpenseID);
   const defaultValues = existingExpenseData || newExpenseDefaultValues;
 
@@ -60,7 +60,7 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
   const onSubmit = (data: ExpenseInputs) => {
     const expenseId = data.id === '' ? uuidv4() : data.id;
     updateExpenses({ ...data, id: expenseId });
-    setExpenseDialogOpen(false);
+    onClose();
   };
 
   const frequency = useWatch({ control, name: 'frequency' });
@@ -508,7 +508,7 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setExpenseDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

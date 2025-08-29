@@ -23,11 +23,11 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 
 interface ContributionRuleDialogProps {
-  setContributionRuleDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedContributionRuleID: string | null;
 }
 
-export default function ContributionRuleDialog({ setContributionRuleDialogOpen, selectedContributionRuleID }: ContributionRuleDialogProps) {
+export default function ContributionRuleDialog({ onClose, selectedContributionRuleID }: ContributionRuleDialogProps) {
   const existingContributionRuleData = useContributionRuleData(selectedContributionRuleID);
 
   const contributionRules = useContributionRulesData();
@@ -56,7 +56,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
   const onSubmit = (data: ContributionInputs) => {
     const contributionRuleId = data.id === '' ? uuidv4() : data.id;
     updateContributionRules({ ...data, id: contributionRuleId });
-    setContributionRuleDialogOpen(false);
+    onClose();
   };
 
   const allocationType = useWatch({ control, name: 'allocationType' });
@@ -186,7 +186,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setContributionRuleDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

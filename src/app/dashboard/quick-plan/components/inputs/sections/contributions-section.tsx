@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, RefObject } from 'react';
+import { useState, RefObject, useCallback } from 'react';
 import { HandCoinsIcon, PiggyBankIcon, BanknoteArrowDownIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
@@ -34,6 +34,11 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
   const hasContributionRules = Object.keys(contributionRules).length > 0;
 
   const deleteContributionRule = useDeleteContributionRule();
+
+  const handleClose = useCallback(() => {
+    setSelectedContributionRuleID(null);
+    setContributionRuleDialogOpen(false);
+  }, []);
 
   return (
     <>
@@ -85,7 +90,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setContributionRuleDialogOpen(true)}>
+                <Button outline onClick={() => setContributionRuleDialogOpen(true)} disabled={!!selectedContributionRuleID}>
                   <PlusIcon />
                   Contribution Rule
                 </Button>
@@ -102,18 +107,8 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
         </div>
       </DisclosureSection>
 
-      <Dialog
-        size="xl"
-        open={contributionRuleDialogOpen}
-        onClose={() => {
-          setSelectedContributionRuleID(null);
-          setContributionRuleDialogOpen(false);
-        }}
-      >
-        <ContributionRuleDialog
-          setContributionRuleDialogOpen={setContributionRuleDialogOpen}
-          selectedContributionRuleID={selectedContributionRuleID}
-        />
+      <Dialog size="xl" open={contributionRuleDialogOpen} onClose={handleClose}>
+        <ContributionRuleDialog onClose={handleClose} selectedContributionRuleID={selectedContributionRuleID} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert
         dataToDelete={contributionRuleToDelete}

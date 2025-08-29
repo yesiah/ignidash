@@ -19,11 +19,11 @@ const newAccountDefaultValues = {
 } as const satisfies Partial<AccountInputs>;
 
 interface SavingsDialogProps {
-  setSavingsDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedAccountID: string | null;
 }
 
-export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID }: SavingsDialogProps) {
+export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDialogProps) {
   const existingAccountData = useSavingsData(selectedAccountID);
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
@@ -41,7 +41,7 @@ export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID 
   const onSubmit = (data: AccountInputs) => {
     const accountId = data.id === '' ? uuidv4() : data.id;
     updateAccounts({ ...data, id: accountId });
-    setSavingsDialogOpen(false);
+    onClose();
   };
 
   return (
@@ -88,7 +88,7 @@ export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID 
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setSavingsDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

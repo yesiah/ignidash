@@ -29,11 +29,11 @@ const newAccountDefaultValues = {
 } as const satisfies Partial<AccountInputs>;
 
 interface AccountDialogProps {
-  setAccountDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedAccountID: string | null;
 }
 
-export default function AccountDialog({ setAccountDialogOpen, selectedAccountID }: AccountDialogProps) {
+export default function AccountDialog({ onClose, selectedAccountID }: AccountDialogProps) {
   const existingAccountData = useInvestmentData(selectedAccountID);
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
@@ -52,7 +52,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
   const onSubmit = (data: AccountInputs) => {
     const accountId = data.id === '' ? uuidv4() : data.id;
     updateAccounts({ ...data, id: accountId });
-    setAccountDialogOpen(false);
+    onClose();
   };
 
   const type = useWatch({ control, name: 'type' });
@@ -212,7 +212,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setAccountDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

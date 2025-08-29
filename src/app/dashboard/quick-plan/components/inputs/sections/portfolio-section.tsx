@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, RefObject } from 'react';
+import { useState, RefObject, useCallback } from 'react';
 import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
@@ -37,6 +37,16 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
   const hasAccounts = Object.keys(accounts).length > 0;
 
   const deleteAccount = useDeleteAccount();
+
+  const handleAccountDialogClose = useCallback(() => {
+    setSelectedAccountID(null);
+    setAccountDialogOpen(false);
+  }, []);
+
+  const handleSavingsDialogClose = useCallback(() => {
+    setSelectedSavingsID(null);
+    setSavingsDialogOpen(false);
+  }, []);
 
   return (
     <>
@@ -76,11 +86,11 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end gap-x-2">
-                <Button outline onClick={() => setSavingsDialogOpen(true)}>
+                <Button outline onClick={() => setSavingsDialogOpen(true)} disabled={!!selectedSavingsID}>
                   <PlusIcon />
                   Savings
                 </Button>
-                <Button outline onClick={() => setAccountDialogOpen(true)}>
+                <Button outline onClick={() => setAccountDialogOpen(true)} disabled={!!selectedAccountID}>
                   <PlusIcon />
                   Investment
                 </Button>
@@ -99,25 +109,11 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
           )}
         </div>
       </DisclosureSection>
-      <Dialog
-        size="xl"
-        open={accountDialogOpen}
-        onClose={() => {
-          setSelectedAccountID(null);
-          setAccountDialogOpen(false);
-        }}
-      >
-        <AccountDialog setAccountDialogOpen={setAccountDialogOpen} selectedAccountID={selectedAccountID} />
+      <Dialog size="xl" open={accountDialogOpen} onClose={handleAccountDialogClose}>
+        <AccountDialog onClose={handleAccountDialogClose} selectedAccountID={selectedAccountID} />
       </Dialog>
-      <Dialog
-        size="xl"
-        open={savingsDialogOpen}
-        onClose={() => {
-          setSelectedSavingsID(null);
-          setSavingsDialogOpen(false);
-        }}
-      >
-        <SavingsDialog setSavingsDialogOpen={setSavingsDialogOpen} selectedAccountID={selectedSavingsID} />
+      <Dialog size="xl" open={savingsDialogOpen} onClose={handleSavingsDialogClose}>
+        <SavingsDialog onClose={handleSavingsDialogClose} selectedAccountID={selectedSavingsID} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={accountToDelete} setDataToDelete={setAccountToDelete} deleteData={deleteAccount} />
     </>

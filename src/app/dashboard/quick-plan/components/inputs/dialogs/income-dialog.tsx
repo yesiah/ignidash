@@ -37,11 +37,11 @@ interface DisclosureState {
 }
 
 interface IncomeDialogProps {
-  setIncomeDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedIncomeID: string | null;
 }
 
-export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: IncomeDialogProps) {
+export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialogProps) {
   const existingIncomeData = useIncomeData(selectedIncomeID);
   const defaultValues = existingIncomeData || newIncomeDefaultValues;
 
@@ -60,7 +60,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
   const onSubmit = (data: IncomeInputs) => {
     const incomeId = data.id === '' ? uuidv4() : data.id;
     updateIncomes({ ...data, id: incomeId });
-    setIncomeDialogOpen(false);
+    onClose();
   };
 
   const frequency = useWatch({ control, name: 'frequency' });
@@ -508,7 +508,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setIncomeDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

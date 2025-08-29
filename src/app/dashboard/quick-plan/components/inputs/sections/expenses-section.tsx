@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, RefObject } from 'react';
+import { useState, RefObject, useCallback } from 'react';
 import { BanknoteArrowDownIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
@@ -32,6 +32,11 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
   const hasExpenses = Object.keys(expenses).length > 0;
 
   const deleteExpense = useDeleteExpense();
+
+  const handleClose = useCallback(() => {
+    setSelectedExpenseID(null);
+    setExpenseDialogOpen(false);
+  }, []);
 
   return (
     <>
@@ -66,7 +71,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setExpenseDialogOpen(true)}>
+                <Button outline onClick={() => setExpenseDialogOpen(true)} disabled={!!selectedExpenseID}>
                   <PlusIcon />
                   Expenses
                 </Button>
@@ -83,15 +88,8 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
         </div>
       </DisclosureSection>
 
-      <Dialog
-        size="xl"
-        open={expenseDialogOpen}
-        onClose={() => {
-          setSelectedExpenseID(null);
-          setExpenseDialogOpen(false);
-        }}
-      >
-        <ExpenseDialog setExpenseDialogOpen={setExpenseDialogOpen} selectedExpenseID={selectedExpenseID} />
+      <Dialog size="xl" open={expenseDialogOpen} onClose={handleClose}>
+        <ExpenseDialog onClose={handleClose} selectedExpenseID={selectedExpenseID} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={expenseToDelete} setDataToDelete={setExpenseToDelete} deleteData={deleteExpense} />
     </>

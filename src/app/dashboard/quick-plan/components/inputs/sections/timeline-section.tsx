@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, RefObject } from 'react';
+import { useState, RefObject, useCallback } from 'react';
 import { HourglassIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
@@ -42,6 +42,11 @@ export default function TimelineSection({ toggleDisclosure, disclosureButtonRef,
 
   const deleteTimeline = useDeleteTimeline();
 
+  const handleClose = useCallback(() => {
+    setSelectedTimelineID(null);
+    setTimelineDialogOpen(false);
+  }, []);
+
   return (
     <>
       <DisclosureSection
@@ -75,7 +80,7 @@ export default function TimelineSection({ toggleDisclosure, disclosureButtonRef,
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setTimelineDialogOpen(true)}>
+                <Button outline onClick={() => setTimelineDialogOpen(true)} disabled={!!selectedTimelineID}>
                   <PlusIcon />
                   Timeline
                 </Button>
@@ -87,15 +92,8 @@ export default function TimelineSection({ toggleDisclosure, disclosureButtonRef,
           )}
         </div>
       </DisclosureSection>
-      <Dialog
-        size="xl"
-        open={timelineDialogOpen}
-        onClose={() => {
-          setSelectedTimelineID(null);
-          setTimelineDialogOpen(false);
-        }}
-      >
-        <TimelineDialog setTimelineDialogOpen={setTimelineDialogOpen} selectedTimelineID={selectedTimelineID} />
+      <Dialog size="xl" open={timelineDialogOpen} onClose={handleClose}>
+        <TimelineDialog selectedTimelineID={selectedTimelineID} onClose={handleClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={timelineToDelete} setDataToDelete={setTimelineToDelete} deleteData={deleteTimeline} />
     </>

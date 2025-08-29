@@ -58,11 +58,11 @@ const newTimelineDefaultValues = {
 } as const satisfies Partial<TimelineInputs>;
 
 interface TimelineDialogProps {
-  setTimelineDialogOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedTimelineID: string | null;
 }
 
-export default function TimelineDialog({ setTimelineDialogOpen, selectedTimelineID }: TimelineDialogProps) {
+export default function TimelineDialog({ onClose, selectedTimelineID }: TimelineDialogProps) {
   const existingTimelineData = useTimelineData(selectedTimelineID);
   const defaultValues = (existingTimelineData || newTimelineDefaultValues) as never;
 
@@ -81,7 +81,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
   const onSubmit = (data: TimelineInputs) => {
     const timelineId = data.id === '' ? uuidv4() : data.id;
     updateTimelines({ ...data, id: timelineId });
-    setTimelineDialogOpen(false);
+    onClose();
   };
 
   const retirementStrategyType = useWatch({ control, name: 'retirementStrategy.type' });
@@ -228,7 +228,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={() => setTimelineDialogOpen(false)}>
+          <Button plain onClick={onClose}>
             Cancel
           </Button>
           <Button color="rose" type="submit">

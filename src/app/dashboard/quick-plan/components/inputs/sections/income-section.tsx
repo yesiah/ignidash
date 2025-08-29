@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, RefObject } from 'react';
+import { useState, RefObject, useCallback } from 'react';
 import { BanknoteArrowUpIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
@@ -32,6 +32,11 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
   const hasIncomes = Object.keys(incomes).length > 0;
 
   const deleteIncome = useDeleteIncome();
+
+  const handleClose = useCallback(() => {
+    setSelectedIncomeID(null);
+    setIncomeDialogOpen(false);
+  }, []);
 
   return (
     <>
@@ -66,7 +71,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setIncomeDialogOpen(true)}>
+                <Button outline onClick={() => setIncomeDialogOpen(true)} disabled={!!selectedIncomeID}>
                   <PlusIcon />
                   Income
                 </Button>
@@ -83,15 +88,8 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
         </div>
       </DisclosureSection>
 
-      <Dialog
-        size="xl"
-        open={incomeDialogOpen}
-        onClose={() => {
-          setSelectedIncomeID(null);
-          setIncomeDialogOpen(false);
-        }}
-      >
-        <IncomeDialog setIncomeDialogOpen={setIncomeDialogOpen} selectedIncomeID={selectedIncomeID} />
+      <Dialog size="xl" open={incomeDialogOpen} onClose={handleClose}>
+        <IncomeDialog onClose={handleClose} selectedIncomeID={selectedIncomeID} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={incomeToDelete} setDataToDelete={setIncomeToDelete} deleteData={deleteIncome} />
     </>
