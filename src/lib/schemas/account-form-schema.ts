@@ -13,33 +13,33 @@ const investmentAccountSchema = baseAccountSchema.extend({
 });
 
 export const accountFormSchema = z.discriminatedUnion('type', [
-  // Savings - just cash, no investments
+  // Savings
   z.object({
     ...baseAccountSchema.shape,
     type: z.literal('savings'),
   }),
 
-  // Taxable - investments with cost basis
+  // Taxable Brokerage
   z.object({
     ...investmentAccountSchema.shape,
     type: z.literal('taxableBrokerage'),
     costBasis: currencyFieldAllowsZero('Cost basis cannot be negative').optional(),
   }),
 
-  // Roth - investments with contributions
+  // Roth
   z.object({
     ...investmentAccountSchema.shape,
     type: z.enum(['roth401k', 'rothIra']),
     contributions: currencyFieldAllowsZero('Contributions cannot be negative').optional(),
   }),
 
-  // Traditional - investments, no basis needed
+  // Tax Deferred
   z.object({
     ...investmentAccountSchema.shape,
     type: z.enum(['401k', 'ira']),
   }),
 
-  // HSA - special case (could have medical expense tracking later)
+  // HSA
   z.object({
     ...investmentAccountSchema.shape,
     type: z.literal('hsa'),
@@ -48,12 +48,10 @@ export const accountFormSchema = z.discriminatedUnion('type', [
 
 export type AccountInputs = z.infer<typeof accountFormSchema>;
 
-// Helper type unions
 export type RothAccountType = 'roth401k' | 'rothIra';
 export type TraditionalAccountType = '401k' | 'ira';
 export type InvestmentAccountType = Exclude<AccountInputs['type'], 'savings'>;
 
-// Helper functions
 export const isRothAccount = (type: AccountInputs['type']): type is RothAccountType => type === 'roth401k' || type === 'rothIra';
 export const isInvestmentAccount = (type: AccountInputs['type']): type is InvestmentAccountType => type !== 'savings';
 export const hasContributionLimit = (type: AccountInputs['type']): boolean => type !== 'savings' && type !== 'taxableBrokerage';
