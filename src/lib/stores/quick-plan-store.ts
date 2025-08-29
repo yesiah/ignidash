@@ -191,19 +191,19 @@ interface QuickPlanState {
     updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
     updateRetirementFunding: (field: keyof RetirementFundingInputs, value: unknown) => UpdateResult;
 
-    updateTimelines: (id: string, data: TimelineInputs) => UpdateResult;
+    updateTimelines: (data: TimelineInputs) => UpdateResult;
     deleteTimeline: (id: string) => UpdateResult;
 
-    updateIncomes: (id: string, data: IncomeInputs) => UpdateResult;
+    updateIncomes: (data: IncomeInputs) => UpdateResult;
     deleteIncome: (id: string) => UpdateResult;
 
-    updateExpenses: (id: string, data: ExpenseInputs) => UpdateResult;
+    updateExpenses: (data: ExpenseInputs) => UpdateResult;
     deleteExpense: (id: string) => UpdateResult;
 
-    updateAccounts: (id: string, data: AccountInputs) => UpdateResult;
+    updateAccounts: (data: AccountInputs) => UpdateResult;
     deleteAccount: (id: string) => UpdateResult;
 
-    updateContributionRules: (id: string, data: ContributionInputs) => UpdateResult;
+    updateContributionRules: (data: ContributionInputs) => UpdateResult;
     deleteContributionRule: (id: string) => UpdateResult;
 
     // Preferences actions
@@ -356,10 +356,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             };
           },
 
-          updateTimelines: (id: string, data: TimelineInputs) => {
+          updateTimelines: (data: TimelineInputs) => {
             set((state) => {
               state.touched.timelines = true;
-              state.inputs.timelines = { ...state.inputs.timelines, [id]: data };
+              state.inputs.timelines = { ...state.inputs.timelines, [data.id]: data };
             });
 
             return { success: true };
@@ -374,10 +374,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             return { success: true };
           },
 
-          updateIncomes: (id: string, data: IncomeInputs) => {
+          updateIncomes: (data: IncomeInputs) => {
             set((state) => {
               state.touched.incomes = true;
-              state.inputs.incomes = { ...state.inputs.incomes, [id]: data };
+              state.inputs.incomes = { ...state.inputs.incomes, [data.id]: data };
             });
 
             return { success: true };
@@ -392,10 +392,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             return { success: true };
           },
 
-          updateAccounts: (id: string, data: AccountInputs) => {
+          updateAccounts: (data: AccountInputs) => {
             set((state) => {
               state.touched.accounts = true;
-              state.inputs.accounts = { ...state.inputs.accounts, [id]: data };
+              state.inputs.accounts = { ...state.inputs.accounts, [data.id]: data };
             });
 
             return { success: true };
@@ -410,10 +410,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             return { success: true };
           },
 
-          updateExpenses: (id: string, data: ExpenseInputs) => {
+          updateExpenses: (data: ExpenseInputs) => {
             set((state) => {
               state.touched.expenses = true;
-              state.inputs.expenses = { ...state.inputs.expenses, [id]: data };
+              state.inputs.expenses = { ...state.inputs.expenses, [data.id]: data };
             });
 
             return { success: true };
@@ -428,10 +428,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             return { success: true };
           },
 
-          updateContributionRules: (id: string, data: ContributionInputs) => {
+          updateContributionRules: (data: ContributionInputs) => {
             set((state) => {
               state.touched.contributionRules = true;
-              state.inputs.contributionRules = { ...state.inputs.contributionRules, [id]: data };
+              state.inputs.contributionRules = { ...state.inputs.contributionRules, [data.id]: data };
             });
 
             return { success: true };

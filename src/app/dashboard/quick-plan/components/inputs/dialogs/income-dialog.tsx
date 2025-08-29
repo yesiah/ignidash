@@ -19,6 +19,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
 const newIncomeDefaultValues = {
+  id: uuidv4(),
   frequency: 'yearly',
   timeframe: {
     start: { type: 'now' },
@@ -57,8 +58,7 @@ export default function IncomeDialog({ setIncomeDialogOpen, selectedIncomeID }: 
 
   const updateIncomes = useUpdateIncomes();
   const onSubmit = (data: IncomeInputs) => {
-    const incomeID = selectedIncomeID ?? uuidv4();
-    updateIncomes(incomeID, data);
+    updateIncomes(data);
     setIncomeDialogOpen(false);
   };
 

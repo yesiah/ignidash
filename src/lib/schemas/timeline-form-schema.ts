@@ -18,6 +18,7 @@ export const retirementStrategySchema = z.discriminatedUnion('type', [
 ]);
 
 export const timelineFormSchema = z.object({
+  id: z.uuid(),
   lifeExpectancy: ageField(50, 110, {
     min: 'Life expectancy must be at least 50 years',
     max: 'Life expectancy must be at most 110 years',

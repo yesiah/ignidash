@@ -49,6 +49,7 @@ function getRetirementStrategyError(errors: FieldErrors, retirementStrategyType:
 }
 
 const newTimelineDefaultValues = {
+  id: uuidv4(),
   retirementStrategy: {
     type: 'swrTarget',
     safeWithdrawalRate: 4,
@@ -78,8 +79,7 @@ export default function TimelineDialog({ setTimelineDialogOpen, selectedTimeline
 
   const updateTimelines = useUpdateTimelines();
   const onSubmit = (data: TimelineInputs) => {
-    const timelineID = selectedTimelineID ?? uuidv4();
-    updateTimelines(timelineID, data);
+    updateTimelines(data);
     setTimelineDialogOpen(false);
   };
 

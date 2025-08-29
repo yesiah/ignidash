@@ -24,6 +24,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
 const newAccountDefaultValues = {
+  id: uuidv4(),
   type: 'taxableBrokerage' as AccountInputs['type'],
 } as const satisfies Partial<AccountInputs>;
 
@@ -49,8 +50,7 @@ export default function AccountDialog({ setAccountDialogOpen, selectedAccountID 
 
   const updateAccounts = useUpdateAccounts();
   const onSubmit = (data: AccountInputs) => {
-    const accountID = selectedAccountID ?? uuidv4();
-    updateAccounts(accountID, data);
+    updateAccounts(data);
     setAccountDialogOpen(false);
   };
 
