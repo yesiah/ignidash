@@ -108,7 +108,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
       </DisclosureSection>
 
       <Dialog size="xl" open={contributionRuleDialogOpen} onClose={handleClose}>
-        <ContributionRuleDialog onClose={handleClose} selectedContributionRuleID={selectedContributionRuleID} />
+        <ContributionRuleDialog selectedContributionRuleID={selectedContributionRuleID} onClose={handleClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert
         dataToDelete={contributionRuleToDelete}

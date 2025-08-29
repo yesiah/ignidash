@@ -110,10 +110,10 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
         </div>
       </DisclosureSection>
       <Dialog size="xl" open={accountDialogOpen} onClose={handleAccountDialogClose}>
-        <AccountDialog onClose={handleAccountDialogClose} selectedAccountID={selectedAccountID} />
+        <AccountDialog selectedAccountID={selectedAccountID} onClose={handleAccountDialogClose} />
       </Dialog>
       <Dialog size="xl" open={savingsDialogOpen} onClose={handleSavingsDialogClose}>
-        <SavingsDialog onClose={handleSavingsDialogClose} selectedAccountID={selectedSavingsID} />
+        <SavingsDialog selectedAccountID={selectedSavingsID} onClose={handleSavingsDialogClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={accountToDelete} setDataToDelete={setAccountToDelete} deleteData={deleteAccount} />
     </>

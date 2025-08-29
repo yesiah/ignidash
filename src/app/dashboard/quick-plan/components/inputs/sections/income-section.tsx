@@ -89,7 +89,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
       </DisclosureSection>
 
       <Dialog size="xl" open={incomeDialogOpen} onClose={handleClose}>
-        <IncomeDialog onClose={handleClose} selectedIncomeID={selectedIncomeID} />
+        <IncomeDialog selectedIncomeID={selectedIncomeID} onClose={handleClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={incomeToDelete} setDataToDelete={setIncomeToDelete} deleteData={deleteIncome} />
     </>

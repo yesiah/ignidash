@@ -89,7 +89,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
       </DisclosureSection>
 
       <Dialog size="xl" open={expenseDialogOpen} onClose={handleClose}>
-        <ExpenseDialog onClose={handleClose} selectedExpenseID={selectedExpenseID} />
+        <ExpenseDialog selectedExpenseID={selectedExpenseID} onClose={handleClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={expenseToDelete} setDataToDelete={setExpenseToDelete} deleteData={deleteExpense} />
     </>
