@@ -7,16 +7,29 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
+import { formatNumber } from '@/lib/utils';
 import { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
 import { Field, Label /* Description */ } from '@/components/catalyst/fieldset';
 import { Listbox, ListboxLabel, ListboxDescription, ListboxOption } from '@/components/catalyst/listbox';
 import { useContributionRulesData, useDeleteContributionRule } from '@/lib/stores/quick-plan-store';
+import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+
+function getContributionRuleDesc(contributionInputs: ContributionInputs) {
+  switch (contributionInputs.contributionType) {
+    case 'dollarAmount':
+      return `${formatNumber(contributionInputs.dollarAmount, 2, '$')} | ...`;
+    case 'percentRemaining':
+      return `${contributionInputs.percentRemaining}% | ...`;
+    case 'unlimited':
+      return 'Unlimited';
+  }
+}
 
 interface ContributionsSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -77,7 +90,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                     id={id}
                     index={index}
                     name={'Contribution Rule ' + (index + 1)}
-                    desc={'Placeholder Contribution Rule Description'}
+                    desc={getContributionRuleDesc(contributionRule)}
                     leftAddOnCharacter={String(contributionRule.rank)}
                     onDropdownClickEdit={() => {
                       setContributionRuleDialogOpen(true);

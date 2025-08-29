@@ -75,8 +75,12 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
   const incomeOptions = Object.entries(incomes).map(([id, income]) => ({ id, name: income.name }));
 
   useEffect(() => {
-    if (contributionType === 'unlimited') {
-      unregister('amount');
+    if (!(contributionType === 'dollarAmount')) {
+      unregister('dollarAmount');
+    }
+
+    if (!(contributionType === 'percentRemaining')) {
+      unregister('percentRemaining');
     }
 
     if (!(selectedAccount && accountTypeRequiresIncomeForContributions(selectedAccount.type))) {
@@ -155,10 +159,17 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 {contributionType === 'dollarAmount' && (
                   <Field>
                     <Label>Amount</Label>
-                    <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="$2,500" prefix="$" />
-                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).amount?.message && (
+                    <NumberInputV2
+                      name="dollarAmount"
+                      control={control}
+                      id="dollarAmount"
+                      inputMode="decimal"
+                      placeholder="$2,500"
+                      prefix="$"
+                    />
+                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).dollarAmount?.message && (
                       <ErrorMessage>
-                        {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).amount?.message}
+                        {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).dollarAmount?.message}
                       </ErrorMessage>
                     )}
                   </Field>
@@ -166,10 +177,21 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 {contributionType === 'percentRemaining' && (
                   <Field>
                     <Label>Percent</Label>
-                    <NumberInputV2 name="amount" control={control} id="amount" inputMode="decimal" placeholder="25%" suffix="%" />
-                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).amount?.message && (
+                    <NumberInputV2
+                      name="percentRemaining"
+                      control={control}
+                      id="percentRemaining"
+                      inputMode="decimal"
+                      placeholder="25%"
+                      suffix="%"
+                    />
+                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).percentRemaining
+                      ?.message && (
                       <ErrorMessage>
-                        {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).amount?.message}
+                        {
+                          (errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).percentRemaining
+                            ?.message
+                        }
                       </ErrorMessage>
                     )}
                   </Field>

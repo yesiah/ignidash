@@ -13,13 +13,13 @@ export const contributionFormSchema = z.discriminatedUnion('contributionType', [
   z.object({
     ...baseContributionSchema.shape,
     contributionType: z.literal('dollarAmount'),
-    amount: currencyFieldForbidsZero('Dollar amount must be greater than zero'),
+    dollarAmount: currencyFieldForbidsZero('Dollar amount must be greater than zero'),
   }),
 
   z.object({
     ...baseContributionSchema.shape,
     contributionType: z.literal('percentRemaining'),
-    amount: percentageField(0, 100, 'Percentage of remaining funds'),
+    percentRemaining: percentageField(0, 100, 'Percentage of remaining funds'),
   }),
 
   z.object({
