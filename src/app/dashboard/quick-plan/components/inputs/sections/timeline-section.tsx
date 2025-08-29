@@ -14,6 +14,7 @@ import type { DisclosureState } from '@/lib/types/disclosure-state';
 import TimelineDialog from '../dialogs/timeline-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getRetirementStrategyDesc(retirementStrategy: RetirementStrategyInputs) {
   switch (retirementStrategy.type) {
@@ -82,14 +83,7 @@ export default function TimelineSection({ toggleDisclosure, disclosureButtonRef,
         )}
         {!hasTimelines && (
           <div className="flex h-full flex-col gap-2">
-            <button
-              type="button"
-              className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
-              onClick={() => setTimelineDialogOpen(true)}
-            >
-              <HourglassIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-              <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add timeline</span>
-            </button>
+            <DisclosureSectionEmptyStateButton onClick={() => setTimelineDialogOpen(true)} icon={HourglassIcon} buttonText="Add timeline" />
           </div>
         )}
       </DisclosureSection>

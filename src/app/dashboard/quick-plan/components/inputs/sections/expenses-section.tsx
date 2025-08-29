@@ -14,6 +14,7 @@ import type { DisclosureState } from '@/lib/types/disclosure-state';
 import ExpenseDialog from '../dialogs/expense-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 interface ExpensesSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -73,14 +74,11 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
         )}
         {!hasExpenses && (
           <div className="flex h-full flex-col">
-            <button
-              type="button"
-              className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
+            <DisclosureSectionEmptyStateButton
               onClick={() => setExpenseDialogOpen(true)}
-            >
-              <BanknoteArrowDownIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-              <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add expense</span>
-            </button>
+              icon={BanknoteArrowDownIcon}
+              buttonText="Add expense"
+            />
           </div>
         )}
       </DisclosureSection>

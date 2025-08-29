@@ -16,6 +16,7 @@ import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 interface PortfolioSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -87,22 +88,12 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
         )}
         {!hasAccounts && (
           <div className="flex h-full flex-col gap-2">
-            <button
-              type="button"
-              className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
-              onClick={() => setSavingsDialogOpen(true)}
-            >
-              <PiggyBankIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-              <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add savings</span>
-            </button>
-            <button
-              type="button"
-              className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 dark:border-white/15 dark:hover:border-white/25"
+            <DisclosureSectionEmptyStateButton onClick={() => setSavingsDialogOpen(true)} icon={PiggyBankIcon} buttonText="Add savings" />
+            <DisclosureSectionEmptyStateButton
               onClick={() => setAccountDialogOpen(true)}
-            >
-              <TrendingUpIcon aria-hidden="true" className="text-primary mx-auto size-12" />
-              <span className="mt-2 block text-sm font-semibold text-gray-900 dark:text-white">Add investment</span>
-            </button>
+              icon={TrendingUpIcon}
+              buttonText="Add investment"
+            />
           </div>
         )}
       </DisclosureSection>
