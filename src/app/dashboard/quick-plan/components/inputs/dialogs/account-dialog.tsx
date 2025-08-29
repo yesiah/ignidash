@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TrendingUpIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,11 +21,6 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
-const newAccountDefaultValues = {
-  id: '',
-  type: '401k' as AccountInputs['type'],
-} as const satisfies Partial<AccountInputs>;
-
 interface AccountDialogProps {
   onClose: () => void;
   selectedAccountID: string | null;
@@ -33,6 +28,10 @@ interface AccountDialogProps {
 
 export default function AccountDialog({ onClose, selectedAccountID }: AccountDialogProps) {
   const existingAccountData = useInvestmentData(selectedAccountID);
+  const newAccountDefaultValues = useMemo(
+    () => ({ id: '', type: '401k' as AccountInputs['type'] }) as const satisfies Partial<AccountInputs>,
+    []
+  );
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
   const {

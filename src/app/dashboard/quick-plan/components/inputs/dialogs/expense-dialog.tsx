@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef, MutableRefObject } from 'react';
+import { useState, useCallback, useEffect, useRef, MutableRefObject, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
@@ -24,18 +24,6 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
-const newExpenseDefaultValues = {
-  id: '',
-  frequency: 'yearly',
-  timeframe: {
-    start: { type: 'now' },
-    end: { type: 'atRetirement' },
-  },
-  growth: {
-    growthRate: 3,
-  },
-} as const satisfies Partial<ExpenseInputs>;
-
 interface DisclosureState {
   open: boolean;
   close: (focusableElement?: HTMLElement | MutableRefObject<HTMLElement | null> | undefined) => void;
@@ -49,6 +37,21 @@ interface ExpenseDialogProps {
 
 export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDialogProps) {
   const existingExpenseData = useExpenseData(selectedExpenseID);
+  const newExpenseDefaultValues = useMemo(
+    () =>
+      ({
+        id: '',
+        frequency: 'yearly',
+        timeframe: {
+          start: { type: 'now' },
+          end: { type: 'atRetirement' },
+        },
+        growth: {
+          growthRate: 3,
+        },
+      }) as const satisfies Partial<ExpenseInputs>,
+    []
+  );
   const defaultValues = existingExpenseData || newExpenseDefaultValues;
 
   const {

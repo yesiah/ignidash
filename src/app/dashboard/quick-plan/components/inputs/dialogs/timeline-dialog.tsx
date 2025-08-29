@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { HourglassIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,14 +47,6 @@ function getRetirementStrategyError(errors: FieldErrors, retirementStrategyType:
   }
 }
 
-const newTimelineDefaultValues = {
-  id: '',
-  retirementStrategy: {
-    type: 'swrTarget',
-    safeWithdrawalRate: 4,
-  },
-} as const satisfies Partial<TimelineInputs>;
-
 interface TimelineDialogProps {
   onClose: () => void;
   selectedTimelineID: string | null;
@@ -62,6 +54,17 @@ interface TimelineDialogProps {
 
 export default function TimelineDialog({ onClose, selectedTimelineID }: TimelineDialogProps) {
   const existingTimelineData = useTimelineData(selectedTimelineID);
+  const newTimelineDefaultValues = useMemo(
+    () =>
+      ({
+        id: '',
+        retirementStrategy: {
+          type: 'swrTarget',
+          safeWithdrawalRate: 4,
+        },
+      }) as const satisfies Partial<TimelineInputs>,
+    []
+  );
   const defaultValues = (existingTimelineData || newTimelineDefaultValues) as never;
 
   const {

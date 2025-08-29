@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { PiggyBankIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,11 +33,15 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
   const contributionRules = useContributionRulesData();
   const contributionRulesCount = Object.entries(contributionRules).length;
   const defaultRank = contributionRulesCount + 1;
-  const newContributionRuleDefaultValues = {
-    id: '',
-    rank: defaultRank,
-    contributionType: 'dollarAmount' as ContributionInputs['contributionType'],
-  } as const satisfies Partial<ContributionInputs>;
+  const newContributionRuleDefaultValues = useMemo(
+    () =>
+      ({
+        id: '',
+        rank: defaultRank,
+        contributionType: 'dollarAmount' as ContributionInputs['contributionType'],
+      }) as const satisfies Partial<ContributionInputs>,
+    [defaultRank]
+  );
 
   const defaultValues = (existingContributionRuleData || newContributionRuleDefaultValues) as never;
 

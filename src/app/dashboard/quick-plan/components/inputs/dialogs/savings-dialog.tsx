@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { PiggyBankIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,11 +14,6 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/c
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
-const newAccountDefaultValues = {
-  id: '',
-  type: 'savings' as AccountInputs['type'],
-} as const satisfies Partial<AccountInputs>;
-
 interface SavingsDialogProps {
   onClose: () => void;
   selectedAccountID: string | null;
@@ -25,6 +21,14 @@ interface SavingsDialogProps {
 
 export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDialogProps) {
   const existingAccountData = useSavingsData(selectedAccountID);
+  const newAccountDefaultValues = useMemo(
+    () =>
+      ({
+        id: '',
+        type: 'savings' as AccountInputs['type'],
+      }) as const satisfies Partial<AccountInputs>,
+    []
+  );
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
   const {
