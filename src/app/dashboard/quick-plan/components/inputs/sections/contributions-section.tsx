@@ -22,11 +22,13 @@ import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getContributionRuleDesc(contributionInputs: ContributionInputs) {
+  const limitText = contributionInputs.maxValue ? ` | Up to: ${formatNumber(contributionInputs.maxValue, 2, '$')}` : '';
+
   switch (contributionInputs.contributionType) {
     case 'dollarAmount':
-      return `${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'} | ...`;
+      return `${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'}${limitText}`;
     case 'percentRemaining':
-      return `${contributionInputs.percentRemaining}% of remaining | ...`;
+      return `${contributionInputs.percentRemaining}% of remaining${limitText}`;
     case 'unlimited':
       return 'Unlimited';
   }
