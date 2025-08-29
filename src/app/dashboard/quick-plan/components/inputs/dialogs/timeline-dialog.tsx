@@ -51,7 +51,6 @@ const newTimelineDefaultValues = {
   retirementStrategy: {
     type: 'swrTarget',
     safeWithdrawalRate: 4,
-    // expenseMetric: 'median',
   },
 } as const satisfies Partial<TimelineInputs>;
 
@@ -87,7 +86,6 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
   useEffect(() => {
     if (retirementStrategyType !== 'swrTarget') {
       unregister('retirementStrategy.safeWithdrawalRate');
-      // unregister('retirementStrategy.expenseMetric');
     }
 
     if (retirementStrategyType !== 'fixedAge') {
@@ -140,33 +138,19 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
                 </Field>
               )}
               {retirementStrategyType === 'swrTarget' && (
-                <>
-                  <Field>
-                    <Label htmlFor="retirementStrategy.safeWithdrawalRate">Safe Withdrawal Rate (SWR)</Label>
-                    <NumberInputV2
-                      name="retirementStrategy.safeWithdrawalRate"
-                      control={control}
-                      id="retirementStrategy.safeWithdrawalRate"
-                      inputMode="decimal"
-                      placeholder="4%"
-                      suffix="%"
-                    />
-                    <ErrorMessage>{getRetirementStrategyError(errors, retirementStrategyType)}</ErrorMessage>
-                    <Description>{getRetirementStrategyDesc(retirementStrategyType)}</Description>
-                  </Field>
-                  {/* <Field>
-                    <Label htmlFor="retirementStrategy.expenseMetric">Expense Metric</Label>
-                    <Select
-                      {...register('retirementStrategy.expenseMetric')}
-                      id="retirementStrategy.expenseMetric"
-                      name="retirementStrategy.expenseMetric"
-                    >
-                      <option value="median">Median</option>
-                      <option value="mean">Mean</option>
-                    </Select>
-                    <Description>Placeholder Text.</Description>
-                  </Field> */}
-                </>
+                <Field>
+                  <Label htmlFor="retirementStrategy.safeWithdrawalRate">Safe Withdrawal Rate (SWR)</Label>
+                  <NumberInputV2
+                    name="retirementStrategy.safeWithdrawalRate"
+                    control={control}
+                    id="retirementStrategy.safeWithdrawalRate"
+                    inputMode="decimal"
+                    placeholder="4%"
+                    suffix="%"
+                  />
+                  <ErrorMessage>{getRetirementStrategyError(errors, retirementStrategyType)}</ErrorMessage>
+                  <Description>{getRetirementStrategyDesc(retirementStrategyType)}</Description>
+                </Field>
               )}
             </FieldGroup>
           </DialogBody>
