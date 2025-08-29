@@ -221,7 +221,7 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
                 </Select>
               </Field>
             </div>
-            <Disclosure as="div" className="border-border/50 border-y py-4">
+            <Disclosure as="div" className="border-border/50 border-t pt-4">
               {/* <Disclosure as="div" className={`border-border/50 ${frequency !== 'oneTime' ? 'border-y' : 'border-t'} py-4`}> */}
               {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
               {({ open, close }) => (
@@ -437,7 +437,7 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
               )}
             </Disclosure>
             {frequency !== 'oneTime' && (
-              <Disclosure as="div">
+              <Disclosure as="div" className="border-border/50 border-t pt-4">
                 {/* From: https://stackoverflow.com/questions/72131620/group-disclosures-accordian-from-headless-ui */}
                 {({ open, close }) => (
                   <>
