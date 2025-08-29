@@ -12,7 +12,13 @@ import { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
 import { Field, Label /* Description */ } from '@/components/catalyst/fieldset';
 import { Listbox, ListboxLabel, ListboxDescription, ListboxOption } from '@/components/catalyst/listbox';
-import { useContributionRulesData, useDeleteContributionRule, useAccountsData } from '@/lib/stores/quick-plan-store';
+import {
+  useContributionRulesData,
+  useBaseContributionRuleData,
+  useUpdateBaseContributionRule,
+  useDeleteContributionRule,
+  useAccountsData,
+} from '@/lib/stores/quick-plan-store';
 import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 
@@ -49,6 +55,9 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
   const contributionRules = useContributionRulesData();
   const hasContributionRules = Object.keys(contributionRules).length > 0;
 
+  const baseContributionRule = useBaseContributionRuleData();
+  const updateBaseContributionRule = useUpdateBaseContributionRule();
+
   const accounts = useAccountsData();
 
   const deleteContributionRule = useDeleteContributionRule();
@@ -71,7 +80,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
         <div className="flex h-full flex-col">
           <Field>
             <Label className="sr-only">Base Rule</Label>
-            <Listbox name="status" defaultValue="spend">
+            <Listbox name="status" value={baseContributionRule.type} onChange={(value) => updateBaseContributionRule('type', value)}>
               <ListboxOption value="spend">
                 <BanknoteArrowDownIcon data-slot="icon" className="text-primary" />
                 <ListboxLabel>Spend</ListboxLabel>
