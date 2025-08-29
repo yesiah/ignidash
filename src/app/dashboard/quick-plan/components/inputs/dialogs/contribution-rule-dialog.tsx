@@ -21,6 +21,7 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@
 import { Combobox, ComboboxLabel, ComboboxDescription, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
+import { Divider } from '@/components/catalyst/divider';
 
 interface ContributionRuleDialogProps {
   onClose: () => void;
@@ -203,9 +204,10 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                   </Field>
                 )}
               </div>
+              <Divider />
               <Field>
                 <Label htmlFor="maxValue" className="flex w-full items-center justify-between">
-                  <span className="whitespace-nowrap">Max Total Value</span>
+                  <span className="whitespace-nowrap">Account Limit</span>
                   <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                 </Label>
                 <NumberInputV2 name="maxValue" control={control} id="maxValue" inputMode="decimal" placeholder="$15,000" prefix="$" />
