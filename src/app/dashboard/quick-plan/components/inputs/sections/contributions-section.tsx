@@ -12,8 +12,9 @@ import { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
 import { Field, Label /* Description */ } from '@/components/catalyst/fieldset';
 import { Listbox, ListboxLabel, ListboxDescription, ListboxOption } from '@/components/catalyst/listbox';
-import { useContributionRulesData, useDeleteContributionRule } from '@/lib/stores/quick-plan-store';
+import { useContributionRulesData, useDeleteContributionRule, useAccountsData } from '@/lib/stores/quick-plan-store';
 import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
+import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
@@ -45,6 +46,8 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
 
   const contributionRules = useContributionRulesData();
   const hasContributionRules = Object.keys(contributionRules).length > 0;
+
+  const accounts = useAccountsData();
 
   const deleteContributionRule = useDeleteContributionRule();
 
@@ -89,7 +92,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                     key={id}
                     id={id}
                     index={index}
-                    name={'Contribution Rule ' + (index + 1)}
+                    name={`To "${accounts[contributionRule.accountId]?.name || 'Unknown'}" (${accountTypeForDisplay(accounts[contributionRule.accountId]?.type)})`}
                     desc={getContributionRuleDesc(contributionRule)}
                     leftAddOnCharacter={String(contributionRule.rank)}
                     onDropdownClickEdit={() => {

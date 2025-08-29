@@ -101,7 +101,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
           <DialogBody>
             <FieldGroup>
               <Field>
-                <Label>For Account</Label>
+                <Label>To Account</Label>
                 <Controller
                   name="accountId"
                   control={control}
