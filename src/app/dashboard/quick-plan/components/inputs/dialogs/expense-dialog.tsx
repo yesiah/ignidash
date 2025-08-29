@@ -19,7 +19,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
 const newExpenseDefaultValues = {
-  id: uuidv4(),
+  id: '',
   frequency: 'yearly',
   timeframe: {
     start: { type: 'now' },
@@ -58,7 +58,8 @@ export default function ExpenseDialog({ setExpenseDialogOpen, selectedExpenseID 
 
   const updateExpenses = useUpdateExpenses();
   const onSubmit = (data: ExpenseInputs) => {
-    updateExpenses(data);
+    const expenseId = data.id === '' ? uuidv4() : data.id;
+    updateExpenses({ ...data, id: expenseId });
     setExpenseDialogOpen(false);
   };
 

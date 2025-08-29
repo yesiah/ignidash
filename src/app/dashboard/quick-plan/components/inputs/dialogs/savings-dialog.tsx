@@ -14,7 +14,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
 const newAccountDefaultValues = {
-  id: uuidv4(),
+  id: '',
   type: 'savings' as AccountInputs['type'],
 } as const satisfies Partial<AccountInputs>;
 
@@ -39,7 +39,8 @@ export default function SavingsDialog({ setSavingsDialogOpen, selectedAccountID 
 
   const updateAccounts = useUpdateAccounts();
   const onSubmit = (data: AccountInputs) => {
-    updateAccounts(data);
+    const accountId = data.id === '' ? uuidv4() : data.id;
+    updateAccounts({ ...data, id: accountId });
     setSavingsDialogOpen(false);
   };
 

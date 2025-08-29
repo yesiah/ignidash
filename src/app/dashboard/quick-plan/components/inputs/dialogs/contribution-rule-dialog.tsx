@@ -34,7 +34,7 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
   const contributionRulesCount = Object.entries(contributionRules).length;
   const defaultRank = contributionRulesCount + 1;
   const newContributionRuleDefaultValues = {
-    id: uuidv4(),
+    id: '',
     rank: defaultRank,
     allocationType: 'fixed' as ContributionInputs['allocationType'],
   } as const satisfies Partial<ContributionInputs>;
@@ -54,7 +54,8 @@ export default function ContributionRuleDialog({ setContributionRuleDialogOpen, 
 
   const updateContributionRules = useUpdateContributionRules();
   const onSubmit = (data: ContributionInputs) => {
-    updateContributionRules(data);
+    const contributionRuleId = data.id === '' ? uuidv4() : data.id;
+    updateContributionRules({ ...data, id: contributionRuleId });
     setContributionRuleDialogOpen(false);
   };
 
