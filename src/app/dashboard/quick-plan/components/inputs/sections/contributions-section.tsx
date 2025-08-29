@@ -23,9 +23,9 @@ import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state
 function getContributionRuleDesc(contributionInputs: ContributionInputs) {
   switch (contributionInputs.contributionType) {
     case 'dollarAmount':
-      return `${formatNumber(contributionInputs.dollarAmount, 2, '$')} | ...`;
+      return `${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'} | ...`;
     case 'percentRemaining':
-      return `${contributionInputs.percentRemaining}% | ...`;
+      return `${contributionInputs.percentRemaining}% of remaining | ...`;
     case 'unlimited':
       return 'Unlimited';
   }
