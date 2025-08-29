@@ -125,38 +125,38 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                   />
                   {errors.currentValue && <ErrorMessage>{errors.currentValue?.message}</ErrorMessage>}
                 </Field>
-                {type === 'taxableBrokerage' &&
-                  (() => {
-                    const error = (errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message;
-                    return (
-                      <Field>
-                        <Label htmlFor="costBasis" className="flex w-full items-center justify-between">
-                          <span className="whitespace-nowrap">Cost Basis</span>
-                          <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                        </Label>
-                        <NumberInputV2 name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
-                        {error && <ErrorMessage>{error}</ErrorMessage>}
-                      </Field>
-                    );
-                  })()}
-                {isRothAccount(type) &&
-                  (() => {
-                    const error = (errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message;
-                    return (
-                      <Field>
-                        <Label htmlFor="contributions">Contributions</Label>
-                        <NumberInputV2
-                          name="contributions"
-                          control={control}
-                          id="contributions"
-                          inputMode="decimal"
-                          placeholder="—"
-                          prefix="$"
-                        />
-                        {error && <ErrorMessage>{error}</ErrorMessage>}
-                      </Field>
-                    );
-                  })()}
+                {type === 'taxableBrokerage' && (
+                  <Field>
+                    <Label htmlFor="costBasis" className="flex w-full items-center justify-between">
+                      <span className="whitespace-nowrap">Cost Basis</span>
+                      <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                    </Label>
+                    <NumberInputV2 name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
+                    {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message && (
+                      <ErrorMessage>
+                        {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message}
+                      </ErrorMessage>
+                    )}
+                  </Field>
+                )}
+                {isRothAccount(type) && (
+                  <Field>
+                    <Label htmlFor="contributions">Contributions</Label>
+                    <NumberInputV2
+                      name="contributions"
+                      control={control}
+                      id="contributions"
+                      inputMode="decimal"
+                      placeholder="—"
+                      prefix="$"
+                    />
+                    {(errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message && (
+                      <ErrorMessage>
+                        {(errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributions?.message}
+                      </ErrorMessage>
+                    )}
+                  </Field>
+                )}
                 <Field className="col-span-2">
                   <Label htmlFor="percentBonds" className="flex w-full items-center justify-between">
                     <span className="whitespace-nowrap">% Bonds</span>
