@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
-import { useUpdateAccounts, useInvestmentData } from '@/lib/stores/quick-plan-store';
+import { useUpdateAccounts, useInvestmentData, useAccountsData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import {
   accountFormSchema,
@@ -28,10 +28,18 @@ interface AccountDialogProps {
 
 export default function AccountDialog({ onClose, selectedAccountID }: AccountDialogProps) {
   const existingAccountData = useInvestmentData(selectedAccountID);
+
+  const numAccounts = Object.entries(useAccountsData()).length;
   const newAccountDefaultValues = useMemo(
-    () => ({ id: '', type: '401k' as AccountInputs['type'] }) as const satisfies Partial<AccountInputs>,
-    []
+    () =>
+      ({
+        name: 'Investment ' + (numAccounts + 1),
+        id: '',
+        type: '401k' as AccountInputs['type'],
+      }) as const satisfies Partial<AccountInputs>,
+    [numAccounts]
   );
+
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
   const {
@@ -96,7 +104,6 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                     inputMode="text"
                     invalid={!!errors.name}
                     aria-invalid={!!errors.name}
-                    autoFocus={selectedAccountID === null}
                   />
                   {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
                 </Field>
@@ -120,7 +127,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                     inputMode="decimal"
                     placeholder="$15,000"
                     prefix="$"
-                    autoFocus={selectedAccountID !== null}
+                    autoFocus
                   />
                   {errors.currentValue && <ErrorMessage>{errors.currentValue?.message}</ErrorMessage>}
                 </Field>

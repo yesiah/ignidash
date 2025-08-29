@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { useUpdateAccounts, useSavingsData } from '@/lib/stores/quick-plan-store';
+import { useUpdateAccounts, useSavingsData, useAccountsData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -21,14 +21,18 @@ interface SavingsDialogProps {
 
 export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDialogProps) {
   const existingAccountData = useSavingsData(selectedAccountID);
+
+  const numAccounts = Object.entries(useAccountsData()).length;
   const newAccountDefaultValues = useMemo(
     () =>
       ({
+        name: 'Savings ' + (numAccounts + 1),
         id: '',
         type: 'savings' as AccountInputs['type'],
       }) as const satisfies Partial<AccountInputs>,
-    []
+    [numAccounts]
   );
+
   const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
 
   const {
@@ -71,7 +75,6 @@ export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDia
                   inputMode="text"
                   invalid={!!errors.name}
                   aria-invalid={!!errors.name}
-                  autoFocus={selectedAccountID === null}
                 />
                 {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
               </Field>
@@ -84,7 +87,7 @@ export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDia
                   inputMode="decimal"
                   placeholder="$15,000"
                   prefix="$"
-                  autoFocus={selectedAccountID !== null}
+                  autoFocus
                 />
                 {errors.currentValue && <ErrorMessage>{errors.currentValue?.message}</ErrorMessage>}
               </Field>

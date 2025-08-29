@@ -8,7 +8,14 @@ import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
-import { useCurrentAge, useLifeExpectancy, useUpdateIncomes, useIncomeData, useMarketAssumptionsData } from '@/lib/stores/quick-plan-store';
+import {
+  useCurrentAge,
+  useLifeExpectancy,
+  useUpdateIncomes,
+  useIncomeData,
+  useIncomesData,
+  useMarketAssumptionsData,
+} from '@/lib/stores/quick-plan-store';
 import { incomeFormSchema, type IncomeInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -31,9 +38,12 @@ interface IncomeDialogProps {
 
 export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialogProps) {
   const existingIncomeData = useIncomeData(selectedIncomeID);
+
+  const numIncomes = Object.entries(useIncomesData()).length;
   const newIncomeDefaultValues = useMemo(
     () =>
       ({
+        name: 'Income ' + (numIncomes + 1),
         id: '',
         frequency: 'yearly',
         timeframe: {
@@ -44,8 +54,9 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
           growthRate: 3,
         },
       }) as const satisfies Partial<IncomeInputs>,
-    []
+    [numIncomes]
   );
+
   const defaultValues = existingIncomeData || newIncomeDefaultValues;
 
   const {
@@ -197,7 +208,6 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                     inputMode="text"
                     invalid={!!errors.name}
                     aria-invalid={!!errors.name}
-                    autoFocus={selectedIncomeID === null}
                   />
                   {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
                 </Field>
@@ -210,7 +220,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                     inputMode="decimal"
                     placeholder="$85,000"
                     prefix="$"
-                    autoFocus={selectedIncomeID !== null}
+                    autoFocus
                   />
                   {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
                 </Field>

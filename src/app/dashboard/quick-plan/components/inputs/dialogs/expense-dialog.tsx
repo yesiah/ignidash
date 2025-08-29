@@ -13,6 +13,7 @@ import {
   useLifeExpectancy,
   useUpdateExpenses,
   useExpenseData,
+  useExpensesData,
   useMarketAssumptionsData,
 } from '@/lib/stores/quick-plan-store';
 import { expenseFormSchema, type ExpenseInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/expense-form-schema';
@@ -37,9 +38,12 @@ interface ExpenseDialogProps {
 
 export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDialogProps) {
   const existingExpenseData = useExpenseData(selectedExpenseID);
+
+  const numExpenses = Object.entries(useExpensesData()).length;
   const newExpenseDefaultValues = useMemo(
     () =>
       ({
+        name: 'Expense ' + (numExpenses + 1),
         id: '',
         frequency: 'yearly',
         timeframe: {
@@ -50,8 +54,9 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
           growthRate: 3,
         },
       }) as const satisfies Partial<ExpenseInputs>,
-    []
+    [numExpenses]
   );
+
   const defaultValues = existingExpenseData || newExpenseDefaultValues;
 
   const {
@@ -203,7 +208,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
                     inputMode="text"
                     invalid={!!errors.name}
                     aria-invalid={!!errors.name}
-                    autoFocus={selectedExpenseID === null}
                   />
                   {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
                 </Field>
@@ -216,7 +220,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
                     inputMode="decimal"
                     placeholder="$50,000"
                     prefix="$"
-                    autoFocus={selectedExpenseID !== null}
+                    autoFocus
                   />
                   {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
                 </Field>

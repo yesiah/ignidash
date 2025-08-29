@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
-import { useUpdateTimelines, useTimelineData } from '@/lib/stores/quick-plan-store';
+import { useUpdateTimelines, useTimelineData, useTimelinesData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
@@ -54,17 +54,21 @@ interface TimelineDialogProps {
 
 export default function TimelineDialog({ onClose, selectedTimelineID }: TimelineDialogProps) {
   const existingTimelineData = useTimelineData(selectedTimelineID);
+
+  const numTimelines = Object.entries(useTimelinesData()).length;
   const newTimelineDefaultValues = useMemo(
     () =>
       ({
+        name: 'Timeline ' + (numTimelines + 1),
         id: '',
         retirementStrategy: {
           type: 'swrTarget',
           safeWithdrawalRate: 4,
         },
       }) as const satisfies Partial<TimelineInputs>,
-    []
+    [numTimelines]
   );
+
   const defaultValues = (existingTimelineData || newTimelineDefaultValues) as never;
 
   const {
@@ -121,13 +125,19 @@ export default function TimelineDialog({ onClose, selectedTimelineID }: Timeline
                     inputMode="text"
                     invalid={!!errors.name}
                     aria-invalid={!!errors.name}
-                    autoFocus={selectedTimelineID === null}
                   />
                   {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
                 </Field>
                 <Field>
                   <Label htmlFor="currentAge">Current Age</Label>
-                  <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
+                  <NumberInputV2
+                    name="currentAge"
+                    control={control}
+                    id="currentAge"
+                    inputMode="numeric"
+                    placeholder="35"
+                    autoFocus={selectedTimelineID === null}
+                  />
                   {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
                 </Field>
                 <Field>
