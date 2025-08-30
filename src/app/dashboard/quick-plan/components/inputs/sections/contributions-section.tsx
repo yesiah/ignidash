@@ -152,7 +152,8 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                 onDragEnd={handleDragEnd}
                 modifiers={[restrictToParentElement]}
               >
-                {/* @ts-expect-error | React 19 type compatibility */}
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore - React 19 type compatibility */}
                 <SortableContext items={sortedRules} strategy={verticalListSortingStrategy}>
                   <ul role="list" className="mb-6 grid grid-cols-1 gap-3">
                     {sortedRules.map(({ id, ...contributionRule }, index) => (
@@ -174,7 +175,8 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                     ))}
                   </ul>
                 </SortableContext>
-                {/* @ts-expect-error | React 19 type compatibility */}
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore - React 19 type compatibility */}
                 <DragOverlay>
                   {activeId && activeContributionRule ? (
                     <ContributionItem
