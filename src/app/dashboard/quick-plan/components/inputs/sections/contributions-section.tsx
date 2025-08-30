@@ -23,7 +23,7 @@ import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
 import { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
-import { Field, Label /* Description */ } from '@/components/catalyst/fieldset';
+import { Field, Label, Description } from '@/components/catalyst/fieldset';
 import { Listbox, ListboxLabel, ListboxDescription, ListboxOption } from '@/components/catalyst/listbox';
 import {
   useContributionRulesData,
@@ -140,7 +140,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                 <ListboxDescription>Save anything left</ListboxDescription>
               </ListboxOption>
             </Listbox>
-            {/* <Description>Allocate any leftover cash after your contribution rules are applied.</Description> */}
+            <Description className="sr-only">Allocate any leftover cash after your contribution rules are applied.</Description>
           </Field>
           <Divider className="my-4" />
           {hasContributionRules && (
