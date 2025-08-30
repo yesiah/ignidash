@@ -42,13 +42,14 @@ export default function DisclosureSectionDataItem({
       >
         {showDragHandle && (
           <button
-            className="mr-2 cursor-grab touch-none rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="flex h-full w-full cursor-grab touch-none items-center justify-center gap-1 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             {...otherProps}
           >
             <GripVerticalIcon className="size-5 shrink-0" />
+            {leftAddOnCharacter}
           </button>
         )}
-        {leftAddOnCharacter}
+        {!showDragHandle && leftAddOnCharacter}
       </div>
       <div className="bg-emphasized-background border-border flex flex-1 items-center justify-between truncate rounded-r-md border-t border-r border-b">
         <div className="flex-1 truncate px-4 py-2 text-sm">
