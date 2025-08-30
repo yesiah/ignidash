@@ -204,6 +204,7 @@ interface QuickPlanState {
     deleteAccount: (id: string) => UpdateResult;
 
     updateContributionRules: (data: ContributionInputs) => UpdateResult;
+    reorderContributionRules: (newOrder: string[]) => UpdateResult;
     deleteContributionRule: (id: string) => UpdateResult;
 
     updateBaseContributionRule: (field: keyof BaseContributionInputs, value: unknown) => UpdateResult;
@@ -443,6 +444,19 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             return { success: true };
           },
 
+          reorderContributionRules: (newOrder: string[]) => {
+            set((state) => {
+              newOrder.forEach((id, index) => {
+                const contributionRule = state.inputs.contributionRules[id];
+                if (contributionRule) {
+                  contributionRule.rank = index + 1;
+                }
+              });
+            });
+
+            return { success: true };
+          },
+
           deleteContributionRule: (id: string) => {
             set((state) => {
               state.touched.contributionRules = true;
@@ -597,6 +611,7 @@ export const useDeleteExpense = () => useQuickPlanStore((state) => state.actions
 export const useUpdateAccounts = () => useQuickPlanStore((state) => state.actions.updateAccounts);
 export const useDeleteAccount = () => useQuickPlanStore((state) => state.actions.deleteAccount);
 export const useUpdateContributionRules = () => useQuickPlanStore((state) => state.actions.updateContributionRules);
+export const useReorderContributionRules = () => useQuickPlanStore((state) => state.actions.reorderContributionRules);
 export const useDeleteContributionRule = () => useQuickPlanStore((state) => state.actions.deleteContributionRule);
 export const useUpdateBaseContributionRule = () => useQuickPlanStore((state) => state.actions.updateBaseContributionRule);
 

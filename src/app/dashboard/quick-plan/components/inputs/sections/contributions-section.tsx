@@ -96,13 +96,13 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
     setContributionRuleDialogOpen(false);
   }, []);
 
-  function handleDragStart(event: DragStartEvent) {
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
 
     setActiveId(active.id.toString());
-  }
+  };
 
-  function handleDragEnd(event: DragEndEvent) {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
@@ -115,7 +115,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
     }
 
     setActiveId(null);
-  }
+  };
 
   return (
     <>
