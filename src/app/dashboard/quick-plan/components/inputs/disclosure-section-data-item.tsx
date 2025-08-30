@@ -42,7 +42,7 @@ export default function DisclosureSectionDataItem({
       >
         {showDragHandle && (
           <button
-            className="mr-2 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="mr-2 cursor-grab touch-none rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             {...otherProps}
           >
             <GripVerticalIcon className="size-5 shrink-0" />
