@@ -13,6 +13,8 @@ interface DisclosureSectionDataItemProps {
   leftAddOnCharacter: string;
   onDropdownClickEdit: () => void;
   onDropdownClickDelete: () => void;
+  ref?: React.Ref<HTMLLIElement>;
+  style?: React.CSSProperties;
 }
 
 export default function DisclosureSectionDataItem({
@@ -23,9 +25,12 @@ export default function DisclosureSectionDataItem({
   leftAddOnCharacter,
   onDropdownClickEdit,
   onDropdownClickDelete,
+  ref,
+  style,
+  ...otherProps
 }: DisclosureSectionDataItemProps) {
   return (
-    <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none">
+    <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none" ref={ref} style={style} {...otherProps}>
       <div
         className={cn(
           'border-foreground/50 flex w-16 shrink-0 items-center justify-center rounded-l-md border text-xl font-medium text-white',

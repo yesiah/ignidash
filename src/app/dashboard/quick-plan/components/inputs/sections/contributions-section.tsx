@@ -3,6 +3,18 @@
 import { useState, RefObject, useCallback } from 'react';
 import { HandCoinsIcon, PiggyBankIcon, BanknoteArrowDownIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
@@ -23,9 +35,10 @@ import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema'
 import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
-import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+import SortableContributionItem from '../sortable-contribution-item';
+// import ContributionItem from '../contribution-item';
 
 function getContributionRuleDesc(contributionInputs: ContributionInputs) {
   const limitText = contributionInputs.maxValue ? ` | Up to: ${formatNumber(contributionInputs.maxValue, 2, '$')}` : '';
@@ -49,11 +62,14 @@ interface ContributionsSectionProps {
 export default function ContributionsSection({ toggleDisclosure, disclosureButtonRef, disclosureKey }: ContributionsSectionProps) {
   const [contributionRuleDialogOpen, setContributionRuleDialogOpen] = useState(false);
   const [selectedContributionRuleID, setSelectedContributionRuleID] = useState<string | null>(null);
-
   const [contributionRuleToDelete, setContributionRuleToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const contributionRules = useContributionRulesData();
   const hasContributionRules = Object.keys(contributionRules).length > 0;
+
+  const contributionRuleIds = Object.keys(contributionRules);
+  const [items, setItems] = useState(contributionRuleIds);
 
   const baseContributionRule = useBaseContributionRuleData();
   const updateBaseContributionRule = useUpdateBaseContributionRule();
@@ -62,10 +78,38 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
 
   const deleteContributionRule = useDeleteContributionRule();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleClose = useCallback(() => {
     setSelectedContributionRuleID(null);
     setContributionRuleDialogOpen(false);
   }, []);
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+
+    setActiveId(active.id.toString());
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setItems((items) => {
+        const oldIndex = items.indexOf(active.id.toString());
+        const newIndex = items.indexOf(over.id.toString());
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+
+    setActiveId(null);
+  }
 
   return (
     <>
@@ -97,25 +141,32 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
           <Divider className="my-4" />
           {hasContributionRules && (
             <>
-              <ul role="list" className="mb-6 grid grid-cols-1 gap-3">
-                {Object.entries(contributionRules).map(([id, contributionRule], index) => (
-                  <DisclosureSectionDataItem
-                    key={id}
-                    id={id}
-                    index={index}
-                    name={`To "${accounts[contributionRule.accountId]?.name || 'Unknown'}" (${accountTypeForDisplay(accounts[contributionRule.accountId]?.type)})`}
-                    desc={getContributionRuleDesc(contributionRule)}
-                    leftAddOnCharacter={String(contributionRule.rank)}
-                    onDropdownClickEdit={() => {
-                      setContributionRuleDialogOpen(true);
-                      setSelectedContributionRuleID(id);
-                    }}
-                    onDropdownClickDelete={() => {
-                      setContributionRuleToDelete({ id, name: 'Contribution Rule ' + (index + 1) });
-                    }}
-                  />
-                ))}
-              </ul>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                {/* @ts-expect-error | React 19 type compatibility */}
+                <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                  <ul role="list" className="mb-6 grid grid-cols-1 gap-3">
+                    {Object.entries(contributionRules).map(([id, contributionRule], index) => (
+                      <SortableContributionItem
+                        key={id}
+                        id={id}
+                        index={index}
+                        name={`To "${accounts[contributionRule.accountId]?.name || 'Unknown'}" (${accountTypeForDisplay(accounts[contributionRule.accountId]?.type)})`}
+                        desc={getContributionRuleDesc(contributionRule)}
+                        leftAddOnCharacter={String(contributionRule.rank)}
+                        onDropdownClickEdit={() => {
+                          setContributionRuleDialogOpen(true);
+                          setSelectedContributionRuleID(id);
+                        }}
+                        onDropdownClickDelete={() => {
+                          setContributionRuleToDelete({ id, name: 'Contribution Rule ' + (index + 1) });
+                        }}
+                      />
+                    ))}
+                  </ul>
+                </SortableContext>
+                {/* @ts-expect-error | React 19 type compatibility */}
+                <DragOverlay>{activeId ? <p>Dragging...</p> : null}</DragOverlay>
+              </DndContext>
               <div className="mt-auto flex items-center justify-end">
                 <Button outline onClick={() => setContributionRuleDialogOpen(true)} disabled={!!selectedContributionRuleID}>
                   <PlusIcon />
