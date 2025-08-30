@@ -11,7 +11,7 @@ interface ContributionItemProps {
   onDropdownClickEdit: () => void;
   onDropdownClickDelete: () => void;
   isDragging: boolean;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 export const ContributionItem = forwardRef<HTMLLIElement, ContributionItemProps>(({ id, ...props }, ref) => {

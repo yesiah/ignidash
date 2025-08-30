@@ -15,6 +15,7 @@ interface DisclosureSectionDataItemProps {
   onDropdownClickDelete: () => void;
   ref?: React.Ref<HTMLLIElement>;
   style?: React.CSSProperties;
+  isDragging?: boolean;
 }
 
 export default function DisclosureSectionDataItem({
@@ -27,6 +28,7 @@ export default function DisclosureSectionDataItem({
   onDropdownClickDelete,
   ref,
   style,
+  isDragging,
   ...otherProps
 }: DisclosureSectionDataItemProps) {
   return (

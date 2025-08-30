@@ -38,7 +38,7 @@ import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 import SortableContributionItem from '../sortable-contribution-item';
-// import ContributionItem from '../contribution-item';
+import ContributionItem from '../contribution-item';
 
 function getContributionRuleDesc(contributionInputs: ContributionInputs) {
   const limitText = contributionInputs.maxValue ? ` | Up to: ${formatNumber(contributionInputs.maxValue, 2, '$')}` : '';
@@ -67,6 +67,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
 
   const contributionRules = useContributionRulesData();
   const hasContributionRules = Object.keys(contributionRules).length > 0;
+  const activeContributionRule = hasContributionRules && activeId ? contributionRules[activeId] : null;
 
   const contributionRuleIds = Object.keys(contributionRules);
   const [items, setItems] = useState(contributionRuleIds);
@@ -165,7 +166,26 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                   </ul>
                 </SortableContext>
                 {/* @ts-expect-error | React 19 type compatibility */}
-                <DragOverlay>{activeId ? <p>Dragging...</p> : null}</DragOverlay>
+                <DragOverlay>
+                  {activeId && activeContributionRule ? (
+                    <ContributionItem
+                      isDragging
+                      key={activeId}
+                      id={activeId}
+                      index={0} // TODO: Use correct index
+                      name={`To "${accounts[activeContributionRule.accountId]?.name || 'Unknown'}" (${accountTypeForDisplay(accounts[activeContributionRule.accountId]?.type)})`}
+                      desc={getContributionRuleDesc(activeContributionRule)}
+                      leftAddOnCharacter={String(activeContributionRule.rank)}
+                      onDropdownClickEdit={() => {
+                        setContributionRuleDialogOpen(true);
+                        setSelectedContributionRuleID(activeId);
+                      }}
+                      onDropdownClickDelete={() => {
+                        setContributionRuleToDelete({ id: activeId, name: 'Contribution Rule ' + (0 + 1) }); // TODO: Use correct index
+                      }}
+                    />
+                  ) : null}
+                </DragOverlay>
               </DndContext>
               <div className="mt-auto flex items-center justify-end">
                 <Button outline onClick={() => setContributionRuleDialogOpen(true)} disabled={!!selectedContributionRuleID}>
