@@ -23,7 +23,7 @@ export default function MobileHeader({ onMenuClick, currentPageTitle, currentPag
         <Icon aria-hidden="true" className="text-primary size-5" />
         {currentPageTitle}
       </div>
-      <a className="focus-outline" href="#">
+      <a className="focus-outline shrink-0" href="#">
         <span className="sr-only">Your profile</span>
         <Image alt="" src={profileLink} className="size-8 rounded-full" width={32} height={32} />
       </a>
