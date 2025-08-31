@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { PiggyBankIcon } from 'lucide-react';
+import { HandCoinsIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller, FieldErrors } from 'react-hook-form';
@@ -97,7 +97,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     <>
       <DialogTitle>
         <div className="flex items-center gap-4">
-          <PiggyBankIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
+          <HandCoinsIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
           <span>{selectedContributionRuleID ? 'Edit Contribution Rule' : 'New Contribution Rule'}</span>
         </div>
       </DialogTitle>

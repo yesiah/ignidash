@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef, MutableRefObject, useMemo } f
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
-import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon } from 'lucide-react';
+import { CalendarIcon, BanknoteArrowDownIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
@@ -188,7 +188,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
     <>
       <DialogTitle>
         <div className="flex items-center gap-4">
-          <BanknoteArrowUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
+          <BanknoteArrowDownIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
           <span>{selectedExpenseID ? 'Edit Expense' : 'New Expense'}</span>
         </div>
       </DialogTitle>
