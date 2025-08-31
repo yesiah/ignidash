@@ -13,24 +13,29 @@ const sharedContributionSchema = z.object({
   incomeIds: z.array(z.string()).optional(),
 });
 
-export const contributionFormSchema = z.discriminatedUnion('contributionType', [
-  z.object({
-    ...sharedContributionSchema.shape,
-    contributionType: z.literal('dollarAmount'),
-    dollarAmount: currencyFieldForbidsZero('Dollar amount must be greater than zero'),
-  }),
+export const contributionFormSchema = z
+  .discriminatedUnion('contributionType', [
+    z.object({
+      ...sharedContributionSchema.shape,
+      contributionType: z.literal('dollarAmount'),
+      dollarAmount: currencyFieldForbidsZero('Dollar amount must be greater than zero'),
+    }),
 
-  z.object({
-    ...sharedContributionSchema.shape,
-    contributionType: z.literal('percentRemaining'),
-    percentRemaining: percentageField(0, 100, 'Percentage of remaining funds'),
-  }),
+    z.object({
+      ...sharedContributionSchema.shape,
+      contributionType: z.literal('percentRemaining'),
+      percentRemaining: percentageField(0, 100, 'Percentage of remaining funds'),
+    }),
 
-  z.object({
-    ...sharedContributionSchema.shape,
-    contributionType: z.literal('unlimited'),
-  }),
-]);
+    z.object({
+      ...sharedContributionSchema.shape,
+      contributionType: z.literal('unlimited'),
+    }),
+  ])
+  .refine((data) => data.accountId !== '', {
+    message: 'Account must be selected',
+    path: ['accountId'],
+  });
 
 export type ContributionInputs = z.infer<typeof contributionFormSchema>;
 export type BaseContributionInputs = z.infer<typeof baseContributionSchema>;
