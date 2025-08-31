@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { HandCoinsIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch, Controller, FieldErrors } from 'react-hook-form';
+import { useForm, useWatch, FieldErrors } from 'react-hook-form';
 
 import {
   useUpdateContributionRules,
@@ -18,7 +18,6 @@ import { contributionFormSchema, type ContributionInputs } from '@/lib/schemas/c
 import { accountTypeForDisplay, accountTypeRequiresIncomeForContributions } from '@/lib/schemas/account-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
-import { Combobox, ComboboxLabel, ComboboxDescription, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
@@ -107,37 +106,16 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
             <FieldGroup>
               <Field>
                 <Label>To Account</Label>
-                <Controller
-                  name="accountId"
-                  control={control}
-                  render={({ field: { onChange, value, name } }) => (
-                    <Combobox
-                      name={name}
-                      options={accountOptions}
-                      displayValue={(account) => account?.name}
-                      placeholder="Select account&hellip;"
-                      value={accountOptions.find((account) => account.id === value) || null}
-                      onChange={(account) => onChange(account?.id || null)}
-                      autoFocus={selectedContributionRuleID === null}
-                      invalid={!!errors.accountId}
-                      filter={(account, query) => {
-                        if (!account) return false;
-
-                        return (
-                          account.name.toLowerCase().includes(query.toLowerCase()) ||
-                          account.type.toLowerCase().includes(query.toLowerCase())
-                        );
-                      }}
-                    >
-                      {(account) => (
-                        <ComboboxOption value={account}>
-                          <ComboboxLabel>{account.name}</ComboboxLabel>
-                          <ComboboxDescription>{accountTypeForDisplay(account.type)}</ComboboxDescription>
-                        </ComboboxOption>
-                      )}
-                    </Combobox>
-                  )}
-                />
+                <Select {...register('accountId')} name="accountId" defaultValue="" invalid={!!errors.accountId}>
+                  <option value="" disabled>
+                    Select account&hellip;
+                  </option>
+                  {accountOptions.map((account) => (
+                    <option key={account.id} value={account.id}>
+                      {account.name} | {accountTypeForDisplay(account.type)}
+                    </option>
+                  ))}
+                </Select>
                 {errors.accountId && <ErrorMessage>{errors.accountId?.message}</ErrorMessage>}
               </Field>
               {selectedAccount && accountTypeRequiresIncomeForContributions(selectedAccount.type) && (
