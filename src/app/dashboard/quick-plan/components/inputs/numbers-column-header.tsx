@@ -32,6 +32,7 @@ export default function NumbersColumnHeader() {
             surfaceColor="emphasized"
           />
         }
+        className="w-96 border-r"
       />
 
       <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title={titleComponent}>

@@ -15,7 +15,7 @@ export default function QuickPlanPage() {
       </MainArea>
       <SecondaryColumn>
         <NumbersColumnHeader />
-        <div className="flex h-[calc(100%-4.3125rem)] flex-col">
+        <div className="flex h-[calc(100%-4.3125rem)] flex-col pt-[4.3125rem]">
           <NumbersColumnSections />
         </div>
       </SecondaryColumn>

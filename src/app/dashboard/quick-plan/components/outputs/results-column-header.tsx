@@ -14,6 +14,7 @@ export default function ResultsColumnHeader() {
       title="Results"
       icon={PresentationChartLineIcon}
       iconButton={<IconButton icon={icon} label={label} onClick={handleClick} className={className} surfaceColor="emphasized" />}
+      className="w-[calc(100%-42rem)] group-data-[state=collapsed]/sidebar:w-[calc(100%-28rem)]"
     />
   );
 }
