@@ -147,7 +147,10 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                 )}
                 {isRothAccount(type) && (
                   <Field>
-                    <Label htmlFor="contributions">Contributions</Label>
+                    <Label htmlFor="contributions" className="flex w-full items-center justify-between">
+                      <span className="whitespace-nowrap">Contributions</span>
+                      <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                    </Label>
                     <NumberInputV2
                       name="contributions"
                       control={control}
