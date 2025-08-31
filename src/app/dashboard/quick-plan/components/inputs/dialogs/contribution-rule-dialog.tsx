@@ -105,7 +105,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
           <DialogBody>
             <FieldGroup>
               <Field>
-                <Label>To Account</Label>
+                <Label htmlFor="accountId">To Account</Label>
                 <Select {...register('accountId')} name="accountId" defaultValue="" invalid={!!errors.accountId}>
                   <option value="" disabled>
                     Select account&hellip;
@@ -141,7 +141,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 </Field>
                 {contributionType === 'dollarAmount' && (
                   <Field>
-                    <Label>Dollar Amount</Label>
+                    <Label htmlFor="dollarAmount">Dollar Amount</Label>
                     <NumberInputV2
                       name="dollarAmount"
                       control={control}
@@ -160,7 +160,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 )}
                 {contributionType === 'percentRemaining' && (
                   <Field>
-                    <Label>% Remaining</Label>
+                    <Label htmlFor="percentRemaining">% Remaining</Label>
                     <NumberInputV2
                       name="percentRemaining"
                       control={control}
