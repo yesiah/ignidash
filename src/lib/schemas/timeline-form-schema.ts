@@ -25,9 +25,9 @@ export const timelineFormSchema = z
       min: 'Life expectancy must be at least 50 years',
       max: 'Life expectancy must be at most 110 years',
     }),
-    currentAge: ageField(16, 100, {
-      min: 'You must be at least 16 years old to use this calculator',
-      max: 'Age cannot exceed 100 years',
+    currentAge: ageField(13, 100, {
+      min: 'Age must be at least 13 years',
+      max: 'Age must be at most 100 years',
     }),
     retirementStrategy: retirementStrategySchema,
   })
