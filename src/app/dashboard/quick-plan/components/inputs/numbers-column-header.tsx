@@ -32,7 +32,7 @@ export default function NumbersColumnHeader() {
             surfaceColor="emphasized"
           />
         }
-        className="w-96 border-r"
+        className="left-76 w-96 border-r group-data-[state=collapsed]/sidebar:left-20"
       />
 
       <Drawer open={preferencesOpen} setOpen={setPreferencesOpen} title={titleComponent}>
