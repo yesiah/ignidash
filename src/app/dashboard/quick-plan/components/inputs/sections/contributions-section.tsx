@@ -127,8 +127,8 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
           <Field>
             <Label className="sr-only">Base Rule</Label>
             <Select name="status" value={baseContributionRule.type} onChange={(e) => updateBaseContributionRule('type', e.target.value)}>
-              <option value="spend">Spend</option>
-              <option value="save">Save</option>
+              <option value="spend">Spend anything left</option>
+              <option value="save">Save anything left</option>
             </Select>
             <Description className="sr-only">Allocate any leftover cash after your contribution rules are applied.</Description>
           </Field>
