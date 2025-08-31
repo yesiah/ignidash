@@ -1,12 +1,6 @@
 'use client';
 
-// import { useState } from 'react';
-
-// import { Button } from '@/components/catalyst/button';
 import {
-  // usePreferencesData,
-  // useUpdatePreferences,
-  // useResetStore,
   useMarketAssumptionsData,
   useUpdateMarketAssumptions,
   useStocksRealReturn,
@@ -22,12 +16,6 @@ import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/ca
 import { Divider } from '@/components/catalyst/divider';
 
 export default function PreferencesDrawer() {
-  // const [isDeleting, setIsDeleting] = useState(false);
-
-  // const preferences = usePreferencesData();
-  // const updatePreferences = useUpdatePreferences();
-  // const resetStore = useResetStore();
-
   const marketAssumptions = useMarketAssumptionsData();
   const updateMarketAssumptions = useUpdateMarketAssumptions();
 
@@ -156,50 +144,6 @@ export default function PreferencesDrawer() {
           </form>
         </Card>
       </SectionContainer>
-      {/* <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Data Storage" />
-        <Card>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <Fieldset aria-label="Data storage configuration">
-              <FieldGroup>
-                <Field>
-                  <Label htmlFor="data-storage">Data Persistence</Label>
-                  <Select
-                    id="data-storage"
-                    name="data-storage"
-                    value={preferences.dataStorage}
-                    onChange={(e) => updatePreferences('dataStorage', e.target.value)}
-                  >
-                    <option value="localStorage">Local Storage</option>
-                    <option value="none">No Data Persistence</option>
-                  </Select>
-                  <Description>Save your data locally on this device, or work without saving between sessions.</Description>
-                </Field>
-                <Divider />
-                <Field>
-                  <Label>Delete Saved Data</Label>
-                  <Button
-                    data-slot="control"
-                    type="button"
-                    color="red"
-                    onClick={async () => {
-                      setIsDeleting(true);
-                      await new Promise((resolve) => setTimeout(resolve, 500));
-                      resetStore();
-                      setIsDeleting(false);
-                    }}
-                    className="w-full"
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? 'Deleting...' : 'Delete'}
-                  </Button>
-                  <Description>This will permanently delete all saved data and reset to defaults.</Description>
-                </Field>
-              </FieldGroup>
-            </Fieldset>
-          </form>
-        </Card>
-      </SectionContainer> */}
     </>
   );
 }
