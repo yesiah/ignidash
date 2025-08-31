@@ -43,13 +43,11 @@ import SortableContributionItem from '../sortable-contribution-item';
 import ContributionItem from '../contribution-item';
 
 function getContributionRuleDesc(contributionInputs: ContributionInputs) {
-  const limitText = contributionInputs.maxValue ? ` | Up to: ${formatNumber(contributionInputs.maxValue, 2, '$')}` : '';
-
   switch (contributionInputs.contributionType) {
     case 'dollarAmount':
-      return `${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'}${limitText}`;
+      return `${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'}`;
     case 'percentRemaining':
-      return `${contributionInputs.percentRemaining}% of remaining${limitText}`;
+      return `${contributionInputs.percentRemaining}% remaining`;
     case 'unlimited':
       return 'Unlimited';
   }
@@ -161,7 +159,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                         key={id}
                         id={id}
                         index={index}
-                        name={`To "${accounts[contributionRule.accountId]?.name || 'Unknown'}" (${accountTypeForDisplay(accounts[contributionRule.accountId]?.type)})`}
+                        name={`${accounts[contributionRule.accountId]?.name || 'Unknown'} | ${accountTypeForDisplay(accounts[contributionRule.accountId]?.type)}`}
                         desc={getContributionRuleDesc({ id, ...contributionRule })}
                         leftAddOnCharacter={String(index + 1)}
                         onDropdownClickEdit={() => {

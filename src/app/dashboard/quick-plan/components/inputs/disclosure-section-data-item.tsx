@@ -4,7 +4,7 @@ import { GripVerticalIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 
-const colors = ['bg-rose-400', 'bg-rose-500', 'bg-rose-600'];
+const colors = ['bg-rose-400', 'bg-rose-500', 'bg-rose-600', 'bg-rose-700', 'bg-rose-800'];
 
 interface DisclosureSectionDataItemProps {
   id: string;
