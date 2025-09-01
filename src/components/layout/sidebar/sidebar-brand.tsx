@@ -18,7 +18,7 @@ export default function SidebarBrand({ onClose }: SidebarBrandProps) {
           <div className="px-1">
             <FireIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
           </div>
-          <span className="ml-1 text-2xl font-extrabold tracking-tight uppercase">Ignidash</span>
+          <span className="ml-1 text-2xl font-bold tracking-tight uppercase">Ignidash</span>
         </Link>
         <SidebarToggle />
       </div>
