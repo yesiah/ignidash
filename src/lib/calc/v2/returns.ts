@@ -18,7 +18,7 @@ export class ReturnsProcessor {
   ) {}
 
   process(): ReturnsData {
-    const returns = this.returnsProvider.getReturns(this.simulationState.year);
+    const returns = this.returnsProvider.getReturns(this.simulationState.time.year);
 
     this.returnRates = returns.returns;
     this.inflationRate = returns.metadata.inflationRate;

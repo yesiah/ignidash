@@ -14,7 +14,7 @@ export class Phase {
   getCurrentPhase(state: SimulationState): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
-        const date = new Date(state.date);
+        const date = new Date(state.time.date);
 
         const yearsFromNow = this.getYearsFromNow(date);
         const age = this.timeline.currentAge + yearsFromNow;

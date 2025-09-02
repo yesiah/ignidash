@@ -18,7 +18,7 @@ export class ExpensesProcessor {
 
     const totalExpenses = activeExpenses.reduce((sum, expense) => {
       // TODO: Fix partial year timeframe expense application
-      return sum + expense.calculateAnnualAmount(returnsData.inflationRate, this.simulationState.year);
+      return sum + expense.calculateAnnualAmount(returnsData.inflationRate, this.simulationState.time.year);
     }, 0);
 
     return { totalExpenses };
@@ -63,8 +63,8 @@ export class Expense {
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
-    const simDate = new Date(simulationState.date);
-    const simAge = simulationState.age;
+    const simDate = new Date(simulationState.time.date);
+    const simAge = simulationState.time.age;
 
     let simTimeIsAfterStart = false;
     let simTimeIsBeforeEnd = false;

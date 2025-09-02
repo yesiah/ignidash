@@ -29,14 +29,18 @@ export interface SimulationResult {
   data: Array<SimulationDataPoint>;
 }
 
+export interface SimulationContext {
+  readonly startingAge: number;
+  readonly lifeExpectancy: number;
+}
+
 export interface SimulationState {
-  date: Date;
-  age: number;
-  year: number;
-  lifeExpectancy: number;
+  time: {
+    date: Date;
+    age: number;
+    year: number;
+  };
   portfolio: Portfolio;
-  incomes: Incomes;
-  expenses: Expenses;
   phase: Phase;
 }
 
@@ -44,16 +48,8 @@ export class FinancialSimulationEngine {
   constructor(protected inputs: QuickPlanInputs) {}
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
-    const simulationState: SimulationState = {
-      date: new Date(),
-      age: timeline.currentAge,
-      year: 0,
-      lifeExpectancy: timeline.lifeExpectancy,
-      portfolio: new Portfolio(Object.values(this.inputs.accounts)),
-      incomes: new Incomes(Object.values(this.inputs.incomes)),
-      expenses: new Expenses(Object.values(this.inputs.expenses)),
-      phase: new Phase(timeline),
-    };
+    const simulationContext: SimulationContext = this.initSimulationContext(timeline);
+    const simulationState: SimulationState = this.initSimulationState(timeline);
 
     const resultData: Array<SimulationDataPoint> = [
       {
@@ -68,13 +64,16 @@ export class FinancialSimulationEngine {
       },
     ];
 
+    const incomes = new Incomes(Object.values(this.inputs.incomes));
+    const expenses = new Expenses(Object.values(this.inputs.expenses));
+
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
-    const incomesProcessor = new IncomesProcessor(simulationState, simulationState.incomes);
+    const incomesProcessor = new IncomesProcessor(simulationState, incomes);
     const taxProcessor = new TaxProcessor(simulationState);
-    const expensesProcessor = new ExpensesProcessor(simulationState, simulationState.expenses);
+    const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState);
 
-    const simulationYears = Math.ceil(simulationState.lifeExpectancy - simulationState.age);
+    const simulationYears = Math.ceil(simulationContext.lifeExpectancy - simulationContext.startingAge);
     for (let year = 1; year <= simulationYears; year++) {
       this.incrementSimulationTime(simulationState);
 
@@ -87,7 +86,7 @@ export class FinancialSimulationEngine {
       taxProcessor.process(); // Needs incomes, withdrawals, rebalance
 
       resultData.push({
-        date: simulationState.date.toISOString().split('T')[0],
+        date: simulationState.time.date.toISOString().split('T')[0],
         portfolio: portfolioData,
         incomes: incomesData,
         incomeTaxes: incomeTaxesData,
@@ -110,9 +109,28 @@ export class FinancialSimulationEngine {
   }
 
   private incrementSimulationTime(simulationState: SimulationState): void {
-    simulationState.date = new Date(simulationState.date.getFullYear() + 1, simulationState.date.getMonth(), 1);
-    simulationState.age += 1;
-    simulationState.year += 1;
+    simulationState.time.date = new Date(simulationState.time.date.getFullYear() + 1, simulationState.time.date.getMonth(), 1);
+    simulationState.time.age += 1;
+    simulationState.time.year += 1;
+  }
+
+  private initSimulationContext(timeline: TimelineInputs): SimulationContext {
+    return {
+      startingAge: timeline.currentAge,
+      lifeExpectancy: timeline.lifeExpectancy,
+    };
+  }
+
+  private initSimulationState(timeline: TimelineInputs): SimulationState {
+    return {
+      time: {
+        date: new Date(),
+        age: timeline.currentAge,
+        year: 0,
+      },
+      portfolio: new Portfolio(Object.values(this.inputs.accounts)),
+      phase: new Phase(timeline),
+    };
   }
 }
 
