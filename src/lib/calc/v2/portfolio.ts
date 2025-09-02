@@ -78,6 +78,7 @@ export class SavingsAccount extends Account {
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
     const cashReturnsAmount = this.currentValue * returns.cash;
     this.currentValue += cashReturnsAmount;
+
     return {
       cash: cashReturnsAmount,
       bonds: 0,
@@ -88,10 +89,15 @@ export class SavingsAccount extends Account {
 
 export class InvestmentAccount extends Account {
   private percentBonds: number;
+  private costBasis: number | undefined;
+  private contributions: number | undefined;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
     super(data.currentValue);
     this.percentBonds = data.percentBonds ?? 0;
+
+    if ('costBasis' in data) this.costBasis = data.costBasis;
+    if ('contributions' in data) this.contributions = data.contributions;
   }
 
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
