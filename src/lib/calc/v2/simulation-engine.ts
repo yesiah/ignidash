@@ -74,7 +74,7 @@ export class FinancialSimulationEngine {
       const expensesData = expensesProcessor.process(returnsData);
       const netCashFlow = incomeTaxesData.netIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(netCashFlow);
-      const taxesData = taxProcessor.process(); // Needs incomes, withdrawals, rebalance
+      const taxesData = taxProcessor.process();
 
       resultData.push({
         date: simulationState.time.date.toISOString().split('T')[0],

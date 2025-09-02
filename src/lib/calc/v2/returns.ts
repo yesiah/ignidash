@@ -9,9 +9,6 @@ export interface ReturnsData {
 }
 
 export class ReturnsProcessor {
-  private returnRates: AssetReturnRates | null = null;
-  private inflationRate: number | null = null;
-
   constructor(
     private simulationState: SimulationState,
     private returnsProvider: ReturnsProvider
@@ -20,13 +17,11 @@ export class ReturnsProcessor {
   process(): ReturnsData {
     const returns = this.returnsProvider.getReturns(this.simulationState.time.year);
 
-    this.returnRates = returns.returns;
-    this.inflationRate = returns.metadata.inflationRate;
+    const returnRates = returns.returns!;
+    const inflationRate = returns.metadata.inflationRate!;
 
-    return {
-      returnAmounts: this.simulationState.portfolio.applyReturns(this.returnRates!),
-      returnRates: this.returnRates!,
-      inflationRate: this.inflationRate!,
-    };
+    const returnAmounts = this.simulationState.portfolio.applyReturns(returnRates);
+
+    return { returnAmounts, returnRates, inflationRate };
   }
 }
