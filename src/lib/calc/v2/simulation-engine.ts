@@ -61,7 +61,8 @@ export interface SimulationState {
   date: Date;
   interval: SimulationTimeInterval;
   age: number;
-  years: number;
+  year: number;
+  period: number;
   lifeExpectancy: number;
   portfolio: Portfolio;
   incomes: Incomes;
@@ -77,7 +78,8 @@ export class FinancialSimulationEngine {
       date: new Date(),
       interval: interval,
       age: timeline.currentAge,
-      years: 0,
+      year: 0,
+      period: 0,
       lifeExpectancy: timeline.lifeExpectancy,
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
       incomes: new Incomes(Object.values(this.inputs.incomes)),
@@ -99,7 +101,7 @@ export class FinancialSimulationEngine {
       },
     ];
 
-    const returnsProcessor = new ReturnsProcessor(simulationState);
+    const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
     const incomesProcessor = new IncomesProcessor(simulationState);
     const taxProcessor = new TaxProcessor(simulationState);
     const expensesProcessor = new ExpensesProcessor(simulationState);
@@ -149,13 +151,15 @@ export class FinancialSimulationEngine {
       case 'month':
         simulationState.date = new Date(simulationState.date.getFullYear(), simulationState.date.getMonth() + 1, 1);
         simulationState.age += 1 / 12;
-        simulationState.years += 1 / 12;
+        simulationState.year += 1 / 12;
+        simulationState.period += 1;
         break;
 
       case 'year':
         simulationState.date = new Date(simulationState.date.getFullYear() + 1, simulationState.date.getMonth(), 1);
         simulationState.age += 1;
-        simulationState.years += 1;
+        simulationState.year += 1;
+        simulationState.period += 1;
         break;
     }
   }

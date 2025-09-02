@@ -47,6 +47,7 @@ export const accountFormSchema = z.discriminatedUnion('type', [
 ]);
 
 export type AccountInputs = z.infer<typeof accountFormSchema>;
+export type InvestmentAccountInputs = AccountInputs & { type: InvestmentAccountType };
 
 export type RothAccountType = 'roth401k' | 'rothIra';
 export type TraditionalAccountType = '401k' | 'ira';
