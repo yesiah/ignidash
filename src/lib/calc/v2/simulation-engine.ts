@@ -91,7 +91,7 @@ export class FinancialSimulationEngine {
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
     const incomesProcessor = new IncomesProcessor(simulationState, simulationState.incomes);
     const taxProcessor = new TaxProcessor(simulationState);
-    const expensesProcessor = new ExpensesProcessor(simulationState);
+    const expensesProcessor = new ExpensesProcessor(simulationState, simulationState.expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState);
 
     const simulationYears = Math.ceil(simulationState.lifeExpectancy - simulationState.age);
@@ -101,7 +101,7 @@ export class FinancialSimulationEngine {
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
       const _incomeTaxesData = taxProcessor.processIncomeTax(incomesData);
-      expensesProcessor.process();
+      const _expensesData = expensesProcessor.process(returnsData);
       portfolioProcessor.process(); // See function for dependencies
       taxProcessor.process(); // Needs incomes, withdrawals, rebalance
 
