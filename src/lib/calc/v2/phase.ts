@@ -11,7 +11,7 @@ export interface PhaseData {
 export class Phase {
   constructor(private timeline: TimelineInputs) {}
 
-  getCurrentPhaseName(state: SimulationState): PhaseName {
+  getCurrentPhase(state: SimulationState): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
         const date = new Date(state.date);
@@ -19,10 +19,10 @@ export class Phase {
         const yearsFromNow = this.getYearsFromNow(date);
         const age = this.timeline.currentAge + yearsFromNow;
 
-        return age < this.timeline.retirementStrategy.retirementAge ? 'accumulation' : 'retirement';
+        return { name: age < this.timeline.retirementStrategy.retirementAge ? 'accumulation' : 'retirement' };
       case 'swrTarget':
         // TODO: Implement SWR Target logic.
-        return 'retirement';
+        return { name: 'retirement' };
     }
   }
 

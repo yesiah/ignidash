@@ -8,19 +8,11 @@ import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest
 import { Portfolio, PortfolioData, PortfolioProcessor } from './portfolio';
 import { Phase, PhaseData } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
-import { Incomes, IncomesProcessor } from './incomes';
-import { Expenses, ExpensesProcessor } from './expenses';
+import { Incomes, IncomesProcessor, type IncomesData } from './incomes';
+import { Expenses, ExpensesProcessor, type ExpensesData } from './expenses';
 import { TaxProcessor, type IncomeTaxesData, type TaxesData } from './taxes';
 
 type ISODateString = string;
-
-interface IncomesData {
-  temp: string;
-}
-
-interface ExpensesData {
-  temp: string;
-}
 
 interface ContributionsData {
   temp: string;
@@ -80,7 +72,7 @@ export class FinancialSimulationEngine {
         incomes: null,
         incomeTaxes: null,
         expenses: null,
-        phase: { name: simulationState.phase.getCurrentPhaseName(simulationState) },
+        phase: simulationState.phase.getCurrentPhase(simulationState),
         taxes: null,
         contributions: null,
         withdrawals: null,
@@ -100,12 +92,23 @@ export class FinancialSimulationEngine {
 
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
-      const _incomeTaxesData = taxProcessor.processIncomeTax(incomesData);
-      const _expensesData = expensesProcessor.process(returnsData);
+      const incomeTaxesData = taxProcessor.processIncomeTax(incomesData);
+      const expensesData = expensesProcessor.process(returnsData);
       portfolioProcessor.process(); // See function for dependencies
       taxProcessor.process(); // Needs incomes, withdrawals, rebalance
 
-      resultData.push(this.getDataPointFromSimulationState(simulationState));
+      resultData.push({
+        date: simulationState.date.toISOString().split('T')[0],
+        portfolio: { totalValue: simulationState.portfolio.getTotalValue() },
+        incomes: incomesData,
+        incomeTaxes: incomeTaxesData,
+        expenses: expensesData,
+        phase: simulationState.phase.getCurrentPhase(simulationState),
+        taxes: null,
+        contributions: null,
+        withdrawals: null,
+        returns: returnsData,
+      });
     }
 
     return { data: resultData };
@@ -117,21 +120,6 @@ export class FinancialSimulationEngine {
     // Rebalance Portfolio (if necessary)
     // Check for phase change
     // Collect data point for loop
-  }
-
-  private getDataPointFromSimulationState(simulationState: SimulationState): SimulationDataPoint {
-    return {
-      date: simulationState.date.toISOString().split('T')[0],
-      portfolio: { totalValue: simulationState.portfolio.getTotalValue() },
-      incomes: null,
-      incomeTaxes: null,
-      expenses: null,
-      phase: { name: simulationState.phase.getCurrentPhaseName(simulationState) },
-      taxes: null,
-      contributions: null,
-      withdrawals: null,
-      returns: null,
-    };
   }
 
   private incrementSimulationTime(simulationState: SimulationState): void {
