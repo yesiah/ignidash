@@ -69,7 +69,11 @@ export interface AccountData {
 }
 
 export abstract class Account {
-  constructor(protected currentValue: number) {}
+  constructor(
+    protected currentValue: number,
+    protected name: string,
+    protected id: string
+  ) {}
 
   getCurrentValue(): number {
     return this.currentValue;
@@ -80,7 +84,7 @@ export abstract class Account {
 
 export class SavingsAccount extends Account {
   constructor(data: AccountInputs) {
-    super(data.currentValue);
+    super(data.currentValue, data.name, data.id);
   }
 
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
@@ -101,7 +105,7 @@ export class InvestmentAccount extends Account {
   private contributions: number | undefined;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
-    super(data.currentValue);
+    super(data.currentValue, data.name, data.id);
     this.percentBonds = data.percentBonds ?? 0;
 
     if ('costBasis' in data) this.costBasis = data.costBasis;
