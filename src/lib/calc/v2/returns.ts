@@ -1,4 +1,4 @@
-import { SimulationState } from './simulation-engine';
+import type { SimulationState } from './simulation-engine';
 import { ReturnsProvider } from '../returns-provider';
 import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
 
