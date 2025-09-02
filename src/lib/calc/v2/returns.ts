@@ -15,12 +15,10 @@ export class ReturnsProcessor {
   ) {}
 
   process(): ReturnsData {
-    const returns = this.returnsProvider.getReturns(this.simulationState.time.year);
-
     const {
       returns: returnRates,
       metadata: { inflationRate },
-    } = returns;
+    } = this.returnsProvider.getReturns(this.simulationState.time.year);
 
     const returnAmounts = this.simulationState.portfolio.applyReturns(returnRates);
 
