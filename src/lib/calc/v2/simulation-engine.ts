@@ -54,7 +54,6 @@ export interface SimulationState {
   date: Date;
   age: number;
   year: number;
-  period: number;
   lifeExpectancy: number;
   portfolio: Portfolio;
   incomes: Incomes;
@@ -70,7 +69,6 @@ export class FinancialSimulationEngine {
       date: new Date(),
       age: timeline.currentAge,
       year: 0,
-      period: 0,
       lifeExpectancy: timeline.lifeExpectancy,
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
       incomes: new Incomes(Object.values(this.inputs.incomes)),
@@ -140,7 +138,6 @@ export class FinancialSimulationEngine {
     simulationState.date = new Date(simulationState.date.getFullYear() + 1, simulationState.date.getMonth(), 1);
     simulationState.age += 1;
     simulationState.year += 1;
-    simulationState.period += 1;
   }
 }
 
