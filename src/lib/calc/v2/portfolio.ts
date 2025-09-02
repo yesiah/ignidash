@@ -1,4 +1,4 @@
-import type { AccountInputs, InvestmentAccountType, InvestmentAccountInputs } from '@/lib/schemas/account-form-schema';
+import type { AccountInputs, InvestmentAccountType } from '@/lib/schemas/account-form-schema';
 
 import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates } from '../asset';
@@ -25,7 +25,7 @@ export class Portfolio {
   constructor(data: AccountInputs[]) {
     this.accounts = data.map((accountData) => {
       if (accountData.type !== 'savings') {
-        return new InvestmentAccount(accountData as InvestmentAccountInputs);
+        return new InvestmentAccount(accountData);
       } else {
         return new SavingsAccount(accountData);
       }
@@ -64,7 +64,8 @@ export class SavingsAccount extends Account {
   }
 
   applyReturns(returns: AssetReturnRates): void {
-    this.currentValue *= 1 + returns.cash;
+    const cashReturnsAmount = this.currentValue * returns.cash;
+    this.currentValue += cashReturnsAmount;
   }
 }
 
@@ -83,8 +84,11 @@ export class InvestmentAccount extends Account {
     const currentBondsValue = this.currentValue * bondsPercent;
     const currentStocksValue = this.currentValue * stocksPercent;
 
-    const newBondsValue = currentBondsValue * (1 + returns.bonds);
-    const newStocksValue = currentStocksValue * (1 + returns.stocks);
+    const bondReturnsAmount = currentBondsValue * returns.bonds;
+    const newBondsValue = currentBondsValue + bondReturnsAmount;
+
+    const stockReturnsAmount = currentStocksValue * returns.stocks;
+    const newStocksValue = currentStocksValue + stockReturnsAmount;
 
     this.currentValue = newBondsValue + newStocksValue;
     this.percentBonds = (newBondsValue / this.currentValue) * 100;
