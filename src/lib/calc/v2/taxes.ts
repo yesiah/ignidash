@@ -15,8 +15,8 @@ export interface IncomeTaxesData {
 export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
-  process(): void {
-    return;
+  process(): TaxesData {
+    return { temp: 'taxes' };
   }
 
   processIncomeTax(incomesData: IncomesData): IncomeTaxesData {

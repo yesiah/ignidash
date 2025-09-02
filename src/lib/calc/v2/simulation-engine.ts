@@ -6,7 +6,7 @@ import { StochasticReturnsProvider } from '../stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest-returns-provider';
 
 import { Portfolio, PortfolioData, PortfolioProcessor } from './portfolio';
-import { Phase, PhaseData } from './phase';
+import { PhaseIdentifier, PhaseData, PhaseName } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
 import { Incomes, IncomesProcessor, type IncomesData } from './incomes';
 import { Expenses, ExpensesProcessor, type ExpensesData } from './expenses';
@@ -41,28 +41,19 @@ export interface SimulationState {
     year: number;
   };
   portfolio: Portfolio;
-  phase: Phase;
+  phaseName: PhaseName;
 }
 
 export class FinancialSimulationEngine {
   constructor(protected inputs: QuickPlanInputs) {}
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
-    const simulationContext: SimulationContext = this.initSimulationContext(timeline);
-    const simulationState: SimulationState = this.initSimulationState(timeline);
+    const phaseIdentifier = new PhaseIdentifier(timeline);
 
-    const resultData: Array<SimulationDataPoint> = [
-      {
-        date: new Date().toISOString().split('T')[0],
-        portfolio: { totalValue: simulationState.portfolio.getTotalValue(), totalContributions: 0, totalWithdrawals: 0 },
-        incomes: null,
-        incomeTaxes: null,
-        expenses: null,
-        phase: simulationState.phase.getCurrentPhase(simulationState),
-        taxes: null,
-        returns: null,
-      },
-    ];
+    const simulationContext: SimulationContext = this.initSimulationContext(timeline);
+    const simulationState: SimulationState = this.initSimulationState(timeline, phaseIdentifier);
+
+    const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState, phaseIdentifier)];
 
     const incomes = new Incomes(Object.values(this.inputs.incomes));
     const expenses = new Expenses(Object.values(this.inputs.expenses));
@@ -83,7 +74,7 @@ export class FinancialSimulationEngine {
       const expensesData = expensesProcessor.process(returnsData);
       const netCashFlow = incomeTaxesData.netIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(netCashFlow);
-      taxProcessor.process(); // Needs incomes, withdrawals, rebalance
+      const taxesData = taxProcessor.process(); // Needs incomes, withdrawals, rebalance
 
       resultData.push({
         date: simulationState.time.date.toISOString().split('T')[0],
@@ -91,8 +82,8 @@ export class FinancialSimulationEngine {
         incomes: incomesData,
         incomeTaxes: incomeTaxesData,
         expenses: expensesData,
-        phase: simulationState.phase.getCurrentPhase(simulationState),
-        taxes: null,
+        phase: phaseIdentifier.getCurrentPhase(simulationState.time.date),
+        taxes: taxesData,
         returns: returnsData,
       });
     }
@@ -121,7 +112,7 @@ export class FinancialSimulationEngine {
     };
   }
 
-  private initSimulationState(timeline: TimelineInputs): SimulationState {
+  private initSimulationState(timeline: TimelineInputs, phaseIdentifier: PhaseIdentifier): SimulationState {
     return {
       time: {
         date: new Date(),
@@ -129,7 +120,20 @@ export class FinancialSimulationEngine {
         year: 0,
       },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
-      phase: new Phase(timeline),
+      phaseName: phaseIdentifier.getCurrentPhase(new Date()).name,
+    };
+  }
+
+  private initSimulationDataPoint(initialSimulationState: SimulationState, phaseIdentifier: PhaseIdentifier): SimulationDataPoint {
+    return {
+      date: new Date().toISOString().split('T')[0],
+      portfolio: { totalValue: initialSimulationState.portfolio.getTotalValue(), totalContributions: 0, totalWithdrawals: 0 },
+      incomes: null,
+      incomeTaxes: null,
+      expenses: null,
+      phase: phaseIdentifier.getCurrentPhase(initialSimulationState.time.date),
+      taxes: null,
+      returns: null,
     };
   }
 }

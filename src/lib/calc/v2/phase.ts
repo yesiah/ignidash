@@ -1,21 +1,17 @@
 import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
-import { SimulationState } from './simulation-engine';
-
 export type PhaseName = 'accumulation' | 'retirement';
 
 export interface PhaseData {
   name: PhaseName;
 }
 
-export class Phase {
+export class PhaseIdentifier {
   constructor(private timeline: TimelineInputs) {}
 
-  getCurrentPhase(state: SimulationState): PhaseData {
+  getCurrentPhase(date: Date): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
-        const date = new Date(state.time.date);
-
         const yearsFromNow = this.getYearsFromNow(date);
         const age = this.timeline.currentAge + yearsFromNow;
 
