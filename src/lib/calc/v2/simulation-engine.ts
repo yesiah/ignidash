@@ -94,7 +94,8 @@ export class FinancialSimulationEngine {
       const incomesData = incomesProcessor.process(returnsData);
       const incomeTaxesData = taxProcessor.processIncomeTax(incomesData);
       const expensesData = expensesProcessor.process(returnsData);
-      portfolioProcessor.process(); // See function for dependencies
+      const netCashFlow = incomeTaxesData.netIncome - expensesData.totalExpenses;
+      const _portfolioData = portfolioProcessor.process(netCashFlow);
       taxProcessor.process(); // Needs incomes, withdrawals, rebalance
 
       resultData.push({

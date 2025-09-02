@@ -3,15 +3,14 @@ import { ReturnsProvider } from '../returns-provider';
 import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
 
 export interface ReturnsData {
-  amounts: AssetReturnAmounts;
-  rates: AssetReturnRates;
+  returnAmounts: AssetReturnAmounts;
+  returnRates: AssetReturnRates;
   inflationRate: number;
 }
 
 export class ReturnsProcessor {
   private returnRates: AssetReturnRates | null = null;
   private inflationRate: number | null = null;
-  private lastSimulationYear: number | null = null;
 
   constructor(
     private simulationState: SimulationState,
@@ -19,21 +18,14 @@ export class ReturnsProcessor {
   ) {}
 
   process(): ReturnsData {
-    const simulationYear = Math.floor(this.simulationState.year);
+    const returns = this.returnsProvider.getReturns(this.simulationState.year);
 
-    if (this.lastSimulationYear !== simulationYear) {
-      const returns = this.returnsProvider.getReturns(simulationYear);
-
-      this.returnRates = returns.returns;
-      this.inflationRate = returns.metadata.inflationRate;
-      this.lastSimulationYear = simulationYear;
-    }
-
-    const returnRates: AssetReturnRates = this.returnRates!;
+    this.returnRates = returns.returns;
+    this.inflationRate = returns.metadata.inflationRate;
 
     return {
-      amounts: this.simulationState.portfolio.applyReturns(returnRates),
-      rates: returnRates,
+      returnAmounts: this.simulationState.portfolio.applyReturns(this.returnRates!),
+      returnRates: this.returnRates!,
       inflationRate: this.inflationRate!,
     };
   }

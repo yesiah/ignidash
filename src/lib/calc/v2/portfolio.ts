@@ -10,12 +10,12 @@ export interface PortfolioData {
 export class PortfolioProcessor {
   constructor(private simulationState: SimulationState) {}
 
-  process(): void {
+  process(netCashFlow: number): PortfolioData {
     // Process contributions (Needs income, taxes, expenses)
     // Process withdrawals (Needs net cash flow)
     // Process rebalance (Needs final portfolio state)
 
-    return;
+    return { totalValue: this.simulationState.portfolio.getTotalValue() };
   }
 }
 
