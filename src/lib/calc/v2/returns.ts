@@ -1,9 +1,14 @@
 import { SimulationState } from './simulation-engine';
 import { ReturnsProvider } from '../returns-provider';
-import type { AssetReturnRates } from '../asset';
+import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
+
+export interface ReturnsData {
+  amounts: AssetReturnAmounts;
+  rates: AssetReturnRates;
+}
 
 export class ReturnsProcessor {
-  private returns: AssetReturnRates | null = null;
+  private returnRates: AssetReturnRates | null = null;
   private lastSimulationYear: number | null = null;
 
   constructor(
@@ -11,28 +16,26 @@ export class ReturnsProcessor {
     private returnsProvider: ReturnsProvider
   ) {}
 
-  process(): void {
+  process(): ReturnsData {
     const simulationYear = Math.floor(this.simulationState.year);
 
     if (this.lastSimulationYear !== simulationYear) {
-      this.returns = this.returnsProvider.getReturns(simulationYear).returns;
+      this.returnRates = this.returnsProvider.getReturns(simulationYear).returns;
       this.lastSimulationYear = simulationYear;
     }
+
+    const returnRates: AssetReturnRates = this.returnRates!;
 
     switch (this.simulationState.interval) {
       case 'month':
         const monthlyReturns: AssetReturnRates = {
-          stocks: Math.pow(1 + this.returns!.stocks, 1 / 12) - 1,
-          bonds: Math.pow(1 + this.returns!.bonds, 1 / 12) - 1,
-          cash: Math.pow(1 + this.returns!.cash, 1 / 12) - 1,
+          stocks: Math.pow(1 + returnRates.stocks, 1 / 12) - 1,
+          bonds: Math.pow(1 + returnRates.bonds, 1 / 12) - 1,
+          cash: Math.pow(1 + returnRates.cash, 1 / 12) - 1,
         };
-        this.simulationState.portfolio.applyReturns(monthlyReturns);
-        break;
+        return { amounts: this.simulationState.portfolio.applyReturns(monthlyReturns), rates: returnRates };
       case 'year':
-        this.simulationState.portfolio.applyReturns(this.returns!);
-        break;
+        return { amounts: this.simulationState.portfolio.applyReturns(returnRates), rates: returnRates };
     }
-
-    return;
   }
 }

@@ -7,7 +7,7 @@ import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest
 
 import { Portfolio, PortfolioData, PortfolioProcessor } from './portfolio';
 import { Phase, PhaseData } from './phase';
-import { ReturnsProcessor } from './returns';
+import { ReturnsProcessor, type ReturnsData } from './returns';
 import { Incomes, IncomesProcessor } from './incomes';
 import { Expenses, ExpensesProcessor } from './expenses';
 import { TaxProcessor } from './taxes';
@@ -36,11 +36,6 @@ interface WithdrawalsData {
   temp: string;
 }
 
-interface ReturnsData {
-  temp: string;
-}
-
-// NOTE: SimulationDataPoint must be serializable for web workers.
 export interface SimulationDataPoint {
   date: ISODateString;
   portfolio: PortfolioData;
