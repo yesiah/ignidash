@@ -58,7 +58,7 @@ export class FinancialSimulationEngine {
     const resultData: Array<SimulationDataPoint> = [
       {
         date: new Date().toISOString().split('T')[0],
-        portfolio: { totalValue: simulationState.portfolio.getTotalValue() },
+        portfolio: { totalValue: simulationState.portfolio.getTotalValue(), totalContributions: 0, totalWithdrawals: 0 },
         incomes: null,
         incomeTaxes: null,
         expenses: null,

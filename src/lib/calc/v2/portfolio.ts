@@ -5,6 +5,8 @@ import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
 
 export interface PortfolioData {
   totalValue: number;
+  totalWithdrawals: number;
+  totalContributions: number;
 }
 
 export class PortfolioProcessor {
@@ -15,7 +17,13 @@ export class PortfolioProcessor {
     // Process withdrawals (Needs net cash flow)
     // Process rebalance (Needs final portfolio state)
 
-    return { totalValue: this.simulationState.portfolio.getTotalValue() };
+    if (netCashFlow > 0) {
+      // Handle contributions
+    } else if (netCashFlow < 0) {
+      // Handle withdrawals
+    }
+
+    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals: 0, totalContributions: 0 };
   }
 }
 
