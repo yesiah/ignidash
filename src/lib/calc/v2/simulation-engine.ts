@@ -37,10 +37,6 @@ export interface SimulationContext {
   readonly birthDate: Date;
 }
 
-interface AnnualAccumulator {
-  temp: string;
-}
-
 export interface SimulationState {
   time: {
     date: Date;
@@ -49,7 +45,12 @@ export interface SimulationState {
   };
   portfolio: Portfolio;
   phaseName: PhaseName;
-  accumulator?: AnnualAccumulator;
+  annualData: {
+    returns: ReturnsData[];
+    incomes: IncomesData[];
+    expenses: ExpensesData[];
+    portfolio: PortfolioData[];
+  };
 }
 
 export class FinancialSimulationEngine {
@@ -68,9 +69,9 @@ export class FinancialSimulationEngine {
 
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
     const incomesProcessor = new IncomesProcessor(simulationState, incomes);
-    const taxProcessor = new TaxProcessor(simulationState);
     const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState);
+    const taxProcessor = new TaxProcessor(simulationState);
 
     let monthCount = 0;
     while (simulationState.time.date < simulationContext.endDate) {
@@ -84,6 +85,11 @@ export class FinancialSimulationEngine {
       const portfolioData = portfolioProcessor.process(grossCashFlow); // accumulate (sum)
       const taxesData = taxProcessor.process(incomesData); // accumulate (sum)
 
+      simulationState.annualData.returns.push(returnsData);
+      simulationState.annualData.incomes.push(incomesData);
+      simulationState.annualData.expenses.push(expensesData);
+      simulationState.annualData.portfolio.push(portfolioData);
+
       if (monthCount % 12 === 0) {
         resultData.push({
           date: simulationState.time.date.toISOString().split('T')[0],
@@ -94,6 +100,13 @@ export class FinancialSimulationEngine {
           taxes: taxesData,
           returns: returnsData,
         });
+
+        simulationState.annualData = {
+          returns: [],
+          incomes: [],
+          expenses: [],
+          portfolio: [],
+        };
       }
     }
 
@@ -126,6 +139,12 @@ export class FinancialSimulationEngine {
       },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
       phaseName: phaseIdentifier.getCurrentPhase(new Date()).name,
+      annualData: {
+        returns: [],
+        incomes: [],
+        expenses: [],
+        portfolio: [],
+      },
     };
   }
 
