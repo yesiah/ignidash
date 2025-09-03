@@ -29,8 +29,11 @@ export interface SimulationResult {
 }
 
 export interface SimulationContext {
-  readonly startingAge: number;
-  readonly lifeExpectancy: number;
+  readonly startAge: number;
+  readonly endAge: number;
+  readonly yearsToSimulate: number;
+  readonly startDate: Date;
+  readonly endDate: Date;
 }
 
 export interface SimulationState {
@@ -63,8 +66,7 @@ export class FinancialSimulationEngine {
     const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState);
 
-    const simulationYears = Math.ceil(simulationContext.lifeExpectancy - simulationContext.startingAge);
-    for (let year = 1; year <= simulationYears; year++) {
+    for (let year = 1; year <= simulationContext.yearsToSimulate; year++) {
       this.incrementSimulationTime(simulationState);
 
       const returnsData = returnsProcessor.process();
@@ -103,10 +105,13 @@ export class FinancialSimulationEngine {
   }
 
   private initSimulationContext(timeline: TimelineInputs): SimulationContext {
-    return {
-      startingAge: timeline.currentAge,
-      lifeExpectancy: timeline.lifeExpectancy,
-    };
+    const startAge = timeline.currentAge;
+    const endAge = timeline.lifeExpectancy;
+    const yearsToSimulate = Math.ceil(endAge - startAge);
+    const startDate = new Date();
+    const endDate = new Date(startDate.getFullYear() + yearsToSimulate, startDate.getMonth(), 1);
+
+    return { startAge, endAge, yearsToSimulate, startDate, endDate };
   }
 
   private initSimulationState(timeline: TimelineInputs, phaseIdentifier: PhaseIdentifier): SimulationState {
