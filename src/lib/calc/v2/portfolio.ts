@@ -1,7 +1,7 @@
 import type { AccountInputs, InvestmentAccountType } from '@/lib/schemas/account-form-schema';
 
 import type { SimulationState } from './simulation-engine';
-import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
+import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
 import { ContributionRules } from './contribution-rules';
 
 export interface PortfolioData {
@@ -147,7 +147,10 @@ export class Portfolio {
 
 export interface AccountData {
   name: string;
+  id: string;
+  type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa';
   currentValue: number;
+  assetAllocation: AssetAllocation;
 }
 
 export abstract class Account {
