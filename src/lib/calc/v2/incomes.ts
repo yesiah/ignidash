@@ -1,4 +1,4 @@
-import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
+import type { IncomeInputs, TimePoint } from '@/lib/schemas/income-form-schema';
 
 import type { ReturnsData } from './returns';
 import type { SimulationState } from './simulation-engine';
@@ -17,7 +17,7 @@ export class IncomesProcessor {
     const activeIncomes = this.incomes.getActiveIncomesByTimeFrame(this.simulationState);
 
     const totalGrossIncome = activeIncomes.reduce((sum, income) => {
-      return sum + income.calculateMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year);
+      return sum + income.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year);
     }, 0);
 
     return { totalGrossIncome };
@@ -38,28 +38,42 @@ export class Incomes {
 
 export class Income {
   private hasOneTimeIncomeOccurred: boolean;
+  private amount: number;
+  private growthRate: number | undefined;
+  private growthLimit: number | undefined;
+  private timeFrameStart: TimePoint;
+  private timeFrameEnd: TimePoint | undefined;
+  private frequency: 'yearly' | 'oneTime' | 'quarterly' | 'monthly' | 'biweekly' | 'weekly';
 
-  constructor(private data: IncomeInputs) {
+  constructor(data: IncomeInputs) {
     this.hasOneTimeIncomeOccurred = false;
+    this.amount = data.amount;
+    this.growthRate = data.growth?.growthRate;
+    this.growthLimit = data.growth?.growthLimit;
+    this.timeFrameStart = data.timeframe.start;
+    this.timeFrameEnd = data.timeframe.end;
+    this.frequency = data.frequency;
   }
 
-  calculateMonthlyAmount(inflationRate: number, year: number): number {
-    const rawAmount = this.data.amount;
+  processMonthlyAmount(inflationRate: number, year: number): number {
+    const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
 
-    const nominalGrowthRate = this.data.growth?.growthRate ?? 0;
+    const nominalGrowthRate = this.growthRate ?? 0;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate / 100) - 1;
 
     annualAmount *= Math.pow(1 + realGrowthRate, year);
 
-    const growthLimit = this.data.growth?.growthLimit;
+    const growthLimit = this.growthLimit;
     if (growthLimit !== undefined && nominalGrowthRate > 0) {
       annualAmount = Math.min(annualAmount, growthLimit);
     } else if (growthLimit !== undefined && nominalGrowthRate < 0) {
       annualAmount = Math.max(annualAmount, growthLimit);
     }
 
-    return Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
+    const monthlyAmount = Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
+    if (this.frequency === 'oneTime') this.hasOneTimeIncomeOccurred = true;
+    return monthlyAmount;
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
@@ -69,7 +83,7 @@ export class Income {
     let simTimeIsAfterStart = false;
     let simTimeIsBeforeEnd = false;
 
-    const timeFrameStart = this.data.timeframe.start;
+    const timeFrameStart = this.timeFrameStart;
     switch (timeFrameStart.type) {
       case 'customAge':
         simTimeIsAfterStart = simAge >= timeFrameStart.age!;
@@ -93,7 +107,7 @@ export class Income {
         break;
     }
 
-    const timeFrameEnd = this.data.timeframe?.end;
+    const timeFrameEnd = this.timeFrameEnd;
     if (!timeFrameEnd) return simTimeIsAfterStart;
 
     switch (timeFrameEnd.type) {
@@ -123,12 +137,11 @@ export class Income {
   }
 
   getTimesToApplyPerYear(): number {
-    switch (this.data.frequency) {
+    switch (this.frequency) {
       case 'yearly':
         return 1;
       case 'oneTime':
         if (this.hasOneTimeIncomeOccurred) return 0;
-        this.hasOneTimeIncomeOccurred = true;
         return 1;
       case 'quarterly':
         return 4;
@@ -142,12 +155,11 @@ export class Income {
   }
 
   getTimesToApplyPerMonth(): number {
-    switch (this.data.frequency) {
+    switch (this.frequency) {
       case 'yearly':
         return 1 / 12;
       case 'oneTime':
         if (this.hasOneTimeIncomeOccurred) return 0;
-        this.hasOneTimeIncomeOccurred = true;
         return 1;
       case 'quarterly':
         return 4 / 12;
