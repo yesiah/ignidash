@@ -168,8 +168,14 @@ export class FinancialSimulationEngine {
 
   private incrementSimulationTime(simulationState: SimulationState): void {
     simulationState.time.date = new Date(simulationState.time.date.getFullYear(), simulationState.time.date.getMonth() + 1, 1);
-    simulationState.time.age += 1 / 12;
-    simulationState.time.year += 1 / 12;
+
+    const newAge = simulationState.time.age + 1 / 12;
+    const newYear = simulationState.time.year + 1 / 12;
+
+    const epsilon = 1e-10;
+
+    simulationState.time.age = Math.abs(newAge - Math.round(newAge)) < epsilon ? Math.round(newAge) : newAge;
+    simulationState.time.year = Math.abs(newYear - Math.round(newYear)) < epsilon ? Math.round(newYear) : newYear;
   }
 
   private initSimulationContext(timeline: TimelineInputs): SimulationContext {
