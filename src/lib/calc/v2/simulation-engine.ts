@@ -103,7 +103,7 @@ export class FinancialSimulationEngine {
             acc.totalWithdrawals += curr.totalWithdrawals;
             return acc;
           },
-          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0 }
+          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, accountsData: [] }
         );
 
         const annualIncomesData = annualData.incomes.reduce(
@@ -210,7 +210,12 @@ export class FinancialSimulationEngine {
   private initSimulationDataPoint(initialSimulationState: SimulationState, phaseIdentifier: PhaseIdentifier): SimulationDataPoint {
     return {
       date: new Date().toISOString().split('T')[0],
-      portfolio: { totalValue: initialSimulationState.portfolio.getTotalValue(), totalContributions: 0, totalWithdrawals: 0 },
+      portfolio: {
+        totalValue: initialSimulationState.portfolio.getTotalValue(),
+        totalContributions: 0,
+        totalWithdrawals: 0,
+        accountsData: [],
+      },
       incomes: null,
       expenses: null,
       phase: phaseIdentifier.getCurrentPhase(initialSimulationState.time.date),

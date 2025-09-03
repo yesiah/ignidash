@@ -8,6 +8,7 @@ export interface PortfolioData {
   totalValue: number;
   totalWithdrawals: number;
   totalContributions: number;
+  accountsData: Array<AccountData & { contributions: number; withdrawals: number }>;
 }
 
 export class PortfolioProcessor {
@@ -21,15 +22,27 @@ export class PortfolioProcessor {
     // Process withdrawals (Needs net cash flow)
     // Process rebalance (Needs final portfolio state)
 
-    const totalContributions = this.processContributions(grossCashFlow);
-    const totalWithdrawals = this.processWithdrawals(grossCashFlow);
+    const { totalContributions, contributionsByAccount } = this.processContributions(grossCashFlow);
+    const { totalWithdrawals, withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
-    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals, totalContributions };
+    const accountsData = this.simulationState.portfolio.getAccounts().map((account) => {
+      const accountData = account.getAccountData();
+      const contributions = contributionsByAccount[account.getAccountID()] || 0;
+      const withdrawals = withdrawalsByAccount[account.getAccountID()] || 0;
+
+      return { ...accountData, contributions, withdrawals };
+    });
+
+    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals, totalContributions, accountsData };
   }
 
-  private processContributions(grossCashFlow: number): number {
+  private processContributions(grossCashFlow: number): {
+    totalContributions: number;
+    contributionsByAccount: Record<string, number>;
+  } {
+    const contributionsByAccount: Record<string, number> = {};
     if (!(grossCashFlow > 0)) {
-      return 0;
+      return { totalContributions: 0, contributionsByAccount };
     }
 
     const totalContributions = grossCashFlow;
@@ -49,6 +62,7 @@ export class PortfolioProcessor {
       const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
 
       contributeToAccount.applyContribution(contributionAmount);
+      contributionsByAccount[contributeToAccountID] = contributionAmount;
 
       remainingToContribute -= contributionAmount;
       currentRuleIndex++;
@@ -66,12 +80,16 @@ export class PortfolioProcessor {
       }
     }
 
-    return totalContributions;
+    return { totalContributions, contributionsByAccount };
   }
 
-  private processWithdrawals(grossCashFlow: number): number {
+  private processWithdrawals(grossCashFlow: number): {
+    totalWithdrawals: number;
+    withdrawalsByAccount: Record<string, number>;
+  } {
+    const withdrawalsByAccount: Record<string, number> = {};
     if (!(grossCashFlow < 0)) {
-      return 0;
+      return { totalWithdrawals: 0, withdrawalsByAccount };
     }
 
     const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
@@ -88,6 +106,7 @@ export class PortfolioProcessor {
 
         const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getCurrentValue());
         account.applyWithdrawal(withdrawFromThisAccount);
+        withdrawalsByAccount[account.getAccountID()] = withdrawFromThisAccount;
         remainingToWithdraw -= withdrawFromThisAccount;
       }
     }
@@ -97,7 +116,7 @@ export class PortfolioProcessor {
     }
 
     const totalWithdrawals = grossCashFlow;
-    return totalWithdrawals;
+    return { totalWithdrawals, withdrawalsByAccount };
   }
 }
 
@@ -174,6 +193,8 @@ export abstract class Account {
     return this.currentValue;
   }
 
+  abstract getAccountData(): AccountData;
+
   abstract applyReturns(returns: AssetReturnRates): AssetReturnAmounts;
   abstract applyContribution(amount: number): void;
   abstract applyWithdrawal(amount: number): void;
@@ -184,17 +205,23 @@ export class SavingsAccount extends Account {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 });
   }
 
+  getAccountData(): AccountData {
+    const assetAllocation: AssetAllocation = {
+      cash: 100,
+      bonds: 0,
+      stocks: 0,
+    };
+
+    return { name: this.name, id: this.id, type: this.type, currentValue: this.currentValue, assetAllocation };
+  }
+
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
     const cashReturnsAmount = this.currentValue * returns.cash;
 
     this.currentValue += cashReturnsAmount;
     this.totalReturns.cash += cashReturnsAmount;
 
-    return {
-      cash: cashReturnsAmount,
-      bonds: 0,
-      stocks: 0,
-    };
+    return { cash: cashReturnsAmount, bonds: 0, stocks: 0 };
   }
 
   applyContribution(amount: number): void {
@@ -221,6 +248,16 @@ export class InvestmentAccount extends Account {
     if ('contributions' in data) this.contributions = data.contributions;
   }
 
+  getAccountData(): AccountData {
+    const assetAllocation: AssetAllocation = {
+      cash: 0,
+      bonds: this.currPercentBonds,
+      stocks: 1 - this.currPercentBonds,
+    };
+
+    return { name: this.name, id: this.id, type: this.type, currentValue: this.currentValue, assetAllocation };
+  }
+
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
     const bondsPercent = this.currPercentBonds / 100;
     const stocksPercent = 1 - bondsPercent;
@@ -239,11 +276,7 @@ export class InvestmentAccount extends Account {
     this.currentValue = newBondsValue + newStocksValue;
     this.currPercentBonds = (newBondsValue / this.currentValue) * 100;
 
-    return {
-      cash: 0,
-      bonds: bondReturnsAmount,
-      stocks: stockReturnsAmount,
-    };
+    return { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount };
   }
 
   applyContribution(amount: number): void {
@@ -258,6 +291,7 @@ export class InvestmentAccount extends Account {
   applyWithdrawal(amount: number): void {
     // TODO: Handle percentBonds allocation with withdrawals.
 
+    if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
     this.currentValue -= amount;
 
     if (this.costBasis !== undefined) this.costBasis -= amount;
