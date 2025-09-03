@@ -129,6 +129,7 @@ export abstract class Account {
     protected currentValue: number,
     protected name: string,
     protected id: string,
+    protected type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa',
     protected totalReturns: AssetReturnAmounts
   ) {}
 
@@ -146,7 +147,7 @@ export abstract class Account {
 
 export class SavingsAccount extends Account {
   constructor(data: AccountInputs) {
-    super(data.currentValue, data.name, data.id, { cash: 0, bonds: 0, stocks: 0 });
+    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 });
   }
 
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
@@ -174,7 +175,7 @@ export class InvestmentAccount extends Account {
   private contributions: number | undefined;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
-    super(data.currentValue, data.name, data.id, { cash: 0, bonds: 0, stocks: 0 });
+    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 });
     this.initialPercentBonds = data.percentBonds ?? 0;
     this.currPercentBonds = data.percentBonds ?? 0;
 
