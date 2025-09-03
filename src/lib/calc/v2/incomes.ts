@@ -17,8 +17,7 @@ export class IncomesProcessor {
     const activeIncomes = this.incomes.getActiveIncomesByTimeFrame(this.simulationState);
 
     const totalGrossIncome = activeIncomes.reduce((sum, income) => {
-      // TODO: Fix partial year timeframe income application
-      return sum + income.calculateAnnualAmount(returnsData.annualInflationRate, this.simulationState.time.year);
+      return sum + income.calculateMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year);
     }, 0);
 
     return { totalGrossIncome };
@@ -44,22 +43,23 @@ export class Income {
     this.hasOneTimeIncomeOccurred = false;
   }
 
-  calculateAnnualAmount(inflationRate: number, year: number): number {
-    let amount = this.data.amount * this.getTimesToApplyPerYear();
+  calculateMonthlyAmount(inflationRate: number, year: number): number {
+    const rawAmount = this.data.amount;
+    let annualAmount = rawAmount * this.getTimesToApplyPerYear();
 
     const nominalGrowthRate = this.data.growth?.growthRate ?? 0;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate / 100) - 1;
 
-    amount *= Math.pow(1 + realGrowthRate, year);
+    annualAmount *= Math.pow(1 + realGrowthRate, year);
 
     const growthLimit = this.data.growth?.growthLimit;
     if (growthLimit !== undefined && nominalGrowthRate > 0) {
-      amount = Math.min(amount, growthLimit);
+      annualAmount = Math.min(annualAmount, growthLimit);
     } else if (growthLimit !== undefined && nominalGrowthRate < 0) {
-      amount = Math.max(amount, growthLimit);
+      annualAmount = Math.max(annualAmount, growthLimit);
     }
 
-    return amount;
+    return Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
