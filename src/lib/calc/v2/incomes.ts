@@ -27,7 +27,7 @@ export class IncomesProcessor {
 export class Incomes {
   private readonly incomes: Income[];
 
-  constructor(private data: IncomeInputs[]) {
+  constructor(data: IncomeInputs[]) {
     this.incomes = data.map((income) => new Income(income));
   }
 
@@ -77,16 +77,16 @@ export class Income {
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
-    const simDate = new Date(simulationState.time.date);
+    const simDate = simulationState.time.date;
     const simAge = simulationState.time.age;
 
-    let simTimeIsAfterStart = false;
-    let simTimeIsBeforeEnd = false;
+    let simTimeIsAfterIncomeStart = false;
+    let simTimeIsBeforeIncomeEnd = false;
 
     const timeFrameStart = this.timeFrameStart;
     switch (timeFrameStart.type) {
       case 'customAge':
-        simTimeIsAfterStart = simAge >= timeFrameStart.age!;
+        simTimeIsAfterIncomeStart = simAge >= timeFrameStart.age!;
         break;
       case 'customDate':
         const customDateYear = timeFrameStart.year!;
@@ -94,25 +94,25 @@ export class Income {
 
         const customStartDate = new Date(customDateYear, customDateMonth);
 
-        simTimeIsAfterStart = simDate >= customStartDate;
+        simTimeIsAfterIncomeStart = simDate >= customStartDate;
         break;
       case 'now':
-        simTimeIsAfterStart = true; // TODO: Use actual date comparison.
+        simTimeIsAfterIncomeStart = true;
         break;
       case 'atRetirement':
-        simTimeIsAfterStart = simulationState.phaseName === 'retirement';
+        simTimeIsAfterIncomeStart = simulationState.phaseName === 'retirement';
         break;
       case 'atLifeExpectancy':
-        simTimeIsAfterStart = false; // TODO: Use actual date comparison.
+        simTimeIsAfterIncomeStart = false;
         break;
     }
 
     const timeFrameEnd = this.timeFrameEnd;
-    if (!timeFrameEnd) return simTimeIsAfterStart;
+    if (!timeFrameEnd) return simTimeIsAfterIncomeStart;
 
     switch (timeFrameEnd.type) {
       case 'customAge':
-        simTimeIsBeforeEnd = simAge <= timeFrameEnd.age!;
+        simTimeIsBeforeIncomeEnd = simAge <= timeFrameEnd.age!;
         break;
       case 'customDate':
         const customDateYear = timeFrameEnd.year!;
@@ -120,20 +120,20 @@ export class Income {
 
         const customEndDate = new Date(customDateYear, customDateMonth);
 
-        simTimeIsBeforeEnd = simDate <= customEndDate;
+        simTimeIsBeforeIncomeEnd = simDate <= customEndDate;
         break;
       case 'now':
-        simTimeIsBeforeEnd = false; // TODO: Use actual date comparison.
+        simTimeIsBeforeIncomeEnd = false;
         break;
       case 'atRetirement':
-        simTimeIsBeforeEnd = simulationState.phaseName !== 'retirement';
+        simTimeIsBeforeIncomeEnd = simulationState.phaseName !== 'retirement';
         break;
       case 'atLifeExpectancy':
-        simTimeIsBeforeEnd = true; // TODO: Use actual date comparison.
+        simTimeIsBeforeIncomeEnd = true;
         break;
     }
 
-    return simTimeIsAfterStart && simTimeIsBeforeEnd;
+    return simTimeIsAfterIncomeStart && simTimeIsBeforeIncomeEnd;
   }
 
   getTimesToApplyPerYear(): number {
