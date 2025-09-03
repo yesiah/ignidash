@@ -12,7 +12,7 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(incomesData: IncomesData): TaxesData {
-    const incomeTaxRate = 0.2; // TODO: Implement progressive tax rates.
+    const incomeTaxRate = 0.3;
     const incomeTaxAmount = incomesData.totalGrossIncome * incomeTaxRate;
     const netIncome = incomesData.totalGrossIncome - incomeTaxAmount;
     return { incomeTaxRate, incomeTaxAmount, netIncome };
