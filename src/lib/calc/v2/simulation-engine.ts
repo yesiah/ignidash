@@ -67,7 +67,10 @@ export class FinancialSimulationEngine {
     const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState);
 
-    for (let year = 1; year <= simulationContext.yearsToSimulate; year++) {
+    let monthCount = 0;
+    while (simulationState.time.date < simulationContext.endDate) {
+      monthCount++;
+
       this.incrementSimulationTime(simulationState);
 
       const returnsData = returnsProcessor.process();
@@ -86,23 +89,19 @@ export class FinancialSimulationEngine {
         taxes: taxesData,
         returns: returnsData,
       });
+
+      if (monthCount % 12 === 0) {
+        // Capture data point
+      }
     }
 
     return { data: resultData };
-
-    // Process Cash Flows (income, expenses, taxes, contributions, withdrawals)
-    // Check for metadata (e.g. bankruptcy)
-    // Rebalance Portfolio (if necessary)
-    // Apply returns to Portfolio
-    // Rebalance Portfolio (if necessary)
-    // Check for phase change
-    // Collect data point for loop
   }
 
   private incrementSimulationTime(simulationState: SimulationState): void {
-    simulationState.time.date = new Date(simulationState.time.date.getFullYear() + 1, simulationState.time.date.getMonth(), 1);
-    simulationState.time.age += 1;
-    simulationState.time.year += 1;
+    simulationState.time.date = new Date(simulationState.time.date.getFullYear(), simulationState.time.date.getMonth() + 1, 1);
+    simulationState.time.age += 1 / 12;
+    simulationState.time.year += 1 / 12;
   }
 
   private initSimulationContext(timeline: TimelineInputs): SimulationContext {

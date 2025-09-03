@@ -9,19 +9,39 @@ export interface ReturnsData {
 }
 
 export class ReturnsProcessor {
+  private annualReturnRates: AssetReturnRates;
+  private annualInflationRate: number;
+  private lastYear: number;
+
   constructor(
     private simulationState: SimulationState,
     private returnsProvider: ReturnsProvider
-  ) {}
+  ) {
+    const returns = this.returnsProvider.getReturns(this.simulationState.time.year);
+
+    this.annualReturnRates = returns.returns;
+    this.annualInflationRate = returns.metadata.inflationRate;
+    this.lastYear = this.simulationState.time.year;
+  }
 
   process(): ReturnsData {
-    const {
-      returns: returnRates,
-      metadata: { inflationRate },
-    } = this.returnsProvider.getReturns(this.simulationState.time.year);
+    const currentYear = Math.floor(this.simulationState.time.year);
+    if (currentYear !== this.lastYear) {
+      const returns = this.returnsProvider.getReturns(currentYear);
 
-    const returnAmounts = this.simulationState.portfolio.applyReturns(returnRates);
+      this.annualReturnRates = returns.returns;
+      this.annualInflationRate = returns.metadata.inflationRate;
+      this.lastYear = currentYear;
+    }
 
-    return { returnAmounts, returnRates, inflationRate };
+    const monthlyReturnRates: AssetReturnRates = {
+      stocks: Math.pow(1 + this.annualReturnRates.stocks, 1 / 12) - 1,
+      bonds: Math.pow(1 + this.annualReturnRates.bonds, 1 / 12) - 1,
+      cash: Math.pow(1 + this.annualReturnRates.cash, 1 / 12) - 1,
+    };
+    const monthlyInflationRate = Math.pow(1 + this.annualInflationRate, 1 / 12) - 1;
+    const monthlyReturnAmounts = this.simulationState.portfolio.applyReturns(monthlyReturnRates);
+
+    return { returnAmounts: monthlyReturnAmounts, returnRates: monthlyReturnRates, inflationRate: monthlyInflationRate };
   }
 }
