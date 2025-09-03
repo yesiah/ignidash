@@ -5,6 +5,8 @@ import type { SimulationState } from './simulation-engine';
 
 export interface IncomesData {
   totalGrossIncome: number;
+  totalAmountWithheld: number;
+  totalIncomeAfterWithholding: number;
 }
 
 export class IncomesProcessor {
@@ -16,11 +18,24 @@ export class IncomesProcessor {
   process(returnsData: ReturnsData): IncomesData {
     const activeIncomes = this.incomes.getActiveIncomesByTimeFrame(this.simulationState);
 
-    const totalGrossIncome = activeIncomes.reduce((sum, income) => {
-      return sum + income.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year);
-    }, 0);
+    const processedIncomes = activeIncomes.map((income) =>
+      income.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year)
+    );
+    const incomesData = processedIncomes.reduce(
+      (acc, curr) => {
+        acc.totalGrossIncome += curr.grossIncome;
+        acc.totalAmountWithheld += curr.amountWithheld;
+        acc.totalIncomeAfterWithholding += curr.incomeAfterWithholding;
+        return acc;
+      },
+      {
+        totalGrossIncome: 0,
+        totalAmountWithheld: 0,
+        totalIncomeAfterWithholding: 0,
+      }
+    );
 
-    return { totalGrossIncome };
+    return incomesData;
   }
 }
 
@@ -37,6 +52,8 @@ export class Incomes {
 }
 
 export class Income {
+  static readonly WITHHOLDING_TAX_RATE = 0.2;
+
   private hasOneTimeIncomeOccurred: boolean;
   private amount: number;
   private growthRate: number | undefined;
@@ -55,7 +72,10 @@ export class Income {
     this.frequency = data.frequency;
   }
 
-  processMonthlyAmount(inflationRate: number, year: number): number {
+  processMonthlyAmount(
+    inflationRate: number,
+    year: number
+  ): { grossIncome: number; amountWithheld: number; incomeAfterWithholding: number } {
     const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
 
@@ -71,9 +91,12 @@ export class Income {
       annualAmount = Math.max(annualAmount, growthLimit);
     }
 
-    const monthlyAmount = Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
+    const grossIncome = Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
+    const amountWithheld = grossIncome * Income.WITHHOLDING_TAX_RATE;
+    const incomeAfterWithholding = grossIncome - amountWithheld;
+
     if (this.frequency === 'oneTime') this.hasOneTimeIncomeOccurred = true;
-    return monthlyAmount;
+    return { grossIncome, amountWithheld, incomeAfterWithholding };
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {

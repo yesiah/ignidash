@@ -109,9 +109,11 @@ export class FinancialSimulationEngine {
         const annualIncomesData = annualData.incomes.reduce(
           (acc, curr) => {
             acc.totalGrossIncome += curr.totalGrossIncome;
+            acc.totalAmountWithheld += curr.totalAmountWithheld;
+            acc.totalIncomeAfterWithholding += curr.totalIncomeAfterWithholding;
             return acc;
           },
-          { totalGrossIncome: 0 }
+          { totalGrossIncome: 0, totalAmountWithheld: 0, totalIncomeAfterWithholding: 0 }
         );
         const annualExpensesData = annualData.expenses.reduce(
           (acc, curr) => {
