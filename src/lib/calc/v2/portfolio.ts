@@ -35,26 +35,26 @@ export class PortfolioProcessor {
     const totalContributions = grossCashFlow;
     const contributionRules = this.contributionRules.getRules();
 
-    let cashLeftToAllocate = grossCashFlow;
+    let remainingToContribute = grossCashFlow;
     let currentRuleIndex = 0;
-    while (cashLeftToAllocate > 0 && currentRuleIndex < contributionRules.length) {
+    while (remainingToContribute > 0 && currentRuleIndex < contributionRules.length) {
       const rule = contributionRules[currentRuleIndex];
       if (!rule.canApply()) {
         currentRuleIndex++;
         continue;
       }
 
-      const contributionAmount = rule.getContributionAmount(cashLeftToAllocate);
+      const contributionAmount = rule.getContributionAmount(remainingToContribute);
       const contributeToAccountID = rule.getAccountID();
       const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
 
       contributeToAccount.applyContribution(contributionAmount);
 
-      cashLeftToAllocate -= contributionAmount;
+      remainingToContribute -= contributionAmount;
       currentRuleIndex++;
     }
 
-    if (cashLeftToAllocate > 0) {
+    if (remainingToContribute > 0) {
       const baseRule = this.contributionRules.getBaseRuleType();
       switch (baseRule) {
         case 'spend':
@@ -74,6 +74,28 @@ export class PortfolioProcessor {
       return 0;
     }
 
+    const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
+    let remainingToWithdraw = grossCashFlow;
+
+    for (const accountType of withdrawalOrder) {
+      if (remainingToWithdraw <= 0) break;
+
+      const accountsOfType = this.simulationState.portfolio.getAccounts().filter((account) => account.getAccountType() === accountType);
+      if (accountsOfType.length === 0) continue;
+
+      for (const account of accountsOfType) {
+        if (remainingToWithdraw <= 0 || !(account.getCurrentValue() > 0)) break;
+
+        const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getCurrentValue());
+        account.applyWithdrawal(withdrawFromThisAccount);
+        remainingToWithdraw -= withdrawFromThisAccount;
+      }
+    }
+
+    if (remainingToWithdraw > 0) {
+      // Handle remaining cash for withdrawals with debt.
+    }
+
     const totalWithdrawals = grossCashFlow;
     return totalWithdrawals;
   }
@@ -90,6 +112,10 @@ export class Portfolio {
         return new SavingsAccount(accountData);
       }
     });
+  }
+
+  getAccounts(): Account[] {
+    return this.accounts;
   }
 
   getTotalValue(): number {
@@ -137,12 +163,17 @@ export abstract class Account {
     return this.id;
   }
 
+  getAccountType(): 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa' {
+    return this.type;
+  }
+
   getCurrentValue(): number {
     return this.currentValue;
   }
 
   abstract applyReturns(returns: AssetReturnRates): AssetReturnAmounts;
   abstract applyContribution(amount: number): void;
+  abstract applyWithdrawal(amount: number): void;
 }
 
 export class SavingsAccount extends Account {
@@ -165,6 +196,10 @@ export class SavingsAccount extends Account {
 
   applyContribution(amount: number): void {
     this.currentValue += amount;
+  }
+
+  applyWithdrawal(amount: number): void {
+    this.currentValue -= amount;
   }
 }
 
@@ -215,5 +250,14 @@ export class InvestmentAccount extends Account {
 
     if (this.costBasis !== undefined) this.costBasis += amount;
     if (this.contributions !== undefined) this.contributions += amount;
+  }
+
+  applyWithdrawal(amount: number): void {
+    // TODO: Handle percentBonds allocation with withdrawals.
+
+    this.currentValue -= amount;
+
+    if (this.costBasis !== undefined) this.costBasis -= amount;
+    if (this.contributions !== undefined) this.contributions -= amount;
   }
 }
