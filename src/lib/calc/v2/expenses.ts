@@ -140,4 +140,23 @@ export class Expense {
         return 52;
     }
   }
+
+  getTimesToApplyPerMonth(): number {
+    switch (this.data.frequency) {
+      case 'yearly':
+        return 1 / 12;
+      case 'oneTime':
+        if (this.hasOneTimeExpenseOccurred) return 0;
+        this.hasOneTimeExpenseOccurred = true;
+        return 1;
+      case 'quarterly':
+        return 4 / 12;
+      case 'monthly':
+        return 1;
+      case 'biweekly':
+        return 26 / 12;
+      case 'weekly':
+        return 52 / 12;
+    }
+  }
 }
