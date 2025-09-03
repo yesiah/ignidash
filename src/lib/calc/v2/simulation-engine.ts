@@ -85,7 +85,6 @@ export class FinancialSimulationEngine {
       const expensesData = expensesProcessor.process(returnsData);
       const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(grossCashFlow);
-      const taxesData = taxProcessor.process(incomesData);
 
       simulationState.phaseName = phaseIdentifier.getCurrentPhase(simulationState.time.date).name;
 
@@ -106,6 +105,7 @@ export class FinancialSimulationEngine {
           },
           { totalValue: 0, totalContributions: 0, totalWithdrawals: 0 }
         );
+
         const annualIncomesData = annualData.incomes.reduce(
           (acc, curr) => {
             acc.totalGrossIncome += curr.totalGrossIncome;
@@ -115,6 +115,7 @@ export class FinancialSimulationEngine {
           },
           { totalGrossIncome: 0, totalAmountWithheld: 0, totalIncomeAfterWithholding: 0 }
         );
+
         const annualExpensesData = annualData.expenses.reduce(
           (acc, curr) => {
             acc.totalExpenses += curr.totalExpenses;
@@ -122,6 +123,7 @@ export class FinancialSimulationEngine {
           },
           { totalExpenses: 0 }
         );
+
         const annualReturnsData = annualData.returns.reduce(
           (acc, curr) => {
             return {
@@ -139,13 +141,16 @@ export class FinancialSimulationEngine {
           }
         );
 
+        // Processes taxes once annually.
+        const annualTaxesData = taxProcessor.process(annualIncomesData);
+
         resultData.push({
           date: simulationState.time.date.toISOString().split('T')[0],
           portfolio: annualPortfolioData,
           incomes: annualIncomesData,
           expenses: annualExpensesData,
           phase: phaseIdentifier.getCurrentPhase(simulationState.time.date),
-          taxes: taxesData,
+          taxes: annualTaxesData,
           returns: annualReturnsData,
         });
 
