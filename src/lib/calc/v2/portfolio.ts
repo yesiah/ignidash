@@ -21,44 +21,57 @@ export class PortfolioProcessor {
     // Process withdrawals (Needs net cash flow)
     // Process rebalance (Needs final portfolio state)
 
-    if (grossCashFlow > 0) {
-      const contributionRules = this.contributionRules.getRules();
+    let totalWithdrawals = 0;
+    const totalContributions = this.processContributions(grossCashFlow);
 
-      let cashLeftToAllocate = grossCashFlow;
-      let currentRuleIndex = 0;
-      while (cashLeftToAllocate > 0 && currentRuleIndex < contributionRules.length) {
-        const rule = contributionRules[currentRuleIndex];
-        if (!rule.canApply()) {
-          currentRuleIndex++;
-          continue;
-        }
-
-        const contributionAmount = rule.getContributionAmount(cashLeftToAllocate);
-        const contributeToAccountID = rule.getAccountID();
-        const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
-
-        contributeToAccount.applyContribution(contributionAmount);
-
-        cashLeftToAllocate -= contributionAmount;
-        currentRuleIndex++;
-      }
-
-      if (cashLeftToAllocate > 0) {
-        const baseRule = this.contributionRules.getBaseRuleType();
-        switch (baseRule) {
-          case 'spend':
-            // Handle remaining cash for spend
-            break;
-          case 'save':
-            // Handle remaining cash for save
-            break;
-        }
-      }
-    } else if (grossCashFlow < 0) {
+    if (grossCashFlow < 0) {
+      totalWithdrawals = grossCashFlow;
       // Handle withdrawals
     }
 
-    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals: 0, totalContributions: 0 };
+    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals, totalContributions };
+  }
+
+  private processContributions(grossCashFlow: number): number {
+    if (!(grossCashFlow > 0)) {
+      return 0;
+    }
+
+    const totalContributions = grossCashFlow;
+    const contributionRules = this.contributionRules.getRules();
+
+    let cashLeftToAllocate = grossCashFlow;
+    let currentRuleIndex = 0;
+    while (cashLeftToAllocate > 0 && currentRuleIndex < contributionRules.length) {
+      const rule = contributionRules[currentRuleIndex];
+      if (!rule.canApply()) {
+        currentRuleIndex++;
+        continue;
+      }
+
+      const contributionAmount = rule.getContributionAmount(cashLeftToAllocate);
+      const contributeToAccountID = rule.getAccountID();
+      const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
+
+      contributeToAccount.applyContribution(contributionAmount);
+
+      cashLeftToAllocate -= contributionAmount;
+      currentRuleIndex++;
+    }
+
+    if (cashLeftToAllocate > 0) {
+      const baseRule = this.contributionRules.getBaseRuleType();
+      switch (baseRule) {
+        case 'spend':
+          // Handle remaining cash for spend
+          break;
+        case 'save':
+          // Handle remaining cash for save
+          break;
+      }
+    }
+
+    return totalContributions;
   }
 }
 
