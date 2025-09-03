@@ -72,6 +72,7 @@ export class Income {
     this.frequency = data.frequency;
   }
 
+  // TODO: Might be cleaner to convert annual growth rate & growth limit to monthly...
   processMonthlyAmount(
     inflationRate: number,
     year: number

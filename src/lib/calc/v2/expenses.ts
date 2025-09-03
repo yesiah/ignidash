@@ -55,6 +55,7 @@ export class Expense {
     this.frequency = data.frequency;
   }
 
+  // TODO: Might be cleaner to convert annual growth rate & growth limit to monthly...
   processMonthlyAmount(inflationRate: number, year: number): number {
     const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
