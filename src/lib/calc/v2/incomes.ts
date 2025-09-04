@@ -19,6 +19,8 @@ export interface IncomesData {
 }
 
 export class IncomesProcessor {
+  private monthlyData: IncomesData[] = [];
+
   constructor(
     private simulationState: SimulationState,
     private incomes: Incomes
@@ -46,7 +48,40 @@ export class IncomesProcessor {
     );
     const perIncomeData = Object.fromEntries(processedIncomes.map((income) => [income.id, income]));
 
-    return { ...totals, perIncomeData };
+    const result = { ...totals, perIncomeData };
+
+    this.monthlyData.push(result);
+    return result;
+  }
+
+  getMonthlyData(): IncomesData[] {
+    return this.monthlyData;
+  }
+
+  resetMonthlyData(): void {
+    this.monthlyData = [];
+  }
+
+  getAnnualData(): IncomesData {
+    return this.monthlyData.reduce(
+      (acc, curr) => {
+        acc.totalGrossIncome += curr.totalGrossIncome;
+        acc.totalAmountWithheld += curr.totalAmountWithheld;
+        acc.totalIncomeAfterWithholding += curr.totalIncomeAfterWithholding;
+
+        Object.entries(curr.perIncomeData).forEach(([incomeID, incomeData]) => {
+          acc.perIncomeData[incomeID] = {
+            ...incomeData,
+            grossIncome: (acc.perIncomeData[incomeID]?.grossIncome ?? 0) + incomeData.grossIncome,
+            amountWithheld: (acc.perIncomeData[incomeID]?.amountWithheld ?? 0) + incomeData.amountWithheld,
+            incomeAfterWithholding: (acc.perIncomeData[incomeID]?.incomeAfterWithholding ?? 0) + incomeData.incomeAfterWithholding,
+          };
+        });
+
+        return acc;
+      },
+      { totalGrossIncome: 0, totalAmountWithheld: 0, totalIncomeAfterWithholding: 0, perIncomeData: {} }
+    );
   }
 }
 

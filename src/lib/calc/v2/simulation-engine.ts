@@ -41,7 +41,6 @@ export interface SimulationState {
   time: { date: Date; age: number; year: number };
   portfolio: Portfolio;
   phase: PhaseData | null;
-  monthlyData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
   annualData: { expenses: ExpensesData[] };
 }
 
@@ -75,95 +74,23 @@ export class FinancialSimulationEngine {
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
       const expensesData = expensesProcessor.process(returnsData);
-      const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
-      const portfolioData = portfolioProcessor.process(grossCashFlow);
-
-      simulationState.monthlyData.returns.push(returnsData);
-      simulationState.monthlyData.incomes.push(incomesData);
-      simulationState.monthlyData.expenses.push(expensesData);
-      simulationState.monthlyData.portfolio.push(portfolioData);
+      portfolioProcessor.process(incomesData.totalGrossIncome - expensesData.totalExpenses);
 
       if (monthCount % 12 === 0) {
-        const monthlyData = simulationState.monthlyData;
+        // Get annual data from processors
+        const annualPortfolioData = portfolioProcessor.getAnnualData();
+        const annualIncomesData = incomesProcessor.getAnnualData();
+        const annualExpensesData = expensesProcessor.getAnnualData();
+        const annualReturnsData = returnsProcessor.getAnnualData();
 
-        const annualPortfolioData = monthlyData.portfolio.reduce(
-          (acc, curr) => {
-            acc.totalValue += curr.totalValue;
-            acc.totalContributions += curr.totalContributions;
-            acc.totalWithdrawals += curr.totalWithdrawals;
-
-            Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
-              acc.perAccountData[accountID] = {
-                ...accountData,
-                contributions: (acc.perAccountData[accountID]?.contributions ?? 0) + accountData.contributions,
-                withdrawals: (acc.perAccountData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
-              };
-            });
-
-            return acc;
-          },
-          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {}, totalAssetAllocation: null }
-        );
-
-        const annualIncomesData = monthlyData.incomes.reduce(
-          (acc, curr) => {
-            acc.totalGrossIncome += curr.totalGrossIncome;
-            acc.totalAmountWithheld += curr.totalAmountWithheld;
-            acc.totalIncomeAfterWithholding += curr.totalIncomeAfterWithholding;
-
-            Object.entries(curr.perIncomeData).forEach(([incomeID, incomeData]) => {
-              acc.perIncomeData[incomeID] = {
-                ...incomeData,
-                grossIncome: (acc.perIncomeData[incomeID]?.grossIncome ?? 0) + incomeData.grossIncome,
-                amountWithheld: (acc.perIncomeData[incomeID]?.amountWithheld ?? 0) + incomeData.amountWithheld,
-                incomeAfterWithholding: (acc.perIncomeData[incomeID]?.incomeAfterWithholding ?? 0) + incomeData.incomeAfterWithholding,
-              };
-            });
-
-            return acc;
-          },
-          { totalGrossIncome: 0, totalAmountWithheld: 0, totalIncomeAfterWithholding: 0, perIncomeData: {} }
-        );
-
-        const annualExpensesData = monthlyData.expenses.reduce(
-          (acc, curr) => {
-            acc.totalExpenses += curr.totalExpenses;
-
-            Object.entries(curr.perExpenseData).forEach(([expenseID, expenseData]) => {
-              acc.perExpenseData[expenseID] = {
-                ...expenseData,
-                amount: (acc.perExpenseData[expenseID]?.amount ?? 0) + expenseData.amount,
-              };
-            });
-
-            return acc;
-          },
-          { totalExpenses: 0, perExpenseData: {} }
-        );
+        // Update simulation state
         simulationState.annualData.expenses.push(annualExpensesData);
-
-        const annualReturnsData = monthlyData.returns.reduce(
-          (acc, curr) => {
-            return {
-              ...acc,
-              returnAmounts: {
-                stocks: acc.returnAmounts.stocks + curr.returnAmounts.stocks,
-                bonds: acc.returnAmounts.bonds + curr.returnAmounts.bonds,
-                cash: acc.returnAmounts.cash + curr.returnAmounts.cash,
-              },
-            };
-          },
-          {
-            ...monthlyData.returns[0],
-            returnAmounts: { stocks: 0, bonds: 0, cash: 0 },
-          }
-        );
-
-        // Processes taxes once annually.
-        const annualTaxesData = taxProcessor.process(annualIncomesData);
-
         simulationState.phase = phaseIdentifier.getCurrentPhase();
 
+        // Process taxes
+        const annualTaxesData = taxProcessor.process(annualIncomesData);
+
+        // Store annual data in results
         resultData.push({
           date: simulationState.time.date.toISOString().split('T')[0],
           portfolio: annualPortfolioData,
@@ -174,7 +101,11 @@ export class FinancialSimulationEngine {
           returns: annualReturnsData,
         });
 
-        simulationState.monthlyData = { returns: [], incomes: [], expenses: [], portfolio: [] };
+        // Reset monthly data for next iteration
+        returnsProcessor.resetMonthlyData();
+        incomesProcessor.resetMonthlyData();
+        expensesProcessor.resetMonthlyData();
+        portfolioProcessor.resetMonthlyData();
       }
     }
 
@@ -210,7 +141,6 @@ export class FinancialSimulationEngine {
       time: { date: new Date(), age: timeline.currentAge, year: 0 },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
       phase: null,
-      monthlyData: { returns: [], incomes: [], expenses: [], portfolio: [] },
       annualData: { expenses: [] },
     };
   }

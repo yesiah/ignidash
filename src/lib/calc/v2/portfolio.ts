@@ -15,6 +15,7 @@ export interface PortfolioData {
 
 export class PortfolioProcessor {
   private extraSavingsAccount: SavingsAccount;
+  private monthlyData: PortfolioData[] = [];
 
   constructor(
     private simulationState: SimulationState,
@@ -44,7 +45,10 @@ export class PortfolioProcessor {
     const totalValue = this.simulationState.portfolio.getTotalValue();
     const totalAssetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
 
-    return { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation };
+    const result = { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation };
+
+    this.monthlyData.push(result);
+    return result;
   }
 
   private processContributions(grossCashFlow: number): {
@@ -136,6 +140,35 @@ export class PortfolioProcessor {
     // TODO: Handle Debts. (totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0)
 
     return { totalWithdrawals: grossCashFlow, withdrawalsByAccount };
+  }
+
+  getMonthlyData(): PortfolioData[] {
+    return this.monthlyData;
+  }
+
+  resetMonthlyData(): void {
+    this.monthlyData = [];
+  }
+
+  getAnnualData(): PortfolioData {
+    return this.monthlyData.reduce(
+      (acc, curr) => {
+        acc.totalValue += curr.totalValue;
+        acc.totalContributions += curr.totalContributions;
+        acc.totalWithdrawals += curr.totalWithdrawals;
+
+        Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
+          acc.perAccountData[accountID] = {
+            ...accountData,
+            contributions: (acc.perAccountData[accountID]?.contributions ?? 0) + accountData.contributions,
+            withdrawals: (acc.perAccountData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
+          };
+        });
+
+        return acc;
+      },
+      { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {}, totalAssetAllocation: null }
+    );
   }
 }
 

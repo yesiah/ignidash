@@ -15,6 +15,8 @@ export interface ExpensesData {
 }
 
 export class ExpensesProcessor {
+  private monthlyData: ExpensesData[] = [];
+
   constructor(
     private simulationState: SimulationState,
     private expenses: Expenses
@@ -32,7 +34,36 @@ export class ExpensesProcessor {
     }, 0);
     const perExpenseData = Object.fromEntries(processedExpenses.map((expense) => [expense.id, expense]));
 
-    return { totalExpenses, perExpenseData };
+    const result = { totalExpenses, perExpenseData };
+
+    this.monthlyData.push(result);
+    return result;
+  }
+
+  getMonthlyData(): ExpensesData[] {
+    return this.monthlyData;
+  }
+
+  resetMonthlyData(): void {
+    this.monthlyData = [];
+  }
+
+  getAnnualData(): ExpensesData {
+    return this.monthlyData.reduce(
+      (acc, curr) => {
+        acc.totalExpenses += curr.totalExpenses;
+
+        Object.entries(curr.perExpenseData).forEach(([expenseID, expenseData]) => {
+          acc.perExpenseData[expenseID] = {
+            ...expenseData,
+            amount: (acc.perExpenseData[expenseID]?.amount ?? 0) + expenseData.amount,
+          };
+        });
+
+        return acc;
+      },
+      { totalExpenses: 0, perExpenseData: {} }
+    );
   }
 }
 

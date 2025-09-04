@@ -14,6 +14,7 @@ export class ReturnsProcessor {
   private annualReturnRates: AssetReturnRates;
   private annualInflationRate: number;
   private lastYear: number;
+  private monthlyData: ReturnsData[] = [];
 
   constructor(
     private simulationState: SimulationState,
@@ -44,12 +45,42 @@ export class ReturnsProcessor {
     const monthlyInflationRate = Math.pow(1 + this.annualInflationRate, 1 / 12) - 1;
     const returnAmounts = this.simulationState.portfolio.applyReturns(monthlyReturnRates);
 
-    return {
+    const result = {
       returnAmounts,
       monthlyReturnRates,
       monthlyInflationRate,
       annualReturnRates: this.annualReturnRates,
       annualInflationRate: this.annualInflationRate,
     };
+
+    this.monthlyData.push(result);
+    return result;
+  }
+
+  getMonthlyData(): ReturnsData[] {
+    return this.monthlyData;
+  }
+
+  resetMonthlyData(): void {
+    this.monthlyData = [];
+  }
+
+  getAnnualData(): ReturnsData {
+    return this.monthlyData.reduce(
+      (acc, curr) => {
+        return {
+          ...acc,
+          returnAmounts: {
+            stocks: acc.returnAmounts.stocks + curr.returnAmounts.stocks,
+            bonds: acc.returnAmounts.bonds + curr.returnAmounts.bonds,
+            cash: acc.returnAmounts.cash + curr.returnAmounts.cash,
+          },
+        };
+      },
+      {
+        ...this.monthlyData[0],
+        returnAmounts: { stocks: 0, bonds: 0, cash: 0 },
+      }
+    );
   }
 }
