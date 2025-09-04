@@ -1,7 +1,6 @@
 import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
 import { SimulationState } from './simulation-engine';
-import { Expenses } from './expenses';
 
 export type PhaseName = 'accumulation' | 'retirement';
 
@@ -12,8 +11,7 @@ export interface PhaseData {
 export class PhaseIdentifier {
   constructor(
     private simulationState: SimulationState,
-    private timeline: TimelineInputs,
-    private expenses: Expenses
+    private timeline: TimelineInputs
   ) {}
 
   getCurrentPhase(): PhaseData {
@@ -30,7 +28,8 @@ export class PhaseIdentifier {
         }
 
         const totalPortfolioValue = this.simulationState.portfolio.getTotalValue();
-        const swr = this.timeline.retirementStrategy.safeWithdrawalRate / 100;
+        const safeWithdrawalRate = this.timeline.retirementStrategy.safeWithdrawalRate / 100;
+        const safeWithdrawalAmount = totalPortfolioValue * safeWithdrawalRate;
 
         const annualExpensesData = this.simulationState.annualData.expenses;
         const averageAnnualExpenses =
@@ -38,7 +37,7 @@ export class PhaseIdentifier {
             ? annualExpensesData.reduce((acc, curr) => acc + curr.totalExpenses, 0) / annualExpensesData.length
             : 0;
 
-        return averageAnnualExpenses < totalPortfolioValue * swr ? { name: 'retirement' } : { name: 'accumulation' };
+        return averageAnnualExpenses < safeWithdrawalAmount ? { name: 'retirement' } : { name: 'accumulation' };
     }
   }
 
