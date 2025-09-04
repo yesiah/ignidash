@@ -1,5 +1,7 @@
 import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
+import { Expenses } from './expenses';
+
 export type PhaseName = 'accumulation' | 'retirement';
 
 export interface PhaseData {
@@ -7,7 +9,10 @@ export interface PhaseData {
 }
 
 export class PhaseIdentifier {
-  constructor(private timeline: TimelineInputs) {}
+  constructor(
+    private timeline: TimelineInputs,
+    private expenses: Expenses
+  ) {}
 
   getCurrentPhase(date: Date): PhaseData {
     switch (this.timeline.retirementStrategy.type) {

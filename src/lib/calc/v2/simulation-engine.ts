@@ -48,7 +48,8 @@ export class FinancialSimulationEngine {
   constructor(protected inputs: QuickPlanInputs) {}
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
-    const phaseIdentifier = new PhaseIdentifier(timeline);
+    const expenses = new Expenses(Object.values(this.inputs.expenses));
+    const phaseIdentifier = new PhaseIdentifier(timeline, expenses);
 
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
     const simulationState: SimulationState = this.initSimulationState(timeline, phaseIdentifier);
@@ -56,7 +57,6 @@ export class FinancialSimulationEngine {
     const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState)];
 
     const incomes = new Incomes(Object.values(this.inputs.incomes));
-    const expenses = new Expenses(Object.values(this.inputs.expenses));
     const contributionRules = new ContributionRules(Object.values(this.inputs.contributionRules), this.inputs.baseContributionRule);
 
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
