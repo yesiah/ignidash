@@ -245,8 +245,8 @@ export class InvestmentAccount extends Account {
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0);
-    this.initialPercentBonds = data.percentBonds ?? 0;
-    this.currPercentBonds = data.percentBonds ?? 0;
+    this.initialPercentBonds = data.percentBonds ?? 0 / 100;
+    this.currPercentBonds = data.percentBonds ?? 0 / 100;
 
     if ('costBasis' in data) this.costBasis = data.costBasis;
     if ('contributions' in data) this.contributions = data.contributions;
@@ -263,7 +263,7 @@ export class InvestmentAccount extends Account {
   }
 
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
-    const bondsPercent = this.currPercentBonds / 100;
+    const bondsPercent = this.currPercentBonds;
     const stocksPercent = 1 - bondsPercent;
 
     const currentBondsValue = this.currentValue * bondsPercent;
@@ -278,7 +278,7 @@ export class InvestmentAccount extends Account {
     const newStocksValue = currentStocksValue + stockReturnsAmount;
 
     this.currentValue = newBondsValue + newStocksValue;
-    this.currPercentBonds = this.currentValue ? (newBondsValue / this.currentValue) * 100 : this.initialPercentBonds;
+    this.currPercentBonds = this.currentValue ? newBondsValue / this.currentValue : this.initialPercentBonds;
 
     return { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount };
   }
