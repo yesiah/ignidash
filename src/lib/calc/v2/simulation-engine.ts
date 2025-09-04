@@ -171,12 +171,7 @@ export class FinancialSimulationEngine {
           returns: annualReturnsData,
         });
 
-        simulationState.annualData = {
-          returns: [],
-          incomes: [],
-          expenses: [],
-          portfolio: [],
-        };
+        simulationState.annualData = { returns: [], incomes: [], expenses: [], portfolio: [] };
       }
     }
 
