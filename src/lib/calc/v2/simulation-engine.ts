@@ -1,13 +1,13 @@
-import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
-import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
+import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
-import { ReturnsProvider } from '../returns-provider';
+import type { ReturnsProvider } from '../returns-provider';
 import { StochasticReturnsProvider } from '../stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest-returns-provider';
 
-import { Portfolio, PortfolioData, PortfolioProcessor } from './portfolio';
+import { Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
 import { ContributionRules } from './contribution-rules';
-import { PhaseIdentifier, PhaseData, PhaseName } from './phase';
+import { PhaseIdentifier, type PhaseData } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
 import { Incomes, IncomesProcessor, type IncomesData } from './incomes';
 import { Expenses, ExpensesProcessor, type ExpensesData } from './expenses';
@@ -40,7 +40,7 @@ export interface SimulationContext {
 export interface SimulationState {
   time: { date: Date; age: number; year: number };
   portfolio: Portfolio;
-  phaseName: PhaseName;
+  phase: PhaseData | undefined;
   annualData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
 }
 
@@ -52,7 +52,7 @@ export class FinancialSimulationEngine {
     const phaseIdentifier = new PhaseIdentifier(timeline, expenses);
 
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
-    const simulationState: SimulationState = this.initSimulationState(timeline, phaseIdentifier);
+    const simulationState: SimulationState = this.initSimulationState(timeline);
 
     const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState)];
 
@@ -76,7 +76,7 @@ export class FinancialSimulationEngine {
       const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(grossCashFlow);
 
-      simulationState.phaseName = phaseIdentifier.getCurrentPhase(simulationState.time.date).name;
+      simulationState.phase = phaseIdentifier.getCurrentPhase(simulationState.time.date);
 
       simulationState.annualData.returns.push(returnsData);
       simulationState.annualData.incomes.push(incomesData);
@@ -202,11 +202,11 @@ export class FinancialSimulationEngine {
     return { startAge, endAge, yearsToSimulate, startDate, endDate };
   }
 
-  private initSimulationState(timeline: TimelineInputs, phaseIdentifier: PhaseIdentifier): SimulationState {
+  private initSimulationState(timeline: TimelineInputs): SimulationState {
     return {
       time: { date: new Date(), age: timeline.currentAge, year: 0 },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
-      phaseName: phaseIdentifier.getCurrentPhase(new Date()).name,
+      phase: undefined,
       annualData: { returns: [], incomes: [], expenses: [], portfolio: [] },
     };
   }
