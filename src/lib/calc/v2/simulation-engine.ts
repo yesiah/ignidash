@@ -122,11 +122,17 @@ export class FinancialSimulationEngine {
             acc.totalIncomeAfterWithholding += curr.totalIncomeAfterWithholding;
 
             Object.entries(curr.perIncomeData).forEach(([incomeID, incomeData]) => {
-              acc.perIncomeData[incomeID] = {
-                grossIncome: (acc.perIncomeData[incomeID]?.grossIncome ?? 0) + incomeData.grossIncome,
-                amountWithheld: (acc.perIncomeData[incomeID]?.amountWithheld ?? 0) + incomeData.amountWithheld,
-                incomeAfterWithholding: (acc.perIncomeData[incomeID]?.incomeAfterWithholding ?? 0) + incomeData.incomeAfterWithholding,
-              };
+              if (!acc.perIncomeData[incomeID]) {
+                acc.perIncomeData[incomeID] = {
+                  grossIncome: 0,
+                  amountWithheld: 0,
+                  incomeAfterWithholding: 0,
+                };
+              }
+
+              acc.perIncomeData[incomeID].grossIncome += incomeData.grossIncome;
+              acc.perIncomeData[incomeID].amountWithheld += incomeData.amountWithheld;
+              acc.perIncomeData[incomeID].incomeAfterWithholding += incomeData.incomeAfterWithholding;
             });
 
             return acc;
