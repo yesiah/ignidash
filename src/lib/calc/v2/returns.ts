@@ -44,6 +44,7 @@ export class ReturnsProcessor {
       cash: Math.pow(1 + this.cachedAnnualReturnRates.cash, 1 / 12) - 1,
     };
     const monthlyInflationRate = Math.pow(1 + this.cachedAnnualInflationRate, 1 / 12) - 1;
+
     const monthlyReturnAmounts = this.simulationState.portfolio.applyReturns(monthlyReturnRates);
 
     const result = {
@@ -68,7 +69,7 @@ export class ReturnsProcessor {
 
   getAnnualData(): ReturnsData {
     return {
-      ...this.monthlyData[0],
+      ...this.monthlyData[0] /* Only need to accumulate monthlyReturnAmounts */,
       monthlyReturnAmounts: this.monthlyData.reduce(
         (acc, curr) => ({
           stocks: acc.stocks + curr.monthlyReturnAmounts.stocks,
