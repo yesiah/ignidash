@@ -169,7 +169,7 @@ export class FinancialSimulationEngine {
           portfolio: annualPortfolioData,
           incomes: annualIncomesData,
           expenses: annualExpensesData,
-          phase: simulationState.phase,
+          phase: { ...simulationState.phase },
           taxes: annualTaxesData,
           returns: annualReturnsData,
         });
