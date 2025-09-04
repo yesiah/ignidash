@@ -177,7 +177,9 @@ export abstract class Account {
     protected name: string,
     protected id: string,
     protected type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa',
-    protected totalReturns: AssetReturnAmounts
+    protected totalReturns: AssetReturnAmounts,
+    protected totalContributions: number,
+    protected totalWithdrawals: number
   ) {}
 
   getAccountID(): string {
@@ -201,7 +203,7 @@ export abstract class Account {
 
 export class SavingsAccount extends Account {
   constructor(data: AccountInputs) {
-    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 });
+    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0);
   }
 
   getAccountData(): AccountData {
@@ -239,7 +241,7 @@ export class InvestmentAccount extends Account {
   private contributions: number | undefined;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
-    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 });
+    super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0);
     this.initialPercentBonds = data.percentBonds ?? 0;
     this.currPercentBonds = data.percentBonds ?? 0;
 
@@ -282,6 +284,7 @@ export class InvestmentAccount extends Account {
     // TODO: Handle percentBonds allocation with contributions.
 
     this.currentValue += amount;
+    this.totalContributions += amount;
 
     if (this.costBasis !== undefined) this.costBasis += amount;
     if (this.contributions !== undefined) this.contributions += amount;
@@ -292,6 +295,7 @@ export class InvestmentAccount extends Account {
 
     if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
     this.currentValue -= amount;
+    this.totalWithdrawals += amount;
 
     if (this.costBasis !== undefined) this.costBasis -= amount;
     if (this.contributions !== undefined) this.contributions -= amount;
