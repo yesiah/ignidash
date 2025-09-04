@@ -8,7 +8,7 @@ export interface PortfolioData {
   totalValue: number;
   totalWithdrawals: number;
   totalContributions: number;
-  accountsData: Array<AccountData & { contributions: number; withdrawals: number }>;
+  accountsData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
 }
 
 export class PortfolioProcessor {
@@ -25,13 +25,15 @@ export class PortfolioProcessor {
     const { totalContributions, contributionsByAccount } = this.processContributions(grossCashFlow);
     const { totalWithdrawals, withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
-    const accountsData = this.simulationState.portfolio.getAccounts().map((account) => {
-      const accountData = account.getAccountData();
-      const contributions = contributionsByAccount[account.getAccountID()] || 0;
-      const withdrawals = withdrawalsByAccount[account.getAccountID()] || 0;
+    const accountsData: Record<string, AccountData & { contributions: number; withdrawals: number }> = Object.fromEntries(
+      this.simulationState.portfolio.getAccounts().map((account) => {
+        const accountData = account.getAccountData();
+        const contributions = contributionsByAccount[account.getAccountID()] || 0;
+        const withdrawals = withdrawalsByAccount[account.getAccountID()] || 0;
 
-      return { ...accountData, contributions, withdrawals };
-    });
+        return [account.getAccountID(), { ...accountData, contributions, withdrawals }];
+      })
+    );
 
     return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals, totalContributions, accountsData };
   }

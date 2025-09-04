@@ -101,9 +101,18 @@ export class FinancialSimulationEngine {
             acc.totalValue += curr.totalValue;
             acc.totalContributions += curr.totalContributions;
             acc.totalWithdrawals += curr.totalWithdrawals;
+
+            Object.entries(curr.accountsData).forEach(([accountID, accountData]) => {
+              acc.accountsData[accountID] = {
+                ...accountData,
+                contributions: (acc.accountsData[accountID]?.contributions ?? 0) + accountData.contributions,
+                withdrawals: (acc.accountsData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
+              };
+            });
+
             return acc;
           },
-          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, accountsData: [] }
+          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, accountsData: {} }
         );
 
         const annualIncomesData = annualData.incomes.reduce(
@@ -214,7 +223,7 @@ export class FinancialSimulationEngine {
         totalValue: initialSimulationState.portfolio.getTotalValue(),
         totalContributions: 0,
         totalWithdrawals: 0,
-        accountsData: [],
+        accountsData: {},
       },
       incomes: null,
       expenses: null,
