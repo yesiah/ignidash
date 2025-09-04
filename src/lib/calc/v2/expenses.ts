@@ -5,6 +5,7 @@ import type { SimulationState } from './simulation-engine';
 
 export interface ExpensesData {
   totalExpenses: number;
+  perExpenseData: Record<string, { amount: number }>;
 }
 
 export class ExpensesProcessor {
@@ -16,11 +17,16 @@ export class ExpensesProcessor {
   process(returnsData: ReturnsData): ExpensesData {
     const activeExpenses = this.expenses.getActiveExpensesByTimeFrame(this.simulationState);
 
-    const totalExpenses = activeExpenses.reduce((sum, expense) => {
-      return sum + expense.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year);
-    }, 0);
+    const processedExpenses = activeExpenses.map((expense) =>
+      expense.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year)
+    );
 
-    return { totalExpenses };
+    const totalExpenses = processedExpenses.reduce((sum, expense) => {
+      return sum + expense.amount;
+    }, 0);
+    const perExpenseData = Object.fromEntries(processedExpenses.map((expense) => [expense.id, expense]));
+
+    return { totalExpenses, perExpenseData };
   }
 }
 
@@ -38,6 +44,8 @@ export class Expenses {
 
 export class Expense {
   private hasOneTimeExpenseOccurred: boolean;
+  private id: string;
+  private name: string;
   private amount: number;
   private growthRate: number | undefined;
   private growthLimit: number | undefined;
@@ -47,6 +55,8 @@ export class Expense {
 
   constructor(data: ExpenseInputs) {
     this.hasOneTimeExpenseOccurred = false;
+    this.id = data.id;
+    this.name = data.name;
     this.amount = data.amount;
     this.growthRate = data.growth?.growthRate;
     this.growthLimit = data.growth?.growthLimit;
@@ -56,7 +66,7 @@ export class Expense {
   }
 
   // TODO: Might be cleaner to convert annual growth rate & growth limit to monthly...
-  processMonthlyAmount(inflationRate: number, year: number): number {
+  processMonthlyAmount(inflationRate: number, year: number): { id: string; name: string; amount: number } {
     const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
 
@@ -74,7 +84,7 @@ export class Expense {
 
     const monthlyAmount = Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
     if (this.frequency === 'oneTime') this.hasOneTimeExpenseOccurred = true;
-    return monthlyAmount;
+    return { id: this.id, name: this.name, amount: monthlyAmount };
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
