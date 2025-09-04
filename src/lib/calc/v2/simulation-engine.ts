@@ -20,7 +20,7 @@ export interface SimulationDataPoint {
   portfolio: PortfolioData;
   incomes: IncomesData | null;
   expenses: ExpensesData | null;
-  phase: PhaseData;
+  phase: PhaseData | null;
   taxes: TaxesData | null;
   returns: ReturnsData | null;
 }
@@ -224,7 +224,7 @@ export class FinancialSimulationEngine {
       portfolio: { totalValue: totalPortfolioValue, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} },
       incomes: null,
       expenses: null,
-      phase: phaseIdentifier.getCurrentPhase(initialSimulationState.time.date),
+      phase: null,
       taxes: null,
       returns: null,
     };
