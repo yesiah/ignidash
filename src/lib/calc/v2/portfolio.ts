@@ -227,10 +227,13 @@ export class SavingsAccount extends Account {
 
   applyContribution(amount: number): void {
     this.currentValue += amount;
+    this.totalContributions += amount;
   }
 
   applyWithdrawal(amount: number): void {
+    if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
     this.currentValue -= amount;
+    this.totalWithdrawals += amount;
   }
 }
 
