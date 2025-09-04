@@ -56,17 +56,20 @@ export class FinancialSimulationEngine {
   }
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
+    // Init context and state
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
     const simulationState: SimulationState = this.initSimulationState(timeline);
 
     const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState)];
 
+    // Init simulation processors
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
     const incomesProcessor = new IncomesProcessor(simulationState, this.incomes);
     const expensesProcessor = new ExpensesProcessor(simulationState, this.expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState, this.contributionRules);
     const taxProcessor = new TaxProcessor(simulationState);
 
+    // Init phase identifier
     const phaseIdentifier = new PhaseIdentifier(simulationState, timeline);
     simulationState.phase = phaseIdentifier.getCurrentPhase();
 
@@ -75,6 +78,7 @@ export class FinancialSimulationEngine {
       monthCount++;
       this.incrementSimulationTime(simulationState);
 
+      // Process one month of simulation
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
       const expensesData = expensesProcessor.process(returnsData);
