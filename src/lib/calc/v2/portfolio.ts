@@ -284,22 +284,42 @@ export class InvestmentAccount extends Account {
   }
 
   applyContribution(amount: number): void {
-    // TODO: Handle percentBonds allocation with contributions.
+    const currentBondValue = this.currentValue * this.currPercentBonds;
 
-    this.currentValue += amount;
+    const newTotalValue = this.currentValue + amount;
+    const targetBondValue = newTotalValue * this.initialPercentBonds;
+
+    let bondContribution = targetBondValue - currentBondValue;
+    bondContribution = Math.max(0, Math.min(amount, bondContribution));
+
+    this.currentValue = newTotalValue;
+    this.currPercentBonds = (currentBondValue + bondContribution) / newTotalValue;
+
     this.totalContributions += amount;
-
     if (this.costBasis !== undefined) this.costBasis += amount;
     if (this.contributions !== undefined) this.contributions += amount;
   }
 
   applyWithdrawal(amount: number): void {
-    // TODO: Handle percentBonds allocation with withdrawals.
-
     if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
-    this.currentValue -= amount;
-    this.totalWithdrawals += amount;
 
+    const currentBondValue = this.currentValue * this.currPercentBonds;
+
+    const newTotalValue = this.currentValue - amount;
+    const targetBondValue = newTotalValue * this.initialPercentBonds;
+
+    let bondWithdrawal = currentBondValue - targetBondValue;
+    bondWithdrawal = Math.max(0, Math.min(amount, bondWithdrawal, currentBondValue));
+
+    this.currentValue = newTotalValue;
+
+    if (newTotalValue > 0) {
+      this.currPercentBonds = (currentBondValue - bondWithdrawal) / newTotalValue;
+    } else {
+      this.currPercentBonds = this.initialPercentBonds;
+    }
+
+    this.totalWithdrawals += amount;
     if (this.costBasis !== undefined) this.costBasis -= amount;
     if (this.contributions !== undefined) this.contributions -= amount;
   }
