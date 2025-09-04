@@ -38,19 +38,10 @@ export interface SimulationContext {
 }
 
 export interface SimulationState {
-  time: {
-    date: Date;
-    age: number;
-    year: number;
-  };
+  time: { date: Date; age: number; year: number };
   portfolio: Portfolio;
   phaseName: PhaseName;
-  annualData: {
-    returns: ReturnsData[];
-    incomes: IncomesData[];
-    expenses: ExpensesData[];
-    portfolio: PortfolioData[];
-  };
+  annualData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
 }
 
 export class FinancialSimulationEngine {
