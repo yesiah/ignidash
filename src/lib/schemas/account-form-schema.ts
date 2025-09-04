@@ -89,3 +89,20 @@ export const accountTypeRequiresIncomeForContributions = (type: AccountInputs['t
       return true;
   }
 };
+
+export const annualContributionLimitForAccountType = (type: AccountInputs['type'], age: number): number | null => {
+  switch (type) {
+    case 'roth401k':
+    case '401k':
+      return age < 50 ? 23500 : 31000;
+    case 'rothIra':
+    case 'ira':
+      return age < 50 ? 7000 : 8000;
+    case 'hsa':
+      // NOTE: This assumes self-only coverage.
+      // Family coverage would be 8550 (under 55) or 9550 (55+).
+      return age < 55 ? 4300 : 5300;
+    default:
+      return null;
+  }
+};
