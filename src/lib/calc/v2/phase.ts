@@ -15,7 +15,7 @@ export class PhaseIdentifier {
     private expenses: Expenses
   ) {}
 
-  getCurrentPhase(simulationState: SimulationState): PhaseData {
+  getCurrentPhase(simulationState: Omit<SimulationState, 'phase'>): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
         const yearsFromNow = this.getYearsFromNow(simulationState.time.date);

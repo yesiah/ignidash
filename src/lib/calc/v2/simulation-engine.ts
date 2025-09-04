@@ -20,7 +20,7 @@ export interface SimulationDataPoint {
   portfolio: PortfolioData;
   incomes: IncomesData | null;
   expenses: ExpensesData | null;
-  phase: PhaseData | null;
+  phase: PhaseData;
   taxes: TaxesData | null;
   returns: ReturnsData | null;
 }
@@ -40,7 +40,7 @@ export interface SimulationContext {
 export interface SimulationState {
   time: { date: Date; age: number; year: number };
   portfolio: Portfolio;
-  phase: PhaseData | undefined;
+  phase: PhaseData;
   annualData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
 }
 
@@ -52,7 +52,7 @@ export class FinancialSimulationEngine {
     const phaseIdentifier = new PhaseIdentifier(timeline, expenses);
 
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
-    const simulationState: SimulationState = this.initSimulationState(timeline);
+    const simulationState: SimulationState = this.initSimulationState(timeline, phaseIdentifier);
 
     const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState)];
 
@@ -202,13 +202,15 @@ export class FinancialSimulationEngine {
     return { startAge, endAge, yearsToSimulate, startDate, endDate };
   }
 
-  private initSimulationState(timeline: TimelineInputs): SimulationState {
-    return {
+  private initSimulationState(timeline: TimelineInputs, phaseIdentifier: PhaseIdentifier): SimulationState {
+    const simulationStateWithoutPhase: Omit<SimulationState, 'phase'> = {
       time: { date: new Date(), age: timeline.currentAge, year: 0 },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
-      phase: undefined,
       annualData: { returns: [], incomes: [], expenses: [], portfolio: [] },
     };
+    const phase = phaseIdentifier.getCurrentPhase(simulationStateWithoutPhase);
+
+    return { ...simulationStateWithoutPhase, phase };
   }
 
   private initSimulationDataPoint(initialSimulationState: SimulationState): SimulationDataPoint {
@@ -219,7 +221,7 @@ export class FinancialSimulationEngine {
       portfolio: { totalValue: totalPortfolioValue, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} },
       incomes: null,
       expenses: null,
-      phase: null,
+      phase: initialSimulationState.phase!,
       taxes: null,
       returns: null,
     };
