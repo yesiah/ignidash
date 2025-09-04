@@ -1,5 +1,6 @@
 import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
+import { SimulationState } from './simulation-engine';
 import { Expenses } from './expenses';
 
 export type PhaseName = 'accumulation' | 'retirement';
@@ -14,15 +15,14 @@ export class PhaseIdentifier {
     private expenses: Expenses
   ) {}
 
-  getCurrentPhase(date: Date): PhaseData {
+  getCurrentPhase(simulationState: SimulationState): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
-        const yearsFromNow = this.getYearsFromNow(date);
+        const yearsFromNow = this.getYearsFromNow(simulationState.time.date);
         const age = this.timeline.currentAge + yearsFromNow;
 
         return { name: age < this.timeline.retirementStrategy.retirementAge ? 'accumulation' : 'retirement' };
       case 'swrTarget':
-        // TODO: Implement SWR Target logic.
         return { name: 'retirement' };
     }
   }

@@ -118,7 +118,7 @@ export class Expense {
       case 'now':
         return true;
       case 'atRetirement':
-        return simulationState.phaseName === 'retirement';
+        return simulationState.phase?.name === 'retirement';
       case 'atLifeExpectancy':
         return false;
     }
@@ -144,7 +144,7 @@ export class Expense {
       case 'now':
         return false;
       case 'atRetirement':
-        return simulationState.phaseName !== 'retirement';
+        return simulationState.phase?.name !== 'retirement';
       case 'atLifeExpectancy':
         return true;
     }

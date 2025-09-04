@@ -76,7 +76,7 @@ export class FinancialSimulationEngine {
       const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(grossCashFlow);
 
-      simulationState.phase = phaseIdentifier.getCurrentPhase(simulationState.time.date);
+      simulationState.phase = phaseIdentifier.getCurrentPhase(simulationState);
 
       simulationState.annualData.returns.push(returnsData);
       simulationState.annualData.incomes.push(incomesData);
@@ -166,7 +166,7 @@ export class FinancialSimulationEngine {
           portfolio: annualPortfolioData,
           incomes: annualIncomesData,
           expenses: annualExpensesData,
-          phase: phaseIdentifier.getCurrentPhase(simulationState.time.date),
+          phase: phaseIdentifier.getCurrentPhase(simulationState),
           taxes: annualTaxesData,
           returns: annualReturnsData,
         });
