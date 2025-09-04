@@ -9,6 +9,7 @@ export interface PortfolioData {
   totalValue: number;
   totalWithdrawals: number;
   totalContributions: number;
+  totalAssetAllocation: AssetAllocation | null;
   perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
 }
 
@@ -40,8 +41,10 @@ export class PortfolioProcessor {
         return [account.getAccountID(), { ...accountData, contributions, withdrawals }];
       })
     );
+    const totalValue = this.simulationState.portfolio.getTotalValue();
+    const totalAssetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
 
-    return { totalValue: this.simulationState.portfolio.getTotalValue(), totalWithdrawals, totalContributions, perAccountData };
+    return { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation };
   }
 
   private processContributions(grossCashFlow: number): {
@@ -154,6 +157,26 @@ export class Portfolio {
 
   addExtraSavingsAccount(extraSavingsAccount: SavingsAccount): void {
     this.accounts.push(extraSavingsAccount);
+  }
+
+  getWeightedAssetAllocation(): AssetAllocation | null {
+    const totalValue = this.getTotalValue();
+    if (totalValue === 0) return null;
+
+    const weightedAllocation = this.accounts.reduce(
+      (acc, account) => {
+        const weight = account.getCurrentValue() / totalValue;
+
+        return {
+          stocks: acc.stocks + (account.getAccountData().assetAllocation.stocks || 0) * weight,
+          bonds: acc.bonds + (account.getAccountData().assetAllocation.bonds || 0) * weight,
+          cash: acc.cash + (account.getAccountData().assetAllocation.cash || 0) * weight,
+        };
+      },
+      { stocks: 0, bonds: 0, cash: 0 } as AssetAllocation
+    );
+
+    return weightedAllocation;
   }
 
   getAccounts(): Account[] {

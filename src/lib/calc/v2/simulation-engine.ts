@@ -102,7 +102,7 @@ export class FinancialSimulationEngine {
 
             return acc;
           },
-          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} }
+          { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {}, totalAssetAllocation: null }
         );
 
         const annualIncomesData = monthlyData.incomes.reduce(
@@ -217,10 +217,17 @@ export class FinancialSimulationEngine {
 
   private initSimulationDataPoint(initialSimulationState: SimulationState): SimulationDataPoint {
     const totalPortfolioValue = initialSimulationState.portfolio.getTotalValue();
+    const totalAssetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
 
     return {
       date: new Date().toISOString().split('T')[0],
-      portfolio: { totalValue: totalPortfolioValue, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} },
+      portfolio: {
+        totalValue: totalPortfolioValue,
+        totalContributions: 0,
+        totalWithdrawals: 0,
+        perAccountData: {},
+        totalAssetAllocation,
+      },
       incomes: null,
       expenses: null,
       phase: null,
