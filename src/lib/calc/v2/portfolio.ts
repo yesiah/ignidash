@@ -11,7 +11,6 @@ export interface PortfolioData {
   totalContributions: number;
   perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
   totalAssetAllocation: AssetAllocation | null;
-  totalDebt: number;
 }
 
 export class PortfolioProcessor {
@@ -31,7 +30,7 @@ export class PortfolioProcessor {
 
   process(grossCashFlow: number): PortfolioData {
     const { totalContributions, contributionsByAccount } = this.processContributions(grossCashFlow);
-    const { totalWithdrawals, withdrawalsByAccount, totalDebt } = this.processWithdrawals(grossCashFlow);
+    const { totalWithdrawals, withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
     const perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }> = Object.fromEntries(
       this.simulationState.portfolio.getAccounts().map((account) => {
@@ -45,7 +44,7 @@ export class PortfolioProcessor {
     const totalValue = this.simulationState.portfolio.getTotalValue();
     const totalAssetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
 
-    return { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation, totalDebt };
+    return { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation };
   }
 
   private processContributions(grossCashFlow: number): {
@@ -109,11 +108,10 @@ export class PortfolioProcessor {
   private processWithdrawals(grossCashFlow: number): {
     totalWithdrawals: number;
     withdrawalsByAccount: Record<string, number>;
-    totalDebt: number;
   } {
     const withdrawalsByAccount: Record<string, number> = {};
     if (!(grossCashFlow < 0)) {
-      return { totalWithdrawals: 0, withdrawalsByAccount, totalDebt: 0 };
+      return { totalWithdrawals: 0, withdrawalsByAccount };
     }
 
     const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
@@ -135,7 +133,9 @@ export class PortfolioProcessor {
       }
     }
 
-    return { totalWithdrawals: grossCashFlow, withdrawalsByAccount, totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0 };
+    // TODO: Handle Debts. (totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0)
+
+    return { totalWithdrawals: grossCashFlow, withdrawalsByAccount };
   }
 }
 
