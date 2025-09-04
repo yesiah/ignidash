@@ -11,14 +11,15 @@ export interface PhaseData {
 
 export class PhaseIdentifier {
   constructor(
+    private simulationState: SimulationState,
     private timeline: TimelineInputs,
     private expenses: Expenses
   ) {}
 
-  getCurrentPhase(simulationState: Omit<SimulationState, 'phase'>): PhaseData {
+  getCurrentPhase(): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
-        const yearsFromNow = this.getYearsFromNow(simulationState.time.date);
+        const yearsFromNow = this.getYearsFromNow(this.simulationState.time.date);
         const age = this.timeline.currentAge + yearsFromNow;
 
         return { name: age < this.timeline.retirementStrategy.retirementAge ? 'accumulation' : 'retirement' };

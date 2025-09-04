@@ -20,7 +20,7 @@ export interface SimulationDataPoint {
   portfolio: PortfolioData;
   incomes: IncomesData | null;
   expenses: ExpensesData | null;
-  phase: PhaseData;
+  phase: PhaseData | null;
   taxes: TaxesData | null;
   returns: ReturnsData | null;
 }
@@ -40,23 +40,22 @@ export interface SimulationContext {
 export interface SimulationState {
   time: { date: Date; age: number; year: number };
   portfolio: Portfolio;
-  phase: PhaseData;
-  annualData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
+  phase: PhaseData | null;
+  monthlyData: { returns: ReturnsData[]; incomes: IncomesData[]; expenses: ExpensesData[]; portfolio: PortfolioData[] };
+  annualData: { expenses: ExpensesData[] };
 }
 
 export class FinancialSimulationEngine {
   constructor(protected inputs: QuickPlanInputs) {}
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
-    const expenses = new Expenses(Object.values(this.inputs.expenses));
-    const phaseIdentifier = new PhaseIdentifier(timeline, expenses);
-
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
-    const simulationState: SimulationState = this.initSimulationState(timeline, phaseIdentifier);
+    const simulationState: SimulationState = this.initSimulationState(timeline);
 
     const resultData: Array<SimulationDataPoint> = [this.initSimulationDataPoint(simulationState)];
 
     const incomes = new Incomes(Object.values(this.inputs.incomes));
+    const expenses = new Expenses(Object.values(this.inputs.expenses));
     const contributionRules = new ContributionRules(Object.values(this.inputs.contributionRules), this.inputs.baseContributionRule);
 
     const returnsProcessor = new ReturnsProcessor(simulationState, returnsProvider);
@@ -64,6 +63,9 @@ export class FinancialSimulationEngine {
     const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState, contributionRules);
     const taxProcessor = new TaxProcessor(simulationState);
+
+    const phaseIdentifier = new PhaseIdentifier(simulationState, timeline, expenses);
+    simulationState.phase = phaseIdentifier.getCurrentPhase();
 
     let monthCount = 0;
     while (simulationState.time.date < simulationContext.endDate) {
@@ -76,17 +78,15 @@ export class FinancialSimulationEngine {
       const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
       const portfolioData = portfolioProcessor.process(grossCashFlow);
 
-      simulationState.phase = phaseIdentifier.getCurrentPhase(simulationState);
-
-      simulationState.annualData.returns.push(returnsData);
-      simulationState.annualData.incomes.push(incomesData);
-      simulationState.annualData.expenses.push(expensesData);
-      simulationState.annualData.portfolio.push(portfolioData);
+      simulationState.monthlyData.returns.push(returnsData);
+      simulationState.monthlyData.incomes.push(incomesData);
+      simulationState.monthlyData.expenses.push(expensesData);
+      simulationState.monthlyData.portfolio.push(portfolioData);
 
       if (monthCount % 12 === 0) {
-        const annualData = simulationState.annualData;
+        const monthlyData = simulationState.monthlyData;
 
-        const annualPortfolioData = annualData.portfolio.reduce(
+        const annualPortfolioData = monthlyData.portfolio.reduce(
           (acc, curr) => {
             acc.totalValue += curr.totalValue;
             acc.totalContributions += curr.totalContributions;
@@ -105,7 +105,7 @@ export class FinancialSimulationEngine {
           { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} }
         );
 
-        const annualIncomesData = annualData.incomes.reduce(
+        const annualIncomesData = monthlyData.incomes.reduce(
           (acc, curr) => {
             acc.totalGrossIncome += curr.totalGrossIncome;
             acc.totalAmountWithheld += curr.totalAmountWithheld;
@@ -125,7 +125,7 @@ export class FinancialSimulationEngine {
           { totalGrossIncome: 0, totalAmountWithheld: 0, totalIncomeAfterWithholding: 0, perIncomeData: {} }
         );
 
-        const annualExpensesData = annualData.expenses.reduce(
+        const annualExpensesData = monthlyData.expenses.reduce(
           (acc, curr) => {
             acc.totalExpenses += curr.totalExpenses;
 
@@ -140,8 +140,9 @@ export class FinancialSimulationEngine {
           },
           { totalExpenses: 0, perExpenseData: {} }
         );
+        simulationState.annualData.expenses.push(annualExpensesData);
 
-        const annualReturnsData = annualData.returns.reduce(
+        const annualReturnsData = monthlyData.returns.reduce(
           (acc, curr) => {
             return {
               ...acc,
@@ -153,7 +154,7 @@ export class FinancialSimulationEngine {
             };
           },
           {
-            ...annualData.returns[0],
+            ...monthlyData.returns[0],
             returnAmounts: { stocks: 0, bonds: 0, cash: 0 },
           }
         );
@@ -161,17 +162,19 @@ export class FinancialSimulationEngine {
         // Processes taxes once annually.
         const annualTaxesData = taxProcessor.process(annualIncomesData);
 
+        simulationState.phase = phaseIdentifier.getCurrentPhase();
+
         resultData.push({
           date: simulationState.time.date.toISOString().split('T')[0],
           portfolio: annualPortfolioData,
           incomes: annualIncomesData,
           expenses: annualExpensesData,
-          phase: phaseIdentifier.getCurrentPhase(simulationState),
+          phase: simulationState.phase,
           taxes: annualTaxesData,
           returns: annualReturnsData,
         });
 
-        simulationState.annualData = { returns: [], incomes: [], expenses: [], portfolio: [] };
+        simulationState.monthlyData = { returns: [], incomes: [], expenses: [], portfolio: [] };
       }
     }
 
@@ -202,15 +205,14 @@ export class FinancialSimulationEngine {
     return { startAge, endAge, yearsToSimulate, startDate, endDate };
   }
 
-  private initSimulationState(timeline: TimelineInputs, phaseIdentifier: PhaseIdentifier): SimulationState {
-    const simulationStateWithoutPhase: Omit<SimulationState, 'phase'> = {
+  private initSimulationState(timeline: TimelineInputs): SimulationState {
+    return {
       time: { date: new Date(), age: timeline.currentAge, year: 0 },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
-      annualData: { returns: [], incomes: [], expenses: [], portfolio: [] },
+      phase: null,
+      monthlyData: { returns: [], incomes: [], expenses: [], portfolio: [] },
+      annualData: { expenses: [] },
     };
-    const phase = phaseIdentifier.getCurrentPhase(simulationStateWithoutPhase);
-
-    return { ...simulationStateWithoutPhase, phase };
   }
 
   private initSimulationDataPoint(initialSimulationState: SimulationState): SimulationDataPoint {
@@ -221,7 +223,7 @@ export class FinancialSimulationEngine {
       portfolio: { totalValue: totalPortfolioValue, totalContributions: 0, totalWithdrawals: 0, perAccountData: {} },
       incomes: null,
       expenses: null,
-      phase: initialSimulationState.phase!,
+      phase: null,
       taxes: null,
       returns: null,
     };
