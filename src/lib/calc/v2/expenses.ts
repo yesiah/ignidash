@@ -102,7 +102,6 @@ export class Expense {
     this.frequency = data.frequency;
   }
 
-  // TODO: Might be cleaner to convert annual growth rate & growth limit to monthly...
   processMonthlyAmount(inflationRate: number, year: number): ExpenseData {
     const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
@@ -110,7 +109,7 @@ export class Expense {
     const nominalGrowthRate = this.growthRate ?? 0;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate) - 1;
 
-    annualAmount *= Math.pow(1 + realGrowthRate, year);
+    annualAmount *= Math.pow(1 + realGrowthRate, Math.floor(year));
 
     const growthLimit = this.growthLimit;
     if (growthLimit !== undefined && nominalGrowthRate > 0) {
@@ -120,6 +119,7 @@ export class Expense {
     }
 
     const monthlyAmount = Math.max((annualAmount / this.getTimesToApplyPerYear()) * this.getTimesToApplyPerMonth(), 0);
+
     if (this.frequency === 'oneTime') this.hasOneTimeExpenseOccurred = true;
     return { id: this.id, name: this.name, amount: monthlyAmount };
   }

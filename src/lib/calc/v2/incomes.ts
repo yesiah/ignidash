@@ -122,7 +122,6 @@ export class Income {
     this.frequency = data.frequency;
   }
 
-  // TODO: Might be cleaner to convert annual growth rate & growth limit to monthly...
   processMonthlyAmount(inflationRate: number, year: number): IncomeData {
     const rawAmount = this.amount;
     let annualAmount = rawAmount * this.getTimesToApplyPerYear();
@@ -130,7 +129,7 @@ export class Income {
     const nominalGrowthRate = this.growthRate ?? 0;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate) - 1;
 
-    annualAmount *= Math.pow(1 + realGrowthRate, year);
+    annualAmount *= Math.pow(1 + realGrowthRate, Math.floor(year));
 
     const growthLimit = this.growthLimit;
     if (growthLimit !== undefined && nominalGrowthRate > 0) {
