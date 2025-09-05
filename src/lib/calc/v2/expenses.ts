@@ -3,17 +3,6 @@ import type { ExpenseInputs, TimePoint } from '@/lib/schemas/expense-form-schema
 import type { ReturnsData } from './returns';
 import type { SimulationState } from './simulation-engine';
 
-export interface ExpenseData {
-  id: string;
-  name: string;
-  amount: number;
-}
-
-export interface ExpensesData {
-  totalExpenses: number;
-  perExpenseData: Record<string, ExpenseData>;
-}
-
 export class ExpensesProcessor {
   private monthlyData: ExpensesData[] = [];
 
@@ -67,6 +56,11 @@ export class ExpensesProcessor {
   }
 }
 
+export interface ExpensesData {
+  totalExpenses: number;
+  perExpenseData: Record<string, ExpenseData>;
+}
+
 export class Expenses {
   private readonly expenses: Expense[];
 
@@ -77,6 +71,12 @@ export class Expenses {
   getActiveExpensesByTimeFrame(simulationState: SimulationState): Expense[] {
     return this.expenses.filter((expense) => expense.getIsActiveByTimeFrame(simulationState));
   }
+}
+
+export interface ExpenseData {
+  id: string;
+  name: string;
+  amount: number;
 }
 
 export class Expense {

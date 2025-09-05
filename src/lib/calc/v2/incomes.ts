@@ -3,21 +3,6 @@ import type { IncomeInputs, TimePoint } from '@/lib/schemas/income-form-schema';
 import type { ReturnsData } from './returns';
 import type { SimulationState } from './simulation-engine';
 
-export interface IncomeData {
-  id: string;
-  name: string;
-  grossIncome: number;
-  amountWithheld: number;
-  incomeAfterWithholding: number;
-}
-
-export interface IncomesData {
-  totalGrossIncome: number;
-  totalAmountWithheld: number;
-  totalIncomeAfterWithholding: number;
-  perIncomeData: Record<string, IncomeData>;
-}
-
 export class IncomesProcessor {
   private monthlyData: IncomesData[] = [];
 
@@ -85,6 +70,13 @@ export class IncomesProcessor {
   }
 }
 
+export interface IncomesData {
+  totalGrossIncome: number;
+  totalAmountWithheld: number;
+  totalIncomeAfterWithholding: number;
+  perIncomeData: Record<string, IncomeData>;
+}
+
 export class Incomes {
   private readonly incomes: Income[];
 
@@ -95,6 +87,14 @@ export class Incomes {
   getActiveIncomesByTimeFrame(simulationState: SimulationState): Income[] {
     return this.incomes.filter((income) => income.getIsActiveByTimeFrame(simulationState));
   }
+}
+
+export interface IncomeData {
+  id: string;
+  name: string;
+  grossIncome: number;
+  amountWithheld: number;
+  incomeAfterWithholding: number;
 }
 
 export class Income {
