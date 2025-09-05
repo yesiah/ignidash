@@ -21,7 +21,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
         <nav className="flex flex-1 flex-col overflow-y-auto px-3">
           <ul role="list" className="flex flex-1 flex-col">
             <li>
-              <ul role="list" className="space-y-1">
+              <ul role="list" className="space-y-1.5">
                 {navigation.map((item) => (
                   <li key={item.name}>
                     <SidebarLink href={item.href} current={item.current}>
@@ -35,7 +35,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
               </ul>
             </li>
             <li className="mt-auto">
-              <ul role="list" className="space-y-1">
+              <ul role="list" className="space-y-1.5">
                 <li key="dark-mode">
                   <SidebarModeToggle />
                 </li>
