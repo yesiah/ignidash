@@ -52,7 +52,7 @@ export default function DisclosureSection({
               <div className="flex w-full items-center justify-between text-left">
                 <div className="flex items-center gap-2 font-medium">
                   <Icon className="text-primary size-5 shrink-0 lg:size-6" aria-hidden="true" />
-                  <h3 className="text-lg font-semibold tracking-tight whitespace-nowrap lg:text-xl">{title}</h3>
+                  <h3 className="text-lg tracking-tight whitespace-nowrap lg:text-xl">{title}</h3>
                 </div>
                 <ChevronDownIcon
                   className="ml-2 h-5 w-5 shrink-0 transition-transform duration-100 group-data-open:-rotate-180"
