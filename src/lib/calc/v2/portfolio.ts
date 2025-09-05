@@ -52,7 +52,7 @@ export class PortfolioProcessor {
     }
 
     const total = grossCashFlow;
-    const contributionRules = this.contributionRules.getRules();
+    const contributionRules = this.contributionRules.getRules().sort((a, b) => a.getRank() - b.getRank());
 
     let remainingToContribute = grossCashFlow;
     let currentRuleIndex = 0;
@@ -78,8 +78,7 @@ export class PortfolioProcessor {
       const baseRule = this.contributionRules.getBaseRuleType();
       switch (baseRule) {
         case 'spend':
-          // Handle remaining cash for spend - do nothing, money is spent
-          // TODO (?): Should create SYSTEM expense for this?
+          // TODO: Create SYSTEM expense for remainingToContribute with spend base rule
           break;
         case 'save':
           const portfolioHasExtraSavingsAccount = this.simulationState.portfolio
@@ -92,7 +91,6 @@ export class PortfolioProcessor {
           this.extraSavingsAccount.applyContribution(remainingToContribute);
           byAccount[this.extraSavingsAccount.getAccountID()] =
             (byAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
-
           break;
       }
     }
@@ -106,6 +104,7 @@ export class PortfolioProcessor {
       return { total: 0, byAccount };
     }
 
+    // TODO: Create more sophisticated drawdown strategy
     const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
     let remainingToWithdraw = grossCashFlow;
 
@@ -125,7 +124,7 @@ export class PortfolioProcessor {
       }
     }
 
-    // TODO: Handle Debts. (totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0)
+    // TODO: Handle going into debt (totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0)
 
     return { total: grossCashFlow, byAccount };
   }

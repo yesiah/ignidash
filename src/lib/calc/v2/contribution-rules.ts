@@ -33,4 +33,8 @@ export class ContributionRule {
   getAccountID(): string {
     return this.contributionInput.accountId;
   }
+
+  getRank(): number {
+    return this.contributionInput.rank;
+  }
 }
