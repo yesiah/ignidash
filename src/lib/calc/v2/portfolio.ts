@@ -5,13 +5,10 @@ import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
 import { ContributionRules } from './contribution-rules';
 
-export interface PortfolioData {
-  totalValue: number;
-  totalWithdrawals: number;
-  totalContributions: number;
-  perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
-  totalAssetAllocation: AssetAllocation | null;
-}
+type CashFlowBreakdown = {
+  total: number;
+  byAccount: Record<string, number>;
+};
 
 export class PortfolioProcessor {
   private extraSavingsAccount: SavingsAccount;
@@ -30,8 +27,8 @@ export class PortfolioProcessor {
   }
 
   process(grossCashFlow: number): PortfolioData {
-    const { totalContributions, contributionsByAccount } = this.processContributions(grossCashFlow);
-    const { totalWithdrawals, withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
+    const { total: totalContributions, byAccount: contributionsByAccount } = this.processContributions(grossCashFlow);
+    const { total: totalWithdrawals, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
     const perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }> = Object.fromEntries(
       this.simulationState.portfolio.getAccounts().map((account) => {
@@ -51,16 +48,13 @@ export class PortfolioProcessor {
     return result;
   }
 
-  private processContributions(grossCashFlow: number): {
-    totalContributions: number;
-    contributionsByAccount: Record<string, number>;
-  } {
-    const contributionsByAccount: Record<string, number> = {};
+  private processContributions(grossCashFlow: number): CashFlowBreakdown {
+    const byAccount: Record<string, number> = {};
     if (!(grossCashFlow > 0)) {
-      return { totalContributions: 0, contributionsByAccount };
+      return { total: 0, byAccount };
     }
 
-    const totalContributions = grossCashFlow;
+    const total = grossCashFlow;
     const contributionRules = this.contributionRules.getRules();
 
     let remainingToContribute = grossCashFlow;
@@ -77,7 +71,7 @@ export class PortfolioProcessor {
       const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
 
       contributeToAccount.applyContribution(contributionAmount);
-      contributionsByAccount[contributeToAccountID] = contributionAmount;
+      byAccount[contributeToAccountID] = contributionAmount;
 
       remainingToContribute -= contributionAmount;
       currentRuleIndex++;
@@ -99,23 +93,20 @@ export class PortfolioProcessor {
           }
 
           this.extraSavingsAccount.applyContribution(remainingToContribute);
-          contributionsByAccount[this.extraSavingsAccount.getAccountID()] =
-            (contributionsByAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
+          byAccount[this.extraSavingsAccount.getAccountID()] =
+            (byAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
 
           break;
       }
     }
 
-    return { totalContributions, contributionsByAccount };
+    return { total, byAccount };
   }
 
-  private processWithdrawals(grossCashFlow: number): {
-    totalWithdrawals: number;
-    withdrawalsByAccount: Record<string, number>;
-  } {
-    const withdrawalsByAccount: Record<string, number> = {};
+  private processWithdrawals(grossCashFlow: number): CashFlowBreakdown {
+    const byAccount: Record<string, number> = {};
     if (!(grossCashFlow < 0)) {
-      return { totalWithdrawals: 0, withdrawalsByAccount };
+      return { total: 0, byAccount };
     }
 
     const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
@@ -132,14 +123,14 @@ export class PortfolioProcessor {
 
         const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getCurrentValue());
         account.applyWithdrawal(withdrawFromThisAccount);
-        withdrawalsByAccount[account.getAccountID()] = withdrawFromThisAccount;
+        byAccount[account.getAccountID()] = withdrawFromThisAccount;
         remainingToWithdraw -= withdrawFromThisAccount;
       }
     }
 
     // TODO: Handle Debts. (totalDebt: remainingToWithdraw > 0 ? remainingToWithdraw : 0)
 
-    return { totalWithdrawals: grossCashFlow, withdrawalsByAccount };
+    return { total: grossCashFlow, byAccount };
   }
 
   getMonthlyData(): PortfolioData[] {
@@ -170,6 +161,14 @@ export class PortfolioProcessor {
       { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {}, totalAssetAllocation: null }
     );
   }
+}
+
+export interface PortfolioData {
+  totalValue: number;
+  totalWithdrawals: number;
+  totalContributions: number;
+  perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
+  totalAssetAllocation: AssetAllocation | null;
 }
 
 export class Portfolio {
