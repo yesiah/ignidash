@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
 import { ContributionRules, AnnualContributionTracker } from './contribution-rules';
+import type { IncomesData } from './incomes';
+import type { ExpensesData } from './expenses';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 
@@ -25,9 +27,12 @@ export class PortfolioProcessor {
     });
   }
 
-  process(grossCashFlow: number): PortfolioData {
-    const { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(grossCashFlow);
-    const { totalForPeriod: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
+  process(incomesData: IncomesData, expensesData: ExpensesData): PortfolioData {
+    const { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(
+      incomesData,
+      expensesData
+    );
+    const { totalForPeriod: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(incomesData, expensesData);
 
     const perAccountData: Record<string, AccountDataWithTransactions> = Object.fromEntries(
       this.simulationState.portfolio.getAccounts().map((account) => {
@@ -57,7 +62,9 @@ export class PortfolioProcessor {
     return result;
   }
 
-  private processContributions(grossCashFlow: number): TransactionsBreakdown {
+  private processContributions(incomesData: IncomesData, expensesData: ExpensesData): TransactionsBreakdown {
+    const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
+
     const byAccount: Record<string, number> = {};
     if (!(grossCashFlow > 0)) {
       return { totalForPeriod: 0, byAccount };
@@ -112,7 +119,9 @@ export class PortfolioProcessor {
     return { totalForPeriod, byAccount };
   }
 
-  private processWithdrawals(grossCashFlow: number): TransactionsBreakdown {
+  private processWithdrawals(incomesData: IncomesData, expensesData: ExpensesData): TransactionsBreakdown {
+    const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
+
     const byAccount: Record<string, number> = {};
     if (!(grossCashFlow < 0)) {
       return { totalForPeriod: 0, byAccount };
