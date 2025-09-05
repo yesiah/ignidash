@@ -1,6 +1,6 @@
-import { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
+import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 
-import { SimulationState } from './simulation-engine';
+import type { SimulationState } from './simulation-engine';
 
 export type PhaseName = 'accumulation' | 'retirement';
 
