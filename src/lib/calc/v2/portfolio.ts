@@ -126,9 +126,9 @@ export class PortfolioProcessor {
 
       for (const account of accountsOfType) {
         if (remainingToWithdraw <= 0) break;
-        if (!(account.getCurrentValue() > 0)) continue;
+        if (!(account.getTotalValue() > 0)) continue;
 
-        const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getCurrentValue());
+        const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getTotalValue());
         account.applyWithdrawal(withdrawFromThisAccount);
 
         byAccount[account.getAccountID()] = withdrawFromThisAccount;
@@ -212,7 +212,7 @@ export class Portfolio {
 
     const weightedAllocation = this.accounts.reduce(
       (acc, account) => {
-        const weight = account.getCurrentValue() / totalValue;
+        const weight = account.getTotalValue() / totalValue;
 
         return {
           stocks: acc.stocks + (account.getAccountData().assetAllocation.stocks || 0) * weight,
@@ -231,7 +231,7 @@ export class Portfolio {
   }
 
   getTotalValue(): number {
-    return this.accounts.reduce((acc, account) => acc + account.getCurrentValue(), 0);
+    return this.accounts.reduce((acc, account) => acc + account.getTotalValue(), 0);
   }
 
   getTotalWithdrawals(): number {
@@ -280,7 +280,7 @@ export class Portfolio {
 }
 
 export interface AccountData {
-  currentValue: number;
+  totalValue: number;
   totalWithdrawals: number;
   totalContributions: number;
   name: string;
@@ -291,7 +291,7 @@ export interface AccountData {
 
 export abstract class Account {
   constructor(
-    protected currentValue: number,
+    protected totalValue: number,
     protected name: string,
     protected id: string,
     protected type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa',
@@ -308,8 +308,8 @@ export abstract class Account {
     return this.type;
   }
 
-  getCurrentValue(): number {
-    return this.currentValue;
+  getTotalValue(): number {
+    return this.totalValue;
   }
 
   getTotalWithdrawals(): number {
@@ -343,7 +343,7 @@ export class SavingsAccount extends Account {
     };
 
     return {
-      currentValue: this.currentValue,
+      totalValue: this.totalValue,
       totalWithdrawals: this.totalWithdrawals,
       totalContributions: this.totalContributions,
       name: this.name,
@@ -354,22 +354,22 @@ export class SavingsAccount extends Account {
   }
 
   applyReturns(returns: AssetReturnRates): AssetReturnAmounts {
-    const cashReturnsAmount = this.currentValue * returns.cash;
+    const cashReturnsAmount = this.totalValue * returns.cash;
 
-    this.currentValue += cashReturnsAmount;
+    this.totalValue += cashReturnsAmount;
     this.totalReturns.cash += cashReturnsAmount;
 
     return { cash: cashReturnsAmount, bonds: 0, stocks: 0 };
   }
 
   applyContribution(amount: number): void {
-    this.currentValue += amount;
+    this.totalValue += amount;
     this.totalContributions += amount;
   }
 
   applyWithdrawal(amount: number): void {
-    if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
-    this.currentValue -= amount;
+    if (amount > this.totalValue) throw new Error('Insufficient funds for withdrawal');
+    this.totalValue -= amount;
     this.totalWithdrawals += amount;
   }
 }
@@ -398,7 +398,7 @@ export class InvestmentAccount extends Account {
     };
 
     return {
-      currentValue: this.currentValue,
+      totalValue: this.totalValue,
       totalWithdrawals: this.totalWithdrawals,
       totalContributions: this.totalContributions,
       name: this.name,
@@ -412,8 +412,8 @@ export class InvestmentAccount extends Account {
     const bondsPercent = this.currPercentBonds;
     const stocksPercent = 1 - bondsPercent;
 
-    const currentBondsValue = this.currentValue * bondsPercent;
-    const currentStocksValue = this.currentValue * stocksPercent;
+    const currentBondsValue = this.totalValue * bondsPercent;
+    const currentStocksValue = this.totalValue * stocksPercent;
 
     const bondReturnsAmount = currentBondsValue * returns.bonds;
     this.totalReturns.bonds += bondReturnsAmount;
@@ -423,22 +423,22 @@ export class InvestmentAccount extends Account {
     this.totalReturns.stocks += stockReturnsAmount;
     const newStocksValue = currentStocksValue + stockReturnsAmount;
 
-    this.currentValue = newBondsValue + newStocksValue;
-    this.currPercentBonds = this.currentValue ? newBondsValue / this.currentValue : this.initialPercentBonds;
+    this.totalValue = newBondsValue + newStocksValue;
+    this.currPercentBonds = this.totalValue ? newBondsValue / this.totalValue : this.initialPercentBonds;
 
     return { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount };
   }
 
   applyContribution(amount: number): void {
-    const currentBondValue = this.currentValue * this.currPercentBonds;
+    const currentBondValue = this.totalValue * this.currPercentBonds;
 
-    const newTotalValue = this.currentValue + amount;
+    const newTotalValue = this.totalValue + amount;
     const targetBondValue = newTotalValue * this.initialPercentBonds;
 
     let bondContribution = targetBondValue - currentBondValue;
     bondContribution = Math.max(0, Math.min(amount, bondContribution));
 
-    this.currentValue = newTotalValue;
+    this.totalValue = newTotalValue;
     this.currPercentBonds = newTotalValue ? (currentBondValue + bondContribution) / newTotalValue : this.initialPercentBonds;
 
     this.totalContributions += amount;
@@ -447,17 +447,17 @@ export class InvestmentAccount extends Account {
   }
 
   applyWithdrawal(amount: number): void {
-    if (amount > this.currentValue) throw new Error('Insufficient funds for withdrawal');
+    if (amount > this.totalValue) throw new Error('Insufficient funds for withdrawal');
 
-    const currentBondValue = this.currentValue * this.currPercentBonds;
+    const currentBondValue = this.totalValue * this.currPercentBonds;
 
-    const newTotalValue = this.currentValue - amount;
+    const newTotalValue = this.totalValue - amount;
     const targetBondValue = newTotalValue * this.initialPercentBonds;
 
     let bondWithdrawal = currentBondValue - targetBondValue;
     bondWithdrawal = Math.max(0, Math.min(amount, bondWithdrawal, currentBondValue));
 
-    this.currentValue = newTotalValue;
+    this.totalValue = newTotalValue;
     this.currPercentBonds = newTotalValue ? (currentBondValue - bondWithdrawal) / newTotalValue : this.initialPercentBonds;
 
     this.totalWithdrawals += amount;
