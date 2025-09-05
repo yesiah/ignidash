@@ -24,8 +24,8 @@ export class PortfolioProcessor {
   }
 
   process(grossCashFlow: number): PortfolioData {
-    const { total: totalContributions, byAccount: contributionsByAccount } = this.processContributions(grossCashFlow);
-    const { total: totalWithdrawals, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
+    const { total: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(grossCashFlow);
+    const { total: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
     const perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }> = Object.fromEntries(
       this.simulationState.portfolio.getAccounts().map((account) => {
@@ -37,9 +37,9 @@ export class PortfolioProcessor {
       })
     );
     const totalValue = this.simulationState.portfolio.getTotalValue();
-    const totalAssetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
+    const assetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
 
-    const result = { totalValue, totalWithdrawals, totalContributions, perAccountData, totalAssetAllocation };
+    const result = { totalValue, withdrawalsForPeriod, contributionsForPeriod, perAccountData, assetAllocation };
 
     this.monthlyData.push(result);
     return result;
@@ -140,33 +140,41 @@ export class PortfolioProcessor {
   }
 
   getAnnualData(): PortfolioData {
-    return this.monthlyData.reduce(
-      (acc, curr) => {
-        acc.totalValue += curr.totalValue;
-        acc.totalContributions += curr.totalContributions;
-        acc.totalWithdrawals += curr.totalWithdrawals;
+    const lastMonthData = this.monthlyData[this.monthlyData.length - 1];
 
-        Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
-          acc.perAccountData[accountID] = {
-            ...accountData,
-            contributions: (acc.perAccountData[accountID]?.contributions ?? 0) + accountData.contributions,
-            withdrawals: (acc.perAccountData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
-          };
-        });
+    return {
+      ...lastMonthData,
+      ...this.monthlyData.reduce(
+        (acc, curr) => {
+          acc.contributionsForPeriod += curr.contributionsForPeriod;
+          acc.withdrawalsForPeriod += curr.withdrawalsForPeriod;
 
-        return acc;
-      },
-      { totalValue: 0, totalContributions: 0, totalWithdrawals: 0, perAccountData: {}, totalAssetAllocation: null }
-    );
+          Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
+            acc.perAccountData[accountID] = {
+              ...accountData,
+              contributions: (acc.perAccountData[accountID]?.contributions ?? 0) + accountData.contributions,
+              withdrawals: (acc.perAccountData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
+            };
+          });
+
+          return acc;
+        },
+        {
+          contributionsForPeriod: 0,
+          withdrawalsForPeriod: 0,
+          perAccountData: {} as Record<string, AccountData & { contributions: number; withdrawals: number }>,
+        }
+      ),
+    };
   }
 }
 
 export interface PortfolioData {
   totalValue: number;
-  totalWithdrawals: number;
-  totalContributions: number;
+  withdrawalsForPeriod: number;
+  contributionsForPeriod: number;
   perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
-  totalAssetAllocation: AssetAllocation | null;
+  assetAllocation: AssetAllocation | null;
 }
 
 export class Portfolio {

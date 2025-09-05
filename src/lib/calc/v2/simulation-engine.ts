@@ -154,16 +154,16 @@ export class FinancialSimulationEngine {
 
   private initSimulationDataPoint(initialSimulationState: SimulationState): SimulationDataPoint {
     const totalPortfolioValue = initialSimulationState.portfolio.getTotalValue();
-    const totalAssetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
+    const assetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
 
     return {
       date: new Date().toISOString().split('T')[0],
       portfolio: {
         totalValue: totalPortfolioValue,
-        totalContributions: 0,
-        totalWithdrawals: 0,
+        contributionsForPeriod: 0,
+        withdrawalsForPeriod: 0,
         perAccountData: {},
-        totalAssetAllocation,
+        assetAllocation,
       },
       incomes: null,
       expenses: null,
