@@ -1,8 +1,7 @@
 import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 
-import type { SimulationState } from './simulation-engine';
-import type { Account } from './portfolio';
+import { Account, type PortfolioData } from './portfolio';
 import type { IncomesData } from './incomes';
 
 export class ContributionRules {
@@ -32,15 +31,17 @@ export class ContributionRule {
   }
 
   getContributionAmount(
-    cashLeftToAllocate: number,
-    remainingContributionLimit: number,
+    remainingToContribute: number,
     account: Account,
-    incomesData: IncomesData
+    incomesData: IncomesData,
+    monthlyPortfolioData: PortfolioData[],
+    age: number
   ): number {
     const currentAccountValue = account.getTotalValue();
 
     const remainingToMaxAccountValue = this.contributionInput.maxValue ? this.contributionInput.maxValue - currentAccountValue : Infinity;
-    let maxContribution = Math.min(remainingToMaxAccountValue, cashLeftToAllocate, remainingContributionLimit);
+    const remainingToAccountTypeContributionLimit = this.getRemainingToAccountTypeContributionLimit(account, monthlyPortfolioData, age);
+    let maxContribution = Math.min(remainingToMaxAccountValue, remainingToContribute, remainingToAccountTypeContributionLimit);
 
     const eligibleIncomeIds = new Set(this.contributionInput?.incomeIds);
     if (eligibleIncomeIds.size > 0) {
@@ -56,7 +57,7 @@ export class ContributionRule {
         contributionAmount = this.contributionInput.dollarAmount;
         return Math.min(contributionAmount, maxContribution);
       case 'percentRemaining':
-        contributionAmount = cashLeftToAllocate * (this.contributionInput.percentRemaining / 100);
+        contributionAmount = remainingToContribute * (this.contributionInput.percentRemaining / 100);
         return Math.min(contributionAmount, maxContribution);
       case 'unlimited':
         return maxContribution;
@@ -70,45 +71,43 @@ export class ContributionRule {
   getRank(): number {
     return this.contributionInput.rank;
   }
-}
 
-export class AnnualContributionTracker {
-  private ytdContributions: Map<string, number> = new Map();
-  private lastYear: number;
+  private getRemainingToAccountTypeContributionLimit(account: Account, monthlyPortfolioData: PortfolioData[], age: number): number {
+    const accountType = account.getAccountType();
+    const accountTypeContributionLimit = this.getAnnualLimit(this.getLimitKey(accountType), age);
 
-  constructor(private simulationState: SimulationState) {
-    this.lastYear = this.simulationState.time.year;
-  }
+    if (!Number.isFinite(accountTypeContributionLimit)) return Infinity;
 
-  addContribution(accountType: AccountInputs['type'], amount: number): void {
-    const limitKey = this.getLimitKey(accountType);
+    let contributionsSoFar;
+    let remainingToAccountTypeLimit;
 
-    const currentYtdContribution = this.ytdContributions.get(limitKey) || 0;
-    this.ytdContributions.set(limitKey, currentYtdContribution + amount);
-  }
-
-  getRemainingLimit(accountType: AccountInputs['type']): number {
-    const currentYear = Math.floor(this.simulationState.time.year);
-    if (currentYear !== this.lastYear) {
-      this.resetYtdContributions();
-      this.lastYear = currentYear;
+    switch (accountType) {
+      case '401k':
+      case 'roth401k':
+        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['401k', 'roth401k']);
+        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
+        break;
+      case 'ira':
+      case 'rothIra':
+        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['ira', 'rothIra']);
+        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
+        break;
+      case 'hsa':
+        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['hsa']);
+        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
+        break;
+      default:
+        remainingToAccountTypeLimit = Infinity;
     }
 
-    const limitKey = this.getLimitKey(accountType);
-
-    const annualLimit = this.getAnnualLimit(limitKey);
-    const ytdContribution = this.getYtdContributions(accountType);
-
-    return Math.max(0, annualLimit - ytdContribution);
+    return remainingToAccountTypeLimit;
   }
 
-  private getYtdContributions(accountType: AccountInputs['type']): number {
-    const limitKey = this.getLimitKey(accountType);
-    return this.ytdContributions.get(limitKey) || 0;
-  }
-
-  private resetYtdContributions(): void {
-    this.ytdContributions.clear();
+  private getContributionsSoFar(monthlyPortfolioData: PortfolioData[], accountTypes: string[]): number {
+    return monthlyPortfolioData
+      .flatMap((data) => Object.values(data.perAccountData))
+      .filter((account) => accountTypes.includes(account.type))
+      .reduce((sum, account) => sum + account.contributionsForPeriod, 0);
   }
 
   private getLimitKey(accountType: AccountInputs['type']): string {
@@ -124,9 +123,7 @@ export class AnnualContributionTracker {
     }
   }
 
-  private getAnnualLimit(limitKey: string): number {
-    const age = this.simulationState.time.age;
-
+  private getAnnualLimit(limitKey: string, age: number): number {
     switch (limitKey) {
       case '401kCombined':
         return age < 50 ? 23500 : 31000;

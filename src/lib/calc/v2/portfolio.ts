@@ -3,14 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
-import { ContributionRules, AnnualContributionTracker } from './contribution-rules';
+import { ContributionRules } from './contribution-rules';
 import type { IncomesData } from './incomes';
 import type { ExpensesData } from './expenses';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 
 export class PortfolioProcessor {
-  private annualContributionTracker: AnnualContributionTracker;
   private extraSavingsAccount: SavingsAccount;
   private monthlyData: PortfolioData[] = [];
 
@@ -18,7 +17,6 @@ export class PortfolioProcessor {
     private simulationState: SimulationState,
     private contributionRules: ContributionRules
   ) {
-    this.annualContributionTracker = new AnnualContributionTracker(this.simulationState);
     this.extraSavingsAccount = new SavingsAccount({
       type: 'savings' as const,
       id: uuidv4(),
@@ -70,6 +68,7 @@ export class PortfolioProcessor {
       return { totalForPeriod: 0, byAccount };
     }
 
+    const age = this.simulationState.time.age;
     const totalForPeriod = grossCashFlow;
     const contributionRules = this.contributionRules.getRules().sort((a, b) => a.getRank() - b.getRank());
 
@@ -85,15 +84,9 @@ export class PortfolioProcessor {
       const contributeToAccountID = rule.getAccountID();
       const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
 
-      const remainingContributionLimit = this.annualContributionTracker.getRemainingLimit(contributeToAccount.getAccountType());
-      const contributionAmount = rule.getContributionAmount(
-        remainingToContribute,
-        remainingContributionLimit,
-        contributeToAccount,
-        incomesData
-      );
+      const contributionAmount = rule.getContributionAmount(remainingToContribute, contributeToAccount, incomesData, this.monthlyData, age);
 
-      contributeToAccount.applyContribution(contributionAmount, this.annualContributionTracker);
+      contributeToAccount.applyContribution(contributionAmount);
       byAccount[contributeToAccountID] = contributionAmount;
 
       remainingToContribute -= contributionAmount;
@@ -114,7 +107,7 @@ export class PortfolioProcessor {
             this.simulationState.portfolio.addExtraSavingsAccount(this.extraSavingsAccount);
           }
 
-          this.extraSavingsAccount.applyContribution(remainingToContribute, this.annualContributionTracker);
+          this.extraSavingsAccount.applyContribution(remainingToContribute);
           byAccount[this.extraSavingsAccount.getAccountID()] =
             (byAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
           break;
@@ -302,7 +295,7 @@ export interface AccountData {
   totalContributions: number;
   name: string;
   id: string;
-  type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa';
+  type: AccountInputs['type'];
   assetAllocation: AssetAllocation;
 }
 
@@ -316,7 +309,7 @@ export abstract class Account {
     protected totalValue: number,
     protected name: string,
     protected id: string,
-    protected type: 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa',
+    protected type: AccountInputs['type'],
     protected totalReturns: AssetReturnAmounts,
     protected totalContributions: number,
     protected totalWithdrawals: number
@@ -326,7 +319,7 @@ export abstract class Account {
     return this.id;
   }
 
-  getAccountType(): 'savings' | 'taxableBrokerage' | 'roth401k' | 'rothIra' | '401k' | 'ira' | 'hsa' {
+  getAccountType(): AccountInputs['type'] {
     return this.type;
   }
 
@@ -349,7 +342,7 @@ export abstract class Account {
   abstract getAccountData(): AccountData;
 
   abstract applyReturns(returns: AssetReturnRates): AssetReturnAmounts;
-  abstract applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void;
+  abstract applyContribution(amount: number): void;
   abstract applyWithdrawal(amount: number): void;
 }
 
@@ -385,10 +378,9 @@ export class SavingsAccount extends Account {
     return { cash: cashReturnsAmount, bonds: 0, stocks: 0 };
   }
 
-  applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void {
+  applyContribution(amount: number): void {
     this.totalValue += amount;
     this.totalContributions += amount;
-    annualContributionTracker.addContribution(this.type, amount);
   }
 
   applyWithdrawal(amount: number): void {
@@ -453,7 +445,7 @@ export class InvestmentAccount extends Account {
     return { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount };
   }
 
-  applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void {
+  applyContribution(amount: number): void {
     const currentBondValue = this.totalValue * this.currPercentBonds;
 
     const newTotalValue = this.totalValue + amount;
@@ -466,7 +458,6 @@ export class InvestmentAccount extends Account {
     this.currPercentBonds = newTotalValue ? (currentBondValue + bondContribution) / newTotalValue : this.initialPercentBonds;
 
     this.totalContributions += amount;
-    annualContributionTracker.addContribution(this.type, amount);
     if (this.costBasis !== undefined) this.costBasis += amount;
     if (this.contributions !== undefined) this.contributions += amount;
   }
