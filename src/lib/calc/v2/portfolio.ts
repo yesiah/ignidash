@@ -3,11 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
-import { ContributionRules } from './contribution-rules';
+import { ContributionRules, AnnualContributionTracker } from './contribution-rules';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 
 export class PortfolioProcessor {
+  private annualContributionTracker: AnnualContributionTracker;
   private extraSavingsAccount: SavingsAccount;
   private monthlyData: PortfolioData[] = [];
 
@@ -15,6 +16,7 @@ export class PortfolioProcessor {
     private simulationState: SimulationState,
     private contributionRules: ContributionRules
   ) {
+    this.annualContributionTracker = new AnnualContributionTracker(this.simulationState);
     this.extraSavingsAccount = new SavingsAccount({
       type: 'savings' as const,
       id: uuidv4(),
@@ -73,11 +75,13 @@ export class PortfolioProcessor {
         continue;
       }
 
-      const contributionAmount = rule.getContributionAmount(remainingToContribute);
       const contributeToAccountID = rule.getAccountID();
       const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
 
-      contributeToAccount.applyContribution(contributionAmount);
+      const remainingContributionLimit = this.annualContributionTracker.getRemainingLimit(contributeToAccount.getAccountType());
+      const contributionAmount = rule.getContributionAmount(remainingToContribute, remainingContributionLimit);
+
+      contributeToAccount.applyContribution(contributionAmount, this.annualContributionTracker);
       byAccount[contributeToAccountID] = contributionAmount;
 
       remainingToContribute -= contributionAmount;
@@ -98,7 +102,7 @@ export class PortfolioProcessor {
             this.simulationState.portfolio.addExtraSavingsAccount(this.extraSavingsAccount);
           }
 
-          this.extraSavingsAccount.applyContribution(remainingToContribute);
+          this.extraSavingsAccount.applyContribution(remainingToContribute, this.annualContributionTracker);
           byAccount[this.extraSavingsAccount.getAccountID()] =
             (byAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
           break;
@@ -331,7 +335,7 @@ export abstract class Account {
   abstract getAccountData(): AccountData;
 
   abstract applyReturns(returns: AssetReturnRates): AssetReturnAmounts;
-  abstract applyContribution(amount: number): void;
+  abstract applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void;
   abstract applyWithdrawal(amount: number): void;
 }
 
@@ -367,9 +371,10 @@ export class SavingsAccount extends Account {
     return { cash: cashReturnsAmount, bonds: 0, stocks: 0 };
   }
 
-  applyContribution(amount: number): void {
+  applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void {
     this.totalValue += amount;
     this.totalContributions += amount;
+    annualContributionTracker.addContribution(this.type, amount);
   }
 
   applyWithdrawal(amount: number): void {
@@ -434,7 +439,7 @@ export class InvestmentAccount extends Account {
     return { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount };
   }
 
-  applyContribution(amount: number): void {
+  applyContribution(amount: number, annualContributionTracker: AnnualContributionTracker): void {
     const currentBondValue = this.totalValue * this.currPercentBonds;
 
     const newTotalValue = this.totalValue + amount;
@@ -447,6 +452,7 @@ export class InvestmentAccount extends Account {
     this.currPercentBonds = newTotalValue ? (currentBondValue + bondContribution) / newTotalValue : this.initialPercentBonds;
 
     this.totalContributions += amount;
+    annualContributionTracker.addContribution(this.type, amount);
     if (this.costBasis !== undefined) this.costBasis += amount;
     if (this.contributions !== undefined) this.contributions += amount;
   }
