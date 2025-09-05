@@ -78,29 +78,19 @@ export class ContributionRule {
 
     if (!Number.isFinite(accountTypeContributionLimit)) return Infinity;
 
-    let contributionsSoFar;
-    let remainingToAccountTypeLimit;
+    const accountTypeGroups: Record<string, string[]> = {
+      '401k': ['401k', 'roth401k'],
+      roth401k: ['401k', 'roth401k'],
+      ira: ['ira', 'rothIra'],
+      rothIra: ['ira', 'rothIra'],
+      hsa: ['hsa'],
+    };
 
-    switch (accountType) {
-      case '401k':
-      case 'roth401k':
-        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['401k', 'roth401k']);
-        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
-        break;
-      case 'ira':
-      case 'rothIra':
-        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['ira', 'rothIra']);
-        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
-        break;
-      case 'hsa':
-        contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, ['hsa']);
-        remainingToAccountTypeLimit = Math.max(0, accountTypeContributionLimit - contributionsSoFar);
-        break;
-      default:
-        remainingToAccountTypeLimit = Infinity;
-    }
+    const relatedTypes = accountTypeGroups[accountType];
+    if (!relatedTypes) return Infinity;
 
-    return remainingToAccountTypeLimit;
+    const contributionsSoFar = this.getContributionsSoFar(monthlyPortfolioData, relatedTypes);
+    return Math.max(0, accountTypeContributionLimit - contributionsSoFar);
   }
 
   private getContributionsSoFar(monthlyPortfolioData: PortfolioData[], accountTypes: string[]): number {
