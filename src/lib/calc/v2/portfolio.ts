@@ -5,10 +5,7 @@ import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../asset';
 import { ContributionRules } from './contribution-rules';
 
-type CashFlowBreakdown = {
-  total: number;
-  byAccount: Record<string, number>;
-};
+type CashFlowBreakdown = { total: number; byAccount: Record<string, number> };
 
 export class PortfolioProcessor {
   private extraSavingsAccount: SavingsAccount;
