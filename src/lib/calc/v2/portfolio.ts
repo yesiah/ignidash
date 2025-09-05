@@ -27,15 +27,16 @@ export class PortfolioProcessor {
     const { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(grossCashFlow);
     const { totalForPeriod: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
-    const perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }> = Object.fromEntries(
-      this.simulationState.portfolio.getAccounts().map((account) => {
-        const accountData = account.getAccountData();
-        const contributions = contributionsByAccount[account.getAccountID()] || 0;
-        const withdrawals = withdrawalsByAccount[account.getAccountID()] || 0;
+    const perAccountData: Record<string, AccountData & { contributionsForPeriod: number; withdrawalsForPeriod: number }> =
+      Object.fromEntries(
+        this.simulationState.portfolio.getAccounts().map((account) => {
+          const accountData = account.getAccountData();
+          const contributionsForPeriod = contributionsByAccount[account.getAccountID()] || 0;
+          const withdrawalsForPeriod = withdrawalsByAccount[account.getAccountID()] || 0;
 
-        return [account.getAccountID(), { ...accountData, contributions, withdrawals }];
-      })
-    );
+          return [account.getAccountID(), { ...accountData, contributionsForPeriod, withdrawalsForPeriod }];
+        })
+      );
     const totalValue = this.simulationState.portfolio.getTotalValue();
     const totalWithdrawals = this.simulationState.portfolio.getTotalWithdrawals();
     const totalContributions = this.simulationState.portfolio.getTotalContributions();
@@ -162,8 +163,8 @@ export class PortfolioProcessor {
           Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
             acc.perAccountData[accountID] = {
               ...accountData,
-              contributions: (acc.perAccountData[accountID]?.contributions ?? 0) + accountData.contributions,
-              withdrawals: (acc.perAccountData[accountID]?.withdrawals ?? 0) + accountData.withdrawals,
+              contributionsForPeriod: (acc.perAccountData[accountID]?.contributionsForPeriod ?? 0) + accountData.contributionsForPeriod,
+              withdrawalsForPeriod: (acc.perAccountData[accountID]?.withdrawalsForPeriod ?? 0) + accountData.withdrawalsForPeriod,
             };
           });
 
@@ -172,7 +173,7 @@ export class PortfolioProcessor {
         {
           contributionsForPeriod: 0,
           withdrawalsForPeriod: 0,
-          perAccountData: {} as Record<string, AccountData & { contributions: number; withdrawals: number }>,
+          perAccountData: {} as Record<string, AccountData & { contributionsForPeriod: number; withdrawalsForPeriod: number }>,
         }
       ),
     };
@@ -185,7 +186,7 @@ export interface PortfolioData {
   totalContributions: number;
   withdrawalsForPeriod: number;
   contributionsForPeriod: number;
-  perAccountData: Record<string, AccountData & { contributions: number; withdrawals: number }>;
+  perAccountData: Record<string, AccountData & { contributionsForPeriod: number; withdrawalsForPeriod: number }>;
   assetAllocation: AssetAllocation | null;
 }
 
@@ -325,6 +326,7 @@ export abstract class Account {
   }
 
   abstract getAccountData(): AccountData;
+
   abstract applyReturns(returns: AssetReturnRates): AssetReturnAmounts;
   abstract applyContribution(amount: number): void;
   abstract applyWithdrawal(amount: number): void;
