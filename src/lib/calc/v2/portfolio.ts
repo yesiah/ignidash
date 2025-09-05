@@ -115,10 +115,12 @@ export class PortfolioProcessor {
       if (accountsOfType.length === 0) continue;
 
       for (const account of accountsOfType) {
-        if (remainingToWithdraw <= 0 || !(account.getCurrentValue() > 0)) break;
+        if (remainingToWithdraw <= 0) break;
+        if (!(account.getCurrentValue() > 0)) continue;
 
         const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getCurrentValue());
         account.applyWithdrawal(withdrawFromThisAccount);
+
         byAccount[account.getAccountID()] = withdrawFromThisAccount;
         remainingToWithdraw -= withdrawFromThisAccount;
       }
