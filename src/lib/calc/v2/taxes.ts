@@ -12,7 +12,7 @@ export interface TaxesData {
 export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
-  process(annualPortfolioData: PortfolioData, annualIncomesData: IncomesData): TaxesData {
+  process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
     const incomeTaxRate = 0.3;
     const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
     const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
