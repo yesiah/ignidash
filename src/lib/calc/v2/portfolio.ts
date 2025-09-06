@@ -6,6 +6,7 @@ import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation } from '../a
 import { ContributionRules } from './contribution-rules';
 import type { IncomesData } from './incomes';
 import type { ExpensesData } from './expenses';
+import type { TaxesData } from './taxes';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 
@@ -25,7 +26,7 @@ export class PortfolioProcessor {
     });
   }
 
-  process(incomesData: IncomesData, expensesData: ExpensesData): PortfolioData {
+  processCashFlows(incomesData: IncomesData, expensesData: ExpensesData): PortfolioData {
     const { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(
       incomesData,
       expensesData
@@ -58,6 +59,10 @@ export class PortfolioProcessor {
 
     this.monthlyData.push(result);
     return result;
+  }
+
+  processTaxes(taxesData: TaxesData): PortfolioData {
+    throw new Error('Not implemented');
   }
 
   private processContributions(incomesData: IncomesData, expensesData: ExpensesData): TransactionsBreakdown {

@@ -80,7 +80,7 @@ export class FinancialSimulationEngine {
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
       const expensesData = expensesProcessor.process(returnsData);
-      portfolioProcessor.process(incomesData, expensesData);
+      portfolioProcessor.processCashFlows(incomesData, expensesData);
 
       if (simulationState.time.month % 12 === 0) {
         // Get annual data from processors
@@ -90,7 +90,7 @@ export class FinancialSimulationEngine {
         const annualReturnsData = returnsProcessor.getAnnualData();
 
         // Process taxes
-        const annualTaxesData = taxProcessor.process(annualIncomesData);
+        const annualTaxesData = taxProcessor.process(annualPortfolioData, annualIncomesData);
 
         // Update simulation state
         simulationState.annualData.expenses.push(annualExpensesData);

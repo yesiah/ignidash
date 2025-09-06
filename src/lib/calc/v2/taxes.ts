@@ -1,6 +1,7 @@
 import { SimulationState } from './simulation-engine';
 
 import { IncomesData } from './incomes';
+import { PortfolioData } from './portfolio';
 
 export interface TaxesData {
   incomeTaxRate: number;
@@ -11,10 +12,10 @@ export interface TaxesData {
 export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
-  process(incomesData: IncomesData): TaxesData {
+  process(annualPortfolioData: PortfolioData, annualIncomesData: IncomesData): TaxesData {
     const incomeTaxRate = 0.3;
-    const incomeTaxAmount = incomesData.totalGrossIncome * incomeTaxRate;
-    const netIncome = incomesData.totalGrossIncome - incomeTaxAmount;
+    const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
+    const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
     return { incomeTaxRate, incomeTaxAmount, netIncome };
   }
 }
