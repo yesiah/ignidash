@@ -70,14 +70,14 @@ export class PortfolioProcessor {
     let contributionsByAccount: Record<string, number> = {};
     let withdrawalsByAccount: Record<string, number> = {};
 
-    if (taxesData.taxesRefund > 0) {
-      const res = this.processContributions(taxesData.taxesRefund);
+    if (taxesData.totalTaxesRefund > 0) {
+      const res = this.processContributions(taxesData.totalTaxesRefund);
       contributionsForPeriod = res.totalForPeriod;
       contributionsByAccount = res.byAccount;
     }
 
-    if (taxesData.taxesDue > 0) {
-      const res = this.processWithdrawals(taxesData.taxesDue);
+    if (taxesData.totalTaxesDue > 0) {
+      const res = this.processWithdrawals(taxesData.totalTaxesDue);
       withdrawalsForPeriod = res.totalForPeriod;
       withdrawalsByAccount = res.byAccount;
     }

@@ -11,8 +11,8 @@ export interface IncomeTaxesData {
 
 export interface TaxesData {
   incomeTaxes: IncomeTaxesData;
-  taxesDue: number;
-  taxesRefund: number;
+  totalTaxesDue: number;
+  totalTaxesRefund: number;
 }
 
 export class TaxProcessor {
@@ -25,9 +25,9 @@ export class TaxProcessor {
     const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
 
     const difference = incomeTaxAmount - annualIncomesData.totalAmountWithheld;
-    const taxesDue = difference > 0 ? difference : 0;
-    const taxesRefund = difference < 0 ? Math.abs(difference) : 0;
+    const totalTaxesDue = difference > 0 ? difference : 0;
+    const totalTaxesRefund = difference < 0 ? Math.abs(difference) : 0;
 
-    return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome }, taxesDue, taxesRefund };
+    return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome }, totalTaxesDue, totalTaxesRefund };
   }
 }
