@@ -19,7 +19,7 @@ export default function MobileHeader({ onMenuClick, currentPageTitle, currentPag
         <span className="sr-only">Open sidebar</span>
         <Bars3Icon aria-hidden="true" className="size-6" />
       </button>
-      <div className="flex flex-1 items-center gap-2 text-sm/6 font-semibold">
+      <div className="flex flex-1 items-center gap-2 text-base/6 font-semibold">
         <Icon aria-hidden="true" className="text-primary size-5" />
         {currentPageTitle}
       </div>
