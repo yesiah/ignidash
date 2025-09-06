@@ -7,6 +7,8 @@ export interface IncomeTaxesData {
   incomeTaxRate: number;
   incomeTaxAmount: number;
   netIncome: number;
+  taxesDue: number;
+  taxesRefund: number;
 }
 
 export interface TaxesData {
@@ -19,7 +21,13 @@ export class TaxProcessor {
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
     const incomeTaxRate = 0.3;
     const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
+
     const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
-    return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome } };
+
+    const difference = incomeTaxAmount - annualIncomesData.totalAmountWithheld;
+    const taxesDue = difference > 0 ? difference : 0;
+    const taxesRefund = difference < 0 ? Math.abs(difference) : 0;
+
+    return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome, taxesDue, taxesRefund } };
   }
 }
