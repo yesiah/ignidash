@@ -27,11 +27,13 @@ export class PortfolioProcessor {
   }
 
   processCashFlows(incomesData: IncomesData, expensesData: ExpensesData): PortfolioData {
+    const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
+
     const { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount } = this.processContributions(
       incomesData,
-      expensesData
+      grossCashFlow
     );
-    const { totalForPeriod: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(incomesData, expensesData);
+    const { totalForPeriod: withdrawalsForPeriod, byAccount: withdrawalsByAccount } = this.processWithdrawals(grossCashFlow);
 
     const perAccountData: Record<string, AccountDataWithTransactions> = Object.fromEntries(
       this.simulationState.portfolio.getAccounts().map((account) => {
@@ -65,9 +67,7 @@ export class PortfolioProcessor {
     throw new Error('Not implemented');
   }
 
-  private processContributions(incomesData: IncomesData, expensesData: ExpensesData): TransactionsBreakdown {
-    const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
-
+  private processContributions(incomesData: IncomesData, grossCashFlow: number): TransactionsBreakdown {
     const byAccount: Record<string, number> = {};
     if (!(grossCashFlow > 0)) {
       return { totalForPeriod: 0, byAccount };
@@ -122,9 +122,7 @@ export class PortfolioProcessor {
     return { totalForPeriod, byAccount };
   }
 
-  private processWithdrawals(incomesData: IncomesData, expensesData: ExpensesData): TransactionsBreakdown {
-    const grossCashFlow = incomesData.totalGrossIncome - expensesData.totalExpenses;
-
+  private processWithdrawals(grossCashFlow: number): TransactionsBreakdown {
     const byAccount: Record<string, number> = {};
     if (!(grossCashFlow < 0)) {
       return { totalForPeriod: 0, byAccount };
