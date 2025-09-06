@@ -61,3 +61,4 @@
 - Asset location optimization (tax-inefficient in tax-advantaged)
 - Qualified dividends and LTCG in taxable accounts
 - Social Security claiming optimization
+- Better drawdown order
