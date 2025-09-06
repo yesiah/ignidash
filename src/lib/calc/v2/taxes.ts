@@ -3,10 +3,14 @@ import { SimulationState } from './simulation-engine';
 import { IncomesData } from './incomes';
 import { PortfolioData } from './portfolio';
 
-export interface TaxesData {
+export interface IncomeTaxesData {
   incomeTaxRate: number;
   incomeTaxAmount: number;
   netIncome: number;
+}
+
+export interface TaxesData {
+  incomeTaxes: IncomeTaxesData;
 }
 
 export class TaxProcessor {
@@ -16,6 +20,6 @@ export class TaxProcessor {
     const incomeTaxRate = 0.3;
     const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
     const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
-    return { incomeTaxRate, incomeTaxAmount, netIncome };
+    return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome } };
   }
 }
