@@ -52,6 +52,7 @@
 ## Strategies
 
 - Roth conversions (reduce future RMDs)
+- RMDs on tax-deferred accounts
 - Basis step-up harvesting in taxable accounts
 - Rule of 55
 - 72(t) / SEPP distributions
