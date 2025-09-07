@@ -4,8 +4,9 @@ import { IncomesData } from './incomes';
 import { PortfolioData } from './portfolio';
 
 export interface CapitalGainsTaxesData {
-  capitalGainsTaxRate: number;
   capitalGainsTaxAmount: number;
+  effectiveCapitalGainsTaxRate: number;
+  netCapitalGains: number;
 }
 
 export interface IncomeTaxesData {
@@ -63,7 +64,12 @@ export class TaxProcessor {
       netIncome: adjustedGrossOrdinaryIncome - incomeTaxAmount,
     };
 
-    const capitalGainsTaxes = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
+    const capitalGainsTaxAmount = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
+    const capitalGainsTaxes: CapitalGainsTaxesData = {
+      capitalGainsTaxAmount,
+      effectiveCapitalGainsTaxRate: taxableCapitalGains > 0 ? capitalGainsTaxAmount / taxableCapitalGains : 0,
+      netCapitalGains: taxableCapitalGains - capitalGainsTaxAmount,
+    };
 
     const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
 
@@ -74,12 +80,11 @@ export class TaxProcessor {
     return { incomeTaxes, capitalGainsTaxes, totalTaxesDue, totalTaxesRefund };
   }
 
-  // Capital gains are "stacked on top" of ordinary income
-  private processCapitalGainsTaxes(taxableCapitalGains: number, taxableOrdinaryIncome: number): CapitalGainsTaxesData {
-    let capitalGainsTaxAmount = 0;
+  private processCapitalGainsTaxes(taxableCapitalGains: number, taxableOrdinaryIncome: number): number {
     let remainingGains = taxableCapitalGains;
     let currentPosition = taxableOrdinaryIncome;
 
+    let capitalGainsTaxAmount = 0;
     for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
       if (remainingGains <= 0 || currentPosition >= bracket.max) continue;
 
@@ -90,8 +95,7 @@ export class TaxProcessor {
       currentPosition += gainsInBracket;
     }
 
-    const capitalGainsTaxRate = taxableCapitalGains > 0 ? capitalGainsTaxAmount / taxableCapitalGains : 0;
-    return { capitalGainsTaxRate, capitalGainsTaxAmount };
+    return capitalGainsTaxAmount;
   }
 
   private processIncomeTaxes(taxableOrdinaryIncome: number): number {
