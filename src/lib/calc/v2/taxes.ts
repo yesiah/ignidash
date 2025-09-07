@@ -59,15 +59,15 @@ export class TaxProcessor {
     const incomeTaxAmount = this.processIncomeTaxes(taxableOrdinaryIncome);
     const incomeTaxes: IncomeTaxesData = {
       incomeTaxAmount,
-      effectiveIncomeTaxRate: grossOrdinaryIncomeAfterCapitalLoss > 0 ? incomeTaxAmount / grossOrdinaryIncomeAfterCapitalLoss : 0,
-      netIncome: grossOrdinaryIncomeAfterCapitalLoss - incomeTaxAmount,
+      effectiveIncomeTaxRate: grossOrdinaryIncome > 0 ? incomeTaxAmount / grossOrdinaryIncome : 0,
+      netIncome: grossOrdinaryIncome - incomeTaxAmount,
     };
 
     const capitalGainsTaxAmount = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
     const capitalGainsTaxes: CapitalGainsTaxesData = {
       capitalGainsTaxAmount,
-      effectiveCapitalGainsTaxRate: taxableCapitalGains > 0 ? capitalGainsTaxAmount / taxableCapitalGains : 0,
-      netCapitalGains: taxableCapitalGains - capitalGainsTaxAmount,
+      effectiveCapitalGainsTaxRate: grossRealizedGains > 0 ? capitalGainsTaxAmount / grossRealizedGains : 0,
+      netCapitalGains: grossRealizedGains - capitalGainsTaxAmount,
     };
 
     const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
