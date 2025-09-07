@@ -34,6 +34,12 @@ export default function PreferencesDrawer() {
     case 'historicalBacktest':
       simulationModeDesc = 'Uses actual historical market data from different starting years to show success probability.';
       break;
+    case 'stochasticReturns':
+      simulationModeDesc = 'Uses your Expected Returns assumptions as averages for one simulation with random returns.';
+      break;
+    case 'historicalReturns':
+      simulationModeDesc = 'Uses actual historical market data from a single starting year for one simulation with historical returns.';
+      break;
     default:
       simulationModeDesc = 'Select a simulation mode for projections.';
       break;
@@ -55,12 +61,14 @@ export default function PreferencesDrawer() {
                     value={marketAssumptions.simulationMode}
                     onChange={(e) => updateMarketAssumptions('simulationMode', e.target.value)}
                   >
-                    <optgroup label="Deterministic (1 Simulation)">
+                    <optgroup label="Single Simulation">
                       <option value="fixedReturns">Fixed Returns</option>
+                      <option value="stochasticReturns">Stochastic Returns</option>
+                      <option value="historicalReturns">Historical Returns</option>
                     </optgroup>
-                    <optgroup label="Stochastic (1,000 Simulations)">
-                      <option value="monteCarlo">Monte Carlo</option>
-                      <option value="historicalBacktest">Historical Backtest</option>
+                    <optgroup label="Monte Carlo (1,000 Simulations)">
+                      <option value="monteCarlo">Stochastic Returns</option>
+                      <option value="historicalBacktest">Historical Returns</option>
                     </optgroup>
                   </Select>
                   <Description>{simulationModeDesc}</Description>

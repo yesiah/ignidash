@@ -96,7 +96,7 @@ export const marketAssumptionsSchema = z.object({
   bondReturn: percentageField(0, 15, 'Bond return'),
   cashReturn: percentageField(0, 10, 'Cash return'),
   inflationRate: percentageField(0, 8, 'Inflation rate'),
-  simulationMode: z.enum(['fixedReturns', 'monteCarlo', 'historicalBacktest']),
+  simulationMode: z.enum(['fixedReturns', 'stochasticReturns', 'historicalReturns', 'monteCarlo', 'historicalBacktest']),
 });
 
 /**
