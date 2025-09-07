@@ -192,8 +192,7 @@ export class PortfolioProcessor {
 
     let realizedGainsForPeriod = 0;
 
-    // TODO: Create more sophisticated drawdown strategy based on tax, penalty efficiency
-    const withdrawalOrder = ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'] as const;
+    const withdrawalOrder = this.getWithdrawalOrder();
     let remainingToWithdraw = grossCashFlow;
 
     for (const accountType of withdrawalOrder) {
@@ -221,6 +220,11 @@ export class PortfolioProcessor {
 
     // TODO: Handle going into debt (remainingToWithdraw > 0 after drawdown loop)
     return { totalForPeriod: grossCashFlow, byAccount, realizedGainsForPeriod, realizedGainsByAccount };
+  }
+
+  private getWithdrawalOrder(): AccountInputs['type'][] {
+    // TODO: Create more sophisticated drawdown strategy based on tax, penalty efficiency
+    return ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'];
   }
 
   getMonthlyData(): PortfolioData[] {
