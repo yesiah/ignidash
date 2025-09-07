@@ -43,18 +43,18 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
-    const ordinaryIncome = annualIncomesData.totalGrossIncome;
-    const capitalGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
+    const grossOrdinaryIncome = annualIncomesData.totalGrossIncome;
+    const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
-    const totalIncome = ordinaryIncome + capitalGains;
-    const totalTaxableIncome = Math.max(0, totalIncome - STANDARD_DEDUCTION_SINGLE);
+    const totalGrossIncome = grossOrdinaryIncome + grossRealizedGains;
+    const totalTaxableIncome = Math.max(0, totalGrossIncome - STANDARD_DEDUCTION_SINGLE);
 
-    const deductionUsedByOrdinaryIncome = Math.min(ordinaryIncome, STANDARD_DEDUCTION_SINGLE);
+    const ordinaryIncomeAfterDeduction = Math.max(0, grossOrdinaryIncome - STANDARD_DEDUCTION_SINGLE);
 
-    const taxableOrdinaryIncome = Math.min(ordinaryIncome - deductionUsedByOrdinaryIncome, totalTaxableIncome);
+    const taxableOrdinaryIncome = Math.min(ordinaryIncomeAfterDeduction, totalTaxableIncome);
     const taxableCapitalGains = totalTaxableIncome - taxableOrdinaryIncome;
 
-    const incomeTaxes = this.processIncomeTaxes(ordinaryIncome, taxableOrdinaryIncome);
+    const incomeTaxes = this.processIncomeTaxes(grossOrdinaryIncome, taxableOrdinaryIncome);
     const capitalGainsTaxes = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
 
     const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
@@ -83,7 +83,7 @@ export class TaxProcessor {
     return { capitalGainsTaxRate, capitalGainsTaxAmount };
   }
 
-  private processIncomeTaxes(ordinaryIncome: number, taxableOrdinaryIncome: number): IncomeTaxesData {
+  private processIncomeTaxes(grossOrdinaryIncome: number, taxableOrdinaryIncome: number): IncomeTaxesData {
     let incomeTaxAmount = 0;
     for (const bracket of INCOME_TAX_BRACKETS_SINGLE) {
       if (taxableOrdinaryIncome > bracket.min) {
@@ -92,8 +92,8 @@ export class TaxProcessor {
       }
     }
 
-    const incomeTaxRate = ordinaryIncome > 0 ? incomeTaxAmount / ordinaryIncome : 0;
-    const netIncome = ordinaryIncome - incomeTaxAmount;
+    const incomeTaxRate = grossOrdinaryIncome > 0 ? incomeTaxAmount / grossOrdinaryIncome : 0;
+    const netIncome = grossOrdinaryIncome - incomeTaxAmount;
 
     return { incomeTaxRate, incomeTaxAmount, netIncome };
   }

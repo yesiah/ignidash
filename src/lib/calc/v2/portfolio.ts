@@ -567,8 +567,8 @@ export class InvestmentAccount extends Account {
 
     let realizedGains = 0;
     if (this.costBasis !== undefined) {
-      const basisProportion = Math.min(1, this.costBasis / this.totalValue);
-      const basisWithdrawn = amount * basisProportion;
+      const basisProportion = this.costBasis / this.totalValue;
+      const basisWithdrawn = Math.min(amount * basisProportion, this.costBasis);
       this.costBasis -= basisWithdrawn;
 
       realizedGains = amount - basisWithdrawn;
