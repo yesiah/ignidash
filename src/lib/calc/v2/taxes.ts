@@ -48,20 +48,19 @@ export class TaxProcessor {
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
-    const adjustedGrossOrdinaryIncome = Math.max(0, grossOrdinaryIncome + capitalLossDeduction);
-    const capitalGainsForTaxCalculation = Math.max(0, grossRealizedGains);
+    const ordinaryIncomeAfterDeductions = Math.max(0, grossOrdinaryIncome + capitalLossDeduction);
 
-    const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, adjustedGrossOrdinaryIncome);
+    const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, ordinaryIncomeAfterDeductions);
     const deductionUsedForGains = STANDARD_DEDUCTION_SINGLE - deductionUsedForOrdinary;
 
-    const taxableOrdinaryIncome = Math.max(0, adjustedGrossOrdinaryIncome - deductionUsedForOrdinary);
-    const taxableCapitalGains = Math.max(0, capitalGainsForTaxCalculation - deductionUsedForGains);
+    const taxableOrdinaryIncome = Math.max(0, ordinaryIncomeAfterDeductions - deductionUsedForOrdinary);
+    const taxableCapitalGains = Math.max(0, grossRealizedGains - deductionUsedForGains);
 
     const incomeTaxAmount = this.processIncomeTaxes(taxableOrdinaryIncome);
     const incomeTaxes: IncomeTaxesData = {
       incomeTaxAmount,
-      effectiveIncomeTaxRate: adjustedGrossOrdinaryIncome > 0 ? incomeTaxAmount / adjustedGrossOrdinaryIncome : 0,
-      netIncome: adjustedGrossOrdinaryIncome - incomeTaxAmount,
+      effectiveIncomeTaxRate: ordinaryIncomeAfterDeductions > 0 ? incomeTaxAmount / ordinaryIncomeAfterDeductions : 0,
+      netIncome: ordinaryIncomeAfterDeductions - incomeTaxAmount,
     };
 
     const capitalGainsTaxAmount = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
