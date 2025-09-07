@@ -19,15 +19,21 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
-    const incomeTaxRate = 0.3;
-    const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
-
-    const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
+    const { incomeTaxRate, incomeTaxAmount, netIncome } = this.processIncomeTaxes(annualIncomesData);
 
     const difference = incomeTaxAmount - annualIncomesData.totalAmountWithheld;
     const totalTaxesDue = difference > 0 ? difference : 0;
     const totalTaxesRefund = difference < 0 ? Math.abs(difference) : 0;
 
     return { incomeTaxes: { incomeTaxRate, incomeTaxAmount, netIncome }, totalTaxesDue, totalTaxesRefund };
+  }
+
+  private processIncomeTaxes(annualIncomesData: IncomesData): IncomeTaxesData {
+    const incomeTaxRate = 0.3;
+    const incomeTaxAmount = annualIncomesData.totalGrossIncome * incomeTaxRate;
+
+    const netIncome = annualIncomesData.totalGrossIncome - incomeTaxAmount;
+
+    return { incomeTaxRate, incomeTaxAmount, netIncome };
   }
 }
