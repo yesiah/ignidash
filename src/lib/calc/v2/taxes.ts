@@ -7,12 +7,14 @@ import type { PortfolioData } from './portfolio';
 export interface CapitalGainsTaxesData {
   capitalGainsTaxAmount: number;
   effectiveCapitalGainsTaxRate: number;
+  topMarginalCapitalGainsTaxRate: number;
   netCapitalGains: number;
 }
 
 export interface IncomeTaxesData {
   incomeTaxAmount: number;
   effectiveIncomeTaxRate: number;
+  topMarginalTaxRate: number;
   netIncome: number;
 }
 
@@ -57,17 +59,22 @@ export class TaxProcessor {
     const taxableOrdinaryIncome = Math.max(0, adjustedGrossIncome - deductionUsedForOrdinary);
     const taxableCapitalGains = Math.max(0, grossRealizedGains - deductionUsedForGains);
 
-    const incomeTaxAmount = this.processIncomeTaxes(taxableOrdinaryIncome);
+    const { incomeTaxAmount, topMarginalTaxRate } = this.processIncomeTaxes(taxableOrdinaryIncome);
     const incomeTaxes: IncomeTaxesData = {
       incomeTaxAmount,
       effectiveIncomeTaxRate: grossOrdinaryIncome > 0 ? incomeTaxAmount / grossOrdinaryIncome : 0,
+      topMarginalTaxRate,
       netIncome: grossOrdinaryIncome - incomeTaxAmount,
     };
 
-    const capitalGainsTaxAmount = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
+    const { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate } = this.processCapitalGainsTaxes(
+      taxableCapitalGains,
+      taxableOrdinaryIncome
+    );
     const capitalGainsTaxes: CapitalGainsTaxesData = {
       capitalGainsTaxAmount,
       effectiveCapitalGainsTaxRate: grossRealizedGains > 0 ? capitalGainsTaxAmount / grossRealizedGains : 0,
+      topMarginalCapitalGainsTaxRate,
       netCapitalGains: grossRealizedGains - capitalGainsTaxAmount,
     };
 
@@ -82,10 +89,14 @@ export class TaxProcessor {
     };
   }
 
-  private processCapitalGainsTaxes(taxableCapitalGains: number, taxableOrdinaryIncome: number): number {
+  private processCapitalGainsTaxes(
+    taxableCapitalGains: number,
+    taxableOrdinaryIncome: number
+  ): { capitalGainsTaxAmount: number; topMarginalCapitalGainsTaxRate: number } {
     const totalTaxableIncome = taxableOrdinaryIncome + taxableCapitalGains;
 
     let capitalGainsTaxAmount = 0;
+    let topMarginalCapitalGainsTaxRate = 0;
     for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
       if (totalTaxableIncome <= bracket.min) break;
 
@@ -94,21 +105,24 @@ export class TaxProcessor {
       const capitalGainsInBracket = incomeInBracket - ordinaryIncomeInBracket;
 
       capitalGainsTaxAmount += capitalGainsInBracket * bracket.rate;
+      topMarginalCapitalGainsTaxRate = bracket.rate;
     }
 
-    return capitalGainsTaxAmount;
+    return { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate };
   }
 
-  private processIncomeTaxes(taxableOrdinaryIncome: number): number {
+  private processIncomeTaxes(taxableOrdinaryIncome: number): { incomeTaxAmount: number; topMarginalTaxRate: number } {
     let incomeTaxAmount = 0;
+    let topMarginalTaxRate = 0;
     for (const bracket of INCOME_TAX_BRACKETS_SINGLE) {
       if (taxableOrdinaryIncome <= bracket.min) break;
 
       const taxableInBracket = Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min;
       incomeTaxAmount += taxableInBracket * bracket.rate;
+      topMarginalTaxRate = bracket.rate;
     }
 
-    return incomeTaxAmount;
+    return { incomeTaxAmount, topMarginalTaxRate };
   }
 
   private getGrossOrdinaryIncome(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): number {
