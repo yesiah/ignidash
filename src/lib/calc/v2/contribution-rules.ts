@@ -24,7 +24,7 @@ export class ContributionRules {
 }
 
 export class ContributionRule {
-  private static readonly ACCOUNT_TYPE_GROUPS: Record<string, string[]> = {
+  private static readonly ACCOUNT_TYPE_GROUPS: Record<string, AccountInputs['type'][]> = {
     '401k': ['401k', 'roth401k'],
     roth401k: ['401k', 'roth401k'],
     ira: ['ira', 'rothIra'],
@@ -89,7 +89,7 @@ export class ContributionRule {
     return Math.max(0, limit - contributions);
   }
 
-  private getContributionsSoFar(monthlyPortfolioData: PortfolioData[], accountTypes: string[]): number {
+  private getContributionsSoFar(monthlyPortfolioData: PortfolioData[], accountTypes: AccountInputs['type'][]): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))

@@ -1,7 +1,8 @@
-import { SimulationState } from './simulation-engine';
+import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 
-import { IncomesData } from './incomes';
-import { PortfolioData } from './portfolio';
+import type { SimulationState } from './simulation-engine';
+import type { IncomesData } from './incomes';
+import type { PortfolioData } from './portfolio';
 
 export interface CapitalGainsTaxesData {
   capitalGainsTaxAmount: number;
@@ -44,7 +45,7 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
-    const grossOrdinaryIncome = annualIncomesData.totalGrossIncome;
+    const grossOrdinaryIncome = this.getGrossOrdinaryIncome(annualPortfolioDataBeforeTaxes, annualIncomesData);
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
@@ -109,5 +110,26 @@ export class TaxProcessor {
     }
 
     return incomeTaxAmount;
+  }
+
+  private getGrossOrdinaryIncome(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): number {
+    const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
+    const grossIncomeFromTaxDeferredWithdrawals = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira']);
+
+    const taxDeferredContributions = this.getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
+
+    return grossIncomeFromIncomes + grossIncomeFromTaxDeferredWithdrawals - taxDeferredContributions;
+  }
+
+  private getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData, accountTypes: AccountInputs['type'][]): number {
+    return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
+      .filter((account) => accountTypes.includes(account.type))
+      .reduce((sum, account) => sum + account.contributionsForPeriod, 0);
+  }
+
+  private getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData, accountTypes: AccountInputs['type'][]): number {
+    return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
+      .filter((account) => accountTypes.includes(account.type))
+      .reduce((sum, account) => sum + account.withdrawalsForPeriod, 0);
   }
 }
