@@ -48,7 +48,7 @@ export class TaxProcessor {
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
-    const adjustedGrossOrdinaryIncome = grossOrdinaryIncome + capitalLossDeduction;
+    const adjustedGrossOrdinaryIncome = Math.max(0, grossOrdinaryIncome + capitalLossDeduction);
     const capitalGainsForTaxCalculation = Math.max(0, grossRealizedGains);
 
     const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, adjustedGrossOrdinaryIncome);
