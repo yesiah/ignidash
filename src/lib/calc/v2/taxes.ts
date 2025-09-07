@@ -46,13 +46,17 @@ export class TaxProcessor {
     const grossOrdinaryIncome = annualIncomesData.totalGrossIncome;
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
-    const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, grossOrdinaryIncome);
+    const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
+    const adjustedGrossOrdinaryIncome = grossOrdinaryIncome + capitalLossDeduction;
+    const capitalGainsForTaxCalculation = Math.max(0, grossRealizedGains);
+
+    const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, adjustedGrossOrdinaryIncome);
     const deductionUsedForGains = STANDARD_DEDUCTION_SINGLE - deductionUsedForOrdinary;
 
-    const taxableOrdinaryIncome = grossOrdinaryIncome - deductionUsedForOrdinary;
-    const taxableCapitalGains = Math.max(0, grossRealizedGains - deductionUsedForGains);
+    const taxableOrdinaryIncome = Math.max(0, adjustedGrossOrdinaryIncome - deductionUsedForOrdinary);
+    const taxableCapitalGains = Math.max(0, capitalGainsForTaxCalculation - deductionUsedForGains);
 
-    const incomeTaxes = this.processIncomeTaxes(grossOrdinaryIncome, taxableOrdinaryIncome);
+    const incomeTaxes = this.processIncomeTaxes(adjustedGrossOrdinaryIncome, taxableOrdinaryIncome);
     const capitalGainsTaxes = this.processCapitalGainsTaxes(taxableCapitalGains, taxableOrdinaryIncome);
 
     const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
@@ -64,30 +68,34 @@ export class TaxProcessor {
     return { incomeTaxes, capitalGainsTaxes, totalTaxesDue, totalTaxesRefund };
   }
 
+  // Capital gains are "stacked on top" of ordinary income
   private processCapitalGainsTaxes(taxableCapitalGains: number, taxableOrdinaryIncome: number): CapitalGainsTaxesData {
     let capitalGainsTaxAmount = 0;
-    for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
-      const bracketStart = Math.max(0, bracket.min - taxableOrdinaryIncome);
-      const bracketEnd = Math.max(0, Math.min(bracket.max - taxableOrdinaryIncome, taxableCapitalGains));
+    let remainingGains = taxableCapitalGains;
+    let currentPosition = taxableOrdinaryIncome; // Start where ordinary income ends
 
-      if (bracketEnd > bracketStart) {
-        const gainsInBracket = bracketEnd - bracketStart;
-        capitalGainsTaxAmount += gainsInBracket * bracket.rate;
-      }
+    for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
+      if (remainingGains <= 0 || currentPosition >= bracket.max) continue;
+
+      const gainsInBracket = Math.min(remainingGains, Math.max(0, bracket.max - Math.max(currentPosition, bracket.min)));
+
+      capitalGainsTaxAmount += gainsInBracket * bracket.rate;
+      remainingGains -= gainsInBracket;
+      currentPosition += gainsInBracket;
     }
 
     const capitalGainsTaxRate = taxableCapitalGains > 0 ? capitalGainsTaxAmount / taxableCapitalGains : 0;
-
     return { capitalGainsTaxRate, capitalGainsTaxAmount };
   }
 
   private processIncomeTaxes(grossOrdinaryIncome: number, taxableOrdinaryIncome: number): IncomeTaxesData {
     let incomeTaxAmount = 0;
+
     for (const bracket of INCOME_TAX_BRACKETS_SINGLE) {
-      if (taxableOrdinaryIncome > bracket.min) {
-        const taxableInBracket = Math.min(taxableOrdinaryIncome - bracket.min, bracket.max - bracket.min);
-        incomeTaxAmount += taxableInBracket * bracket.rate;
-      }
+      if (taxableOrdinaryIncome <= bracket.min) break;
+
+      const taxableInBracket = Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min;
+      incomeTaxAmount += taxableInBracket * bracket.rate;
     }
 
     const incomeTaxRate = grossOrdinaryIncome > 0 ? incomeTaxAmount / grossOrdinaryIncome : 0;
