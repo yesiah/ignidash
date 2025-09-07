@@ -219,12 +219,21 @@ export class PortfolioProcessor {
     }
 
     // TODO: Handle going into debt (remainingToWithdraw > 0 after drawdown loop)
+    // TODO: Handle Required Minimum Distributions starting age 73
+
     return { totalForPeriod: grossCashFlow, byAccount, realizedGainsForPeriod, realizedGainsByAccount };
   }
 
   private getWithdrawalOrder(): AccountInputs['type'][] {
     // TODO: Create more sophisticated drawdown strategy based on tax, penalty efficiency
-    return ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'];
+    const age = this.simulationState.time.age;
+    const retirementAge = 59.5;
+
+    if (age < retirementAge) {
+      return ['savings', 'taxableBrokerage', 'roth401k', 'rothIra', '401k', 'ira', 'hsa'];
+    } else {
+      return ['savings', 'taxableBrokerage', '401k', 'ira', 'hsa', 'roth401k', 'rothIra'];
+    }
   }
 
   getMonthlyData(): PortfolioData[] {
