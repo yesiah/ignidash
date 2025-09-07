@@ -83,18 +83,17 @@ export class TaxProcessor {
   }
 
   private processCapitalGainsTaxes(taxableCapitalGains: number, taxableOrdinaryIncome: number): number {
-    let remainingGains = taxableCapitalGains;
-    let currentPosition = taxableOrdinaryIncome;
+    const totalTaxableIncome = taxableOrdinaryIncome + taxableCapitalGains;
 
     let capitalGainsTaxAmount = 0;
     for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
-      if (remainingGains <= 0 || currentPosition >= bracket.max) continue;
+      if (totalTaxableIncome <= bracket.min) break;
 
-      const gainsInBracket = Math.min(remainingGains, Math.max(0, bracket.max - Math.max(currentPosition, bracket.min)));
+      const incomeInBracket = Math.min(totalTaxableIncome, bracket.max) - bracket.min;
+      const ordinaryIncomeInBracket = Math.max(0, Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min);
+      const capitalGainsInBracket = incomeInBracket - ordinaryIncomeInBracket;
 
-      capitalGainsTaxAmount += gainsInBracket * bracket.rate;
-      remainingGains -= gainsInBracket;
-      currentPosition += gainsInBracket;
+      capitalGainsTaxAmount += capitalGainsInBracket * bracket.rate;
     }
 
     return capitalGainsTaxAmount;
