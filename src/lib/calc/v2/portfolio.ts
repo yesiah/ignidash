@@ -455,7 +455,7 @@ export class SavingsAccount extends Account {
 
   getAccountData(): AccountData {
     const assetAllocation: AssetAllocation = {
-      cash: 100,
+      cash: 1,
       bonds: 0,
       stocks: 0,
     };
