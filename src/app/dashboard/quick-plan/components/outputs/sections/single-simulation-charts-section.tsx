@@ -8,6 +8,7 @@ import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
 import { SingleSimulationCategory } from '../single-simulation-category-selector';
 import SingleSimulationPortfolioAreaChartCard from '../cards/single-simulation-portfolio-area-chart-card';
+import SingleSimulationPortfolioAccountTypeAreaChartCard from '../cards/single-simulation-portfolio-account-type-area-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -18,12 +19,20 @@ interface ChartsCategoryProps {
 
 function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: ChartsCategoryProps) {
   return (
-    <SingleSimulationPortfolioAreaChartCard
-      simulation={simulation}
-      keyMetrics={keyMetrics}
-      setSelectedAge={setSelectedAge}
-      selectedAge={selectedAge}
-    />
+    <>
+      <SingleSimulationPortfolioAreaChartCard
+        simulation={simulation}
+        keyMetrics={keyMetrics}
+        setSelectedAge={setSelectedAge}
+        selectedAge={selectedAge}
+      />
+      <SingleSimulationPortfolioAccountTypeAreaChartCard
+        simulation={simulation}
+        keyMetrics={keyMetrics}
+        setSelectedAge={setSelectedAge}
+        selectedAge={selectedAge}
+      />
+    </>
   );
 }
 

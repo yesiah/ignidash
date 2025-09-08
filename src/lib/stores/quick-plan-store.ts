@@ -965,8 +965,46 @@ export const useSingleSimulationPortfolioAreaChartData = (simulation: Simulation
         stocks: totalValue * stocksAllocation,
         bonds: totalValue * bondsAllocation,
         cash: totalValue * cashAllocation,
-        portfolioValue: totalValue,
       };
+    });
+  }, [simulation]);
+};
+
+export const useSingleSimulationPortfolioAccountTypeAreaChartData = (simulation: SimulationResultV2) => {
+  return useMemo(() => {
+    return simulation.data.map((data) => {
+      const startAge = simulation.context.startAge;
+      const startDateYear = new Date().getFullYear();
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const portfolio = data.portfolio;
+
+      let savings = 0;
+      let taxable = 0;
+      let taxDeferred = 0;
+      let taxFree = 0;
+
+      for (const account of Object.values(portfolio.perAccountData)) {
+        switch (account.type) {
+          case 'savings':
+            savings += account.totalValue;
+            break;
+          case 'taxableBrokerage':
+            taxable += account.totalValue;
+            break;
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferred += account.totalValue;
+            break;
+          case 'roth401k':
+          case 'rothIra':
+            taxFree += account.totalValue;
+            break;
+        }
+      }
+
+      return { age: currDateYear - startDateYear + startAge, taxable, taxDeferred, taxFree, savings };
     });
   }, [simulation]);
 };

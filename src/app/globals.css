@@ -14,6 +14,7 @@
   --chart-1: hsl(346 77% 65%); /* Darker pink (top) */
   --chart-2: hsl(346 77% 80%); /* Medium pink (middle) */
   --chart-3: hsl(346 77% 90%); /* Light pink (bottom) */
+  --chart-4: hsl(346 77% 50%); /* Deepest pink/red (darkest) */
 }
 
 @theme inline {
@@ -38,6 +39,7 @@
   --chart-1: hsl(346 80% 50%); /* Brighter red (top) */
   --chart-2: hsl(346 75% 35%); /* Deep burgundy (middle) */
   --chart-3: hsl(346 70% 25%); /* Dark maroon (bottom) */
+  --chart-4: hsl(346 80% 65%); /* Brightest pink (lightest) */
 }
 
 html {
