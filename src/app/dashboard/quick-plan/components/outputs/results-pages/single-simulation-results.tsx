@@ -14,6 +14,7 @@ export default function SingleSimulationResults() {
   const keyMetrics = useFixedReturnsKeyMetricsV2(simulationResult);
 
   const startAge = simulationResult?.context.startAge;
+
   const [selectedAge, setSelectedAge] = useState<number>(startAge! + 1);
   const [currentCategory, setCurrentCategory] = useState<SingleSimulationCategory>(SingleSimulationCategory.Portfolio);
 
