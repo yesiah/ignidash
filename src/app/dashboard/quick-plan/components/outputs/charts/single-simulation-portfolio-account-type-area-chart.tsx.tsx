@@ -37,8 +37,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
-  console.log({ payload });
-
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
