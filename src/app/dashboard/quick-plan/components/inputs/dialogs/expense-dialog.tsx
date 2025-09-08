@@ -48,7 +48,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
         frequency: 'yearly',
         timeframe: {
           start: { type: 'now' },
-          end: { type: 'atRetirement' },
+          end: { type: 'atLifeExpectancy' },
         },
         growth: {
           growthRate: 3,
