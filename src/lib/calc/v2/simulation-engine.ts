@@ -27,6 +27,13 @@ export interface SimulationDataPoint {
 
 export interface SimulationResult {
   data: Array<SimulationDataPoint>;
+  context: {
+    startAge: number;
+    endAge: number;
+    yearsToSimulate: number;
+    startDate: ISODateString;
+    endDate: ISODateString;
+  };
 }
 
 export interface SimulationContext {
@@ -116,7 +123,15 @@ export class FinancialSimulationEngine {
       }
     }
 
-    return { data: resultData };
+    const context = {
+      startAge: simulationContext.startAge,
+      endAge: simulationContext.endAge,
+      yearsToSimulate: simulationContext.yearsToSimulate,
+      startDate: simulationContext.startDate.toISOString().split('T')[0],
+      endDate: simulationContext.endDate.toISOString().split('T')[0],
+    };
+
+    return { data: resultData, context };
   }
 
   private incrementSimulationTime(simulationState: SimulationState): void {
