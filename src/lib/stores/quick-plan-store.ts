@@ -668,11 +668,11 @@ export const useFixedReturnsSimulationV2 = (): SimulationResultV2 | null => {
 };
 
 export interface FixedReturnsKeyMetricsV2 {
+  success: boolean;
   startAge: number;
   retirementAge: number | null;
   yearsToRetirement: number | null;
   portfolioAtRetirement: number | null;
-  initialPortfolio: number;
   finalPortfolio: number;
   progressToRetirement: number | null;
 }
@@ -728,12 +728,14 @@ export const useFixedReturnsKeyMetricsV2 = (simulationResult: SimulationResultV2
         break;
     }
 
+    const success = retirementAge !== null && finalPortfolio > 0.1;
+
     return {
+      success,
       startAge,
       retirementAge,
       yearsToRetirement,
       portfolioAtRetirement,
-      initialPortfolio,
       finalPortfolio,
       progressToRetirement,
     };
