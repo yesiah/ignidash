@@ -654,7 +654,6 @@ export const useFixedReturnsSimulation = () => {
 };
 
 export const useFixedReturnsSimulationV2 = (): SimulationResultV2 | null => {
-  // TODO: Add memoization.
   const inputs = useQuickPlanStore((state) => state.inputs);
 
   return useMemo(() => {
