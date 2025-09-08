@@ -1,55 +1,16 @@
+'use client';
+
 import { formatNumber } from '@/lib/utils';
-import { useTimelinesData } from '@/lib/stores/quick-plan-store';
-import { SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import type { FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 
 import MetricsCard from './metrics-card';
 
 interface SingleSimulationMetricsProps {
-  result: SimulationResult;
+  keyMetrics: FixedReturnsKeyMetricsV2;
 }
 
-export default function SingleSimulationMetrics({ result }: SingleSimulationMetricsProps) {
-  const timelines = useTimelinesData();
-  const timeline = Object.values(timelines)[0];
-
-  const currentAge = timeline.currentAge;
-  const retirementStrategy = timeline.retirementStrategy;
-
-  let yearsToRetirement: number | null = null;
-  let retirementAge: number | null = null;
-  let portfolioAtRetirement: number | null = null;
-
-  switch (retirementStrategy.type) {
-    case 'fixedAge':
-      retirementAge = retirementStrategy.retirementAge;
-      yearsToRetirement = retirementAge - currentAge;
-
-      for (const dp of result.data) {
-        const phase = dp.phase;
-        if (phase?.name === 'retirement') {
-          portfolioAtRetirement = dp.portfolio.totalValue;
-          break;
-        }
-      }
-
-      break;
-    case 'swrTarget':
-      for (const dp of result.data) {
-        const phase = dp.phase;
-        if (phase?.name === 'retirement') {
-          const retirementDate = new Date(dp.date);
-
-          yearsToRetirement = retirementDate.getFullYear() - new Date().getFullYear();
-          retirementAge = currentAge + yearsToRetirement;
-          portfolioAtRetirement = dp.portfolio.totalValue;
-          break;
-        }
-      }
-      break;
-  }
-
-  const initialPortfolio = result.data[0].portfolio.totalValue;
-  const finalPortfolio = result.data[result.data.length - 1].portfolio.totalValue;
+export default function SingleSimulationMetrics({ keyMetrics }: SingleSimulationMetricsProps) {
+  const { initialPortfolio, finalPortfolio, portfolioAtRetirement, retirementAge, yearsToRetirement } = keyMetrics;
 
   const progressToRetirementForDisplay =
     portfolioAtRetirement !== null ? `${formatNumber(Math.min(initialPortfolio / portfolioAtRetirement, 1) * 100, 0)}%` : 'N/A';

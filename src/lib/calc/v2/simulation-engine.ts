@@ -1,5 +1,5 @@
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
-import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
+import type { TimelineInputs, RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 
 import type { ReturnsProvider } from '../returns-provider';
 import { StochasticReturnsProvider } from '../stochastic-returns-provider';
@@ -33,6 +33,7 @@ export interface SimulationResult {
     yearsToSimulate: number;
     startDate: ISODateString;
     endDate: ISODateString;
+    retirementStrategy: RetirementStrategyInputs;
   };
 }
 
@@ -42,6 +43,7 @@ export interface SimulationContext {
   readonly yearsToSimulate: number;
   readonly startDate: Date;
   readonly endDate: Date;
+  readonly retirementStrategy: RetirementStrategyInputs;
 }
 
 export interface SimulationState {
@@ -129,6 +131,7 @@ export class FinancialSimulationEngine {
       yearsToSimulate: simulationContext.yearsToSimulate,
       startDate: simulationContext.startDate.toISOString().split('T')[0],
       endDate: simulationContext.endDate.toISOString().split('T')[0],
+      retirementStrategy: simulationContext.retirementStrategy,
     };
 
     return { data: resultData, context };
@@ -156,7 +159,9 @@ export class FinancialSimulationEngine {
     const startDate = new Date();
     const endDate = new Date(startDate.getFullYear() + yearsToSimulate, startDate.getMonth(), 1);
 
-    return { startAge, endAge, yearsToSimulate, startDate, endDate };
+    const retirementStrategy = timeline.retirementStrategy;
+
+    return { startAge, endAge, yearsToSimulate, startDate, endDate, retirementStrategy };
   }
 
   private initSimulationState(timeline: TimelineInputs): SimulationState {
