@@ -38,7 +38,7 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
         selectedAge={selectedAge}
         startAge={startAge}
       />
-      <SingleSimulationPortfolioAssetTypePieChartCard simulation={simulation} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+      <SingleSimulationPortfolioAssetTypePieChartCard rawChartData={assetTypeRawChartData} selectedAge={selectedAge} />
       <SingleSimulationPortfolioAccountTypeAreaChartCard
         rawChartData={accountTypeRawChartData}
         keyMetrics={keyMetrics}
@@ -46,7 +46,7 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
         selectedAge={selectedAge}
         startAge={startAge}
       />
-      <SingleSimulationPortfolioAccountTypePieChartCard simulation={simulation} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+      <SingleSimulationPortfolioAccountTypePieChartCard rawChartData={accountTypeRawChartData} selectedAge={selectedAge} />
     </>
   );
 }

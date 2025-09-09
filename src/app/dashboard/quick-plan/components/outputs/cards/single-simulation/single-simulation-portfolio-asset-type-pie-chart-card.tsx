@@ -1,19 +1,17 @@
 'use client';
 
 import Card from '@/components/ui/card';
-import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
+import type { SingleSimulationPortfolioAssetTypeAreaChartDataPoint } from '../../charts/single-simulation/single-simulation-portfolio-asset-type-area-chart';
 
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
-  simulation: SimulationResult;
-  setSelectedAge: (age: number) => void;
+  rawChartData: SingleSimulationPortfolioAssetTypeAreaChartDataPoint[];
   selectedAge: number;
 }
 
 export default function SingleSimulationPortfolioAssetTypePieChartCard({
-  simulation,
-  setSelectedAge,
+  rawChartData,
   selectedAge,
 }: SingleSimulationPortfolioAssetTypePieChartCardProps) {
   return (
@@ -23,7 +21,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
           <span className="mr-2">Asset Type Allocation</span>
         </h4>
       </div>
-      <SingleSimulationPortfolioPieChart />
+      <SingleSimulationPortfolioPieChart rawChartData={rawChartData} selectedAge={selectedAge} />
     </Card>
   );
 }

@@ -94,16 +94,21 @@ const renderActiveShape = ({
 
 interface SingleSimulationPortfolioPieChartProps {
   rawChartData: SingleSimulationPortfolioPieChartDataPoint[];
+  selectedAge: number;
 }
 
-export default function SingleSimulationPortfolioPieChart({ rawChartData }: SingleSimulationPortfolioPieChartProps) {
+export default function SingleSimulationPortfolioPieChart({ rawChartData, selectedAge }: SingleSimulationPortfolioPieChartProps) {
+  const chartData = rawChartData
+    .filter((data) => data.age === selectedAge)
+    .flatMap(({ age, ...rest }) => Object.entries(rest).map(([name, value]) => ({ name, value })));
+
   return (
     <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart className="text-xs">
           <Pie
             activeShape={renderActiveShape}
-            data={rawChartData}
+            data={chartData}
             cx="50%"
             cy="50%"
             innerRadius={60}
@@ -111,7 +116,7 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData }: Sing
             fill="#8884d8"
             dataKey="value"
           >
-            {rawChartData.map((entry, index) => (
+            {chartData.map((entry, index) => (
               <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
