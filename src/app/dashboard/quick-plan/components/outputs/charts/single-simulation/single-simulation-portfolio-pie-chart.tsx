@@ -92,40 +92,11 @@ const renderActiveShape = ({
         textAnchor={textAnchor}
         fill="currentColor"
         fontSize="16"
-      >{`${formatString(payload.name)}: ${value !== undefined ? formatNumber(value) : 'N/A'}`}</text>
+      >{`${formatString(payload.name)}: ${value !== undefined ? formatNumber(value, 2, '$') : 'N/A'}`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="var(--muted-foreground)" fontSize="14">
         {`${((percent ?? 1) * 100).toFixed(2)}% of Net Worth`}
       </text>
     </g>
-  );
-};
-
-type GeometrySector = {
-  cx: number;
-  cy: number;
-  innerRadius: number;
-  outerRadius: number;
-  startAngle: number;
-  endAngle: number;
-};
-
-type PieLabelProps = PieSectorData &
-  GeometrySector & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tooltipPayload?: any;
-  };
-
-const RADIAN = Math.PI / 180;
-
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, tooltipPayload }: PieLabelProps) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
-  const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
-
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${((percent ?? 1) * 100).toFixed(0)}%`}
-    </text>
   );
 };
 
@@ -145,8 +116,6 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
         <PieChart className="text-xs">
           <Pie
             activeShape={renderActiveShape}
-            labelLine={false}
-            label={renderCustomizedLabel}
             data={chartData}
             cx="50%"
             cy="50%"
