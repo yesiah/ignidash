@@ -1,7 +1,9 @@
 'use client';
 
+import { Fragment } from 'react';
 import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'recharts';
 
+import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatNumber } from '@/lib/utils';
 
 interface SingleSimulationPortfolioAccountTypePieChartDataPoint {
@@ -111,25 +113,37 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
     .flatMap(({ age, ...rest }) => Object.entries(rest).map(([name, value]) => ({ name, value })));
 
   return (
-    <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart className="text-xs">
-          <Pie
-            activeShape={renderActiveShape}
-            data={chartData}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            paddingAngle={10}
-            dataKey="value"
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="flex items-center">
+      <div className="h-64 w-full sm:h-72 lg:h-80 @2xl:w-2/3 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart className="text-xs">
+            <Pie
+              activeShape={renderActiveShape}
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              paddingAngle={10}
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="hidden w-1/3 @2xl:block">
+        <DescriptionList>
+          {chartData.map((entry) => (
+            <Fragment key={entry.name}>
+              <DescriptionTerm>{formatString(entry.name)}</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
+            </Fragment>
+          ))}
+        </DescriptionList>
+      </div>
     </div>
   );
 }
