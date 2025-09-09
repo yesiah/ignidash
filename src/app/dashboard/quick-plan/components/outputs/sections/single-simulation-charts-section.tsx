@@ -17,6 +17,7 @@ import SingleSimulationPortfolioAccountTypeAreaChartCard from '../cards/single-s
 import SingleSimulationPortfolioAssetTypePieChartCard from '../cards/single-simulation/single-simulation-portfolio-asset-type-pie-chart-card';
 import SingleSimulationPortfolioAccountTypePieChartCard from '../cards/single-simulation/single-simulation-portfolio-account-type-pie-chart-card';
 import SingleSimulationCashFlowLineChartCard from '../cards/single-simulation/single-simulation-cash-flow-line-chart-card';
+import SingleSimulationCashFlowBarChartCard from '../cards/single-simulation/single-simulation-cash-flow-bar-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -84,6 +85,7 @@ function CashFlowCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }:
         rawChartData={rawChartData}
         startAge={startAge}
       />
+      <SingleSimulationCashFlowBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </>
   );
 }
