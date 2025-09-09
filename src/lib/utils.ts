@@ -18,3 +18,8 @@ export function formatNumber(num: number, fractionDigits: number = 2, prefix: st
 export function formatNumberAsNumber(num: number): number {
   return parseFloat(num.toFixed(2));
 }
+
+export function formatChartString(input: string): string {
+  const withSpaces = input.replace(/(?<!^)([A-Z])/g, ' $1');
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
+}

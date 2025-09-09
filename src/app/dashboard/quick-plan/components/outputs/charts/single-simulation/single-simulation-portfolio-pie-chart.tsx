@@ -5,7 +5,7 @@ import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'r
 
 import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
-import { formatNumber } from '@/lib/utils';
+import { formatNumber, formatChartString } from '@/lib/utils';
 
 interface SingleSimulationPortfolioAccountTypePieChartDataPoint {
   age: number;
@@ -75,7 +75,7 @@ const renderActiveShape = ({
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill="currentColor" fontSize="16">
-        {formatString(payload.name)}
+        {formatChartString(payload.name)}
       </text>
       <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} />
       <Sector
@@ -144,7 +144,7 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
           </Subheading>
           {chartData.toReversed().map((entry) => (
             <Fragment key={entry.name}>
-              <DescriptionTerm>{formatString(entry.name)}</DescriptionTerm>
+              <DescriptionTerm>{formatChartString(entry.name)}</DescriptionTerm>
               <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
             </Fragment>
           ))}
@@ -165,14 +165,9 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
 //         >
 //           <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
 //         </svg>
-//         {formatString(entry.name)}
+//         {formatChartString(entry.name)}
 //       </DescriptionTerm>
 //       <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
 //     </Fragment>
 //   ));
 // }
-
-function formatString(input: string): string {
-  const withSpaces = input.replace(/(?<!^)([A-Z])/g, ' $1');
-  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
-}

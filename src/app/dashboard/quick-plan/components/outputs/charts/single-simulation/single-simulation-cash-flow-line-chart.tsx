@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
 import { useCurrentAge } from '@/lib/stores/quick-plan-store';
-import { formatNumber } from '@/lib/utils';
+import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
@@ -36,24 +36,35 @@ const CustomTooltip = ({ active, payload, label, currentAge, disabled }: CustomT
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
-      <p className="border-foreground/50 flex justify-between rounded-lg border bg-[var(--chart-1)]/60 px-2 text-sm">
-        <span className="mr-2">Net Cash Flow:</span>
-        <span className="ml-1 font-semibold">{formatNumber(payload[0].value, 3, '$')}</span>
-      </p>
+      <div className="flex flex-col gap-2">
+        {payload.map((entry) => (
+          <p
+            key={entry.dataKey}
+            className={`border-foreground/50 flex justify-between rounded-lg border bg-[${entry.color}]/60 px-2 text-sm`}
+          >
+            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.value, 3, '$')}</span>
+          </p>
+        ))}
+      </div>
     </div>
   );
 };
+
+const COLORS = ['var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
 
 interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   onAgeSelect: (age: number) => void;
   selectedAge: number;
+  dataView: 'cashFlow' | 'incomes' | 'expenses';
 }
 
 export default function SingleSimulationCashFlowLineChart({
   rawChartData,
   onAgeSelect,
   selectedAge,
+  dataView,
 }: SingleSimulationCashFlowLineChartProps) {
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
 
@@ -70,6 +81,22 @@ export default function SingleSimulationCashFlowLineChart({
   const chartData = rawChartData;
   if (chartData.length === 0) {
     return null;
+  }
+
+  const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint)[] = [];
+  switch (dataView) {
+    case 'cashFlow':
+      dataKeys.push('totalNetCashFlow');
+      break;
+    case 'incomes':
+      dataKeys.push('totalGrossIncome', 'totalNetIncome');
+      break;
+    case 'expenses':
+      dataKeys.push('totalExpenses');
+      break;
+    default:
+      dataKeys.push('totalNetCashFlow');
+      break;
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
@@ -96,7 +123,9 @@ export default function SingleSimulationCashFlowLineChart({
             hide={isSmallScreen}
             tickFormatter={(value: number) => formatNumber(value, 1, '$')}
           />
-          <Line type="monotone" dataKey="totalNetCashFlow" stroke="var(--chart-1)" />
+          {dataKeys.map((dataKey, index) => (
+            <Line key={dataKey} type="monotone" dataKey={dataKey} stroke={COLORS[index % COLORS.length]} />
+          ))}
           <Tooltip
             content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} />}
             cursor={{ stroke: foregroundColor }}

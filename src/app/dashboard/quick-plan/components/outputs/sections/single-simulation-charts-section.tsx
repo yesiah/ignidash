@@ -72,11 +72,15 @@ function CashFlowCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }:
 
   const rawChartData = useSingleSimulationCashFlowChartData(simulation);
 
+  const [dataView, setDataView] = useState<'cashFlow' | 'incomes' | 'expenses'>('cashFlow');
+
   return (
     <>
       <SingleSimulationCashFlowLineChartCard
         setSelectedAge={setSelectedAge}
         selectedAge={selectedAge}
+        setDataView={setDataView}
+        dataView={dataView}
         rawChartData={rawChartData}
         startAge={startAge}
       />
