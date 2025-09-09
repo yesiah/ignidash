@@ -65,6 +65,12 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
   }
 }
 
+function CashFlowCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: ChartsCategoryProps) {
+  const _startAge = simulation.context.startAge;
+
+  return <div>Cash Flow Charts - Coming Soon</div>;
+}
+
 interface SingleSimulationChartsSectionProps {
   simulation: SimulationResult;
   keyMetrics: FixedReturnsKeyMetricsV2;
@@ -85,6 +91,11 @@ function SingleSimulationChartsSection({
     case SingleSimulationCategory.Portfolio:
       chartsComponents = (
         <PortfolioCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+      );
+      break;
+    case SingleSimulationCategory.CashFlow:
+      chartsComponents = (
+        <CashFlowCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
       );
       break;
     default:
