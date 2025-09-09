@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { useState, memo } from 'react';
 
 import SectionContainer from '@/components/ui/section-container';
 import {
@@ -29,26 +29,40 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
   const assetTypeRawChartData = useSingleSimulationPortfolioAssetTypeAreaChartData(simulation);
   const accountTypeRawChartData = useSingleSimulationPortfolioAccountTypeAreaChartData(simulation);
 
-  return (
-    <>
-      <SingleSimulationPortfolioAssetTypeAreaChartCard
-        rawChartData={assetTypeRawChartData}
-        keyMetrics={keyMetrics}
-        setSelectedAge={setSelectedAge}
-        selectedAge={selectedAge}
-        startAge={startAge}
-      />
-      <SingleSimulationPortfolioAssetTypePieChartCard rawChartData={assetTypeRawChartData} selectedAge={selectedAge} />
-      <SingleSimulationPortfolioAccountTypeAreaChartCard
-        rawChartData={accountTypeRawChartData}
-        keyMetrics={keyMetrics}
-        setSelectedAge={setSelectedAge}
-        selectedAge={selectedAge}
-        startAge={startAge}
-      />
-      <SingleSimulationPortfolioAccountTypePieChartCard rawChartData={accountTypeRawChartData} selectedAge={selectedAge} />
-    </>
-  );
+  const [dataView, setDataView] = useState<'asset' | 'account'>('asset');
+
+  switch (dataView) {
+    case 'asset':
+      return (
+        <>
+          <SingleSimulationPortfolioAssetTypeAreaChartCard
+            rawChartData={assetTypeRawChartData}
+            keyMetrics={keyMetrics}
+            setSelectedAge={setSelectedAge}
+            selectedAge={selectedAge}
+            setDataView={setDataView}
+            dataView={dataView}
+            startAge={startAge}
+          />
+          <SingleSimulationPortfolioAssetTypePieChartCard rawChartData={assetTypeRawChartData} selectedAge={selectedAge} />
+        </>
+      );
+    case 'account':
+      return (
+        <>
+          <SingleSimulationPortfolioAccountTypeAreaChartCard
+            rawChartData={accountTypeRawChartData}
+            keyMetrics={keyMetrics}
+            setSelectedAge={setSelectedAge}
+            selectedAge={selectedAge}
+            setDataView={setDataView}
+            dataView={dataView}
+            startAge={startAge}
+          />
+          <SingleSimulationPortfolioAccountTypePieChartCard rawChartData={accountTypeRawChartData} selectedAge={selectedAge} />
+        </>
+      );
+  }
 }
 
 interface SingleSimulationChartsSectionProps {

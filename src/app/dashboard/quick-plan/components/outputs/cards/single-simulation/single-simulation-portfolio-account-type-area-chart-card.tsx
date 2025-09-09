@@ -3,6 +3,7 @@
 import { useShowReferenceLinesPreference, useUpdatePreferences, type FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import { Switch } from '@/components/catalyst/switch';
+import { Select } from '@/components/catalyst/select';
 
 import SingleSimulationPortfolioAccountTypeAreaChart, {
   type SingleSimulationPortfolioAccountTypeAreaChartDataPoint,
@@ -13,6 +14,8 @@ interface SingleSimulationPortfolioAccountTypeAreaChartCardProps {
   keyMetrics: FixedReturnsKeyMetricsV2;
   setSelectedAge: (age: number) => void;
   selectedAge: number;
+  setDataView: (view: 'asset' | 'account') => void;
+  dataView: 'asset' | 'account';
   startAge: number;
 }
 
@@ -21,6 +24,8 @@ export default function SingleSimulationPortfolioAccountTypeAreaChartCard({
   keyMetrics,
   setSelectedAge,
   selectedAge,
+  setDataView,
+  dataView,
   startAge,
 }: SingleSimulationPortfolioAccountTypeAreaChartCardProps) {
   const showReferenceLines = useShowReferenceLinesPreference();
@@ -30,7 +35,17 @@ export default function SingleSimulationPortfolioAccountTypeAreaChartCard({
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-foreground flex items-center text-lg font-semibold">
-          <span className="mr-2">Portfolio by Account Type</span>
+          <span className="mr-2 whitespace-nowrap">Net Worth by</span>
+          <Select
+            className="max-w-36"
+            id="data-view"
+            name="data-view"
+            value={dataView}
+            onChange={(e) => setDataView(e.target.value as 'asset' | 'account')}
+          >
+            <option value="asset">Asset Class</option>
+            <option value="account">Account Type</option>
+          </Select>
         </h4>
         <Switch
           className="focus-outline"
