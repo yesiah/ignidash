@@ -119,7 +119,7 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius={40}
+            innerRadius={60}
             outerRadius={80}
             paddingAngle={10}
             dataKey="value"
