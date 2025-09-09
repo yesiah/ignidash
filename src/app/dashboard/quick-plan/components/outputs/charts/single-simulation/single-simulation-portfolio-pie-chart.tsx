@@ -154,6 +154,24 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
   );
 }
 
+// {
+//   chartData.toReversed().map((entry, index) => (
+//     <Fragment key={entry.name}>
+//       <DescriptionTerm>
+//         <svg
+//           viewBox="0 0 6 6"
+//           aria-hidden="true"
+//           className={`size-5 fill-[${COLORS[(COLORS.length - index - 1) % COLORS.length]}] mr-1 inline`}
+//         >
+//           <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
+//         </svg>
+//         {formatString(entry.name)}
+//       </DescriptionTerm>
+//       <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
+//     </Fragment>
+//   ));
+// }
+
 function formatString(input: string): string {
   const withSpaces = input.replace(/(?<!^)([A-Z])/g, ' $1');
   return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
