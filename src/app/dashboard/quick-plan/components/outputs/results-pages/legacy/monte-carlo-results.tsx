@@ -6,8 +6,8 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 
 import ResultsMetrics from '../../stochastic-metrics';
-import StochasticDataTableSection from '../../sections/stochastic-data-table-section';
-import StochasticChartsSection from '../../sections/stochastic-charts-section';
+import StochasticDataTableSection from '../../sections/legacy/stochastic-data-table-section';
+import StochasticChartsSection from '../../sections/legacy/stochastic-charts-section';
 
 interface MonteCarloResultsImplProps {
   simStats: AggregateSimulationStats;
