@@ -3,6 +3,7 @@
 import { Fragment } from 'react';
 import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'recharts';
 
+import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatNumber } from '@/lib/utils';
 
@@ -114,7 +115,7 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
 
   return (
     <div className="flex items-center">
-      <div className="h-64 w-full sm:h-72 lg:h-80 @2xl:w-2/3 [&_svg:focus]:outline-none">
+      <div className="h-64 w-full sm:h-72 lg:h-80 @3xl:w-3/4 [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart className="text-xs">
             <Pie
@@ -134,8 +135,11 @@ export default function SingleSimulationPortfolioPieChart({ rawChartData, select
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div className="hidden w-1/3 @2xl:block">
+      <div className="hidden w-1/4 @3xl:block">
         <DescriptionList>
+          <Subheading level={5} className="mb-2 whitespace-nowrap">
+            Breakdown
+          </Subheading>
           {chartData.map((entry) => (
             <Fragment key={entry.name}>
               <DescriptionTerm>{formatString(entry.name)}</DescriptionTerm>
