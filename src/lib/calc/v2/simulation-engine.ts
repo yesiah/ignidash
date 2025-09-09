@@ -5,7 +5,7 @@ import type { ReturnsProvider } from '../returns-provider';
 import { StochasticReturnsProvider } from '../stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest-returns-provider';
 
-import { Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
+import { type AccountDataWithTransactions, Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
 import { ContributionRules } from './contribution-rules';
 import { PhaseIdentifier, type PhaseData } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
@@ -177,6 +177,18 @@ export class FinancialSimulationEngine {
     const totalPortfolioValue = initialSimulationState.portfolio.getTotalValue();
     const assetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
 
+    const defaultTransactionsData = {
+      contributionsForPeriod: 0,
+      withdrawalsForPeriod: 0,
+      realizedGainsForPeriod: 0,
+    };
+
+    const perAccountData: Record<string, AccountDataWithTransactions> = Object.fromEntries(
+      initialSimulationState.portfolio
+        .getAccounts()
+        .map((account) => [account.getAccountID(), { ...account.getAccountData(), ...defaultTransactionsData }])
+    );
+
     return {
       date: new Date().toISOString().split('T')[0],
       portfolio: {
@@ -187,7 +199,7 @@ export class FinancialSimulationEngine {
         contributionsForPeriod: 0,
         withdrawalsForPeriod: 0,
         realizedGainsForPeriod: 0,
-        perAccountData: {},
+        perAccountData,
         assetAllocation,
       },
       incomes: null,
