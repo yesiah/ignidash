@@ -142,7 +142,13 @@ export class PortfolioProcessor {
       const rule = contributionRules[currentRuleIndex];
 
       const contributeToAccountID = rule.getAccountID();
-      const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID)!;
+      const contributeToAccount = this.simulationState.portfolio.getAccountById(contributeToAccountID);
+      if (!contributeToAccount) {
+        console.warn(`Contribution rule references non-existent account ID: ${contributeToAccountID}`);
+
+        currentRuleIndex++;
+        continue;
+      }
 
       const contributionAmount = rule.getContributionAmount(remainingToContribute, contributeToAccount, this.monthlyData, age, incomesData);
       if (contributionAmount <= 0) {

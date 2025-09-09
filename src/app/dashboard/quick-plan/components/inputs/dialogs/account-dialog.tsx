@@ -55,8 +55,20 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
 
   const updateAccounts = useUpdateAccounts();
   const onSubmit = (data: AccountInputs) => {
-    const accountId = data.id === '' ? uuidv4() : data.id;
-    updateAccounts({ ...data, id: accountId });
+    const processedData = { ...data };
+
+    if (isRothAccount(data.type)) {
+      const rothData = processedData as Extract<AccountInputs, { type: RothAccountType }>;
+      rothData.contributionBasis ??= data.currentValue;
+    }
+
+    if (data.type === 'taxableBrokerage') {
+      const taxableData = processedData as Extract<AccountInputs, { type: 'taxableBrokerage' }>;
+      taxableData.costBasis ??= data.currentValue;
+    }
+
+    const accountId = processedData.id === '' ? uuidv4() : processedData.id;
+    updateAccounts({ ...processedData, id: accountId });
     onClose();
   };
 
