@@ -41,24 +41,36 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
   const yAxisDomain: [number, number] | undefined = undefined;
   const chartData = rawChartData.filter((item) => item.age === age);
 
-  let transformedChartData: { name: string; amount: number }[] = [];
+  let transformedChartData: { name: string; amount: number; type: string }[] = [];
   switch (dataView) {
     case 'cashFlow':
       transformedChartData = chartData
         .flatMap(({ perIncomeData, perExpenseData }) =>
           perIncomeData
-            .map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' }))
-            .concat(perExpenseData.map(({ name, amount }) => ({ name, amount: -amount, type: 'expense' })))
+            .map(({ name, grossIncome }) => ({
+              name,
+              amount: grossIncome,
+              type: 'income',
+            }))
+            .concat(
+              perExpenseData.map(({ name, amount }) => ({
+                name,
+                amount: -amount,
+                type: 'expense',
+              }))
+            )
         )
-        .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+        .sort((a, b) => b.amount - a.amount);
       break;
     case 'incomes':
       transformedChartData = chartData.flatMap(({ perIncomeData }) =>
-        perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome }))
+        perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' }))
       );
       break;
     case 'expenses':
-      transformedChartData = chartData.flatMap(({ perExpenseData }) => perExpenseData.map(({ name, amount }) => ({ name, amount })));
+      transformedChartData = chartData.flatMap(({ perExpenseData }) =>
+        perExpenseData.map(({ name, amount }) => ({ name, amount, type: 'expense' }))
+      );
       break;
   }
 
@@ -84,8 +96,13 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
               domain={yAxisDomain}
             />
             <Bar dataKey="amount" maxBarSize={75} minPointSize={20}>
-              {transformedChartData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" />
+              {transformedChartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill="var(--chart-3)"
+                  stroke="var(--chart-1)"
+                  fillOpacity={entry.type === 'income' ? 1 : 0.25}
+                />
               ))}
               <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
             </Bar>
