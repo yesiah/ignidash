@@ -95,7 +95,7 @@ export default function SingleSimulationCashFlowLineChart({
       dataKeys.push('netCashFlow');
       break;
     case 'incomes':
-      dataKeys.push('netIncome');
+      dataKeys.push('grossIncome');
       break;
     case 'expenses':
       dataKeys.push('expenses');
