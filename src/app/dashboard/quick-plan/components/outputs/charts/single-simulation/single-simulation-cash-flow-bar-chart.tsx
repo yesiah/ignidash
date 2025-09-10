@@ -28,6 +28,21 @@ const CustomLabelListContent = (props: any) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
+  const truncateText = (text: string, maxLength = 18) => {
+    return text.length > maxLength ? text.substring(0, maxLength - 3) + '…' : text;
+  };
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="end" fill="currentColor" transform="rotate(-35)" fontSize={12}>
+        {truncateText(payload.value)}
+      </text>
+    </g>
+  );
+};
+
 interface SingleSimulationCashFlowBarChartProps {
   age: number;
   dataView: 'cashFlow' | 'incomes' | 'expenses';
@@ -81,13 +96,22 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
   const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
 
+  const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
+  const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
+  const bottomMargin = shouldUseCustomTick ? 50 : 0;
+
   return (
     <div>
       <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={transformedChartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1}>
+          <BarChart
+            data={transformedChartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+            tabIndex={-1}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="name" />
+            <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
             <YAxis
               tick={{ fill: foregroundMutedColor }}
               axisLine={false}
