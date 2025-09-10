@@ -1,6 +1,6 @@
 'use client';
 
-import { PresentationChartLineIcon } from '@heroicons/react/24/outline';
+import { PresentationIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import ColumnHeader from '@/components/ui/column-header';
@@ -12,7 +12,7 @@ export default function ResultsColumnHeader() {
   return (
     <ColumnHeader
       title="Results"
-      icon={PresentationChartLineIcon}
+      icon={PresentationIcon}
       iconButton={<IconButton icon={icon} label={label} onClick={handleClick} className={className} surfaceColor="emphasized" />}
       className="w-[calc(100%-42rem)] group-data-[state=collapsed]/sidebar:w-[calc(100%-28rem)]"
     />
