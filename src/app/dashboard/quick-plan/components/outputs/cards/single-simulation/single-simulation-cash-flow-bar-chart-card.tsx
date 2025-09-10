@@ -16,11 +16,24 @@ export default function SingleSimulationCashFlowBarChartCard({
   rawChartData,
   dataView,
 }: SingleSimulationCashFlowBarChartCardProps) {
+  let title;
+  switch (dataView) {
+    case 'net':
+      title = 'Net Cash Flow';
+      break;
+    case 'incomes':
+      title = 'All Incomes';
+      break;
+    case 'expenses':
+      title = 'All Expenses';
+      break;
+  }
+
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-foreground flex items-center text-lg font-semibold whitespace-nowrap">
-          <span className="mr-2">Cash Flow</span>
+          <span className="mr-2">{title}</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </h4>
       </div>

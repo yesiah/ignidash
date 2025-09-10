@@ -66,7 +66,7 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
           type: 'income',
         },
         {
-          name: 'Total Expenses',
+          name: 'Expenses',
           amount: -perExpenseData.reduce((sum, { amount }) => sum + amount, 0),
           type: 'expense',
         },
@@ -114,7 +114,7 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
               tickFormatter={(value: number) => formatNumber(value, 1, '$')}
               domain={yAxisDomain}
             />
-            <Bar dataKey="amount" maxBarSize={75} minPointSize={20}>
+            <Bar dataKey="amount" maxBarSize={150} minPointSize={20}>
               {transformedChartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" fillOpacity={entry.type === 'income' ? 1 : 0.5} />
               ))}

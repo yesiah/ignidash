@@ -37,7 +37,7 @@ export default function SingleSimulationCashFlowLineChartCard({
           value={dataView}
           onChange={(e) => setDataView(e.target.value as 'net' | 'incomes' | 'expenses')}
         >
-          <option value="net">Net</option>
+          <option value="net">Net Cash Flow</option>
           <option value="incomes">Incomes</option>
           <option value="expenses">Expenses</option>
         </Select>
