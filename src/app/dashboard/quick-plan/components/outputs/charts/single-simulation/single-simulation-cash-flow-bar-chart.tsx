@@ -59,23 +59,18 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
   let transformedChartData: { name: string; amount: number; type: string }[] = [];
   switch (dataView) {
     case 'cashFlow':
-      transformedChartData = chartData
-        .flatMap(({ perIncomeData, perExpenseData }) =>
-          perIncomeData
-            .map(({ name, grossIncome }) => ({
-              name,
-              amount: grossIncome,
-              type: 'income',
-            }))
-            .concat(
-              perExpenseData.map(({ name, amount }) => ({
-                name,
-                amount: -amount,
-                type: 'expense',
-              }))
-            )
-        )
-        .sort((a, b) => b.amount - a.amount);
+      transformedChartData = chartData.flatMap(({ perIncomeData, perExpenseData }) => [
+        {
+          name: 'Gross Income',
+          amount: perIncomeData.reduce((sum, { grossIncome }) => sum + grossIncome, 0),
+          type: 'income',
+        },
+        {
+          name: 'Total Expenses',
+          amount: -perExpenseData.reduce((sum, { amount }) => sum + amount, 0),
+          type: 'expense',
+        },
+      ]);
       break;
     case 'incomes':
       transformedChartData = chartData.flatMap(({ perIncomeData }) =>
@@ -121,12 +116,7 @@ export default function SingleSimulationCashFlowBarChart({ age, dataView, rawCha
             />
             <Bar dataKey="amount" maxBarSize={75} minPointSize={20}>
               {transformedChartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill="var(--chart-3)"
-                  stroke="var(--chart-1)"
-                  fillOpacity={entry.type === 'income' ? 1 : 0.25}
-                />
+                <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" fillOpacity={entry.type === 'income' ? 1 : 0.5} />
               ))}
               <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
             </Bar>
