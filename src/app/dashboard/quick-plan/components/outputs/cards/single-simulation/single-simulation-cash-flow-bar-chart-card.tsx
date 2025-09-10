@@ -8,7 +8,7 @@ import SingleSimulationCashFlowBarChart from '../../charts/single-simulation/sin
 interface SingleSimulationCashFlowBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
-  dataView: 'cashFlow' | 'incomes' | 'expenses';
+  dataView: 'net' | 'incomes' | 'expenses';
 }
 
 export default function SingleSimulationCashFlowBarChartCard({

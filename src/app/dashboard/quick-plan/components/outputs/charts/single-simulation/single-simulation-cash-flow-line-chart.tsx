@@ -57,7 +57,7 @@ interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'cashFlow' | 'incomes' | 'expenses';
+  dataView: 'net' | 'incomes' | 'expenses';
 }
 
 export default function SingleSimulationCashFlowLineChart({
@@ -85,7 +85,7 @@ export default function SingleSimulationCashFlowLineChart({
 
   const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint)[] = [];
   switch (dataView) {
-    case 'cashFlow':
+    case 'net':
       dataKeys.push('totalNetCashFlow');
       break;
     case 'incomes':

@@ -9,8 +9,8 @@ import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/si
 interface SingleSimulationCashFlowLineChartCardProps {
   setSelectedAge: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'cashFlow' | 'incomes' | 'expenses') => void;
-  dataView: 'cashFlow' | 'incomes' | 'expenses';
+  setDataView: (view: 'net' | 'incomes' | 'expenses') => void;
+  dataView: 'net' | 'incomes' | 'expenses';
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   startAge: number;
 }
@@ -23,24 +23,11 @@ export default function SingleSimulationCashFlowLineChartCard({
   rawChartData,
   startAge,
 }: SingleSimulationCashFlowLineChartCardProps) {
-  let title;
-  switch (dataView) {
-    case 'cashFlow':
-      title = 'Cash Flow';
-      break;
-    case 'incomes':
-      title = 'Incomes';
-      break;
-    case 'expenses':
-      title = 'Expenses';
-      break;
-  }
-
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-foreground flex items-center text-lg font-semibold whitespace-nowrap">
-          <span className="mr-2">{title}</span>
+          <span className="mr-2">Cash Flow</span>
           <span className="text-muted-foreground hidden sm:inline">Time Series</span>
         </h4>
         <Select
@@ -48,9 +35,9 @@ export default function SingleSimulationCashFlowLineChartCard({
           id="data-view"
           name="data-view"
           value={dataView}
-          onChange={(e) => setDataView(e.target.value as 'cashFlow' | 'incomes' | 'expenses')}
+          onChange={(e) => setDataView(e.target.value as 'net' | 'incomes' | 'expenses')}
         >
-          <option value="cashFlow">Cash Flow</option>
+          <option value="net">Net</option>
           <option value="incomes">Incomes</option>
           <option value="expenses">Expenses</option>
         </Select>
