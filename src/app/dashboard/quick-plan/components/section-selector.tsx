@@ -1,6 +1,6 @@
 'use client';
 
-import { CalculatorIcon, SlidersHorizontalIcon, PresentationIcon } from 'lucide-react';
+import { CalculatorIcon, SlidersHorizontalIcon, PresentationIcon, TrendingUpIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -8,6 +8,7 @@ import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 
+import ExpectedReturnsDrawer from './inputs/drawers/expected-returns-drawer';
 import SimulationSettingsDrawer from './outputs/drawers/simulation-settings-drawer';
 
 type ActiveSection = 'results' | 'your-numbers';
@@ -32,8 +33,16 @@ interface SectionSelectorProps {
 
 export default function SectionSelector({ activeSection, setActiveSection }: SectionSelectorProps) {
   const [simulationSettingsOpen, setSimulationSettingsOpen] = useState(false);
+  const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
+
   const { icon, label, handleClick, className } = useRegenSimulation();
 
+  const expectedReturnsTitleComponent = (
+    <div className="flex items-center gap-2">
+      <TrendingUpIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+      <span>Expected Returns</span>
+    </div>
+  );
   const simulationSettingsTitleComponent = (
     <div className="flex items-center gap-2">
       <SlidersHorizontalIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
@@ -64,18 +73,29 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           </nav>
           {activeSection === 'your-numbers' && (
             <IconButton
-              icon={SlidersHorizontalIcon}
-              label="Simulation Settings"
-              onClick={() => setSimulationSettingsOpen(true)}
+              icon={TrendingUpIcon}
+              label="Expected Returns"
+              onClick={() => setExpectedReturnsOpen(true)}
               surfaceColor="emphasized"
             />
           )}
           {activeSection === 'results' && (
-            <IconButton icon={icon} label={label} onClick={handleClick} className={cn(className)} surfaceColor="emphasized" />
+            <div className="flex items-center gap-2">
+              <IconButton
+                icon={SlidersHorizontalIcon}
+                label="Simulation Settings"
+                onClick={() => setSimulationSettingsOpen(true)}
+                surfaceColor="emphasized"
+              />
+              <IconButton icon={icon} label={label} onClick={handleClick} className={className} surfaceColor="emphasized" />
+            </div>
           )}
         </div>
       </div>
 
+      <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
+        <ExpectedReturnsDrawer />
+      </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
         <SimulationSettingsDrawer />
       </Drawer>
