@@ -20,6 +20,7 @@ import SingleSimulationPortfolioAccountTypePieChartCard from '../cards/single-si
 import SingleSimulationCashFlowLineChartCard from '../cards/single-simulation/single-simulation-cash-flow-line-chart-card';
 import SingleSimulationCashFlowBarChartCard from '../cards/single-simulation/single-simulation-cash-flow-bar-chart-card';
 import SingleSimulationReturnsLineChartCard from '../cards/single-simulation/single-simulation-returns-line-chart-card';
+import SingleSimulationReturnsBarChartCard from '../cards/single-simulation/single-simulation-returns-bar-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -108,14 +109,17 @@ function ReturnsCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: 
   const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'totalAmounts'>('rates');
 
   return (
-    <SingleSimulationReturnsLineChartCard
-      rawChartData={rawChartData}
-      setSelectedAge={setSelectedAge}
-      selectedAge={selectedAge}
-      dataView={dataView}
-      setDataView={setDataView}
-      startAge={startAge}
-    />
+    <>
+      <SingleSimulationReturnsLineChartCard
+        rawChartData={rawChartData}
+        setSelectedAge={setSelectedAge}
+        selectedAge={selectedAge}
+        dataView={dataView}
+        setDataView={setDataView}
+        startAge={startAge}
+      />
+      <SingleSimulationReturnsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+    </>
   );
 }
 
