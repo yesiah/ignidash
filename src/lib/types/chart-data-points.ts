@@ -1,5 +1,6 @@
 import type { ExpenseData } from '@/lib/calc/v2/expenses';
 import type { IncomeData } from '@/lib/calc/v2/incomes';
+import type { AccountDataWithTransactions } from '@/lib/calc/v2/portfolio';
 
 export interface StochasticCashFlowChartDataPoint {
   age: number;
@@ -61,4 +62,20 @@ export interface SingleSimulationTaxesChartDataPoint {
   totalTaxesDue: number;
   totalTaxesRefund: number;
   totalTaxableIncome: number;
+}
+
+export interface SingleSimulationContributionsChartDataPoint {
+  age: number;
+  totalContributions: number;
+  contributionsForPeriod: number;
+  perAccountData: AccountDataWithTransactions[];
+}
+
+export interface SingleSimulationWithdrawalsChartDataPoint {
+  age: number;
+  totalWithdrawals: number;
+  totalRealizedGains: number;
+  withdrawalsForPeriod: number;
+  realizedGainsForPeriod: number;
+  perAccountData: AccountDataWithTransactions[];
 }

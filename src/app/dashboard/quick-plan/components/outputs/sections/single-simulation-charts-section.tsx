@@ -10,6 +10,7 @@ import {
   useSingleSimulationCashFlowChartData,
   useSingleSimulationReturnsChartData,
   useSingleSimulationTaxesChartData,
+  useSingleSimulationContributionsChartData,
 } from '@/lib/stores/quick-plan-store';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
@@ -24,6 +25,7 @@ import SingleSimulationReturnsLineChartCard from '../cards/single-simulation/sin
 import SingleSimulationReturnsBarChartCard from '../cards/single-simulation/single-simulation-returns-bar-chart-card';
 import SingleSimulationTaxesLineChartCard from '../cards/single-simulation/single-simulation-taxes-line-chart-card';
 import SingleSimulationTaxesBarChartCard from '../cards/single-simulation/single-simulation-taxes-bar-chart-card';
+import SingleSimulationContributionsLineChartCard from '../cards/single-simulation/single-simulation-contributions-line-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -148,6 +150,25 @@ function ReturnsCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: 
   );
 }
 
+function ContributionsCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: ChartsCategoryProps) {
+  const startAge = simulation.context.startAge;
+
+  const rawChartData = useSingleSimulationContributionsChartData(simulation);
+
+  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
+
+  return (
+    <SingleSimulationContributionsLineChartCard
+      rawChartData={rawChartData}
+      setSelectedAge={setSelectedAge}
+      selectedAge={selectedAge}
+      dataView={dataView}
+      setDataView={setDataView}
+      startAge={startAge}
+    />
+  );
+}
+
 interface SingleSimulationChartsSectionProps {
   simulation: SimulationResult;
   keyMetrics: FixedReturnsKeyMetricsV2;
@@ -183,6 +204,11 @@ function SingleSimulationChartsSection({
     case SingleSimulationCategory.Returns:
       chartsComponents = (
         <ReturnsCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+      );
+      break;
+    case SingleSimulationCategory.Contributions:
+      chartsComponents = (
+        <ContributionsCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
       );
       break;
     default:
