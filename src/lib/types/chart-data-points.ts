@@ -82,4 +82,8 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   withdrawalsForPeriod: number;
   realizedGainsForPeriod: number;
   perAccountData: AccountDataWithTransactions[];
+  taxable: number;
+  taxDeferred: number;
+  taxFree: number;
+  savings: number;
 }

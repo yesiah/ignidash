@@ -1,0 +1,129 @@
+'use client';
+
+import { useTheme } from 'next-themes';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+
+import { formatNumber } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomLabelListContent = (props: any) => {
+  const { x, y, width, height, offset, value, isSmallScreen } = props;
+  if (!value || value === 0) {
+    return null;
+  }
+
+  return (
+    <text
+      x={x + width / 2}
+      y={y + height / 2 + (isSmallScreen ? offset : 0)}
+      fill="currentColor"
+      textAnchor="middle"
+      dominantBaseline="middle"
+      className="text-xs sm:text-sm"
+    >
+      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
+    </text>
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
+  const truncateText = (text: string, maxLength = 18) => {
+    return text.length > maxLength ? text.substring(0, maxLength - 3) + '…' : text;
+  };
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="end" fill="currentColor" transform="rotate(-35)" fontSize={12}>
+        {truncateText(payload.value)}
+      </text>
+    </g>
+  );
+};
+
+interface SingleSimulationWithdrawalsBarChartProps {
+  age: number;
+  dataView: 'annualAmounts' | 'totalAmounts' | 'account';
+  rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
+}
+
+export default function SingleSimulationWithdrawalsBarChart({ age, dataView, rawChartData }: SingleSimulationWithdrawalsBarChartProps) {
+  const { resolvedTheme } = useTheme();
+  const isSmallScreen = useIsMobile();
+
+  const chartData = rawChartData.filter((item) => item.age === age);
+
+  let transformedChartData: { name: string; amount: number }[] = [];
+  switch (dataView) {
+    case 'annualAmounts':
+      transformedChartData = chartData.flatMap((item) => [
+        {
+          name: 'Annual Withdrawals',
+          amount: item.withdrawalsForPeriod,
+        },
+      ]);
+      break;
+    case 'totalAmounts':
+      transformedChartData = chartData.flatMap((item) => [
+        {
+          name: 'Total Withdrawals',
+          amount: item.totalWithdrawals,
+        },
+      ]);
+      break;
+    case 'account':
+      transformedChartData = chartData.flatMap((item) => [
+        {
+          name: 'Taxable Withdrawals',
+          amount: item.taxable,
+        },
+        { name: 'Tax Deferred Withdrawals', amount: item.taxDeferred },
+        { name: 'Tax Free Withdrawals', amount: item.taxFree },
+        { name: 'Savings Withdrawals', amount: item.savings },
+      ]);
+      break;
+  }
+
+  if (transformedChartData.length === 0) {
+    return null;
+  }
+
+  const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
+
+  const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
+  const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
+  const bottomMargin = shouldUseCustomTick ? 50 : 0;
+
+  return (
+    <div>
+      <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={transformedChartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+            tabIndex={-1}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+            />
+            <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
+              {transformedChartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" />
+              ))}
+              <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}

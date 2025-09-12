@@ -1110,19 +1110,19 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            savings += account.totalValue;
+            savings += account.contributionsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxable += account.totalValue;
+            taxable += account.contributionsForPeriod;
             break;
           case '401k':
           case 'ira':
           case 'hsa':
-            taxDeferred += account.totalValue;
+            taxDeferred += account.contributionsForPeriod;
             break;
           case 'roth401k':
           case 'rothIra':
-            taxFree += account.totalValue;
+            taxFree += account.contributionsForPeriod;
             break;
         }
       }
@@ -1131,6 +1131,56 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
         age: currDateYear - startDateYear + startAge,
         totalContributions: portfolioData.totalContributions,
         contributionsForPeriod: portfolioData.contributionsForPeriod,
+        perAccountData: Object.values(portfolioData.perAccountData),
+        taxable,
+        taxDeferred,
+        taxFree,
+        savings,
+      };
+    });
+  }, [simulation]);
+};
+
+export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResultV2) => {
+  return useMemo(() => {
+    return simulation.data.slice(1).map((data) => {
+      const startAge = simulation.context.startAge;
+      const startDateYear = new Date().getFullYear();
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const portfolioData = data.portfolio!;
+
+      let savings = 0;
+      let taxable = 0;
+      let taxDeferred = 0;
+      let taxFree = 0;
+
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case 'savings':
+            savings += account.withdrawalsForPeriod;
+            break;
+          case 'taxableBrokerage':
+            taxable += account.withdrawalsForPeriod;
+            break;
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferred += account.withdrawalsForPeriod;
+            break;
+          case 'roth401k':
+          case 'rothIra':
+            taxFree += account.withdrawalsForPeriod;
+            break;
+        }
+      }
+
+      return {
+        age: currDateYear - startDateYear + startAge,
+        totalWithdrawals: portfolioData.totalWithdrawals,
+        withdrawalsForPeriod: portfolioData.withdrawalsForPeriod,
+        totalRealizedGains: portfolioData.totalRealizedGains,
+        realizedGainsForPeriod: portfolioData.realizedGainsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxable,
         taxDeferred,
