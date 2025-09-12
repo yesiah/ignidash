@@ -23,6 +23,7 @@ import SingleSimulationCashFlowBarChartCard from '../cards/single-simulation/sin
 import SingleSimulationReturnsLineChartCard from '../cards/single-simulation/single-simulation-returns-line-chart-card';
 import SingleSimulationReturnsBarChartCard from '../cards/single-simulation/single-simulation-returns-bar-chart-card';
 import SingleSimulationTaxesLineChartCard from '../cards/single-simulation/single-simulation-taxes-line-chart-card';
+import SingleSimulationTaxesBarChartCard from '../cards/single-simulation/single-simulation-taxes-bar-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -111,14 +112,17 @@ function TaxesCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: Ch
   const [dataView, setDataView] = useState<'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome'>('effectiveRates');
 
   return (
-    <SingleSimulationTaxesLineChartCard
-      rawChartData={rawChartData}
-      setSelectedAge={setSelectedAge}
-      selectedAge={selectedAge}
-      dataView={dataView}
-      setDataView={setDataView}
-      startAge={startAge}
-    />
+    <>
+      <SingleSimulationTaxesLineChartCard
+        rawChartData={rawChartData}
+        setSelectedAge={setSelectedAge}
+        selectedAge={selectedAge}
+        dataView={dataView}
+        setDataView={setDataView}
+        startAge={startAge}
+      />
+      <SingleSimulationTaxesBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+    </>
   );
 }
 
