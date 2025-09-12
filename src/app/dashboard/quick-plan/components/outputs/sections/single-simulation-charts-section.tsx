@@ -26,6 +26,7 @@ import SingleSimulationReturnsBarChartCard from '../cards/single-simulation/sing
 import SingleSimulationTaxesLineChartCard from '../cards/single-simulation/single-simulation-taxes-line-chart-card';
 import SingleSimulationTaxesBarChartCard from '../cards/single-simulation/single-simulation-taxes-bar-chart-card';
 import SingleSimulationContributionsLineChartCard from '../cards/single-simulation/single-simulation-contributions-line-chart-card';
+import SingleSimulationContributionsBarChartCard from '../cards/single-simulation/single-simulation-contributions-bar-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -158,14 +159,17 @@ function ContributionsCharts({ simulation, keyMetrics, setSelectedAge, selectedA
   const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
 
   return (
-    <SingleSimulationContributionsLineChartCard
-      rawChartData={rawChartData}
-      setSelectedAge={setSelectedAge}
-      selectedAge={selectedAge}
-      dataView={dataView}
-      setDataView={setDataView}
-      startAge={startAge}
-    />
+    <>
+      <SingleSimulationContributionsLineChartCard
+        rawChartData={rawChartData}
+        setSelectedAge={setSelectedAge}
+        selectedAge={selectedAge}
+        dataView={dataView}
+        setDataView={setDataView}
+        startAge={startAge}
+      />
+      <SingleSimulationContributionsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+    </>
   );
 }
 
