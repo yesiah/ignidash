@@ -44,3 +44,19 @@ export interface SingleSimulationReturnsChartDataPoint {
   bondsAmount: number;
   cashAmount: number;
 }
+
+export interface SingleSimulationTaxesChartDataPoint {
+  age: number;
+  incomeTaxAmount: number;
+  effectiveIncomeTaxRate: number;
+  topMarginalIncomeTaxRate: number;
+  netIncome: number;
+  capitalLossDeduction: number | undefined;
+  capitalGainsTaxAmount: number;
+  effectiveCapitalGainsTaxRate: number;
+  topMarginalCapitalGainsTaxRate: number;
+  netCapitalGains: number;
+  totalTaxesDue: number;
+  totalTaxesRefund: number;
+  totalTaxableIncome: number;
+}

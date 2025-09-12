@@ -1010,55 +1010,6 @@ export const useSingleSimulationPortfolioAccountTypeAreaChartData = (simulation:
 };
 
 export const useSingleSimulationCashFlowChartData = (simulation: SimulationResultV2) => {
-  // export interface IncomesData {
-  //   totalGrossIncome: number;
-  //   totalAmountWithheld: number;
-  //   totalIncomeAfterWithholding: number;
-  //   perIncomeData: Record<string, IncomeData>;
-  // }
-
-  // export interface IncomeData {
-  //   id: string;
-  //   name: string;
-  //   grossIncome: number;
-  //   amountWithheld: number;
-  //   incomeAfterWithholding: number;
-  // }
-
-  // export interface ExpensesData {
-  //   totalExpenses: number;
-  //   perExpenseData: Record<string, ExpenseData>;
-  // }
-
-  // export interface ExpenseData {
-  //   id: string;
-  //   name: string;
-  //   amount: number;
-  // }
-
-  // export interface CapitalGainsTaxesData {
-  //   capitalGainsTaxAmount: number;
-  //   effectiveCapitalGainsTaxRate: number;
-  //   topMarginalCapitalGainsTaxRate: number;
-  //   netCapitalGains: number;
-  // }
-
-  // export interface IncomeTaxesData {
-  //   incomeTaxAmount: number;
-  //   effectiveIncomeTaxRate: number;
-  //   topMarginalTaxRate: number;
-  //   netIncome: number;
-  //   capitalLossDeduction?: number;
-  // }
-
-  // export interface TaxesData {
-  //   incomeTaxes: IncomeTaxesData;
-  //   capitalGainsTaxes: CapitalGainsTaxesData;
-  //   totalTaxesDue: number;
-  //   totalTaxesRefund: number;
-  //   totalTaxableIncome: number;
-  // }
-
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -1107,6 +1058,34 @@ export const useSingleSimulationReturnsChartData = (simulation: SimulationResult
         stocksAmount: returnsData.returnAmountsForPeriod.stocks,
         bondsAmount: returnsData.returnAmountsForPeriod.bonds,
         cashAmount: returnsData.returnAmountsForPeriod.cash,
+      };
+    });
+  }, [simulation]);
+};
+
+export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2) => {
+  return useMemo(() => {
+    return simulation.data.slice(1).map((data) => {
+      const startAge = simulation.context.startAge;
+      const startDateYear = new Date().getFullYear();
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const taxesData = data.taxes!;
+
+      return {
+        age: currDateYear - startDateYear + startAge,
+        incomeTaxAmount: taxesData.incomeTaxes.incomeTaxAmount,
+        effectiveIncomeTaxRate: taxesData.incomeTaxes.effectiveIncomeTaxRate,
+        topMarginalIncomeTaxRate: taxesData.incomeTaxes.topMarginalTaxRate,
+        netIncome: taxesData.incomeTaxes.netIncome,
+        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction,
+        capitalGainsTaxAmount: taxesData.capitalGainsTaxes.capitalGainsTaxAmount,
+        effectiveCapitalGainsTaxRate: taxesData.capitalGainsTaxes.effectiveCapitalGainsTaxRate,
+        topMarginalCapitalGainsTaxRate: taxesData.capitalGainsTaxes.topMarginalCapitalGainsTaxRate,
+        netCapitalGains: taxesData.capitalGainsTaxes.netCapitalGains,
+        totalTaxesDue: taxesData.totalTaxesDue,
+        totalTaxesRefund: taxesData.totalTaxesRefund,
+        totalTaxableIncome: taxesData.totalTaxableIncome,
       };
     });
   }, [simulation]);

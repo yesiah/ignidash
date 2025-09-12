@@ -9,6 +9,7 @@ import {
   useSingleSimulationPortfolioAccountTypeAreaChartData,
   useSingleSimulationCashFlowChartData,
   useSingleSimulationReturnsChartData,
+  useSingleSimulationTaxesChartData,
 } from '@/lib/stores/quick-plan-store';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
@@ -21,6 +22,7 @@ import SingleSimulationCashFlowLineChartCard from '../cards/single-simulation/si
 import SingleSimulationCashFlowBarChartCard from '../cards/single-simulation/single-simulation-cash-flow-bar-chart-card';
 import SingleSimulationReturnsLineChartCard from '../cards/single-simulation/single-simulation-returns-line-chart-card';
 import SingleSimulationReturnsBarChartCard from '../cards/single-simulation/single-simulation-returns-bar-chart-card';
+import SingleSimulationTaxesLineChartCard from '../cards/single-simulation/single-simulation-taxes-line-chart-card';
 
 interface ChartsCategoryProps {
   simulation: SimulationResult;
@@ -101,6 +103,25 @@ function CashFlowCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }:
   );
 }
 
+function TaxesCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: ChartsCategoryProps) {
+  const startAge = simulation.context.startAge;
+
+  const rawChartData = useSingleSimulationTaxesChartData(simulation);
+
+  const [dataView, setDataView] = useState<'marginalRates' | 'effectiveRates' | 'amounts'>('effectiveRates');
+
+  return (
+    <SingleSimulationTaxesLineChartCard
+      rawChartData={rawChartData}
+      setSelectedAge={setSelectedAge}
+      selectedAge={selectedAge}
+      dataView={dataView}
+      setDataView={setDataView}
+      startAge={startAge}
+    />
+  );
+}
+
 function ReturnsCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }: ChartsCategoryProps) {
   const startAge = simulation.context.startAge;
 
@@ -148,6 +169,11 @@ function SingleSimulationChartsSection({
     case SingleSimulationCategory.CashFlow:
       chartsComponents = (
         <CashFlowCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
+      );
+      break;
+    case SingleSimulationCategory.Taxes:
+      chartsComponents = (
+        <TaxesCharts simulation={simulation} keyMetrics={keyMetrics} setSelectedAge={setSelectedAge} selectedAge={selectedAge} />
       );
       break;
     case SingleSimulationCategory.Returns:
