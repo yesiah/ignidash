@@ -64,6 +64,14 @@ import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import { Portfolio } from '@/lib/calc/portfolio';
 import { SimulationPhase, AccumulationPhase, RetirementPhase, type PhaseType } from '@/lib/calc/simulation-phase';
+import type {
+  SingleSimulationPortfolioChartDataPoint,
+  SingleSimulationCashFlowChartDataPoint,
+  SingleSimulationTaxesChartDataPoint,
+  SingleSimulationReturnsChartDataPoint,
+  SingleSimulationContributionsChartDataPoint,
+  SingleSimulationWithdrawalsChartDataPoint,
+} from '@/lib/types/chart-data-points';
 
 // ================================
 // TYPES & HELPERS
@@ -945,7 +953,7 @@ export const useStochasticAnalysis = (analysis: AggregateSimulationStats) => {
  * Single Simulation Chart Hooks
  * These hooks provide access to single simulation chart data
  */
-export const useSingleSimulationPortfolioChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationPortfolioChartData = (simulation: SimulationResultV2): SingleSimulationPortfolioChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.map((data) => {
       const startAge = simulation.context.startAge;
@@ -999,7 +1007,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
   }, [simulation]);
 };
 
-export const useSingleSimulationCashFlowChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationCashFlowChartData = (simulation: SimulationResultV2): SingleSimulationCashFlowChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -1027,7 +1035,7 @@ export const useSingleSimulationCashFlowChartData = (simulation: SimulationResul
   }, [simulation]);
 };
 
-export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2): SingleSimulationTaxesChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -1057,7 +1065,7 @@ export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2
   }, [simulation]);
 };
 
-export const useSingleSimulationReturnsChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationReturnsChartData = (simulation: SimulationResultV2): SingleSimulationReturnsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -1083,7 +1091,9 @@ export const useSingleSimulationReturnsChartData = (simulation: SimulationResult
   }, [simulation]);
 };
 
-export const useSingleSimulationContributionsChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationContributionsChartData = (
+  simulation: SimulationResultV2
+): SingleSimulationContributionsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -1131,7 +1141,7 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
   }, [simulation]);
 };
 
-export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResultV2) => {
+export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResultV2): SingleSimulationWithdrawalsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
