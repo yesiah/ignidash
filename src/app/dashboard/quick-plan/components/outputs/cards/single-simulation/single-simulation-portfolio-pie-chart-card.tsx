@@ -34,7 +34,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
           <span className="text-muted-foreground">Age {selectedAge}</span>
         </h4>
       </div>
-      <SingleSimulationPortfolioPieChart rawChartData={rawChartData} selectedAge={selectedAge} />
+      <SingleSimulationPortfolioPieChart rawChartData={rawChartData} selectedAge={selectedAge} dataView={dataView} />
     </Card>
   );
 }

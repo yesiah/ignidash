@@ -6,6 +6,7 @@ import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'r
 import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatNumber, formatChartString } from '@/lib/utils';
+import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
 
 interface SingleSimulationPortfolioAccountTypePieChartDataPoint {
   age: number;
@@ -106,12 +107,27 @@ const renderActiveShape = ({
 interface SingleSimulationPortfolioPieChartProps {
   rawChartData: SingleSimulationPortfolioPieChartDataPoint[];
   selectedAge: number;
+  dataView: 'asset' | 'account';
 }
 
-export default function SingleSimulationPortfolioPieChart({ rawChartData, selectedAge }: SingleSimulationPortfolioPieChartProps) {
+export default function SingleSimulationPortfolioPieChart({ rawChartData, selectedAge, dataView }: SingleSimulationPortfolioPieChartProps) {
   const chartData = rawChartData
     .filter((data) => data.age === selectedAge)
-    .flatMap(({ age, ...rest }) => Object.entries(rest).map(([name, value]) => ({ name, value })));
+    .flatMap(({ age, ...rest }) => {
+      const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint)[] = [];
+      switch (dataView) {
+        case 'asset':
+          dataKeys.push('stocks', 'bonds', 'cash');
+          break;
+        case 'account':
+          dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'savings');
+          break;
+      }
+
+      return Object.entries(rest)
+        .filter(([name]) => dataKeys.includes(name as keyof SingleSimulationPortfolioChartDataPoint))
+        .map(([name, value]) => ({ name, value }));
+    });
 
   const totalValue = chartData.reduce((acc, curr) => acc + curr.value, 0);
 
