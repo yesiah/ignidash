@@ -68,14 +68,16 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
             <span className="text-muted-foreground">{formatNumber(totalValue, 2, '$')}</span>
           </h4>
         </div>
-        <DescriptionList>
-          {chartData.toReversed().map((entry) => (
-            <Fragment key={entry.name}>
-              <DescriptionTerm>{formatChartString(entry.name)}</DescriptionTerm>
-              <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
-            </Fragment>
-          ))}
-        </DescriptionList>
+        <div className="flex h-64 w-full flex-col justify-center sm:h-72 lg:h-80">
+          <DescriptionList>
+            {chartData.toReversed().map((entry) => (
+              <Fragment key={entry.name}>
+                <DescriptionTerm>{formatChartString(entry.name)}</DescriptionTerm>
+                <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
+              </Fragment>
+            ))}
+          </DescriptionList>
+        </div>
       </Card>
     </div>
   );
