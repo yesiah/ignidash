@@ -68,7 +68,7 @@ interface SingleSimulationPortfolioAssetTypeAreaChartProps {
   startAge: number;
   keyMetrics: FixedReturnsKeyMetricsV2;
   showReferenceLines: boolean;
-  dataView: 'asset' | 'account';
+  dataView: 'assetClass' | 'taxTreatment';
   onAgeSelect: (age: number) => void;
   selectedAge: number;
 }
@@ -100,11 +100,11 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
 
   const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint)[] = [];
   switch (dataView) {
-    case 'asset':
+    case 'assetClass':
       dataKeys.push('stocks', 'bonds', 'cash');
       break;
-    case 'account':
-      dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'savings');
+    case 'taxTreatment':
+      dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
       break;
   }
 

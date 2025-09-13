@@ -30,7 +30,7 @@ export interface SingleSimulationPortfolioChartDataPoint {
   taxable: number;
   taxDeferred: number;
   taxFree: number;
-  savings: number;
+  cashSavings: number;
 }
 
 export interface SingleSimulationCashFlowChartDataPoint {
@@ -83,7 +83,7 @@ export interface SingleSimulationContributionsChartDataPoint {
   taxable: number;
   taxDeferred: number;
   taxFree: number;
-  savings: number;
+  cashSavings: number;
 }
 
 export interface SingleSimulationWithdrawalsChartDataPoint {
@@ -96,5 +96,5 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   taxable: number;
   taxDeferred: number;
   taxFree: number;
-  savings: number;
+  cashSavings: number;
 }

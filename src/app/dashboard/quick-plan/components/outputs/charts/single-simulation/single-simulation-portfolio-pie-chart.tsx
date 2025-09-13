@@ -84,7 +84,7 @@ const renderActiveShape = ({
 interface SingleSimulationPortfolioPieChartProps {
   chartData: { name: string; value: number }[];
   selectedAge: number;
-  dataView: 'asset' | 'account';
+  dataView: 'assetClass' | 'taxTreatment';
 }
 
 export default function SingleSimulationPortfolioPieChart({ chartData, selectedAge, dataView }: SingleSimulationPortfolioPieChartProps) {

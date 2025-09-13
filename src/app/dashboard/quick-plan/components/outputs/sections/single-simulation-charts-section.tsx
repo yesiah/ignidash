@@ -40,7 +40,7 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
 
   const rawChartData = useSingleSimulationPortfolioChartData(simulation);
 
-  const [dataView, setDataView] = useState<'asset' | 'account'>('asset');
+  const [dataView, setDataView] = useState<'assetClass' | 'taxTreatment'>('assetClass');
 
   return (
     <>

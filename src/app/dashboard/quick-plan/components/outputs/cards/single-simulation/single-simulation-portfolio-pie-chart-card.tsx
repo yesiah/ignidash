@@ -12,7 +12,7 @@ import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/si
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   selectedAge: number;
-  dataView: 'asset' | 'account';
+  dataView: 'assetClass' | 'taxTreatment';
 }
 
 export default function SingleSimulationPortfolioAssetTypePieChartCard({
@@ -22,11 +22,11 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
 }: SingleSimulationPortfolioAssetTypePieChartCardProps) {
   let title = '';
   switch (dataView) {
-    case 'asset':
+    case 'assetClass':
       title = 'By Asset Class';
       break;
-    case 'account':
-      title = 'By Account Category';
+    case 'taxTreatment':
+      title = 'By Tax Treatment';
       break;
   }
 
@@ -35,11 +35,11 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
     .flatMap(({ age, ...rest }) => {
       const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint)[] = [];
       switch (dataView) {
-        case 'asset':
+        case 'assetClass':
           dataKeys.push('stocks', 'bonds', 'cash');
           break;
-        case 'account':
-          dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'savings');
+        case 'taxTreatment':
+          dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
           break;
       }
 

@@ -968,7 +968,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
       const bondsAllocation = assetAllocation.bonds;
       const cashAllocation = assetAllocation.cash;
 
-      let savings = 0;
+      let cashSavings = 0;
       let taxable = 0;
       let taxDeferred = 0;
       let taxFree = 0;
@@ -976,7 +976,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
       for (const account of Object.values(portfolio.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            savings += account.totalValue;
+            cashSavings += account.totalValue;
             break;
           case 'taxableBrokerage':
             taxable += account.totalValue;
@@ -1001,7 +1001,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
         taxable,
         taxDeferred,
         taxFree,
-        savings,
+        cashSavings,
       };
     });
   }, [simulation]);
@@ -1102,7 +1102,7 @@ export const useSingleSimulationContributionsChartData = (
 
       const portfolioData = data.portfolio!;
 
-      let savings = 0;
+      let cashSavings = 0;
       let taxable = 0;
       let taxDeferred = 0;
       let taxFree = 0;
@@ -1110,7 +1110,7 @@ export const useSingleSimulationContributionsChartData = (
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            savings += account.contributionsForPeriod;
+            cashSavings += account.contributionsForPeriod;
             break;
           case 'taxableBrokerage':
             taxable += account.contributionsForPeriod;
@@ -1135,7 +1135,7 @@ export const useSingleSimulationContributionsChartData = (
         taxable,
         taxDeferred,
         taxFree,
-        savings,
+        cashSavings,
       };
     });
   }, [simulation]);
@@ -1150,7 +1150,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
 
       const portfolioData = data.portfolio!;
 
-      let savings = 0;
+      let cashSavings = 0;
       let taxable = 0;
       let taxDeferred = 0;
       let taxFree = 0;
@@ -1158,7 +1158,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            savings += account.withdrawalsForPeriod;
+            cashSavings += account.withdrawalsForPeriod;
             break;
           case 'taxableBrokerage':
             taxable += account.withdrawalsForPeriod;
@@ -1185,7 +1185,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
         taxable,
         taxDeferred,
         taxFree,
-        savings,
+        cashSavings,
       };
     });
   }, [simulation]);

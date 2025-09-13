@@ -81,7 +81,7 @@ export default function SingleSimulationWithdrawalsBarChart({ age, dataView, raw
         },
         { name: 'Tax Deferred Withdrawals', amount: item.taxDeferred },
         { name: 'Tax Free Withdrawals', amount: item.taxFree },
-        { name: 'Savings Withdrawals', amount: item.savings },
+        { name: 'Cash Savings Withdrawals', amount: item.cashSavings },
       ]);
       break;
   }

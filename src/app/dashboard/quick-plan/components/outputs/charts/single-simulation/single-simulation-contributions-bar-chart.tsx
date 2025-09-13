@@ -81,7 +81,7 @@ export default function SingleSimulationContributionsBarChart({ age, dataView, r
         },
         { name: 'Tax Deferred Contributions', amount: item.taxDeferred },
         { name: 'Tax Free Contributions', amount: item.taxFree },
-        { name: 'Savings Contributions', amount: item.savings },
+        { name: 'Cash Savings Contributions', amount: item.cashSavings },
       ]);
       break;
   }
