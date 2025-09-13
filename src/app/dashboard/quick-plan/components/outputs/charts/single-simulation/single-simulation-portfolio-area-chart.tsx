@@ -179,7 +179,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
         aria-label="Chart legend"
       >
         {dataKeys.map((dataKey, index) => (
-          <div key={dataKey} className="flex items-center gap-x-1 text-sm font-medium">
+          <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
             <svg viewBox="0 0 6 6" aria-hidden="true" className={`size-5 fill-[${COLORS[index % COLORS.length]}]`}>
               <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
             </svg>
