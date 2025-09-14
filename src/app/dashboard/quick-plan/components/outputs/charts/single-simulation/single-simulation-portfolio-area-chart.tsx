@@ -6,6 +6,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 import type { FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
+import type { AccountDataWithTransactions } from '@/lib/calc/v2/portfolio';
 import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -69,6 +70,7 @@ interface SingleSimulationPortfolioAssetTypeAreaChartProps {
   keyMetrics: FixedReturnsKeyMetricsV2;
   showReferenceLines: boolean;
   dataView: 'assetClass' | 'taxTreatment' | 'custom';
+  customDataName: string;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
 }
@@ -79,6 +81,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
   keyMetrics,
   showReferenceLines,
   dataView,
+  customDataName,
   onAgeSelect,
   selectedAge,
 }: SingleSimulationPortfolioAssetTypeAreaChartProps) {
@@ -87,18 +90,19 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
-  const chartData = rawChartData;
-
   const chartRef = useClickDetection<HTMLDivElement>(
     () => setClickedOutsideChart(true),
     () => setClickedOutsideChart(false)
   );
 
+  let chartData:
+    | SingleSimulationPortfolioChartDataPoint[]
+    | Array<{ age: number; stocks: number; bonds: number; cash: number } & AccountDataWithTransactions> = rawChartData;
   if (chartData.length === 0) {
     return null;
   }
 
-  const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint)[] = [];
+  const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint | keyof AccountDataWithTransactions)[] = [];
   switch (dataView) {
     case 'assetClass':
       dataKeys.push('stocks', 'bonds', 'cash');
@@ -107,6 +111,34 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
       dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
       break;
     case 'custom':
+      if (!customDataName) {
+        console.warn('Custom data name is required for custom data view');
+        break;
+      }
+
+      const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
+        Object.values(perAccountData)
+          .map((account) => {
+            const totalValue = account.totalValue;
+
+            const assetAllocation = account.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
+            const stocksAllocation = assetAllocation.stocks;
+            const bondsAllocation = assetAllocation.bonds;
+            const cashAllocation = assetAllocation.cash;
+
+            return {
+              age,
+              ...account,
+              stocks: totalValue * stocksAllocation,
+              bonds: totalValue * bondsAllocation,
+              cash: totalValue * cashAllocation,
+            };
+          })
+          .filter((account) => account.id === customDataName)
+      );
+
+      chartData = perAccountData;
+      dataKeys.push('stocks', 'bonds', 'cash');
       break;
   }
 

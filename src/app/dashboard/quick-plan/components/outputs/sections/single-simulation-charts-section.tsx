@@ -56,7 +56,12 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
         rawChartData={rawChartData}
         startAge={startAge}
       />
-      <SingleSimulationPortfolioPieChartCard rawChartData={rawChartData} selectedAge={selectedAge} dataView={dataView} />
+      <SingleSimulationPortfolioPieChartCard
+        rawChartData={rawChartData}
+        selectedAge={selectedAge}
+        dataView={dataView}
+        customDataName={customDataName}
+      />
     </>
   );
 }

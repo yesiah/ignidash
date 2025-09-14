@@ -16,42 +16,63 @@ interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   selectedAge: number;
   dataView: 'assetClass' | 'taxTreatment' | 'custom';
+  customDataName: string;
 }
 
 export default function SingleSimulationPortfolioAssetTypePieChartCard({
   rawChartData,
   selectedAge,
   dataView,
+  customDataName,
 }: SingleSimulationPortfolioAssetTypePieChartCardProps) {
   let title = '';
+
+  let chartData: { name: string; value: number }[] = [];
   switch (dataView) {
     case 'assetClass':
       title = 'By Asset Class';
+      chartData = rawChartData
+        .filter((data) => data.age === selectedAge)
+        .flatMap(({ age, perAccountData, ...rest }) =>
+          Object.entries(rest)
+            .filter(([name]) => ['stocks', 'bonds', 'cash'].includes(name))
+            .map(([name, value]) => ({ name, value }))
+        );
       break;
     case 'taxTreatment':
       title = 'By Tax Treatment';
+      chartData = rawChartData
+        .filter((data) => data.age === selectedAge)
+        .flatMap(({ age, perAccountData, ...rest }) =>
+          Object.entries(rest)
+            .filter(([name]) => ['taxable', 'taxDeferred', 'taxFree', 'cashSavings'].includes(name))
+            .map(([name, value]) => ({ name, value }))
+        );
+      break;
+    case 'custom':
+      title = 'Custom Account';
+      chartData = rawChartData
+        .filter((data) => data.age === selectedAge)
+        .flatMap(({ age, perAccountData }) =>
+          perAccountData
+            .filter((account) => account.id === customDataName)
+            .flatMap((account) => {
+              const totalValue = account.totalValue;
+
+              const assetAllocation = account.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
+              const stocksAllocation = assetAllocation.stocks;
+              const bondsAllocation = assetAllocation.bonds;
+              const cashAllocation = assetAllocation.cash;
+
+              return [
+                { name: 'stocks', value: totalValue * stocksAllocation },
+                { name: 'bonds', value: totalValue * bondsAllocation },
+                { name: 'cash', value: totalValue * cashAllocation },
+              ];
+            })
+        );
       break;
   }
-
-  const chartData = rawChartData
-    .filter((data) => data.age === selectedAge)
-    .flatMap(({ age, ...rest }) => {
-      const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint)[] = [];
-      switch (dataView) {
-        case 'assetClass':
-          dataKeys.push('stocks', 'bonds', 'cash');
-          break;
-        case 'taxTreatment':
-          dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
-          break;
-        case 'custom':
-          break;
-      }
-
-      return Object.entries(rest)
-        .filter(([name]) => dataKeys.includes(name as keyof SingleSimulationPortfolioChartDataPoint))
-        .map(([name, value]) => ({ name, value }));
-    });
 
   const totalValue = chartData.reduce((acc, curr) => acc + curr.value, 0);
 

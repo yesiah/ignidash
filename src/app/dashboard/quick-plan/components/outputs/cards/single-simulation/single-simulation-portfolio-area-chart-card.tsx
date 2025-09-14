@@ -80,6 +80,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
         keyMetrics={keyMetrics}
         showReferenceLines={showReferenceLines}
         dataView={dataView}
+        customDataName={customDataName}
         onAgeSelect={(age) => {
           if (age >= startAge + 1) setSelectedAge(age);
         }}
