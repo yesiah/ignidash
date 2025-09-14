@@ -21,7 +21,7 @@ export class PortfolioProcessor {
     this.extraSavingsAccount = new SavingsAccount({
       type: 'savings' as const,
       id: uuidv4(),
-      name: '[SYSTEM] Extra Savings',
+      name: '[System] Extra Savings',
       currentValue: 0,
     });
   }

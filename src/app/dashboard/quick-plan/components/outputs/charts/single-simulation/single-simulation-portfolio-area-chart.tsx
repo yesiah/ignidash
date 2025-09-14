@@ -41,7 +41,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
         {payload.map((entry) => (
           <p
             key={entry.dataKey}
-            className={`border-foreground/50 flex justify-between rounded-lg border bg-[${entry.color}]/60 px-2 text-sm`}
+            style={{ backgroundColor: `hsl(from ${entry.color} h s l / 0.6)` }}
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
             <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
@@ -214,7 +215,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
       >
         {dataKeys.map((dataKey, index) => (
           <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
-            <svg viewBox="0 0 6 6" aria-hidden="true" className={`size-5 fill-[${COLORS[index % COLORS.length]}]`}>
+            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: COLORS[index % COLORS.length] }} className="size-5">
               <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
             </svg>
             {formatChartString(dataKey)}
