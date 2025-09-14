@@ -118,6 +118,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
 
       const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
         Object.values(perAccountData)
+          .filter((account) => account.id === customDataName)
           .map((account) => {
             const totalValue = account.totalValue;
 
@@ -134,7 +135,6 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
               cash: totalValue * cashAllocation,
             };
           })
-          .filter((account) => account.id === customDataName)
       );
 
       chartData = perAccountData;
