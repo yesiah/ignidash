@@ -141,8 +141,8 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f3f4f6' : '#111827'; // gray-100 : gray-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
