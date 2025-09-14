@@ -140,12 +140,16 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
       break;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
   const foregroundColor = resolvedTheme === 'dark' ? '#f3f4f6' : '#111827'; // gray-100 : gray-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
-  const interval = 5;
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
+    if (dataLength <= desiredTicks) return 0;
+    return Math.ceil(dataLength / desiredTicks);
+  }, []);
+  const interval = calculateInterval(chartData.length);
 
   const onClick = useCallback(
     (data: { activeLabel: string | undefined }) => {
