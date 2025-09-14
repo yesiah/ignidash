@@ -65,8 +65,8 @@ export default function SingleSimulationCashFlowBarChart({
   switch (dataView) {
     case 'net':
       transformedChartData = chartData.flatMap(({ perIncomeData, perExpenseData }) => [
-        { name: 'Gross Income', amount: perIncomeData.reduce((sum, { grossIncome }) => sum + grossIncome, 0), type: 'income' },
-        { name: 'Expenses', amount: -perExpenseData.reduce((sum, { amount }) => sum + amount, 0), type: 'expense' },
+        { name: 'Total Gross Income', amount: perIncomeData.reduce((sum, { grossIncome }) => sum + grossIncome, 0), type: 'income' },
+        { name: 'Total Expenses', amount: -perExpenseData.reduce((sum, { amount }) => sum + amount, 0), type: 'expense' },
       ]);
       break;
     case 'incomes':

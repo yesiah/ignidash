@@ -100,14 +100,17 @@ export default function SingleSimulationCashFlowLineChart({
       break;
     case 'incomes':
       yAxisDomain = [
-        Math.min(0, ...chartData.map((d) => d.grossIncome * 1.25)),
-        Math.max(0, ...chartData.map((d) => d.grossIncome * 1.25)),
+        Math.min(0, ...chartData.map((d) => d.totalGrossIncome * 1.25)),
+        Math.max(0, ...chartData.map((d) => d.totalGrossIncome * 1.25)),
       ];
-      dataKeys.push('grossIncome');
+      dataKeys.push('totalGrossIncome');
       break;
     case 'expenses':
-      yAxisDomain = [Math.min(0, ...chartData.map((d) => d.expenses * 1.25)), Math.max(0, ...chartData.map((d) => d.expenses * 1.25))];
-      dataKeys.push('expenses');
+      yAxisDomain = [
+        Math.min(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
+        Math.max(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
+      ];
+      dataKeys.push('totalExpenses');
       break;
     case 'custom':
       if (!customDataID) {

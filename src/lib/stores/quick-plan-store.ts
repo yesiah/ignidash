@@ -1020,17 +1020,17 @@ export const useSingleSimulationCashFlowChartData = (simulation: SimulationResul
       const taxesData = data.taxes!;
 
       const netIncome = taxesData.incomeTaxes.netIncome;
-      const grossIncome = incomesData.totalGrossIncome;
-      const expenses = expensesData.totalExpenses;
+      const totalGrossIncome = incomesData.totalGrossIncome;
+      const totalExpenses = expensesData.totalExpenses;
 
       return {
         age: currDateYear - startDateYear + startAge,
         perIncomeData: Object.values(incomesData.perIncomeData),
         perExpenseData: Object.values(expensesData.perExpenseData),
         netIncome,
-        grossIncome,
-        expenses,
-        netCashFlow: netIncome - expenses,
+        totalGrossIncome,
+        totalExpenses,
+        netCashFlow: netIncome - totalExpenses,
       };
     });
   }, [simulation]);

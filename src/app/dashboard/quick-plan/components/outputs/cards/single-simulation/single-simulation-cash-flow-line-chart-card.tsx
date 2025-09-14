@@ -72,7 +72,7 @@ export default function SingleSimulationCashFlowLineChartCard({
         >
           <optgroup label="By Aggregate">
             <option value="net">Net Cash Flow</option>
-            <option value="incomes">Total Income</option>
+            <option value="incomes">Total Gross Income</option>
             <option value="expenses">Total Expenses</option>
           </optgroup>
           <optgroup label="By Income">
