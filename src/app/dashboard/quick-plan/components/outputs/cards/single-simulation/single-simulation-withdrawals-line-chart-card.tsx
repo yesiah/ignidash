@@ -12,6 +12,7 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
   setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'account') => void;
   dataView: 'annualAmounts' | 'totalAmounts' | 'account';
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
+  startAge: number;
 }
 
 export default function SingleSimulationWithdrawalsLineChartCard({
@@ -20,6 +21,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  startAge,
 }: SingleSimulationWithdrawalsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -45,6 +47,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
+        startAge={startAge}
       />
     </Card>
   );

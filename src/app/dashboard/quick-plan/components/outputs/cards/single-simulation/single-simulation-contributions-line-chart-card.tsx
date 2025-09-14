@@ -12,6 +12,7 @@ interface SingleSimulationContributionsLineChartCardProps {
   setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'account') => void;
   dataView: 'annualAmounts' | 'totalAmounts' | 'account';
   rawChartData: SingleSimulationContributionsChartDataPoint[];
+  startAge: number;
 }
 
 export default function SingleSimulationContributionsLineChartCard({
@@ -20,6 +21,7 @@ export default function SingleSimulationContributionsLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  startAge,
 }: SingleSimulationContributionsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -45,6 +47,7 @@ export default function SingleSimulationContributionsLineChartCard({
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
+        startAge={startAge}
       />
     </Card>
   );

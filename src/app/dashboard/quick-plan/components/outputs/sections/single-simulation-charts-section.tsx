@@ -29,15 +29,14 @@ import SingleSimulationWithdrawalsLineChartCard from '../cards/single-simulation
 import SingleSimulationWithdrawalsBarChartCard from '../cards/single-simulation/single-simulation-withdrawals-bar-chart-card';
 
 interface ChartsCategoryProps {
+  startAge: number;
   simulation: SimulationResult;
   keyMetrics: FixedReturnsKeyMetricsV2;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
 }
 
-function PortfolioCharts({ simulation, keyMetrics, onAgeSelect, selectedAge }: ChartsCategoryProps) {
-  const startAge = simulation.context.startAge;
-
+function PortfolioCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationPortfolioChartData(simulation);
 
   const [dataView, setDataView] = useState<'assetClass' | 'taxTreatment' | 'custom'>('assetClass');
@@ -66,7 +65,7 @@ function PortfolioCharts({ simulation, keyMetrics, onAgeSelect, selectedAge }: C
   );
 }
 
-function CashFlowCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryProps) {
+function CashFlowCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationCashFlowChartData(simulation);
 
   const [dataView, setDataView] = useState<'net' | 'incomes' | 'expenses' | 'custom'>('net');
@@ -82,6 +81,7 @@ function CashFlowCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategory
         setCustomDataID={setCustomDataID}
         customDataID={customDataID}
         rawChartData={rawChartData}
+        startAge={startAge}
       />
       <SingleSimulationCashFlowBarChartCard
         rawChartData={rawChartData}
@@ -93,7 +93,7 @@ function CashFlowCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategory
   );
 }
 
-function TaxesCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryProps) {
+function TaxesCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationTaxesChartData(simulation);
 
   const [dataView, setDataView] = useState<'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome'>('effectiveRates');
@@ -106,13 +106,14 @@ function TaxesCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryPro
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        startAge={startAge}
       />
       <SingleSimulationTaxesBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </>
   );
 }
 
-function ReturnsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryProps) {
+function ReturnsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationReturnsChartData(simulation);
 
   const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'totalAmounts'>('rates');
@@ -125,13 +126,14 @@ function ReturnsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryP
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        startAge={startAge}
       />
       <SingleSimulationReturnsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </>
   );
 }
 
-function ContributionsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryProps) {
+function ContributionsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationContributionsChartData(simulation);
 
   const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
@@ -144,13 +146,14 @@ function ContributionsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCat
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        startAge={startAge}
       />
       <SingleSimulationContributionsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </>
   );
 }
 
-function WithdrawalsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCategoryProps) {
+function WithdrawalsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationWithdrawalsChartData(simulation);
 
   const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
@@ -163,6 +166,7 @@ function WithdrawalsCharts({ simulation, onAgeSelect, selectedAge }: ChartsCateg
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        startAge={startAge}
       />
       <SingleSimulationWithdrawalsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </>
@@ -184,36 +188,74 @@ function SingleSimulationChartsSection({
   selectedAge,
   currentCategory,
 }: SingleSimulationChartsSectionProps) {
+  const startAge = simulation.context.startAge;
+
   let chartsComponents = null;
   switch (currentCategory) {
     case SingleSimulationCategory.Portfolio:
       chartsComponents = (
-        <PortfolioCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <PortfolioCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     case SingleSimulationCategory.CashFlow:
       chartsComponents = (
-        <CashFlowCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <CashFlowCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     case SingleSimulationCategory.Taxes:
       chartsComponents = (
-        <TaxesCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <TaxesCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     case SingleSimulationCategory.Returns:
       chartsComponents = (
-        <ReturnsCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <ReturnsCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     case SingleSimulationCategory.Contributions:
       chartsComponents = (
-        <ContributionsCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <ContributionsCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     case SingleSimulationCategory.Withdrawals:
       chartsComponents = (
-        <WithdrawalsCharts simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+        <WithdrawalsCharts
+          simulation={simulation}
+          keyMetrics={keyMetrics}
+          onAgeSelect={onAgeSelect}
+          selectedAge={selectedAge}
+          startAge={startAge}
+        />
       );
       break;
     default:

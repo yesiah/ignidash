@@ -12,6 +12,7 @@ interface SingleSimulationTaxesLineChartCardProps {
   setDataView: (view: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome') => void;
   dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
+  startAge: number;
 }
 
 export default function SingleSimulationTaxesLineChartCard({
@@ -20,6 +21,7 @@ export default function SingleSimulationTaxesLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  startAge,
 }: SingleSimulationTaxesLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -42,7 +44,13 @@ export default function SingleSimulationTaxesLineChartCard({
           <option value="taxableIncome">Taxable Income</option>
         </Select>
       </div>
-      <SingleSimulationTaxesLineChart onAgeSelect={onAgeSelect} selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+      <SingleSimulationTaxesLineChart
+        onAgeSelect={onAgeSelect}
+        selectedAge={selectedAge}
+        rawChartData={rawChartData}
+        dataView={dataView}
+        startAge={startAge}
+      />
     </Card>
   );
 }

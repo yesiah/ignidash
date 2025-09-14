@@ -12,6 +12,7 @@ interface SingleSimulationReturnsLineChartCardProps {
   setDataView: (view: 'rates' | 'annualAmounts' | 'totalAmounts') => void;
   dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
   rawChartData: SingleSimulationReturnsChartDataPoint[];
+  startAge: number;
 }
 
 export default function SingleSimulationReturnsLineChartCard({
@@ -20,6 +21,7 @@ export default function SingleSimulationReturnsLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  startAge,
 }: SingleSimulationReturnsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -45,6 +47,7 @@ export default function SingleSimulationReturnsLineChartCard({
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
+        startAge={startAge}
       />
     </Card>
   );

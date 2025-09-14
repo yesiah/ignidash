@@ -4,7 +4,6 @@ import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
-import { useCurrentAge } from '@/lib/stores/quick-plan-store';
 import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -20,16 +19,16 @@ interface CustomTooltipProps {
     payload: SingleSimulationReturnsChartDataPoint;
   }>;
   label?: number;
-  currentAge: number;
+  startAge: number;
   disabled: boolean;
   dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
 }
 
-const CustomTooltip = ({ active, payload, label, currentAge, disabled, dataView }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
-  const yearForAge = currentYear + (label! - currentAge);
+  const yearForAge = currentYear + (label! - startAge);
 
   const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts') => {
     switch (mode) {
@@ -71,6 +70,7 @@ interface SingleSimulationReturnsLineChartProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
+  startAge: number;
 }
 
 export default function SingleSimulationReturnsLineChart({
@@ -78,13 +78,12 @@ export default function SingleSimulationReturnsLineChart({
   onAgeSelect,
   selectedAge,
   dataView,
+  startAge,
 }: SingleSimulationReturnsLineChartProps) {
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
 
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
-
-  const currentAge = useCurrentAge();
 
   const chartRef = useClickDetection<HTMLDivElement>(
     () => setClickedOutsideChart(true),
@@ -147,7 +146,7 @@ export default function SingleSimulationReturnsLineChart({
             <Line key={dataKey} type="monotone" dataKey={dataKey} stroke={COLORS[index % COLORS.length]} />
           ))}
           <Tooltip
-            content={<CustomTooltip currentAge={currentAge!} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+            content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
             cursor={{ stroke: foregroundColor }}
           />
           {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}

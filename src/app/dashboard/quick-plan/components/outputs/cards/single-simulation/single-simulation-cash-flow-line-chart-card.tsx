@@ -16,6 +16,7 @@ interface SingleSimulationCashFlowLineChartCardProps {
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
+  startAge: number;
 }
 
 export default function SingleSimulationCashFlowLineChartCard({
@@ -26,6 +27,7 @@ export default function SingleSimulationCashFlowLineChartCard({
   setCustomDataID,
   customDataID,
   rawChartData,
+  startAge,
 }: SingleSimulationCashFlowLineChartCardProps) {
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
     return Array.from(new Map(items.map((item) => [item.id, { id: item.id, name: item.name }])).values());
@@ -90,6 +92,7 @@ export default function SingleSimulationCashFlowLineChartCard({
         rawChartData={rawChartData}
         dataView={dataView}
         customDataID={customDataID}
+        startAge={startAge}
       />
     </Card>
   );
