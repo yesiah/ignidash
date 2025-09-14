@@ -40,17 +40,20 @@ function PortfolioCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }
 
   const rawChartData = useSingleSimulationPortfolioChartData(simulation);
 
-  const [dataView, setDataView] = useState<'assetClass' | 'taxTreatment'>('assetClass');
+  const [dataView, setDataView] = useState<'assetClass' | 'taxTreatment' | 'custom'>('assetClass');
+  const [customDataName, setCustomDataName] = useState<string>('');
 
   return (
     <>
       <SingleSimulationPortfolioAreaChartCard
-        rawChartData={rawChartData}
-        keyMetrics={keyMetrics}
         setSelectedAge={setSelectedAge}
         selectedAge={selectedAge}
+        keyMetrics={keyMetrics}
         setDataView={setDataView}
         dataView={dataView}
+        setCustomDataName={setCustomDataName}
+        customDataName={customDataName}
+        rawChartData={rawChartData}
         startAge={startAge}
       />
       <SingleSimulationPortfolioPieChartCard rawChartData={rawChartData} selectedAge={selectedAge} dataView={dataView} />
@@ -79,8 +82,8 @@ function CashFlowCharts({ simulation, keyMetrics, setSelectedAge, selectedAge }:
         startAge={startAge}
       />
       <SingleSimulationCashFlowBarChartCard
-        selectedAge={selectedAge}
         rawChartData={rawChartData}
+        selectedAge={selectedAge}
         dataView={dataView}
         customDataName={customDataName}
       />

@@ -12,8 +12,10 @@ interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
   keyMetrics: FixedReturnsKeyMetricsV2;
   setSelectedAge: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'assetClass' | 'taxTreatment') => void;
-  dataView: 'assetClass' | 'taxTreatment';
+  setDataView: (view: 'assetClass' | 'taxTreatment' | 'custom') => void;
+  dataView: 'assetClass' | 'taxTreatment' | 'custom';
+  setCustomDataName: (name: string) => void;
+  customDataName: string;
   startAge: number;
 }
 
@@ -24,6 +26,8 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
   selectedAge,
   setDataView,
   dataView,
+  setCustomDataName,
+  customDataName,
   startAge,
 }: SingleSimulationPortfolioAssetTypeAreaChartCardProps) {
   const showReferenceLines = useShowReferenceLinesPreference();
@@ -40,7 +44,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
           id="data-view"
           name="data-view"
           value={dataView}
-          onChange={(e) => setDataView(e.target.value as 'assetClass' | 'taxTreatment')}
+          onChange={(e) => setDataView(e.target.value as 'assetClass' | 'taxTreatment' | 'custom')}
         >
           <option value="assetClass">By Asset Class</option>
           <option value="taxTreatment">By Tax Treatment</option>

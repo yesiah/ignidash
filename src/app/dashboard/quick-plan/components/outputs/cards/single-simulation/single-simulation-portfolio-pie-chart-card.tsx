@@ -15,7 +15,7 @@ const COLORS = ['var(--chart-3)', 'var(--chart-2)', 'var(--chart-1)', 'var(--cha
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   selectedAge: number;
-  dataView: 'assetClass' | 'taxTreatment';
+  dataView: 'assetClass' | 'taxTreatment' | 'custom';
 }
 
 export default function SingleSimulationPortfolioAssetTypePieChartCard({
@@ -43,6 +43,8 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
           break;
         case 'taxTreatment':
           dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
+          break;
+        case 'custom':
           break;
       }
 

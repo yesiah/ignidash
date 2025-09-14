@@ -68,7 +68,7 @@ interface SingleSimulationPortfolioAssetTypeAreaChartProps {
   startAge: number;
   keyMetrics: FixedReturnsKeyMetricsV2;
   showReferenceLines: boolean;
-  dataView: 'assetClass' | 'taxTreatment';
+  dataView: 'assetClass' | 'taxTreatment' | 'custom';
   onAgeSelect: (age: number) => void;
   selectedAge: number;
 }
@@ -105,6 +105,8 @@ export default function SingleSimulationPortfolioAssetTypeAreaChart({
       break;
     case 'taxTreatment':
       dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
+      break;
+    case 'custom':
       break;
   }
 
