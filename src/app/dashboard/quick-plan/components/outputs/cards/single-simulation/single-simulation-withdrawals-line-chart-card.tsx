@@ -7,21 +7,19 @@ import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/char
 import SingleSimulationWithdrawalsLineChart from '../../charts/single-simulation/single-simulation-withdrawals-line-chart';
 
 interface SingleSimulationWithdrawalsLineChartCardProps {
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'account') => void;
   dataView: 'annualAmounts' | 'totalAmounts' | 'account';
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
-  startAge: number;
 }
 
 export default function SingleSimulationWithdrawalsLineChartCard({
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
   rawChartData,
-  startAge,
 }: SingleSimulationWithdrawalsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -43,9 +41,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
         </Select>
       </div>
       <SingleSimulationWithdrawalsLineChart
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}

@@ -7,25 +7,23 @@ import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-d
 import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/single-simulation-cash-flow-line-chart';
 
 interface SingleSimulationCashFlowLineChartCardProps {
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'net' | 'incomes' | 'expenses' | 'custom') => void;
   dataView: 'net' | 'incomes' | 'expenses' | 'custom';
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
-  startAge: number;
 }
 
 export default function SingleSimulationCashFlowLineChartCard({
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
   setCustomDataID,
   customDataID,
   rawChartData,
-  startAge,
 }: SingleSimulationCashFlowLineChartCardProps) {
   const getUniqueItems = (items: Array<{ id: string; name: string }>) => {
     return Array.from(new Map(items.map((item) => [item.id, { id: item.id, name: item.name }])).values());
@@ -79,9 +77,7 @@ export default function SingleSimulationCashFlowLineChartCard({
         </Select>
       </div>
       <SingleSimulationCashFlowLineChart
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}

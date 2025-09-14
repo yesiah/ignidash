@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
@@ -17,6 +17,13 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
   const startAge = simulation.context.startAge;
 
   const [selectedAge, setSelectedAge] = useState<number>(startAge + 1);
+  const onAgeSelect = useCallback(
+    (age: number) => {
+      if (age >= startAge + 1) setSelectedAge(age);
+    },
+    [startAge]
+  );
+
   const [currentCategory, setCurrentCategory] = useState<SingleSimulationCategory>(SingleSimulationCategory.Portfolio);
 
   return (
@@ -27,7 +34,7 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
       <SingleSimulationChartsSection
         simulation={simulation}
         keyMetrics={keyMetrics}
-        setSelectedAge={setSelectedAge}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         currentCategory={currentCategory}
       />

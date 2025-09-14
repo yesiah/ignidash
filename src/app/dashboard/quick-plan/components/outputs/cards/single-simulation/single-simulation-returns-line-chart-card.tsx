@@ -7,21 +7,19 @@ import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-da
 import SingleSimulationReturnsLineChart from '../../charts/single-simulation/single-simulation-returns-line-chart';
 
 interface SingleSimulationReturnsLineChartCardProps {
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'rates' | 'annualAmounts' | 'totalAmounts') => void;
   dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
   rawChartData: SingleSimulationReturnsChartDataPoint[];
-  startAge: number;
 }
 
 export default function SingleSimulationReturnsLineChartCard({
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
   rawChartData,
-  startAge,
 }: SingleSimulationReturnsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -43,9 +41,7 @@ export default function SingleSimulationReturnsLineChartCard({
         </Select>
       </div>
       <SingleSimulationReturnsLineChart
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}

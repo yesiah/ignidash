@@ -10,7 +10,7 @@ import SingleSimulationPortfolioAreaChart from '../../charts/single-simulation/s
 interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   keyMetrics: FixedReturnsKeyMetricsV2;
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'assetClass' | 'taxTreatment' | 'custom') => void;
   dataView: 'assetClass' | 'taxTreatment' | 'custom';
@@ -22,7 +22,7 @@ interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
 export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
   rawChartData,
   keyMetrics,
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
@@ -81,9 +81,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
         showReferenceLines={showReferenceLines}
         dataView={dataView}
         customDataID={customDataID}
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
       />
     </Card>

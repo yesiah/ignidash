@@ -7,21 +7,19 @@ import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/ch
 import SingleSimulationContributionsLineChart from '../../charts/single-simulation/single-simulation-contributions-line-chart';
 
 interface SingleSimulationContributionsLineChartCardProps {
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'account') => void;
   dataView: 'annualAmounts' | 'totalAmounts' | 'account';
   rawChartData: SingleSimulationContributionsChartDataPoint[];
-  startAge: number;
 }
 
 export default function SingleSimulationContributionsLineChartCard({
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
   rawChartData,
-  startAge,
 }: SingleSimulationContributionsLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -43,9 +41,7 @@ export default function SingleSimulationContributionsLineChartCard({
         </Select>
       </div>
       <SingleSimulationContributionsLineChart
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
+        onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}

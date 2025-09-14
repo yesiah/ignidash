@@ -7,21 +7,19 @@ import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data
 import SingleSimulationTaxesLineChart from '../../charts/single-simulation/single-simulation-taxes-line-chart';
 
 interface SingleSimulationTaxesLineChartCardProps {
-  setSelectedAge: (age: number) => void;
+  onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome') => void;
   dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  startAge: number;
 }
 
 export default function SingleSimulationTaxesLineChartCard({
-  setSelectedAge,
+  onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
   rawChartData,
-  startAge,
 }: SingleSimulationTaxesLineChartCardProps) {
   return (
     <Card className="my-0">
@@ -44,14 +42,7 @@ export default function SingleSimulationTaxesLineChartCard({
           <option value="taxableIncome">Taxable Income</option>
         </Select>
       </div>
-      <SingleSimulationTaxesLineChart
-        onAgeSelect={(age) => {
-          if (age >= startAge + 1) setSelectedAge(age);
-        }}
-        selectedAge={selectedAge}
-        rawChartData={rawChartData}
-        dataView={dataView}
-      />
+      <SingleSimulationTaxesLineChart onAgeSelect={onAgeSelect} selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
     </Card>
   );
 }
