@@ -119,7 +119,7 @@ export default function SingleSimulationCashFlowBarChart({
           margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
           tabIndex={-1}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis
             tick={{ fill: foregroundMutedColor }}
