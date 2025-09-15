@@ -8,7 +8,7 @@ import SingleSimulationTaxesBarChart from '../../charts/single-simulation/single
 interface SingleSimulationTaxesBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
+  dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
 }
 
 export default function SingleSimulationTaxesBarChartCard({ selectedAge, rawChartData, dataView }: SingleSimulationTaxesBarChartCardProps) {
@@ -20,10 +20,10 @@ export default function SingleSimulationTaxesBarChartCard({ selectedAge, rawChar
     case 'effectiveRates':
       title = 'Effective Rates';
       break;
-    case 'amounts':
+    case 'taxAmounts':
       title = 'Taxes Due';
       break;
-    case 'net':
+    case 'netIncome':
       title = 'Net After Tax';
       break;
     case 'taxableIncome':

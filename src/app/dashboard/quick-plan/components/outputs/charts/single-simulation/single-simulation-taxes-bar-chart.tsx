@@ -14,13 +14,13 @@ const CustomLabelListContent = (props: any) => {
     return null;
   }
 
-  const formatValue = (value: number, mode: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome') => {
+  const formatValue = (value: number, mode: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome') => {
     switch (mode) {
       case 'marginalRates':
       case 'effectiveRates':
         return `${(value * 100).toFixed(2)}%`;
-      case 'amounts':
-      case 'net':
+      case 'taxAmounts':
+      case 'netIncome':
       case 'taxableIncome':
         return formatNumber(value, 1, '$');
       default:
@@ -59,7 +59,7 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
 
 interface SingleSimulationTaxesBarChartProps {
   age: number;
-  dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
+  dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
 }
 
@@ -86,14 +86,14 @@ export default function SingleSimulationTaxesBarChart({ age, dataView, rawChartD
       ]);
       formatter = (value: number) => `${(value * 100).toFixed(2)}%`;
       break;
-    case 'amounts':
+    case 'taxAmounts':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Income Tax Amount', amount: item.incomeTaxAmount },
         { name: 'Capital Gains Tax Amount', amount: item.capitalGainsTaxAmount },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'net':
+    case 'netIncome':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Net Income', amount: item.netIncome },
         { name: 'Net Capital Gains', amount: item.netCapitalGains },

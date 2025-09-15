@@ -21,7 +21,7 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
+  dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -30,13 +30,13 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
-  const formatValue = (value: number, mode: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome') => {
+  const formatValue = (value: number, mode: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome') => {
     switch (mode) {
       case 'marginalRates':
       case 'effectiveRates':
         return `${(value * 100).toFixed(2)}%`;
-      case 'amounts':
-      case 'net':
+      case 'taxAmounts':
+      case 'netIncome':
       case 'taxableIncome':
         return formatNumber(value, 1, '$');
       default:
@@ -72,7 +72,7 @@ interface SingleSimulationTaxesLineChartProps {
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'marginalRates' | 'effectiveRates' | 'amounts' | 'net' | 'taxableIncome';
+  dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
   startAge: number;
 }
 
@@ -115,7 +115,7 @@ export default function SingleSimulationTaxesLineChart({
       formatter = (value: number) => `${(value * 100).toFixed(2)}%`;
       dataKeys.push('effectiveIncomeTaxRate', 'effectiveCapitalGainsTaxRate');
       break;
-    case 'amounts':
+    case 'taxAmounts':
       yAxisDomain = [
         Math.min(0, ...chartData.flatMap((d) => [d.incomeTaxAmount * 1.25, d.capitalGainsTaxAmount * 1.25])),
         Math.max(0, ...chartData.flatMap((d) => [d.incomeTaxAmount * 1.25, d.capitalGainsTaxAmount * 1.25])),
@@ -123,7 +123,7 @@ export default function SingleSimulationTaxesLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('incomeTaxAmount', 'capitalGainsTaxAmount');
       break;
-    case 'net':
+    case 'netIncome':
       yAxisDomain = [
         Math.min(0, ...chartData.flatMap((d) => [d.netIncome * 1.25, d.netCapitalGains * 1.25])),
         Math.max(0, ...chartData.flatMap((d) => [d.netIncome * 1.25, d.netCapitalGains * 1.25])),
