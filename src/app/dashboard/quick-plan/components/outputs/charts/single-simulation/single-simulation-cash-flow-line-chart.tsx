@@ -37,6 +37,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   if (dataView === 'custom') {
     const payloadData = payload[0];
     const cashFlowName = (payloadData.payload as ({ age: number } & IncomeData) | ({ age: number } & ExpenseData)).name;
+    const bgColor = 'grossIncome' in payloadData.payload ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)';
 
     return (
       <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
@@ -44,7 +45,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
           <span>Age {label}</span>
           <span className="text-muted-foreground">{yearForAge}</span>
         </p>
-        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+        <p style={{ backgroundColor: bgColor }} className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm">
           <span className="mr-2">{`${cashFlowName}:`}</span>
           <span className="ml-1 font-semibold">{formatNumber(payloadData.value, 1, '$')}</span>
         </p>
