@@ -129,7 +129,7 @@ export default function SingleSimulationCashFlowBarChart({
           />
           <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
             {transformedChartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" fillOpacity={entry.type === 'income' ? 1 : 0.5} />
+              <Cell key={`cell-${index}`} fill="var(--chart-3)" stroke="var(--chart-1)" fillOpacity={entry.type === 'income' ? 1 : 0.25} />
             ))}
             <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
           </Bar>
