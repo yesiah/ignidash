@@ -37,11 +37,15 @@ export default function SingleSimulationTaxesLineChartCard({
           value={dataView}
           onChange={(e) => setDataView(e.target.value as 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome')}
         >
-          <option value="marginalRates">Top Marginal Rates</option>
-          <option value="effectiveRates">Effective Rates</option>
-          <option value="taxAmounts">Tax Amounts</option>
-          <option value="netIncome">Net Income After Tax</option>
-          <option value="taxableIncome">Taxable Income</option>
+          <optgroup label="Tax Rates">
+            <option value="marginalRates">Top Marginal Rates</option>
+            <option value="effectiveRates">Effective Rates</option>
+          </optgroup>
+          <optgroup label="Dollar Amounts">
+            <option value="taxAmounts">Tax Amounts</option>
+            <option value="netIncome">Net Income After Tax</option>
+            <option value="taxableIncome">Taxable Income</option>
+          </optgroup>
         </Select>
       </div>
       <SingleSimulationTaxesLineChart
