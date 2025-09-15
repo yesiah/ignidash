@@ -1058,9 +1058,9 @@ export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2
         effectiveCapitalGainsTaxRate: taxesData.capitalGainsTaxes.effectiveCapitalGainsTaxRate,
         topMarginalCapitalGainsTaxRate: taxesData.capitalGainsTaxes.topMarginalCapitalGainsTaxRate,
         netCapitalGains: taxesData.capitalGainsTaxes.netCapitalGains,
-        totalTaxesDue: taxesData.totalTaxesDue,
-        totalTaxesRefund: taxesData.totalTaxesRefund,
         totalTaxableIncome: taxesData.totalTaxableIncome,
+        totalTaxesAmount: taxesData.incomeTaxes.incomeTaxAmount + taxesData.capitalGainsTaxes.capitalGainsTaxAmount,
+        totalNetIncome: taxesData.incomeTaxes.netIncome + taxesData.capitalGainsTaxes.netCapitalGains,
       };
     });
   }, [simulation]);

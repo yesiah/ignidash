@@ -71,9 +71,9 @@ export interface SingleSimulationTaxesChartDataPoint {
   effectiveCapitalGainsTaxRate: number;
   topMarginalCapitalGainsTaxRate: number;
   netCapitalGains: number;
-  totalTaxesDue: number;
-  totalTaxesRefund: number;
   totalTaxableIncome: number;
+  totalTaxesAmount: number;
+  totalNetIncome: number;
 }
 
 export interface SingleSimulationContributionsChartDataPoint {

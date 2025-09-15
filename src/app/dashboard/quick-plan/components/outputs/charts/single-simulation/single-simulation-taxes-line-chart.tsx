@@ -121,7 +121,7 @@ export default function SingleSimulationTaxesLineChart({
         Math.max(0, ...chartData.flatMap((d) => [d.incomeTaxAmount * 1.25, d.capitalGainsTaxAmount * 1.25])),
       ];
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('incomeTaxAmount', 'capitalGainsTaxAmount');
+      dataKeys.push('incomeTaxAmount', 'capitalGainsTaxAmount', 'totalTaxesAmount');
       break;
     case 'netIncome':
       yAxisDomain = [
@@ -129,7 +129,7 @@ export default function SingleSimulationTaxesLineChart({
         Math.max(0, ...chartData.flatMap((d) => [d.netIncome * 1.25, d.netCapitalGains * 1.25])),
       ];
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('netIncome', 'netCapitalGains');
+      dataKeys.push('netIncome', 'netCapitalGains', 'totalNetIncome');
       break;
     case 'taxableIncome':
       yAxisDomain = [
