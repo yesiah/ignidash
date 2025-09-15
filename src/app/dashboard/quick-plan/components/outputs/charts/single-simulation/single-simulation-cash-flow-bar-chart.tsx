@@ -105,8 +105,8 @@ export default function SingleSimulationCashFlowBarChart({
 
   const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
-  const incomeBarColor = 'rgb(16, 185, 129)'; // emerald-500
-  const expenseBarColor = 'rgb(244, 63, 94)'; // rose-500
+  const incomeBarColor = 'var(--chart-2)';
+  const expenseBarColor = 'var(--chart-4)';
 
   const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };

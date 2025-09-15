@@ -34,10 +34,12 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
   if (dataView === 'custom') {
     const payloadData = payload[0];
     const cashFlowName = (payloadData.payload as ({ age: number } & IncomeData) | ({ age: number } & ExpenseData)).name;
-    const bgColor = 'grossIncome' in payloadData.payload ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)';
+    const bgColor = 'grossIncome' in payloadData.payload ? 'var(--chart-2)' : 'var(--chart-4)';
 
     return (
       <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
@@ -45,7 +47,10 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
           <span>Age {label}</span>
           <span className="text-muted-foreground">{yearForAge}</span>
         </p>
-        <p style={{ backgroundColor: bgColor }} className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm">
+        <p
+          style={{ backgroundColor: bgColor }}
+          className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(payloadData.color) ? 'text-background' : 'text-foreground'}`}
+        >
           <span className="mr-2">{`${cashFlowName}:`}</span>
           <span className="ml-1 font-semibold">{formatNumber(payloadData.value, 1, '$')}</span>
         </p>
@@ -60,7 +65,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const incomeDataListComponent = perIncomeData.map((income) => (
     <p
       key={income.id}
-      style={{ backgroundColor: 'rgba(16, 185, 129, 0.5)' }}
+      style={{ backgroundColor: 'var(--chart-2)' }}
       className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm"
     >
       <span className="mr-2">{income.name}</span>
@@ -75,8 +80,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const expenseDataListComponent = perExpenseData.map((expense) => (
     <p
       key={expense.id}
-      style={{ backgroundColor: 'rgba(244, 63, 94, 0.5)' }}
-      className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm"
+      style={{ backgroundColor: 'var(--chart-4)' }}
+      className="border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm"
     >
       <span className="mr-2">{expense.name}</span>
       <span className="ml-1 font-semibold">{formatNumber(expense.amount, 1, '$')}</span>
@@ -185,7 +190,7 @@ export default function SingleSimulationCashFlowLineChart({
         Math.max(0, ...chartData.map((d) => d.totalGrossIncome * 1.25)),
       ];
       dataKeys.push('totalGrossIncome');
-      strokeColor = 'rgba(34, 197, 94)';
+      strokeColor = 'var(--chart-2)';
       break;
     case 'expenses':
       yAxisDomain = [
@@ -193,7 +198,7 @@ export default function SingleSimulationCashFlowLineChart({
         Math.max(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
       ];
       dataKeys.push('totalExpenses');
-      strokeColor = 'rgba(239, 68, 68)';
+      strokeColor = 'var(--chart-4)';
       break;
     case 'custom':
       if (!customDataID) {
@@ -214,7 +219,7 @@ export default function SingleSimulationCashFlowLineChart({
         ];
         chartData = perIncomeData;
         dataKeys.push('grossIncome');
-        strokeColor = 'rgba(34, 197, 94)';
+        strokeColor = 'var(--chart-2)';
         break;
       }
 
@@ -231,7 +236,7 @@ export default function SingleSimulationCashFlowLineChart({
         ];
         chartData = perExpenseData;
         dataKeys.push('amount');
-        strokeColor = 'rgba(239, 68, 68)';
+        strokeColor = 'var(--chart-4)';
         break;
       }
 
@@ -275,10 +280,10 @@ export default function SingleSimulationCashFlowLineChart({
           >
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" />
-                <stop offset="50%" stopColor="#10b981" />
-                <stop offset="50%" stopColor="#f43f5e" />
-                <stop offset="100%" stopColor="#f43f5e" />
+                <stop offset="0%" stopColor="var(--chart-2)" />
+                <stop offset="50%" stopColor="var(--chart-2)" />
+                <stop offset="50%" stopColor="var(--chart-4)" />
+                <stop offset="100%" stopColor="var(--chart-4)" />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
