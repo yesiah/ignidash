@@ -47,6 +47,29 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     }
   };
 
+  let totalFooter = null;
+  switch (dataView) {
+    case 'marginalRates':
+    case 'effectiveRates':
+      break;
+    case 'taxAmounts':
+    case 'netIncome':
+    case 'taxableIncome':
+      totalFooter = (
+        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
+  }
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -65,6 +88,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
           </p>
         ))}
       </div>
+      {totalFooter}
     </div>
   );
 };
@@ -150,7 +174,7 @@ export default function SingleSimulationTaxesLineChart({
         ),
       ];
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableOrdinaryIncome', 'taxableCapitalGains', 'totalTaxableIncome');
+      dataKeys.push('taxableOrdinaryIncome', 'taxableCapitalGains');
       break;
   }
 
