@@ -66,7 +66,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   );
 };
 
-const COLORS = ['var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
+const COLORS = ['#fda4af', '#f43f5e', '#be123c'];
 
 interface SingleSimulationTaxesLineChartProps {
   rawChartData: SingleSimulationTaxesChartDataPoint[];
