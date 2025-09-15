@@ -3,6 +3,7 @@
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
+import { useShowReferenceLinesPreference, type FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 
 import SingleSimulationTaxesLineChart from '../../charts/single-simulation/single-simulation-taxes-line-chart';
 
@@ -12,6 +13,7 @@ interface SingleSimulationTaxesLineChartCardProps {
   setDataView: (view: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome') => void;
   dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
+  keyMetrics: FixedReturnsKeyMetricsV2;
   startAge: number;
 }
 
@@ -21,8 +23,11 @@ export default function SingleSimulationTaxesLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  keyMetrics,
   startAge,
 }: SingleSimulationTaxesLineChartCardProps) {
+  const showReferenceLines = useShowReferenceLinesPreference();
+
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
@@ -52,6 +57,8 @@ export default function SingleSimulationTaxesLineChartCard({
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
+        keyMetrics={keyMetrics}
+        showReferenceLines={showReferenceLines}
         dataView={dataView}
         startAge={startAge}
       />

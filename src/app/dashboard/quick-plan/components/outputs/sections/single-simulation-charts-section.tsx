@@ -94,7 +94,7 @@ function CashFlowCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, star
   );
 }
 
-function TaxesCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
+function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationTaxesChartData(simulation);
 
   const [dataView, setDataView] = useState<'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome'>(
@@ -109,6 +109,7 @@ function TaxesCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsC
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        keyMetrics={keyMetrics}
         startAge={startAge}
       />
       <SingleSimulationTaxesBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
