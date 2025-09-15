@@ -31,6 +31,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -42,7 +44,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
           <p
             key={entry.dataKey}
             style={{ backgroundColor: `hsl(from ${entry.color} h s l)` }}
-            className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm"
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
             <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
