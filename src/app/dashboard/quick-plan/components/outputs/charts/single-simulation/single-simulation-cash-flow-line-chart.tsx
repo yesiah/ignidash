@@ -268,7 +268,7 @@ export default function SingleSimulationCashFlowLineChart({
             domain={yAxisDomain}
           />
           {dataKeys.map((dataKey, index) => (
-            <Line key={dataKey} type="monotone" dataKey={dataKey} stroke="var(--chart-4)" />
+            <Line key={dataKey} type="monotone" dataKey={dataKey} stroke="var(--chart-4)" dot={false} activeDot={false} strokeWidth={2} />
           ))}
           <Tooltip
             content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
