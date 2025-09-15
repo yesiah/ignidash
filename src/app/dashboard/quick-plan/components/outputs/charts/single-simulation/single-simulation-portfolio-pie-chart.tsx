@@ -24,7 +24,7 @@ type PieSectorData = {
 
 type PieSectorDataItem = React.SVGProps<SVGPathElement> & Partial<SectorProps> & PieSectorData;
 
-const COLORS = ['var(--chart-3)', 'var(--chart-2)', 'var(--chart-1)', 'var(--chart-4)'];
+const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 const renderActiveShape = ({
   cx,
@@ -113,21 +113,3 @@ export default function SingleSimulationPortfolioPieChart({ chartData, selectedA
     </div>
   );
 }
-
-// {
-//   chartData.toReversed().map((entry, index) => (
-//     <Fragment key={entry.name}>
-//       <DescriptionTerm>
-//         <svg
-//           viewBox="0 0 6 6"
-//           aria-hidden="true"
-//           className={`size-5 fill-[${COLORS[(COLORS.length - index - 1) % COLORS.length]}] mr-1 inline`}
-//         >
-//           <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-//         </svg>
-//         {formatChartString(entry.name)}
-//       </DescriptionTerm>
-//       <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
-//     </Fragment>
-//   ));
-// }
