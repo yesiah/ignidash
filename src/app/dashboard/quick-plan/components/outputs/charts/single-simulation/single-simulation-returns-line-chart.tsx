@@ -63,7 +63,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   );
 };
 
-const COLORS = ['var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
+const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 interface SingleSimulationReturnsLineChartProps {
   rawChartData: SingleSimulationReturnsChartDataPoint[];
@@ -143,7 +143,15 @@ export default function SingleSimulationReturnsLineChart({
             domain={yAxisDomain}
           />
           {dataKeys.map((dataKey, index) => (
-            <Line key={dataKey} type="monotone" dataKey={dataKey} stroke={COLORS[index % COLORS.length]} />
+            <Line
+              key={dataKey}
+              type="monotone"
+              dataKey={dataKey}
+              stroke={COLORS[index % COLORS.length]}
+              dot={false}
+              activeDot={false}
+              strokeWidth={3}
+            />
           ))}
           <Tooltip
             content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
