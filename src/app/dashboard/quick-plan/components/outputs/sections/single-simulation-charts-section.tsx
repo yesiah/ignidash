@@ -117,7 +117,7 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
   );
 }
 
-function ReturnsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
+function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationReturnsChartData(simulation);
 
   const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'totalAmounts'>('rates');
@@ -126,6 +126,7 @@ function ReturnsCharts({ simulation, onAgeSelect, selectedAge, startAge }: Chart
     <>
       <SingleSimulationReturnsLineChartCard
         rawChartData={rawChartData}
+        keyMetrics={keyMetrics}
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         dataView={dataView}
@@ -137,7 +138,7 @@ function ReturnsCharts({ simulation, onAgeSelect, selectedAge, startAge }: Chart
   );
 }
 
-function ContributionsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
+function ContributionsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationContributionsChartData(simulation);
 
   const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
@@ -146,6 +147,7 @@ function ContributionsCharts({ simulation, onAgeSelect, selectedAge, startAge }:
     <>
       <SingleSimulationContributionsLineChartCard
         rawChartData={rawChartData}
+        keyMetrics={keyMetrics}
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         dataView={dataView}
@@ -157,7 +159,7 @@ function ContributionsCharts({ simulation, onAgeSelect, selectedAge, startAge }:
   );
 }
 
-function WithdrawalsCharts({ simulation, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
+function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationWithdrawalsChartData(simulation);
 
   const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'account'>('annualAmounts');
@@ -166,6 +168,7 @@ function WithdrawalsCharts({ simulation, onAgeSelect, selectedAge, startAge }: C
     <>
       <SingleSimulationWithdrawalsLineChartCard
         rawChartData={rawChartData}
+        keyMetrics={keyMetrics}
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         dataView={dataView}

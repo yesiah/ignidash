@@ -8,6 +8,7 @@ import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
+import type { FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -57,6 +58,8 @@ const COLORS = ['var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--cha
 
 interface SingleSimulationContributionsLineChartProps {
   rawChartData: SingleSimulationContributionsChartDataPoint[];
+  keyMetrics: FixedReturnsKeyMetricsV2;
+  showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   dataView: 'annualAmounts' | 'totalAmounts' | 'account';
@@ -65,6 +68,8 @@ interface SingleSimulationContributionsLineChartProps {
 
 export default function SingleSimulationContributionsLineChart({
   rawChartData,
+  keyMetrics,
+  showReferenceLines,
   onAgeSelect,
   selectedAge,
   dataView,
@@ -151,6 +156,9 @@ export default function SingleSimulationContributionsLineChart({
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
               cursor={{ stroke: foregroundColor }}
             />
+            {keyMetrics.retirementAge && showReferenceLines && (
+              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+            )}
             {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
           </LineChart>
         </ResponsiveContainer>

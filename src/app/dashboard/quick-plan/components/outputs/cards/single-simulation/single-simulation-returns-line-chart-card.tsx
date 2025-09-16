@@ -3,6 +3,7 @@
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-data-points';
+import { useShowReferenceLinesPreference, type FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 
 import SingleSimulationReturnsLineChart from '../../charts/single-simulation/single-simulation-returns-line-chart';
 
@@ -12,6 +13,7 @@ interface SingleSimulationReturnsLineChartCardProps {
   setDataView: (view: 'rates' | 'annualAmounts' | 'totalAmounts') => void;
   dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
   rawChartData: SingleSimulationReturnsChartDataPoint[];
+  keyMetrics: FixedReturnsKeyMetricsV2;
   startAge: number;
 }
 
@@ -21,8 +23,11 @@ export default function SingleSimulationReturnsLineChartCard({
   setDataView,
   dataView,
   rawChartData,
+  keyMetrics,
   startAge,
 }: SingleSimulationReturnsLineChartCardProps) {
+  const showReferenceLines = useShowReferenceLinesPreference();
+
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
@@ -50,6 +55,8 @@ export default function SingleSimulationReturnsLineChartCard({
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
+        keyMetrics={keyMetrics}
+        showReferenceLines={showReferenceLines}
         dataView={dataView}
         startAge={startAge}
       />
