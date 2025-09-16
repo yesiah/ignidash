@@ -91,9 +91,6 @@ export default function SingleSimulationReturnsLineChart({
   );
 
   const chartData: SingleSimulationReturnsChartDataPoint[] = rawChartData;
-  if (chartData.length === 0) {
-    return null;
-  }
 
   const dataKeys: (keyof SingleSimulationReturnsChartDataPoint)[] = [];
   const yAxisDomain: [number, number] | undefined = undefined;
@@ -113,9 +110,10 @@ export default function SingleSimulationReturnsLineChart({
       break;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f3f4f6' : '#111827'; // gray-100 : gray-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
+  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   const calculateInterval = (dataLength: number, desiredTicks = 8) => {
     if (dataLength <= desiredTicks) return 0;
@@ -130,36 +128,58 @@ export default function SingleSimulationReturnsLineChart({
   };
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1} onClick={onClick}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={formatter}
-            domain={yAxisDomain}
-          />
-          {dataKeys.map((dataKey, index) => (
-            <Line
-              key={dataKey}
-              type="monotone"
-              dataKey={dataKey}
-              stroke={COLORS[index % COLORS.length]}
-              dot={false}
-              activeDot={false}
-              strokeWidth={3}
+    <div>
+      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+            tabIndex={-1}
+            onClick={onClick}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={formatter}
+              domain={yAxisDomain}
             />
-          ))}
-          <Tooltip
-            content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
-            cursor={{ stroke: foregroundColor }}
-          />
-          {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
-        </LineChart>
-      </ResponsiveContainer>
+            {dataKeys.map((dataKey, index) => (
+              <Line
+                key={dataKey}
+                type="monotone"
+                dataKey={dataKey}
+                stroke={COLORS[index % COLORS.length]}
+                dot={false}
+                activeDot={false}
+                strokeWidth={3}
+              />
+            ))}
+            <Tooltip
+              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+              cursor={{ stroke: foregroundColor }}
+            />
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div
+        className={`mt-2 flex justify-center gap-x-2 sm:gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}
+        role="group"
+        aria-label="Chart legend"
+      >
+        {dataKeys.map((dataKey, index) => (
+          <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
+            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: COLORS[index % COLORS.length] }} className="size-5 shrink-0">
+              <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
+            </svg>
+            {formatChartString(dataKey)}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
