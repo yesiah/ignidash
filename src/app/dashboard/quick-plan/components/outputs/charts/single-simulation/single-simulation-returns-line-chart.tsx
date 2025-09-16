@@ -30,7 +30,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
 
   const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts') => {
     switch (mode) {
@@ -88,7 +88,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   );
 };
 
-const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)'];
+const COLORS = ['var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
 
 interface SingleSimulationReturnsLineChartProps {
   rawChartData: SingleSimulationReturnsChartDataPoint[];
