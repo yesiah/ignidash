@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
 import { formatNumber, formatChartString } from '@/lib/utils';
@@ -140,17 +140,20 @@ export default function SingleSimulationReturnsLineChart({
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
-  const calculateInterval = (dataLength: number, desiredTicks = 8) => {
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
     if (dataLength <= desiredTicks) return 0;
     return Math.ceil(dataLength / desiredTicks);
-  };
+  }, []);
   const interval = calculateInterval(chartData.length);
 
-  const onClick = (data: { activeLabel: string | undefined }) => {
-    if (data.activeLabel !== undefined && onAgeSelect) {
-      onAgeSelect(Number(data.activeLabel));
-    }
-  };
+  const onClick = useCallback(
+    (data: { activeLabel: string | undefined }) => {
+      if (data.activeLabel !== undefined && onAgeSelect) {
+        onAgeSelect(Number(data.activeLabel));
+      }
+    },
+    [onAgeSelect]
+  );
 
   return (
     <div>
