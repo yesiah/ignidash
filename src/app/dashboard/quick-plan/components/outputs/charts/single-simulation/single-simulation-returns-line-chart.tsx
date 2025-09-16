@@ -30,6 +30,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
   const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts') => {
     switch (mode) {
       case 'rates':
@@ -42,6 +44,27 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     }
   };
 
+  let totalFooter = null;
+  switch (dataView) {
+    case 'rates':
+      break;
+    case 'annualAmounts':
+    case 'totalAmounts':
+      totalFooter = (
+        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
+  }
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -52,18 +75,20 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
         {payload.map((entry) => (
           <p
             key={entry.dataKey}
-            className={`border-foreground/50 flex justify-between rounded-lg border bg-[${entry.color}]/60 px-2 text-sm`}
+            style={{ backgroundColor: entry.color }}
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
             <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
           </p>
         ))}
       </div>
+      {totalFooter}
     </div>
   );
 };
 
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
+const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)'];
 
 interface SingleSimulationReturnsLineChartProps {
   rawChartData: SingleSimulationReturnsChartDataPoint[];
