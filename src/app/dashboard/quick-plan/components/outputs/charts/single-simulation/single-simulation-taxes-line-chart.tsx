@@ -226,7 +226,7 @@ export default function SingleSimulationTaxesLineChart({
                 stroke={COLORS[index % COLORS.length]}
                 dot={false}
                 activeDot={false}
-                strokeWidth={2}
+                strokeWidth={3}
               />
             ))}
             <Tooltip
