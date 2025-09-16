@@ -18,7 +18,7 @@ interface CustomTooltipProps {
     name: string;
     color: string;
     dataKey: keyof SingleSimulationContributionsChartDataPoint;
-    payload: SingleSimulationContributionsChartDataPoint;
+    payload: SingleSimulationContributionsChartDataPoint | ({ age: number; annualContributions: number } & AccountDataWithTransactions);
   }>;
   label?: number;
   startAge: number;
