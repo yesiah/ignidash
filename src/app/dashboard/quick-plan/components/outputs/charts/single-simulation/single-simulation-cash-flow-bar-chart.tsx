@@ -135,6 +135,7 @@ export default function SingleSimulationCashFlowBarChart({
                 key={`cell-${index}`}
                 fill={entry.type === 'income' ? incomeBarColor : expenseBarColor}
                 stroke={entry.type === 'income' ? incomeBarColor : expenseBarColor}
+                strokeWidth={3}
                 fillOpacity={0.5}
               />
             ))}

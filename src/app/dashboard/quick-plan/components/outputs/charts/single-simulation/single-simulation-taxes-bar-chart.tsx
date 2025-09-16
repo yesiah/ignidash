@@ -138,13 +138,14 @@ export default function SingleSimulationTaxesBarChart({ age, dataView, rawChartD
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
             <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            <Bar dataKey="amount" maxBarSize={150} minPointSize={20}>
+            <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
               {transformedChartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                   stroke={COLORS[index % COLORS.length]}
-                  fillOpacity={0.25}
+                  strokeWidth={3}
+                  fillOpacity={0.5}
                 />
               ))}
               <LabelList
