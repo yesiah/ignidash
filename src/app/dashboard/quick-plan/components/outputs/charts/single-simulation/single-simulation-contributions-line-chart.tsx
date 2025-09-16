@@ -91,7 +91,7 @@ export default function SingleSimulationContributionsLineChart({
   const yAxisDomain: [number, number] | undefined = undefined;
   switch (dataView) {
     case 'annualAmounts':
-      dataKeys.push('contributionsForPeriod');
+      dataKeys.push('annualContributions');
       break;
     case 'totalAmounts':
       dataKeys.push('totalContributions');

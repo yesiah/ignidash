@@ -79,7 +79,7 @@ export interface SingleSimulationTaxesChartDataPoint {
 export interface SingleSimulationContributionsChartDataPoint {
   age: number;
   totalContributions: number;
-  contributionsForPeriod: number;
+  annualContributions: number;
   perAccountData: AccountDataWithTransactions[];
   taxable: number;
   taxDeferred: number;

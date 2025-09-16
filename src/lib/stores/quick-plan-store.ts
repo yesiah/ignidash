@@ -1131,7 +1131,7 @@ export const useSingleSimulationContributionsChartData = (
       return {
         age: currDateYear - startDateYear + startAge,
         totalContributions: portfolioData.totalContributions,
-        contributionsForPeriod: portfolioData.contributionsForPeriod,
+        annualContributions: portfolioData.contributionsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxable,
         taxDeferred,

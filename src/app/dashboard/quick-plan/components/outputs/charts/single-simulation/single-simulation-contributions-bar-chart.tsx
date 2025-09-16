@@ -63,7 +63,7 @@ export default function SingleSimulationContributionsBarChart({ age, dataView, r
       transformedChartData = chartData.flatMap((item) => [
         {
           name: 'Annual Contributions',
-          amount: item.contributionsForPeriod,
+          amount: item.annualContributions,
         },
       ]);
       break;
