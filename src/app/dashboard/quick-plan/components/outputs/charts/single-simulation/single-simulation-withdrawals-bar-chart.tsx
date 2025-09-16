@@ -61,7 +61,7 @@ export default function SingleSimulationWithdrawalsBarChart({ age, dataView, raw
       transformedChartData = chartData.flatMap((item) => [
         {
           name: 'Annual Withdrawals',
-          amount: item.withdrawalsForPeriod,
+          amount: item.annualWithdrawals,
         },
       ]);
       break;

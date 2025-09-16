@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
 import { formatNumber, formatChartString } from '@/lib/utils';
@@ -30,6 +30,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -40,7 +42,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
         {payload.map((entry) => (
           <p
             key={entry.dataKey}
-            className={`border-foreground/50 flex justify-between rounded-lg border bg-[${entry.color}]/60 px-2 text-sm`}
+            style={{ backgroundColor: entry.color }}
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
             <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
@@ -51,7 +54,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
   );
 };
 
-const COLORS = ['var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
+const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 interface SingleSimulationWithdrawalsLineChartProps {
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
@@ -83,15 +86,12 @@ export default function SingleSimulationWithdrawalsLineChart({
   );
 
   const chartData: SingleSimulationWithdrawalsChartDataPoint[] = rawChartData;
-  if (chartData.length === 0) {
-    return null;
-  }
 
   const dataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
   const yAxisDomain: [number, number] | undefined = undefined;
   switch (dataView) {
     case 'annualAmounts':
-      dataKeys.push('withdrawalsForPeriod');
+      dataKeys.push('annualWithdrawals');
       break;
     case 'totalAmounts':
       dataKeys.push('totalWithdrawals');
@@ -101,48 +101,82 @@ export default function SingleSimulationWithdrawalsLineChart({
       break;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#374151' : '#d1d5db'; // gray-700 : gray-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f3f4f6' : '#111827'; // gray-100 : gray-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d1d5db' : '#4b5563'; // gray-300 : gray-600
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
+  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
-  const calculateInterval = (dataLength: number, desiredTicks = 8) => {
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
     if (dataLength <= desiredTicks) return 0;
     return Math.ceil(dataLength / desiredTicks);
-  };
+  }, []);
   const interval = calculateInterval(chartData.length);
 
-  const onClick = (data: { activeLabel: string | undefined }) => {
-    if (data.activeLabel !== undefined && onAgeSelect) {
-      onAgeSelect(Number(data.activeLabel));
-    }
-  };
+  const onClick = useCallback(
+    (data: { activeLabel: string | undefined }) => {
+      if (data.activeLabel !== undefined && onAgeSelect) {
+        onAgeSelect(Number(data.activeLabel));
+      }
+    },
+    [onAgeSelect]
+  );
 
   return (
-    <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: 0 }} tabIndex={-1} onClick={onClick}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 1, '$')}
-            domain={yAxisDomain}
-          />
-          {dataKeys.map((dataKey, index) => (
-            <Line key={dataKey} type="monotone" dataKey={dataKey} stroke={COLORS[index % COLORS.length]} />
-          ))}
-          <Tooltip
-            content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
-            cursor={{ stroke: foregroundColor }}
-          />
-          {keyMetrics.retirementAge && showReferenceLines && (
-            <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-          )}
-          {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
-        </LineChart>
-      </ResponsiveContainer>
+    <div>
+      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            className="text-xs"
+            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+            tabIndex={-1}
+            onClick={onClick}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <YAxis
+              tick={{ fill: foregroundMutedColor }}
+              axisLine={false}
+              hide={isSmallScreen}
+              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+              domain={yAxisDomain}
+            />
+            {dataKeys.map((dataKey, index) => (
+              <Line
+                key={dataKey}
+                type="monotone"
+                dataKey={dataKey}
+                stroke={COLORS[index % COLORS.length]}
+                dot={false}
+                activeDot={false}
+                strokeWidth={3}
+              />
+            ))}
+            <Tooltip
+              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
+              cursor={{ stroke: foregroundColor }}
+            />
+            {keyMetrics.retirementAge && showReferenceLines && (
+              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+            )}
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div
+        className={`mt-2 flex justify-center gap-x-2 sm:gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}
+        role="group"
+        aria-label="Chart legend"
+      >
+        {dataKeys.map((dataKey, index) => (
+          <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
+            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: COLORS[index % COLORS.length] }} className="size-5 shrink-0">
+              <circle r={2.5} cx={3} cy={3} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
+            </svg>
+            {formatChartString(dataKey)}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

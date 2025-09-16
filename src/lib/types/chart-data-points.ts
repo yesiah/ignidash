@@ -91,8 +91,8 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   age: number;
   totalWithdrawals: number;
   totalRealizedGains: number;
-  withdrawalsForPeriod: number;
-  realizedGainsForPeriod: number;
+  annualWithdrawals: number;
+  annualRealizedGains: number;
   perAccountData: AccountDataWithTransactions[];
   taxable: number;
   taxDeferred: number;

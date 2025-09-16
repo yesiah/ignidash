@@ -1179,9 +1179,9 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
       return {
         age: currDateYear - startDateYear + startAge,
         totalWithdrawals: portfolioData.totalWithdrawals,
-        withdrawalsForPeriod: portfolioData.withdrawalsForPeriod,
+        annualWithdrawals: portfolioData.withdrawalsForPeriod,
         totalRealizedGains: portfolioData.totalRealizedGains,
-        realizedGainsForPeriod: portfolioData.realizedGainsForPeriod,
+        annualRealizedGains: portfolioData.realizedGainsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxable,
         taxDeferred,
