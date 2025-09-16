@@ -47,7 +47,7 @@ const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--cha
 
 interface SingleSimulationContributionsBarChartProps {
   age: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxTreatment';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom';
   rawChartData: SingleSimulationContributionsChartDataPoint[];
 }
 
@@ -85,6 +85,8 @@ export default function SingleSimulationContributionsBarChart({ age, dataView, r
         { name: 'Tax Free Contributions', amount: item.taxFree },
         { name: 'Cash Savings Contributions', amount: item.cashSavings },
       ]);
+      break;
+    case 'custom':
       break;
   }
 

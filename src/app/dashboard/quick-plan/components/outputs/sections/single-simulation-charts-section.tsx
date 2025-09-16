@@ -141,7 +141,8 @@ function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, start
 function ContributionsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationContributionsChartData(simulation);
 
-  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxTreatment'>('taxTreatment');
+  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom'>('taxTreatment');
+  const [customDataID, setCustomDataID] = useState<string>('');
 
   return (
     <>
@@ -150,8 +151,10 @@ function ContributionsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge,
         keyMetrics={keyMetrics}
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
-        dataView={dataView}
         setDataView={setDataView}
+        dataView={dataView}
+        setCustomDataID={setCustomDataID}
+        customDataID={customDataID}
         startAge={startAge}
       />
       <SingleSimulationContributionsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />

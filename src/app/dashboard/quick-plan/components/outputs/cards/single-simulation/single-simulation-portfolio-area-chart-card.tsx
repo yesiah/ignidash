@@ -61,7 +61,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
               setDataView('custom');
               setCustomDataID(e.target.value);
             } else {
-              setDataView(e.target.value as 'assetClass' | 'taxTreatment' | 'custom');
+              setDataView(e.target.value as 'assetClass' | 'taxTreatment');
               setCustomDataID('');
             }
           }}
