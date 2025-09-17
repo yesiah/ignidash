@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
-import { useUpdateTimelines, useTimelinesData } from '@/lib/stores/quick-plan-store';
+import { useUpdateTimeline, useSingleTimelineData } from '@/lib/stores/quick-plan-store';
 import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 import NumberInputV2 from '@/components/ui/number-input-v2';
 import SectionHeader from '@/components/ui/section-header';
@@ -14,6 +14,7 @@ import Card from '@/components/ui/card';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Divider } from '@/components/catalyst/divider';
+// import { Button } from '@/components/catalyst/button';
 
 function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarget') {
   switch (retirementStrategyType) {
@@ -47,20 +48,19 @@ function getRetirementStrategyError(errors: FieldErrors, retirementStrategyType:
 }
 
 export default function TimelineDrawer() {
-  const existingTimelineData = undefined;
+  const existingTimelineData = useSingleTimelineData();
 
-  const numTimelines = Object.entries(useTimelinesData()).length;
   const newTimelineDefaultValues = useMemo(
     () =>
       ({
-        name: 'Timeline ' + (numTimelines + 1),
+        name: 'Timeline 1',
         id: '',
         retirementStrategy: {
           type: 'swrTarget',
           safeWithdrawalRate: 4,
         },
       }) as const satisfies Partial<TimelineInputs>,
-    [numTimelines]
+    []
   );
 
   const defaultValues = (existingTimelineData || newTimelineDefaultValues) as never;
@@ -76,10 +76,10 @@ export default function TimelineDrawer() {
     defaultValues,
   });
 
-  const updateTimelines = useUpdateTimelines();
+  const updateTimeline = useUpdateTimeline();
   const onSubmit = (data: TimelineInputs) => {
     const timelineId = data.id === '' ? uuidv4() : data.id;
-    updateTimelines({ ...data, id: timelineId });
+    updateTimeline({ ...data, id: timelineId });
   };
 
   const retirementStrategyType = useWatch({ control, name: 'retirementStrategy.type' });
