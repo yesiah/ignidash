@@ -70,6 +70,7 @@ export default function TimelineDrawer() {
     unregister,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(timelineFormSchema),
@@ -153,9 +154,14 @@ export default function TimelineDrawer() {
                 <Divider />
               </FieldGroup>
             </Fieldset>
-            <Button color="rose" type="submit" className="mt-4 w-full">
-              Save
-            </Button>
+            <div className="mt-4 flex gap-x-2">
+              <Button outline onClick={() => reset()} className="w-1/2">
+                Reset
+              </Button>
+              <Button color="rose" type="submit" className="w-1/2">
+                Save
+              </Button>
+            </div>
           </form>
         </Card>
       </SectionContainer>
