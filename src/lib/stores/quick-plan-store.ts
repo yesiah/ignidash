@@ -173,43 +173,20 @@ interface QuickPlanState {
 
 export const defaultState: Omit<QuickPlanState, 'actions'> = {
   inputs: {
-    basics: {
-      currentAge: 28,
-      annualIncome: 85000,
-      annualExpenses: 50000,
-      investedAssets: 75000,
-    },
-    growthRates: {
-      incomeGrowthRate: 3, // Nominal % - "My salary increases by X% per year"
-      expenseGrowthRate: 3, // Nominal % - "My spending increases by X% per year"
-    },
-    allocation: {
-      stockAllocation: 70,
-      bondAllocation: 25,
-      cashAllocation: 5,
-    },
-    goals: {
-      retirementExpenses: 50000, // Real $ - "What I'd spend in retirement (today's dollars)"
-    },
-    marketAssumptions: {
-      stockReturn: 10, // Nominal % - matches market reporting
-      bondReturn: 5, // Nominal %
-      cashReturn: 3, // Nominal %
-      inflationRate: 3, // The bridge between nominal and real
-    },
-    retirementFunding: {
-      safeWithdrawalRate: 4,
-      retirementIncome: 0, // Real $ - "Social Security (today's dollars)"
-      lifeExpectancy: 78,
-      effectiveTaxRate: 0,
-    },
+    basics: { currentAge: 28, annualIncome: 85000, annualExpenses: 50000, investedAssets: 75000 },
+    growthRates: { incomeGrowthRate: 3, expenseGrowthRate: 3 },
+    allocation: { stockAllocation: 70, bondAllocation: 25, cashAllocation: 5 },
+    goals: { retirementExpenses: 50000 },
+    retirementFunding: { safeWithdrawalRate: 4, retirementIncome: 0, lifeExpectancy: 78, effectiveTaxRate: 0 },
+
+    // Needed for V2 simulation engine
+    timeline: undefined,
     incomes: {},
     expenses: {},
     accounts: {},
     contributionRules: {},
-    baseContributionRule: {
-      type: 'save',
-    },
+    baseContributionRule: { type: 'save' },
+    marketAssumptions: { stockReturn: 10, bondReturn: 5, cashReturn: 3, inflationRate: 3 },
   },
   preferences: {
     dataStorage: 'localStorage',
