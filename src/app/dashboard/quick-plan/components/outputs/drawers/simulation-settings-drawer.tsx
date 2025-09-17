@@ -1,6 +1,6 @@
 'use client';
 
-import { useMarketAssumptionsData, useUpdateMarketAssumptions } from '@/lib/stores/quick-plan-store';
+import { useSimulationMode, useUpdateSimulationMode } from '@/lib/stores/quick-plan-store';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
@@ -8,11 +8,11 @@ import { Select } from '@/components/catalyst/select';
 import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
 
 export default function SimulationSettingsDrawer() {
-  const marketAssumptions = useMarketAssumptionsData();
-  const updateMarketAssumptions = useUpdateMarketAssumptions();
+  const simulationMode = useSimulationMode();
+  const updateSimulationMode = useUpdateSimulationMode();
 
   let simulationModeDesc;
-  switch (marketAssumptions.simulationMode) {
+  switch (simulationMode) {
     case 'fixedReturns':
       simulationModeDesc = 'Uses your Expected Returns assumptions for a single deterministic projection.';
       break;
@@ -46,8 +46,12 @@ export default function SimulationSettingsDrawer() {
                   <Select
                     id="simulation-mode"
                     name="simulation-mode"
-                    value={marketAssumptions.simulationMode}
-                    onChange={(e) => updateMarketAssumptions('simulationMode', e.target.value)}
+                    value={simulationMode}
+                    onChange={(e) =>
+                      updateSimulationMode(
+                        e.target.value as 'fixedReturns' | 'stochasticReturns' | 'historicalReturns' | 'monteCarlo' | 'historicalBacktest'
+                      )
+                    }
                   >
                     <optgroup label="Single Simulation">
                       <option value="fixedReturns">Fixed Returns</option>

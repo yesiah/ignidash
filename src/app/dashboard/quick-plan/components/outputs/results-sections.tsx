@@ -1,6 +1,6 @@
 'use client';
 
-import { useIsCalculationReady, useMarketAssumptionsData } from '@/lib/stores/quick-plan-store';
+import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/quick-plan-store';
 
 import SingleSimulationResults from './results-pages/single-simulation-results';
 import FixedReturnsResults from './results-pages/legacy/fixed-returns-results';
@@ -11,7 +11,7 @@ const USE_V2 = true;
 
 export default function ResultsSections() {
   const isCalculationReady = useIsCalculationReady();
-  const marketAssumptions = useMarketAssumptionsData();
+  const simulationMode = useSimulationMode();
 
   if (!isCalculationReady) {
     return (
@@ -22,7 +22,7 @@ export default function ResultsSections() {
   }
 
   if (!USE_V2) {
-    switch (marketAssumptions.simulationMode) {
+    switch (simulationMode) {
       case 'fixedReturns':
         return <FixedReturnsResults />;
       case 'monteCarlo':
@@ -32,7 +32,7 @@ export default function ResultsSections() {
     }
   }
 
-  switch (marketAssumptions.simulationMode) {
+  switch (simulationMode) {
     case 'fixedReturns':
     case 'historicalReturns':
     case 'stochasticReturns':

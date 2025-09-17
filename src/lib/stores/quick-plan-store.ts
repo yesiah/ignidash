@@ -139,6 +139,7 @@ interface QuickPlanState {
     showReferenceLines: boolean;
     simulationSeed: number;
     sidebarCollapsed: boolean;
+    simulationMode: 'fixedReturns' | 'stochasticReturns' | 'historicalReturns' | 'monteCarlo' | 'historicalBacktest';
   };
 
   actions: {
@@ -161,6 +162,7 @@ interface QuickPlanState {
     updateBaseContributionRule: (field: keyof BaseContributionInputs, value: unknown) => UpdateResult;
 
     updatePreferences: (field: keyof QuickPlanState['preferences'], value: unknown) => void;
+    updateSimulationMode: (value: QuickPlanState['preferences']['simulationMode']) => void;
     generateNewSeed: () => void;
 
     resetStore: () => void;
@@ -192,7 +194,6 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
       bondReturn: 5, // Nominal %
       cashReturn: 3, // Nominal %
       inflationRate: 3, // The bridge between nominal and real
-      simulationMode: 'fixedReturns',
     },
     retirementFunding: {
       safeWithdrawalRate: 4,
@@ -213,6 +214,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     showReferenceLines: true,
     simulationSeed: Math.floor(Math.random() * 1000),
     sidebarCollapsed: false,
+    simulationMode: 'fixedReturns',
   },
 };
 
@@ -367,8 +369,21 @@ export const useQuickPlanStore = create<QuickPlanState>()(
                 state.preferences.simulationSeed = value as number;
               } else if (field === 'sidebarCollapsed') {
                 state.preferences.sidebarCollapsed = value as boolean;
+              } else if (field === 'simulationMode') {
+                state.preferences.simulationMode = value as
+                  | 'fixedReturns'
+                  | 'stochasticReturns'
+                  | 'historicalReturns'
+                  | 'monteCarlo'
+                  | 'historicalBacktest';
               }
             }),
+
+          updateSimulationMode: (value) => {
+            set((state) => {
+              state.preferences.simulationMode = value;
+            });
+          },
 
           generateNewSeed: () =>
             set((state) => {
@@ -492,6 +507,8 @@ export const useSimulationSeed = () => useQuickPlanStore((state) => state.prefer
 export const useSidebarCollapsed = () => useQuickPlanStore((state) => state.preferences.sidebarCollapsed);
 export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
 export const useGenerateNewSeed = () => useQuickPlanStore((state) => state.actions.generateNewSeed);
+export const useSimulationMode = () => useQuickPlanStore((state) => state.preferences.simulationMode);
+export const useUpdateSimulationMode = () => useQuickPlanStore((state) => state.actions.updateSimulationMode);
 
 /**
  * Utility selectors
