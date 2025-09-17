@@ -31,10 +31,10 @@ export default function DisclosureSectionDataItem({
   ...otherProps
 }: DisclosureSectionDataItemProps) {
   return (
-    <li key={id} className="col-span-1 flex rounded-md shadow-xs dark:shadow-none" ref={ref} style={style}>
+    <li key={id} className="col-span-1 flex shadow-xs dark:shadow-none" ref={ref} style={style}>
       <div
         className={cn(
-          'border-foreground/50 flex w-16 shrink-0 items-center justify-center gap-1 rounded-l-md border text-xl font-medium text-white',
+          'border-foreground/50 flex w-16 shrink-0 items-center justify-center gap-1 border text-xl font-medium text-white',
           'bg-rose-800 dark:bg-rose-400',
           showDragHandle &&
             'cursor-grab touch-none focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none focus-visible:ring-inset'
@@ -44,7 +44,7 @@ export default function DisclosureSectionDataItem({
         {showDragHandle && <GripVerticalIcon className="size-5 shrink-0" />}
         {leftAddOnCharacter}
       </div>
-      <div className="bg-emphasized-background border-border flex flex-1 items-center justify-between truncate rounded-r-md border-t border-r border-b">
+      <div className="bg-emphasized-background border-border flex flex-1 items-center justify-between truncate border-t border-r border-b">
         <div className="flex-1 truncate px-4 py-2 text-sm">
           <span className="font-medium text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-200">{name}</span>
           <p className="text-muted-foreground">{desc}</p>
