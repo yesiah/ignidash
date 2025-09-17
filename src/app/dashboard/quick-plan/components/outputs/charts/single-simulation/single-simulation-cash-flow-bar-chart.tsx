@@ -70,14 +70,14 @@ export default function SingleSimulationCashFlowBarChart({
       ]);
       break;
     case 'incomes':
-      transformedChartData = chartData
-        .flatMap(({ perIncomeData }) => perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' })))
-        .filter(({ amount }) => amount !== 0);
+      transformedChartData = chartData.flatMap(({ perIncomeData }) =>
+        perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' }))
+      );
       break;
     case 'expenses':
-      transformedChartData = chartData
-        .flatMap(({ perExpenseData }) => perExpenseData.map(({ name, amount }) => ({ name, amount, type: 'expense' })))
-        .filter(({ amount }) => amount !== 0);
+      transformedChartData = chartData.flatMap(({ perExpenseData }) =>
+        perExpenseData.map(({ name, amount }) => ({ name, amount, type: 'expense' }))
+      );
       break;
     case 'custom':
       if (!customDataID) {
@@ -91,10 +91,10 @@ export default function SingleSimulationCashFlowBarChart({
           .flatMap(({ perIncomeData }) =>
             perIncomeData.map(({ id, name, grossIncome }) => ({ id, name, amount: grossIncome, type: 'income' }))
           )
-          .filter(({ id, amount }) => amount !== 0 && id === customDataID),
+          .filter(({ id }) => id === customDataID),
         ...chartData
           .flatMap(({ perExpenseData }) => perExpenseData.map(({ id, name, amount }) => ({ id, name, amount, type: 'expense' })))
-          .filter(({ id, amount }) => amount !== 0 && id === customDataID),
+          .filter(({ id }) => id === customDataID),
       ];
       break;
   }
