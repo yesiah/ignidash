@@ -51,7 +51,7 @@ export default function ExpectedReturnsDrawer() {
             <Fieldset aria-label="Expected Returns">
               <FieldGroup>
                 <Field>
-                  <Label htmlFor="stock-return" className="flex w-full items-center justify-between">
+                  <Label htmlFor="stockReturn" className="flex w-full items-center justify-between">
                     <span>Stock Return</span>
                     <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
                   </Label>
@@ -61,7 +61,7 @@ export default function ExpectedReturnsDrawer() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label htmlFor="bond-return" className="flex w-full items-center justify-between">
+                  <Label htmlFor="bondReturn" className="flex w-full items-center justify-between">
                     <span>Bond Return</span>
                     <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
                   </Label>
@@ -71,7 +71,7 @@ export default function ExpectedReturnsDrawer() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label htmlFor="cash-return" className="flex w-full items-center justify-between">
+                  <Label htmlFor="cashReturn" className="flex w-full items-center justify-between">
                     <span>Cash Return</span>
                     <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
                   </Label>
@@ -81,7 +81,7 @@ export default function ExpectedReturnsDrawer() {
                 </Field>
                 <Divider />
                 <Field>
-                  <Label htmlFor="inflation-rate" className="flex w-full items-center justify-between">
+                  <Label htmlFor="inflationRate" className="flex w-full items-center justify-between">
                     <span>Inflation Rate</span>
                     <span className="text-muted-foreground text-sm/6">—</span>
                   </Label>
