@@ -8,7 +8,7 @@ import SectionContainer from '@/components/ui/section-container';
 
 import FixedReturnsPortfolioAreaChartCard from '../../cards/legacy/fixed-returns-portfolio-area-chart-card';
 import FixedReturnsCashFlowBarChartCard from '../../cards/legacy/fixed-returns-cash-flow-bar-chart-card';
-import FixedReturnsDataTable from '../../tables/fixed-returns-data-table';
+import FixedReturnsDataTable from '../../tables/legacy/fixed-returns-data-table';
 import ResultsMetrics from '../../fixed-returns-metrics';
 
 export default function FixedReturnsResults() {

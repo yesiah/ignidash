@@ -17,8 +17,8 @@ import {
 import type { AggregateSimulationStats } from '@/lib/calc/simulation-analyzer';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 
-import Table from './table';
-import { TableType } from '../table-type-selector';
+import Table from '../table';
+import { TableType } from '../../table-type-selector';
 
 interface HistoricalBacktestDataTableImplProps {
   tableData: StochasticTableRow[];

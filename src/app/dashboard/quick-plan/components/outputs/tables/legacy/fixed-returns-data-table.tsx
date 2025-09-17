@@ -5,7 +5,7 @@ import type { SimulationTableRow } from '@/lib/schemas/simulation-table-schema';
 import type { SimulationResult } from '@/lib/calc/simulation-engine';
 import { generateSimulationTableColumns } from '@/lib/utils/table-formatters';
 
-import Table from './table';
+import Table from '../table';
 
 interface FixedReturnsDataTableProps {
   simulation: SimulationResult;
