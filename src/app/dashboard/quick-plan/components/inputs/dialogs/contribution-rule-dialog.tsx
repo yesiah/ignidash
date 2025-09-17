@@ -106,7 +106,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
             <FieldGroup>
               <Field>
                 <Label htmlFor="accountId">To Account</Label>
-                <Select {...register('accountId')} name="accountId" defaultValue="" invalid={!!errors.accountId}>
+                <Select {...register('accountId')} id="accountId" name="accountId" defaultValue="" invalid={!!errors.accountId}>
                   <option value="" disabled>
                     Select account&hellip;
                   </option>
@@ -121,7 +121,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
               {selectedAccount && accountTypeRequiresIncomeForContributions(selectedAccount.type) && (
                 <Field>
                   <Label htmlFor="incomeIds">With Income(s)</Label>
-                  <Select {...register('incomeIds')} id="incomeIds" name="incomeIds" multiple>
+                  <Select {...register('incomeIds')} id="incomeIds" name="incomeIds" multiple invalid={!!errors.incomeIds}>
                     {incomeOptions.map((income) => (
                       <option key={income.id} value={income.id}>
                         {income.name}
@@ -133,7 +133,12 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
               <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                 <Field className={getContributionTypeColSpan()}>
                   <Label htmlFor="contributionType">Type</Label>
-                  <Select {...register('contributionType')} id="contributionType" name="contributionType">
+                  <Select
+                    {...register('contributionType')}
+                    id="contributionType"
+                    name="contributionType"
+                    invalid={!!errors.contributionType}
+                  >
                     <option value="dollarAmount">Dollar Amount</option>
                     <option value="percentRemaining">% Remaining</option>
                     <option value="unlimited">Unlimited</option>
