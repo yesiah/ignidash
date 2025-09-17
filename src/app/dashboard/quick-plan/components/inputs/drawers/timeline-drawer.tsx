@@ -107,6 +107,7 @@ export default function TimelineDrawer() {
                   <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
                   {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
                 </Field>
+                <Divider />
                 <Field>
                   <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
                   <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
