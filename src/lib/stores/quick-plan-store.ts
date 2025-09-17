@@ -161,9 +161,11 @@ interface QuickPlanState {
     deleteContributionRule: (id: string) => UpdateResult;
     updateBaseContributionRule: (field: keyof BaseContributionInputs, value: unknown) => UpdateResult;
 
-    updatePreferences: (field: keyof QuickPlanState['preferences'], value: unknown) => void;
+    updateDataStoragePreference: (value: QuickPlanState['preferences']['dataStorage']) => void;
+    updateShowReferenceLines: (value: boolean) => void;
+    updateSimulationSeed: () => void;
+    updateSidebarCollapsed: (value: boolean) => void;
     updateSimulationMode: (value: QuickPlanState['preferences']['simulationMode']) => void;
-    generateNewSeed: () => void;
 
     resetStore: () => void;
   };
@@ -359,35 +361,29 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 
           updateBaseContributionRule: createSimpleUpdateAction('baseContributionRule', set, get),
 
-          updatePreferences: (field, value) =>
+          updateDataStoragePreference: (value) =>
             set((state) => {
-              if (field === 'dataStorage') {
-                state.preferences.dataStorage = value as 'localStorage' | 'none';
-              } else if (field === 'showReferenceLines') {
-                state.preferences.showReferenceLines = value as boolean;
-              } else if (field === 'simulationSeed') {
-                state.preferences.simulationSeed = value as number;
-              } else if (field === 'sidebarCollapsed') {
-                state.preferences.sidebarCollapsed = value as boolean;
-              } else if (field === 'simulationMode') {
-                state.preferences.simulationMode = value as
-                  | 'fixedReturns'
-                  | 'stochasticReturns'
-                  | 'historicalReturns'
-                  | 'monteCarlo'
-                  | 'historicalBacktest';
-              }
+              state.preferences.dataStorage = value as 'localStorage' | 'none';
             }),
 
-          updateSimulationMode: (value) => {
+          updateShowReferenceLines: (value) =>
             set((state) => {
-              state.preferences.simulationMode = value;
-            });
-          },
+              state.preferences.showReferenceLines = value;
+            }),
 
-          generateNewSeed: () =>
+          updateSimulationSeed: () =>
             set((state) => {
               state.preferences.simulationSeed = Math.floor(Math.random() * 1000);
+            }),
+
+          updateSidebarCollapsed: (value) =>
+            set((state) => {
+              state.preferences.sidebarCollapsed = value;
+            }),
+
+          updateSimulationMode: (value) =>
+            set((state) => {
+              state.preferences.simulationMode = value;
             }),
 
           resetStore: () =>
@@ -497,18 +493,21 @@ export const useReorderContributionRules = () => useQuickPlanStore((state) => st
 export const useDeleteContributionRule = () => useQuickPlanStore((state) => state.actions.deleteContributionRule);
 export const useUpdateBaseContributionRule = () => useQuickPlanStore((state) => state.actions.updateBaseContributionRule);
 
+export const useUpdateDataStoragePreference = () => useQuickPlanStore((state) => state.actions.updateDataStoragePreference);
+export const useUpdateShowReferenceLines = () => useQuickPlanStore((state) => state.actions.updateShowReferenceLines);
+export const useUpdateSimulationSeed = () => useQuickPlanStore((state) => state.actions.updateSimulationSeed);
+export const useUpdateSidebarCollapsed = () => useQuickPlanStore((state) => state.actions.updateSidebarCollapsed);
+export const useUpdateSimulationMode = () => useQuickPlanStore((state) => state.actions.updateSimulationMode);
+
 /**
  * Preferences selectors
  * These hooks manage user preferences and settings
  */
-export const usePreferencesData = () => useQuickPlanStore((state) => state.preferences);
-export const useShowReferenceLinesPreference = () => useQuickPlanStore((state) => state.preferences.showReferenceLines);
+export const useDataStoragePreference = () => useQuickPlanStore((state) => state.preferences.dataStorage);
+export const useShowReferenceLines = () => useQuickPlanStore((state) => state.preferences.showReferenceLines);
 export const useSimulationSeed = () => useQuickPlanStore((state) => state.preferences.simulationSeed);
 export const useSidebarCollapsed = () => useQuickPlanStore((state) => state.preferences.sidebarCollapsed);
-export const useUpdatePreferences = () => useQuickPlanStore((state) => state.actions.updatePreferences);
-export const useGenerateNewSeed = () => useQuickPlanStore((state) => state.actions.generateNewSeed);
 export const useSimulationMode = () => useQuickPlanStore((state) => state.preferences.simulationMode);
-export const useUpdateSimulationMode = () => useQuickPlanStore((state) => state.actions.updateSimulationMode);
 
 /**
  * Utility selectors

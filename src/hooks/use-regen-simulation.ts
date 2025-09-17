@@ -1,14 +1,14 @@
 import { RefreshCwIcon } from 'lucide-react';
 
-import { useGenerateNewSeed } from '@/lib/stores/quick-plan-store';
+import { useUpdateSimulationSeed } from '@/lib/stores/quick-plan-store';
 
 export function useRegenSimulation() {
-  const generateNewSeed = useGenerateNewSeed();
+  const updateSimulationSeed = useUpdateSimulationSeed();
 
   return {
     icon: RefreshCwIcon,
     label: 'Regenerate simulation',
-    handleClick: generateNewSeed,
+    handleClick: updateSimulationSeed,
     className: 'hover:-rotate-180 transition-transform duration-300',
   };
 }

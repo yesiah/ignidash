@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  useShowReferenceLinesPreference,
-  useUpdatePreferences,
-  useCurrentAge,
-  type StochasticAnalysis,
-} from '@/lib/stores/quick-plan-store';
+import { useShowReferenceLines, useUpdateShowReferenceLines, useCurrentAge, type StochasticAnalysis } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import { Switch } from '@/components/catalyst/switch';
 
@@ -27,8 +22,8 @@ export default function StochasticPortfolioAreaChartCard({
   selectedAge,
 }: StochasticPortfolioAreaChartCardProps) {
   const currentAge = useCurrentAge();
-  const showReferenceLines = useShowReferenceLinesPreference();
-  const updatePreferences = useUpdatePreferences();
+  const showReferenceLines = useShowReferenceLines();
+  const updateShowReferenceLines = useUpdateShowReferenceLines();
 
   return (
     <Card className="my-0">
@@ -42,9 +37,9 @@ export default function StochasticPortfolioAreaChartCard({
           color="rose"
           checked={showReferenceLines}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') updatePreferences('showReferenceLines', !showReferenceLines);
+            if (e.key === 'Enter') updateShowReferenceLines(!showReferenceLines);
           }}
-          onChange={() => updatePreferences('showReferenceLines', !showReferenceLines)}
+          onChange={() => updateShowReferenceLines(!showReferenceLines)}
           aria-label="Toggle reference lines"
         />
       </div>

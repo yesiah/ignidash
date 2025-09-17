@@ -1,6 +1,6 @@
 'use client';
 
-import { useCurrentAge, useShowReferenceLinesPreference, useUpdatePreferences } from '@/lib/stores/quick-plan-store';
+import { useCurrentAge, useShowReferenceLines, useUpdateShowReferenceLines } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import { Switch } from '@/components/catalyst/switch';
 import type { SimulationResult } from '@/lib/calc/simulation-engine';
@@ -19,8 +19,8 @@ export default function FixedReturnsPortfolioAreaChartCard({
   selectedAge,
 }: FixedReturnsPortfolioAreaChartCardProps) {
   const currentAge = useCurrentAge();
-  const showReferenceLines = useShowReferenceLinesPreference();
-  const updatePreferences = useUpdatePreferences();
+  const showReferenceLines = useShowReferenceLines();
+  const updateShowReferenceLines = useUpdateShowReferenceLines();
 
   return (
     <Card className="my-0">
@@ -34,9 +34,9 @@ export default function FixedReturnsPortfolioAreaChartCard({
           color="rose"
           checked={showReferenceLines}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') updatePreferences('showReferenceLines', !showReferenceLines);
+            if (e.key === 'Enter') updateShowReferenceLines(!showReferenceLines);
           }}
-          onChange={() => updatePreferences('showReferenceLines', !showReferenceLines)}
+          onChange={() => updateShowReferenceLines(!showReferenceLines)}
           aria-label="Toggle reference lines"
         />
       </div>

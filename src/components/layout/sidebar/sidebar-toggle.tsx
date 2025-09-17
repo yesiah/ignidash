@@ -4,7 +4,7 @@ import { PanelLeftCloseIcon, PanelLeftOpenIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import { cn } from '@/lib/utils';
-import { useSidebarCollapsed, useUpdatePreferences } from '@/lib/stores/quick-plan-store';
+import { useSidebarCollapsed, useUpdateSidebarCollapsed } from '@/lib/stores/quick-plan-store';
 
 interface SidebarToggleProps {
   className?: string;
@@ -13,8 +13,8 @@ interface SidebarToggleProps {
 export default function SidebarToggle({ className }: SidebarToggleProps) {
   const sidebarCollapsed = useSidebarCollapsed();
 
-  const updatePreferences = useUpdatePreferences();
-  const handleToggle = () => updatePreferences('sidebarCollapsed', !sidebarCollapsed);
+  const updateSidebarCollapsed = useUpdateSidebarCollapsed();
+  const handleToggle = () => updateSidebarCollapsed(!sidebarCollapsed);
 
   return (
     <IconButton

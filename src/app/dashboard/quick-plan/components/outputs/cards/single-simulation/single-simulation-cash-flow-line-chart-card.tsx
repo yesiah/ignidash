@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback } from 'react';
 
-import { useShowReferenceLinesPreference, type FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
+import { useShowReferenceLines, type FixedReturnsKeyMetricsV2 } from '@/lib/stores/quick-plan-store';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
@@ -32,7 +32,7 @@ export default function SingleSimulationCashFlowLineChartCard({
   keyMetrics,
   startAge,
 }: SingleSimulationCashFlowLineChartCardProps) {
-  const showReferenceLines = useShowReferenceLinesPreference();
+  const showReferenceLines = useShowReferenceLines();
 
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
     return Array.from(new Map(items.map((item) => [item.id, { id: item.id, name: item.name }])).values());
