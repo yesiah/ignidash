@@ -361,7 +361,6 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 
           updateBaseContributionRule: createSimpleUpdateAction('baseContributionRule', set, get),
 
-          /** Preferences actions */
           updatePreferences: (field, value) =>
             set((state) => {
               if (field === 'dataStorage') {
@@ -380,7 +379,6 @@ export const useQuickPlanStore = create<QuickPlanState>()(
               state.preferences.simulationSeed = Math.floor(Math.random() * 1000);
             }),
 
-          /** Utility actions */
           resetStore: () =>
             set((state) => {
               state.inputs = { ...defaultState.inputs };
