@@ -144,6 +144,7 @@ interface QuickPlanState {
   actions: {
     updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
 
+    updateTimeline: (data: TimelineInputs) => UpdateResult;
     updateTimelines: (data: TimelineInputs) => UpdateResult;
     deleteTimeline: (id: string) => UpdateResult;
 
@@ -265,6 +266,14 @@ export const useQuickPlanStore = create<QuickPlanState>()(
         ...defaultState,
         actions: {
           updateMarketAssumptions: createSimpleUpdateAction('marketAssumptions', set, get),
+
+          updateTimeline: (data: TimelineInputs) => {
+            set((state) => {
+              state.inputs.timeline = { ...data };
+            });
+
+            return { success: true };
+          },
 
           updateTimelines: (data: TimelineInputs) => {
             set((state) => {
