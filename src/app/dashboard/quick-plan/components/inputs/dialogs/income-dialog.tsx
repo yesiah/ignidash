@@ -18,7 +18,7 @@ import {
 } from '@/lib/stores/quick-plan-store';
 import { incomeFormSchema, type IncomeInputs, timeFrameForDisplay, growthForDisplay } from '@/lib/schemas/income-form-schema';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import { Field, Fieldset, FieldGroup, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
@@ -213,15 +213,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                 </Field>
                 <Field>
                   <Label htmlFor="amount">Amount</Label>
-                  <NumberInputV2
-                    name="amount"
-                    control={control}
-                    id="amount"
-                    inputMode="decimal"
-                    placeholder="$85,000"
-                    prefix="$"
-                    autoFocus
-                  />
+                  <NumberInput name="amount" control={control} id="amount" inputMode="decimal" placeholder="$85,000" prefix="$" autoFocus />
                   {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
                 </Field>
                 <Field>
@@ -491,7 +483,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                               <span>Growth Rate</span>
                               <span className="text-muted-foreground text-sm/6">{Number(realGrowthRate).toFixed(1)}% real</span>
                             </Label>
-                            <NumberInputV2
+                            <NumberInput
                               name="growth.growthRate"
                               control={control}
                               id="growthRate"
@@ -506,7 +498,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                               <span className="whitespace-nowrap">Limit</span>
                               <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                             </Label>
-                            <NumberInputV2
+                            <NumberInput
                               name="growth.growthLimit"
                               control={control}
                               id="growthLimit"

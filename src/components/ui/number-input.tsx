@@ -2,7 +2,7 @@ import { NumericFormat, type NumberFormatValues } from 'react-number-format';
 import { Input } from '@/components/catalyst/input';
 import { useController, type UseControllerProps, type FieldValues, type FieldPath } from 'react-hook-form';
 
-interface NumberInputV2Props {
+interface NumberInputProps {
   id: string;
   inputMode: 'numeric' | 'decimal';
   placeholder: string;
@@ -15,7 +15,7 @@ interface NumberInputV2Props {
   autoFocus?: boolean;
 }
 
-export default function NumberInputV2<
+export default function NumberInput<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -35,7 +35,7 @@ export default function NumberInputV2<
   defaultValue,
   control,
   disabled,
-}: NumberInputV2Props & UseControllerProps<TFieldValues, TName>) {
+}: NumberInputProps & UseControllerProps<TFieldValues, TName>) {
   const {
     field: { onChange, onBlur, value, ref },
     fieldState: { error },

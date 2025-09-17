@@ -15,7 +15,7 @@ import {
   type RothAccountType,
   type InvestmentAccountType,
 } from '@/lib/schemas/account-form-schema';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
@@ -132,7 +132,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                 </Field>
                 <Field className={getBalanceColSpan()}>
                   <Label htmlFor="currentValue">Market Value</Label>
-                  <NumberInputV2
+                  <NumberInput
                     name="currentValue"
                     control={control}
                     id="currentValue"
@@ -149,7 +149,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                       <span className="whitespace-nowrap">Cost Basis</span>
                       <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                     </Label>
-                    <NumberInputV2 name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
+                    <NumberInput name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="—" prefix="$" />
                     {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message && (
                       <ErrorMessage>
                         {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message}
@@ -163,7 +163,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                       <span className="whitespace-nowrap">Contributions</span>
                       <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                     </Label>
-                    <NumberInputV2
+                    <NumberInput
                       name="contributionBasis"
                       control={control}
                       id="contributionBasis"
@@ -183,7 +183,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                     <span className="whitespace-nowrap">% Bonds</span>
                     <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                   </Label>
-                  <NumberInputV2
+                  <NumberInput
                     name="percentBonds"
                     control={control}
                     id="percentBonds"

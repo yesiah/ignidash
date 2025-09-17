@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { useUpdateAccounts, useSavingsData, useAccountsData } from '@/lib/stores/quick-plan-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs } from '@/lib/schemas/account-form-schema';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
@@ -80,7 +80,7 @@ export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDia
               </Field>
               <Field>
                 <Label htmlFor="currentValue">Balance</Label>
-                <NumberInputV2
+                <NumberInput
                   name="currentValue"
                   control={control}
                   id="currentValue"

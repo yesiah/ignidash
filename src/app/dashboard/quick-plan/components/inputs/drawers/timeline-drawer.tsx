@@ -7,7 +7,7 @@ import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
 import { useUpdateTimeline, useTimelineData } from '@/lib/stores/quick-plan-store';
 import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
@@ -106,13 +106,13 @@ export default function TimelineDrawer() {
               <FieldGroup>
                 <Field>
                   <Label htmlFor="currentAge">Current Age</Label>
-                  <NumberInputV2 name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
+                  <NumberInput name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
                   {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
                 </Field>
                 <Divider />
                 <Field>
                   <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
-                  <NumberInputV2 name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
+                  <NumberInput name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
                   {errors.lifeExpectancy && <ErrorMessage>{errors.lifeExpectancy?.message}</ErrorMessage>}
                 </Field>
                 <Divider />
@@ -126,7 +126,7 @@ export default function TimelineDrawer() {
                 {retirementStrategyType === 'fixedAge' && (
                   <Field>
                     <Label htmlFor="retirementStrategy.retirementAge">Retirement Age</Label>
-                    <NumberInputV2
+                    <NumberInput
                       name="retirementStrategy.retirementAge"
                       control={control}
                       id="retirementStrategy.retirementAge"
@@ -140,7 +140,7 @@ export default function TimelineDrawer() {
                 {retirementStrategyType === 'swrTarget' && (
                   <Field>
                     <Label htmlFor="retirementStrategy.safeWithdrawalRate">Safe Withdrawal Rate</Label>
-                    <NumberInputV2
+                    <NumberInput
                       name="retirementStrategy.safeWithdrawalRate"
                       control={control}
                       id="retirementStrategy.safeWithdrawalRate"

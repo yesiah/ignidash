@@ -16,7 +16,7 @@ import {
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { contributionFormSchema, type ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import { accountTypeForDisplay, accountTypeRequiresIncomeForContributions } from '@/lib/schemas/account-form-schema';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
@@ -142,7 +142,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 {contributionType === 'dollarAmount' && (
                   <Field>
                     <Label htmlFor="dollarAmount">Dollar Amount</Label>
-                    <NumberInputV2
+                    <NumberInput
                       name="dollarAmount"
                       control={control}
                       id="dollarAmount"
@@ -161,7 +161,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 {contributionType === 'percentRemaining' && (
                   <Field>
                     <Label htmlFor="percentRemaining">% Remaining</Label>
-                    <NumberInputV2
+                    <NumberInput
                       name="percentRemaining"
                       control={control}
                       id="percentRemaining"
@@ -188,7 +188,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                   <span className="whitespace-nowrap">Account Limit</span>
                   <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                 </Label>
-                <NumberInputV2 name="maxValue" control={control} id="maxValue" inputMode="decimal" placeholder="$15,000" prefix="$" />
+                <NumberInput name="maxValue" control={control} id="maxValue" inputMode="decimal" placeholder="$15,000" prefix="$" />
                 {errors.maxValue && <ErrorMessage>{errors.maxValue?.message}</ErrorMessage>}
                 <Description>Limit on the total value of this account. Contributions will stop once reached.</Description>
               </Field>

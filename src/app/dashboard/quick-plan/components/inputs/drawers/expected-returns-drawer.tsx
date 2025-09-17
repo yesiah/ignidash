@@ -14,7 +14,7 @@ import { type MarketAssumptionsInputs, marketAssumptionsSchema } from '@/lib/sch
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
-import NumberInputV2 from '@/components/ui/number-input-v2';
+import NumberInput from '@/components/ui/number-input';
 import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
@@ -55,7 +55,7 @@ export default function ExpectedReturnsDrawer() {
                     <span>Stock Return</span>
                     <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInputV2 name="stockReturn" control={control} id="stockReturn" inputMode="decimal" placeholder="10%" suffix="%" />
+                  <NumberInput name="stockReturn" control={control} id="stockReturn" inputMode="decimal" placeholder="10%" suffix="%" />
                   {errors.stockReturn && <ErrorMessage>{errors.stockReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for stocks and other volatile investments.</Description>
                 </Field>
@@ -65,7 +65,7 @@ export default function ExpectedReturnsDrawer() {
                     <span>Bond Return</span>
                     <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInputV2 id="bondReturn" control={control} name="bondReturn" inputMode="decimal" placeholder="5%" suffix="%" />
+                  <NumberInput id="bondReturn" control={control} name="bondReturn" inputMode="decimal" placeholder="5%" suffix="%" />
                   {errors.bondReturn && <ErrorMessage>{errors.bondReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for bonds.</Description>
                 </Field>
@@ -75,7 +75,7 @@ export default function ExpectedReturnsDrawer() {
                     <span>Cash Return</span>
                     <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInputV2 id="cashReturn" control={control} name="cashReturn" inputMode="decimal" placeholder="3%" suffix="%" />
+                  <NumberInput id="cashReturn" control={control} name="cashReturn" inputMode="decimal" placeholder="3%" suffix="%" />
                   {errors.cashReturn && <ErrorMessage>{errors.cashReturn?.message}</ErrorMessage>}
                   <Description>Expected annual interest rate for cash savings and money market accounts.</Description>
                 </Field>
@@ -85,14 +85,7 @@ export default function ExpectedReturnsDrawer() {
                     <span>Inflation Rate</span>
                     <span className="text-muted-foreground text-sm/6">—</span>
                   </Label>
-                  <NumberInputV2
-                    id="inflationRate"
-                    control={control}
-                    name="inflationRate"
-                    inputMode="decimal"
-                    placeholder="3%"
-                    suffix="%"
-                  />
+                  <NumberInput id="inflationRate" control={control} name="inflationRate" inputMode="decimal" placeholder="3%" suffix="%" />
                   {errors.inflationRate && <ErrorMessage>{errors.inflationRate?.message}</ErrorMessage>}
                   <Description>Expected annual inflation rate, used to calculate real returns.</Description>
                 </Field>
