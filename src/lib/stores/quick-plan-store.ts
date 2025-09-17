@@ -142,7 +142,7 @@ interface QuickPlanState {
   };
 
   actions: {
-    updateMarketAssumptions: (field: keyof MarketAssumptionsInputs, value: unknown) => UpdateResult;
+    updateMarketAssumptions: (data: MarketAssumptionsInputs) => UpdateResult;
 
     updateTimeline: (data: TimelineInputs) => UpdateResult;
 
@@ -262,7 +262,13 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       immer((set, get) => ({
         ...defaultState,
         actions: {
-          updateMarketAssumptions: createSimpleUpdateAction('marketAssumptions', set, get),
+          updateMarketAssumptions: (data: MarketAssumptionsInputs) => {
+            set((state) => {
+              state.inputs.marketAssumptions = { ...data };
+            });
+
+            return { success: true };
+          },
 
           updateTimeline: (data: TimelineInputs) => {
             set((state) => {

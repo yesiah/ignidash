@@ -1,5 +1,8 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 import {
   useMarketAssumptionsData,
   useUpdateMarketAssumptions,
@@ -7,18 +10,33 @@ import {
   useBondsRealReturn,
   useCashRealReturn,
 } from '@/lib/stores/quick-plan-store';
+import { type MarketAssumptionsInputs, marketAssumptionsSchema } from '@/lib/schemas/quick-plan-schema';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
-import NumberInput from '@/components/ui/number-input';
-import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
+import NumberInputV2 from '@/components/ui/number-input-v2';
+import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
 import { DialogActions } from '@/components/catalyst/dialog';
 
 export default function ExpectedReturnsDrawer() {
   const marketAssumptions = useMarketAssumptionsData();
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(marketAssumptionsSchema),
+    defaultValues: marketAssumptions,
+  });
+
   const updateMarketAssumptions = useUpdateMarketAssumptions();
+  const onSubmit = (data: MarketAssumptionsInputs) => {
+    updateMarketAssumptions({ ...data });
+  };
 
   const stocksRealReturn = useStocksRealReturn();
   const bondsRealReturn = useBondsRealReturn();
@@ -29,7 +47,7 @@ export default function ExpectedReturnsDrawer() {
       <SectionContainer showBottomBorder={false} location="drawer">
         <SectionHeader title="Expected Returns" desc="Set expected inflation rate and annual returns for each asset class." />
         <Card>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Expected Returns">
               <FieldGroup>
                 <Field>
@@ -37,14 +55,8 @@ export default function ExpectedReturnsDrawer() {
                     <span>Stock Return</span>
                     <span className="text-muted-foreground text-sm/6">{stocksRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInput
-                    id="stock-return"
-                    value={marketAssumptions.stockReturn}
-                    onBlur={(value) => updateMarketAssumptions('stockReturn', value)}
-                    inputMode="decimal"
-                    placeholder="10%"
-                    suffix="%"
-                  />
+                  <NumberInputV2 name="stockReturn" control={control} id="stockReturn" inputMode="decimal" placeholder="10%" suffix="%" />
+                  {errors.stockReturn && <ErrorMessage>{errors.stockReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for stocks and other volatile investments.</Description>
                 </Field>
                 <Divider />
@@ -53,14 +65,8 @@ export default function ExpectedReturnsDrawer() {
                     <span>Bond Return</span>
                     <span className="text-muted-foreground text-sm/6">{bondsRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInput
-                    id="bond-return"
-                    value={marketAssumptions.bondReturn}
-                    onBlur={(value) => updateMarketAssumptions('bondReturn', value)}
-                    inputMode="decimal"
-                    placeholder="5%"
-                    suffix="%"
-                  />
+                  <NumberInputV2 id="bondReturn" control={control} name="bondReturn" inputMode="decimal" placeholder="5%" suffix="%" />
+                  {errors.bondReturn && <ErrorMessage>{errors.bondReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for bonds.</Description>
                 </Field>
                 <Divider />
@@ -69,14 +75,8 @@ export default function ExpectedReturnsDrawer() {
                     <span>Cash Return</span>
                     <span className="text-muted-foreground text-sm/6">{cashRealReturn.toFixed(1)}% real</span>
                   </Label>
-                  <NumberInput
-                    id="cash-return"
-                    value={marketAssumptions.cashReturn}
-                    onBlur={(value) => updateMarketAssumptions('cashReturn', value)}
-                    inputMode="decimal"
-                    placeholder="3%"
-                    suffix="%"
-                  />
+                  <NumberInputV2 id="cashReturn" control={control} name="cashReturn" inputMode="decimal" placeholder="3%" suffix="%" />
+                  {errors.cashReturn && <ErrorMessage>{errors.cashReturn?.message}</ErrorMessage>}
                   <Description>Expected annual interest rate for cash savings and money market accounts.</Description>
                 </Field>
                 <Divider />
@@ -85,21 +85,22 @@ export default function ExpectedReturnsDrawer() {
                     <span>Inflation Rate</span>
                     <span className="text-muted-foreground text-sm/6">—</span>
                   </Label>
-                  <NumberInput
-                    id="inflation-rate"
-                    value={marketAssumptions.inflationRate}
-                    onBlur={(value) => updateMarketAssumptions('inflationRate', value)}
+                  <NumberInputV2
+                    id="inflationRate"
+                    control={control}
+                    name="inflationRate"
                     inputMode="decimal"
                     placeholder="3%"
                     suffix="%"
                   />
+                  {errors.inflationRate && <ErrorMessage>{errors.inflationRate?.message}</ErrorMessage>}
                   <Description>Expected annual inflation rate, used to calculate real returns.</Description>
                 </Field>
                 <Divider />
               </FieldGroup>
             </Fieldset>
             <DialogActions>
-              <Button outline onClick={() => {}}>
+              <Button outline onClick={() => reset()}>
                 Reset
               </Button>
               <Button color="rose" type="submit">
