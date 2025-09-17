@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 interface SectionContainerProps {
   showBottomBorder: boolean;
   children: React.ReactNode;
@@ -21,7 +23,7 @@ export default function SectionContainer({ children, showBottomBorder, location 
 
   const borderClass = showBottomBorder ? 'border-border border-b' : '';
   return (
-    <div className={`my-5 pb-5 ${borderClass} ${outerXMarginClass}`}>
+    <div className={cn('my-5 pb-5', borderClass, outerXMarginClass)}>
       <div className={innerXMarginClass}>{children}</div>
     </div>
   );
