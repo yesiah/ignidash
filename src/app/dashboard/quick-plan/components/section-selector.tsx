@@ -1,6 +1,6 @@
 'use client';
 
-import { CalculatorIcon, SlidersHorizontalIcon, PresentationIcon, TrendingUpIcon, BanknoteXIcon } from 'lucide-react';
+import { CalculatorIcon, SlidersHorizontalIcon, PresentationIcon, TrendingUpIcon, BanknoteXIcon, HourglassIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 import ExpectedReturnsDrawer from './inputs/drawers/expected-returns-drawer';
 import TaxSettingsDrawer from './inputs/drawers/tax-settings-drawer';
 import SimulationSettingsDrawer from './outputs/drawers/simulation-settings-drawer';
+import TimelineDrawer from './inputs/drawers/timeline-drawer';
 
 type ActiveSection = 'results' | 'your-numbers';
 
@@ -36,6 +37,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const [simulationSettingsOpen, setSimulationSettingsOpen] = useState(false);
   const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
   const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
+  const [timelineOpen, setTimelineOpen] = useState(false);
 
   const { icon, label, handleClick, className } = useRegenSimulation();
 
@@ -55,6 +57,12 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
     <div className="flex items-center gap-2">
       <SlidersHorizontalIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
       <span>Simulation Settings</span>
+    </div>
+  );
+  const timelineTitleComponent = (
+    <div className="flex items-center gap-2">
+      <HourglassIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+      <span>Timeline</span>
     </div>
   );
 
@@ -88,6 +96,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 surfaceColor="emphasized"
               />
               <IconButton icon={BanknoteXIcon} label="Tax Settings" onClick={() => setTaxSettingsOpen(true)} surfaceColor="emphasized" />
+              <IconButton icon={HourglassIcon} label="Timeline" onClick={() => setTimelineOpen(true)} surfaceColor="emphasized" />
             </div>
           )}
           {activeSection === 'results' && (
@@ -112,6 +121,9 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
         <SimulationSettingsDrawer />
+      </Drawer>
+      <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
+        <TimelineDrawer />
       </Drawer>
     </>
   );
