@@ -13,7 +13,6 @@ import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
-import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
 
 function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarget') {
@@ -28,7 +27,7 @@ function getRetirementStrategyDesc(retirementStrategyType: 'fixedAge' | 'swrTarg
             href="https://www.investopedia.com/terms/s/safe-withdrawal-rate-swr-method.asp"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hidden hover:underline sm:inline"
+            className="text-primary hidden whitespace-nowrap hover:underline sm:inline"
           >
             Learn more →
           </a>
@@ -98,7 +97,7 @@ export default function TimelineDrawer() {
   return (
     <>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Timeline" />
+        <SectionHeader title="Timeline" desc="Set when your simulation should start, when it should end, and when you want to retire." />
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Timeline details">
@@ -152,10 +151,6 @@ export default function TimelineDrawer() {
                 )}
               </FieldGroup>
             </Fieldset>
-
-            <Button color="rose" type="submit">
-              Save
-            </Button>
           </form>
         </Card>
       </SectionContainer>
