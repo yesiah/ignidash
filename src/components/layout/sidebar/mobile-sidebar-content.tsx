@@ -1,5 +1,6 @@
 import type { NavigationItem } from '@/lib/navigation';
 import { SidebarModeToggle } from '@/components/mode-toggle';
+import { Divider } from '@/components/catalyst/divider';
 
 import SidebarLink from './sidebar-link';
 import SidebarBrand from './sidebar-brand';
@@ -30,10 +31,12 @@ export default function MobileSidebarContent({ navigation, secondaryNavigation, 
                   </SidebarLink>
                 </li>
               ))}
+              <Divider />
             </ul>
           </li>
           <li className="mt-auto mb-1">
             <ul role="list" className="space-y-1.5">
+              <Divider />
               <li key="dark-mode">
                 <SidebarModeToggle />
               </li>
