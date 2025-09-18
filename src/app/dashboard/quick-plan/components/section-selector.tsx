@@ -88,7 +88,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             ))}
           </nav>
           {activeSection === 'your-numbers' && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <IconButton
                 icon={TrendingUpIcon}
                 label="Expected Returns"
@@ -100,7 +100,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             </div>
           )}
           {activeSection === 'results' && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <IconButton
                 icon={SlidersHorizontalIcon}
                 label="Simulation Settings"

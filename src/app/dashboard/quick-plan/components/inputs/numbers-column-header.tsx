@@ -41,7 +41,7 @@ export default function NumbersColumnHeader() {
         title="Numbers"
         icon={CalculatorIcon}
         iconButton={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <IconButton
               icon={TrendingUpIcon}
               label="Expected Returns"

@@ -27,7 +27,7 @@ export default function ResultsColumnHeader() {
         title="Results"
         icon={PresentationIcon}
         iconButton={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <IconButton
               icon={SlidersHorizontalIcon}
               label="Simulation Settings"
