@@ -33,12 +33,15 @@ export default function DisclosureSectionDataItem({
   ...otherProps
 }: DisclosureSectionDataItemProps) {
   const color = COLORS[index % COLORS.length];
+  // const needsBgTextColor = ['bg-[var(--chart-1)]'];
+
   return (
     <li key={id} className="col-span-1 flex shadow-xs dark:shadow-none" ref={ref} style={style}>
       <div
         className={cn(
           'border-foreground/50 flex w-16 shrink-0 items-center justify-center gap-1 border text-xl font-medium text-white',
           color,
+          // needsBgTextColor.includes(color) && 'text-black',
           showDragHandle &&
             'cursor-grab touch-none focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none focus-visible:ring-inset'
         )}
