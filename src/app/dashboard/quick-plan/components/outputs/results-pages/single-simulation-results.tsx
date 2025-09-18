@@ -24,7 +24,7 @@ export default function SingleSimulationResults({ simulationMode }: SingleSimula
 
   return (
     <>
-      <SectionContainer showBottomBorder>
+      <SectionContainer showBottomBorder className="mb-0">
         <SingleSimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <SingleSimulationMainResults simulation={simulationResult} keyMetrics={keyMetrics} />

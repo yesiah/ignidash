@@ -5,6 +5,7 @@ import { useState, useCallback } from 'react';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { SingleSimulationKeyMetrics } from '@/lib/stores/quick-plan-store';
 import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import SectionContainer from '@/components/ui/section-container';
 
 import SingleSimulationCategorySelector from '../single-simulation-category-selector';
 import SingleSimulationChartsSection from '../sections/single-simulation-charts-section';
@@ -30,9 +31,9 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
 
   return (
     <>
-      <div>
+      <SectionContainer showBottomBorder>
         <SingleSimulationCategorySelector currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />
-      </div>
+      </SectionContainer>
       <SingleSimulationChartsSection
         simulation={simulation}
         keyMetrics={keyMetrics}
