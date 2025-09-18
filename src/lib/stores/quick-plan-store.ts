@@ -797,10 +797,10 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
       const startDateYear = new Date().getFullYear();
       const currDateYear = new Date(data.date).getFullYear();
 
-      const portfolio = data.portfolio;
-      const totalValue = portfolio.totalValue;
+      const portfolioData = data.portfolio;
+      const totalValue = portfolioData.totalValue;
 
-      const assetAllocation = portfolio.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
+      const assetAllocation = portfolioData.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
       const stocksAllocation = assetAllocation.stocks;
       const bondsAllocation = assetAllocation.bonds;
       const cashAllocation = assetAllocation.cash;
@@ -810,7 +810,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
       let taxDeferred = 0;
       let taxFree = 0;
 
-      for (const account of Object.values(portfolio.perAccountData)) {
+      for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
             cashSavings += account.totalValue;
@@ -839,7 +839,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
         taxDeferred,
         taxFree,
         cashSavings,
-        perAccountData: Object.values(portfolio.perAccountData),
+        perAccountData: Object.values(portfolioData.perAccountData),
       };
     });
   }, [simulation]);

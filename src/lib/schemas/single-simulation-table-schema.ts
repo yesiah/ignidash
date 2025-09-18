@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const singleSimulationTableRowSchema = z.object({
   year: z.number(),
   age: z.number(),
-  phaseName: z.string(),
+  phaseName: z.string().nullable(),
   portfolioValue: z.number(),
   stocksValue: z.number(),
   stocksReturn: z.number().nullable(),
