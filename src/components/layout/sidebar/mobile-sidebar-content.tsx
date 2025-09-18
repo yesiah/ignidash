@@ -31,12 +31,12 @@ export default function MobileSidebarContent({ navigation, secondaryNavigation, 
                   </SidebarLink>
                 </li>
               ))}
-              <Divider />
+              <Divider hard />
             </ul>
           </li>
           <li className="mt-auto mb-1">
             <ul role="list" className="space-y-1.5">
-              <Divider />
+              <Divider hard />
               <li key="dark-mode">
                 <SidebarModeToggle />
               </li>
