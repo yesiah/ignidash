@@ -1311,7 +1311,7 @@ export const useStocksRealReturn = () =>
     const nominalReturn = state.inputs.marketAssumptions.stockReturn;
     const inflationRate = state.inputs.marketAssumptions.inflationRate;
     const realReturn = (1 + nominalReturn / 100) / (1 + inflationRate / 100) - 1;
-    return realReturn * 100; // Convert back to percentage
+    return realReturn * 100;
   });
 
 export const useBondsRealReturn = () =>
@@ -1319,7 +1319,7 @@ export const useBondsRealReturn = () =>
     const nominalReturn = state.inputs.marketAssumptions.bondReturn;
     const inflationRate = state.inputs.marketAssumptions.inflationRate;
     const realReturn = (1 + nominalReturn / 100) / (1 + inflationRate / 100) - 1;
-    return realReturn * 100; // Convert back to percentage
+    return realReturn * 100;
   });
 
 export const useCashRealReturn = () =>
@@ -1327,7 +1327,7 @@ export const useCashRealReturn = () =>
     const nominalReturn = state.inputs.marketAssumptions.cashReturn;
     const inflationRate = state.inputs.marketAssumptions.inflationRate;
     const realReturn = (1 + nominalReturn / 100) / (1 + inflationRate / 100) - 1;
-    return realReturn * 100; // Convert back to percentage
+    return realReturn * 100;
   });
 
 export const useIncomeRealGrowthRate = () =>
@@ -1335,7 +1335,7 @@ export const useIncomeRealGrowthRate = () =>
     const nominalGrowthRate = state.inputs.growthRates.incomeGrowthRate;
     const inflationRate = state.inputs.marketAssumptions.inflationRate;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate / 100) - 1;
-    return realGrowthRate * 100; // Convert back to percentage
+    return realGrowthRate * 100;
   });
 
 export const useExpenseRealGrowthRate = () =>
@@ -1343,7 +1343,7 @@ export const useExpenseRealGrowthRate = () =>
     const nominalGrowthRate = state.inputs.growthRates.expenseGrowthRate;
     const inflationRate = state.inputs.marketAssumptions.inflationRate;
     const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate / 100) - 1;
-    return realGrowthRate * 100; // Convert back to percentage
+    return realGrowthRate * 100;
   });
 
 /**
