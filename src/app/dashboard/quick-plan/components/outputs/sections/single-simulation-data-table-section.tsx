@@ -8,6 +8,7 @@ import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
+import { useSimulationMode } from '@/lib/stores/quick-plan-store';
 
 import SingleSimulationDataTable from '../tables/single-simulation-data-table';
 import TableTypeSelector, { TableType } from '../table-type-selector';
@@ -51,21 +52,29 @@ interface SingleSimulationDataTableSectionProps {
 }
 
 function SingleSimulationDataTableSection({ simulation, currentCategory }: SingleSimulationDataTableSectionProps) {
+  const simulationMode = useSimulationMode();
+  const isSingleSimulation = ['fixedReturns', 'stochasticReturns', 'historicalReturns'].includes(simulationMode);
+
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const [currentTableType, setCurrentTableType] = useState<TableType>(TableType.AllSimulations);
 
   let headerText: string | React.ReactNode;
   let headerDesc: string;
 
-  if (selectedSeed !== null) {
-    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />;
-    headerDesc = 'Year-by-year progression and outcome for this simulation.';
-  } else if (currentTableType === TableType.YearlyResults) {
+  if (isSingleSimulation) {
     headerText = 'Yearly Results';
-    headerDesc = 'View aggregated statistics across all simulations by year.';
+    headerDesc = 'Year-by-year progression and outcome for this simulation.';
   } else {
-    headerText = 'All Simulations';
-    headerDesc = 'Browse all simulation runs. Select one to explore further.';
+    if (selectedSeed !== null) {
+      headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />;
+      headerDesc = 'Year-by-year progression and outcome for this simulation.';
+    } else if (currentTableType === TableType.YearlyResults) {
+      headerText = 'Yearly Results';
+      headerDesc = 'View aggregated statistics across all simulations by year.';
+    } else {
+      headerText = 'All Simulations';
+      headerDesc = 'Browse all simulation runs. Select one to explore further.';
+    }
   }
 
   return (
