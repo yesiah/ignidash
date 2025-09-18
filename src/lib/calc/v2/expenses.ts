@@ -125,7 +125,7 @@ export class Expense {
           annualAmount = Math.max(annualAmount, growthLimit);
         }
 
-        this.amount = Math.max(annualAmount / timesToApplyPerYear, 0);
+        if (timesToApplyPerYear !== 0) this.amount = Math.max(annualAmount / timesToApplyPerYear, 0);
       }
 
       this.lastYear = Math.floor(year);
