@@ -22,8 +22,8 @@ export class TableDataExtractor {
         const cashAllocation = assetAllocation.cash;
 
         const returnsData = data.returns;
-        const stocksReturn = returnsData?.annualReturnRates.stocks ?? null;
-        const bondsReturn = returnsData?.annualReturnRates.bonds ?? null;
+        const stockReturn = returnsData?.annualReturnRates.stocks ?? null;
+        const bondReturn = returnsData?.annualReturnRates.bonds ?? null;
         const cashReturn = returnsData?.annualReturnRates.cash ?? null;
         const inflationRate = returnsData?.annualInflationRate ?? null;
 
@@ -32,10 +32,10 @@ export class TableDataExtractor {
           age: currDateYear - startDateYear + startAge,
           phaseName: phaseName,
           portfolioValue,
-          stocksValue: portfolioValue * stocksAllocation,
-          stocksReturn,
-          bondsValue: portfolioValue * bondsAllocation,
-          bondsReturn,
+          stockValue: portfolioValue * stocksAllocation,
+          stockReturn,
+          bondValue: portfolioValue * bondsAllocation,
+          bondReturn,
           cashValue: portfolioValue * cashAllocation,
           cashReturn,
           inflationRate,
