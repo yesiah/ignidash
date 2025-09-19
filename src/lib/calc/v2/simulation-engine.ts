@@ -264,7 +264,6 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     if (!timeline) throw new Error('Must have timeline data for simulation');
 
     const result = this.runSimulation(returnsProvider, timeline);
-
     const historicalRanges = returnsProvider.getHistoricalRanges();
 
     return { ...result, historicalRanges };
