@@ -3,7 +3,7 @@
 import { useMultiSimulationResult, useMultiSimulationKeyMetrics } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 
-import SingleSimulationMetrics from '../single-simulation-metrics';
+import SimulationMetrics from '../simulation-metrics';
 import SingleSimulationMainResults from './single-simulation-main-results';
 
 interface MultiSimulationResultsProps {
@@ -25,7 +25,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   return (
     <>
       <SectionContainer showBottomBorder className="mb-0">
-        <SingleSimulationMetrics keyMetrics={keyMetrics} />
+        <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <SingleSimulationMainResults simulation={simulationResult.p50Result} keyMetrics={keyMetrics} />
     </>

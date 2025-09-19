@@ -5,7 +5,7 @@ import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 import MetricsCard from './metrics-card';
 
-interface SingleSimulationMetricsProps {
+interface SimulationMetricsProps {
   keyMetrics: KeyMetrics;
 }
 
@@ -31,7 +31,7 @@ const formatMetrics = (keyMetrics: KeyMetrics) => {
   };
 };
 
-export default function SingleSimulationMetrics({ keyMetrics }: SingleSimulationMetricsProps) {
+export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
   const {
     successForDisplay,
     progressToRetirementForDisplay,
