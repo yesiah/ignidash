@@ -1,15 +1,15 @@
 'use client';
 
 import { formatNumber } from '@/lib/utils';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 import MetricsCard from './metrics-card';
 
 interface SingleSimulationMetricsProps {
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
 }
 
-const formatMetrics = (keyMetrics: SingleSimulationKeyMetrics) => {
+const formatMetrics = (keyMetrics: KeyMetrics) => {
   const { success, retirementAge, yearsToRetirement, portfolioAtRetirement, finalPortfolio, progressToRetirement } = keyMetrics;
 
   const formatters = {

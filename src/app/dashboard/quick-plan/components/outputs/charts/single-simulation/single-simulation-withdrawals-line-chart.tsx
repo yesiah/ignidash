@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/v2/portfolio';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -59,7 +59,7 @@ const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--cha
 
 interface SingleSimulationWithdrawalsLineChartProps {
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;

@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
 import SectionContainer from '@/components/ui/section-container';
 
@@ -13,7 +13,7 @@ import SingleSimulationDataTableSection from '../sections/single-simulation-data
 
 interface SingleSimulationMainResultsProps {
   simulation: SimulationResult;
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
 }
 
 export default function SingleSimulationMainResults({ simulation, keyMetrics }: SingleSimulationMainResultsProps) {

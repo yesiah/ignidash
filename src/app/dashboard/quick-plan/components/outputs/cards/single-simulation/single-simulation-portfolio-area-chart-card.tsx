@@ -3,7 +3,7 @@
 import { useMemo, useCallback } from 'react';
 
 import { useShowReferenceLines } from '@/lib/stores/quick-plan-store';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
@@ -12,7 +12,7 @@ import SingleSimulationPortfolioAreaChart from '../../charts/single-simulation/s
 
 interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'assetClass' | 'taxTreatment' | 'custom') => void;

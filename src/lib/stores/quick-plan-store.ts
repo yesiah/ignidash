@@ -19,7 +19,7 @@ import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
 import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import type { MarketAssumptionsInputs } from '../schemas/market-assumptions-schema';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 import type {
   SingleSimulationPortfolioChartDataPoint,
   SingleSimulationCashFlowChartDataPoint,
@@ -380,7 +380,7 @@ export const useMultiSimulationResult = (simulationMode: 'monteCarloStochasticRe
   );
 };
 
-export const useSingleSimulationKeyMetrics = (simulationResult: SimulationResult | null): SingleSimulationKeyMetrics | null => {
+export const useKeyMetrics = (simulationResult: SimulationResult | null): KeyMetrics | null => {
   return useMemo(() => {
     if (!simulationResult) return null;
     const { data, context } = simulationResult;
@@ -445,10 +445,8 @@ export const useSingleSimulationKeyMetrics = (simulationResult: SimulationResult
   }, [simulationResult]);
 };
 
-export const useMultiSimulationKeyMetrics = (
-  multiSimulationAnalysis: MultiSimulationAnalysis | null
-): SingleSimulationKeyMetrics | null => {
-  const metrics = useSingleSimulationKeyMetrics(multiSimulationAnalysis?.p50Result ?? null);
+export const useMultiSimulationKeyMetrics = (multiSimulationAnalysis: MultiSimulationAnalysis | null): KeyMetrics | null => {
+  const metrics = useKeyMetrics(multiSimulationAnalysis?.p50Result ?? null);
   if (!metrics) return null;
 
   return { ...metrics, success: multiSimulationAnalysis!.success };

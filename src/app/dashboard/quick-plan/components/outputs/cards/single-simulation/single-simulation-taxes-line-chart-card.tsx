@@ -4,7 +4,7 @@ import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import { useShowReferenceLines } from '@/lib/stores/quick-plan-store';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 import SingleSimulationTaxesLineChart from '../../charts/single-simulation/single-simulation-taxes-line-chart';
 
@@ -14,7 +14,7 @@ interface SingleSimulationTaxesLineChartCardProps {
   setDataView: (view: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome') => void;
   dataView: 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
   startAge: number;
 }
 

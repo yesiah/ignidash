@@ -1,6 +1,6 @@
 'use client';
 
-import { useSimulationResult, useSingleSimulationKeyMetrics } from '@/lib/stores/quick-plan-store';
+import { useSimulationResult, useKeyMetrics } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 
 import SingleSimulationMetrics from '../single-simulation-metrics';
@@ -12,7 +12,7 @@ interface SingleSimulationResultsProps {
 
 export default function SingleSimulationResults({ simulationMode }: SingleSimulationResultsProps) {
   const simulationResult = useSimulationResult(simulationMode);
-  const keyMetrics = useSingleSimulationKeyMetrics(simulationResult);
+  const keyMetrics = useKeyMetrics(simulationResult);
 
   if (!simulationResult || !keyMetrics) {
     return (

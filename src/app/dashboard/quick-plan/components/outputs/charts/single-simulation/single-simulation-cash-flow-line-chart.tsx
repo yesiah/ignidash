@@ -10,7 +10,7 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
 import type { IncomeData } from '@/lib/calc/v2/incomes';
 import type { ExpenseData } from '@/lib/calc/v2/expenses';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Divider } from '@/components/catalyst/divider';
 
 interface CustomTooltipProps {
@@ -141,7 +141,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
 interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   startAge: number;
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;

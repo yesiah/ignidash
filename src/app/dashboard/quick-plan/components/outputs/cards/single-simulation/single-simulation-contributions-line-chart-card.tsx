@@ -6,7 +6,7 @@ import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
 import { useShowReferenceLines } from '@/lib/stores/quick-plan-store';
-import type { SingleSimulationKeyMetrics } from '@/lib/types/key-metrics';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 import SingleSimulationContributionsLineChart from '../../charts/single-simulation/single-simulation-contributions-line-chart';
 
@@ -18,7 +18,7 @@ interface SingleSimulationContributionsLineChartCardProps {
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationContributionsChartDataPoint[];
-  keyMetrics: SingleSimulationKeyMetrics;
+  keyMetrics: KeyMetrics;
   startAge: number;
 }
 

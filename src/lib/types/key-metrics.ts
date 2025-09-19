@@ -1,4 +1,4 @@
-export interface SingleSimulationKeyMetrics {
+export interface KeyMetrics {
   success: number;
   startAge: number;
   retirementAge: number | null;
