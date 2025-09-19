@@ -441,7 +441,9 @@ export const useSimulationResult = (
       }
       case 'historicalReturns': {
         const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed);
-        return engine.runSimulation(returnsProvider, timeline);
+        const res = engine.runSimulation(returnsProvider, timeline);
+        const _historicalRanges = returnsProvider.getHistoricalRanges();
+        return res;
       }
     }
   }, [inputs, seed, simulationMode]);
