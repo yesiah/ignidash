@@ -233,17 +233,15 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
   }
 
   runMonteCarloSimulation(numSimulations: number): MultiSimulationResult {
-    const simulations: Array<[number, SimulationResult]> = [];
+    const timeline = this.inputs.timeline;
+    if (!timeline) throw new Error('Must have timeline data for simulation');
 
+    const simulations: Array<[number, SimulationResult]> = [];
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new StochasticReturnsProvider(this.inputs, simulationSeed);
 
-      const timeline = this.inputs.timeline;
-      if (!timeline) throw new Error('Must have timeline data for simulation');
-
       const result = this.runSimulation(returnsProvider, timeline);
-
       simulations.push([simulationSeed, result]);
     }
 
@@ -275,23 +273,19 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
   }
 
   runLcgHistoricalBacktest(numSimulations: number): MultiSimulationResult {
-    const simulations: Array<[number, SimulationResult & HistoricalRangeInfo]> = [];
+    const timeline = this.inputs.timeline;
+    if (!timeline) throw new Error('Must have timeline data for simulation');
 
+    const simulations: Array<[number, SimulationResult & HistoricalRangeInfo]> = [];
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
 
-      const timeline = this.inputs.timeline;
-      if (!timeline) throw new Error('Must have timeline data for simulation');
-
       const result = this.runSimulation(returnsProvider, timeline);
-
       const historicalRanges = returnsProvider.getHistoricalRanges();
       simulations.push([simulationSeed, { ...result, historicalRanges }]);
     }
 
-    return {
-      simulations,
-    };
+    return { simulations };
   }
 }
