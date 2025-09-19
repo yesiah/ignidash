@@ -1,9 +1,9 @@
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import type { TimelineInputs, RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 
-import type { ReturnsProvider } from '../returns-provider';
-import { StochasticReturnsProvider } from '../stochastic-returns-provider';
-import { LcgHistoricalBacktestReturnsProvider } from '../lcg-historical-backtest-returns-provider';
+import type { ReturnsProvider } from '../returns-providers.ts/returns-provider';
+import { StochasticReturnsProvider } from '../returns-providers.ts/stochastic-returns-provider';
+import { LcgHistoricalBacktestReturnsProvider } from '../returns-providers.ts/lcg-historical-backtest-returns-provider';
 
 import { type AccountDataWithTransactions, Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
 import { ContributionRules } from './contribution-rules';

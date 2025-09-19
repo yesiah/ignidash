@@ -22,8 +22,8 @@
  */
 
 import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
-import { nyuHistoricalData, NyuHistoricalYearData, getNyuDataRange } from './data/nyu-historical-data';
-import { AssetReturnRates } from './asset';
+import { nyuHistoricalData, NyuHistoricalYearData, getNyuDataRange } from '../data/nyu-historical-data';
+import { AssetReturnRates } from '../asset';
 import { SeededRandom } from './seeded-random';
 
 /**

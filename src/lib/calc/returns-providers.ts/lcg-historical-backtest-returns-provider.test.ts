@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { LcgHistoricalBacktestReturnsProvider } from './lcg-historical-backtest-returns-provider';
-import { getNyuDataRange, nyuHistoricalData } from './data/nyu-historical-data';
+import { getNyuDataRange, nyuHistoricalData } from '../data/nyu-historical-data';
 
 describe('LcgHistoricalBacktestReturnsProvider', () => {
   const dataRange = getNyuDataRange();

@@ -19,7 +19,7 @@
  * - Fisher equation implementation for accurate real return conversion
  */
 
-import { AssetReturnRates, AssetReturnAmounts } from './asset';
+import { AssetReturnRates, AssetReturnAmounts } from '../asset';
 
 /**
  * Represents asset returns data combined with relevant metadata.
