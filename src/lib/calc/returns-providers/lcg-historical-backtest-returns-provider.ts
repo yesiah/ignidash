@@ -35,12 +35,15 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
     let adjustedYear: number;
     if (targetHistoricalYear <= this.dataRange.endYear) {
       adjustedYear = targetHistoricalYear;
+
       const currentRange = this.historicalRanges[this.historicalRanges.length - 1];
       currentRange.endYear = adjustedYear;
     } else {
       this.currentSequenceStartYear = this.dataRange.startYear;
       this.currentSequenceStartSimYear = simulationYear;
+
       adjustedYear = this.currentSequenceStartYear;
+
       this.historicalRanges.push({ startYear: adjustedYear, endYear: adjustedYear });
     }
 
