@@ -1,19 +1,11 @@
 import { z } from 'zod';
 
-import { percentageField } from '@/lib/utils/zod-schema-helpers';
-
 import { timelineFormSchema } from './timeline-form-schema';
 import { incomeFormSchema } from './income-form-schema';
 import { accountFormSchema } from './account-form-schema';
 import { expenseFormSchema } from './expense-form-schema';
 import { contributionFormSchema, baseContributionSchema } from './contribution-form-schema';
-
-export const marketAssumptionsSchema = z.object({
-  stockReturn: percentageField(0, 20, 'Stock return'),
-  bondReturn: percentageField(0, 15, 'Bond return'),
-  cashReturn: percentageField(0, 10, 'Cash return'),
-  inflationRate: percentageField(0, 8, 'Inflation rate'),
-});
+import { marketAssumptionsSchema } from './market-assumptions-schema';
 
 export const quickPlanSchema = z.object({
   timeline: timelineFormSchema.optional(),
@@ -26,7 +18,6 @@ export const quickPlanSchema = z.object({
 });
 
 export type QuickPlanInputs = z.infer<typeof quickPlanSchema>;
-export type MarketAssumptionsInputs = z.infer<typeof marketAssumptionsSchema>;
 
 export const formatZodErrors = (error: z.ZodError) => {
   const formatted: Record<string, string> = {};

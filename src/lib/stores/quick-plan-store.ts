@@ -5,11 +5,8 @@ import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
 import useSWR from 'swr';
 
-import { type QuickPlanInputs, type MarketAssumptionsInputs, validateField } from '@/lib/schemas/quick-plan-schema';
-import {
-  FinancialSimulationEngine as FinancialSimulationEngineV2,
-  type SimulationResult as SimulationResultV2,
-} from '@/lib/calc/v2/simulation-engine';
+import { type QuickPlanInputs, validateField } from '@/lib/schemas/quick-plan-schema';
+import { FinancialSimulationEngine, type SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import { FixedReturnsProvider } from '@/lib/calc/fixed-returns-provider';
 import { StochasticReturnsProvider } from '@/lib/calc/stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/lcg-historical-backtest-returns-provider';
@@ -21,6 +18,7 @@ import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
 import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
 import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/contribution-form-schema';
+import type { MarketAssumptionsInputs } from '../schemas/market-assumptions-schema';
 import type {
   SingleSimulationPortfolioChartDataPoint,
   SingleSimulationCashFlowChartDataPoint,
@@ -420,9 +418,9 @@ export const useResetStore = () => useQuickPlanStore((state) => state.actions.re
  * Simulation & Analysis Hooks
  * These hooks provide access to simulation and analysis functions
  */
-export const useSimulationResultV2 = (
+export const useSimulationResult = (
   simulationMode: 'fixedReturns' | 'stochasticReturns' | 'historicalReturns'
-): SimulationResultV2 | null => {
+): SimulationResult | null => {
   const inputs = useQuickPlanStore((state) => state.inputs);
   const seed = useSimulationSeed();
 
@@ -430,7 +428,7 @@ export const useSimulationResultV2 = (
     const timeline = inputs.timeline;
     if (!timeline) return null;
 
-    const engine = new FinancialSimulationEngineV2(inputs);
+    const engine = new FinancialSimulationEngine(inputs);
     switch (simulationMode) {
       case 'fixedReturns': {
         const returnsProvider = new FixedReturnsProvider(inputs);
@@ -458,7 +456,7 @@ export interface SingleSimulationKeyMetrics {
   progressToRetirement: number | null;
 }
 
-export const useSingleSimulationKeyMetrics = (simulationResult: SimulationResultV2 | null): SingleSimulationKeyMetrics | null => {
+export const useSingleSimulationKeyMetrics = (simulationResult: SimulationResult | null): SingleSimulationKeyMetrics | null => {
   return useMemo(() => {
     if (!simulationResult) return null;
     const { data, context } = simulationResult;
@@ -587,7 +585,7 @@ export const useHistoricalBacktestAnalysisWithWorker = () => {
  * Single Simulation Chart Hooks
  * These hooks provide access to single simulation chart data
  */
-export const useSingleSimulationPortfolioChartData = (simulation: SimulationResultV2): SingleSimulationPortfolioChartDataPoint[] => {
+export const useSingleSimulationPortfolioChartData = (simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.map((data) => {
       const startAge = simulation.context.startAge;
@@ -642,7 +640,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
   }, [simulation]);
 };
 
-export const useSingleSimulationCashFlowChartData = (simulation: SimulationResultV2): SingleSimulationCashFlowChartDataPoint[] => {
+export const useSingleSimulationCashFlowChartData = (simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -670,7 +668,7 @@ export const useSingleSimulationCashFlowChartData = (simulation: SimulationResul
   }, [simulation]);
 };
 
-export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2): SingleSimulationTaxesChartDataPoint[] => {
+export const useSingleSimulationTaxesChartData = (simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -700,7 +698,7 @@ export const useSingleSimulationTaxesChartData = (simulation: SimulationResultV2
   }, [simulation]);
 };
 
-export const useSingleSimulationReturnsChartData = (simulation: SimulationResultV2): SingleSimulationReturnsChartDataPoint[] => {
+export const useSingleSimulationReturnsChartData = (simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -726,9 +724,7 @@ export const useSingleSimulationReturnsChartData = (simulation: SimulationResult
   }, [simulation]);
 };
 
-export const useSingleSimulationContributionsChartData = (
-  simulation: SimulationResultV2
-): SingleSimulationContributionsChartDataPoint[] => {
+export const useSingleSimulationContributionsChartData = (simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -776,7 +772,7 @@ export const useSingleSimulationContributionsChartData = (
   }, [simulation]);
 };
 
-export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResultV2): SingleSimulationWithdrawalsChartDataPoint[] => {
+export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] => {
   return useMemo(() => {
     return simulation.data.slice(1).map((data) => {
       const startAge = simulation.context.startAge;
@@ -831,7 +827,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
  * These hooks provide access to fixed returns simulation table data
  */
 export const useSingleSimulationTableData = (
-  simulation: SimulationResultV2,
+  simulation: SimulationResult,
   category: SingleSimulationCategory
 ): SingleSimulationTableRow[] => {
   return useMemo(() => {
