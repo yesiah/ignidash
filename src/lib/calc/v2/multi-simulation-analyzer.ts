@@ -41,8 +41,8 @@ export class MultiSimulationAnalyzer {
       const dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }> = [];
 
       for (const [seed, simResult] of simulations) {
-        const dataPoint = simResult.data[i];
-        dataPointsForYear.push({ seed, dp: dataPoint });
+        const dp = simResult.data[i];
+        dataPointsForYear.push({ seed, dp });
       }
 
       const sortedDataPointsForYear = dataPointsForYear.sort((a, b) => a.dp.portfolio.totalValue - b.dp.portfolio.totalValue);
