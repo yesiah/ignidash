@@ -245,9 +245,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
       simulations.push([simulationSeed, result]);
     }
 
-    return {
-      simulations,
-    };
+    return { simulations };
   }
 }
 
