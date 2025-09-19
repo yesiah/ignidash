@@ -148,16 +148,42 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       immer((set, get) => ({
         ...defaultState,
         actions: {
-          updateMarketAssumptions: (data) => set((state) => (state.inputs.marketAssumptions = { ...data })),
-          updateTimeline: (data) => set((state) => (state.inputs.timeline = { ...data })),
-          updateIncomes: (data) => set((state) => (state.inputs.incomes = { ...state.inputs.incomes, [data.id]: data })),
-          deleteIncome: (name) => set((state) => delete state.inputs.incomes[name]),
-          updateAccounts: (data) => set((state) => (state.inputs.accounts = { ...state.inputs.accounts, [data.id]: data })),
-          deleteAccount: (id) => set((state) => delete state.inputs.accounts[id]),
-          updateExpenses: (data) => set((state) => (state.inputs.expenses = { ...state.inputs.expenses, [data.id]: data })),
-          deleteExpense: (id) => set((state) => delete state.inputs.expenses[id]),
+          updateMarketAssumptions: (data) =>
+            set((state) => {
+              state.inputs.marketAssumptions = { ...data };
+            }),
+          updateTimeline: (data) =>
+            set((state) => {
+              state.inputs.timeline = { ...data };
+            }),
+          updateIncomes: (data) =>
+            set((state) => {
+              state.inputs.incomes = { ...state.inputs.incomes, [data.id]: data };
+            }),
+          deleteIncome: (name) =>
+            set((state) => {
+              delete state.inputs.incomes[name];
+            }),
+          updateAccounts: (data) =>
+            set((state) => {
+              state.inputs.accounts = { ...state.inputs.accounts, [data.id]: data };
+            }),
+          deleteAccount: (id) =>
+            set((state) => {
+              delete state.inputs.accounts[id];
+            }),
+          updateExpenses: (data) =>
+            set((state) => {
+              state.inputs.expenses = { ...state.inputs.expenses, [data.id]: data };
+            }),
+          deleteExpense: (id) =>
+            set((state) => {
+              delete state.inputs.expenses[id];
+            }),
           updateContributionRules: (data) =>
-            set((state) => (state.inputs.contributionRules = { ...state.inputs.contributionRules, [data.id]: data })),
+            set((state) => {
+              state.inputs.contributionRules = { ...state.inputs.contributionRules, [data.id]: data };
+            }),
           reorderContributionRules: (newOrder) => {
             set((state) => {
               newOrder.forEach((id, index) => {
@@ -168,14 +194,38 @@ export const useQuickPlanStore = create<QuickPlanState>()(
               });
             });
           },
-          deleteContributionRule: (id) => set((state) => delete state.inputs.contributionRules[id]),
-          updateBaseContributionRule: (data) => set((state) => (state.inputs.baseContributionRule = { ...data })),
-          updateDataStoragePreference: (value) => set((state) => (state.preferences.dataStorage = value as 'localStorage' | 'none')),
-          updateShowReferenceLines: (value) => set((state) => (state.preferences.showReferenceLines = value)),
-          updateSimulationSeed: () => set((state) => (state.preferences.simulationSeed = Math.floor(Math.random() * 1000))),
-          updateSidebarCollapsed: (value) => set((state) => (state.preferences.sidebarCollapsed = value)),
-          updateSimulationMode: (value) => set((state) => (state.preferences.simulationMode = value)),
-          resetStore: () => set((state) => (state.inputs = { ...defaultState.inputs })),
+          deleteContributionRule: (id) =>
+            set((state) => {
+              delete state.inputs.contributionRules[id];
+            }),
+          updateBaseContributionRule: (data) =>
+            set((state) => {
+              state.inputs.baseContributionRule = { ...data };
+            }),
+          updateDataStoragePreference: (value) =>
+            set((state) => {
+              state.preferences.dataStorage = value as 'localStorage' | 'none';
+            }),
+          updateShowReferenceLines: (value) =>
+            set((state) => {
+              state.preferences.showReferenceLines = value;
+            }),
+          updateSimulationSeed: () =>
+            set((state) => {
+              state.preferences.simulationSeed = Math.floor(Math.random() * 1000);
+            }),
+          updateSidebarCollapsed: (value) =>
+            set((state) => {
+              state.preferences.sidebarCollapsed = value;
+            }),
+          updateSimulationMode: (value) =>
+            set((state) => {
+              state.preferences.simulationMode = value;
+            }),
+          resetStore: () =>
+            set((state) => {
+              state.inputs = { ...defaultState.inputs };
+            }),
         },
       })),
       {
