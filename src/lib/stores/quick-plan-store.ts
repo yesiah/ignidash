@@ -445,10 +445,70 @@ export const useSingleSimulationKeyMetrics = (simulationResult: SimulationResult
   }, [simulationResult]);
 };
 
-export const useMultiSimulationKeyMetrics = (multiSimulationAnalysis: MultiSimulationAnalysis | null) => {
+export const useMultiSimulationKeyMetrics = (
+  multiSimulationAnalysis: MultiSimulationAnalysis | null
+): SingleSimulationKeyMetrics | null => {
   return useMemo(() => {
     if (!multiSimulationAnalysis) return null;
-    throw new Error('Not implemented yet');
+    const { data, context } = multiSimulationAnalysis.p50Result;
+
+    const startAge = context.startAge;
+    const retirementStrategy = context.retirementStrategy;
+
+    const initialPortfolio = data[0].portfolio.totalValue;
+    const finalPortfolio = data[data.length - 1].portfolio.totalValue;
+
+    let yearsToRetirement: number | null = null;
+    let retirementAge: number | null = null;
+    let portfolioAtRetirement: number | null = null;
+    let progressToRetirement: number | null = null;
+
+    switch (retirementStrategy.type) {
+      case 'fixedAge':
+        retirementAge = retirementStrategy.retirementAge;
+        yearsToRetirement = retirementAge - startAge;
+
+        progressToRetirement = Math.min(startAge / retirementAge, 1);
+
+        for (const dp of data) {
+          const phase = dp.phase;
+          if (phase?.name === 'retirement') {
+            portfolioAtRetirement = dp.portfolio.totalValue;
+            break;
+          }
+        }
+
+        break;
+      case 'swrTarget':
+        for (const dp of data) {
+          const phase = dp.phase;
+          if (phase?.name === 'retirement') {
+            const retirementDate = new Date(dp.date);
+
+            yearsToRetirement = retirementDate.getFullYear() - new Date().getFullYear();
+            retirementAge = startAge + yearsToRetirement;
+            portfolioAtRetirement = dp.portfolio.totalValue;
+            break;
+          }
+        }
+
+        if (portfolioAtRetirement !== null) {
+          progressToRetirement = Math.min(initialPortfolio / portfolioAtRetirement, 1);
+        }
+        break;
+    }
+
+    const success = retirementAge !== null && finalPortfolio > 0.1;
+
+    return {
+      success,
+      startAge,
+      retirementAge,
+      yearsToRetirement,
+      portfolioAtRetirement,
+      finalPortfolio,
+      progressToRetirement,
+    };
   }, [multiSimulationAnalysis]);
 };
 
