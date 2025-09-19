@@ -6,6 +6,7 @@ import {
   LcgHistoricalBacktestSimulationEngine,
   type MultiSimulationResult,
 } from '@/lib/calc/v2/simulation-engine';
+import { MultiSimulationAnalyzer, type MultiSimulationAnalysis } from '../calc/v2/multi-simulation-analyzer';
 
 const simulationAPI = {
   async runMonteCarloSimulation(inputs: QuickPlanInputs, baseSeed: number, numSimulations: number): Promise<MultiSimulationResult> {
@@ -22,12 +23,24 @@ const simulationAPI = {
     return res;
   },
 
-  async analyzeMonteCarloSimulation(inputs: QuickPlanInputs, baseSeed: number, numSimulations: number): Promise<void> {
-    throw new Error('Not implemented yet');
+  async analyzeMonteCarloSimulation(inputs: QuickPlanInputs, baseSeed: number, numSimulations: number): Promise<MultiSimulationAnalysis> {
+    const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
+    const res = engine.runMonteCarloSimulation(numSimulations);
+
+    const analyzer = new MultiSimulationAnalyzer();
+    return analyzer.analyze(res);
   },
 
-  async analyzeHistoricalBacktestSimulation(inputs: QuickPlanInputs, baseSeed: number, numSimulations: number): Promise<void> {
-    throw new Error('Not implemented yet');
+  async analyzeHistoricalBacktestSimulation(
+    inputs: QuickPlanInputs,
+    baseSeed: number,
+    numSimulations: number
+  ): Promise<MultiSimulationAnalysis> {
+    const engine = new LcgHistoricalBacktestSimulationEngine(inputs, baseSeed);
+    const res = engine.runLcgHistoricalBacktest(numSimulations);
+
+    const analyzer = new MultiSimulationAnalyzer();
+    return analyzer.analyze(res);
   },
 
   async generateMonteCarloTableData(inputs: QuickPlanInputs, baseSeed: number, numSimulations: number): Promise<never[]> {
