@@ -7,9 +7,9 @@ import useSWR from 'swr';
 
 import { type QuickPlanInputs, validateField } from '@/lib/schemas/quick-plan-schema';
 import { FinancialSimulationEngine, type SimulationResult } from '@/lib/calc/v2/simulation-engine';
-import { FixedReturnsProvider } from '@/lib/calc/returns-providers.ts/fixed-returns-provider';
-import { StochasticReturnsProvider } from '@/lib/calc/returns-providers.ts/stochastic-returns-provider';
-import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/returns-providers.ts/lcg-historical-backtest-returns-provider';
+import { FixedReturnsProvider } from '@/lib/calc/returns-providers/fixed-returns-provider';
+import { StochasticReturnsProvider } from '@/lib/calc/returns-providers/stochastic-returns-provider';
+import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/returns-providers/lcg-historical-backtest-returns-provider';
 import { TableDataExtractor } from '@/lib/calc/v2/table-data-extractor';
 import { getSimulationWorker } from '@/lib/workers/simulation-worker-api';
 import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
