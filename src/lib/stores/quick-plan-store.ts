@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import useSWR from 'swr';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { FinancialSimulationEngine, type SimulationResult } from '@/lib/calc/v2/simulation-engine';
@@ -167,6 +168,20 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             }),
           updateAccounts: (data) =>
             set((state) => {
+              if (!(data.id in get().inputs.accounts)) {
+                const contributionRulesCount = Object.entries(get().inputs.contributionRules).length;
+
+                const contributionRuleId = uuidv4();
+                const contributionRuleData: ContributionInputs = {
+                  id: contributionRuleId,
+                  accountId: data.id,
+                  rank: contributionRulesCount + 1,
+                  contributionType: 'unlimited',
+                };
+
+                state.inputs.contributionRules = { ...state.inputs.contributionRules, [contributionRuleId]: contributionRuleData };
+              }
+
               state.inputs.accounts = { ...state.inputs.accounts, [data.id]: data };
             }),
           deleteAccount: (id) =>
