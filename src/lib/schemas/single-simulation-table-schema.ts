@@ -18,7 +18,7 @@ export type SingleSimulationTableRow = z.infer<typeof singleSimulationTableRowSc
 
 export type ColumnFormat = 'number' | 'currency' | 'percentage' | 'string' | 'historicalRanges';
 
-const SIMULATION_COLUMNS = {
+const SINGLE_SIMULATION_COLUMNS = {
   year: { title: 'Year', format: 'number' },
   age: { title: 'Age', format: 'number' },
   phaseName: { title: 'Phase Name', format: 'string' },
@@ -32,7 +32,8 @@ const SIMULATION_COLUMNS = {
   inflationRate: { title: 'Inflation Rate', format: 'percentage' },
 } as const;
 
-export const SIMULATION_TABLE_CONFIG: Record<keyof SingleSimulationTableRow, { title: string; format: ColumnFormat }> = SIMULATION_COLUMNS;
+export const SIMULATION_TABLE_CONFIG: Record<keyof SingleSimulationTableRow, { title: string; format: ColumnFormat }> =
+  SINGLE_SIMULATION_COLUMNS;
 
 const validateSingleSimulationTableRow = (data: unknown): SingleSimulationTableRow => {
   return singleSimulationTableRowSchema.parse(data);
