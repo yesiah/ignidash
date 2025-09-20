@@ -189,10 +189,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
               const contributionRules = Object.values(state.inputs.contributionRules);
               const contributionRuleToDelete = contributionRules.find((rule) => rule.accountId === id);
               if (contributionRuleToDelete !== undefined) {
+                const deletedRank = contributionRuleToDelete.rank;
                 delete state.inputs.contributionRules[contributionRuleToDelete.id];
 
-                const deletedRank = contributionRuleToDelete.rank;
-                contributionRules.forEach((rule) => {
+                Object.values(state.inputs.contributionRules).forEach((rule) => {
                   if (rule.rank > deletedRank) rule.rank--;
                 });
               }
