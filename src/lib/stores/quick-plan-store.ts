@@ -198,6 +198,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 
                 contributionRulesToDelete.forEach((ruleToDelete) => {
                   delete state.inputs.contributionRules[ruleToDelete.id];
+
                   const deletedRank = ruleToDelete.rank;
                   Object.values(state.inputs.contributionRules).forEach((rule) => {
                     if (rule.rank > deletedRank) rule.rank--;
