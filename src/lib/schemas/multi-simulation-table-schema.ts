@@ -1,0 +1,91 @@
+import { z } from 'zod';
+
+import { ColumnFormat } from '@/lib/types/column-format';
+
+// Stochastic Simulation Table Schema
+export const stochasticTableRowSchema = z.object({
+  seed: z.number(),
+  success: z.boolean(),
+  retirementAge: z.number().nullable(),
+  bankruptcyAge: z.number().nullable(),
+  finalPhaseName: z.string(),
+  finalPortfolioValue: z.number(),
+  averageStockReturn: z.number().nullable(),
+  averageBondReturn: z.number().nullable(),
+  averageCashReturn: z.number().nullable(),
+  averageInflationRate: z.number().nullable(),
+  historicalRanges: z.array(z.object({ startYear: z.number(), endYear: z.number() })).nullable(),
+});
+
+export type StochasticTableRow = z.infer<typeof stochasticTableRowSchema>;
+
+const STOCHASTIC_COLUMNS = {
+  seed: { title: 'Seed', format: 'number' },
+  success: { title: 'Success', format: 'string' },
+  retirementAge: { title: 'Retirement Age', format: 'number' },
+  bankruptcyAge: { title: 'Bankruptcy Age', format: 'number' },
+  finalPhaseName: { title: 'Final Phase', format: 'string' },
+  finalPortfolioValue: { title: 'Final Portfolio', format: 'currency' },
+  averageStockReturn: { title: 'Mean Stock Return', format: 'percentage' },
+  averageBondReturn: { title: 'Mean Bond Return', format: 'percentage' },
+  averageCashReturn: { title: 'Mean Cash Return', format: 'percentage' },
+  averageInflationRate: { title: 'Mean Inflation Rate', format: 'percentage' },
+  historicalRanges: { title: 'Historical Ranges', format: 'historicalRanges' },
+} as const;
+
+export const STOCHASTIC_TABLE_CONFIG: Record<keyof StochasticTableRow, { title: string; format: ColumnFormat }> = STOCHASTIC_COLUMNS;
+
+export const validateStochasticTableRow = (data: unknown): StochasticTableRow => {
+  return stochasticTableRowSchema.parse(data);
+};
+
+export const validateStochasticTableData = (data: unknown[]): StochasticTableRow[] => {
+  return data.map(validateStochasticTableRow);
+};
+
+// Yearly Aggregate Table Schema
+export const yearlyAggregateTableRowSchema = z.object({
+  year: z.number(),
+  age: z.number(),
+
+  percentAccumulation: z.number(),
+  percentRetirement: z.number(),
+  percentBankrupt: z.number(),
+
+  p10Portfolio: z.number(),
+  p25Portfolio: z.number(),
+  p50Portfolio: z.number(),
+  p75Portfolio: z.number(),
+  p90Portfolio: z.number(),
+
+  minPortfolio: z.number().nullable(),
+  maxPortfolio: z.number().nullable(),
+});
+
+export type YearlyAggregateTableRow = z.infer<typeof yearlyAggregateTableRowSchema>;
+
+const YEARLY_AGGREGATE_COLUMNS = {
+  year: { title: 'Year', format: 'number' },
+  age: { title: 'Age', format: 'number' },
+  percentAccumulation: { title: '% Accumulation Phase', format: 'percentage' },
+  percentRetirement: { title: '% Retirement Phase', format: 'percentage' },
+  percentBankrupt: { title: '% Bankrupt', format: 'percentage' },
+  p10Portfolio: { title: 'P10 Portfolio', format: 'currency' },
+  p25Portfolio: { title: 'P25 Portfolio', format: 'currency' },
+  p50Portfolio: { title: 'P50 Portfolio', format: 'currency' },
+  p75Portfolio: { title: 'P75 Portfolio', format: 'currency' },
+  p90Portfolio: { title: 'P90 Portfolio', format: 'currency' },
+  minPortfolio: { title: 'Min Portfolio', format: 'currency' },
+  maxPortfolio: { title: 'Max Portfolio', format: 'currency' },
+} as const;
+
+export const YEARLY_AGGREGATE_TABLE_CONFIG: Record<keyof YearlyAggregateTableRow, { title: string; format: ColumnFormat }> =
+  YEARLY_AGGREGATE_COLUMNS;
+
+export const validateYearlyAggregateTableRow = (data: unknown): YearlyAggregateTableRow => {
+  return yearlyAggregateTableRowSchema.parse(data);
+};
+
+export const validateYearlyAggregateTableData = (data: unknown[]): YearlyAggregateTableRow[] => {
+  return data.map(validateYearlyAggregateTableRow);
+};

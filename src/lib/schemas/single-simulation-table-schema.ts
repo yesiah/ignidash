@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ColumnFormat } from '@/lib/types/column-format';
+
 export const singleSimulationTableRowSchema = z.object({
   year: z.number(),
   age: z.number(),
@@ -15,8 +17,6 @@ export const singleSimulationTableRowSchema = z.object({
 });
 
 export type SingleSimulationTableRow = z.infer<typeof singleSimulationTableRowSchema>;
-
-export type ColumnFormat = 'number' | 'currency' | 'percentage' | 'string' | 'historicalRanges';
 
 const SINGLE_SIMULATION_COLUMNS = {
   year: { title: 'Year', format: 'number' },
