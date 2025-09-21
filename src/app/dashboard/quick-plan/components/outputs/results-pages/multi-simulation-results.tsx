@@ -4,7 +4,7 @@ import { useMultiSimulationResult, useMultiSimulationKeyMetrics } from '@/lib/st
 import SectionContainer from '@/components/ui/section-container';
 
 import SimulationMetrics from '../simulation-metrics';
-import SingleSimulationMainResults from './single-simulation-main-results';
+import MultiSimulationMainResults from './multi-simulation-main-results';
 
 interface MultiSimulationResultsProps {
   simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
@@ -28,7 +28,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
       <SectionContainer showBottomBorder className="mb-0">
         <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
-      <SingleSimulationMainResults simulation={simulationResult.p50Result} keyMetrics={keyMetrics} />
+      <MultiSimulationMainResults simulation={simulationResult.p50Result} keyMetrics={keyMetrics} />
     </>
   );
 }
