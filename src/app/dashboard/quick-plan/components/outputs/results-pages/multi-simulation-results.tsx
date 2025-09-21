@@ -11,8 +11,7 @@ interface MultiSimulationResultsProps {
 }
 
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
-  const { data } = useMultiSimulationResult(simulationMode);
-  const { analysis: simulationResult } = data ?? {};
+  const { data: { analysis: simulationResult } = {} } = useMultiSimulationResult(simulationMode);
   const keyMetrics = useMultiSimulationKeyMetrics(simulationResult ?? null);
 
   if (!simulationResult || !keyMetrics) {
