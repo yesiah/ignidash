@@ -2,7 +2,7 @@
 
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 import { useSingleSimulationTableData } from '@/lib/stores/quick-plan-store';
 import { generateSimulationTableColumns } from '@/lib/utils/table-formatters';
 
@@ -10,7 +10,7 @@ import Table from './table';
 
 interface SingleSimulationDataTableProps {
   simulation: SimulationResult;
-  currentCategory: SingleSimulationCategory;
+  currentCategory: SimulationCategory;
 }
 
 export default function SingleSimulationDataTable({ simulation, currentCategory }: SingleSimulationDataTableProps) {

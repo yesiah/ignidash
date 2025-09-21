@@ -1,10 +1,10 @@
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 import { type SingleSimulationTableRow, validateSingleSimulationTableData } from '@/lib/schemas/single-simulation-table-schema';
 
 import type { SimulationResult, MultiSimulationResult } from './simulation-engine';
 
 export class TableDataExtractor {
-  extractSingleSimulationData(simulation: SimulationResult, category: SingleSimulationCategory): SingleSimulationTableRow[] {
+  extractSingleSimulationData(simulation: SimulationResult, category: SimulationCategory): SingleSimulationTableRow[] {
     return validateSingleSimulationTableData(
       simulation.data.map((data, idx) => {
         const startAge = simulation.context.startAge;
@@ -44,7 +44,7 @@ export class TableDataExtractor {
     );
   }
 
-  extractMultiSimulationData(simulations: MultiSimulationResult, category: SingleSimulationCategory): SingleSimulationTableRow[][] {
+  extractMultiSimulationData(simulations: MultiSimulationResult, category: SimulationCategory): SingleSimulationTableRow[][] {
     throw new Error('Multi-simulation data extraction not implemented yet.');
   }
 }

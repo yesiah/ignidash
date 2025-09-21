@@ -14,7 +14,7 @@ import {
   useSingleSimulationWithdrawalsChartData,
 } from '@/lib/stores/quick-plan-store';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 
 import SingleSimulationPortfolioAreaChartCard from '../cards/single-simulation/single-simulation-portfolio-area-chart-card';
 import SingleSimulationPortfolioPieChartCard from '../cards/single-simulation/single-simulation-portfolio-pie-chart-card';
@@ -202,7 +202,7 @@ interface SingleSimulationChartsSectionProps {
   keyMetrics: KeyMetrics;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  currentCategory: SingleSimulationCategory;
+  currentCategory: SimulationCategory;
 }
 
 function SingleSimulationChartsSection({
@@ -217,22 +217,22 @@ function SingleSimulationChartsSection({
 
   let chartsComponents = null;
   switch (currentCategory) {
-    case SingleSimulationCategory.Portfolio:
+    case SimulationCategory.Portfolio:
       chartsComponents = <PortfolioCharts {...props} />;
       break;
-    case SingleSimulationCategory.CashFlow:
+    case SimulationCategory.CashFlow:
       chartsComponents = <CashFlowCharts {...props} />;
       break;
-    case SingleSimulationCategory.Taxes:
+    case SimulationCategory.Taxes:
       chartsComponents = <TaxesCharts {...props} />;
       break;
-    case SingleSimulationCategory.Returns:
+    case SimulationCategory.Returns:
       chartsComponents = <ReturnsCharts {...props} />;
       break;
-    case SingleSimulationCategory.Contributions:
+    case SimulationCategory.Contributions:
       chartsComponents = <ContributionsCharts {...props} />;
       break;
-    case SingleSimulationCategory.Withdrawals:
+    case SimulationCategory.Withdrawals:
       chartsComponents = <WithdrawalsCharts {...props} />;
       break;
     default:

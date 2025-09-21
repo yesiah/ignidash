@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ColumnFormat } from '@/lib/types/column-format';
+import type { ColumnFormat } from '@/lib/types/column-format';
 
 // Stochastic Simulation Table Schema
 export const stochasticTableRowSchema = z.object({

@@ -1,22 +1,18 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 
-interface SingleSimulationCategorySelectorProps {
+interface SimulationCategorySelectorProps {
   className?: string;
-  setCurrentCategory: (category: SingleSimulationCategory) => void;
-  currentCategory: SingleSimulationCategory;
+  setCurrentCategory: (category: SimulationCategory) => void;
+  currentCategory: SimulationCategory;
 }
 
-export default function SingleSimulationCategorySelector({
-  className,
-  setCurrentCategory,
-  currentCategory,
-}: SingleSimulationCategorySelectorProps) {
+export default function SimulationCategorySelector({ className, setCurrentCategory, currentCategory }: SimulationCategorySelectorProps) {
   return (
     <div className={cn('isolate -ml-1 flex gap-x-2 overflow-x-auto py-2 pl-1', className)}>
-      {Object.values(SingleSimulationCategory).map((category) => (
+      {Object.values(SimulationCategory).map((category) => (
         <button
           key={category}
           onClick={() => setCurrentCategory(category)}

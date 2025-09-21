@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ColumnFormat } from '@/lib/types/column-format';
+import type { ColumnFormat } from '@/lib/types/column-format';
 
 export const singleSimulationTableRowSchema = z.object({
   year: z.number(),

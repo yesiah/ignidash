@@ -29,7 +29,7 @@ import type {
   SingleSimulationContributionsChartDataPoint,
   SingleSimulationWithdrawalsChartDataPoint,
 } from '@/lib/types/chart-data-points';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 
 // ================================
 // STATE INTERFACE & DEFAULT STATE
@@ -732,10 +732,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
  * Fixed Returns Table Hooks
  * These hooks provide access to fixed returns simulation table data
  */
-export const useSingleSimulationTableData = (
-  simulation: SimulationResult,
-  category: SingleSimulationCategory
-): SingleSimulationTableRow[] => {
+export const useSingleSimulationTableData = (simulation: SimulationResult, category: SimulationCategory): SingleSimulationTableRow[] => {
   return useMemo(() => {
     const extractor = new TableDataExtractor();
     return extractor.extractSingleSimulationData(simulation, category);

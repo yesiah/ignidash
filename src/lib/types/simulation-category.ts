@@ -1,4 +1,4 @@
-export enum SingleSimulationCategory {
+export enum SimulationCategory {
   Portfolio = 'Portfolio',
   CashFlow = 'Cash Flow',
   Taxes = 'Taxes',

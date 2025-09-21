@@ -4,10 +4,10 @@ import { useState, useCallback } from 'react';
 
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 import SectionContainer from '@/components/ui/section-container';
 
-import SingleSimulationCategorySelector from '../single-simulation-category-selector';
+import SimulationCategorySelector from '../single-simulation-category-selector';
 import SingleSimulationChartsSection from '../sections/single-simulation-charts-section';
 import SingleSimulationDataTableSection from '../sections/single-simulation-data-table-section';
 
@@ -27,12 +27,12 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
     [startAge]
   );
 
-  const [currentCategory, setCurrentCategory] = useState<SingleSimulationCategory>(SingleSimulationCategory.Portfolio);
+  const [currentCategory, setCurrentCategory] = useState<SimulationCategory>(SimulationCategory.Portfolio);
 
   return (
     <>
       <SectionContainer showBottomBorder>
-        <SingleSimulationCategorySelector currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />
+        <SimulationCategorySelector currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />
       </SectionContainer>
       <SingleSimulationChartsSection
         simulation={simulation}

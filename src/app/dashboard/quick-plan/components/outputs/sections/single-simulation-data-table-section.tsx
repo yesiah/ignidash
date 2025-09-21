@@ -6,7 +6,7 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
-import { SingleSimulationCategory } from '@/lib/types/single-simulation-category';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 import { useSimulationMode } from '@/lib/stores/quick-plan-store';
 
@@ -48,7 +48,7 @@ function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed }: DrillDownBreadcr
 
 interface SingleSimulationDataTableSectionProps {
   simulation: SimulationResult;
-  currentCategory: SingleSimulationCategory;
+  currentCategory: SimulationCategory;
 }
 
 function SingleSimulationDataTableSection({ simulation, currentCategory }: SingleSimulationDataTableSectionProps) {

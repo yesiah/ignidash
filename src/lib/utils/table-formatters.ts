@@ -1,5 +1,6 @@
 import type { TableColumn } from '@/lib/types/table';
-import { type SingleSimulationTableRow, type ColumnFormat, SIMULATION_TABLE_CONFIG } from '@/lib/schemas/single-simulation-table-schema';
+import type { ColumnFormat } from '@/lib/types/column-format';
+import { type SingleSimulationTableRow, SIMULATION_TABLE_CONFIG } from '@/lib/schemas/single-simulation-table-schema';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
