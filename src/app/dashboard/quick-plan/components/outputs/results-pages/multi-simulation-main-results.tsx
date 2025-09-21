@@ -4,6 +4,7 @@ import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import SectionContainer from '@/components/ui/section-container';
 import { useResultsState } from '@/hooks/use-results-state';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 
 import SimulationCategorySelector from '../single-simulation-category-selector';
 import SingleSimulationChartsSection from '../sections/single-simulation-charts-section';
@@ -12,9 +13,16 @@ import SingleSimulationDataTableSection from '../sections/single-simulation-data
 interface MultiSimulationMainResultsProps {
   simulation: SimulationResult;
   keyMetrics: KeyMetrics;
+  tableData: MultiSimulationTableRow[];
+  yearlyTableData: YearlyAggregateTableRow[];
 }
 
-export default function MultiSimulationMainResults({ simulation, keyMetrics }: MultiSimulationMainResultsProps) {
+export default function MultiSimulationMainResults({
+  simulation,
+  keyMetrics,
+  tableData,
+  yearlyTableData,
+}: MultiSimulationMainResultsProps) {
   const startAge = simulation.context.startAge;
 
   const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
