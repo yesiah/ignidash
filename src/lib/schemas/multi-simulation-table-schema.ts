@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 import type { ColumnFormat } from '@/lib/types/column-format';
 
-// Stochastic Simulation Table Schema
-export const stochasticTableRowSchema = z.object({
+// Multi Simulation Table Schema
+export const multiSimulationTableRowSchema = z.object({
   seed: z.number(),
   success: z.boolean(),
   retirementAge: z.number().nullable(),
@@ -17,9 +17,9 @@ export const stochasticTableRowSchema = z.object({
   historicalRanges: z.array(z.object({ startYear: z.number(), endYear: z.number() })).nullable(),
 });
 
-export type StochasticTableRow = z.infer<typeof stochasticTableRowSchema>;
+export type MultiSimulationTableRow = z.infer<typeof multiSimulationTableRowSchema>;
 
-const STOCHASTIC_COLUMNS = {
+const MULTI_SIMULATION_COLUMNS = {
   seed: { title: 'Seed', format: 'number' },
   success: { title: 'Success', format: 'string' },
   retirementAge: { title: 'Retirement Age', format: 'number' },
@@ -33,14 +33,15 @@ const STOCHASTIC_COLUMNS = {
   historicalRanges: { title: 'Historical Ranges', format: 'historicalRanges' },
 } as const;
 
-export const STOCHASTIC_TABLE_CONFIG: Record<keyof StochasticTableRow, { title: string; format: ColumnFormat }> = STOCHASTIC_COLUMNS;
+export const MULTI_SIMULATION_TABLE_CONFIG: Record<keyof MultiSimulationTableRow, { title: string; format: ColumnFormat }> =
+  MULTI_SIMULATION_COLUMNS;
 
-export const validateStochasticTableRow = (data: unknown): StochasticTableRow => {
-  return stochasticTableRowSchema.parse(data);
+export const validateMultiSimulationTableRow = (data: unknown): MultiSimulationTableRow => {
+  return multiSimulationTableRowSchema.parse(data);
 };
 
-export const validateStochasticTableData = (data: unknown[]): StochasticTableRow[] => {
-  return data.map(validateStochasticTableRow);
+export const validateMultiSimulationTableData = (data: unknown[]): MultiSimulationTableRow[] => {
+  return data.map(validateMultiSimulationTableRow);
 };
 
 // Yearly Aggregate Table Schema
