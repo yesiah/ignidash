@@ -7,7 +7,7 @@ import type { ExpensesData, ExpenseData } from './expenses';
 import type { PhaseData, PhaseName } from './phase';
 import type { TaxesData } from './taxes';
 import type { ReturnsData } from './returns';
-import type { AssetClass } from '../asset';
+import type { AssetClass, AssetAllocation } from '../asset';
 
 export interface Stats {
   mean: number;
@@ -115,9 +115,13 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  // export type AssetAllocation = Record<AssetClass, number>;
-  // assetAllocation: AssetAllocation;
   private calculatePortfolioPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PortfolioData> {
+    const fallback = { stocks: 0, bonds: 0, cash: 0 };
+    const getAllocationPercentiles = (allocations: AssetAllocation[]): Percentiles<AssetAllocation> => {
+      const sorted = allocations.sort((a, b) => a.stocks - b.stocks);
+      return this.calculatePercentilesFromValues(sorted);
+    };
+
     const percentiles = {
       totalValue: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalValue),
       totalWithdrawals: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalWithdrawals),
@@ -126,6 +130,7 @@ export class MultiSimulationAnalyzer {
       withdrawalsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.withdrawalsForPeriod),
       contributionsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.contributionsForPeriod),
       realizedGainsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.realizedGainsForPeriod),
+      assetAllocation: getAllocationPercentiles(dataPointsForYear.map((d) => d.dp.portfolio.assetAllocation ?? fallback)),
     };
 
     const accountNamesAndTypes: Record<string, { name: string; type: AccountInputs['type'] }> = {};
@@ -146,6 +151,7 @@ export class MultiSimulationAnalyzer {
         contributionsForPeriod: Percentiles<number>;
         withdrawalsForPeriod: Percentiles<number>;
         realizedGainsForPeriod: Percentiles<number>;
+        assetAllocation: Percentiles<AssetAllocation>;
       }
     > = {};
     for (const id of Object.keys(accountNamesAndTypes)) {
@@ -166,6 +172,9 @@ export class MultiSimulationAnalyzer {
           dataPointsForYear,
           (d) => d.dp.portfolio.perAccountData[id]?.realizedGainsForPeriod ?? 0
         ),
+        assetAllocation: getAllocationPercentiles(
+          dataPointsForYear.map((d) => d.dp.portfolio.perAccountData[id]?.assetAllocation ?? fallback)
+        ),
       };
     }
 
@@ -183,7 +192,7 @@ export class MultiSimulationAnalyzer {
           contributionsForPeriod: accountPercentiles[id].contributionsForPeriod[p],
           withdrawalsForPeriod: accountPercentiles[id].withdrawalsForPeriod[p],
           realizedGainsForPeriod: accountPercentiles[id].realizedGainsForPeriod[p],
-          assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+          assetAllocation: accountPercentiles[id].assetAllocation[p],
         };
       }
 
@@ -196,7 +205,7 @@ export class MultiSimulationAnalyzer {
         contributionsForPeriod: percentiles.contributionsForPeriod[p],
         realizedGainsForPeriod: percentiles.realizedGainsForPeriod[p],
         perAccountData,
-        assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+        assetAllocation: percentiles.assetAllocation[p],
       };
     };
 
@@ -429,33 +438,5 @@ export class MultiSimulationAnalyzer {
       p75: buildPercentileData('p75'),
       p90: buildPercentileData('p90'),
     };
-  }
-
-  private calculateStats(values: number[]): Stats | null {
-    if (values.length === 0) return null;
-    if (values.length === 1) return { mean: values[0], median: values[0], min: values[0], max: values[0], stdDev: null };
-
-    const sorted = [...values].sort((a, b) => a - b);
-    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const median = this.calculateMedian(sorted);
-    const min = sorted[0];
-    const max = sorted[sorted.length - 1];
-    const stdDev = this.calculateStandardDeviation(values, mean);
-
-    return { mean, median, min, max, stdDev };
-  }
-
-  private calculateMedian(sortedValues: number[]): number {
-    const length = sortedValues.length;
-    if (length % 2 === 0) {
-      return (sortedValues[length / 2 - 1] + sortedValues[length / 2]) / 2;
-    } else {
-      return sortedValues[Math.floor(length / 2)];
-    }
-  }
-
-  private calculateStandardDeviation(values: number[], mean: number): number {
-    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (values.length - 1);
-    return Math.sqrt(variance);
   }
 }
