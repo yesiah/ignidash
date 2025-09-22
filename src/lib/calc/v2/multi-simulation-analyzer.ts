@@ -1,7 +1,7 @@
 import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from './simulation-engine';
 import type { PortfolioData } from './portfolio';
-import type { IncomesData } from './incomes';
-import type { ExpensesData } from './expenses';
+import type { IncomesData, IncomeData } from './incomes';
+import type { ExpensesData, ExpenseData } from './expenses';
 import type { PhaseData } from './phase';
 import type { TaxesData } from './taxes';
 import type { ReturnsData } from './returns';
@@ -169,20 +169,6 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  // export interface IncomesData {
-  //   totalGrossIncome: number;
-  //   totalAmountWithheld: number;
-  //   totalIncomeAfterWithholding: number;
-  //   perIncomeData: Record<string, IncomeData>;
-  // }
-
-  // export interface IncomeData {
-  //   id: string;
-  //   name: string;
-  //   grossIncome: number;
-  //   amountWithheld: number;
-  //   incomeAfterWithholding: number;
-  // }
   private calculateIncomesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<IncomesData> {
     const percentiles = {
       totalGrossIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalGrossIncome ?? 0),
@@ -190,12 +176,52 @@ export class MultiSimulationAnalyzer {
       totalIncomeAfterWithholding: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalIncomeAfterWithholding ?? 0),
     };
 
-    const buildPercentileData = (p: keyof Percentiles<number>): IncomesData => ({
-      totalGrossIncome: percentiles.totalGrossIncome[p],
-      totalAmountWithheld: percentiles.totalAmountWithheld[p],
-      totalIncomeAfterWithholding: percentiles.totalIncomeAfterWithholding[p],
-      perIncomeData: {},
+    const incomeNames: Record<string, string> = {};
+    dataPointsForYear.forEach(({ dp }) => {
+      const perIncomeData = dp.incomes?.perIncomeData ?? {};
+      for (const [id, inc] of Object.entries(perIncomeData)) {
+        if (!incomeNames[id]) incomeNames[id] = inc.name;
+      }
     });
+
+    const incomePercentiles: Record<
+      string,
+      {
+        grossIncome: Percentiles<number>;
+        amountWithheld: Percentiles<number>;
+        incomeAfterWithholding: Percentiles<number>;
+      }
+    > = {};
+    for (const id of Object.keys(incomeNames)) {
+      incomePercentiles[id] = {
+        grossIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.grossIncome ?? 0),
+        amountWithheld: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.amountWithheld ?? 0),
+        incomeAfterWithholding: this.getFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.incomes?.perIncomeData[id]?.incomeAfterWithholding ?? 0
+        ),
+      };
+    }
+
+    const buildPercentileData = (p: keyof Percentiles<number>): IncomesData => {
+      const perIncomeData: Record<string, IncomeData> = {};
+      for (const [id, name] of Object.entries(incomeNames)) {
+        perIncomeData[id] = {
+          id,
+          name,
+          grossIncome: incomePercentiles[id].grossIncome[p],
+          amountWithheld: incomePercentiles[id].amountWithheld[p],
+          incomeAfterWithholding: incomePercentiles[id].incomeAfterWithholding[p],
+        };
+      }
+
+      return {
+        totalGrossIncome: percentiles.totalGrossIncome[p],
+        totalAmountWithheld: percentiles.totalAmountWithheld[p],
+        totalIncomeAfterWithholding: percentiles.totalIncomeAfterWithholding[p],
+        perIncomeData,
+      };
+    };
 
     return {
       p10: buildPercentileData('p10'),
@@ -206,25 +232,35 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  // export interface ExpensesData {
-  //   totalExpenses: number;
-  //   perExpenseData: Record<string, ExpenseData>;
-  // }
-
-  // export interface ExpenseData {
-  //   id: string;
-  //   name: string;
-  //   amount: number;
-  // }
   private calculateExpensesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ExpensesData> {
     const percentiles = {
       totalExpenses: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.totalExpenses ?? 0),
     };
 
-    const buildPercentileData = (p: keyof Percentiles<number>): ExpensesData => ({
-      totalExpenses: percentiles.totalExpenses[p],
-      perExpenseData: {},
+    const expenseNames: Record<string, string> = {};
+    dataPointsForYear.forEach(({ dp }) => {
+      const perExpenseData = dp.expenses?.perExpenseData ?? {};
+      for (const [id, exp] of Object.entries(perExpenseData)) {
+        if (!expenseNames[id]) expenseNames[id] = exp.name;
+      }
     });
+
+    const expensePercentiles: Record<string, Percentiles<number>> = {};
+    for (const id of Object.keys(expenseNames)) {
+      expensePercentiles[id] = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.perExpenseData[id]?.amount ?? 0);
+    }
+
+    const buildPercentileData = (p: keyof Percentiles<number>): ExpensesData => {
+      const perExpenseData: Record<string, ExpenseData> = {};
+      for (const [id, name] of Object.entries(expenseNames)) {
+        perExpenseData[id] = { id, name, amount: expensePercentiles[id][p] };
+      }
+
+      return {
+        totalExpenses: percentiles.totalExpenses[p],
+        perExpenseData,
+      };
+    };
 
     return {
       p10: buildPercentileData('p10'),
