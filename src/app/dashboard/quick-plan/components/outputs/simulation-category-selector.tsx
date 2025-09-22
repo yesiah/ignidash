@@ -41,7 +41,7 @@ export default function SimulationCategorySelector({
         ))}
       </div>
       {setCurrentPercentile && currentPercentile && (
-        <div className="border-border/50 shrink-0 border-l px-2">
+        <div className="border-border/50 shrink-0 border-l sm:px-2">
           <Dropdown>
             <DropdownButton plain aria-label="Open options">
               <ListFilterIcon />
