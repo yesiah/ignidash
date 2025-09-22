@@ -1,4 +1,5 @@
-import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from './simulation-engine';
+import type { PortfolioData } from './portfolio';
 
 export interface Stats {
   mean: number;
@@ -8,12 +9,12 @@ export interface Stats {
   stdDev: number | null;
 }
 
-export interface Percentiles {
-  p10: { seed: number; dp: SimulationDataPoint };
-  p25: { seed: number; dp: SimulationDataPoint };
-  p50: { seed: number; dp: SimulationDataPoint };
-  p75: { seed: number; dp: SimulationDataPoint };
-  p90: { seed: number; dp: SimulationDataPoint };
+export interface Percentiles<T> {
+  p10: T;
+  p25: T;
+  p50: T;
+  p75: T;
+  p90: T;
 }
 
 export interface MultiSimulationAnalysis {
@@ -74,21 +75,55 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculatePercentile(
-    sortedValues: Array<{ seed: number; dp: SimulationDataPoint }>,
-    percentile: number
-  ): { seed: number; dp: SimulationDataPoint } {
+  private calculatePercentile<T>(sortedValues: T[], percentile: number): T {
     const index = Math.floor((percentile / 100) * sortedValues.length);
     return sortedValues[Math.min(index, sortedValues.length - 1)];
   }
 
-  private calculatePercentilesFromValues(sortedValues: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles {
+  private calculatePercentilesFromValues<T>(sortedValues: T[]): Percentiles<T> {
     return {
       p10: this.calculatePercentile(sortedValues, 10),
       p25: this.calculatePercentile(sortedValues, 25),
       p50: this.calculatePercentile(sortedValues, 50),
       p75: this.calculatePercentile(sortedValues, 75),
       p90: this.calculatePercentile(sortedValues, 90),
+    };
+  }
+
+  private calculatePortfolioPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PortfolioData> {
+    const getFieldPercentiles = (field: keyof PortfolioData) => {
+      const values = dataPointsForYear.map((d) => d.dp.portfolio[field] as number).sort((a, b) => a - b);
+      return this.calculatePercentilesFromValues(values);
+    };
+
+    const percentiles = {
+      totalValue: getFieldPercentiles('totalValue'),
+      totalWithdrawals: getFieldPercentiles('totalWithdrawals'),
+      totalContributions: getFieldPercentiles('totalContributions'),
+      totalRealizedGains: getFieldPercentiles('totalRealizedGains'),
+      withdrawalsForPeriod: getFieldPercentiles('withdrawalsForPeriod'),
+      contributionsForPeriod: getFieldPercentiles('contributionsForPeriod'),
+      realizedGainsForPeriod: getFieldPercentiles('realizedGainsForPeriod'),
+    };
+
+    const buildPercentileData = (p: keyof Percentiles<number>): PortfolioData => ({
+      totalValue: percentiles.totalValue[p],
+      totalWithdrawals: percentiles.totalWithdrawals[p],
+      totalContributions: percentiles.totalContributions[p],
+      totalRealizedGains: percentiles.totalRealizedGains[p],
+      withdrawalsForPeriod: percentiles.withdrawalsForPeriod[p],
+      contributionsForPeriod: percentiles.contributionsForPeriod[p],
+      realizedGainsForPeriod: percentiles.realizedGainsForPeriod[p],
+      perAccountData: {},
+      assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+    });
+
+    return {
+      p10: buildPercentileData('p10'),
+      p25: buildPercentileData('p25'),
+      p50: buildPercentileData('p50'),
+      p75: buildPercentileData('p75'),
+      p90: buildPercentileData('p90'),
     };
   }
 
