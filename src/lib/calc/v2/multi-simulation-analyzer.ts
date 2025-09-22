@@ -207,7 +207,12 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculateIncomesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<IncomesData> {
+  private calculateIncomesPercentiles(
+    dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>
+  ): Percentiles<IncomesData | null> {
+    const allHaveNoIncomes = dataPointsForYear.every((d) => d.dp.incomes === null);
+    if (allHaveNoIncomes) return { p10: null, p25: null, p50: null, p75: null, p90: null };
+
     const percentiles: { [K in keyof Omit<IncomesData, 'perIncomeData'>]: Percentiles<IncomesData[K]> } = {
       totalGrossIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalGrossIncome ?? 0),
       totalAmountWithheld: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalAmountWithheld ?? 0),
@@ -270,7 +275,12 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculateExpensesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ExpensesData> {
+  private calculateExpensesPercentiles(
+    dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>
+  ): Percentiles<ExpensesData | null> {
+    const allHaveNoExpenses = dataPointsForYear.every((d) => d.dp.expenses === null);
+    if (allHaveNoExpenses) return { p10: null, p25: null, p50: null, p75: null, p90: null };
+
     const percentiles: { [K in keyof Omit<ExpensesData, 'perExpenseData'>]: Percentiles<ExpensesData[K]> } = {
       totalExpenses: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.totalExpenses ?? 0),
     };
@@ -309,7 +319,10 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculatePhasePercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PhaseData> {
+  private calculatePhasePercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PhaseData | null> {
+    const allHaveNoPhase = dataPointsForYear.every((d) => d.dp.phase === null);
+    if (allHaveNoPhase) return { p10: null, p25: null, p50: null, p75: null, p90: null };
+
     const values: PhaseName[] = dataPointsForYear.map((d) => d.dp.phase?.name ?? 'accumulation').sort();
 
     const percentiles = this.calculatePercentilesFromValues(values);
@@ -324,7 +337,10 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculateTaxesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<TaxesData> {
+  private calculateTaxesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<TaxesData | null> {
+    const allHaveNoTaxes = dataPointsForYear.every((d) => d.dp.taxes === null);
+    if (allHaveNoTaxes) return { p10: null, p25: null, p50: null, p75: null, p90: null };
+
     const percentiles: { [K in keyof Omit<TaxesData, 'incomeTaxes' | 'capitalGainsTaxes'>]: Percentiles<TaxesData[K]> } = {
       totalTaxesDue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesDue ?? 0),
       totalTaxesRefund: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesRefund ?? 0),
@@ -387,7 +403,12 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private calculateReturnsPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ReturnsData> {
+  private calculateReturnsPercentiles(
+    dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>
+  ): Percentiles<ReturnsData | null> {
+    const allHaveNoReturns = dataPointsForYear.every((d) => d.dp.returns === null);
+    if (allHaveNoReturns) return { p10: null, p25: null, p50: null, p75: null, p90: null };
+
     const assetClasses: AssetClass[] = ['stocks', 'bonds', 'cash'];
 
     const inflationRateForPeriod = this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.inflationRateForPeriod ?? 0);
