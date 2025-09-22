@@ -49,7 +49,7 @@ export default function SimulationCategorySelector({
             <DropdownMenu>
               {percentiles.map((percentile) => (
                 <DropdownItem key={percentile} onClick={() => setCurrentPercentile(percentile)}>
-                  <CheckIcon className={cn({ invisible: currentPercentile !== percentile })} />
+                  <CheckIcon data-slot="icon" className={cn({ invisible: currentPercentile !== percentile })} />
                   <DropdownLabel>{percentile}</DropdownLabel>
                 </DropdownItem>
               ))}
