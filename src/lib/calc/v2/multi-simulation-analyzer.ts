@@ -2,7 +2,7 @@ import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } fro
 import type { PortfolioData } from './portfolio';
 import type { IncomesData, IncomeData } from './incomes';
 import type { ExpensesData, ExpenseData } from './expenses';
-import type { PhaseData } from './phase';
+import type { PhaseData, PhaseName } from './phase';
 import type { TaxesData } from './taxes';
 import type { ReturnsData } from './returns';
 
@@ -271,13 +271,19 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  // export type PhaseName = 'accumulation' | 'retirement';
-
-  // export interface PhaseData {
-  //   name: PhaseName;
-  // }
   private calculatePhasePercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PhaseData> {
-    throw new Error('Not implemented');
+    const values: PhaseName[] = dataPointsForYear.map((d) => d.dp.phase?.name ?? 'accumulation').sort();
+
+    const percentiles = this.calculatePercentilesFromValues(values);
+    const wrap = (name: PhaseName): PhaseData => ({ name });
+
+    return {
+      p10: wrap(percentiles.p10),
+      p25: wrap(percentiles.p25),
+      p50: wrap(percentiles.p50),
+      p75: wrap(percentiles.p75),
+      p90: wrap(percentiles.p90),
+    };
   }
 
   // export interface CapitalGainsTaxesData {
