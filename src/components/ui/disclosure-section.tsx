@@ -1,11 +1,11 @@
 'use client';
 
 import { RefObject, useEffect, useRef } from 'react';
-
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
 import type { DisclosureState } from '@/lib/types/disclosure-state';
+import { cn } from '@/lib/utils';
 
 interface DisclosureSectionContentProps {
   title: string;
@@ -72,9 +72,7 @@ function DisclosureSectionContent({
         </DisclosureButton>
       </div>
       <DisclosurePanel className="border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4">
-        <div className={`flex h-full flex-col px-4 py-5 sm:py-6 ${centerPanelContent ? 'justify-center' : 'justify-start'}`}>
-          {children}
-        </div>
+        <div className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}>{children}</div>
       </DisclosurePanel>
     </div>
   );

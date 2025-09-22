@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import type { MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-analyzer';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import SectionContainer from '@/components/ui/section-container';
@@ -29,11 +31,17 @@ export default function MultiSimulationMainResults({
   const startAge = simulation.context.startAge;
 
   const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+  const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
 
   return (
     <>
       <SectionContainer showBottomBorder>
-        <SimulationCategorySelector currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />
+        <SimulationCategorySelector
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
+          currentPercentile={currentPercentile}
+          setCurrentPercentile={setCurrentPercentile}
+        />
       </SectionContainer>
       <SingleSimulationChartsSection
         simulation={simulation}
