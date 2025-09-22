@@ -95,26 +95,6 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  private getFieldPercentiles<T>(data: T[], valueExtractor: (item: T) => number): Percentiles<number> {
-    const values = data.map(valueExtractor).sort((a, b) => a - b);
-    return this.calculatePercentilesFromValues(values);
-  }
-
-  private calculatePercentile<T>(sortedValues: T[], percentile: number): T {
-    const index = Math.floor((percentile / 100) * sortedValues.length);
-    return sortedValues[Math.min(index, sortedValues.length - 1)];
-  }
-
-  private calculatePercentilesFromValues<T>(sortedValues: T[]): Percentiles<T> {
-    return {
-      p10: this.calculatePercentile(sortedValues, 10),
-      p25: this.calculatePercentile(sortedValues, 25),
-      p50: this.calculatePercentile(sortedValues, 50),
-      p75: this.calculatePercentile(sortedValues, 75),
-      p90: this.calculatePercentile(sortedValues, 90),
-    };
-  }
-
   private calculatePortfolioPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PortfolioData> {
     const fallback = { stocks: 0, bonds: 0, cash: 0 };
     const getAllocationPercentiles = (allocations: AssetAllocation[]): Percentiles<AssetAllocation> => {
@@ -123,13 +103,13 @@ export class MultiSimulationAnalyzer {
     };
 
     const percentiles = {
-      totalValue: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalValue),
-      totalWithdrawals: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalWithdrawals),
-      totalContributions: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalContributions),
-      totalRealizedGains: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalRealizedGains),
-      withdrawalsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.withdrawalsForPeriod),
-      contributionsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.contributionsForPeriod),
-      realizedGainsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.realizedGainsForPeriod),
+      totalValue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalValue),
+      totalWithdrawals: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalWithdrawals),
+      totalContributions: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalContributions),
+      totalRealizedGains: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalRealizedGains),
+      withdrawalsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.withdrawalsForPeriod),
+      contributionsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.contributionsForPeriod),
+      realizedGainsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.realizedGainsForPeriod),
       assetAllocation: getAllocationPercentiles(dataPointsForYear.map((d) => d.dp.portfolio.assetAllocation ?? fallback)),
     };
 
@@ -156,19 +136,28 @@ export class MultiSimulationAnalyzer {
     > = {};
     for (const id of Object.keys(accountNamesAndTypes)) {
       accountPercentiles[id] = {
-        totalValue: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalValue ?? 0),
-        totalWithdrawals: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalWithdrawals ?? 0),
-        totalContributions: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalContributions ?? 0),
-        totalRealizedGains: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalRealizedGains ?? 0),
-        contributionsForPeriod: this.getFieldPercentiles(
+        totalValue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalValue ?? 0),
+        totalWithdrawals: this.getNumberFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.totalWithdrawals ?? 0
+        ),
+        totalContributions: this.getNumberFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.totalContributions ?? 0
+        ),
+        totalRealizedGains: this.getNumberFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.totalRealizedGains ?? 0
+        ),
+        contributionsForPeriod: this.getNumberFieldPercentiles(
           dataPointsForYear,
           (d) => d.dp.portfolio.perAccountData[id]?.contributionsForPeriod ?? 0
         ),
-        withdrawalsForPeriod: this.getFieldPercentiles(
+        withdrawalsForPeriod: this.getNumberFieldPercentiles(
           dataPointsForYear,
           (d) => d.dp.portfolio.perAccountData[id]?.withdrawalsForPeriod ?? 0
         ),
-        realizedGainsForPeriod: this.getFieldPercentiles(
+        realizedGainsForPeriod: this.getNumberFieldPercentiles(
           dataPointsForYear,
           (d) => d.dp.portfolio.perAccountData[id]?.realizedGainsForPeriod ?? 0
         ),
@@ -220,9 +209,9 @@ export class MultiSimulationAnalyzer {
 
   private calculateIncomesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<IncomesData> {
     const percentiles = {
-      totalGrossIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalGrossIncome ?? 0),
-      totalAmountWithheld: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalAmountWithheld ?? 0),
-      totalIncomeAfterWithholding: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalIncomeAfterWithholding ?? 0),
+      totalGrossIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalGrossIncome ?? 0),
+      totalAmountWithheld: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalAmountWithheld ?? 0),
+      totalIncomeAfterWithholding: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalIncomeAfterWithholding ?? 0),
     };
 
     const incomeNames: Record<string, string> = {};
@@ -243,9 +232,9 @@ export class MultiSimulationAnalyzer {
     > = {};
     for (const id of Object.keys(incomeNames)) {
       incomePercentiles[id] = {
-        grossIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.grossIncome ?? 0),
-        amountWithheld: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.amountWithheld ?? 0),
-        incomeAfterWithholding: this.getFieldPercentiles(
+        grossIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.grossIncome ?? 0),
+        amountWithheld: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.perIncomeData[id]?.amountWithheld ?? 0),
+        incomeAfterWithholding: this.getNumberFieldPercentiles(
           dataPointsForYear,
           (d) => d.dp.incomes?.perIncomeData[id]?.incomeAfterWithholding ?? 0
         ),
@@ -283,7 +272,7 @@ export class MultiSimulationAnalyzer {
 
   private calculateExpensesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ExpensesData> {
     const percentiles = {
-      totalExpenses: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.totalExpenses ?? 0),
+      totalExpenses: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.totalExpenses ?? 0),
     };
 
     const expenseNames: Record<string, string> = {};
@@ -296,7 +285,7 @@ export class MultiSimulationAnalyzer {
 
     const expensePercentiles: Record<string, Percentiles<number>> = {};
     for (const id of Object.keys(expenseNames)) {
-      expensePercentiles[id] = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.perExpenseData[id]?.amount ?? 0);
+      expensePercentiles[id] = this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.perExpenseData[id]?.amount ?? 0);
     }
 
     const buildPercentileData = (p: keyof Percentiles<number>): ExpensesData => {
@@ -337,32 +326,35 @@ export class MultiSimulationAnalyzer {
 
   private calculateTaxesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<TaxesData> {
     const percentiles = {
-      totalTaxesDue: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesDue ?? 0),
-      totalTaxesRefund: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesRefund ?? 0),
-      totalTaxableIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxableIncome ?? 0),
+      totalTaxesDue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesDue ?? 0),
+      totalTaxesRefund: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesRefund ?? 0),
+      totalTaxableIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxableIncome ?? 0),
     };
 
     const incomeTaxes = {
-      taxableOrdinaryIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.taxableOrdinaryIncome ?? 0),
-      incomeTaxAmount: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0),
-      effectiveIncomeTaxRate: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.effectiveIncomeTaxRate ?? 0),
-      topMarginalTaxRate: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.topMarginalTaxRate ?? 0),
-      netIncome: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.netIncome ?? 0),
-      capitalLossDeduction: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.capitalLossDeduction ?? 0),
+      taxableOrdinaryIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.taxableOrdinaryIncome ?? 0),
+      incomeTaxAmount: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0),
+      effectiveIncomeTaxRate: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.effectiveIncomeTaxRate ?? 0),
+      topMarginalTaxRate: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.topMarginalTaxRate ?? 0),
+      netIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.netIncome ?? 0),
+      capitalLossDeduction: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.capitalLossDeduction ?? 0),
     };
 
     const capitalGainsTaxes = {
-      taxableCapitalGains: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.taxableCapitalGains ?? 0),
-      capitalGainsTaxAmount: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0),
-      effectiveCapitalGainsTaxRate: this.getFieldPercentiles(
+      taxableCapitalGains: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.taxableCapitalGains ?? 0),
+      capitalGainsTaxAmount: this.getNumberFieldPercentiles(
+        dataPointsForYear,
+        (d) => d.dp.taxes?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0
+      ),
+      effectiveCapitalGainsTaxRate: this.getNumberFieldPercentiles(
         dataPointsForYear,
         (d) => d.dp.taxes?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? 0
       ),
-      topMarginalCapitalGainsTaxRate: this.getFieldPercentiles(
+      topMarginalCapitalGainsTaxRate: this.getNumberFieldPercentiles(
         dataPointsForYear,
         (d) => d.dp.taxes?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? 0
       ),
-      netCapitalGains: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.netCapitalGains ?? 0),
+      netCapitalGains: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.netCapitalGains ?? 0),
     };
 
     const buildPercentileData = (p: keyof Percentiles<number>): TaxesData => ({
@@ -398,14 +390,14 @@ export class MultiSimulationAnalyzer {
   private calculateReturnsPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ReturnsData> {
     const assetClasses: AssetClass[] = ['stocks', 'bonds', 'cash'];
 
-    const inflationRateForPeriod = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.inflationRateForPeriod ?? 0);
-    const annualInflationRate = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.annualInflationRate ?? 0);
+    const inflationRateForPeriod = this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.inflationRateForPeriod ?? 0);
+    const annualInflationRate = this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.annualInflationRate ?? 0);
 
     const makeAssetPercentiles = <T extends Record<AssetClass, number>>(
       selector: (d: (typeof dataPointsForYear)[number]) => T
     ): Record<AssetClass, Percentiles<number>> => {
       return Object.fromEntries(
-        assetClasses.map((asset) => [asset, this.getFieldPercentiles(dataPointsForYear, (d) => selector(d)[asset])])
+        assetClasses.map((asset) => [asset, this.getNumberFieldPercentiles(dataPointsForYear, (d) => selector(d)[asset])])
       ) as Record<AssetClass, Percentiles<number>>;
     };
 
@@ -437,6 +429,26 @@ export class MultiSimulationAnalyzer {
       p50: buildPercentileData('p50'),
       p75: buildPercentileData('p75'),
       p90: buildPercentileData('p90'),
+    };
+  }
+
+  private getNumberFieldPercentiles<T>(data: T[], valueExtractor: (item: T) => number): Percentiles<number> {
+    const values = data.map(valueExtractor).sort((a, b) => a - b);
+    return this.calculatePercentilesFromValues(values);
+  }
+
+  private calculatePercentile<T>(sortedValues: T[], percentile: number): T {
+    const index = Math.floor((percentile / 100) * sortedValues.length);
+    return sortedValues[Math.min(index, sortedValues.length - 1)];
+  }
+
+  private calculatePercentilesFromValues<T>(sortedValues: T[]): Percentiles<T> {
+    return {
+      p10: this.calculatePercentile(sortedValues, 10),
+      p25: this.calculatePercentile(sortedValues, 25),
+      p50: this.calculatePercentile(sortedValues, 50),
+      p75: this.calculatePercentile(sortedValues, 75),
+      p90: this.calculatePercentile(sortedValues, 90),
     };
   }
 }
