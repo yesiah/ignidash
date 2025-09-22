@@ -7,6 +7,7 @@ import type { KeyMetrics } from '@/lib/types/key-metrics';
 import SectionContainer from '@/components/ui/section-container';
 import { useResultsState } from '@/hooks/use-results-state';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
+import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
 import SimulationCategorySelector from '../simulation-category-selector';
 import SingleSimulationChartsSection from '../sections/single-simulation-charts-section';
@@ -27,11 +28,29 @@ export default function MultiSimulationMainResults({
   yearlyTableData,
   simulationMode,
 }: MultiSimulationMainResultsProps) {
-  const simulation = analysis.results.p50;
-  const startAge = simulation.context.startAge;
-
-  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
   const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
+
+  let simulation: SimulationResult;
+  switch (currentPercentile) {
+    case 'P10':
+      simulation = analysis.results.p10;
+      break;
+    case 'P25':
+      simulation = analysis.results.p25;
+      break;
+    case 'P50':
+      simulation = analysis.results.p50;
+      break;
+    case 'P75':
+      simulation = analysis.results.p75;
+      break;
+    case 'P90':
+      simulation = analysis.results.p90;
+      break;
+  }
+
+  const startAge = simulation.context.startAge;
+  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
 
   return (
     <>
