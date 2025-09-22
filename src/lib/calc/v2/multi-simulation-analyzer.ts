@@ -1,5 +1,7 @@
+import type { AccountInputs } from '@/lib/schemas/account-form-schema';
+
 import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from './simulation-engine';
-import type { PortfolioData } from './portfolio';
+import type { PortfolioData, AccountDataWithTransactions } from './portfolio';
 import type { IncomesData, IncomeData } from './incomes';
 import type { ExpensesData, ExpenseData } from './expenses';
 import type { PhaseData, PhaseName } from './phase';
@@ -106,36 +108,8 @@ export class MultiSimulationAnalyzer {
     };
   }
 
-  // export interface PortfolioData {
-  //   totalValue: number;
-  //   totalWithdrawals: number;
-  //   totalContributions: number;
-  //   totalRealizedGains: number;
-  //   withdrawalsForPeriod: number;
-  //   contributionsForPeriod: number;
-  //   realizedGainsForPeriod: number;
-  //   perAccountData: Record<string, AccountDataWithTransactions>;
-  //   assetAllocation: AssetAllocation | null;
-  // }
-
   // export type AssetAllocation = Record<AssetClass, number>;
-
-  // export interface AccountData {
-  //   totalValue: number;
-  //   totalWithdrawals: number;
-  //   totalContributions: number;
-  //   totalRealizedGains: number;
-  //   name: string;
-  //   id: string;
-  //   type: AccountInputs['type'];
-  //   assetAllocation: AssetAllocation;
-  // }
-
-  // export interface AccountDataWithTransactions extends AccountData {
-  //   contributionsForPeriod: number;
-  //   withdrawalsForPeriod: number;
-  //   realizedGainsForPeriod: number;
-  // }
+  // assetAllocation: AssetAllocation;
 
   private calculatePortfolioPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PortfolioData> {
     const percentiles = {
@@ -148,17 +122,77 @@ export class MultiSimulationAnalyzer {
       realizedGainsForPeriod: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.realizedGainsForPeriod),
     };
 
-    const buildPercentileData = (p: keyof Percentiles<number>): PortfolioData => ({
-      totalValue: percentiles.totalValue[p],
-      totalWithdrawals: percentiles.totalWithdrawals[p],
-      totalContributions: percentiles.totalContributions[p],
-      totalRealizedGains: percentiles.totalRealizedGains[p],
-      withdrawalsForPeriod: percentiles.withdrawalsForPeriod[p],
-      contributionsForPeriod: percentiles.contributionsForPeriod[p],
-      realizedGainsForPeriod: percentiles.realizedGainsForPeriod[p],
-      perAccountData: {},
-      assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+    const accountNames: Record<string, { name: string; type: AccountInputs['type'] }> = {};
+    dataPointsForYear.forEach(({ dp }) => {
+      const perAccountData = dp.portfolio.perAccountData;
+      for (const [id, acc] of Object.entries(perAccountData)) {
+        if (!accountNames[id]) accountNames[id] = { name: acc.name, type: acc.type };
+      }
     });
+
+    const accountPercentiles: Record<
+      string,
+      {
+        totalValue: Percentiles<number>;
+        totalWithdrawals: Percentiles<number>;
+        totalContributions: Percentiles<number>;
+        totalRealizedGains: Percentiles<number>;
+        contributionsForPeriod: Percentiles<number>;
+        withdrawalsForPeriod: Percentiles<number>;
+        realizedGainsForPeriod: Percentiles<number>;
+      }
+    > = {};
+    for (const id of Object.keys(accountNames)) {
+      accountPercentiles[id] = {
+        totalValue: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalValue ?? 0),
+        totalWithdrawals: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalWithdrawals ?? 0),
+        totalContributions: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalContributions ?? 0),
+        totalRealizedGains: this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.perAccountData[id]?.totalRealizedGains ?? 0),
+        contributionsForPeriod: this.getFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.contributionsForPeriod ?? 0
+        ),
+        withdrawalsForPeriod: this.getFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.withdrawalsForPeriod ?? 0
+        ),
+        realizedGainsForPeriod: this.getFieldPercentiles(
+          dataPointsForYear,
+          (d) => d.dp.portfolio.perAccountData[id]?.realizedGainsForPeriod ?? 0
+        ),
+      };
+    }
+
+    const buildPercentileData = (p: keyof Percentiles<number>): PortfolioData => {
+      const perAccountData: Record<string, AccountDataWithTransactions> = {};
+      for (const [id, { name, type }] of Object.entries(accountNames)) {
+        perAccountData[id] = {
+          id,
+          name,
+          type,
+          totalValue: accountPercentiles[id].totalValue[p],
+          totalWithdrawals: accountPercentiles[id].totalWithdrawals[p],
+          totalContributions: accountPercentiles[id].totalContributions[p],
+          totalRealizedGains: accountPercentiles[id].totalRealizedGains[p],
+          contributionsForPeriod: accountPercentiles[id].contributionsForPeriod[p],
+          withdrawalsForPeriod: accountPercentiles[id].withdrawalsForPeriod[p],
+          realizedGainsForPeriod: accountPercentiles[id].realizedGainsForPeriod[p],
+          assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+        };
+      }
+
+      return {
+        totalValue: percentiles.totalValue[p],
+        totalWithdrawals: percentiles.totalWithdrawals[p],
+        totalContributions: percentiles.totalContributions[p],
+        totalRealizedGains: percentiles.totalRealizedGains[p],
+        withdrawalsForPeriod: percentiles.withdrawalsForPeriod[p],
+        contributionsForPeriod: percentiles.contributionsForPeriod[p],
+        realizedGainsForPeriod: percentiles.realizedGainsForPeriod[p],
+        perAccountData,
+        assetAllocation: { stocks: 0, bonds: 0, cash: 0 },
+      };
+    };
 
     return {
       p10: buildPercentileData('p10'),
