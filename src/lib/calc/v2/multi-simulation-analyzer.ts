@@ -7,6 +7,7 @@ import type { ExpensesData, ExpenseData } from './expenses';
 import type { PhaseData, PhaseName } from './phase';
 import type { TaxesData } from './taxes';
 import type { ReturnsData } from './returns';
+import type { AssetClass } from '../asset';
 
 export interface Stats {
   mean: number;
@@ -347,25 +348,49 @@ export class MultiSimulationAnalyzer {
     throw new Error('Not implemented');
   }
 
-  // export interface ReturnsData {
-  //   // Total return data
-  //   totalReturnAmounts: AssetReturnAmounts;
-
-  //   // Monthly return data
-  //   returnAmountsForPeriod: AssetReturnAmounts;
-  //   returnRatesForPeriod: AssetReturnRates;
-  //   inflationRateForPeriod: number;
-
-  //   // Annual return data
-  //   annualReturnRates: AssetReturnRates;
-  //   annualInflationRate: number;
-  // }
-
-  // export type AssetClass = 'stocks' | 'bonds' | 'cash';
-  // export type AssetReturnRates = Record<AssetClass, number>;
-  // export type AssetReturnAmounts = Record<AssetClass, number>;
   private calculateReturnsPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ReturnsData> {
-    throw new Error('Not implemented');
+    const assetClasses: AssetClass[] = ['stocks', 'bonds', 'cash'];
+
+    const inflationRateForPeriod = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.inflationRateForPeriod ?? 0);
+    const annualInflationRate = this.getFieldPercentiles(dataPointsForYear, (d) => d.dp.returns?.annualInflationRate ?? 0);
+
+    const makeAssetPercentiles = <T extends Record<AssetClass, number>>(
+      selector: (d: (typeof dataPointsForYear)[number]) => T
+    ): Record<AssetClass, Percentiles<number>> => {
+      return Object.fromEntries(
+        assetClasses.map((asset) => [asset, this.getFieldPercentiles(dataPointsForYear, (d) => selector(d)[asset])])
+      ) as Record<AssetClass, Percentiles<number>>;
+    };
+
+    const fallback = { stocks: 0, bonds: 0, cash: 0 };
+
+    const totalReturnAmounts = makeAssetPercentiles((d) => d.dp.returns?.totalReturnAmounts ?? fallback);
+    const returnAmountsForPeriod = makeAssetPercentiles((d) => d.dp.returns?.returnAmountsForPeriod ?? fallback);
+    const returnRatesForPeriod = makeAssetPercentiles((d) => d.dp.returns?.returnRatesForPeriod ?? fallback);
+    const annualReturnRates = makeAssetPercentiles((d) => d.dp.returns?.annualReturnRates ?? fallback);
+
+    const buildPercentileData = (p: keyof Percentiles<number>): ReturnsData => {
+      const pickAsset = (m: Record<AssetClass, Percentiles<number>>): Record<AssetClass, number> => {
+        return Object.fromEntries(assetClasses.map((asset) => [asset, m[asset][p]])) as Record<AssetClass, number>;
+      };
+
+      return {
+        totalReturnAmounts: pickAsset(totalReturnAmounts),
+        returnAmountsForPeriod: pickAsset(returnAmountsForPeriod),
+        returnRatesForPeriod: pickAsset(returnRatesForPeriod),
+        inflationRateForPeriod: inflationRateForPeriod[p],
+        annualReturnRates: pickAsset(annualReturnRates),
+        annualInflationRate: annualInflationRate[p],
+      };
+    };
+
+    return {
+      p10: buildPercentileData('p10'),
+      p25: buildPercentileData('p25'),
+      p50: buildPercentileData('p50'),
+      p75: buildPercentileData('p75'),
+      p90: buildPercentileData('p90'),
+    };
   }
 
   private calculateStats(values: number[]): Stats | null {
