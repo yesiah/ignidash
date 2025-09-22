@@ -96,12 +96,6 @@ export class MultiSimulationAnalyzer {
   }
 
   private calculatePortfolioPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<PortfolioData> {
-    const fallback = { stocks: 0, bonds: 0, cash: 0 };
-    const getAllocationPercentiles = (allocations: AssetAllocation[]): Percentiles<AssetAllocation> => {
-      const sorted = allocations.sort((a, b) => a.stocks - b.stocks);
-      return this.calculatePercentilesFromValues(sorted);
-    };
-
     const percentiles: { [K in keyof Omit<PortfolioData, 'perAccountData'>]: Percentiles<PortfolioData[K]> } = {
       totalValue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalValue),
       totalWithdrawals: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalWithdrawals),
@@ -110,7 +104,7 @@ export class MultiSimulationAnalyzer {
       withdrawalsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.withdrawalsForPeriod),
       contributionsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.contributionsForPeriod),
       realizedGainsForPeriod: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.realizedGainsForPeriod),
-      assetAllocation: getAllocationPercentiles(dataPointsForYear.map((d) => d.dp.portfolio.assetAllocation ?? fallback)),
+      assetAllocation: this.getAssetAllocationPercentiles(dataPointsForYear.map((d) => d.dp.portfolio.assetAllocation)),
     };
 
     const accountNamesAndTypes: Record<string, { name: string; type: AccountInputs['type'] }> = {};
@@ -161,8 +155,8 @@ export class MultiSimulationAnalyzer {
           dataPointsForYear,
           (d) => d.dp.portfolio.perAccountData[id]?.realizedGainsForPeriod ?? 0
         ),
-        assetAllocation: getAllocationPercentiles(
-          dataPointsForYear.map((d) => d.dp.portfolio.perAccountData[id]?.assetAllocation ?? fallback)
+        assetAllocation: this.getAssetAllocationPercentiles(
+          dataPointsForYear.map((d) => d.dp.portfolio.perAccountData[id]?.assetAllocation)
         ),
       };
     }
@@ -450,6 +444,11 @@ export class MultiSimulationAnalyzer {
 
   private getNumberFieldPercentiles<T>(data: T[], valueExtractor: (item: T) => number): Percentiles<number> {
     const values = data.map(valueExtractor).sort((a, b) => a - b);
+    return this.calculatePercentilesFromValues(values);
+  }
+
+  private getAssetAllocationPercentiles(data: Array<AssetAllocation | null>): Percentiles<AssetAllocation> {
+    const values = data.map((item) => item ?? { stocks: 0, bonds: 0, cash: 0 }).sort((a, b) => a.stocks - b.stocks);
     return this.calculatePercentilesFromValues(values);
   }
 
