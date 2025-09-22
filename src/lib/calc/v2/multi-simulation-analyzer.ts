@@ -425,8 +425,8 @@ export class MultiSimulationAnalyzer {
     const annualReturnRates = makeAssetPercentiles((d) => d.dp.returns!.annualReturnRates);
 
     const buildPercentileData = (p: keyof Percentiles<number>): ReturnsData => {
-      const pickAsset = (m: Record<AssetClass, Percentiles<number>>): Record<AssetClass, number> => {
-        return Object.fromEntries(assetClasses.map((asset) => [asset, m[asset][p]])) as Record<AssetClass, number>;
+      const pickAsset = (assetPercentiles: Record<AssetClass, Percentiles<number>>): Record<AssetClass, number> => {
+        return Object.fromEntries(assetClasses.map((asset) => [asset, assetPercentiles[asset][p]])) as Record<AssetClass, number>;
       };
 
       return {
