@@ -326,14 +326,14 @@ export class MultiSimulationAnalyzer {
     const values: PhaseName[] = dataPointsForYear.map((d) => d.dp.phase!.name).sort();
 
     const percentiles = this.calculatePercentilesFromValues(values);
-    const wrap = (name: PhaseName): PhaseData => ({ name });
+    const wrapPhaseName = (name: PhaseName): PhaseData => ({ name });
 
     return {
-      p10: wrap(percentiles.p10),
-      p25: wrap(percentiles.p25),
-      p50: wrap(percentiles.p50),
-      p75: wrap(percentiles.p75),
-      p90: wrap(percentiles.p90),
+      p10: wrapPhaseName(percentiles.p10),
+      p25: wrapPhaseName(percentiles.p25),
+      p50: wrapPhaseName(percentiles.p50),
+      p75: wrapPhaseName(percentiles.p75),
+      p90: wrapPhaseName(percentiles.p90),
     };
   }
 
