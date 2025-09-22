@@ -5,7 +5,7 @@ import type { PortfolioData, AccountDataWithTransactions } from './portfolio';
 import type { IncomesData, IncomeData } from './incomes';
 import type { ExpensesData, ExpenseData } from './expenses';
 import type { PhaseData, PhaseName } from './phase';
-import type { TaxesData } from './taxes';
+import type { TaxesData, IncomeTaxesData, CapitalGainsTaxesData } from './taxes';
 import type { ReturnsData } from './returns';
 import type { AssetClass, AssetAllocation } from '../asset';
 
@@ -102,7 +102,7 @@ export class MultiSimulationAnalyzer {
       return this.calculatePercentilesFromValues(sorted);
     };
 
-    const percentiles = {
+    const percentiles: { [K in keyof Omit<PortfolioData, 'perAccountData'>]: Percentiles<PortfolioData[K]> } = {
       totalValue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalValue),
       totalWithdrawals: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalWithdrawals),
       totalContributions: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.portfolio.totalContributions),
@@ -208,7 +208,7 @@ export class MultiSimulationAnalyzer {
   }
 
   private calculateIncomesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<IncomesData> {
-    const percentiles = {
+    const percentiles: { [K in keyof Omit<IncomesData, 'perIncomeData'>]: Percentiles<IncomesData[K]> } = {
       totalGrossIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalGrossIncome ?? 0),
       totalAmountWithheld: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalAmountWithheld ?? 0),
       totalIncomeAfterWithholding: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.incomes?.totalIncomeAfterWithholding ?? 0),
@@ -271,7 +271,7 @@ export class MultiSimulationAnalyzer {
   }
 
   private calculateExpensesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<ExpensesData> {
-    const percentiles = {
+    const percentiles: { [K in keyof Omit<ExpensesData, 'perExpenseData'>]: Percentiles<ExpensesData[K]> } = {
       totalExpenses: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.expenses?.totalExpenses ?? 0),
     };
 
@@ -325,13 +325,13 @@ export class MultiSimulationAnalyzer {
   }
 
   private calculateTaxesPercentiles(dataPointsForYear: Array<{ seed: number; dp: SimulationDataPoint }>): Percentiles<TaxesData> {
-    const percentiles = {
+    const percentiles: { [K in keyof Omit<TaxesData, 'incomeTaxes' | 'capitalGainsTaxes'>]: Percentiles<TaxesData[K]> } = {
       totalTaxesDue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesDue ?? 0),
       totalTaxesRefund: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxesRefund ?? 0),
       totalTaxableIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.totalTaxableIncome ?? 0),
     };
 
-    const incomeTaxes = {
+    const incomeTaxes: { [K in keyof IncomeTaxesData]: Percentiles<IncomeTaxesData[K]> } = {
       taxableOrdinaryIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.taxableOrdinaryIncome ?? 0),
       incomeTaxAmount: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0),
       effectiveIncomeTaxRate: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.effectiveIncomeTaxRate ?? 0),
@@ -340,7 +340,7 @@ export class MultiSimulationAnalyzer {
       capitalLossDeduction: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.incomeTaxes.capitalLossDeduction ?? 0),
     };
 
-    const capitalGainsTaxes = {
+    const capitalGainsTaxes: { [K in keyof CapitalGainsTaxesData]: Percentiles<CapitalGainsTaxesData[K]> } = {
       taxableCapitalGains: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes?.capitalGainsTaxes.taxableCapitalGains ?? 0),
       capitalGainsTaxAmount: this.getNumberFieldPercentiles(
         dataPointsForYear,
@@ -364,7 +364,7 @@ export class MultiSimulationAnalyzer {
         effectiveIncomeTaxRate: incomeTaxes.effectiveIncomeTaxRate[p],
         topMarginalTaxRate: incomeTaxes.topMarginalTaxRate[p],
         netIncome: incomeTaxes.netIncome[p],
-        capitalLossDeduction: incomeTaxes.capitalLossDeduction[p],
+        capitalLossDeduction: incomeTaxes.capitalLossDeduction?.[p] ?? 0,
       },
       capitalGainsTaxes: {
         taxableCapitalGains: capitalGainsTaxes.taxableCapitalGains[p],
