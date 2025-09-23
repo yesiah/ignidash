@@ -28,6 +28,7 @@ import SingleSimulationContributionsLineChartCard from '../cards/single-simulati
 import SingleSimulationContributionsBarChartCard from '../cards/single-simulation/single-simulation-contributions-bar-chart-card';
 import SingleSimulationWithdrawalsLineChartCard from '../cards/single-simulation/single-simulation-withdrawals-line-chart-card';
 import SingleSimulationWithdrawalsBarChartCard from '../cards/single-simulation/single-simulation-withdrawals-bar-chart-card';
+import DrillDownBreadcrumb from '../drill-down-breadcrumb';
 
 interface ChartsCategoryProps {
   startAge: number;
@@ -203,8 +204,9 @@ interface SingleSimulationChartsSectionProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   currentCategory: SimulationCategory;
-  currentPercentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
-  selectedSeed: number | null;
+  currentPercentile?: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
+  setSelectedSeed?: (seed: number | null) => void;
+  selectedSeed?: number | null;
 }
 
 function SingleSimulationChartsSection({
@@ -214,6 +216,7 @@ function SingleSimulationChartsSection({
   selectedAge,
   currentCategory,
   currentPercentile,
+  setSelectedSeed,
   selectedSeed,
 }: SingleSimulationChartsSectionProps) {
   const startAge = simulation.context.startAge;
@@ -248,11 +251,18 @@ function SingleSimulationChartsSection({
       break;
   }
 
-  const title = selectedSeed !== null ? `Data Visualization [Seed #${selectedSeed}]` : `Data Visualization [${currentPercentile}]`;
+  let headerText: string | React.ReactNode;
+  if (selectedSeed && setSelectedSeed) {
+    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="Data Visualization" />;
+  } else if (currentPercentile) {
+    headerText = `Data Visualization [${currentPercentile}]`;
+  } else {
+    headerText = 'Data Visualization';
+  }
 
   return (
     <SectionContainer showBottomBorder>
-      <SectionHeader title={title} desc="Interactive charts to explore your projection." className="mb-4" />
+      <SectionHeader title={headerText} desc="Interactive charts to explore your projection." className="mb-4" />
       <div className="mb-4 grid grid-cols-1 gap-2">{chartsComponents}</div>
     </SectionContainer>
   );

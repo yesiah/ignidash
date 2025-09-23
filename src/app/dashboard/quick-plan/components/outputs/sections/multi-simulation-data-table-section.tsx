@@ -65,7 +65,7 @@ function MultiSimulationDataTableSection({
   let headerDesc: string;
 
   if (selectedSeed !== null) {
-    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} />;
+    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="All Simulations" />;
     headerDesc = 'Year-by-year progression and outcome for this simulation.';
   } else if (currentTableType === TableType.YearlyResults) {
     headerText = 'Yearly Results';

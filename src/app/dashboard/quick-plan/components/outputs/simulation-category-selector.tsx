@@ -12,7 +12,7 @@ interface SimulationCategorySelectorProps {
   currentCategory: SimulationCategory;
   setCurrentPercentile?: (percentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90') => void;
   currentPercentile?: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
-  selectedSeed: number | null;
+  selectedSeed?: number | null;
 }
 
 export default function SimulationCategorySelector({

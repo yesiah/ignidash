@@ -7,9 +7,10 @@ import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 interface DrillDownBreadcrumbProps {
   selectedSeed: number | null;
   setSelectedSeed: (seed: number | null) => void;
+  rootLabel: string;
 }
 
-export default function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed }: DrillDownBreadcrumbProps) {
+export default function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed, rootLabel }: DrillDownBreadcrumbProps) {
   const withScrollPreservation = useScrollPreservation();
 
   return (
@@ -22,7 +23,7 @@ export default function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed }: D
               className="text-muted-foreground hover:text-foreground focus-outline"
               onClick={withScrollPreservation(() => setSelectedSeed(null))}
             >
-              <span>All Simulations</span>
+              <span>{rootLabel}</span>
             </button>
           </div>
         </li>
