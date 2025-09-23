@@ -28,6 +28,11 @@ export default function SingleSimulationDataListSection({ simulation, selectedAg
 
   if (!data) return null;
 
+  const grossIncome = data.incomes?.totalGrossIncome ?? 0;
+  const incomeTax = data.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
+  const totalExpenses = data.expenses?.totalExpenses ?? 0;
+  const netCashFlow = grossIncome - incomeTax - totalExpenses;
+
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title={'Data List'} desc={'Data List Desc'} className="mb-4" />
@@ -36,13 +41,16 @@ export default function SingleSimulationDataListSection({ simulation, selectedAg
           <Subheading level={4}>Cash Flow</Subheading>
           <DescriptionList>
             <DescriptionTerm>Gross Income</DescriptionTerm>
-            <DescriptionDetails>{`+ ${formatNumber(data.incomes?.totalGrossIncome ?? 0, 2, '$')}`}</DescriptionDetails>
+            <DescriptionDetails>{`+ ${formatNumber(grossIncome, 2, '$')}`}</DescriptionDetails>
 
             <DescriptionTerm>Income Tax</DescriptionTerm>
-            <DescriptionDetails>{`- ${formatNumber(data.taxes?.incomeTaxes.incomeTaxAmount ?? 0, 2, '$')}`}</DescriptionDetails>
+            <DescriptionDetails>{`- ${formatNumber(incomeTax, 2, '$')}`}</DescriptionDetails>
 
             <DescriptionTerm>Total Expenses</DescriptionTerm>
-            <DescriptionDetails>{`- ${formatNumber(data.expenses?.totalExpenses ?? 0, 2, '$')}`}</DescriptionDetails>
+            <DescriptionDetails>{`- ${formatNumber(totalExpenses, 2, '$')}`}</DescriptionDetails>
+
+            <DescriptionTerm>Net</DescriptionTerm>
+            <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
           </DescriptionList>
         </Card>
       </div>
