@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
@@ -8,12 +8,15 @@ import { Subheading } from '@/components/catalyst/heading';
 import { formatNumber } from '@/lib/utils';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
+import { Switch } from '@/components/catalyst/switch';
 
 interface DataListCardProps {
   dp: SimulationDataPoint;
 }
 
 function PortfolioDataListCard({ dp }: DataListCardProps) {
+  const [checked, setChecked] = useState(true);
+
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
 
@@ -22,44 +25,64 @@ function PortfolioDataListCard({ dp }: DataListCardProps) {
   const bondsAllocation = assetAllocation.bonds;
   const cashAllocation = assetAllocation.cash;
 
-  //   let cashSavings = 0;
-  //   let taxable = 0;
-  //   let taxDeferred = 0;
-  //   let taxFree = 0;
+  let cashSavings = 0;
+  let taxable = 0;
+  let taxDeferred = 0;
+  let taxFree = 0;
 
-  //   for (const account of Object.values(portfolioData.perAccountData)) {
-  //     switch (account.type) {
-  //       case 'savings':
-  //         cashSavings += account.totalValue;
-  //         break;
-  //       case 'taxableBrokerage':
-  //         taxable += account.totalValue;
-  //         break;
-  //       case '401k':
-  //       case 'ira':
-  //       case 'hsa':
-  //         taxDeferred += account.totalValue;
-  //         break;
-  //       case 'roth401k':
-  //       case 'rothIra':
-  //         taxFree += account.totalValue;
-  //         break;
-  //     }
-  //   }
+  for (const account of Object.values(portfolioData.perAccountData)) {
+    switch (account.type) {
+      case 'savings':
+        cashSavings += account.totalValue;
+        break;
+      case 'taxableBrokerage':
+        taxable += account.totalValue;
+        break;
+      case '401k':
+      case 'ira':
+      case 'hsa':
+        taxDeferred += account.totalValue;
+        break;
+      case 'roth401k':
+      case 'rothIra':
+        taxFree += account.totalValue;
+        break;
+    }
+  }
 
   return (
     <Card>
-      <Subheading level={4}>Portfolio</Subheading>
+      <div className="flex w-full items-center justify-between">
+        <Subheading level={4}>Portfolio</Subheading>
+        <Switch aria-label="Toggle portfolio data view mode" checked={checked} onChange={setChecked} />
+      </div>
       <DescriptionList>
-        <DescriptionTerm>Stocks</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
+        {checked ? (
+          <>
+            <DescriptionTerm>Stocks</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
 
-        <DescriptionTerm>Bonds</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * bondsAllocation, 2, '$')} (${formatNumber(bondsAllocation * 100, 1)}%)`}</DescriptionDetails>
+            <DescriptionTerm>Bonds</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(totalValue * bondsAllocation, 2, '$')} (${formatNumber(bondsAllocation * 100, 1)}%)`}</DescriptionDetails>
 
-        <DescriptionTerm>Cash</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * cashAllocation, 2, '$')} (${formatNumber(cashAllocation * 100, 1)}%)`}</DescriptionDetails>
+            <DescriptionTerm>Cash</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(totalValue * cashAllocation, 2, '$')} (${formatNumber(cashAllocation * 100, 1)}%)`}</DescriptionDetails>
+          </>
+        ) : (
+          <>
+            <DescriptionTerm>Taxable</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(taxable, 2, '$')} (${formatNumber((taxable / totalValue) * 100, 1)}%)`}</DescriptionDetails>
 
+            <DescriptionTerm>Tax Deferred</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(taxDeferred, 2, '$')} (${formatNumber((taxDeferred / totalValue) * 100, 1)}%)`}</DescriptionDetails>
+
+            <DescriptionTerm>Tax Free</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(taxFree, 2, '$')} (${formatNumber((taxFree / totalValue) * 100, 1)}%)`}</DescriptionDetails>
+
+            <DescriptionTerm>Cash Savings</DescriptionTerm>
+            <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
+          </>
+        )}
         <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
       </DescriptionList>
