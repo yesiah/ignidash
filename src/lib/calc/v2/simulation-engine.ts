@@ -34,6 +34,7 @@ export interface SimulationResult {
     startDate: ISODateString;
     endDate: ISODateString;
     retirementStrategy: RetirementStrategyInputs;
+    historicalRanges?: Array<{ startYear: number; endYear: number }>;
   };
 }
 
@@ -207,12 +208,8 @@ export class FinancialSimulationEngine {
   }
 }
 
-export interface HistoricalRangeInfo {
-  historicalRanges: Array<{ startYear: number; endYear: number }>;
-}
-
 export interface MultiSimulationResult {
-  simulations: Array<[number /* seed */, SimulationResult | (SimulationResult & HistoricalRangeInfo)]>;
+  simulations: Array<[number /* seed */, SimulationResult]>;
 }
 
 export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
@@ -257,7 +254,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     super(inputs);
   }
 
-  runSingleSimulation(seed: number): SimulationResult & HistoricalRangeInfo {
+  runSingleSimulation(seed: number): SimulationResult {
     const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed);
 
     const timeline = this.inputs.timeline;
@@ -266,21 +263,36 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     const result = this.runSimulation(returnsProvider, timeline);
     const historicalRanges = returnsProvider.getHistoricalRanges();
 
-    return { ...result, historicalRanges };
+    return {
+      ...result,
+      context: {
+        ...result.context,
+        historicalRanges,
+      },
+    };
   }
 
   runLcgHistoricalBacktest(numSimulations: number): MultiSimulationResult {
     const timeline = this.inputs.timeline;
     if (!timeline) throw new Error('Must have timeline data for simulation');
 
-    const simulations: Array<[number, SimulationResult & HistoricalRangeInfo]> = [];
+    const simulations: Array<[number, SimulationResult]> = [];
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
       const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
 
       const result = this.runSimulation(returnsProvider, timeline);
       const historicalRanges = returnsProvider.getHistoricalRanges();
-      simulations.push([simulationSeed, { ...result, historicalRanges }]);
+      simulations.push([
+        simulationSeed,
+        {
+          ...result,
+          context: {
+            ...result.context,
+            historicalRanges,
+          },
+        },
+      ]);
     }
 
     return { simulations };

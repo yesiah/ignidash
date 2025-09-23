@@ -93,7 +93,7 @@ export class TableDataExtractor {
 
       const lastDp = data[data.length - 1];
       const success = retirementAge !== null && lastDp.portfolio.totalValue > 0.1;
-      const historicalRanges = 'historicalRanges' in result && result.historicalRanges ? result.historicalRanges : null;
+      const historicalRanges = context.historicalRanges ?? null;
 
       return {
         seed,
