@@ -9,12 +9,13 @@ export class TableDataExtractor {
   extractSingleSimulationData(simulation: SimulationResult, category: SimulationCategory): SingleSimulationTableRow[] {
     return simulation.data.map((data, idx) => {
       const startAge = simulation.context.startAge;
+
       const historicalRanges = simulation.context.historicalRanges ?? null;
+      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
 
       const startDateYear = new Date().getFullYear();
       const currDateYear = new Date(data.date).getFullYear();
 
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
       const phaseName = data.phase?.name ?? null;
 
       const portfolioData = data.portfolio;
