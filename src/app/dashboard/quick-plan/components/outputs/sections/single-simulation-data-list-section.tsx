@@ -107,18 +107,33 @@ function CashFlowDataListCard({ dp }: DataListCardProps) {
   const grossIncome = (dp.incomes?.totalGrossIncome ?? 0) + taxDeferredWithdrawals;
   const incomeTax = dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
   const totalExpenses = dp.expenses?.totalExpenses ?? 0;
-  const netCashFlow = grossIncome - incomeTax - totalExpenses;
+  const netIncome = grossIncome - incomeTax;
+  const netCashFlow = netIncome - totalExpenses;
 
   return (
     <div className="flex flex-col gap-2">
       <Card className="mb-0">
         <Subheading level={4}>Income</Subheading>
         <DescriptionList>
+          {Object.values(dp.incomes?.perIncomeData ?? {}).map((income) => (
+            <Fragment key={income.id}>
+              <DescriptionTerm>{income.name}</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(income.grossIncome, 2, '$')}</DescriptionDetails>
+            </Fragment>
+          ))}
+
+          {taxDeferredWithdrawals > 0 && (
+            <>
+              <DescriptionTerm>Tax Deferred Withdrawals</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(taxDeferredWithdrawals, 2, '$')}</DescriptionDetails>
+            </>
+          )}
+
           <DescriptionTerm>Income Tax</DescriptionTerm>
           <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="font-semibold">Net Income</DescriptionTerm>
-          <DescriptionDetails className="font-semibold">{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-semibold">{formatNumber(netIncome, 2, '$')}</DescriptionDetails>
         </DescriptionList>
       </Card>
       <Card className="my-0">
