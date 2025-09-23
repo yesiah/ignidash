@@ -110,29 +110,34 @@ function CashFlowDataListCard({ dp }: DataListCardProps) {
   const netCashFlow = grossIncome - incomeTax - totalExpenses;
 
   return (
-    <Card>
-      <Subheading level={4}>Cash Flow</Subheading>
-      <DescriptionList>
-        <DescriptionTerm>Gross Income</DescriptionTerm>
-        <DescriptionDetails>{`+ ${formatNumber(grossIncome, 2, '$')}`}</DescriptionDetails>
+    <div className="flex flex-col gap-2">
+      <Card className="mb-0">
+        <Subheading level={4}>Cash Flow</Subheading>
+        <DescriptionList>
+          <DescriptionTerm>Gross Income</DescriptionTerm>
+          <DescriptionDetails>{`+ ${formatNumber(grossIncome, 2, '$')}`}</DescriptionDetails>
 
-        <DescriptionTerm>Income Tax</DescriptionTerm>
-        <DescriptionDetails>{`- ${formatNumber(incomeTax, 2, '$')}`}</DescriptionDetails>
+          <DescriptionTerm>Income Tax</DescriptionTerm>
+          <DescriptionDetails>{`- ${formatNumber(incomeTax, 2, '$')}`}</DescriptionDetails>
 
-        <DescriptionTerm>Total Expenses</DescriptionTerm>
-        <DescriptionDetails>{`- ${formatNumber(totalExpenses, 2, '$')}`}</DescriptionDetails>
+          <DescriptionTerm>Total Expenses</DescriptionTerm>
+          <DescriptionDetails>{`- ${formatNumber(totalExpenses, 2, '$')}`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-semibold">Net</DescriptionTerm>
-        <DescriptionDetails className="font-semibold">{`${netCashFlow < 0 ? '-' : '+'} ${formatNumber(Math.abs(netCashFlow), 2, '$')}`}</DescriptionDetails>
+          <DescriptionTerm className="font-semibold">Net</DescriptionTerm>
+          <DescriptionDetails className="font-semibold">{`${netCashFlow < 0 ? '-' : '+'} ${formatNumber(Math.abs(netCashFlow), 2, '$')}`}</DescriptionDetails>
 
-        {grossIncome > 0 && (
-          <>
-            <DescriptionTerm>Savings Rate</DescriptionTerm>
-            <DescriptionDetails>{`${formatNumber((netCashFlow / grossIncome) * 100, 1)}%`}</DescriptionDetails>
-          </>
-        )}
-      </DescriptionList>
-    </Card>
+          {grossIncome > 0 && (
+            <>
+              <DescriptionTerm>Savings Rate</DescriptionTerm>
+              <DescriptionDetails>{`${formatNumber((netCashFlow / grossIncome) * 100, 1)}%`}</DescriptionDetails>
+            </>
+          )}
+        </DescriptionList>
+      </Card>
+      <Card className="mt-0">
+        <Subheading level={4}>Cash Flow</Subheading>
+      </Card>
+    </div>
   );
 }
 
