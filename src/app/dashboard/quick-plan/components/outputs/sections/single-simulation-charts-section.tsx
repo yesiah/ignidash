@@ -254,8 +254,6 @@ function SingleSimulationChartsSection({
   let headerText: string | React.ReactNode;
   if (selectedSeed && setSelectedSeed) {
     headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="Data Visualization" />;
-  } else if (currentPercentile) {
-    headerText = `Data Visualization [${currentPercentile}]`;
   } else {
     headerText = 'Data Visualization';
   }
