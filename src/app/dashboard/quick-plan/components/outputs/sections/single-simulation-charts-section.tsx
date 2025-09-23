@@ -248,7 +248,7 @@ function SingleSimulationChartsSection({
       break;
   }
 
-  const title = selectedSeed !== null ? `Data Visualization (Seed #${selectedSeed})` : `Data Visualization (${currentPercentile})`;
+  const title = selectedSeed !== null ? `Data Visualization [Seed #${selectedSeed}]` : `Data Visualization [${currentPercentile}]`;
 
   return (
     <SectionContainer showBottomBorder>
