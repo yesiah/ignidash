@@ -51,7 +51,10 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   }
 
   const baseMetrics = useKeyMetrics(simulation);
-  const keyMetrics = baseMetrics && selectedSeed === null ? { ...baseMetrics, success: analysis?.success ?? 0 } : null;
+  const keyMetrics = baseMetrics && {
+    ...baseMetrics,
+    success: selectedSeed === null ? (analysis?.success ?? 0) : baseMetrics.success,
+  };
 
   if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation) {
     return (
