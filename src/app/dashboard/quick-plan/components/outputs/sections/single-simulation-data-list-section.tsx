@@ -49,8 +49,8 @@ export default function SingleSimulationDataListSection({ simulation, selectedAg
             <DescriptionTerm>Total Expenses</DescriptionTerm>
             <DescriptionDetails>{`- ${formatNumber(totalExpenses, 2, '$')}`}</DescriptionDetails>
 
-            <DescriptionTerm>Net</DescriptionTerm>
-            <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+            <DescriptionTerm className="font-semibold">Net</DescriptionTerm>
+            <DescriptionDetails className="font-semibold">{`${netCashFlow < 0 ? '-' : '+'} ${formatNumber(Math.abs(netCashFlow), 2, '$')}`}</DescriptionDetails>
           </DescriptionList>
         </Card>
       </div>
