@@ -376,11 +376,11 @@ export const useResetStore = () => useQuickPlanStore((state) => state.actions.re
  */
 export const useSimulationResult = (
   simulationMode: 'fixedReturns' | 'stochasticReturns' | 'historicalReturns',
-  seedOverride?: number
+  seedOverride?: number | null
 ): SimulationResult | null => {
   const inputs = useQuickPlanStore((state) => state.inputs);
   const preferencesSeed = useSimulationSeed();
-  const seed = seedOverride !== undefined ? seedOverride : preferencesSeed;
+  const seed = seedOverride !== undefined && seedOverride !== null ? seedOverride : preferencesSeed;
 
   return useMemo(() => {
     const timeline = inputs.timeline;

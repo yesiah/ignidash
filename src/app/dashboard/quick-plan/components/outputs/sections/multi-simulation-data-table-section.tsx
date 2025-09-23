@@ -5,17 +5,17 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
-import type { MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-analyzer';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
+import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import {
   generateSimulationTableColumns,
   generateMultiSimulationTableColumns,
   generateYearlyAggregateTableColumns,
 } from '@/lib/utils/table-formatters';
-import { useSimulationResult, useSingleSimulationTableData } from '@/lib/stores/quick-plan-store';
+import { useSingleSimulationTableData } from '@/lib/stores/quick-plan-store';
 
 import TableTypeSelector, { TableType } from '../table-type-selector';
 import Table from '../tables/table';
@@ -54,25 +54,13 @@ function DrillDownBreadcrumb({ selectedSeed, setSelectedSeed }: DrillDownBreadcr
 }
 
 interface TableWithSelectedSeedProps {
-  selectedSeed: number;
-  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
   currentCategory: SimulationCategory;
   onEscPressed: () => void;
+  simulation: SimulationResult;
 }
 
-function TableWithSelectedSeed({ selectedSeed, simulationMode, currentCategory, onEscPressed }: TableWithSelectedSeedProps) {
-  let simulationModeForSelectedSeed: 'stochasticReturns' | 'historicalReturns';
-  switch (simulationMode) {
-    case 'monteCarloStochasticReturns':
-      simulationModeForSelectedSeed = 'stochasticReturns';
-      break;
-    case 'monteCarloHistoricalReturns':
-      simulationModeForSelectedSeed = 'historicalReturns';
-      break;
-  }
-
-  const simulationResult = useSimulationResult(simulationModeForSelectedSeed, selectedSeed);
-  const tableData = useSingleSimulationTableData(simulationResult!, currentCategory);
+function TableWithSelectedSeed({ currentCategory, onEscPressed, simulation }: TableWithSelectedSeedProps) {
+  const tableData = useSingleSimulationTableData(simulation, currentCategory);
 
   return (
     <Table<SingleSimulationTableRow>
@@ -85,21 +73,22 @@ function TableWithSelectedSeed({ selectedSeed, simulationMode, currentCategory, 
 }
 
 interface MultiSimulationDataTableSectionProps {
-  analysis: MultiSimulationAnalysis;
+  simulation: SimulationResult;
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
   currentCategory: SimulationCategory;
-  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
+  setSelectedSeed: (seed: number | null) => void;
+  selectedSeed: number | null;
 }
 
 function MultiSimulationDataTableSection({
-  analysis,
+  simulation,
   tableData,
   yearlyTableData,
   currentCategory,
-  simulationMode,
+  setSelectedSeed,
+  selectedSeed,
 }: MultiSimulationDataTableSectionProps) {
-  const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
   const [currentTableType, setCurrentTableType] = useState<TableType>(TableType.AllSimulations);
 
   const withScrollPreservation = useScrollPreservation();
@@ -123,10 +112,9 @@ function MultiSimulationDataTableSection({
   if (selectedSeed !== null) {
     tableComponent = (
       <TableWithSelectedSeed
-        selectedSeed={selectedSeed}
-        simulationMode={simulationMode}
         currentCategory={currentCategory}
         onEscPressed={withScrollPreservation(() => setSelectedSeed(null))}
+        simulation={simulation}
       />
     );
   } else {
