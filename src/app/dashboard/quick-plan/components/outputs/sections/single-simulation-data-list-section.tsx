@@ -83,8 +83,8 @@ function PortfolioDataListCard({ dp }: DataListCardProps) {
             <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
           </>
         )}
-        <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm className="font-semibold">Total Value</DescriptionTerm>
+        <DescriptionDetails className="font-semibold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
@@ -122,8 +122,8 @@ function CashFlowDataListCard({ dp }: DataListCardProps) {
         <DescriptionTerm>Total Expenses</DescriptionTerm>
         <DescriptionDetails>{`- ${formatNumber(totalExpenses, 2, '$')}`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{`${netCashFlow < 0 ? '-' : '+'} ${formatNumber(Math.abs(netCashFlow), 2, '$')}`}</DescriptionDetails>
+        <DescriptionTerm className="font-semibold">Net</DescriptionTerm>
+        <DescriptionDetails className="font-semibold">{`${netCashFlow < 0 ? '-' : '+'} ${formatNumber(Math.abs(netCashFlow), 2, '$')}`}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
