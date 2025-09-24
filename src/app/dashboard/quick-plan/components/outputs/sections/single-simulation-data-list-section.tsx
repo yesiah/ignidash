@@ -15,7 +15,8 @@ interface DataListCardProps {
 }
 
 function PortfolioAndReturnsDataListCard({ dp }: DataListCardProps) {
-  const [checked, setChecked] = useState(true);
+  const [portfolioChecked, setPortfolioChecked] = useState(true);
+  const [returnsChecked, setReturnsChecked] = useState(true);
 
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
@@ -50,15 +51,25 @@ function PortfolioAndReturnsDataListCard({ dp }: DataListCardProps) {
     }
   }
 
+  const returnsData = dp.returns;
+
+  const { stocks: stockReturn, bonds: bondReturn, cash: cashReturn } = returnsData?.annualReturnRates ?? { stocks: 0, bonds: 0, cash: 0 };
+  const inflationRate = returnsData?.annualInflationRate ?? 0;
+  const {
+    stocks: stockAmount,
+    bonds: bondAmount,
+    cash: cashAmount,
+  } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
+
   return (
     <div className="flex flex-col gap-2">
       <Card className="mb-0">
         <div className="flex w-full items-center justify-between">
           <Subheading level={4}>Portfolio</Subheading>
-          <Switch aria-label="Toggle portfolio data view mode" checked={checked} onChange={setChecked} />
+          <Switch aria-label="Toggle portfolio data view mode" checked={portfolioChecked} onChange={setPortfolioChecked} />
         </div>
         <DescriptionList>
-          {checked ? (
+          {portfolioChecked ? (
             <>
               <DescriptionTerm>Stocks</DescriptionTerm>
               <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
@@ -89,7 +100,43 @@ function PortfolioAndReturnsDataListCard({ dp }: DataListCardProps) {
         </DescriptionList>
       </Card>
       <Card className="mt-0">
-        <Subheading level={4}>Returns</Subheading>
+        <div className="flex w-full items-center justify-between">
+          <Subheading level={4}>Returns</Subheading>
+          <Switch aria-label="Toggle returns data view mode" checked={returnsChecked} onChange={setReturnsChecked} />
+        </div>
+        <DescriptionList>
+          {returnsChecked ? (
+            <>
+              <DescriptionTerm>Stocks</DescriptionTerm>
+              <DescriptionDetails>{`${formatNumber(stockReturn * 100, 2)}%`}</DescriptionDetails>
+
+              <DescriptionTerm>Bonds</DescriptionTerm>
+              <DescriptionDetails>{`${formatNumber(bondReturn * 100, 2)}%`}</DescriptionDetails>
+
+              <DescriptionTerm>Cash</DescriptionTerm>
+              <DescriptionDetails>{`${formatNumber(cashReturn * 100, 2)}%`}</DescriptionDetails>
+
+              <DescriptionTerm>Inflation</DescriptionTerm>
+              <DescriptionDetails>{`${formatNumber(inflationRate * 100, 2)}%`}</DescriptionDetails>
+            </>
+          ) : (
+            <>
+              <DescriptionTerm>Stocks</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(stockAmount, 2, '$')}</DescriptionDetails>
+
+              <DescriptionTerm>Bonds</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(bondAmount, 2, '$')}</DescriptionDetails>
+
+              <DescriptionTerm>Cash</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(cashAmount, 2, '$')}</DescriptionDetails>
+
+              <DescriptionTerm className="font-semibold">Total</DescriptionTerm>
+              <DescriptionDetails className="font-semibold">
+                {formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}
+              </DescriptionDetails>
+            </>
+          )}
+        </DescriptionList>
       </Card>
     </div>
   );
