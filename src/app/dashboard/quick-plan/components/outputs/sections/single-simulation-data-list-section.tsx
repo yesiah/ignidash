@@ -9,6 +9,7 @@ import { formatNumber } from '@/lib/utils';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import { Switch } from '@/components/catalyst/switch';
+import { Select } from '@/components/catalyst/select';
 
 interface DataListCardProps {
   dp: SimulationDataPoint;
@@ -239,6 +240,8 @@ function CashFlowDataListCard({ dp }: DataListCardProps) {
 // }
 
 function WithdrawalsAndTaxesDataListCard({ dp }: DataListCardProps) {
+  const [taxesDataView, setTaxesDataView] = useState<'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'taxableIncome'>('marginalRates');
+
   const portfolioData = dp.portfolio;
 
   let cashSavings = 0;
@@ -295,7 +298,25 @@ function WithdrawalsAndTaxesDataListCard({ dp }: DataListCardProps) {
         </DescriptionList>
       </Card>
       <Card className="mt-0">
-        <Subheading level={4}>Taxes</Subheading>
+        <div className="flex w-full items-center justify-between">
+          <Subheading level={4}>Taxes</Subheading>
+          <Select
+            className="max-w-48 sm:max-w-64"
+            id="taxes-data-view"
+            name="taxes-data-view"
+            value={taxesDataView}
+            onChange={(e) => setTaxesDataView(e.target.value as 'marginalRates' | 'effectiveRates' | 'taxAmounts' | 'taxableIncome')}
+          >
+            <optgroup label="Tax Rates">
+              <option value="marginalRates">Top Marginal Rates</option>
+              <option value="effectiveRates">Effective Rates</option>
+            </optgroup>
+            <optgroup label="Dollar Amounts">
+              <option value="taxAmounts">Tax Amounts</option>
+              <option value="taxableIncome">Taxable Income</option>
+            </optgroup>
+          </Select>
+        </div>
         <DescriptionList>
           <DescriptionTerm>Income Tax</DescriptionTerm>
           <DescriptionDetails>{formatNumber(incomeTaxAmount, 2, '$')}</DescriptionDetails>
