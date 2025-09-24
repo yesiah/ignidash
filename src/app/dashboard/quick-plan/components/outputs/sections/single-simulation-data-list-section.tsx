@@ -235,6 +235,10 @@ function TaxesDataListCard({ dp }: DataListCardProps) {
   const incomeTaxAmount = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const capitalGainsTaxAmount = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
 
+  const taxableOrdinaryIncome = taxesData?.incomeTaxes.taxableOrdinaryIncome ?? 0;
+  const taxableCapitalGains = taxesData?.capitalGainsTaxes.taxableCapitalGains ?? 0;
+  const totalTaxableIncome = taxesData?.totalTaxableIncome ?? 0;
+
   let taxesDescListComponents = null;
   switch (taxesDataView) {
     case 'marginalRates':
@@ -274,7 +278,18 @@ function TaxesDataListCard({ dp }: DataListCardProps) {
       );
       break;
     case 'taxableIncome':
-      taxesDescListComponents = null;
+      taxesDescListComponents = (
+        <>
+          <DescriptionTerm>Taxable Ordinary Income</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxableOrdinaryIncome, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm>Taxable Capital Gains</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxableCapitalGains, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm className="font-semibold">Total</DescriptionTerm>
+          <DescriptionDetails className="font-semibold">{formatNumber(totalTaxableIncome, 2, '$')}</DescriptionDetails>
+        </>
+      );
       break;
   }
 
