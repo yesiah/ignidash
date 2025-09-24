@@ -437,7 +437,7 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
       break;
     case SimulationCategory.Returns:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 @3xl:grid-cols-2">
           <PortfolioDataListCard dp={dp} />
           <ReturnsDataListCard dp={dp} />
         </div>
