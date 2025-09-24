@@ -310,7 +310,7 @@ export default function SingleSimulationCashFlowLineChart({
         </ResponsiveContainer>
       </div>
       <div
-        className={`mt-2 flex justify-center gap-x-2 sm:gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}
+        className={`mt-2 grid grid-cols-2 gap-2 sm:flex sm:justify-center sm:gap-x-4 ${!isSmallScreen ? 'ml-16' : ''}`}
         role="group"
         aria-label="Chart legend"
       >
