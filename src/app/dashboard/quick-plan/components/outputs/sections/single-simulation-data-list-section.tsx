@@ -17,7 +17,7 @@ interface DataListCardProps {
 }
 
 function PortfolioDataListCard({ dp }: DataListCardProps) {
-  const [portfolioChecked, setPortfolioChecked] = useState(true);
+  const [portfolioChecked, setPortfolioChecked] = useState(false);
 
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
@@ -55,11 +55,11 @@ function PortfolioDataListCard({ dp }: DataListCardProps) {
   return (
     <Card className="my-0">
       <div className="flex w-full items-center justify-between">
-        <Subheading level={4}>{portfolioChecked ? 'Portfolio by Asset Class' : 'Portfolio by Tax Treatment'}</Subheading>
+        <Subheading level={4}>{portfolioChecked ? 'Portfolio by Tax Treatment' : 'Portfolio by Asset Class'}</Subheading>
         <Switch aria-label="Toggle portfolio data view mode" checked={portfolioChecked} onChange={setPortfolioChecked} />
       </div>
       <DescriptionList>
-        {portfolioChecked ? (
+        {!portfolioChecked ? (
           <>
             <DescriptionTerm>Stocks</DescriptionTerm>
             <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
@@ -309,7 +309,7 @@ function TaxesDataListCard({ dp }: DataListCardProps) {
 }
 
 function ReturnsDataListCard({ dp }: DataListCardProps) {
-  const [returnsChecked, setReturnsChecked] = useState(true);
+  const [returnsChecked, setReturnsChecked] = useState(false);
 
   const returnsData = dp.returns;
 
