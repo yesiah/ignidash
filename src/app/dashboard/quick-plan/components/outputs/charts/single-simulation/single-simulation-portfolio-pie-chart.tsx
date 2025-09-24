@@ -60,17 +60,17 @@ const createRenderActiveShape = (isSmallScreen: boolean) => {
 
     return (
       <g>
-        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">
-          {formatChartString(payload?.name ?? 'N/A')}
-        </text>
         <text
           x={cx}
           y={cy}
-          dy={0}
+          dy={-20}
           textAnchor="middle"
           fill="currentColor"
-          fontSize="16"
+          fontSize="14"
         >{`${value !== undefined ? formatNumber(value, 2, '$') : 'N/A'}`}</text>
+        <text x={cx} y={cy} dy={0} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">
+          {formatChartString(payload?.name ?? 'N/A')}
+        </text>
         <text x={cx} y={cy} dy={20} textAnchor="middle" fill="var(--muted-foreground)" fontSize="14">
           {`${((percent ?? 1) * 100).toFixed(2)}%`}
         </text>
