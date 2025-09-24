@@ -97,7 +97,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
             <span className="text-muted-foreground">{formatNumber(totalValue, 2, '$')}</span>
           </h4>
         </div>
-        <div className="flex h-64 w-full flex-col justify-center sm:h-72 lg:h-80">
+        <div className="flex h-64 w-full flex-col sm:h-72 lg:h-80">
           <DescriptionList>
             {chartData.map((entry, index) => (
               <Fragment key={entry.name}>
