@@ -115,6 +115,8 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
 function _TaxesDataListCardV2({ dp }: DataListCardProps) {
   const portfolioData = dp.portfolio;
 
+  const realizedGains = portfolioData.realizedGainsForPeriod;
+
   let taxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
@@ -135,6 +137,9 @@ function _TaxesDataListCardV2({ dp }: DataListCardProps) {
   const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
   const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const netIncome = grossIncome - incomeTax;
+  const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
+  const netCapGains = realizedGains - capGainsTax;
+  const totalTaxLiability = incomeTax + capGainsTax;
 
   return (
     <Card className="my-0">
@@ -154,6 +159,18 @@ function _TaxesDataListCardV2({ dp }: DataListCardProps) {
 
         <DescriptionTerm>Net Income</DescriptionTerm>
         <DescriptionDetails>{formatNumber(netIncome, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(realizedGains, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Net Capital Gains</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(netCapGains, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Total Tax Liability</DescriptionTerm>
+        <DescriptionDetails className="font-bold">{formatNumber(totalTaxLiability, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
