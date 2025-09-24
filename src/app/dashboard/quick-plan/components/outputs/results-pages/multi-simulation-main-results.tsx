@@ -37,7 +37,7 @@ export default function MultiSimulationMainResults({
 
   return (
     <>
-      <SectionContainer showBottomBorder>
+      <SectionContainer showBottomBorder className="py-0">
         <SimulationCategorySelector
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
