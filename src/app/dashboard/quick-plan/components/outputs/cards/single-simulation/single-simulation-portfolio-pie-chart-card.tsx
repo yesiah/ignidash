@@ -80,8 +80,8 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   return (
-    <div className="grid grid-cols-1 gap-2 @5xl:grid-cols-3">
-      <Card className="my-0 @5xl:col-span-2">
+    <div className="grid grid-cols-1 gap-2 @3xl:grid-cols-2">
+      <Card className="my-0">
         <div className="mb-4 flex items-center justify-between">
           <h4 className="text-foreground flex items-center text-lg font-semibold">
             <span className="mr-2">{title}</span>
@@ -90,7 +90,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
         </div>
         <SingleSimulationPortfolioPieChart chartData={chartData} />
       </Card>
-      <Card className="my-0 hidden @5xl:block">
+      <Card className="my-0 hidden @3xl:block">
         <div className="mb-4 flex items-center justify-between">
           <h4 className="text-foreground flex items-center text-lg font-semibold">
             <span className="mr-2">Net Worth</span>
