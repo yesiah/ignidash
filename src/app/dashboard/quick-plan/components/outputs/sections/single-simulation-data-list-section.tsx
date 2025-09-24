@@ -122,7 +122,7 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Withdrawals</Subheading>
+      <Subheading level={4}>Annual Withdrawals</Subheading>
       <DescriptionList>
         <DescriptionTerm>Taxable</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
@@ -175,7 +175,7 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Contributions</Subheading>
+      <Subheading level={4}>Annual Contributions</Subheading>
       <DescriptionList>
         <DescriptionTerm>Taxable</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
@@ -414,7 +414,7 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
   switch (currentCategory) {
     case SimulationCategory.Portfolio:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
           <PortfolioDataListCard dp={dp} />
           <WithdrawalsDataListCard dp={dp} />
           <ContributionsDataListCard dp={dp} />
