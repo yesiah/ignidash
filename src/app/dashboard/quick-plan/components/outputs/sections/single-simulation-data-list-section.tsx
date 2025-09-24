@@ -52,6 +52,57 @@ function PortfolioDataListCardV2({ dp }: DataListCardProps) {
   );
 }
 
+function CashFlowDataListCardV2({ dp }: DataListCardProps) {
+  let taxDeferredWithdrawals = 0;
+  for (const account of Object.values(dp.portfolio.perAccountData)) {
+    switch (account.type) {
+      case '401k':
+      case 'ira':
+      case 'hsa':
+        taxDeferredWithdrawals += account.withdrawalsForPeriod;
+        break;
+      default:
+        break;
+    }
+  }
+
+  const grossIncome = (dp.incomes?.totalGrossIncome ?? 0) + taxDeferredWithdrawals;
+  const incomeTax = dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
+  const totalExpenses = dp.expenses?.totalExpenses ?? 0;
+  const netIncome = grossIncome - incomeTax;
+  const netCashFlow = netIncome - totalExpenses;
+
+  return (
+    <Card className="my-0">
+      <Subheading level={4}>Cash Flow</Subheading>
+      <DescriptionList>
+        <DescriptionTerm>Gross Income</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Tax Deferred Withdrawals</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(taxDeferredWithdrawals, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Income Tax</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Net Income</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(netIncome, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Total Expenses</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
+        <DescriptionDetails className="font-bold">
+          {grossIncome > 0 ? `${formatNumber((netCashFlow / grossIncome) * 100, 1)}%` : 'N/A'}
+        </DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Net</DescriptionTerm>
+        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+      </DescriptionList>
+    </Card>
+  );
+}
+
 function PortfolioDataListCard({ dp }: DataListCardProps) {
   const [portfolioChecked, setPortfolioChecked] = useState(false);
 
@@ -444,60 +495,6 @@ function IncomeDataListCard({ dp }: DataListCardProps) {
   );
 }
 
-function ExpensesDataListCard({ dp }: DataListCardProps) {
-  const totalExpenses = dp.expenses?.totalExpenses ?? 0;
-
-  return (
-    <Card className="my-0">
-      <Subheading level={4}>Expenses</Subheading>
-      <DescriptionList>
-        {Object.values(dp.expenses?.perExpenseData ?? {}).map((expense) => (
-          <Fragment key={expense.id}>
-            <DescriptionTerm>{expense.name}</DescriptionTerm>
-            <DescriptionDetails>{formatNumber(expense.amount, 2, '$')}</DescriptionDetails>
-          </Fragment>
-        ))}
-        <DescriptionTerm className="font-bold">Total Expenses</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
-      </DescriptionList>
-    </Card>
-  );
-}
-
-function NetCashFlowDataListCard({ dp }: DataListCardProps) {
-  let taxDeferredWithdrawals = 0;
-  for (const account of Object.values(dp.portfolio.perAccountData)) {
-    switch (account.type) {
-      case '401k':
-      case 'ira':
-      case 'hsa':
-        taxDeferredWithdrawals += account.withdrawalsForPeriod;
-        break;
-      default:
-        break;
-    }
-  }
-
-  const grossIncome = (dp.incomes?.totalGrossIncome ?? 0) + taxDeferredWithdrawals;
-  const incomeTax = dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
-  const totalExpenses = dp.expenses?.totalExpenses ?? 0;
-  const netIncome = grossIncome - incomeTax;
-  const netCashFlow = netIncome - totalExpenses;
-
-  return (
-    <Card className="my-0">
-      <Subheading level={4}>Net Cash Flow</Subheading>
-      <DescriptionList>
-        <DescriptionTerm>Savings Rate</DescriptionTerm>
-        <DescriptionDetails>{grossIncome > 0 ? `${formatNumber((netCashFlow / grossIncome) * 100, 1)}%` : 'N/A'}</DescriptionDetails>
-
-        <DescriptionTerm className="font-bold">Net</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
-      </DescriptionList>
-    </Card>
-  );
-}
-
 interface SingleSimulationDataListSectionProps {
   simulation: SimulationResult;
   selectedAge: number;
@@ -528,10 +525,8 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
       break;
     case SimulationCategory.CashFlow:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
-          <IncomeDataListCard dp={dp} />
-          <ExpensesDataListCard dp={dp} />
-          <NetCashFlowDataListCard dp={dp} />
+        <div className="grid grid-cols-1 gap-2">
+          <CashFlowDataListCardV2 dp={dp} />
         </div>
       );
       break;
