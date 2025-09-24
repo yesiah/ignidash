@@ -71,6 +71,7 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
   const totalExpenses = dp.expenses?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
   const netCashFlow = netIncome - totalExpenses;
+  const savingsRate = grossIncome > 0 ? (netCashFlow / grossIncome) * 100 : null;
 
   return (
     <Card className="my-0">
@@ -92,9 +93,7 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionDetails>{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
-        <DescriptionDetails className="font-bold">
-          {grossIncome > 0 ? `${formatNumber((netCashFlow / grossIncome) * 100, 1)}%` : 'N/A'}
-        </DescriptionDetails>
+        <DescriptionDetails className="font-bold">{savingsRate !== null ? `${formatNumber(savingsRate, 1)}%` : 'N/A'}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Net</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
