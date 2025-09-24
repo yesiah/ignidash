@@ -1,6 +1,5 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { Fragment } from 'react';
 
 import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
@@ -9,8 +8,6 @@ import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/componen
 import { formatNumber, formatChartString } from '@/lib/utils';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
-
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
@@ -76,9 +73,6 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
 
   const totalValue = chartData.reduce((acc, curr) => acc + curr.value, 0);
 
-  const { resolvedTheme } = useTheme();
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
-
   return (
     <div className="grid grid-cols-1 gap-2 @3xl:grid-cols-2">
       <Card className="my-0">
@@ -101,15 +95,12 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
           <DescriptionList>
             {chartData.map((entry, index) => (
               <Fragment key={entry.name}>
-                <DescriptionTerm className="flex items-center gap-2">
-                  <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: COLORS[index % COLORS.length] }} className="size-5 shrink-0">
-                    <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-                  </svg>
-                  {formatChartString(entry.name)}
-                </DescriptionTerm>
+                <DescriptionTerm>{formatChartString(entry.name)}</DescriptionTerm>
                 <DescriptionDetails>{formatNumber(entry.value, 2, '$')}</DescriptionDetails>
               </Fragment>
             ))}
+            <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
+            <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
           </DescriptionList>
         </div>
       </Card>
