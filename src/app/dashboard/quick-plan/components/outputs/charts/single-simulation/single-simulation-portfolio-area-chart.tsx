@@ -167,7 +167,7 @@ export default function SingleSimulationPortfolioAreaChart({
   const getLegendGridCols = useCallback((length: number) => {
     if (length % 3 === 0) return 'grid-cols-3';
     if (length % 2 === 0) return 'grid-cols-2';
-    return 'grid-cols-4';
+    return 'grid-cols-3';
   }, []);
 
   return (
