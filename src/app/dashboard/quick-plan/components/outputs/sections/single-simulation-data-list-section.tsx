@@ -85,7 +85,7 @@ function PortfolioDataListCard({ dp }: DataListCardProps) {
             <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
           </>
         )}
-        <DescriptionTerm className="font-bold">Total</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
@@ -130,7 +130,7 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Withdrawals</Subheading>
+      <Subheading level={4}>Annual Withdrawals</Subheading>
       <DescriptionList>
         <DescriptionTerm>Taxable</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
@@ -144,7 +144,7 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{formatNumber(cashSavings, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Withdrawals</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(taxable + taxDeferred + taxFree + cashSavings, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
@@ -189,7 +189,7 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Contributions</Subheading>
+      <Subheading level={4}>Annual Contributions</Subheading>
       <DescriptionList>
         <DescriptionTerm>Taxable</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
@@ -203,7 +203,7 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{formatNumber(cashSavings, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Contributions</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(taxable + taxDeferred + taxFree + cashSavings, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
