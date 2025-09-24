@@ -66,11 +66,11 @@ export interface SingleSimulationTaxesChartDataPoint {
   topMarginalIncomeTaxRate: number;
   netIncome: number;
   capitalLossDeduction: number | undefined;
-  taxableCapitalGains: number;
-  capitalGainsTaxAmount: number;
-  effectiveCapitalGainsTaxRate: number;
-  topMarginalCapitalGainsTaxRate: number;
-  netCapitalGains: number;
+  taxableCapGains: number;
+  capGainsTaxAmount: number;
+  effectiveCapGainsTaxRate: number;
+  topMarginalCapGainsTaxRate: number;
+  netCapGains: number;
   totalTaxableIncome: number;
   totalTaxesAmount: number;
   totalNetIncome: number;

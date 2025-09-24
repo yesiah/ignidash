@@ -77,21 +77,21 @@ export default function SingleSimulationTaxesBarChart({ age, dataView, rawChartD
     case 'marginalRates':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Top Marginal Income Tax Rate', amount: item.topMarginalIncomeTaxRate },
-        { name: 'Top Marginal Capital Gains Tax Rate', amount: item.topMarginalCapitalGainsTaxRate },
+        { name: 'Top Marginal Cap Gains Tax Rate', amount: item.topMarginalCapGainsTaxRate },
       ]);
       formatter = (value: number) => `${(value * 100).toFixed(2)}%`;
       break;
     case 'effectiveRates':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Effective Income Tax Rate', amount: item.effectiveIncomeTaxRate },
-        { name: 'Effective Capital Gains Tax Rate', amount: item.effectiveCapitalGainsTaxRate },
+        { name: 'Effective Cap Gains Tax Rate', amount: item.effectiveCapGainsTaxRate },
       ]);
       formatter = (value: number) => `${(value * 100).toFixed(2)}%`;
       break;
     case 'taxAmounts':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Income Tax Amount', amount: item.incomeTaxAmount },
-        { name: 'Capital Gains Tax Amount', amount: item.capitalGainsTaxAmount },
+        { name: 'Cap Gains Tax Amount', amount: item.capGainsTaxAmount },
         { name: 'Total Tax Amount', amount: item.totalTaxesAmount },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
@@ -99,7 +99,7 @@ export default function SingleSimulationTaxesBarChart({ age, dataView, rawChartD
     case 'netIncome':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Net Income', amount: item.netIncome },
-        { name: 'Net Capital Gains', amount: item.netCapitalGains },
+        { name: 'Net Cap Gains', amount: item.netCapGains },
         { name: 'Total Net Income', amount: item.totalNetIncome },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
@@ -107,7 +107,7 @@ export default function SingleSimulationTaxesBarChart({ age, dataView, rawChartD
     case 'taxableIncome':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Taxable Ordinary Income', amount: item.taxableOrdinaryIncome },
-        { name: 'Taxable Capital Gains', amount: item.taxableCapitalGains },
+        { name: 'Taxable Cap Gains', amount: item.taxableCapGains },
         { name: 'Total Taxable Income', amount: item.totalTaxableIncome },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
