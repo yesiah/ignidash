@@ -60,7 +60,7 @@ const createRenderActiveShape = (isSmallScreen: boolean) => {
 
     return (
       <g>
-        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill="currentColor" fontSize="16">
+        <text x={cx} y={cy} dy={-20} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">
           {formatChartString(payload?.name ?? 'N/A')}
         </text>
         <text
