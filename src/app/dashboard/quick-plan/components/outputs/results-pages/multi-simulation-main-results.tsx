@@ -37,7 +37,7 @@ export default function MultiSimulationMainResults({
 
   return (
     <>
-      <SectionContainer showBottomBorder className="from-emphasized-background bg-gradient-to-l py-0">
+      <SectionContainer showBottomBorder className="bg-emphasized-background py-0 xl:sticky xl:top-[4.3125rem] xl:z-10">
         <SimulationCategorySelector
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
