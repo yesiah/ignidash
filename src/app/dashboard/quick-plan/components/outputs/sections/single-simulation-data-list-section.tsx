@@ -112,7 +112,7 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
   );
 }
 
-function _TaxesDataListCardV2({ dp }: DataListCardProps) {
+function TaxesDataListCardV2({ dp }: DataListCardProps) {
   const portfolioData = dp.portfolio;
 
   const realizedGains = portfolioData.realizedGainsForPeriod;
@@ -605,10 +605,8 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
       break;
     case SimulationCategory.Taxes:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
-          <IncomeDataListCard dp={dp} />
-          <WithdrawalsDataListCard dp={dp} />
-          <TaxesDataListCard dp={dp} />
+        <div className="grid grid-cols-1 gap-2">
+          <TaxesDataListCardV2 dp={dp} />
         </div>
       );
       break;
