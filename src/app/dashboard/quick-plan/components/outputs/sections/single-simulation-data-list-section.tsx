@@ -136,7 +136,7 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{formatNumber(cashSavings, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-semibold">Total Withdrawals</DescriptionTerm>
+        <DescriptionTerm className="font-semibold">Total</DescriptionTerm>
         <DescriptionDetails className="font-semibold">
           {formatNumber(taxable + taxDeferred + taxFree + cashSavings, 2, '$')}
         </DescriptionDetails>
@@ -189,7 +189,7 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{formatNumber(cashSavings, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-semibold">Total Contributions</DescriptionTerm>
+        <DescriptionTerm className="font-semibold">Total</DescriptionTerm>
         <DescriptionDetails className="font-semibold">
           {formatNumber(taxable + taxDeferred + taxFree + cashSavings, 2, '$')}
         </DescriptionDetails>
