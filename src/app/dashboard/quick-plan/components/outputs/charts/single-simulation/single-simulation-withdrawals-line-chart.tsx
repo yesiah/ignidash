@@ -102,7 +102,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       dataKeys.push('totalWithdrawals');
       break;
     case 'taxTreatment':
-      dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
+      dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
       break;
     case 'custom':
       if (!customDataID) {

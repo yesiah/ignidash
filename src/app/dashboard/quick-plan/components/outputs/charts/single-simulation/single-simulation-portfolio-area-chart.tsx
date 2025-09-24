@@ -110,7 +110,7 @@ export default function SingleSimulationPortfolioAreaChart({
       dataKeys.push('stocks', 'bonds', 'cash');
       break;
     case 'taxTreatment':
-      dataKeys.push('taxable', 'taxDeferred', 'taxFree', 'cashSavings');
+      dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
       break;
     case 'custom':
       if (!customDataID) {

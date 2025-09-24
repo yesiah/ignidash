@@ -27,7 +27,7 @@ export interface SingleSimulationPortfolioChartDataPoint {
   stocks: number;
   bonds: number;
   cash: number;
-  taxable: number;
+  taxableBrokerage: number;
   taxDeferred: number;
   taxFree: number;
   cashSavings: number;
@@ -81,7 +81,7 @@ export interface SingleSimulationContributionsChartDataPoint {
   totalContributions: number;
   annualContributions: number;
   perAccountData: AccountDataWithTransactions[];
-  taxable: number;
+  taxableBrokerage: number;
   taxDeferred: number;
   taxFree: number;
   cashSavings: number;
@@ -94,7 +94,7 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   annualWithdrawals: number;
   annualRealizedGains: number;
   perAccountData: AccountDataWithTransactions[];
-  taxable: number;
+  taxableBrokerage: number;
   taxDeferred: number;
   taxFree: number;
   cashSavings: number;

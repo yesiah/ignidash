@@ -72,7 +72,7 @@ function PortfolioDataListCard({ dp }: DataListCardProps) {
           </>
         ) : (
           <>
-            <DescriptionTerm>Taxable</DescriptionTerm>
+            <DescriptionTerm>Taxable Brokerage</DescriptionTerm>
             <DescriptionDetails>{`${formatNumber(taxable, 2, '$')} (${formatNumber((taxable / totalValue) * 100, 1)}%)`}</DescriptionDetails>
 
             <DescriptionTerm>Tax Deferred</DescriptionTerm>
@@ -132,7 +132,7 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
     <Card className="my-0">
       <Subheading level={4}>Annual Withdrawals</Subheading>
       <DescriptionList>
-        <DescriptionTerm>Taxable</DescriptionTerm>
+        <DescriptionTerm>Taxable Brokerage</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Tax Deferred</DescriptionTerm>
@@ -191,7 +191,7 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
     <Card className="my-0">
       <Subheading level={4}>Annual Contributions</Subheading>
       <DescriptionList>
-        <DescriptionTerm>Taxable</DescriptionTerm>
+        <DescriptionTerm>Taxable Brokerage</DescriptionTerm>
         <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Tax Deferred</DescriptionTerm>

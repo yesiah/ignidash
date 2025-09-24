@@ -507,7 +507,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
       const cashAllocation = assetAllocation.cash;
 
       let cashSavings = 0;
-      let taxable = 0;
+      let taxableBrokerage = 0;
       let taxDeferred = 0;
       let taxFree = 0;
 
@@ -517,7 +517,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
             cashSavings += account.totalValue;
             break;
           case 'taxableBrokerage':
-            taxable += account.totalValue;
+            taxableBrokerage += account.totalValue;
             break;
           case '401k':
           case 'ira':
@@ -536,7 +536,7 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
         stocks: totalValue * stocksAllocation,
         bonds: totalValue * bondsAllocation,
         cash: totalValue * cashAllocation,
-        taxable,
+        taxableBrokerage,
         taxDeferred,
         taxFree,
         cashSavings,
@@ -640,7 +640,7 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
       const portfolioData = data.portfolio;
 
       let cashSavings = 0;
-      let taxable = 0;
+      let taxableBrokerage = 0;
       let taxDeferred = 0;
       let taxFree = 0;
 
@@ -650,7 +650,7 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
             cashSavings += account.contributionsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxable += account.contributionsForPeriod;
+            taxableBrokerage += account.contributionsForPeriod;
             break;
           case '401k':
           case 'ira':
@@ -669,7 +669,7 @@ export const useSingleSimulationContributionsChartData = (simulation: Simulation
         totalContributions: portfolioData.totalContributions,
         annualContributions: portfolioData.contributionsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
-        taxable,
+        taxableBrokerage,
         taxDeferred,
         taxFree,
         cashSavings,
@@ -688,7 +688,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
       const portfolioData = data.portfolio;
 
       let cashSavings = 0;
-      let taxable = 0;
+      let taxableBrokerage = 0;
       let taxDeferred = 0;
       let taxFree = 0;
 
@@ -698,7 +698,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
             cashSavings += account.withdrawalsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxable += account.withdrawalsForPeriod;
+            taxableBrokerage += account.withdrawalsForPeriod;
             break;
           case '401k':
           case 'ira':
@@ -719,7 +719,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
         totalRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
-        taxable,
+        taxableBrokerage,
         taxDeferred,
         taxFree,
         cashSavings,
