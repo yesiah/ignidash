@@ -352,9 +352,19 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
 
   if (!dp) return null;
 
+  switch (currentCategory) {
+    case SimulationCategory.Portfolio:
+    case SimulationCategory.CashFlow:
+    case SimulationCategory.Taxes:
+    case SimulationCategory.Returns:
+    case SimulationCategory.Contributions:
+    case SimulationCategory.Withdrawals:
+      break;
+  }
+
   return (
     <SectionContainer showBottomBorder>
-      <div className="grid grid-cols-1 gap-2 @3xl:grid-cols-2 @5xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2">
         <PortfolioAndReturnsDataListCard dp={dp} />
         <CashFlowDataListCard dp={dp} />
         <WithdrawalsAndTaxesDataListCard dp={dp} />
