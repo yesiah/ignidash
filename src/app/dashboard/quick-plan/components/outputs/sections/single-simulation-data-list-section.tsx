@@ -216,7 +216,69 @@ function CashFlowDataListCard({ dp }: DataListCardProps) {
 }
 
 function WithdrawalsAndTaxesDataListCard({ dp }: DataListCardProps) {
-  return null;
+  const portfolioData = dp.portfolio;
+  const taxesData = dp.taxes;
+
+  let cashSavings = 0;
+  let taxable = 0;
+  let taxDeferred = 0;
+  let taxFree = 0;
+
+  for (const account of Object.values(portfolioData.perAccountData)) {
+    switch (account.type) {
+      case 'savings':
+        cashSavings += account.withdrawalsForPeriod;
+        break;
+      case 'taxableBrokerage':
+        taxable += account.withdrawalsForPeriod;
+        break;
+      case '401k':
+      case 'ira':
+      case 'hsa':
+        taxDeferred += account.withdrawalsForPeriod;
+        break;
+      case 'roth401k':
+      case 'rothIra':
+        taxFree += account.withdrawalsForPeriod;
+        break;
+    }
+  }
+
+  return (
+    <div className="grid h-full grid-rows-2 gap-2">
+      <Card className="mb-0">
+        <Subheading level={4}>Withdrawals</Subheading>
+        <DescriptionList>
+          <DescriptionTerm>Taxable</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxable, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm>Tax Deferred</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxDeferred, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm>Tax Free</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxFree, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm>Cash Savings</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(cashSavings, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm className="font-semibold">Total Withdrawals</DescriptionTerm>
+          <DescriptionDetails className="font-semibold">
+            {formatNumber(taxable + taxDeferred + taxFree + cashSavings, 2, '$')}
+          </DescriptionDetails>
+        </DescriptionList>
+      </Card>
+      <Card className="mt-0">
+        <Subheading level={4}>Taxes</Subheading>
+        <DescriptionList>
+          <DescriptionTerm>Income Tax</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxesData?.incomeTaxes.incomeTaxAmount ?? 0, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0, 2, '$')}</DescriptionDetails>
+        </DescriptionList>
+      </Card>
+    </div>
+  );
 }
 
 interface SingleSimulationDataListSectionProps {
