@@ -508,15 +508,19 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
       break;
     case SimulationCategory.Contributions:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
+          <PortfolioDataListCard dp={dp} />
           <ContributionsDataListCard dp={dp} />
+          <IncomeDataListCard dp={dp} />
         </div>
       );
       break;
     case SimulationCategory.Withdrawals:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
+          <PortfolioDataListCard dp={dp} />
           <WithdrawalsDataListCard dp={dp} />
+          <TaxesDataListCard dp={dp} />
         </div>
       );
       break;
