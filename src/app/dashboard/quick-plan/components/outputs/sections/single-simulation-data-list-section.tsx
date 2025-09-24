@@ -120,6 +120,14 @@ function WithdrawalsDataListCard({ dp }: DataListCardProps) {
     }
   }
 
+  if (taxable === 0 && taxDeferred === 0 && taxFree === 0 && cashSavings === 0) {
+    return (
+      <Card className="my-0">
+        <div className="flex size-full items-center justify-center">No withdrawals.</div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="my-0">
       <Subheading level={4}>Withdrawals</Subheading>
@@ -169,6 +177,14 @@ function ContributionsDataListCard({ dp }: DataListCardProps) {
         taxFree += account.contributionsForPeriod;
         break;
     }
+  }
+
+  if (taxable === 0 && taxDeferred === 0 && taxFree === 0 && cashSavings === 0) {
+    return (
+      <Card className="my-0">
+        <div className="flex size-full items-center justify-center">No contributions.</div>
+      </Card>
+    );
   }
 
   return (
