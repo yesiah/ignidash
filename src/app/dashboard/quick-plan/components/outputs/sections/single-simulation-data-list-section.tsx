@@ -16,6 +16,42 @@ interface DataListCardProps {
   dp: SimulationDataPoint;
 }
 
+function PortfolioDataListCardV2({ dp }: DataListCardProps) {
+  const returnsData = dp.returns;
+
+  const {
+    stocks: stockAmount,
+    bonds: bondAmount,
+    cash: cashAmount,
+  } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
+
+  const portfolioData = dp.portfolio;
+
+  const totalWithdrawals = portfolioData.withdrawalsForPeriod;
+  const totalContributions = portfolioData.contributionsForPeriod;
+
+  return (
+    <Card className="my-0">
+      <Subheading level={4}>Portfolio Change</Subheading>
+      <DescriptionList>
+        <DescriptionTerm>Total Return Amount</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Total Contributions</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalContributions, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Total Withdrawals</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Net Change</DescriptionTerm>
+        <DescriptionDetails className="font-bold">
+          {formatNumber(stockAmount + bondAmount + cashAmount + totalContributions - totalWithdrawals, 2, '$')}
+        </DescriptionDetails>
+      </DescriptionList>
+    </Card>
+  );
+}
+
 function PortfolioDataListCard({ dp }: DataListCardProps) {
   const [portfolioChecked, setPortfolioChecked] = useState(false);
 
@@ -485,10 +521,8 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
   switch (currentCategory) {
     case SimulationCategory.Portfolio:
       dataListComponents = (
-        <div className="grid grid-cols-1 gap-2 @6xl:grid-cols-3">
-          <ReturnsDataListCard dp={dp} />
-          <ContributionsDataListCard dp={dp} />
-          <WithdrawalsDataListCard dp={dp} />
+        <div className="grid grid-cols-1 gap-2">
+          <PortfolioDataListCardV2 dp={dp} />
         </div>
       );
       break;
