@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, Fragment } from 'react';
+import { useMemo, useState, Fragment, memo } from 'react';
 
 import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
@@ -339,11 +339,7 @@ interface SingleSimulationDataListSectionProps {
   currentCategory: SimulationCategory;
 }
 
-export default function SingleSimulationDataListSection({
-  simulation,
-  selectedAge,
-  currentCategory,
-}: SingleSimulationDataListSectionProps) {
+function SingleSimulationDataListSection({ simulation, selectedAge, currentCategory }: SingleSimulationDataListSectionProps) {
   const dp = useMemo(() => {
     return simulation.data.find((dp) => {
       const startAge = simulation.context.startAge;
@@ -366,3 +362,6 @@ export default function SingleSimulationDataListSection({
     </SectionContainer>
   );
 }
+
+// Memoize the entire section to prevent re-renders when props haven't changed
+export default memo(SingleSimulationDataListSection);
