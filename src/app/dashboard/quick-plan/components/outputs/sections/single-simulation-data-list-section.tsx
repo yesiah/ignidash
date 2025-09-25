@@ -315,6 +315,9 @@ function WithdrawalsDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm>Net Cash Flow</DescriptionTerm>
         <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
 
+        <DescriptionTerm>Total Withdrawals</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
+
         <DescriptionTerm>Withdrawal Rate</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber((totalWithdrawals / (totalValue + totalWithdrawals)) * 100, 1)}%`}</DescriptionDetails>
       </DescriptionList>
