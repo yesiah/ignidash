@@ -14,8 +14,8 @@ import SingleSimulationContributionsLineChart from '../../charts/single-simulati
 interface SingleSimulationContributionsLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom') => void;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom';
+  setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom') => void;
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationContributionsChartDataPoint[];
@@ -59,18 +59,18 @@ export default function SingleSimulationContributionsLineChartCard({
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =
-              e.target.value !== 'annualAmounts' && e.target.value !== 'totalAmounts' && e.target.value !== 'taxTreatment';
+              e.target.value !== 'annualAmounts' && e.target.value !== 'totalAmounts' && e.target.value !== 'taxCategory';
             if (isCustomSelection) {
               setDataView('custom');
               setCustomDataID(e.target.value);
             } else {
-              setDataView(e.target.value as 'annualAmounts' | 'totalAmounts' | 'taxTreatment');
+              setDataView(e.target.value as 'annualAmounts' | 'totalAmounts' | 'taxCategory');
               setCustomDataID('');
             }
           }}
         >
           <optgroup label="By Category">
-            <option value="taxTreatment">Tax Category</option>
+            <option value="taxCategory">Tax Category</option>
           </optgroup>
           <optgroup label="By Aggregate">
             <option value="annualAmounts">Annual Amounts</option>

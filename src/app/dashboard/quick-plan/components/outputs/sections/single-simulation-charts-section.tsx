@@ -42,7 +42,7 @@ interface ChartsCategoryProps {
 function PortfolioCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationPortfolioChartData(simulation);
 
-  const [dataView, setDataView] = useState<'assetClass' | 'taxTreatment' | 'custom'>('assetClass');
+  const [dataView, setDataView] = useState<'assetClass' | 'taxCategory' | 'custom'>('assetClass');
   const [customDataID, setCustomDataID] = useState<string>('');
 
   return (
@@ -144,7 +144,7 @@ function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, start
 function ContributionsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationContributionsChartData(simulation);
 
-  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom'>('taxTreatment');
+  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom'>('taxCategory');
   const [customDataID, setCustomDataID] = useState<string>('');
 
   return (
@@ -173,7 +173,7 @@ function ContributionsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge,
 function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationWithdrawalsChartData(simulation);
 
-  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom'>('taxTreatment');
+  const [dataView, setDataView] = useState<'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom'>('taxCategory');
   const [customDataID, setCustomDataID] = useState<string>('');
 
   return (

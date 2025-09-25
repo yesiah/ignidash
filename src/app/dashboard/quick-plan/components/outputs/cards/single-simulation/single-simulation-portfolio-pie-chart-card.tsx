@@ -9,7 +9,7 @@ import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/si
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   selectedAge: number;
-  dataView: 'assetClass' | 'taxTreatment' | 'custom';
+  dataView: 'assetClass' | 'taxCategory' | 'custom';
   customDataID: string;
 }
 
@@ -33,7 +33,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
             .map(([name, value]) => ({ name, value }))
         );
       break;
-    case 'taxTreatment':
+    case 'taxCategory':
       title = 'By Tax Category';
       chartData = rawChartData
         .filter((data) => data.age === selectedAge)

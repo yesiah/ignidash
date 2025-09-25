@@ -63,7 +63,7 @@ interface SingleSimulationContributionsLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
   customDataID: string;
   startAge: number;
 }
@@ -101,7 +101,7 @@ export default function SingleSimulationContributionsLineChart({
     case 'totalAmounts':
       dataKeys.push('totalContributions');
       break;
-    case 'taxTreatment':
+    case 'taxCategory':
       dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
       break;
     case 'custom':

@@ -47,7 +47,7 @@ const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--cha
 
 interface SingleSimulationContributionsBarChartProps {
   age: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxTreatment' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
   rawChartData: SingleSimulationContributionsChartDataPoint[];
   customDataID: string;
 }
@@ -81,7 +81,7 @@ export default function SingleSimulationContributionsBarChart({
         },
       ]);
       break;
-    case 'taxTreatment':
+    case 'taxCategory':
       transformedChartData = chartData.flatMap((item) => [
         {
           name: 'Taxable Contributions',
