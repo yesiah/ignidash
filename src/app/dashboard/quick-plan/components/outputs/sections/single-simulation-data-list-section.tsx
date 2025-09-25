@@ -29,7 +29,7 @@ function PortfolioDataListCardV2({ dp }: DataListCardProps) {
   return (
     <Card className="my-0">
       <DescriptionList>
-        <DescriptionTerm>Total Return Amount</DescriptionTerm>
+        <DescriptionTerm>Total Returns</DescriptionTerm>
         <DescriptionDetails>{formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Total Contributions</DescriptionTerm>
