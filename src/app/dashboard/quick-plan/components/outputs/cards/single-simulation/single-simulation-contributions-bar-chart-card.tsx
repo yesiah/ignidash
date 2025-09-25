@@ -2,6 +2,7 @@
 
 import Card from '@/components/ui/card';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
+import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationContributionsBarChart from '../../charts/single-simulation/single-simulation-contributions-bar-chart';
 
@@ -37,10 +38,10 @@ export default function SingleSimulationContributionsBarChartCard({
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-foreground flex items-center text-lg font-semibold whitespace-nowrap">
+        <Subheading level={4}>
           <span className="mr-2">{title}</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
-        </h4>
+        </Subheading>
       </div>
       <SingleSimulationContributionsBarChart
         age={selectedAge}

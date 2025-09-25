@@ -2,6 +2,7 @@
 
 import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
 import Card from '@/components/ui/card';
+import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
 
@@ -70,10 +71,10 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-foreground flex items-center text-lg font-semibold">
+        <Subheading level={4}>
           <span className="mr-2">{title}</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
-        </h4>
+        </Subheading>
       </div>
       <SingleSimulationPortfolioPieChart chartData={chartData} />
     </Card>

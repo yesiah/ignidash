@@ -7,6 +7,7 @@ import type { KeyMetrics } from '@/lib/types/key-metrics';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
+import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/single-simulation-cash-flow-line-chart';
 
@@ -51,10 +52,10 @@ export default function SingleSimulationCashFlowLineChartCard({
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-foreground flex items-center text-lg font-semibold whitespace-nowrap">
+        <Subheading level={4}>
           <span className="mr-2">Cash Flow</span>
           <span className="text-muted-foreground hidden sm:inline">Time Series</span>
-        </h4>
+        </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
           id="data-view"

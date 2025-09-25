@@ -5,6 +5,7 @@ import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import { useShowReferenceLines } from '@/lib/stores/quick-plan-store';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationTaxesLineChart from '../../charts/single-simulation/single-simulation-taxes-line-chart';
 
@@ -32,10 +33,10 @@ export default function SingleSimulationTaxesLineChartCard({
   return (
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-foreground flex items-center text-lg font-semibold whitespace-nowrap">
+        <Subheading level={4}>
           <span className="mr-2">Taxes</span>
           <span className="text-muted-foreground hidden sm:inline">Time Series</span>
-        </h4>
+        </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
           id="data-view"
