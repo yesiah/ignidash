@@ -69,6 +69,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   );
 };
 
+// const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
+
 interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   startAge: number;
@@ -117,8 +119,14 @@ export default function SingleSimulationCashFlowLineChart({
       break;
     case 'incomes':
       yAxisDomain = [
-        Math.min(0, ...chartData.map((d) => d.grossIncome * 1.25)),
-        Math.max(0, ...chartData.map((d) => d.grossIncome * 1.25)),
+        Math.min(
+          0,
+          ...chartData.flatMap((d) => [d.ordinaryIncome * 1.25, d.taxDeferredWithdrawals * 1.25, d.incomeTax * 1.25, d.netIncome * 1.25])
+        ),
+        Math.max(
+          0,
+          ...chartData.flatMap((d) => [d.ordinaryIncome * 1.25, d.taxDeferredWithdrawals * 1.25, d.incomeTax * 1.25, d.netIncome * 1.25])
+        ),
       ];
       dataKeys.push('ordinaryIncome', 'taxDeferredWithdrawals', 'incomeTax', 'netIncome');
       strokeColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
