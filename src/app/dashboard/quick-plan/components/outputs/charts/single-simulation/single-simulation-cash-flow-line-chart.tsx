@@ -41,16 +41,34 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   let tooltipFooterComponent = null;
   switch (dataView) {
     case 'net':
+      const entry: SingleSimulationCashFlowChartDataPoint = payload[0].payload as SingleSimulationCashFlowChartDataPoint;
+
+      const netIncome = entry.netIncome;
+      const totalExpenses = entry.totalExpenses;
+      const netCashFlow = entry.netCashFlow;
+
+      tooltipBodyComponent = (
+        <div className="flex flex-col gap-2">
+          <p
+            style={{ backgroundColor: 'var(--chart-2)' }}
+            className="border-foreground/50 text-foreground flex justify-between rounded-lg border px-2 text-sm"
+          >
+            <span className="mr-2">{`${formatChartString('netIncome')}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(netIncome, 1, '$')}</span>
+          </p>
+          <p
+            style={{ backgroundColor: 'var(--chart-4)' }}
+            className="border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm"
+          >
+            <span className="mr-2">{`${formatChartString('totalExpenses')}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(totalExpenses, 1, '$')}</span>
+          </p>
+        </div>
+      );
       tooltipFooterComponent = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Total:</span>
-          <span className="ml-1 font-semibold">
-            {formatNumber(
-              payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
-            )}
-          </span>
+          <span className="mr-2">Net Cash Flow:</span>
+          <span className="ml-1 font-semibold">{formatNumber(netCashFlow, 3, '$')}</span>
         </p>
       );
       break;
