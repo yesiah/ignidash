@@ -553,22 +553,44 @@ export const useSingleSimulationCashFlowChartData = (simulation: SimulationResul
       const startDateYear = new Date().getFullYear();
       const currDateYear = new Date(data.date).getFullYear();
 
+      const portfolioData = data.portfolio;
+
+      let taxDeferredWithdrawals = 0;
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferredWithdrawals += account.withdrawalsForPeriod;
+            break;
+          default:
+            break;
+        }
+      }
+
       const incomesData = data.incomes!;
       const expensesData = data.expenses!;
       const taxesData = data.taxes!;
 
-      const totalGrossIncome = incomesData.totalGrossIncome;
-      const totalExpenses = expensesData.totalExpenses;
-      const totalTaxes = taxesData.incomeTaxes.incomeTaxAmount + taxesData.capitalGainsTaxes.capitalGainsTaxAmount;
+      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const totalExpenses = expensesData?.totalExpenses ?? 0;
+      const netIncome = grossIncome - incomeTax;
+      const netCashFlow = netIncome - totalExpenses;
+      const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
 
       return {
         age: currDateYear - startDateYear + startAge,
         perIncomeData: Object.values(incomesData.perIncomeData),
         perExpenseData: Object.values(expensesData.perExpenseData),
-        totalGrossIncome,
+        ordinaryIncome,
+        grossIncome,
+        incomeTax,
         totalExpenses,
-        netCashFlow: totalGrossIncome - totalExpenses,
-        totalTaxes,
+        netIncome,
+        netCashFlow,
+        savingsRate,
       };
     });
   }, [simulation]);

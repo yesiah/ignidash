@@ -38,10 +38,13 @@ export interface SingleSimulationCashFlowChartDataPoint {
   age: number;
   perIncomeData: IncomeData[];
   perExpenseData: ExpenseData[];
-  totalGrossIncome: number;
+  ordinaryIncome: number;
+  grossIncome: number;
+  incomeTax: number;
   totalExpenses: number;
+  netIncome: number;
   netCashFlow: number;
-  totalTaxes: number;
+  savingsRate: number | null;
 }
 
 export interface SingleSimulationReturnsChartDataPoint {

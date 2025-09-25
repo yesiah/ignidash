@@ -186,10 +186,10 @@ export default function SingleSimulationCashFlowLineChart({
       break;
     case 'incomes':
       yAxisDomain = [
-        Math.min(0, ...chartData.map((d) => d.totalGrossIncome * 1.25)),
-        Math.max(0, ...chartData.map((d) => d.totalGrossIncome * 1.25)),
+        Math.min(0, ...chartData.map((d) => d.grossIncome * 1.25)),
+        Math.max(0, ...chartData.map((d) => d.grossIncome * 1.25)),
       ];
-      dataKeys.push('totalGrossIncome');
+      dataKeys.push('grossIncome');
       strokeColor = 'var(--chart-2)';
       break;
     case 'expenses':
