@@ -32,7 +32,6 @@ function PortfolioDataListCardV2({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Portfolio Change</Subheading>
       <DescriptionList>
         <DescriptionTerm>Total Return Amount</DescriptionTerm>
         <DescriptionDetails>{formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}</DescriptionDetails>
@@ -82,7 +81,6 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Cash Flow</Subheading>
       <DescriptionList>
         <DescriptionTerm>Total Gross Income</DescriptionTerm>
         <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
@@ -135,7 +133,6 @@ function TaxesDataListCardV2({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Taxes</Subheading>
       <DescriptionList>
         <DescriptionTerm>Total Gross Income</DescriptionTerm>
         <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
@@ -167,7 +164,6 @@ function ReturnsDataListCardV2({ dp }: DataListCardProps) {
 
   return (
     <Card className="my-0">
-      <Subheading level={4}>Portfolio by Asset Class</Subheading>
       <DescriptionList>
         <DescriptionTerm>Stocks</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
@@ -178,7 +174,7 @@ function ReturnsDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(totalValue * cashAllocation, 2, '$')} (${formatNumber(cashAllocation * 100, 1)}%)`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
