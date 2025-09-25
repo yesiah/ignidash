@@ -191,6 +191,8 @@ function _ContributionsDataListCardV2({ dp }: DataListCardProps) {
   let taxDeferred = 0;
   let taxFree = 0;
 
+  let taxDeferredWithdrawals = 0;
+
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
       case 'savings':
@@ -203,6 +205,7 @@ function _ContributionsDataListCardV2({ dp }: DataListCardProps) {
       case 'ira':
       case 'hsa':
         taxDeferred += account.totalValue;
+        taxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
       case 'roth401k':
       case 'rothIra':
@@ -210,6 +213,17 @@ function _ContributionsDataListCardV2({ dp }: DataListCardProps) {
         break;
     }
   }
+
+  const incomesData = dp.incomes;
+  const expensesData = dp.expenses;
+  const taxesData = dp.taxes;
+
+  const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+  const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+  const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+  const totalExpenses = expensesData?.totalExpenses ?? 0;
+  const netIncome = grossIncome - incomeTax;
+  const netCashFlow = netIncome - totalExpenses;
 
   return (
     <Card className="my-0">
@@ -228,6 +242,9 @@ function _ContributionsDataListCardV2({ dp }: DataListCardProps) {
 
         <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
+        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
