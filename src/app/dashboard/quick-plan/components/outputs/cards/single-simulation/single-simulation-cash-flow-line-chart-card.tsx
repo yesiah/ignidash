@@ -14,8 +14,8 @@ import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/si
 interface SingleSimulationCashFlowLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'net' | 'incomes' | 'expenses' | 'custom') => void;
-  dataView: 'net' | 'incomes' | 'expenses' | 'custom';
+  setDataView: (view: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate') => void;
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
@@ -62,12 +62,13 @@ export default function SingleSimulationCashFlowLineChartCard({
           name="data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
-            const isCustomSelection = e.target.value !== 'net' && e.target.value !== 'incomes' && e.target.value !== 'expenses';
+            const isCustomSelection =
+              e.target.value !== 'net' && e.target.value !== 'incomes' && e.target.value !== 'expenses' && e.target.value !== 'savingsRate';
             if (isCustomSelection) {
               setDataView('custom');
               setCustomDataID(e.target.value);
             } else {
-              setDataView(e.target.value as 'net' | 'incomes' | 'expenses');
+              setDataView(e.target.value as 'net' | 'incomes' | 'expenses' | 'savingsRate');
               setCustomDataID('');
             }
           }}
@@ -75,6 +76,7 @@ export default function SingleSimulationCashFlowLineChartCard({
           <option value="net">Net Cash Flow</option>
           <option value="incomes">Income</option>
           <option value="expenses">Expenses</option>
+          <option value="savingsRate">Savings Rate</option>
           <optgroup label="By Income">
             {uniqueIncomes.map((income) => (
               <option key={income.id} value={income.id}>

@@ -45,7 +45,7 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
 
 interface SingleSimulationCashFlowBarChartProps {
   age: number;
-  dataView: 'net' | 'incomes' | 'expenses' | 'custom';
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   customDataID: string;
 }
@@ -96,6 +96,8 @@ export default function SingleSimulationCashFlowBarChart({
           .flatMap(({ perExpenseData }) => perExpenseData.map(({ id, name, amount }) => ({ id, name, amount, type: 'expense' })))
           .filter(({ id }) => id === customDataID),
       ];
+      break;
+    case 'savingsRate':
       break;
   }
 

@@ -24,7 +24,7 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'net' | 'incomes' | 'expenses' | 'custom';
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -73,6 +73,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     case 'incomes':
     case 'expenses':
     case 'custom':
+    case 'savingsRate':
       tooltipBodyComponent = (
         <div className="flex flex-col gap-2">
           {payload.map((entry) => (
@@ -82,7 +83,9 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
               className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
             >
               <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+              <span className="ml-1 font-semibold">
+                {dataView === 'savingsRate' ? `${entry.value.toFixed(2)}%` : formatNumber(entry.value, 1, '$')}
+              </span>
             </p>
           ))}
         </div>
@@ -109,7 +112,7 @@ interface SingleSimulationCashFlowLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'net' | 'incomes' | 'expenses' | 'custom';
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   customDataID?: string;
 }
 
@@ -139,6 +142,7 @@ export default function SingleSimulationCashFlowLineChart({
   const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
   let yAxisDomain: [number, number] | undefined = undefined;
   const strokeColors: string[] = [];
+  let formatter = undefined;
   switch (dataView) {
     case 'net':
       yAxisDomain = [
@@ -147,6 +151,7 @@ export default function SingleSimulationCashFlowLineChart({
       ];
       dataKeys.push('netCashFlow');
       strokeColors.push('url(#colorGradient)');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'incomes':
       yAxisDomain = [
@@ -161,6 +166,7 @@ export default function SingleSimulationCashFlowLineChart({
       ];
       dataKeys.push('ordinaryIncome', 'taxDeferredWithdrawals', 'incomeTax', 'netIncome');
       strokeColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'expenses':
       yAxisDomain = [
@@ -169,6 +175,7 @@ export default function SingleSimulationCashFlowLineChart({
       ];
       dataKeys.push('totalExpenses');
       strokeColors.push('var(--chart-4)');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'custom':
       if (!customDataID) {
@@ -190,6 +197,7 @@ export default function SingleSimulationCashFlowLineChart({
         chartData = perIncomeData;
         dataKeys.push('grossIncome');
         strokeColors.push('var(--chart-2)');
+        formatter = (value: number) => formatNumber(value, 1, '$');
         break;
       }
 
@@ -207,9 +215,15 @@ export default function SingleSimulationCashFlowLineChart({
         chartData = perExpenseData;
         dataKeys.push('amount');
         strokeColors.push('var(--chart-4)');
+        formatter = (value: number) => formatNumber(value, 1, '$');
         break;
       }
 
+      break;
+    case 'savingsRate':
+      dataKeys.push('savingsRate');
+      strokeColors.push('var(--chart-3)');
+      formatter = (value: number) => `${value.toFixed(2)}%`;
       break;
     default:
       dataKeys.push('netCashFlow');
@@ -262,7 +276,7 @@ export default function SingleSimulationCashFlowLineChart({
               tick={{ fill: foregroundMutedColor }}
               axisLine={false}
               hide={isSmallScreen}
-              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+              tickFormatter={formatter}
               domain={yAxisDomain}
             />
             {dataKeys.map((dataKey, index) => (

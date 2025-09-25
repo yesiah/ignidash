@@ -9,7 +9,7 @@ import SingleSimulationCashFlowBarChart from '../../charts/single-simulation/sin
 interface SingleSimulationCashFlowBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
-  dataView: 'net' | 'incomes' | 'expenses' | 'custom';
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   customDataID: string;
 }
 
@@ -32,6 +32,9 @@ export default function SingleSimulationCashFlowBarChartCard({
       break;
     case 'custom':
       title = 'Custom';
+      break;
+    case 'savingsRate':
+      title = 'Savings Rate';
       break;
   }
 
