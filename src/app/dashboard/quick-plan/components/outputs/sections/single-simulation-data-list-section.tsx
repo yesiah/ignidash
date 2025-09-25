@@ -82,31 +82,34 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
 
   return (
-    <Card className="my-0">
-      <Subheading level={4}>
-        <span className="mr-2">Details</span>
-        <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
-      </Subheading>
-      <DescriptionList>
-        <DescriptionTerm>Total Gross Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+    <div>
+      <Card className="my-0">
+        <Subheading level={4}>
+          <span className="mr-2">Details</span>
+          <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
+        </Subheading>
+        <DescriptionList>
+          <DescriptionTerm>Total Gross Income*</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Income Tax</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Income Tax</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Net Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(netIncome, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Net Income</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(netIncome, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Total Expenses</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Total Expenses</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{savingsRate !== null ? `${formatNumber(savingsRate, 1)}%` : 'N/A'}</DescriptionDetails>
+          <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
+          <DescriptionDetails className="font-bold">{savingsRate !== null ? `${formatNumber(savingsRate, 1)}%` : 'N/A'}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
-      </DescriptionList>
-    </Card>
+          <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
+          <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+        </DescriptionList>
+      </Card>
+      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">*Includes tax-deferred withdrawals from 401K, HSA, and IRA.</p>
+    </div>
   );
 }
 
