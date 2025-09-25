@@ -108,7 +108,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
         </DescriptionList>
       </Card>
-      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">*Includes tax-deferred withdrawals from 401K, HSA, and IRA.</p>
+      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">*Includes tax-deferred withdrawals from 401(k), HSA, and IRA.</p>
     </div>
   );
 }
