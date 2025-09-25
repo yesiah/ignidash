@@ -25,8 +25,8 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
   const portfolioData = dp.portfolio;
 
-  const totalWithdrawals = portfolioData.withdrawalsForPeriod;
-  const totalContributions = portfolioData.contributionsForPeriod;
+  const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+  const annualContributions = portfolioData.contributionsForPeriod;
 
   return (
     <Card className="my-0">
@@ -35,18 +35,18 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
-        <DescriptionTerm>Total Returns</DescriptionTerm>
+        <DescriptionTerm>Annual Returns</DescriptionTerm>
         <DescriptionDetails>{formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Total Contributions</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(totalContributions, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Annual Contributions</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(annualContributions, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Total Withdrawals</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Annual Withdrawals</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Net Portfolio Change</DescriptionTerm>
         <DescriptionDetails className="font-bold">
-          {formatNumber(stockAmount + bondAmount + cashAmount + totalContributions + totalWithdrawals, 2, '$')}
+          {formatNumber(stockAmount + bondAmount + cashAmount + annualContributions + annualWithdrawals, 2, '$')}
         </DescriptionDetails>
       </DescriptionList>
     </Card>
