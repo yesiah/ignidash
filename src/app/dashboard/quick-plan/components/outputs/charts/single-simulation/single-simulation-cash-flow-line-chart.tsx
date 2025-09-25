@@ -11,7 +11,6 @@ import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-d
 import type { IncomeData } from '@/lib/calc/v2/incomes';
 import type { ExpenseData } from '@/lib/calc/v2/expenses';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
-import { Divider } from '@/components/catalyst/divider';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -36,104 +35,34 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
 
-  if (dataView === 'custom') {
-    const payloadData = payload[0];
-    const cashFlowName = (payloadData.payload as ({ age: number } & IncomeData) | ({ age: number } & ExpenseData)).name;
-    const bgColor = 'grossIncome' in payloadData.payload ? 'var(--chart-2)' : 'var(--chart-4)';
-
-    return (
-      <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-        <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-          <span>Age {label}</span>
-          <span className="text-muted-foreground">{yearForAge}</span>
-        </p>
-        <p
-          style={{ backgroundColor: bgColor }}
-          className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(payloadData.color) ? 'text-background' : 'text-foreground'}`}
-        >
-          <span className="mr-2">{`${cashFlowName}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(payloadData.value, 1, '$')}</span>
-        </p>
-      </div>
-    );
-  }
-
-  const perIncomeData = payload
-    .flatMap((entry) => (entry.payload as SingleSimulationCashFlowChartDataPoint).perIncomeData)
-    .filter((income) => income.grossIncome !== 0);
-  const totalGrossIncome = perIncomeData.reduce((sum, income) => sum + income.grossIncome, 0);
-  const incomeDataListComponent = perIncomeData.map((income) => (
-    <p
-      key={income.id}
-      style={{ backgroundColor: 'var(--chart-2)' }}
-      className="border-foreground/50 flex justify-between rounded-lg border px-2 text-sm"
-    >
-      <span className="mr-2">{income.name}</span>
-      <span className="ml-1 font-semibold">{formatNumber(income.grossIncome, 1, '$')}</span>
-    </p>
-  ));
-
-  const perExpenseData = payload
-    .flatMap((entry) => (entry.payload as SingleSimulationCashFlowChartDataPoint).perExpenseData)
-    .filter((expense) => expense.amount !== 0);
-  const totalExpenses = perExpenseData.reduce((sum, expense) => sum + expense.amount, 0);
-  const expenseDataListComponent = perExpenseData.map((expense) => (
-    <p
-      key={expense.id}
-      style={{ backgroundColor: 'var(--chart-4)' }}
-      className="border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm"
-    >
-      <span className="mr-2">{expense.name}</span>
-      <span className="ml-1 font-semibold">{formatNumber(expense.amount, 1, '$')}</span>
-    </p>
-  ));
-
-  let tooltipBodyComponent = null;
-  let tooltipFooterComponent = null;
-  switch (dataView) {
-    case 'net':
-      tooltipBodyComponent = (
-        <>
-          {incomeDataListComponent}
-          <Divider />
-          {expenseDataListComponent}
-        </>
-      );
-      tooltipFooterComponent = (
-        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Net Cash Flow:</span>
-          <span className="ml-1 font-semibold">{formatNumber(totalGrossIncome - totalExpenses, 1, '$')}</span>
-        </p>
-      );
-      break;
-    case 'incomes':
-      tooltipBodyComponent = incomeDataListComponent;
-      tooltipFooterComponent = (
-        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Total Gross Income:</span>
-          <span className="ml-1 font-semibold">{formatNumber(totalGrossIncome, 1, '$')}</span>
-        </p>
-      );
-      break;
-    case 'expenses':
-      tooltipBodyComponent = expenseDataListComponent;
-      tooltipFooterComponent = (
-        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Total Expenses:</span>
-          <span className="ml-1 font-semibold">{formatNumber(totalExpenses, 1, '$')}</span>
-        </p>
-      );
-      break;
-  }
-
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
-      <div className="flex flex-col gap-2">{tooltipBodyComponent}</div>
-      {tooltipFooterComponent}
+      <div className="flex flex-col gap-2">
+        {payload.map((entry) => (
+          <p
+            key={entry.dataKey}
+            style={{ backgroundColor: entry.color }}
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
+          >
+            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+          </p>
+        ))}
+      </div>
+      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+        <span className="mr-2">Total:</span>
+        <span className="ml-1 font-semibold">
+          {formatNumber(
+            payload.reduce((sum, item) => sum + item.value, 0),
+            3,
+            '$'
+          )}
+        </span>
+      </p>
     </div>
   );
 };
@@ -174,7 +103,7 @@ export default function SingleSimulationCashFlowLineChart({
 
   const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
   let yAxisDomain: [number, number] | undefined = undefined;
-  let strokeColor: string;
+  const strokeColors: string[] = [];
   switch (dataView) {
     case 'net':
       yAxisDomain = [
@@ -182,15 +111,15 @@ export default function SingleSimulationCashFlowLineChart({
         Math.max(0, ...chartData.map((d) => d.netCashFlow * 1.25)),
       ];
       dataKeys.push('netCashFlow');
-      strokeColor = 'url(#colorGradient)';
+      strokeColors.push('url(#colorGradient)');
       break;
     case 'incomes':
       yAxisDomain = [
         Math.min(0, ...chartData.map((d) => d.grossIncome * 1.25)),
         Math.max(0, ...chartData.map((d) => d.grossIncome * 1.25)),
       ];
-      dataKeys.push('grossIncome');
-      strokeColor = 'var(--chart-2)';
+      dataKeys.push('ordinaryIncome', 'taxDeferredWithdrawals', 'incomeTax', 'netIncome');
+      strokeColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'expenses':
       yAxisDomain = [
@@ -198,7 +127,7 @@ export default function SingleSimulationCashFlowLineChart({
         Math.max(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
       ];
       dataKeys.push('totalExpenses');
-      strokeColor = 'var(--chart-4)';
+      strokeColors.push('var(--chart-4)');
       break;
     case 'custom':
       if (!customDataID) {
@@ -219,7 +148,7 @@ export default function SingleSimulationCashFlowLineChart({
         ];
         chartData = perIncomeData;
         dataKeys.push('grossIncome');
-        strokeColor = 'var(--chart-2)';
+        strokeColors.push('var(--chart-2)');
         break;
       }
 
@@ -236,14 +165,14 @@ export default function SingleSimulationCashFlowLineChart({
         ];
         chartData = perExpenseData;
         dataKeys.push('amount');
-        strokeColor = 'var(--chart-4)';
+        strokeColors.push('var(--chart-4)');
         break;
       }
 
       break;
     default:
       dataKeys.push('netCashFlow');
-      strokeColor = 'url(#colorGradient)';
+      strokeColors.push('url(#colorGradient)');
       break;
   }
 
@@ -296,7 +225,15 @@ export default function SingleSimulationCashFlowLineChart({
               domain={yAxisDomain}
             />
             {dataKeys.map((dataKey, index) => (
-              <Line key={dataKey} type="monotone" dataKey={dataKey} stroke={strokeColor} dot={false} activeDot={false} strokeWidth={3} />
+              <Line
+                key={dataKey}
+                type="monotone"
+                dataKey={dataKey}
+                stroke={strokeColors[index]}
+                dot={false}
+                activeDot={false}
+                strokeWidth={3}
+              />
             ))}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
@@ -314,9 +251,9 @@ export default function SingleSimulationCashFlowLineChart({
         role="group"
         aria-label="Chart legend"
       >
-        {dataKeys.map((dataKey) => (
+        {dataKeys.map((dataKey, index) => (
           <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
-            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: strokeColor }} className="size-5 shrink-0">
+            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: strokeColors[index] }} className="size-5 shrink-0">
               <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
             </svg>
             <span className="truncate">{formatChartString(dataKey)}</span>

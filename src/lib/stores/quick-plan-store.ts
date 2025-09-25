@@ -585,6 +585,7 @@ export const useSingleSimulationCashFlowChartData = (simulation: SimulationResul
         perIncomeData: Object.values(incomesData.perIncomeData),
         perExpenseData: Object.values(expensesData.perExpenseData),
         ordinaryIncome,
+        taxDeferredWithdrawals,
         grossIncome,
         incomeTax,
         totalExpenses,
