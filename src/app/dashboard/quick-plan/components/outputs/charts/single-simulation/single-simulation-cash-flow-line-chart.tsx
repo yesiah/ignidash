@@ -161,8 +161,8 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'expenses':
-      dataKeys.push('totalExpenses');
-      strokeColors.push('var(--chart-4)');
+      dataKeys.push('totalExpenses', 'incomeTax');
+      strokeColors.push('var(--chart-4)', 'var(--chart-1)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'custom':
