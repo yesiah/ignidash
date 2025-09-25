@@ -70,7 +70,7 @@ export default function SingleSimulationContributionsLineChartCard({
           }}
         >
           <optgroup label="By Category">
-            <option value="taxTreatment">Tax Treatment</option>
+            <option value="taxTreatment">Tax Category</option>
           </optgroup>
           <optgroup label="By Aggregate">
             <option value="annualAmounts">Annual Amounts</option>

@@ -34,7 +34,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
         );
       break;
     case 'taxTreatment':
-      title = 'By Tax Treatment';
+      title = 'By Tax Category';
       chartData = rawChartData
         .filter((data) => data.age === selectedAge)
         .flatMap(({ age, perAccountData, ...rest }) =>

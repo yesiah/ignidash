@@ -28,7 +28,7 @@ export default function SingleSimulationWithdrawalsBarChartCard({
       title = 'Total Amounts';
       break;
     case 'taxTreatment':
-      title = 'By Tax Treatment';
+      title = 'By Tax Category';
       break;
     case 'custom':
       title = 'Custom Account';
