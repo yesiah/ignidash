@@ -236,11 +236,11 @@ function ContributionsDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Net Cash Flow</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
@@ -305,14 +305,14 @@ function WithdrawalsDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm>Cash Savings</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total Value</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Withdrawal Rate</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber((totalWithdrawals / (totalValue + totalWithdrawals)) * 100, 1)}%`}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Net Cash Flow</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
