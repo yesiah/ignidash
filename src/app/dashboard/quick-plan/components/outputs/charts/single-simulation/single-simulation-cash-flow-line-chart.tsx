@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
@@ -314,18 +314,14 @@ export default function SingleSimulationCashFlowLineChart({
         role="group"
         aria-label="Chart legend"
       >
-        <div className="flex items-center gap-x-2 text-sm font-medium">
-          <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: 'var(--chart-2)' }} className="size-5 shrink-0">
-            <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-          </svg>
-          Income
-        </div>
-        <div className="flex items-center gap-x-2 text-sm font-medium">
-          <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: 'var(--chart-4)' }} className="size-5 shrink-0">
-            <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-          </svg>
-          Expense
-        </div>
+        {dataKeys.map((dataKey) => (
+          <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
+            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: strokeColor }} className="size-5 shrink-0">
+              <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
+            </svg>
+            <span className="truncate">{formatChartString(dataKey)}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
