@@ -38,7 +38,7 @@ function PortfolioDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm>Total Withdrawals</DescriptionTerm>
         <DescriptionDetails>{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net Change</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Net Portfolio Change</DescriptionTerm>
         <DescriptionDetails className="font-bold">
           {formatNumber(stockAmount + bondAmount + cashAmount + totalContributions + totalWithdrawals, 2, '$')}
         </DescriptionDetails>
@@ -93,7 +93,7 @@ function CashFlowDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
         <DescriptionDetails className="font-bold">{savingsRate !== null ? `${formatNumber(savingsRate, 1)}%` : 'N/A'}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net</DescriptionTerm>
+        <DescriptionTerm className="font-bold">Net Cash Flow</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
