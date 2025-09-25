@@ -140,39 +140,20 @@ export default function SingleSimulationCashFlowLineChart({
     rawChartData;
 
   const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
-  let yAxisDomain: [number, number] | undefined = undefined;
   const strokeColors: string[] = [];
   let formatter = undefined;
   switch (dataView) {
     case 'net':
-      yAxisDomain = [
-        Math.min(0, ...chartData.map((d) => d.netCashFlow * 1.25)),
-        Math.max(0, ...chartData.map((d) => d.netCashFlow * 1.25)),
-      ];
       dataKeys.push('netCashFlow');
       strokeColors.push('url(#colorGradient)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'incomes':
-      yAxisDomain = [
-        Math.min(
-          0,
-          ...chartData.flatMap((d) => [d.ordinaryIncome * 1.25, d.taxDeferredWithdrawals * 1.25, d.incomeTax * 1.25, d.netIncome * 1.25])
-        ),
-        Math.max(
-          0,
-          ...chartData.flatMap((d) => [d.ordinaryIncome * 1.25, d.taxDeferredWithdrawals * 1.25, d.incomeTax * 1.25, d.netIncome * 1.25])
-        ),
-      ];
       dataKeys.push('ordinaryIncome', 'taxDeferredWithdrawals', 'incomeTax', 'netIncome');
       strokeColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'expenses':
-      yAxisDomain = [
-        Math.min(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
-        Math.max(0, ...chartData.map((d) => d.totalExpenses * 1.25)),
-      ];
       dataKeys.push('totalExpenses');
       strokeColors.push('var(--chart-4)');
       formatter = (value: number) => formatNumber(value, 1, '$');
@@ -190,10 +171,6 @@ export default function SingleSimulationCashFlowLineChart({
       });
 
       if (perIncomeData.length > 0) {
-        yAxisDomain = [
-          Math.min(0, ...perIncomeData.map((d) => d.grossIncome * 1.25)),
-          Math.max(0, ...perIncomeData.map((d) => d.grossIncome * 1.25)),
-        ];
         chartData = perIncomeData;
         dataKeys.push('grossIncome');
         strokeColors.push('var(--chart-2)');
@@ -208,10 +185,6 @@ export default function SingleSimulationCashFlowLineChart({
       });
 
       if (perExpenseData.length > 0) {
-        yAxisDomain = [
-          Math.min(0, ...perExpenseData.map((d) => d.amount * 1.25)),
-          Math.max(0, ...perExpenseData.map((d) => d.amount * 1.25)),
-        ];
         chartData = perExpenseData;
         dataKeys.push('amount');
         strokeColors.push('var(--chart-4)');
@@ -272,13 +245,7 @@ export default function SingleSimulationCashFlowLineChart({
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
-            <YAxis
-              tick={{ fill: foregroundMutedColor }}
-              axisLine={false}
-              hide={isSmallScreen}
-              tickFormatter={formatter}
-              domain={yAxisDomain}
-            />
+            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} hide={isSmallScreen} tickFormatter={formatter} />
             {dataKeys.map((dataKey, index) => (
               <Line
                 key={dataKey}
