@@ -183,30 +183,15 @@ function ContributionsDataListCardV2({ dp }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const totalContributions = portfolioData.contributionsForPeriod;
 
-  let cashSavings = 0;
-  let taxable = 0;
-  let taxDeferred = 0;
-  let taxFree = 0;
-
   let taxDeferredWithdrawals = 0;
-
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
-      case 'savings':
-        cashSavings += account.totalValue;
-        break;
-      case 'taxableBrokerage':
-        taxable += account.totalValue;
-        break;
       case '401k':
       case 'ira':
       case 'hsa':
-        taxDeferred += account.totalValue;
         taxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
-      case 'roth401k':
-      case 'rothIra':
-        taxFree += account.totalValue;
+      default:
         break;
     }
   }
@@ -225,20 +210,8 @@ function ContributionsDataListCardV2({ dp }: DataListCardProps) {
   return (
     <Card className="my-0">
       <DescriptionList>
-        <DescriptionTerm>Taxable Brokerage</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(taxable, 2, '$')} (${formatNumber((taxable / totalValue) * 100, 1)}%)`}</DescriptionDetails>
-
-        <DescriptionTerm>Tax Deferred</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(taxDeferred, 2, '$')} (${formatNumber((taxDeferred / totalValue) * 100, 1)}%)`}</DescriptionDetails>
-
-        <DescriptionTerm>Tax Free</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(taxFree, 2, '$')} (${formatNumber((taxFree / totalValue) * 100, 1)}%)`}</DescriptionDetails>
-
-        <DescriptionTerm>Cash Savings</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(cashSavings, 2, '$')} (${formatNumber((cashSavings / totalValue) * 100, 1)}%)`}</DescriptionDetails>
-
-        <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Total Portfolio Value</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Net Cash Flow</DescriptionTerm>
         <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
