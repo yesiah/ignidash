@@ -181,6 +181,7 @@ function ReturnsDataListCardV2({ dp }: DataListCardProps) {
 function ContributionsDataListCardV2({ dp }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
+  const totalContributions = portfolioData.contributionsForPeriod;
 
   let cashSavings = 0;
   let taxable = 0;
@@ -241,6 +242,9 @@ function ContributionsDataListCardV2({ dp }: DataListCardProps) {
 
         <DescriptionTerm>Net Cash Flow</DescriptionTerm>
         <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Total Contributions</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(totalContributions, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
@@ -308,11 +312,11 @@ function WithdrawalsDataListCardV2({ dp }: DataListCardProps) {
         <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
         <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Withdrawal Rate</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber((totalWithdrawals / (totalValue + totalWithdrawals)) * 100, 1)}%`}</DescriptionDetails>
-
         <DescriptionTerm>Net Cash Flow</DescriptionTerm>
         <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm>Withdrawal Rate</DescriptionTerm>
+        <DescriptionDetails>{`${formatNumber((totalWithdrawals / (totalValue + totalWithdrawals)) * 100, 1)}%`}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
