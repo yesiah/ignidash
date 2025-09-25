@@ -33,7 +33,12 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'url(#colorGradient)'];
+
+  const getBackgroundColor = (color: string) => {
+    if (color !== 'url(#colorGradient)') return color;
+    return 'linear-gradient(to right, var(--chart-2) 0%, var(--chart-2) 65%, var(--chart-4) 65%, var(--chart-4) 100%)';
+  };
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
@@ -45,7 +50,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
         {payload.map((entry) => (
           <p
             key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
+            style={{ background: getBackgroundColor(entry.color) }}
             className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
@@ -53,7 +58,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
           </p>
         ))}
       </div>
-      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+      {/* <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
         <span className="mr-2">Total:</span>
         <span className="ml-1 font-semibold">
           {formatNumber(
@@ -62,7 +67,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             '$'
           )}
         </span>
-      </p>
+      </p> */}
     </div>
   );
 };
