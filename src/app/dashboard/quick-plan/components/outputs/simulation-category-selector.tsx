@@ -4,7 +4,15 @@ import { ListFilterIcon, CheckIcon, ArrowUpDownIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { SimulationCategory } from '@/lib/types/simulation-category';
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel } from '@/components/catalyst/dropdown';
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownItem,
+  DropdownMenu,
+  DropdownLabel,
+  DropdownHeader,
+  DropdownDivider,
+} from '@/components/catalyst/dropdown';
 import { useMonteCarloSortMode, useUpdateMonteCarloSortMode } from '@/lib/stores/quick-plan-store';
 import { formatChartString } from '@/lib/utils';
 
@@ -55,6 +63,10 @@ export default function SimulationCategorySelector({
               <ArrowUpDownIcon />
             </DropdownButton>
             <DropdownMenu>
+              <DropdownHeader>
+                <div className="pr-6 text-sm/7 font-semibold">Sort Results By</div>
+              </DropdownHeader>
+              <DropdownDivider />
               {sortModeOptions.map((sortMode) => (
                 <DropdownItem key={sortMode} onClick={() => updateMonteCarloSortMode(sortMode)}>
                   <CheckIcon data-slot="icon" className={cn({ invisible: monteCarloSortMode !== sortMode })} />
