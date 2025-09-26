@@ -23,10 +23,10 @@ export default function SingleSimulationReturnsBarChartCard({
       title = 'Real Rates';
       break;
     case 'annualAmounts':
-      title = 'Annual Amounts';
+      title = 'Annual Returns';
       break;
     case 'totalAmounts':
-      title = 'Total Amounts';
+      title = 'Total Returns';
       break;
   }
 
