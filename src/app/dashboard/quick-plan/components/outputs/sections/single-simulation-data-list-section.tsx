@@ -46,7 +46,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
         <DescriptionTerm className="font-bold">Net Portfolio Change</DescriptionTerm>
         <DescriptionDetails className="font-bold">
-          {formatNumber(stockAmount + bondAmount + cashAmount + annualContributions + annualWithdrawals, 2, '$')}
+          {formatNumber(stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals, 2, '$')}
         </DescriptionDetails>
       </DescriptionList>
     </Card>
@@ -56,13 +56,13 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
 
-  let taxDeferredWithdrawals = 0;
+  let annualTaxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
       case '401k':
       case 'ira':
       case 'hsa':
-        taxDeferredWithdrawals += account.withdrawalsForPeriod;
+        annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
       default:
         break;
@@ -74,7 +74,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-  const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+  const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals;
   const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
@@ -116,15 +116,15 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
 
-  const realizedGains = portfolioData.realizedGainsForPeriod;
+  const annualRealizedGains = portfolioData.realizedGainsForPeriod;
 
-  let taxDeferredWithdrawals = 0;
+  let annualTaxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
       case '401k':
       case 'ira':
       case 'hsa':
-        taxDeferredWithdrawals += account.withdrawalsForPeriod;
+        annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
       default:
         break;
@@ -135,7 +135,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-  const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+  const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals;
   const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
   const totalTaxLiability = incomeTax + capGainsTax;
@@ -154,7 +154,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(realizedGains, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatNumber(annualRealizedGains, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
         <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
@@ -203,13 +203,13 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualContributions = portfolioData.contributionsForPeriod;
 
-  let taxDeferredWithdrawals = 0;
+  let annualTaxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
       case '401k':
       case 'ira':
       case 'hsa':
-        taxDeferredWithdrawals += account.withdrawalsForPeriod;
+        annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
       default:
         break;
@@ -221,7 +221,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-  const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+  const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals;
   const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
@@ -252,13 +252,13 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-  let taxDeferredWithdrawals = 0;
+  let annualTaxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
       case '401k':
       case 'ira':
       case 'hsa':
-        taxDeferredWithdrawals += account.withdrawalsForPeriod;
+        annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
         break;
       default:
         break;
@@ -270,7 +270,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-  const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+  const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals;
   const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
