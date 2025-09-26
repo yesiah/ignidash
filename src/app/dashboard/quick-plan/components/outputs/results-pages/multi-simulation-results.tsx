@@ -14,7 +14,7 @@ interface MultiSimulationResultsProps {
 }
 
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
-  const { data: { analysis, tableData, yearlyTableData } = {} } = useMultiSimulationResult(simulationMode);
+  const { analysis, tableData, yearlyTableData } = useMultiSimulationResult(simulationMode);
 
   const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);

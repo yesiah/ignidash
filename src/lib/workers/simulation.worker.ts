@@ -6,42 +6,24 @@ import {
   LcgHistoricalBacktestSimulationEngine,
   type MultiSimulationResult,
 } from '@/lib/calc/v2/simulation-engine';
-import { SimulationCategory } from '@/lib/types/simulation-category';
-import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
-
-import { MultiSimulationAnalyzer, type MultiSimulationAnalysis } from '../calc/v2/multi-simulation-analyzer';
-import { TableDataExtractor } from '../calc/v2/table-data-extractor';
 
 const simulationAPI = {
   async analyzeMonteCarloSimulation(
     inputs: QuickPlanInputs,
     baseSeed: number,
     numSimulations: number,
-    simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
-    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
-  ): Promise<{ analysis: MultiSimulationAnalysis; tableData: MultiSimulationTableRow[]; yearlyTableData: YearlyAggregateTableRow[] }> {
-    let res: MultiSimulationResult;
+    simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
+  ): Promise<MultiSimulationResult> {
     switch (simulationMode) {
       case 'monteCarloStochasticReturns': {
         const engine = new MonteCarloSimulationEngine(inputs, baseSeed);
-        res = engine.runMonteCarloSimulation(numSimulations);
-        break;
+        return engine.runMonteCarloSimulation(numSimulations);
       }
       case 'monteCarloHistoricalReturns': {
         const engine = new LcgHistoricalBacktestSimulationEngine(inputs, baseSeed);
-        res = engine.runLcgHistoricalBacktest(numSimulations);
-        break;
+        return engine.runLcgHistoricalBacktest(numSimulations);
       }
     }
-
-    const analyzer = new MultiSimulationAnalyzer();
-    const analysis = analyzer.analyzeV2(res, sortMode);
-
-    const extractor = new TableDataExtractor();
-    const tableData = extractor.extractMultiSimulationData(res, SimulationCategory.Portfolio);
-    const yearlyTableData = extractor.extractMultiSimulationYearlyAggregateData(res, analysis, SimulationCategory.Portfolio);
-
-    return { analysis, tableData, yearlyTableData };
   },
 };
 

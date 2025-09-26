@@ -2,17 +2,19 @@ import { useMemo } from 'react';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { FinancialSimulationEngine, type SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import { MultiSimulationAnalyzer, type MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-analyzer';
 import { FixedReturnsProvider } from '@/lib/calc/returns-providers/fixed-returns-provider';
 import { StochasticReturnsProvider } from '@/lib/calc/returns-providers/stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/returns-providers/lcg-historical-backtest-returns-provider';
 import { TableDataExtractor } from '@/lib/calc/v2/table-data-extractor';
 import { getSimulationWorker } from '@/lib/workers/simulation-worker-api';
 import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
@@ -420,16 +422,33 @@ export const useSimulationResult = (
   }, [inputs, seed, simulationMode]);
 };
 
-export const useMultiSimulationResult = (simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns') => {
+export const useMultiSimulationResult = (
+  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
+): { analysis: MultiSimulationAnalysis | null; tableData: MultiSimulationTableRow[]; yearlyTableData: YearlyAggregateTableRow[] } => {
   const inputs = useQuickPlanStore((state) => state.inputs);
   const simulationSeed = useSimulationSeed();
   const sortMode = useMonteCarloSortMode();
 
-  return useSWR(
+  const { data: res } = useSWR(
     [inputs, simulationSeed, simulationMode],
-    async () => await getSimulationWorker().analyzeMonteCarloSimulation(inputs, simulationSeed, 1000, simulationMode, sortMode),
+    async () => {
+      const res = await getSimulationWorker().analyzeMonteCarloSimulation(inputs, simulationSeed, 1000, simulationMode);
+      mutate(() => true, undefined, { revalidate: false });
+      return res;
+    },
     { revalidateOnFocus: false }
   );
+
+  if (!res) return { analysis: null, tableData: [], yearlyTableData: [] };
+
+  const analyzer = new MultiSimulationAnalyzer();
+  const analysis = analyzer.analyzeV2(res, sortMode);
+
+  const extractor = new TableDataExtractor();
+  const tableData = extractor.extractMultiSimulationData(res, SimulationCategory.Portfolio);
+  const yearlyTableData = extractor.extractMultiSimulationYearlyAggregateData(res, analysis, SimulationCategory.Portfolio);
+
+  return { analysis, tableData, yearlyTableData };
 };
 
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
