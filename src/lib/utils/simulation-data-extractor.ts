@@ -1,6 +1,6 @@
 import type { SimulationDataPoint } from '@/lib/calc/v2/simulation-engine';
 
-export interface MilestoneData {
+export interface MilestonesData {
   yearsToRetirement: number | null;
   retirementAge: number | null;
   yearsToBankruptcy: number | null;
@@ -15,7 +15,7 @@ export interface AverageReturnsData {
 }
 
 export class SimulationDataExtractor {
-  static getMilestonesData(data: SimulationDataPoint[], startAge: number): MilestoneData {
+  static getMilestonesData(data: SimulationDataPoint[], startAge: number): MilestonesData {
     let yearsToRetirement: number | null = null;
     let retirementAge: number | null = null;
     let yearsToBankruptcy: number | null = null;
