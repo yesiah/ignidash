@@ -23,15 +23,32 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - startAge);
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
+  let tooltipFooterComponent = null;
+  if (dataView === 'taxCategory') {
+    tooltipFooterComponent = (
+      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+        <span className="mr-2">Total:</span>
+        <span className="ml-1 font-semibold">
+          {formatNumber(
+            payload.reduce((sum, item) => sum + item.value, 0),
+            3,
+            '$'
+          )}
+        </span>
+      </p>
+    );
+  }
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
@@ -51,6 +68,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
           </p>
         ))}
       </div>
+      {tooltipFooterComponent}
     </div>
   );
 };
@@ -175,7 +193,7 @@ export default function SingleSimulationWithdrawalsLineChart({
               />
             ))}
             <Tooltip
-              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
+              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
               cursor={{ stroke: foregroundColor }}
             />
             {keyMetrics.retirementAge && showReferenceLines && (
