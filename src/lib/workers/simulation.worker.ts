@@ -58,10 +58,6 @@ const simulationAPI = {
 
     return { analysis, tableData, yearlyTableData };
   },
-
-  async clear(): Promise<void> {
-    cache = null;
-  },
 };
 
 Comlink.expose(simulationAPI);
