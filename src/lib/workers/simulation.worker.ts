@@ -15,6 +15,12 @@ import {
 type CacheEntry = { handle: string; res: MultiSimulationResult };
 let cache: CacheEntry | null = null;
 
+type DerivedMultiSimulationData = {
+  analysis: MultiSimulationAnalysis;
+  tableData: MultiSimulationTableRow[];
+  yearlyTableData: YearlyAggregateTableRow[];
+};
+
 const simulationAPI = {
   async runSimulation(
     inputs: QuickPlanInputs,
@@ -45,7 +51,7 @@ const simulationAPI = {
   async getDerivedMultiSimulationData(
     handle: string,
     sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
-  ): Promise<{ analysis: MultiSimulationAnalysis; tableData: MultiSimulationTableRow[]; yearlyTableData: YearlyAggregateTableRow[] }> {
+  ): Promise<DerivedMultiSimulationData> {
     if (!cache || cache.handle !== handle) throw new Error('Simulation not found');
     const { res } = cache;
 
