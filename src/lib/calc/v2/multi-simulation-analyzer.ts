@@ -58,15 +58,12 @@ export class MultiSimulationAnalyzer {
     const tableData = extractor.extractMultiSimulationData(multiSimulationResult, SimulationCategory.Portfolio);
 
     const { min: minFinalPortfolioValue, range: finalPortfolioValueRange } = this.getRange(tableData, (row) => row.finalPortfolioValue);
-    const { min: minRetirementAge, range: retirementAgeRange } = this.getRange(tableData, (row) => row.retirementAge ?? -Infinity);
-    const { min: minBankruptcyAge, range: bankruptcyAgeRange } = this.getRange(tableData, (row) => row.bankruptcyAge ?? Infinity);
-    const { min: minAverageStockReturn, range: averageStockReturnRange } = this.getRange(tableData, (row) => row.averageStockReturn ?? 0);
-    const { min: minAverageBondReturn, range: averageBondReturnRange } = this.getRange(tableData, (row) => row.averageBondReturn ?? 0);
-    const { min: minAverageCashReturn, range: averageCashReturnRange } = this.getRange(tableData, (row) => row.averageCashReturn ?? 0);
-    const { min: minAverageInflationRate, range: averageInflationRateRange } = this.getRange(
-      tableData,
-      (row) => row.averageInflationRate ?? 0
-    );
+    const { min: minRetirementAge, range: retirementAgeRange } = this.getRange(tableData, (row) => row.retirementAge);
+    const { min: minBankruptcyAge, range: bankruptcyAgeRange } = this.getRange(tableData, (row) => row.bankruptcyAge);
+    const { min: minAverageStockReturn, range: averageStockReturnRange } = this.getRange(tableData, (row) => row.averageStockReturn);
+    const { min: minAverageBondReturn, range: averageBondReturnRange } = this.getRange(tableData, (row) => row.averageBondReturn);
+    const { min: minAverageCashReturn, range: averageCashReturnRange } = this.getRange(tableData, (row) => row.averageCashReturn);
+    const { min: minAverageInflationRate, range: averageInflationRateRange } = this.getRange(tableData, (row) => row.averageInflationRate);
 
     const sortedSimulations = [...simulations].sort((a, b) => {
       const {
@@ -162,8 +159,8 @@ export class MultiSimulationAnalyzer {
     return { success: successCount / simulations.length, results };
   }
 
-  private getRange<T>(data: T[], extractor: (row: T) => number): { min: number; max: number; range: number } {
-    const values = data.map(extractor);
+  private getRange<T>(data: T[], extractor: (row: T) => number | null): { min: number; max: number; range: number } {
+    const values = data.map(extractor).filter((v): v is number => v !== null);
     const min = Math.min(...values);
     const max = Math.max(...values);
 
