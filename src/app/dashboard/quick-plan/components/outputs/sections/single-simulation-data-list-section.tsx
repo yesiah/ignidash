@@ -250,7 +250,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
-  const totalWithdrawals = portfolioData.withdrawalsForPeriod;
+  const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
   let taxDeferredWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
@@ -275,7 +275,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
   const netCashFlow = netIncome - totalExpenses;
-  const withdrawalRate = totalValue + totalWithdrawals > 0 ? (Math.abs(totalWithdrawals) / (totalValue + totalWithdrawals)) * 100 : null;
+  const withdrawalRate = totalValue + annualWithdrawals > 0 ? (Math.abs(annualWithdrawals) / (totalValue + annualWithdrawals)) * 100 : null;
 
   return (
     <Card className="my-0">
@@ -291,7 +291,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Total Withdrawals</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails className="font-bold">{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Withdrawal Rate</DescriptionTerm>
         <DescriptionDetails className="font-bold">
