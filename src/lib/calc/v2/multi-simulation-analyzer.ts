@@ -68,7 +68,7 @@ export class MultiSimulationAnalyzer {
       (row) => row.averageInflationRate ?? 0
     );
 
-    const _sortedSimulations = [...simulations].sort((a, b) => {
+    const sortedSimulations = [...simulations].sort((a, b) => {
       const {
         data: dataA,
         context: { startAge },
@@ -151,7 +151,15 @@ export class MultiSimulationAnalyzer {
       return scoreA - scoreB;
     });
 
-    throw new Error('analyzeV2 is not implemented. Use analyze instead.');
+    let successCount = 0;
+    for (const [, simResult] of simulations) {
+      const finalDp = simResult.data[simResult.data.length - 1];
+      if (finalDp.portfolio.totalValue > 0.1 && finalDp.phase?.name === 'retirement') successCount++;
+    }
+
+    const results = this.calculatePercentilesFromValues(sortedSimulations.map((s) => s[1]));
+
+    return { success: successCount / simulations.length, results };
   }
 
   private getRange<T>(data: T[], extractor: (row: T) => number): { min: number; max: number; range: number } {
