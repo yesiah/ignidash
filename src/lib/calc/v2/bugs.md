@@ -3,3 +3,4 @@
 - Contributions, cost basis not being set to defaults for applicable types.
 - Trigger contribution rule updates after incomes, accounts are deleted or updated which are attached to contribution rules.
 - Auto-create contribution rules when portfolio items are added.
+- Withdrawals to pay taxes with are not currently being taxed.
