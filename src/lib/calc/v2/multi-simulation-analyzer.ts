@@ -34,32 +34,6 @@ export interface MultiSimulationAnalysis {
 }
 
 export class MultiSimulationAnalyzer {
-  // Compare success
-  // Compare final total value
-  // Compare time to retirement
-  // Compare time to bankruptcy
-  // Compare average returns
-
-  // seed,
-  // success,
-  // retirementAge,
-  // bankruptcyAge,
-  // finalPhaseName: lastDp.phase!.name,
-  // finalPortfolioValue: lastDp.portfolio.totalValue,
-  // averageStockReturn,
-  // averageBondReturn,
-  // averageCashReturn,
-  // averageInflationRate,
-
-  //  const startAge = context.startAge;
-
-  //   const { retirementAge, bankruptcyAge } = SimulationDataExtractor.getMilestonesData(data, startAge);
-  //   const { averageStockReturn, averageBondReturn, averageCashReturn, averageInflationRate } =
-  //     SimulationDataExtractor.getAverageReturns(data);
-
-  //   const lastDp = data[data.length - 1];
-  //   const success = retirementAge !== null && lastDp.portfolio.totalValue > 0.1;
-
   analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
@@ -83,27 +57,27 @@ export class MultiSimulationAnalyzer {
 
     const minRetirementAge = Math.min(...retirementAges);
     const maxRetirementAge = Math.max(...retirementAges);
-    const _retirementAgeRange = maxRetirementAge - minRetirementAge;
+    const retirementAgeRange = maxRetirementAge - minRetirementAge;
 
     const minBankruptcyAge = Math.min(...bankruptcyAges);
     const maxBankruptcyAge = Math.max(...bankruptcyAges);
-    const _bankruptcyAgeRange = maxBankruptcyAge - minBankruptcyAge;
+    const bankruptcyAgeRange = maxBankruptcyAge - minBankruptcyAge;
 
     const minAverageStockReturn = Math.min(...averageStockReturns);
     const maxAverageStockReturn = Math.max(...averageStockReturns);
-    const _averageStockReturnRange = maxAverageStockReturn - minAverageStockReturn;
+    const averageStockReturnRange = maxAverageStockReturn - minAverageStockReturn;
 
     const minAverageBondReturn = Math.min(...averageBondReturns);
     const maxAverageBondReturn = Math.max(...averageBondReturns);
-    const _averageBondReturnRange = maxAverageBondReturn - minAverageBondReturn;
+    const averageBondReturnRange = maxAverageBondReturn - minAverageBondReturn;
 
     const minAverageCashReturn = Math.min(...averageCashReturns);
     const maxAverageCashReturn = Math.max(...averageCashReturns);
-    const _averageCashReturnRange = maxAverageCashReturn - minAverageCashReturn;
+    const averageCashReturnRange = maxAverageCashReturn - minAverageCashReturn;
 
     const minAverageInflationRate = Math.min(...averageInflationRates);
     const maxAverageInflationRate = Math.max(...averageInflationRates);
-    const _averageInflationRateRange = maxAverageInflationRate - minAverageInflationRate;
+    const averageInflationRateRange = maxAverageInflationRate - minAverageInflationRate;
 
     const _sortedSimulations = [...simulations].sort((a, b) => {
       const {
@@ -117,21 +91,46 @@ export class MultiSimulationAnalyzer {
 
       if (dataALength !== dataBLength) console.warn('Simulations have different lengths');
 
-      const { retirementAge: retirementAgeA, bankruptcyAge: _bankruptcyAgeA } = SimulationDataExtractor.getMilestonesData(dataA, startAge);
-      const { retirementAge: retirementAgeB, bankruptcyAge: _bankruptcyAgeB } = SimulationDataExtractor.getMilestonesData(dataB, startAge);
+      const { retirementAge: retirementAgeA, bankruptcyAge: bankruptcyAgeA } = SimulationDataExtractor.getMilestonesData(dataA, startAge);
+      const { retirementAge: retirementAgeB, bankruptcyAge: bankruptcyAgeB } = SimulationDataExtractor.getMilestonesData(dataB, startAge);
+
+      const normalizedRetirementAgeA = retirementAgeA !== null ? (retirementAgeA - minRetirementAge) / retirementAgeRange : 1;
+      const normalizedRetirementAgeB = retirementAgeB !== null ? (retirementAgeB - minRetirementAge) / retirementAgeRange : 1;
+
+      const normalizedBankruptcyAgeA = bankruptcyAgeA !== null ? (bankruptcyAgeA - minBankruptcyAge) / bankruptcyAgeRange : 1;
+      const normalizedBankruptcyAgeB = bankruptcyAgeB !== null ? (bankruptcyAgeB - minBankruptcyAge) / bankruptcyAgeRange : 1;
 
       const {
-        averageStockReturn: _averageStockReturnA,
-        averageBondReturn: _averageBondReturnA,
-        averageCashReturn: _averageCashReturnA,
-        averageInflationRate: _averageInflationRateA,
+        averageStockReturn: averageStockReturnA,
+        averageBondReturn: averageBondReturnA,
+        averageCashReturn: averageCashReturnA,
+        averageInflationRate: averageInflationRateA,
       } = SimulationDataExtractor.getAverageReturns(dataA);
+
+      const normalizedAverageStockReturnA =
+        averageStockReturnA !== null ? (averageStockReturnA - minAverageStockReturn) / averageStockReturnRange : 1;
+      const normalizedAverageBondReturnA =
+        averageBondReturnA !== null ? (averageBondReturnA - minAverageBondReturn) / averageBondReturnRange : 1;
+      const normalizedAverageCashReturnA =
+        averageCashReturnA !== null ? (averageCashReturnA - minAverageCashReturn) / averageCashReturnRange : 1;
+      const normalizedAverageInflationRateA =
+        averageInflationRateA !== null ? (averageInflationRateA - minAverageInflationRate) / averageInflationRateRange : 1;
+
       const {
-        averageStockReturn: _averageStockReturnB,
-        averageBondReturn: _averageBondReturnB,
-        averageCashReturn: _averageCashReturnB,
-        averageInflationRate: _averageInflationRateB,
+        averageStockReturn: averageStockReturnB,
+        averageBondReturn: averageBondReturnB,
+        averageCashReturn: averageCashReturnB,
+        averageInflationRate: averageInflationRateB,
       } = SimulationDataExtractor.getAverageReturns(dataB);
+
+      const normalizedAverageStockReturnB =
+        averageStockReturnB !== null ? (averageStockReturnB - minAverageStockReturn) / averageStockReturnRange : 1;
+      const normalizedAverageBondReturnB =
+        averageBondReturnB !== null ? (averageBondReturnB - minAverageBondReturn) / averageBondReturnRange : 1;
+      const normalizedAverageCashReturnB =
+        averageCashReturnB !== null ? (averageCashReturnB - minAverageCashReturn) / averageCashReturnRange : 1;
+      const normalizedAverageInflationRateB =
+        averageInflationRateB !== null ? (averageInflationRateB - minAverageInflationRate) / averageInflationRateRange : 1;
 
       const lastDpA = dataA[dataALength - 1];
       const lastDpB = dataB[dataBLength - 1];
@@ -141,10 +140,41 @@ export class MultiSimulationAnalyzer {
       const normalizedFinalPortfolioValueB =
         finalPortfolioValueRange !== 0 ? (lastDpB.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange : 0.5;
 
-      const _successA = retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1;
-      const _successB = retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1;
+      const successA = Number(retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1);
+      const successB = Number(retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1);
 
-      return normalizedFinalPortfolioValueA - normalizedFinalPortfolioValueB;
+      const weights = {
+        success: 0.2,
+        finalPortfolioValue: 0.2,
+        retirementAge: 0.2,
+        bankruptcyAge: 0.2,
+        avgStockReturns: 0.1,
+        avgBondReturns: 0.05,
+        avgCashReturns: 0.025,
+        avgInflationRates: 0.025,
+      };
+
+      const scoreA =
+        weights.success * successA +
+        weights.finalPortfolioValue * normalizedFinalPortfolioValueA +
+        weights.retirementAge * normalizedRetirementAgeA +
+        weights.bankruptcyAge * normalizedBankruptcyAgeA +
+        weights.avgStockReturns * normalizedAverageStockReturnA +
+        weights.avgBondReturns * normalizedAverageBondReturnA +
+        weights.avgCashReturns * normalizedAverageCashReturnA +
+        weights.avgInflationRates * normalizedAverageInflationRateA;
+
+      const scoreB =
+        weights.success * successB +
+        weights.finalPortfolioValue * normalizedFinalPortfolioValueB +
+        weights.retirementAge * normalizedRetirementAgeB +
+        weights.bankruptcyAge * normalizedBankruptcyAgeB +
+        weights.avgStockReturns * normalizedAverageStockReturnB +
+        weights.avgBondReturns * normalizedAverageBondReturnB +
+        weights.avgCashReturns * normalizedAverageCashReturnB +
+        weights.avgInflationRates * normalizedAverageInflationRateB;
+
+      return scoreA - scoreB;
     });
 
     throw new Error('analyzeV2 is not implemented. Use analyze instead.');
