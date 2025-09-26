@@ -141,28 +141,31 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalTaxLiability = incomeTax + capGainsTax;
 
   return (
-    <Card className="my-0">
-      <Subheading level={4}>
-        <span className="mr-2">Details</span>
-        <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
-      </Subheading>
-      <DescriptionList>
-        <DescriptionTerm>Gross Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+    <div>
+      <Card className="my-0">
+        <Subheading level={4}>
+          <span className="mr-2">Details</span>
+          <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
+        </Subheading>
+        <DescriptionList>
+          <DescriptionTerm>Gross Income*</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Income Tax</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Income Tax</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(annualRealizedGains, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(annualRealizedGains, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
+          <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
+          <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Total Tax Liability</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalTaxLiability, 2, '$')}</DescriptionDetails>
-      </DescriptionList>
-    </Card>
+          <DescriptionTerm className="font-bold">Total Tax Liability</DescriptionTerm>
+          <DescriptionDetails className="font-bold">{formatNumber(totalTaxLiability, 2, '$')}</DescriptionDetails>
+        </DescriptionList>
+      </Card>
+      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">*Includes tax-deferred withdrawals from 401(k), HSA, and IRA.</p>
+    </div>
   );
 }
 
