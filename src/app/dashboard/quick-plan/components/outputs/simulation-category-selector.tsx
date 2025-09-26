@@ -1,10 +1,12 @@
 'use client';
 
-import { ListFilterIcon, CheckIcon } from 'lucide-react';
+import { ListFilterIcon, CheckIcon, ArrowUpDownIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel } from '@/components/catalyst/dropdown';
+import { useMonteCarloSortMode, useUpdateMonteCarloSortMode } from '@/lib/stores/quick-plan-store';
+import { formatChartString } from '@/lib/utils';
 
 interface SimulationCategorySelectorProps {
   className?: string;
@@ -24,6 +26,10 @@ export default function SimulationCategorySelector({
   selectedSeed,
 }: SimulationCategorySelectorProps) {
   const percentiles = ['P10', 'P25', 'P50', 'P75', 'P90'] as const;
+  const sortModeOptions = ['retirementAge', 'finalPortfolioValue', 'bankruptcyAge', 'averageStockReturn'] as const;
+
+  const monteCarloSortMode = useMonteCarloSortMode();
+  const updateMonteCarloSortMode = useUpdateMonteCarloSortMode();
 
   return (
     <div className="flex items-center justify-between">
@@ -44,6 +50,19 @@ export default function SimulationCategorySelector({
       </div>
       {setCurrentPercentile && currentPercentile && (
         <div className="border-border/50 shrink-0 border-l sm:px-2">
+          <Dropdown>
+            <DropdownButton plain aria-label="Open sort mode options" disabled={!!selectedSeed}>
+              <ArrowUpDownIcon />
+            </DropdownButton>
+            <DropdownMenu>
+              {sortModeOptions.map((sortMode) => (
+                <DropdownItem key={sortMode} onClick={() => updateMonteCarloSortMode(sortMode)}>
+                  <CheckIcon data-slot="icon" className={cn({ invisible: monteCarloSortMode !== sortMode })} />
+                  <DropdownLabel>{formatChartString(sortMode)}</DropdownLabel>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
           <Dropdown>
             <DropdownButton plain aria-label="Open options" disabled={!!selectedSeed}>
               <ListFilterIcon />
