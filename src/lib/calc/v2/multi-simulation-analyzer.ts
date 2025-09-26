@@ -34,6 +34,26 @@ export interface MultiSimulationAnalysis {
 }
 
 export class MultiSimulationAnalyzer {
+  static readonly METRICS = {
+    finalPortfolioValue: { nullBehavior: 'bad' as const },
+    retirementAge: { nullBehavior: 'bad' as const },
+    bankruptcyAge: { nullBehavior: 'good' as const },
+    averageStockReturn: { nullBehavior: 'bad' as const },
+    averageBondReturn: { nullBehavior: 'bad' as const },
+    averageCashReturn: { nullBehavior: 'bad' as const },
+    averageInflationRate: { nullBehavior: 'good' as const, invert: true },
+  };
+
+  static readonly WEIGHTS: Record<keyof typeof MultiSimulationAnalyzer.METRICS, number> = {
+    finalPortfolioValue: 0.2,
+    retirementAge: 0.2,
+    bankruptcyAge: 0.2,
+    averageStockReturn: 0.1,
+    averageBondReturn: 0.05,
+    averageCashReturn: 0.025,
+    averageInflationRate: 0.025,
+  };
+
   analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
@@ -43,41 +63,16 @@ export class MultiSimulationAnalyzer {
     const extractor = new TableDataExtractor();
     const tableData = extractor.extractMultiSimulationData(multiSimulationResult, SimulationCategory.Portfolio);
 
-    const finalPortfolioValues = tableData.map((row) => row.finalPortfolioValue);
-    const retirementAges = tableData.map((row) => row.retirementAge ?? -Infinity);
-    const bankruptcyAges = tableData.map((row) => row.bankruptcyAge ?? Infinity);
-    const averageStockReturns = tableData.map((row) => row.averageStockReturn ?? 0);
-    const averageBondReturns = tableData.map((row) => row.averageBondReturn ?? 0);
-    const averageCashReturns = tableData.map((row) => row.averageCashReturn ?? 0);
-    const averageInflationRates = tableData.map((row) => row.averageInflationRate ?? 0);
-
-    const minFinalPortfolioValue = Math.min(...finalPortfolioValues);
-    const maxFinalPortfolioValue = Math.max(...finalPortfolioValues);
-    const finalPortfolioValueRange = maxFinalPortfolioValue - minFinalPortfolioValue;
-
-    const minRetirementAge = Math.min(...retirementAges);
-    const maxRetirementAge = Math.max(...retirementAges);
-    const retirementAgeRange = maxRetirementAge - minRetirementAge;
-
-    const minBankruptcyAge = Math.min(...bankruptcyAges);
-    const maxBankruptcyAge = Math.max(...bankruptcyAges);
-    const bankruptcyAgeRange = maxBankruptcyAge - minBankruptcyAge;
-
-    const minAverageStockReturn = Math.min(...averageStockReturns);
-    const maxAverageStockReturn = Math.max(...averageStockReturns);
-    const averageStockReturnRange = maxAverageStockReturn - minAverageStockReturn;
-
-    const minAverageBondReturn = Math.min(...averageBondReturns);
-    const maxAverageBondReturn = Math.max(...averageBondReturns);
-    const averageBondReturnRange = maxAverageBondReturn - minAverageBondReturn;
-
-    const minAverageCashReturn = Math.min(...averageCashReturns);
-    const maxAverageCashReturn = Math.max(...averageCashReturns);
-    const averageCashReturnRange = maxAverageCashReturn - minAverageCashReturn;
-
-    const minAverageInflationRate = Math.min(...averageInflationRates);
-    const maxAverageInflationRate = Math.max(...averageInflationRates);
-    const averageInflationRateRange = maxAverageInflationRate - minAverageInflationRate;
+    const { min: minFinalPortfolioValue, range: finalPortfolioValueRange } = this.getRange(tableData, (row) => row.finalPortfolioValue);
+    const { min: minRetirementAge, range: retirementAgeRange } = this.getRange(tableData, (row) => row.retirementAge ?? -Infinity);
+    const { min: minBankruptcyAge, range: bankruptcyAgeRange } = this.getRange(tableData, (row) => row.bankruptcyAge ?? Infinity);
+    const { min: minAverageStockReturn, range: averageStockReturnRange } = this.getRange(tableData, (row) => row.averageStockReturn ?? 0);
+    const { min: minAverageBondReturn, range: averageBondReturnRange } = this.getRange(tableData, (row) => row.averageBondReturn ?? 0);
+    const { min: minAverageCashReturn, range: averageCashReturnRange } = this.getRange(tableData, (row) => row.averageCashReturn ?? 0);
+    const { min: minAverageInflationRate, range: averageInflationRateRange } = this.getRange(
+      tableData,
+      (row) => row.averageInflationRate ?? 0
+    );
 
     const _sortedSimulations = [...simulations].sort((a, b) => {
       const {
@@ -178,6 +173,14 @@ export class MultiSimulationAnalyzer {
     });
 
     throw new Error('analyzeV2 is not implemented. Use analyze instead.');
+  }
+
+  private getRange<T>(data: T[], extractor: (row: T) => number): { min: number; max: number; range: number } {
+    const values = data.map(extractor);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+
+    return { min, max, range: max - min };
   }
 
   analyze(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
