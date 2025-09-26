@@ -1,5 +1,6 @@
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 import { SimulationCategory } from '@/lib/types/simulation-category';
+import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
 
 import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from './simulation-engine';
 import type { PortfolioData, AccountDataWithTransactions } from './portfolio';
@@ -50,6 +51,15 @@ export class MultiSimulationAnalyzer {
   // averageCashReturn,
   // averageInflationRate,
 
+  //  const startAge = context.startAge;
+
+  //   const { retirementAge, bankruptcyAge } = SimulationDataExtractor.getMilestonesData(data, startAge);
+  //   const { averageStockReturn, averageBondReturn, averageCashReturn, averageInflationRate } =
+  //     SimulationDataExtractor.getAverageReturns(data);
+
+  //   const lastDp = data[data.length - 1];
+  //   const success = retirementAge !== null && lastDp.portfolio.totalValue > 0.1;
+
   analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
@@ -60,19 +70,68 @@ export class MultiSimulationAnalyzer {
     const tableData = extractor.extractMultiSimulationData(multiSimulationResult, SimulationCategory.Portfolio);
 
     const finalPortfolioValues = tableData.map((row) => row.finalPortfolioValue);
+    const retirementAges = tableData.map((row) => row.retirementAge ?? Infinity);
+    const bankruptcyAges = tableData.map((row) => row.bankruptcyAge ?? Infinity);
+    const averageStockReturns = tableData.map((row) => row.averageStockReturn ?? 0);
+    const averageBondReturns = tableData.map((row) => row.averageBondReturn ?? 0);
+    const averageCashReturns = tableData.map((row) => row.averageCashReturn ?? 0);
+    const averageInflationRates = tableData.map((row) => row.averageInflationRate ?? 0);
 
     const minFinalPortfolioValue = Math.min(...finalPortfolioValues);
     const maxFinalPortfolioValue = Math.max(...finalPortfolioValues);
     const finalPortfolioValueRange = maxFinalPortfolioValue - minFinalPortfolioValue;
 
-    const _sortedSimulations = [...simulations].sort((a, b) => {
-      const dataA = a[1].data;
-      const dataALength = dataA.length;
+    const minRetirementAge = Math.min(...retirementAges);
+    const maxRetirementAge = Math.max(...retirementAges);
+    const _retirementAgeRange = maxRetirementAge - minRetirementAge;
 
-      const dataB = b[1].data;
+    const minBankruptcyAge = Math.min(...bankruptcyAges);
+    const maxBankruptcyAge = Math.max(...bankruptcyAges);
+    const _bankruptcyAgeRange = maxBankruptcyAge - minBankruptcyAge;
+
+    const minAverageStockReturn = Math.min(...averageStockReturns);
+    const maxAverageStockReturn = Math.max(...averageStockReturns);
+    const _averageStockReturnRange = maxAverageStockReturn - minAverageStockReturn;
+
+    const minAverageBondReturn = Math.min(...averageBondReturns);
+    const maxAverageBondReturn = Math.max(...averageBondReturns);
+    const _averageBondReturnRange = maxAverageBondReturn - minAverageBondReturn;
+
+    const minAverageCashReturn = Math.min(...averageCashReturns);
+    const maxAverageCashReturn = Math.max(...averageCashReturns);
+    const _averageCashReturnRange = maxAverageCashReturn - minAverageCashReturn;
+
+    const minAverageInflationRate = Math.min(...averageInflationRates);
+    const maxAverageInflationRate = Math.max(...averageInflationRates);
+    const _averageInflationRateRange = maxAverageInflationRate - minAverageInflationRate;
+
+    const _sortedSimulations = [...simulations].sort((a, b) => {
+      const {
+        data: dataA,
+        context: { startAge },
+      } = a[1];
+      const { data: dataB } = b[1];
+
+      const dataALength = dataA.length;
       const dataBLength = dataB.length;
 
       if (dataALength !== dataBLength) console.warn('Simulations have different lengths');
+
+      const { retirementAge: _retirementAgeA, bankruptcyAge: _bankruptcyAgeA } = SimulationDataExtractor.getMilestonesData(dataA, startAge);
+      const { retirementAge: _retirementAgeB, bankruptcyAge: _bankruptcyAgeB } = SimulationDataExtractor.getMilestonesData(dataB, startAge);
+
+      const {
+        averageStockReturn: _averageStockReturnA,
+        averageBondReturn: _averageBondReturnA,
+        averageCashReturn: _averageCashReturnA,
+        averageInflationRate: _averageInflationRateA,
+      } = SimulationDataExtractor.getAverageReturns(dataA);
+      const {
+        averageStockReturn: _averageStockReturnB,
+        averageBondReturn: _averageBondReturnB,
+        averageCashReturn: _averageCashReturnB,
+        averageInflationRate: _averageInflationRateB,
+      } = SimulationDataExtractor.getAverageReturns(dataB);
 
       const lastDpA = dataA[dataALength - 1];
       const lastDpB = dataB[dataBLength - 1];
