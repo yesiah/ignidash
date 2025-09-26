@@ -42,6 +42,7 @@ export class MultiSimulationAnalyzer {
     finalPortfolioValue: 0.25,
     retirementAge: 0.25,
     bankruptcyAge: 0.25,
+    averageStockReturn: 0,
   } as const;
 
   analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
@@ -56,6 +57,7 @@ export class MultiSimulationAnalyzer {
     const { min: minFinalPortfolioValue, range: finalPortfolioValueRange } = this.getRange(tableData, (row) => row.finalPortfolioValue);
     const { min: minRetirementAge, range: retirementAgeRange } = this.getRange(tableData, (row) => row.retirementAge);
     const { min: minBankruptcyAge, range: bankruptcyAgeRange } = this.getRange(tableData, (row) => row.bankruptcyAge);
+    const { min: minAverageStockReturn, range: averageStockReturnRange } = this.getRange(tableData, (row) => row.averageStockReturn);
 
     const sortedSimulations = [...simulations].sort((a, b) => {
       const {
@@ -78,6 +80,12 @@ export class MultiSimulationAnalyzer {
       const normalizedBankruptcyAgeA = this.normalize(bankruptcyAgeA, minBankruptcyAge, bankruptcyAgeRange, 1);
       const normalizedBankruptcyAgeB = this.normalize(bankruptcyAgeB, minBankruptcyAge, bankruptcyAgeRange, 1);
 
+      const returnsA = SimulationDataExtractor.getAverageReturns(dataA);
+      const returnsB = SimulationDataExtractor.getAverageReturns(dataB);
+
+      const normalizedAverageStockReturnA = this.normalize(returnsA.averageStockReturn, minAverageStockReturn, averageStockReturnRange, 0);
+      const normalizedAverageStockReturnB = this.normalize(returnsB.averageStockReturn, minAverageStockReturn, averageStockReturnRange, 0);
+
       const lastDpA = dataA[dataALength - 1];
       const lastDpB = dataB[dataBLength - 1];
 
@@ -92,6 +100,7 @@ export class MultiSimulationAnalyzer {
         finalPortfolioValue: normalizedFinalPortfolioValueA,
         retirementAge: normalizedRetirementAgeA,
         bankruptcyAge: normalizedBankruptcyAgeA,
+        averageStockReturn: normalizedAverageStockReturnA,
       };
 
       const valuesB: NormalizedValues = {
@@ -99,6 +108,7 @@ export class MultiSimulationAnalyzer {
         finalPortfolioValue: normalizedFinalPortfolioValueB,
         retirementAge: normalizedRetirementAgeB,
         bankruptcyAge: normalizedBankruptcyAgeB,
+        averageStockReturn: normalizedAverageStockReturnB,
       };
 
       const scoreA = this.calculateScore(valuesA);
