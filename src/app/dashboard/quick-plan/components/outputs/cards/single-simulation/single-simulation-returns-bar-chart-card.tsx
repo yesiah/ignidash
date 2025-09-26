@@ -20,7 +20,7 @@ export default function SingleSimulationReturnsBarChartCard({
   let title;
   switch (dataView) {
     case 'rates':
-      title = 'Rates';
+      title = 'Real Rates';
       break;
     case 'annualAmounts':
       title = 'Annual Amounts';
