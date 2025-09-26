@@ -34,17 +34,8 @@ export interface MultiSimulationAnalysis {
 }
 
 export class MultiSimulationAnalyzer {
-  static readonly METRICS = {
-    finalPortfolioValue: { nullBehavior: 'bad' as const },
-    retirementAge: { nullBehavior: 'bad' as const },
-    bankruptcyAge: { nullBehavior: 'good' as const },
-    averageStockReturn: { nullBehavior: 'bad' as const },
-    averageBondReturn: { nullBehavior: 'bad' as const },
-    averageCashReturn: { nullBehavior: 'bad' as const },
-    averageInflationRate: { nullBehavior: 'good' as const, invert: true },
-  };
-
-  static readonly WEIGHTS: Record<keyof typeof MultiSimulationAnalyzer.METRICS, number> = {
+  static readonly WEIGHTS = {
+    success: 0.2,
     finalPortfolioValue: 0.2,
     retirementAge: 0.2,
     bankruptcyAge: 0.2,
@@ -52,7 +43,7 @@ export class MultiSimulationAnalyzer {
     averageBondReturn: 0.05,
     averageCashReturn: 0.025,
     averageInflationRate: 0.025,
-  };
+  } as const;
 
   analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
@@ -129,36 +120,25 @@ export class MultiSimulationAnalyzer {
       const successA = Number(retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1);
       const successB = Number(retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1);
 
-      const weights = {
-        success: 0.2,
-        finalPortfolioValue: 0.2,
-        retirementAge: 0.2,
-        bankruptcyAge: 0.2,
-        avgStockReturns: 0.1,
-        avgBondReturns: 0.05,
-        avgCashReturns: 0.025,
-        avgInflationRates: 0.025,
-      };
-
       const scoreA =
-        weights.success * successA +
-        weights.finalPortfolioValue * normalizedFinalPortfolioValueA +
-        weights.retirementAge * normalizedRetirementAgeA +
-        weights.bankruptcyAge * normalizedBankruptcyAgeA +
-        weights.avgStockReturns * normalizedAverageStockReturnA +
-        weights.avgBondReturns * normalizedAverageBondReturnA +
-        weights.avgCashReturns * normalizedAverageCashReturnA +
-        weights.avgInflationRates * normalizedAverageInflationRateA;
+        MultiSimulationAnalyzer.WEIGHTS.success * successA +
+        MultiSimulationAnalyzer.WEIGHTS.finalPortfolioValue * normalizedFinalPortfolioValueA +
+        MultiSimulationAnalyzer.WEIGHTS.retirementAge * normalizedRetirementAgeA +
+        MultiSimulationAnalyzer.WEIGHTS.bankruptcyAge * normalizedBankruptcyAgeA +
+        MultiSimulationAnalyzer.WEIGHTS.averageStockReturn * normalizedAverageStockReturnA +
+        MultiSimulationAnalyzer.WEIGHTS.averageBondReturn * normalizedAverageBondReturnA +
+        MultiSimulationAnalyzer.WEIGHTS.averageCashReturn * normalizedAverageCashReturnA +
+        MultiSimulationAnalyzer.WEIGHTS.averageInflationRate * normalizedAverageInflationRateA;
 
       const scoreB =
-        weights.success * successB +
-        weights.finalPortfolioValue * normalizedFinalPortfolioValueB +
-        weights.retirementAge * normalizedRetirementAgeB +
-        weights.bankruptcyAge * normalizedBankruptcyAgeB +
-        weights.avgStockReturns * normalizedAverageStockReturnB +
-        weights.avgBondReturns * normalizedAverageBondReturnB +
-        weights.avgCashReturns * normalizedAverageCashReturnB +
-        weights.avgInflationRates * normalizedAverageInflationRateB;
+        MultiSimulationAnalyzer.WEIGHTS.success * successB +
+        MultiSimulationAnalyzer.WEIGHTS.finalPortfolioValue * normalizedFinalPortfolioValueB +
+        MultiSimulationAnalyzer.WEIGHTS.retirementAge * normalizedRetirementAgeB +
+        MultiSimulationAnalyzer.WEIGHTS.bankruptcyAge * normalizedBankruptcyAgeB +
+        MultiSimulationAnalyzer.WEIGHTS.averageStockReturn * normalizedAverageStockReturnB +
+        MultiSimulationAnalyzer.WEIGHTS.averageBondReturn * normalizedAverageBondReturnB +
+        MultiSimulationAnalyzer.WEIGHTS.averageCashReturn * normalizedAverageCashReturnB +
+        MultiSimulationAnalyzer.WEIGHTS.averageInflationRate * normalizedAverageInflationRateB;
 
       return scoreA - scoreB;
     });
