@@ -102,4 +102,5 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   taxDeferred: number;
   taxFree: number;
   cashSavings: number;
+  withdrawalRate: number | null;
 }

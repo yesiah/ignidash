@@ -746,6 +746,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
         taxDeferred,
         taxFree,
         cashSavings,
+        withdrawalRate: null,
       };
     });
   }, [simulation]);

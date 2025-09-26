@@ -275,6 +275,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const netIncome = grossIncome - incomeTax;
   const netCashFlow = netIncome - totalExpenses;
+  const withdrawalRate = totalValue + totalWithdrawals > 0 ? (Math.abs(totalWithdrawals) / (totalValue + totalWithdrawals)) * 100 : null;
 
   return (
     <Card className="my-0">
@@ -293,7 +294,9 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionDetails className="font-bold">{formatNumber(totalWithdrawals, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Withdrawal Rate</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{`${formatNumber((Math.abs(totalWithdrawals) / (totalValue + totalWithdrawals)) * 100, 1)}%`}</DescriptionDetails>
+        <DescriptionDetails className="font-bold">
+          {withdrawalRate !== null ? `${formatNumber(withdrawalRate, 1)}%` : 'N/A'}
+        </DescriptionDetails>
       </DescriptionList>
     </Card>
   );
