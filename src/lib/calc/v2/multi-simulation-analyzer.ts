@@ -64,8 +64,10 @@ export class MultiSimulationAnalyzer {
       const lastDpA = dataA[dataALength - 1];
       const lastDpB = dataB[dataBLength - 1];
 
-      const normalizedFinalPortfolioValueA = (lastDpA.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange;
-      const normalizedFinalPortfolioValueB = (lastDpB.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange;
+      const normalizedFinalPortfolioValueA =
+        finalPortfolioValueRange !== 0 ? (lastDpA.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange : 0.5;
+      const normalizedFinalPortfolioValueB =
+        finalPortfolioValueRange !== 0 ? (lastDpB.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange : 0.5;
 
       return normalizedFinalPortfolioValueA - normalizedFinalPortfolioValueB;
     });
