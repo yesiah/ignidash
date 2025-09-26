@@ -434,11 +434,12 @@ export const useMultiSimulationResult = (
   const sortMode = useMonteCarloSortMode();
 
   const worker = getSimulationWorker();
+  const swrOptions = { revalidateOnFocus: false, keepPreviousData: true } as const;
 
   const { data: handleData } = useSWR(
     ['simulationHandle', inputs, simulationSeed, simulationMode],
     async () => worker.runSimulation(inputs, simulationSeed, 1000, simulationMode),
-    { revalidateOnFocus: false }
+    swrOptions
   );
 
   const handle = handleData?.handle;
@@ -446,7 +447,7 @@ export const useMultiSimulationResult = (
   const { data: { analysis, tableData, yearlyTableData } = {} } = useSWR(
     handle ? ['derived', handle, sortMode] : null,
     async () => worker.getDerivedMultiSimulationData(handle!, sortMode),
-    { revalidateOnFocus: false }
+    swrOptions
   );
 
   return { analysis, tableData, yearlyTableData };
