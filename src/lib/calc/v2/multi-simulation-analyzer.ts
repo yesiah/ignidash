@@ -117,8 +117,8 @@ export class MultiSimulationAnalyzer {
 
       if (dataALength !== dataBLength) console.warn('Simulations have different lengths');
 
-      const { retirementAge: _retirementAgeA, bankruptcyAge: _bankruptcyAgeA } = SimulationDataExtractor.getMilestonesData(dataA, startAge);
-      const { retirementAge: _retirementAgeB, bankruptcyAge: _bankruptcyAgeB } = SimulationDataExtractor.getMilestonesData(dataB, startAge);
+      const { retirementAge: retirementAgeA, bankruptcyAge: _bankruptcyAgeA } = SimulationDataExtractor.getMilestonesData(dataA, startAge);
+      const { retirementAge: retirementAgeB, bankruptcyAge: _bankruptcyAgeB } = SimulationDataExtractor.getMilestonesData(dataB, startAge);
 
       const {
         averageStockReturn: _averageStockReturnA,
@@ -140,6 +140,9 @@ export class MultiSimulationAnalyzer {
         finalPortfolioValueRange !== 0 ? (lastDpA.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange : 0.5;
       const normalizedFinalPortfolioValueB =
         finalPortfolioValueRange !== 0 ? (lastDpB.portfolio.totalValue - minFinalPortfolioValue) / finalPortfolioValueRange : 0.5;
+
+      const _successA = retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1;
+      const _successB = retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1;
 
       return normalizedFinalPortfolioValueA - normalizedFinalPortfolioValueB;
     });
