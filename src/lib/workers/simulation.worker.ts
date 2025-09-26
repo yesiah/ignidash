@@ -17,7 +17,8 @@ const simulationAPI = {
     inputs: QuickPlanInputs,
     baseSeed: number,
     numSimulations: number,
-    simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
+    simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
+    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
   ): Promise<{ analysis: MultiSimulationAnalysis; tableData: MultiSimulationTableRow[]; yearlyTableData: YearlyAggregateTableRow[] }> {
     let res: MultiSimulationResult;
     switch (simulationMode) {
@@ -34,7 +35,7 @@ const simulationAPI = {
     }
 
     const analyzer = new MultiSimulationAnalyzer();
-    const analysis = analyzer.analyzeV2(res);
+    const analysis = analyzer.analyzeV2(res, sortMode);
 
     const extractor = new TableDataExtractor();
     const tableData = extractor.extractMultiSimulationData(res, SimulationCategory.Portfolio);

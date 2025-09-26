@@ -33,19 +33,35 @@ export interface MultiSimulationAnalysis {
   results: Percentiles<SimulationResult>;
 }
 
-type WeightKey = keyof typeof MultiSimulationAnalyzer.WEIGHTS;
-type NormalizedValues = Record<WeightKey, number>;
+type MetricKey = 'success' | 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn';
+type NormalizedValues = Record<MetricKey, number>;
 
 export class MultiSimulationAnalyzer {
-  static readonly WEIGHTS = {
-    success: 0.25,
-    finalPortfolioValue: 0.25,
-    retirementAge: 0.25,
-    bankruptcyAge: 0.25,
-    averageStockReturn: 0,
-  } as const;
+  private static buildWeights(sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn') {
+    const base: Record<MetricKey, number> = {
+      success: 0.25,
+      finalPortfolioValue: 0.25,
+      retirementAge: 0.25,
+      bankruptcyAge: 0.25,
+      averageStockReturn: 0,
+    };
 
-  analyzeV2(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {
+    switch (sortMode) {
+      case 'retirementAge':
+        return { ...base, retirementAge: 1, success: 0, finalPortfolioValue: 0, bankruptcyAge: 0, averageStockReturn: 0 };
+      case 'finalPortfolioValue':
+        return { ...base, finalPortfolioValue: 1, success: 0, retirementAge: 0, bankruptcyAge: 0, averageStockReturn: 0 };
+      case 'bankruptcyAge':
+        return { ...base, bankruptcyAge: 1, success: 0, finalPortfolioValue: 0, retirementAge: 0, averageStockReturn: 0 };
+      case 'averageStockReturn':
+        return { ...base, averageStockReturn: 1, success: 0, finalPortfolioValue: 0, retirementAge: 0, bankruptcyAge: 0 };
+    }
+  }
+
+  analyzeV2(
+    multiSimulationResult: MultiSimulationResult,
+    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
+  ): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
     const numDataPoints = simulations[0][1]?.data.length;
@@ -58,6 +74,8 @@ export class MultiSimulationAnalyzer {
     const { min: minRetirementAge, range: retirementAgeRange } = this.getRange(tableData, (row) => row.retirementAge);
     const { min: minBankruptcyAge, range: bankruptcyAgeRange } = this.getRange(tableData, (row) => row.bankruptcyAge);
     const { min: minAverageStockReturn, range: averageStockReturnRange } = this.getRange(tableData, (row) => row.averageStockReturn);
+
+    const weights = MultiSimulationAnalyzer.buildWeights(sortMode);
 
     const sortedSimulations = [...simulations].sort((a, b) => {
       const {
@@ -111,8 +129,8 @@ export class MultiSimulationAnalyzer {
         averageStockReturn: normalizedAverageStockReturnB,
       };
 
-      const scoreA = this.calculateScore(valuesA);
-      const scoreB = this.calculateScore(valuesB);
+      const scoreA = this.calculateScore(valuesA, weights);
+      const scoreB = this.calculateScore(valuesB, weights);
 
       return scoreA - scoreB;
     });
@@ -146,11 +164,8 @@ export class MultiSimulationAnalyzer {
     return Math.max(0, Math.min(1, norm));
   }
 
-  private calculateScore(values: NormalizedValues): number {
-    return (Object.keys(MultiSimulationAnalyzer.WEIGHTS) as WeightKey[]).reduce(
-      (sum, key) => sum + MultiSimulationAnalyzer.WEIGHTS[key] * values[key],
-      0
-    );
+  private calculateScore(values: NormalizedValues, weights: Record<MetricKey, number>): number {
+    return (Object.keys(weights) as MetricKey[]).reduce((sum, key) => sum + weights[key] * values[key], 0);
   }
 
   analyze(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {

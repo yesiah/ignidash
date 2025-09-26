@@ -48,6 +48,7 @@ interface QuickPlanState {
       | 'historicalReturns'
       | 'monteCarloStochasticReturns'
       | 'monteCarloHistoricalReturns';
+    monteCarloSortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn';
   };
 
   actions: {
@@ -80,6 +81,7 @@ interface QuickPlanState {
     updateSimulationSeed: () => void;
     updateSidebarCollapsed: (value: boolean) => void;
     updateSimulationMode: (value: QuickPlanState['preferences']['simulationMode']) => void;
+    updateMonteCarloSortMode: (value: QuickPlanState['preferences']['monteCarloSortMode']) => void;
 
     resetStore: () => void;
   };
@@ -101,6 +103,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     simulationSeed: Math.floor(Math.random() * 1000),
     sidebarCollapsed: false,
     simulationMode: 'fixedReturns',
+    monteCarloSortMode: 'finalPortfolioValue',
   },
 };
 
@@ -257,6 +260,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             set((state) => {
               state.preferences.simulationMode = value;
             }),
+          updateMonteCarloSortMode: (value) =>
+            set((state) => {
+              state.preferences.monteCarloSortMode = value;
+            }),
           resetStore: () =>
             set((state) => {
               state.inputs = { ...defaultState.inputs };
@@ -352,6 +359,7 @@ export const useUpdateShowReferenceLines = () => useQuickPlanStore((state) => st
 export const useUpdateSimulationSeed = () => useQuickPlanStore((state) => state.actions.updateSimulationSeed);
 export const useUpdateSidebarCollapsed = () => useQuickPlanStore((state) => state.actions.updateSidebarCollapsed);
 export const useUpdateSimulationMode = () => useQuickPlanStore((state) => state.actions.updateSimulationMode);
+export const useUpdateMonteCarloSortMode = () => useQuickPlanStore((state) => state.actions.updateMonteCarloSortMode);
 
 /**
  * Preferences selectors
@@ -362,6 +370,7 @@ export const useShowReferenceLines = () => useQuickPlanStore((state) => state.pr
 export const useSimulationSeed = () => useQuickPlanStore((state) => state.preferences.simulationSeed);
 export const useSidebarCollapsed = () => useQuickPlanStore((state) => state.preferences.sidebarCollapsed);
 export const useSimulationMode = () => useQuickPlanStore((state) => state.preferences.simulationMode);
+export const useMonteCarloSortMode = () => useQuickPlanStore((state) => state.preferences.monteCarloSortMode);
 
 /**
  * Utility selectors
@@ -414,10 +423,11 @@ export const useSimulationResult = (
 export const useMultiSimulationResult = (simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns') => {
   const inputs = useQuickPlanStore((state) => state.inputs);
   const simulationSeed = useSimulationSeed();
+  const sortMode = useMonteCarloSortMode();
 
   return useSWR(
     [inputs, simulationSeed, simulationMode],
-    async () => await getSimulationWorker().analyzeMonteCarloSimulation(inputs, simulationSeed, 1000, simulationMode),
+    async () => await getSimulationWorker().analyzeMonteCarloSimulation(inputs, simulationSeed, 1000, simulationMode, sortMode),
     { revalidateOnFocus: false }
   );
 };
