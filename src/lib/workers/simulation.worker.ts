@@ -12,7 +12,8 @@ import {
   type MultiSimulationResult,
 } from '@/lib/calc/v2/simulation-engine';
 
-const simulationCache = new Map<string, MultiSimulationResult>();
+type CacheEntry = { handle: string; res: MultiSimulationResult };
+let cache: CacheEntry | null = null;
 
 const simulationAPI = {
   async runSimulation(
@@ -21,7 +22,7 @@ const simulationAPI = {
     numSimulations: number,
     simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
   ): Promise<{ handle: string }> {
-    const key = uuidv4();
+    const handle = uuidv4();
 
     let res: MultiSimulationResult;
     switch (simulationMode) {
@@ -37,16 +38,16 @@ const simulationAPI = {
       }
     }
 
-    simulationCache.set(key, res);
-    return { handle: key };
+    cache = { handle, res };
+    return { handle };
   },
 
   async getDerivedMultiSimulationData(
     handle: string,
     sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
   ): Promise<{ analysis: MultiSimulationAnalysis; tableData: MultiSimulationTableRow[]; yearlyTableData: YearlyAggregateTableRow[] }> {
-    const res = simulationCache.get(handle);
-    if (!res) throw new Error('Simulation not found');
+    if (!cache || cache.handle !== handle) throw new Error('Simulation not found');
+    const { res } = cache;
 
     const analyzer = new MultiSimulationAnalyzer();
     const analysis = analyzer.analyzeV2(res, sortMode);
@@ -58,8 +59,8 @@ const simulationAPI = {
     return { analysis, tableData, yearlyTableData };
   },
 
-  async clear(handle: string): Promise<void> {
-    simulationCache.delete(handle);
+  async clear(): Promise<void> {
+    cache = null;
   },
 };
 
