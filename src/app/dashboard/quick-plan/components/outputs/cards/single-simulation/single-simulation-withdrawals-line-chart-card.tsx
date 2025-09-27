@@ -14,8 +14,8 @@ import SingleSimulationWithdrawalsLineChart from '../../charts/single-simulation
 interface SingleSimulationWithdrawalsLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom') => void;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  setDataView: (view: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom') => void;
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom';
   setCustomDataID: (name: string) => void;
   customDataID: string;
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
@@ -59,12 +59,15 @@ export default function SingleSimulationWithdrawalsLineChartCard({
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =
-              e.target.value !== 'annualAmounts' && e.target.value !== 'totalAmounts' && e.target.value !== 'taxCategory';
+              e.target.value !== 'annualAmounts' &&
+              e.target.value !== 'totalAmounts' &&
+              e.target.value !== 'taxCategory' &&
+              e.target.value !== 'withdrawalRate';
             if (isCustomSelection) {
               setDataView('custom');
               setCustomDataID(e.target.value);
             } else {
-              setDataView(e.target.value as 'annualAmounts' | 'totalAmounts' | 'taxCategory');
+              setDataView(e.target.value as 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate');
               setCustomDataID('');
             }
           }}
@@ -72,6 +75,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
           <option value="taxCategory">Tax Category</option>
           <option value="annualAmounts">Annual Withdrawals</option>
           <option value="totalAmounts">Total Withdrawals</option>
+          <option value="withdrawalRate">Withdrawal Rate</option>
           <optgroup label="By Account">
             {uniqueAccounts.map((account) => (
               <option key={account.id} value={account.id}>

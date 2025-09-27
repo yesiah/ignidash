@@ -47,7 +47,7 @@ const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--cha
 
 interface SingleSimulationWithdrawalsBarChartProps {
   age: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom';
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
   customDataID: string;
 }
@@ -91,6 +91,8 @@ export default function SingleSimulationWithdrawalsBarChart({
         { name: 'Tax Free Withdrawals', amount: item.taxFree },
         { name: 'Cash Savings Withdrawals', amount: item.cashSavings },
       ]);
+      break;
+    case 'withdrawalRate':
       break;
     case 'custom':
       if (!customDataID) {

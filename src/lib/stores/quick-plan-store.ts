@@ -740,6 +740,8 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
       const currDateYear = new Date(data.date).getFullYear();
 
       const portfolioData = data.portfolio;
+      const totalValue = portfolioData.totalValue;
+      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
       let cashSavings = 0;
       let taxableBrokerage = 0;
@@ -766,6 +768,8 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
         }
       }
 
+      const withdrawalRate = totalValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalValue + annualWithdrawals)) * 100 : null;
+
       return {
         age: currDateYear - startDateYear + startAge,
         totalWithdrawals: portfolioData.totalWithdrawals,
@@ -777,7 +781,7 @@ export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationRe
         taxDeferred,
         taxFree,
         cashSavings,
-        withdrawalRate: null,
+        withdrawalRate,
       };
     });
   }, [simulation]);

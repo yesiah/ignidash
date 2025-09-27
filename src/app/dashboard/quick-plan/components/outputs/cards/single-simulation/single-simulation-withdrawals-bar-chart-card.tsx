@@ -9,7 +9,7 @@ import SingleSimulationWithdrawalsBarChart from '../../charts/single-simulation/
 interface SingleSimulationWithdrawalsBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom';
   customDataID: string;
 }
 
@@ -29,6 +29,9 @@ export default function SingleSimulationWithdrawalsBarChartCard({
       break;
     case 'taxCategory':
       title = 'By Tax Category';
+      break;
+    case 'withdrawalRate':
+      title = 'Withdrawal Rate';
       break;
     case 'custom':
       title = 'Custom Account';

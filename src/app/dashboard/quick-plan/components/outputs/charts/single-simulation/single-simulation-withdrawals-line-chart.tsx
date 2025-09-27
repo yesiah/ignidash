@@ -23,7 +23,7 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -33,6 +33,15 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   const yearForAge = currentYear + (label! - startAge);
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
+  const formatValue = (value: number, mode: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom') => {
+    switch (mode) {
+      case 'withdrawalRate':
+        return `${value.toFixed(2)}%`;
+      default:
+        return formatNumber(value, 1, '$');
+    }
+  };
 
   let tooltipFooterComponent = null;
   if (dataView === 'taxCategory') {
@@ -64,7 +73,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+            <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
           </p>
         ))}
       </div>
@@ -81,7 +90,7 @@ interface SingleSimulationWithdrawalsLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'withdrawalRate' | 'custom';
   customDataID: string;
   startAge: number;
 }
@@ -112,15 +121,23 @@ export default function SingleSimulationWithdrawalsLineChart({
 
   const dataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
   const yAxisDomain: [number, number] | undefined = undefined;
+  let formatter = undefined;
   switch (dataView) {
     case 'annualAmounts':
       dataKeys.push('annualWithdrawals');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'totalAmounts':
       dataKeys.push('totalWithdrawals');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'taxCategory':
       dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'withdrawalRate':
+      dataKeys.push('withdrawalRate');
+      formatter = (value: number) => `${value.toFixed(2)}%`;
       break;
     case 'custom':
       if (!customDataID) {
@@ -138,6 +155,7 @@ export default function SingleSimulationWithdrawalsLineChart({
 
       chartData = perAccountData;
       dataKeys.push('annualWithdrawals', 'totalWithdrawals');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
   }
 
@@ -178,7 +196,7 @@ export default function SingleSimulationWithdrawalsLineChart({
               tick={{ fill: foregroundMutedColor }}
               axisLine={false}
               hide={isSmallScreen}
-              tickFormatter={(value: number) => formatNumber(value, 1, '$')}
+              tickFormatter={formatter}
               domain={yAxisDomain}
             />
             {dataKeys.map((dataKey, index) => (
