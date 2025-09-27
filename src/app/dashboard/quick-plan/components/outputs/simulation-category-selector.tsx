@@ -60,7 +60,7 @@ export default function SimulationCategorySelector({
         <div className="border-border/50 flex shrink-0 border-l sm:gap-1.5 sm:px-2">
           <Dropdown>
             <DropdownButton plain aria-label="Open sort mode options" disabled={!!selectedSeed}>
-              <ArrowUpDownIcon />
+              <ArrowUpDownIcon data-slot="icon" />
             </DropdownButton>
             <DropdownMenu>
               <DropdownHeader>
@@ -77,7 +77,7 @@ export default function SimulationCategorySelector({
           </Dropdown>
           <Dropdown>
             <DropdownButton plain aria-label="Open options" disabled={!!selectedSeed}>
-              <ListFilterIcon />
+              <ListFilterIcon data-slot="icon" />
             </DropdownButton>
             <DropdownMenu>
               {percentiles.map((percentile) => (
