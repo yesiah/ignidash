@@ -254,14 +254,14 @@ function SingleSimulationChartsSection({
 
   let headerText: string | React.ReactNode;
   if (selectedSeed && setSelectedSeed) {
-    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="Data Visualization" />;
+    headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="Charts" />;
   } else {
-    headerText = 'Data Visualization';
+    headerText = 'Charts';
   }
 
   return (
     <SectionContainer showBottomBorder>
-      <SectionHeader title={headerText} desc="Interactive charts to explore your projection." className="mb-4" />
+      <SectionHeader title={headerText} desc="Interactive charts to explore your simulation." className="mb-4" />
       <div className="grid grid-cols-1 gap-2 @[92rem]:grid-cols-2">
         {chartsComponents}
         <div className="@[92rem]:col-span-2">
