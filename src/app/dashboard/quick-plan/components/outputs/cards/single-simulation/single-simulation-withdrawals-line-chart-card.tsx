@@ -54,8 +54,8 @@ export default function SingleSimulationWithdrawalsLineChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="withdrawals-data-view"
+          name="withdrawals-data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =

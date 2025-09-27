@@ -39,8 +39,8 @@ export default function SingleSimulationReturnsLineChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="returns-data-view"
+          name="returns-data-view"
           value={dataView}
           onChange={(e) => setDataView(e.target.value as 'rates' | 'annualAmounts' | 'totalAmounts')}
         >

@@ -58,8 +58,8 @@ export default function SingleSimulationCashFlowLineChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="cash-flow-data-view"
+          name="cash-flow-data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =

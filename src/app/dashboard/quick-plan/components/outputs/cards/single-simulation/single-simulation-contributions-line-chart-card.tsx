@@ -54,8 +54,8 @@ export default function SingleSimulationContributionsLineChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="contributions-data-view"
+          name="contributions-data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =

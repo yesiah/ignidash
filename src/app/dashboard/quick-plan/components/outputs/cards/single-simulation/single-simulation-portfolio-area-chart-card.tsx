@@ -54,8 +54,8 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="portfolio-data-view"
+          name="portfolio-data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection = e.target.value !== 'assetClass' && e.target.value !== 'taxCategory';

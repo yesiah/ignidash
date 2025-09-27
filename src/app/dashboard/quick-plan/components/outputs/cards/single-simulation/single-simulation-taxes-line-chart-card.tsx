@@ -39,8 +39,8 @@ export default function SingleSimulationTaxesLineChartCard({
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="data-view"
-          name="data-view"
+          id="taxes-data-view"
+          name="taxes-data-view"
           value={dataView}
           onChange={(e) =>
             setDataView(
