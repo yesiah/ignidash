@@ -11,6 +11,7 @@ import type { MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-ana
 import { FixedReturnsProvider } from '@/lib/calc/returns-providers/fixed-returns-provider';
 import { StochasticReturnsProvider } from '@/lib/calc/returns-providers/stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/returns-providers/lcg-historical-backtest-returns-provider';
+import { ChartDataExtractor } from '@/lib/calc/v2/chart-data-extractor';
 import { TableDataExtractor } from '@/lib/calc/v2/table-data-extractor';
 import { getSimulationWorker } from '@/lib/workers/simulation-worker-api';
 import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
@@ -524,266 +525,43 @@ export const useKeyMetrics = (simulationResult: SimulationResult | null | undefi
  */
 export const useSingleSimulationPortfolioChartData = (simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const portfolioData = data.portfolio;
-      const totalValue = portfolioData.totalValue;
-
-      const assetAllocation = portfolioData.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
-      const stocksAllocation = assetAllocation.stocks;
-      const bondsAllocation = assetAllocation.bonds;
-      const cashAllocation = assetAllocation.cash;
-
-      let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
-
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case 'savings':
-            cashSavings += account.totalValue;
-            break;
-          case 'taxableBrokerage':
-            taxableBrokerage += account.totalValue;
-            break;
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferred += account.totalValue;
-            break;
-          case 'roth401k':
-          case 'rothIra':
-            taxFree += account.totalValue;
-            break;
-        }
-      }
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        stocks: totalValue * stocksAllocation,
-        bonds: totalValue * bondsAllocation,
-        cash: totalValue * cashAllocation,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
-        perAccountData: Object.values(portfolioData.perAccountData),
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationPortfolioChartData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationCashFlowChartData = (simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.slice(1).map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const portfolioData = data.portfolio;
-
-      let taxDeferredWithdrawals = 0;
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferredWithdrawals += account.withdrawalsForPeriod;
-            break;
-          default:
-            break;
-        }
-      }
-
-      const incomesData = data.incomes!;
-      const expensesData = data.expenses!;
-      const taxesData = data.taxes!;
-
-      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
-      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-      const expenses = expensesData?.totalExpenses ?? 0;
-      const netIncome = grossIncome - incomeTax;
-      const netCashFlow = netIncome - expenses;
-      const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        perIncomeData: Object.values(incomesData.perIncomeData),
-        perExpenseData: Object.values(expensesData.perExpenseData),
-        ordinaryIncome,
-        taxDeferredWithdrawals,
-        grossIncome,
-        incomeTax,
-        expenses,
-        netIncome,
-        netCashFlow,
-        savingsRate,
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationCashFlowChartData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationTaxesChartData = (simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.slice(1).map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const taxesData = data.taxes!;
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        taxableOrdinaryIncome: taxesData.incomeTaxes.taxableOrdinaryIncome,
-        incomeTaxAmount: taxesData.incomeTaxes.incomeTaxAmount,
-        effectiveIncomeTaxRate: taxesData.incomeTaxes.effectiveIncomeTaxRate,
-        topMarginalIncomeTaxRate: taxesData.incomeTaxes.topMarginalTaxRate,
-        netIncome: taxesData.incomeTaxes.netIncome,
-        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction,
-        taxableCapGains: taxesData.capitalGainsTaxes.taxableCapitalGains,
-        capGainsTaxAmount: taxesData.capitalGainsTaxes.capitalGainsTaxAmount,
-        effectiveCapGainsTaxRate: taxesData.capitalGainsTaxes.effectiveCapitalGainsTaxRate,
-        topMarginalCapGainsTaxRate: taxesData.capitalGainsTaxes.topMarginalCapitalGainsTaxRate,
-        netCapGains: taxesData.capitalGainsTaxes.netCapitalGains,
-        totalTaxableIncome: taxesData.totalTaxableIncome,
-        totalTaxesAmount: taxesData.incomeTaxes.incomeTaxAmount + taxesData.capitalGainsTaxes.capitalGainsTaxAmount,
-        totalNetIncome: taxesData.incomeTaxes.netIncome + taxesData.capitalGainsTaxes.netCapitalGains,
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationTaxesChartData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationReturnsChartData = (simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.slice(1).map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const returnsData = data.returns!;
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        stocksRate: returnsData.annualReturnRates.stocks,
-        bondsRate: returnsData.annualReturnRates.bonds,
-        cashRate: returnsData.annualReturnRates.cash,
-        inflationRate: returnsData.annualInflationRate,
-        totalStocksAmount: returnsData.totalReturnAmounts.stocks,
-        totalBondsAmount: returnsData.totalReturnAmounts.bonds,
-        totalCashAmount: returnsData.totalReturnAmounts.cash,
-        stocksAmount: returnsData.returnAmountsForPeriod.stocks,
-        bondsAmount: returnsData.returnAmountsForPeriod.bonds,
-        cashAmount: returnsData.returnAmountsForPeriod.cash,
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationReturnsChartData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationContributionsChartData = (simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.slice(1).map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const portfolioData = data.portfolio;
-
-      let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
-
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case 'savings':
-            cashSavings += account.contributionsForPeriod;
-            break;
-          case 'taxableBrokerage':
-            taxableBrokerage += account.contributionsForPeriod;
-            break;
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferred += account.contributionsForPeriod;
-            break;
-          case 'roth401k':
-          case 'rothIra':
-            taxFree += account.contributionsForPeriod;
-            break;
-        }
-      }
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        totalContributions: portfolioData.totalContributions,
-        annualContributions: portfolioData.contributionsForPeriod,
-        perAccountData: Object.values(portfolioData.perAccountData),
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationContributionsChartData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] => {
   return useMemo(() => {
-    return simulation.data.slice(1).map((data) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(data.date).getFullYear();
-
-      const portfolioData = data.portfolio;
-      const totalValue = portfolioData.totalValue;
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
-
-      let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
-
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case 'savings':
-            cashSavings += account.withdrawalsForPeriod;
-            break;
-          case 'taxableBrokerage':
-            taxableBrokerage += account.withdrawalsForPeriod;
-            break;
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferred += account.withdrawalsForPeriod;
-            break;
-          case 'roth401k':
-          case 'rothIra':
-            taxFree += account.withdrawalsForPeriod;
-            break;
-        }
-      }
-
-      const withdrawalRate = totalValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalValue + annualWithdrawals)) * 100 : null;
-
-      return {
-        age: currDateYear - startDateYear + startAge,
-        totalWithdrawals: portfolioData.totalWithdrawals,
-        annualWithdrawals: portfolioData.withdrawalsForPeriod,
-        totalRealizedGains: portfolioData.totalRealizedGains,
-        annualRealizedGains: portfolioData.realizedGainsForPeriod,
-        perAccountData: Object.values(portfolioData.perAccountData),
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
-        withdrawalRate,
-      };
-    });
+    const extractor = new ChartDataExtractor();
+    return extractor.extractSingleSimulationWithdrawalsChartData(simulation);
   }, [simulation]);
 };
 
