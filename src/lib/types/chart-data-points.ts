@@ -81,6 +81,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   totalAnnualTaxAmount: number;
   totalTaxAmount: number;
   totalNetIncome: number;
+  adjustments: Record<string, number>;
+  deductions: Record<string, number>;
 }
 
 export interface SingleSimulationContributionsChartDataPoint {

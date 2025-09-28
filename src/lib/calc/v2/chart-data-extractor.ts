@@ -154,6 +154,8 @@ export class ChartDataExtractor {
         totalAnnualTaxAmount,
         totalTaxAmount,
         totalNetIncome: taxesData.incomeTaxes.netIncome + taxesData.capitalGainsTaxes.netCapitalGains,
+        adjustments: taxesData.adjustments,
+        deductions: taxesData.deductions,
       };
     });
   }

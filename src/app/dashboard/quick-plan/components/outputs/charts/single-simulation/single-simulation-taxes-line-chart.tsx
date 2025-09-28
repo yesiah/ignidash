@@ -9,6 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import { Divider } from '@/components/catalyst/divider';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -59,7 +60,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     case 'annualAmounts':
     case 'totalAmounts':
     case 'netIncome':
-    case 'taxableIncome':
       totalFooter = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
@@ -71,6 +71,34 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             )}
           </span>
         </p>
+      );
+      break;
+    case 'taxableIncome':
+      const entry = payload[0].payload;
+
+      const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
+        <p key={name} className="flex justify-between text-sm font-semibold">
+          <span className="mr-2">{`${formatChartString(name)}:`}</span>
+          <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
+        </p>
+      ));
+
+      totalFooter = (
+        <div className="mx-1 mt-2 flex flex-col gap-2">
+          <Divider />
+          {adjustments}
+          <Divider />
+          <p className="flex justify-between text-sm font-semibold">
+            <span className="mr-2">Total:</span>
+            <span className="ml-1 font-semibold">
+              {formatNumber(
+                payload.reduce((sum, item) => sum + item.value, 0),
+                3,
+                '$'
+              )}
+            </span>
+          </p>
+        </div>
       );
       break;
   }
