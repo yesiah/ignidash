@@ -135,8 +135,30 @@ export class ChartDataExtractor {
       totalCapGainsTaxAmount += annualCapGainsTaxAmount;
       totalTaxAmount += totalAnnualTaxAmount;
 
+      const portfolioData = data.portfolio;
+
+      let annualTaxDeferredWithdrawals = 0;
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
+            break;
+          default:
+            break;
+        }
+      }
+
+      const incomesData = data.incomes;
+
+      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+      const annualRealizedGains = portfolioData.realizedGainsForPeriod;
+      const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals + annualRealizedGains;
+
       return {
         age: currDateYear - startDateYear + startAge,
+        grossIncome,
         taxableOrdinaryIncome: taxesData.incomeTaxes.taxableOrdinaryIncome,
         annualIncomeTaxAmount,
         totalIncomeTaxAmount,

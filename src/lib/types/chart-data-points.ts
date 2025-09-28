@@ -64,6 +64,7 @@ export interface SingleSimulationReturnsChartDataPoint {
 
 export interface SingleSimulationTaxesChartDataPoint {
   age: number;
+  grossIncome: number;
   taxableOrdinaryIncome: number;
   annualIncomeTaxAmount: number;
   totalIncomeTaxAmount: number;

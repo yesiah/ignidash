@@ -93,6 +93,11 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
 
       header = (
         <div className="mx-1 mb-2 flex flex-col gap-2">
+          <p className="flex justify-between text-sm font-semibold">
+            <span className="mr-2">Gross Income:</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+          </p>
+          <Divider />
           <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
           {adjustments}
           <Divider />
