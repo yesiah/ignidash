@@ -27,6 +27,8 @@ export interface TaxesData {
   totalTaxesDue: number;
   totalTaxesRefund: number;
   totalTaxableIncome: number;
+  adjustments: Record<string, number>;
+  deductions: Record<string, number>;
 }
 
 const STANDARD_DEDUCTION_SINGLE = 15000;
@@ -51,7 +53,10 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData): TaxesData {
-    const { grossOrdinaryIncome } = this.getGrossOrdinaryIncome(annualPortfolioDataBeforeTaxes, annualIncomesData);
+    const { grossOrdinaryIncome, taxDeferredContributions } = this.getGrossOrdinaryIncome(
+      annualPortfolioDataBeforeTaxes,
+      annualIncomesData
+    );
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
@@ -94,6 +99,8 @@ export class TaxProcessor {
       totalTaxesDue: difference > 0 ? difference : 0,
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
       totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
+      adjustments: { taxDeferredContributions, capitalLossDeduction },
+      deductions: { standardDeduction: STANDARD_DEDUCTION_SINGLE },
     };
   }
 
@@ -136,13 +143,16 @@ export class TaxProcessor {
   private getGrossOrdinaryIncome(
     annualPortfolioDataBeforeTaxes: PortfolioData,
     annualIncomesData: IncomesData
-  ): { grossOrdinaryIncome: number } {
+  ): { grossOrdinaryIncome: number; taxDeferredContributions: number } {
     const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
     const grossIncomeFromTaxDeferredWithdrawals = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira']);
 
     const taxDeferredContributions = this.getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
 
-    return { grossOrdinaryIncome: grossIncomeFromIncomes + grossIncomeFromTaxDeferredWithdrawals - taxDeferredContributions };
+    return {
+      grossOrdinaryIncome: grossIncomeFromIncomes + grossIncomeFromTaxDeferredWithdrawals - taxDeferredContributions,
+      taxDeferredContributions,
+    };
   }
 
   private getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData, accountTypes: AccountInputs['type'][]): number {
