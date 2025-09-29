@@ -76,7 +76,7 @@ export default function SingleSimulationTaxesBarChartCard({
         age={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
-        referenceLineMode={currReferenceLineMode}
+        referenceLineMode={dataView === 'taxableIncome' ? currReferenceLineMode : null}
       />
     </Card>
   );

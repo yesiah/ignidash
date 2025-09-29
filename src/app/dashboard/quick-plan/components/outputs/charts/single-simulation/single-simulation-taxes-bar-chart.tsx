@@ -68,7 +68,7 @@ interface SingleSimulationTaxesBarChartProps {
   age: number;
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
+  referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
 }
 
 export default function SingleSimulationTaxesBarChart({
@@ -83,7 +83,7 @@ export default function SingleSimulationTaxesBarChart({
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let formatter = undefined;
-  let transformedChartData: { name: string; amount: number }[] = [];
+  let transformedChartData: { name: string; [key: string]: number | string }[] = [];
   let dataKeys: string[] = ['amount'];
   switch (dataView) {
     case 'marginalRates':
@@ -125,13 +125,13 @@ export default function SingleSimulationTaxesBarChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'taxableIncome':
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Taxable Ordinary Income', amount: item.taxableOrdinaryIncome },
-        { name: 'Taxable Cap Gains', amount: item.taxableCapGains },
-        { name: 'Total Taxable Income', amount: item.totalTaxableIncome },
-      ]);
+      transformedChartData = chartData.map((item) => ({
+        name: 'Taxable Income',
+        taxableOrdinaryIncome: item.taxableOrdinaryIncome,
+        taxableCapGains: item.taxableCapGains,
+      }));
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys = ['amount'];
+      dataKeys = ['taxableOrdinaryIncome', 'taxableCapGains'];
       break;
   }
 
