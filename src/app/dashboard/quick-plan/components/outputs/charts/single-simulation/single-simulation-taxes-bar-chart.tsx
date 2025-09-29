@@ -11,7 +11,7 @@ import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data
 import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/v2/taxes';
 import { Divider } from '@/components/catalyst/divider';
 
-type CustomTooltipPayload = {
+type TaxableIncomeTooltipPayload = {
   name: string;
   taxableOrdinaryIncome: number;
   taxableCapGains: number;
@@ -21,14 +21,14 @@ type CustomTooltipPayload = {
   deductions: Record<string, number>;
 };
 
-interface CustomTooltipProps {
+interface TaxableIncomeTooltipProps {
   active?: boolean;
   payload?: Array<{
     value: number;
     name: string;
     color: string;
-    dataKey: keyof CustomTooltipPayload;
-    payload: CustomTooltipPayload;
+    dataKey: keyof TaxableIncomeTooltipPayload;
+    payload: TaxableIncomeTooltipPayload;
   }>;
   label?: number;
   startAge: number;
@@ -37,7 +37,7 @@ interface CustomTooltipProps {
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
 }
 
-const CustomTooltip = ({ active, payload, startAge, age, disabled, dataView }: CustomTooltipProps) => {
+const TaxableIncomeTooltip = ({ active, payload, startAge, age, disabled, dataView }: TaxableIncomeTooltipProps) => {
   if (!(active && payload && payload.length) || disabled || dataView !== 'taxableIncome') return null;
 
   const currentYear = new Date().getFullYear();
@@ -332,7 +332,7 @@ export default function SingleSimulationTaxesBarChart({
             {dataView === 'taxableIncome' && (
               <Tooltip
                 content={
-                  <CustomTooltip startAge={startAge} age={age} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />
+                  <TaxableIncomeTooltip startAge={startAge} age={age} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />
                 }
                 cursor={false}
               />
