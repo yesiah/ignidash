@@ -243,7 +243,7 @@ export default function SingleSimulationTaxesBarChart({
         hasOrdinaryIncome = item.taxableOrdinaryIncome > 0 || hasOrdinaryIncome;
         hasCapGains = item.taxableCapGains > 0 || hasCapGains;
         return {
-          name: 'Taxable Income',
+          name: 'Total Taxable Income',
           taxableOrdinaryIncome: item.taxableOrdinaryIncome,
           taxableCapGains: item.taxableCapGains,
           grossIncome: item.grossIncome,
