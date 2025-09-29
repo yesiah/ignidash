@@ -1,11 +1,12 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, ReferenceLine /* Tooltip */ } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
+import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/v2/taxes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -137,6 +138,7 @@ export default function SingleSimulationTaxesBarChart({
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
   const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
@@ -172,6 +174,34 @@ export default function SingleSimulationTaxesBarChart({
                 content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
               />
             </Bar>
+            {referenceLineMode === 'showMarginalIncomeRates' &&
+              INCOME_TAX_BRACKETS_SINGLE.map((bracket, index) => (
+                <ReferenceLine
+                  key={index}
+                  y={bracket.min}
+                  stroke={foregroundMutedColor}
+                  label={{
+                    value: `${(bracket.rate * 100).toFixed(0)}% (${formatNumber(bracket.min, 1, '$')})`,
+                    position: 'insideBottomRight',
+                    fill: foregroundColor,
+                    fontWeight: '600',
+                  }}
+                />
+              ))}
+            {referenceLineMode === 'showMarginalCapGainsRates' &&
+              CAPITAL_GAINS_TAX_BRACKETS_SINGLE.map((bracket, index) => (
+                <ReferenceLine
+                  key={index}
+                  y={bracket.min}
+                  stroke={foregroundMutedColor}
+                  label={{
+                    value: `${(bracket.rate * 100).toFixed(0)}% (${formatNumber(bracket.min, 1, '$')})`,
+                    position: 'insideBottomRight',
+                    fill: foregroundColor,
+                    fontWeight: '600',
+                  }}
+                />
+              ))}
           </BarChart>
         </ResponsiveContainer>
       </div>
