@@ -125,6 +125,7 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
         setReferenceLineMode={setReferenceLineMode}
         referenceLineMode={referenceLineMode}
         referenceLineModes={referenceLineModes}
+        startAge={startAge}
       />
     </>
   );

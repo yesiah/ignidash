@@ -1,12 +1,93 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, ReferenceLine /* Tooltip */ } from 'recharts';
+import { useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, ReferenceLine, Tooltip } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/v2/taxes';
+import { Divider } from '@/components/catalyst/divider';
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    name: string;
+    color: string;
+    dataKey: keyof SingleSimulationTaxesChartDataPoint;
+    payload: SingleSimulationTaxesChartDataPoint;
+  }>;
+  label?: number;
+  startAge: number;
+  disabled: boolean;
+  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
+}
+
+const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
+  if (!(active && payload && payload.length) || disabled || dataView !== 'taxableIncome') return null;
+
+  const currentYear = new Date().getFullYear();
+  const yearForAge = currentYear + (label! - startAge);
+
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+
+  const entry = payload[0].payload;
+
+  const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
+    <p key={name} className="flex justify-between text-sm font-semibold">
+      <span className="mr-2">{`${formatChartString(name)}:`}</span>
+      <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
+    </p>
+  ));
+
+  const deductions = Object.entries(entry.deductions).map(([name, value]) => (
+    <p key={name} className="flex justify-between text-sm font-semibold">
+      <span className="mr-2">{`${formatChartString(name)}:`}</span>
+      <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
+    </p>
+  ));
+
+  const header = (
+    <div className="mx-1 mb-2 flex flex-col gap-2">
+      <p className="flex justify-between text-sm font-semibold">
+        <span className="mr-2">Gross Income:</span>
+        <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+      </p>
+      <Divider />
+      <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
+      {adjustments}
+      <Divider />
+      <p className="text-muted-foreground -mb-2 text-xs/6">Deductions</p>
+      {deductions}
+      <Divider />
+    </div>
+  );
+
+  return (
+    <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
+      <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
+        <span>Age {label}</span>
+        <span className="text-muted-foreground">{yearForAge}</span>
+      </p>
+      {header}
+      <div className="flex flex-col gap-2">
+        {payload.map((entry) => (
+          <p
+            key={entry.dataKey}
+            style={{ backgroundColor: entry.color }}
+            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
+          >
+            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -69,6 +150,7 @@ interface SingleSimulationTaxesBarChartProps {
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
+  startAge: number;
 }
 
 export default function SingleSimulationTaxesBarChart({
@@ -76,9 +158,17 @@ export default function SingleSimulationTaxesBarChart({
   dataView,
   rawChartData,
   referenceLineMode,
+  startAge,
 }: SingleSimulationTaxesBarChartProps) {
+  const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
+
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
+
+  const chartRef = useClickDetection<HTMLDivElement>(
+    () => setClickedOutsideChart(true),
+    () => setClickedOutsideChart(false)
+  );
 
   const chartData = rawChartData.filter((item) => item.age === age);
 
@@ -168,7 +258,7 @@ export default function SingleSimulationTaxesBarChart({
 
   return (
     <div>
-      <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={transformedChartData}
@@ -217,6 +307,10 @@ export default function SingleSimulationTaxesBarChart({
                   />
                 </Bar>
               ))}
+            <Tooltip
+              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+              cursor={{ stroke: foregroundColor }}
+            />
             {referenceLineMode === 'marginalIncomeTaxRates' &&
               INCOME_TAX_BRACKETS_SINGLE.map((bracket, index) => (
                 <ReferenceLine

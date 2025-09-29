@@ -17,6 +17,7 @@ interface SingleSimulationTaxesBarChartCardProps {
   setReferenceLineMode: (mode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates') => void;
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
   referenceLineModes: readonly ('hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates')[];
+  startAge: number;
 }
 
 export default function SingleSimulationTaxesBarChartCard({
@@ -26,6 +27,7 @@ export default function SingleSimulationTaxesBarChartCard({
   setReferenceLineMode: setCurrReferenceLineMode,
   referenceLineMode: currReferenceLineMode,
   referenceLineModes,
+  startAge,
 }: SingleSimulationTaxesBarChartCardProps) {
   let title;
   switch (dataView) {
@@ -77,6 +79,7 @@ export default function SingleSimulationTaxesBarChartCard({
         rawChartData={rawChartData}
         dataView={dataView}
         referenceLineMode={dataView === 'taxableIncome' ? currReferenceLineMode : null}
+        startAge={startAge}
       />
     </Card>
   );
