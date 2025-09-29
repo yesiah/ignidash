@@ -1,8 +1,12 @@
 'use client';
 
+import { EyeIcon, CheckIcon } from 'lucide-react';
+
+import { cn, formatChartString } from '@/lib/utils';
 import Card from '@/components/ui/card';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel } from '@/components/catalyst/dropdown';
 
 import SingleSimulationTaxesBarChart from '../../charts/single-simulation/single-simulation-taxes-bar-chart';
 
@@ -10,14 +14,18 @@ interface SingleSimulationTaxesBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
+  setReferenceLineMode: (mode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates') => void;
   referenceLineMode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates';
+  referenceLineModes: readonly ('hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates')[];
 }
 
 export default function SingleSimulationTaxesBarChartCard({
   selectedAge,
   rawChartData,
   dataView,
-  referenceLineMode,
+  setReferenceLineMode: setCurrReferenceLineMode,
+  referenceLineMode: currReferenceLineMode,
+  referenceLineModes,
 }: SingleSimulationTaxesBarChartCardProps) {
   let title;
   switch (dataView) {
@@ -48,12 +56,27 @@ export default function SingleSimulationTaxesBarChartCard({
           <span className="mr-2">{title}</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
+        {dataView === 'taxableIncome' && (
+          <Dropdown>
+            <DropdownButton plain aria-label="Open chart view options">
+              <EyeIcon data-slot="icon" />
+            </DropdownButton>
+            <DropdownMenu>
+              {referenceLineModes.map((referenceLineMode) => (
+                <DropdownItem key={referenceLineMode} onClick={() => setCurrReferenceLineMode(referenceLineMode)}>
+                  <CheckIcon data-slot="icon" className={cn({ invisible: currReferenceLineMode !== referenceLineMode })} />
+                  <DropdownLabel>{formatChartString(referenceLineMode)}</DropdownLabel>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        )}
       </div>
       <SingleSimulationTaxesBarChart
         age={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
-        referenceLineMode={referenceLineMode}
+        referenceLineMode={currReferenceLineMode}
       />
     </Card>
   );

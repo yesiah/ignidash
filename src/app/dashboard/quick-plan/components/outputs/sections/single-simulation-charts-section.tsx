@@ -117,15 +117,14 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
         setDataView={setDataView}
         keyMetrics={keyMetrics}
         startAge={startAge}
-        setReferenceLineMode={setReferenceLineMode}
-        referenceLineMode={referenceLineMode}
-        referenceLineModes={referenceLineModes}
       />
       <SingleSimulationTaxesBarChartCard
         selectedAge={selectedAge}
         rawChartData={rawChartData}
         dataView={dataView}
+        setReferenceLineMode={setReferenceLineMode}
         referenceLineMode={referenceLineMode}
+        referenceLineModes={referenceLineModes}
       />
     </>
   );

@@ -10,7 +10,6 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Divider } from '@/components/catalyst/divider';
-import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/v2/taxes';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -144,7 +143,6 @@ interface SingleSimulationTaxesLineChartProps {
   selectedAge: number;
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
   startAge: number;
-  referenceLineMode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates' | null;
 }
 
 export default function SingleSimulationTaxesLineChart({
@@ -155,7 +153,6 @@ export default function SingleSimulationTaxesLineChart({
   selectedAge,
   dataView,
   startAge,
-  referenceLineMode,
 }: SingleSimulationTaxesLineChartProps) {
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
 
@@ -262,34 +259,6 @@ export default function SingleSimulationTaxesLineChart({
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
             {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
-            {referenceLineMode === 'showMarginalIncomeRates' &&
-              INCOME_TAX_BRACKETS_SINGLE.map((bracket, index) => (
-                <ReferenceLine
-                  key={index}
-                  y={bracket.min}
-                  stroke={foregroundMutedColor}
-                  label={{
-                    value: `${(bracket.rate * 100).toFixed(0)}% (${formatNumber(bracket.min, 1, '$')})`,
-                    position: 'insideBottomRight',
-                    fill: foregroundColor,
-                    fontWeight: '600',
-                  }}
-                />
-              ))}
-            {referenceLineMode === 'showMarginalCapGainsRates' &&
-              CAPITAL_GAINS_TAX_BRACKETS_SINGLE.map((bracket, index) => (
-                <ReferenceLine
-                  key={index}
-                  y={bracket.min}
-                  stroke={foregroundMutedColor}
-                  label={{
-                    value: `${(bracket.rate * 100).toFixed(0)}% (${formatNumber(bracket.min, 1, '$')})`,
-                    position: 'insideBottomRight',
-                    fill: foregroundColor,
-                    fontWeight: '600',
-                  }}
-                />
-              ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
