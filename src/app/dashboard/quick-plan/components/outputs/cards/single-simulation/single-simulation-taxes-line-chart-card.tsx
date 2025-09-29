@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { EyeIcon, CheckIcon } from 'lucide-react';
 
 import { cn, formatChartString } from '@/lib/utils';
@@ -22,6 +21,9 @@ interface SingleSimulationTaxesLineChartCardProps {
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   keyMetrics: KeyMetrics;
   startAge: number;
+  setReferenceLineMode: (mode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates') => void;
+  referenceLineMode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates';
+  referenceLineModes: readonly ('hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates')[];
 }
 
 export default function SingleSimulationTaxesLineChartCard({
@@ -32,11 +34,11 @@ export default function SingleSimulationTaxesLineChartCard({
   rawChartData,
   keyMetrics,
   startAge,
+  setReferenceLineMode: setCurrentReferenceLineMode,
+  referenceLineMode: currReferenceLineMode,
+  referenceLineModes,
 }: SingleSimulationTaxesLineChartCardProps) {
   const showReferenceLines = useShowReferenceLines();
-
-  const referenceLineModes = ['hideReferenceLines', 'showMarginalCapGainsRates', 'showMarginalIncomeRates'] as const;
-  const [currReferenceLineMode, setCurrentReferenceLineMode] = useState<(typeof referenceLineModes)[number]>(referenceLineModes[0]);
 
   return (
     <Card className="my-0">
