@@ -68,7 +68,7 @@ interface SingleSimulationTaxesBarChartProps {
   age: number;
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  referenceLineMode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates';
+  referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
 }
 
 export default function SingleSimulationTaxesBarChart({
@@ -174,7 +174,7 @@ export default function SingleSimulationTaxesBarChart({
                 content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
               />
             </Bar>
-            {referenceLineMode === 'showMarginalIncomeRates' &&
+            {referenceLineMode === 'marginalIncomeTaxRates' &&
               INCOME_TAX_BRACKETS_SINGLE.map((bracket, index) => (
                 <ReferenceLine
                   key={index}
@@ -188,7 +188,7 @@ export default function SingleSimulationTaxesBarChart({
                   }}
                 />
               ))}
-            {referenceLineMode === 'showMarginalCapGainsRates' &&
+            {referenceLineMode === 'marginalCapGainsTaxRates' &&
               CAPITAL_GAINS_TAX_BRACKETS_SINGLE.map((bracket, index) => (
                 <ReferenceLine
                   key={index}

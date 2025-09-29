@@ -14,9 +14,9 @@ interface SingleSimulationTaxesBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'totalAmounts' | 'netIncome' | 'taxableIncome';
-  setReferenceLineMode: (mode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates') => void;
-  referenceLineMode: 'hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates';
-  referenceLineModes: readonly ('hideReferenceLines' | 'showMarginalCapGainsRates' | 'showMarginalIncomeRates')[];
+  setReferenceLineMode: (mode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates') => void;
+  referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
+  referenceLineModes: readonly ('hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates')[];
 }
 
 export default function SingleSimulationTaxesBarChartCard({
