@@ -33,7 +33,7 @@ export interface TaxesData {
 
 const STANDARD_DEDUCTION_SINGLE = 15000;
 
-const INCOME_TAX_BRACKETS_SINGLE = [
+export const INCOME_TAX_BRACKETS_SINGLE = [
   { min: 0, max: 11925, rate: 0.1 },
   { min: 11925, max: 48475, rate: 0.12 },
   { min: 48475, max: 103350, rate: 0.22 },
@@ -43,7 +43,7 @@ const INCOME_TAX_BRACKETS_SINGLE = [
   { min: 626350, max: Infinity, rate: 0.37 },
 ];
 
-const CAPITAL_GAINS_TAX_BRACKETS_SINGLE = [
+export const CAPITAL_GAINS_TAX_BRACKETS_SINGLE = [
   { min: 0, max: 47025, rate: 0.0 },
   { min: 47025, max: 518900, rate: 0.15 },
   { min: 518900, max: Infinity, rate: 0.2 },

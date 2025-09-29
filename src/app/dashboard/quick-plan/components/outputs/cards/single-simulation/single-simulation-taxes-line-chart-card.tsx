@@ -54,9 +54,9 @@ export default function SingleSimulationTaxesLineChartCard({
           </optgroup>
           <optgroup label="Tax Amounts">
             <option value="taxableIncome">Taxable Income</option>
+            <option value="netIncome">Net Income After Tax</option>
             <option value="annualAmounts">Annual Taxes</option>
             <option value="totalAmounts">Total Taxes</option>
-            <option value="netIncome">Net Income After Tax</option>
           </optgroup>
         </Select>
       </div>
