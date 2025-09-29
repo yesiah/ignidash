@@ -165,8 +165,8 @@ export default function SingleSimulationTaxesBarChart({
                 {transformedChartData.map((entry, idx2) => (
                   <Cell
                     key={`cell-${idx1}-${idx2}`}
-                    fill={COLORS[idx1 % COLORS.length]}
-                    stroke={COLORS[idx1 % COLORS.length]}
+                    fill={COLORS[(idx1 + idx2) % COLORS.length]}
+                    stroke={COLORS[(idx1 + idx2) % COLORS.length]}
                     strokeWidth={3}
                     fillOpacity={0.5}
                   />
