@@ -2,9 +2,9 @@
 
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import SectionContainer from '@/components/ui/section-container';
-import { useResultsState } from '@/hooks/use-results-state';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 
 import SimulationCategorySelector from '../simulation-category-selector';
 import SingleSimulationChartsSection from '../sections/single-simulation-charts-section';
@@ -15,10 +15,14 @@ interface MultiSimulationMainResultsProps {
   keyMetrics: KeyMetrics;
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
+  setCurrentCategory: (category: SimulationCategory) => void;
+  currentCategory: SimulationCategory;
   setCurrentPercentile: (percentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90') => void;
   currentPercentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
   setSelectedSeed: (seed: number | null) => void;
   selectedSeed: number | null;
+  onAgeSelect: (age: number) => void;
+  selectedAge: number;
 }
 
 export default function MultiSimulationMainResults({
@@ -26,14 +30,15 @@ export default function MultiSimulationMainResults({
   keyMetrics,
   tableData,
   yearlyTableData,
+  setCurrentCategory,
+  currentCategory,
   setCurrentPercentile,
   currentPercentile,
   setSelectedSeed,
   selectedSeed,
+  onAgeSelect,
+  selectedAge,
 }: MultiSimulationMainResultsProps) {
-  const startAge = simulation.context.startAge;
-  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
-
   return (
     <>
       <SectionContainer

@@ -309,6 +309,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
 export const useMarketAssumptionsData = () => useQuickPlanStore((state) => state.inputs.marketAssumptions);
 
 export const useTimelineData = () => useQuickPlanStore((state) => state.inputs.timeline);
+export const useCurrentAge = () => useQuickPlanStore((state) => state.inputs.timeline?.currentAge);
 
 export const useIncomesData = () => useQuickPlanStore((state) => state.inputs.incomes);
 export const useIncomeData = (id: string | null) => useQuickPlanStore((state) => (id !== null ? state.inputs.incomes[id] : null));
@@ -424,7 +425,8 @@ export const useSimulationResult = (
 };
 
 export const useMultiSimulationResult = (
-  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
+  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
+  category: SimulationCategory
 ): {
   analysis: MultiSimulationAnalysis | undefined;
   tableData: MultiSimulationTableRow[] | undefined;
@@ -446,8 +448,8 @@ export const useMultiSimulationResult = (
   const handle = handleData?.handle;
 
   const { data: { analysis, tableData, yearlyTableData } = {} } = useSWR(
-    handle ? ['derived', handle, sortMode] : null,
-    async () => worker.getDerivedMultiSimulationData(handle!, sortMode),
+    handle ? ['derived', handle, sortMode, category] : null,
+    async () => worker.getDerivedMultiSimulationData(handle!, sortMode, category),
     swrOptions
   );
 

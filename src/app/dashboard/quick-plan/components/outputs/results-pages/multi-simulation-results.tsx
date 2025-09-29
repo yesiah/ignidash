@@ -2,9 +2,16 @@
 
 import { useState, useEffect } from 'react';
 
-import { useMultiSimulationResult, useKeyMetrics, useSimulationResult, useSimulationSeed } from '@/lib/stores/quick-plan-store';
+import {
+  useMultiSimulationResult,
+  useKeyMetrics,
+  useSimulationResult,
+  useSimulationSeed,
+  useCurrentAge,
+} from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import { useResultsState } from '@/hooks/use-results-state';
 
 import SimulationMetrics from '../simulation-metrics';
 import MultiSimulationMainResults from './multi-simulation-main-results';
@@ -14,7 +21,9 @@ interface MultiSimulationResultsProps {
 }
 
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
-  const { analysis, tableData, yearlyTableData } = useMultiSimulationResult(simulationMode);
+  const startAge = useCurrentAge()!;
+  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+  const { analysis, tableData, yearlyTableData } = useMultiSimulationResult(simulationMode, currentCategory);
 
   const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
@@ -77,10 +86,14 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
         keyMetrics={keyMetrics}
         tableData={tableData}
         yearlyTableData={yearlyTableData}
+        setCurrentCategory={setCurrentCategory}
+        currentCategory={currentCategory}
         setCurrentPercentile={setCurrentPercentile}
         currentPercentile={currentPercentile}
         setSelectedSeed={setSelectedSeed}
         selectedSeed={selectedSeed}
+        onAgeSelect={onAgeSelect}
+        selectedAge={selectedAge}
       />
     </>
   );

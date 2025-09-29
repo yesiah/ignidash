@@ -50,7 +50,8 @@ const simulationAPI = {
 
   async getDerivedMultiSimulationData(
     handle: string,
-    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
+    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn',
+    category: SimulationCategory
   ): Promise<DerivedMultiSimulationData> {
     if (!cache || cache.handle !== handle) throw new Error('Simulation not found');
     const { res } = cache;
@@ -59,8 +60,8 @@ const simulationAPI = {
     const analysis = analyzer.analyzeV2(res, sortMode);
 
     const extractor = new TableDataExtractor();
-    const tableData = extractor.extractMultiSimulationData(res, SimulationCategory.Portfolio);
-    const yearlyTableData = extractor.extractMultiSimulationYearlyAggregateData(res, analysis, SimulationCategory.Portfolio);
+    const tableData = extractor.extractMultiSimulationData(res, category);
+    const yearlyTableData = extractor.extractMultiSimulationYearlyAggregateData(res, analysis, category);
 
     return { analysis, tableData, yearlyTableData };
   },
