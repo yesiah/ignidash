@@ -476,6 +476,8 @@ export class MultiSimulationAnalyzer {
       totalTaxesDue: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes!.totalTaxesDue),
       totalTaxesRefund: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes!.totalTaxesRefund),
       totalTaxableIncome: this.getNumberFieldPercentiles(dataPointsForYear, (d) => d.dp.taxes!.totalTaxableIncome),
+      adjustments: { p10: {}, p25: {}, p50: {}, p75: {}, p90: {} },
+      deductions: { p10: {}, p25: {}, p50: {}, p75: {}, p90: {} },
     };
 
     const incomeTaxes: { [K in keyof IncomeTaxesData]: Percentiles<IncomeTaxesData[K]> } = {
@@ -520,6 +522,8 @@ export class MultiSimulationAnalyzer {
       totalTaxesDue: percentiles.totalTaxesDue[p],
       totalTaxesRefund: percentiles.totalTaxesRefund[p],
       totalTaxableIncome: percentiles.totalTaxableIncome[p],
+      adjustments: {},
+      deductions: {},
     });
 
     return {
