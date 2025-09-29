@@ -107,22 +107,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
           <Divider />
         </div>
       );
-
-      totalFooter = (
-        <div className="mx-1 mt-2 flex flex-col gap-2">
-          <Divider />
-          <p className="flex justify-between text-sm font-semibold">
-            <span className="mr-2">Total:</span>
-            <span className="ml-1 font-semibold">
-              {formatNumber(
-                payload.reduce((sum, item) => sum + item.value, 0),
-                3,
-                '$'
-              )}
-            </span>
-          </p>
-        </div>
-      );
       break;
   }
 
@@ -213,7 +197,7 @@ export default function SingleSimulationTaxesLineChart({
       break;
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains');
+      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'totalTaxableIncome');
       break;
   }
 
