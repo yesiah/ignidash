@@ -23,7 +23,7 @@ interface MultiSimulationResultsProps {
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
   const startAge = useCurrentAge()!;
   const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
-  const { analysis, tableData, yearlyTableData } = useMultiSimulationResult(simulationMode, currentCategory);
+  const { analysis, tableData, yearlyTableData, isLoading } = useMultiSimulationResult(simulationMode, currentCategory);
 
   const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
   const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
@@ -68,7 +68,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     success: selectedSeed === null ? (analysis?.success ?? 0) : baseMetrics.success,
   };
 
-  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation) {
+  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoading) {
     return (
       <div className="text-muted-foreground text-center">
         <p>Results content will be displayed here...</p>

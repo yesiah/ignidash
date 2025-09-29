@@ -431,18 +431,18 @@ export const useMultiSimulationResult = (
   analysis: MultiSimulationAnalysis | undefined;
   tableData: MultiSimulationTableRow[] | undefined;
   yearlyTableData: YearlyAggregateTableRow[] | undefined;
+  isLoading: boolean;
 } => {
   const inputs = useQuickPlanStore((state) => state.inputs);
   const simulationSeed = useSimulationSeed();
   const sortMode = useMonteCarloSortMode();
 
   const worker = getSimulationWorker();
-  const swrOptions = { revalidateOnFocus: false, keepPreviousData: true } as const;
 
-  const { data: handleData } = useSWR(
+  const { data: handleData, isLoading } = useSWR(
     ['simulationHandle', inputs, simulationSeed, simulationMode],
     async () => worker.runSimulation(inputs, simulationSeed, 1000, simulationMode),
-    swrOptions
+    { revalidateOnFocus: false }
   );
 
   const handle = handleData?.handle;
@@ -450,10 +450,10 @@ export const useMultiSimulationResult = (
   const { data: { analysis, tableData, yearlyTableData } = {} } = useSWR(
     handle ? ['derived', handle, sortMode, category] : null,
     async () => worker.getDerivedMultiSimulationData(handle!, sortMode, category),
-    swrOptions
+    { revalidateOnFocus: false, keepPreviousData: true }
   );
 
-  return { analysis, tableData, yearlyTableData };
+  return { analysis, tableData, yearlyTableData, isLoading };
 };
 
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
