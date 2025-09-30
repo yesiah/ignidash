@@ -30,14 +30,14 @@ export class TableDataExtractor {
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
 
       const portfolioData = data.portfolio;
-      const portfolioValue = portfolioData.totalValue;
+      const totalPortfolioValue = portfolioData.totalValue;
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
       const annualContributions = portfolioData.contributionsForPeriod;
 
       let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
+      let taxableBrokerageHoldings = 0;
+      let taxDeferredHoldings = 0;
+      let taxFreeHoldings = 0;
 
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
@@ -45,16 +45,16 @@ export class TableDataExtractor {
             cashSavings += account.totalValue;
             break;
           case 'taxableBrokerage':
-            taxableBrokerage += account.totalValue;
+            taxableBrokerageHoldings += account.totalValue;
             break;
           case '401k':
           case 'ira':
           case 'hsa':
-            taxDeferred += account.totalValue;
+            taxDeferredHoldings += account.totalValue;
             break;
           case 'roth401k':
           case 'rothIra':
-            taxFree += account.totalValue;
+            taxFreeHoldings += account.totalValue;
             break;
         }
       }
@@ -75,17 +75,17 @@ export class TableDataExtractor {
         year: idx,
         age: currDateYear - startDateYear + startAge,
         phaseName: formattedPhaseName,
-        portfolioValue,
+        totalPortfolioValue,
         annualReturns: stockAmount + bondAmount + cashAmount,
         annualWithdrawals,
         annualContributions,
         netPortfolioChange: stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals,
-        stockValue: portfolioValue * stocksAllocation,
-        bondValue: portfolioValue * bondsAllocation,
-        cashValue: portfolioValue * cashAllocation,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
+        stockHoldings: totalPortfolioValue * stocksAllocation,
+        bondHoldings: totalPortfolioValue * bondsAllocation,
+        cashHoldings: totalPortfolioValue * cashAllocation,
+        taxableBrokerageHoldings,
+        taxDeferredHoldings,
+        taxFreeHoldings,
         cashSavings,
         historicalYear,
       };
