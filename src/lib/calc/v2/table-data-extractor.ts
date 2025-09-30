@@ -294,11 +294,124 @@ export class TableDataExtractor {
   }
 
   private extractSingleSimulationContributionsData(simulation: SimulationResult): SingleSimulationContributionsTableRow[] {
-    throw new Error('Method not implemented.');
+    const startAge = simulation.context.startAge;
+    const historicalRanges = simulation.context.historicalRanges ?? null;
+    const startDateYear = new Date().getFullYear();
+
+    return simulation.data.map((data, idx) => {
+      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const phaseName = data.phase?.name ?? null;
+      const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
+
+      const portfolioData = data.portfolio;
+      const totalPortfolioValue = portfolioData.totalValue;
+
+      let cashSavings = 0;
+      let taxableBrokerageHoldings = 0;
+      let taxDeferredHoldings = 0;
+      let taxFreeHoldings = 0;
+
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case 'savings':
+            cashSavings += account.contributionsForPeriod;
+            break;
+          case 'taxableBrokerage':
+            taxableBrokerageHoldings += account.contributionsForPeriod;
+            break;
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferredHoldings += account.contributionsForPeriod;
+            break;
+          case 'roth401k':
+          case 'rothIra':
+            taxFreeHoldings += account.contributionsForPeriod;
+            break;
+        }
+      }
+
+      return {
+        year: idx,
+        age: currDateYear - startDateYear + startAge,
+        phaseName: formattedPhaseName,
+        cumulativeContributions: portfolioData.totalContributions,
+        annualContributions: portfolioData.contributionsForPeriod,
+        taxableBrokerageHoldings,
+        taxDeferredHoldings,
+        taxFreeHoldings,
+        cashSavings,
+        totalPortfolioValue,
+        netCashFlow: null,
+        historicalYear,
+      };
+    });
   }
 
   private extractSingleSimulationWithdrawalsData(simulation: SimulationResult): SingleSimulationWithdrawalsTableRow[] {
-    throw new Error('Method not implemented.');
+    const startAge = simulation.context.startAge;
+    const historicalRanges = simulation.context.historicalRanges ?? null;
+    const startDateYear = new Date().getFullYear();
+
+    return simulation.data.map((data, idx) => {
+      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const phaseName = data.phase?.name ?? null;
+      const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
+
+      const portfolioData = data.portfolio;
+      const totalPortfolioValue = portfolioData.totalValue;
+      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+
+      let cashSavings = 0;
+      let taxableBrokerage = 0;
+      let taxDeferred = 0;
+      let taxFree = 0;
+
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case 'savings':
+            cashSavings += account.withdrawalsForPeriod;
+            break;
+          case 'taxableBrokerage':
+            taxableBrokerage += account.withdrawalsForPeriod;
+            break;
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferred += account.withdrawalsForPeriod;
+            break;
+          case 'roth401k':
+          case 'rothIra':
+            taxFree += account.withdrawalsForPeriod;
+            break;
+        }
+      }
+
+      const withdrawalRate =
+        totalPortfolioValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalPortfolioValue + annualWithdrawals)) * 100 : null;
+
+      return {
+        year: idx,
+        age: currDateYear - startDateYear + startAge,
+        phaseName: formattedPhaseName,
+        cumulativeWithdrawals: portfolioData.totalWithdrawals,
+        annualWithdrawals: portfolioData.withdrawalsForPeriod,
+        cumulativeRealizedGains: portfolioData.totalRealizedGains,
+        annualRealizedGains: portfolioData.realizedGainsForPeriod,
+        taxableBrokerageHoldings: taxableBrokerage,
+        taxDeferredHoldings: taxDeferred,
+        taxFreeHoldings: taxFree,
+        cashSavings,
+        totalPortfolioValue,
+        netCashFlow: null,
+        withdrawalRate,
+        historicalYear,
+      };
+    });
   }
 
   extractMultiSimulationData(simulations: MultiSimulationResult, category: SimulationCategory): MultiSimulationTableRow[] {
