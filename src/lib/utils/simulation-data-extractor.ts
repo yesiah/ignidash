@@ -1,4 +1,4 @@
-import type { SimulationDataPoint } from '@/lib/calc/v2/simulation-engine';
+import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
 export interface MilestonesData {
   yearsToRetirement: number | null;
@@ -14,6 +14,7 @@ export interface ReturnsStatsData {
   averageInflationRate: number | null;
   minStockReturn: number;
   maxStockReturn: number;
+  earlyRetirementStockReturn: number | null;
 }
 
 export class SimulationDataExtractor {
@@ -43,11 +44,24 @@ export class SimulationDataExtractor {
     return { yearsToRetirement, retirementAge, yearsToBankruptcy, bankruptcyAge };
   }
 
-  static getAverageReturns(data: SimulationDataPoint[]): ReturnsStatsData {
-    const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn } = data.slice(1).reduce(
+  static getAverageReturns(result: SimulationResult, retirementAge: number | null): ReturnsStatsData {
+    const { data, context } = result;
+
+    const startAge = context.startAge;
+    const startDateYear = new Date().getFullYear();
+
+    const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn, earlyRetirementStockReturn } = data.slice(1).reduce(
       (acc, dp) => {
+        const currDateYear = new Date(dp.date).getFullYear();
+        const currAge = currDateYear - startDateYear + startAge;
+
         const returnsData = dp.returns!;
         const stockReturn = returnsData.annualReturnRates.stocks;
+
+        let earlyRetirementStockReturn = acc.earlyRetirementStockReturn;
+        if (retirementAge !== null && currAge >= retirementAge && currAge <= retirementAge + 5) {
+          earlyRetirementStockReturn += stockReturn;
+        }
 
         return {
           stocks: acc.stocks + stockReturn,
@@ -57,9 +71,19 @@ export class SimulationDataExtractor {
           count: acc.count + 1,
           minStockReturn: Math.min(acc.minStockReturn, stockReturn),
           maxStockReturn: Math.max(acc.maxStockReturn, stockReturn),
+          earlyRetirementStockReturn,
         };
       },
-      { stocks: 0, bonds: 0, cash: 0, inflation: 0, count: 0, minStockReturn: Infinity, maxStockReturn: -Infinity }
+      {
+        stocks: 0,
+        bonds: 0,
+        cash: 0,
+        inflation: 0,
+        count: 0,
+        minStockReturn: Infinity,
+        maxStockReturn: -Infinity,
+        earlyRetirementStockReturn: 0,
+      }
     );
 
     const averageStockReturn = count > 0 ? stocks / count : null;
@@ -67,6 +91,14 @@ export class SimulationDataExtractor {
     const averageCashReturn = count > 0 ? cash / count : null;
     const averageInflationRate = count > 0 ? inflation / count : null;
 
-    return { averageStockReturn, averageBondReturn, averageCashReturn, averageInflationRate, minStockReturn, maxStockReturn };
+    return {
+      averageStockReturn,
+      averageBondReturn,
+      averageCashReturn,
+      averageInflationRate,
+      minStockReturn,
+      maxStockReturn,
+      earlyRetirementStockReturn,
+    };
   }
 }
