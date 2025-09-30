@@ -7,11 +7,13 @@ export interface MilestonesData {
   bankruptcyAge: number | null;
 }
 
-export interface AverageReturnsData {
+export interface ReturnsStatsData {
   averageStockReturn: number | null;
   averageBondReturn: number | null;
   averageCashReturn: number | null;
   averageInflationRate: number | null;
+  minStockReturn: number;
+  maxStockReturn: number;
 }
 
 export class SimulationDataExtractor {
@@ -41,19 +43,23 @@ export class SimulationDataExtractor {
     return { yearsToRetirement, retirementAge, yearsToBankruptcy, bankruptcyAge };
   }
 
-  static getAverageReturns(data: SimulationDataPoint[]) {
-    const { stocks, bonds, cash, inflation, count } = data.slice(1).reduce(
+  static getAverageReturns(data: SimulationDataPoint[]): ReturnsStatsData {
+    const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn } = data.slice(1).reduce(
       (acc, dp) => {
         const returnsData = dp.returns!;
+        const stockReturn = returnsData.annualReturnRates.stocks;
+
         return {
-          stocks: acc.stocks + returnsData.annualReturnRates.stocks,
+          stocks: acc.stocks + stockReturn,
           bonds: acc.bonds + returnsData.annualReturnRates.bonds,
           cash: acc.cash + returnsData.annualReturnRates.cash,
           inflation: acc.inflation + returnsData.annualInflationRate,
           count: acc.count + 1,
+          minStockReturn: Math.min(acc.minStockReturn, stockReturn),
+          maxStockReturn: Math.max(acc.maxStockReturn, stockReturn),
         };
       },
-      { stocks: 0, bonds: 0, cash: 0, inflation: 0, count: 0 }
+      { stocks: 0, bonds: 0, cash: 0, inflation: 0, count: 0, minStockReturn: Infinity, maxStockReturn: -Infinity }
     );
 
     const averageStockReturn = count > 0 ? stocks / count : null;
@@ -61,6 +67,6 @@ export class SimulationDataExtractor {
     const averageCashReturn = count > 0 ? cash / count : null;
     const averageInflationRate = count > 0 ? inflation / count : null;
 
-    return { averageStockReturn, averageBondReturn, averageCashReturn, averageInflationRate };
+    return { averageStockReturn, averageBondReturn, averageCashReturn, averageInflationRate, minStockReturn, maxStockReturn };
   }
 }
