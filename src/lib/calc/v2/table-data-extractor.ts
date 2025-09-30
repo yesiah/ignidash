@@ -309,29 +309,29 @@ export class TableDataExtractor {
       const totalPortfolioValue = portfolioData.totalValue;
       const annualContributions = portfolioData.contributionsForPeriod;
 
-      let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
+      let cashSavingsContributions = 0;
+      let taxableBrokerageContributions = 0;
+      let taxDeferredContributions = 0;
+      let taxFreeContributions = 0;
       let taxDeferredWithdrawals = 0;
 
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            cashSavings += account.contributionsForPeriod;
+            cashSavingsContributions += account.contributionsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxableBrokerage += account.contributionsForPeriod;
+            taxableBrokerageContributions += account.contributionsForPeriod;
             break;
           case '401k':
           case 'ira':
           case 'hsa':
-            taxDeferred += account.contributionsForPeriod;
+            taxDeferredContributions += account.contributionsForPeriod;
             taxDeferredWithdrawals += account.withdrawalsForPeriod;
             break;
           case 'roth401k':
           case 'rothIra':
-            taxFree += account.contributionsForPeriod;
+            taxFreeContributions += account.contributionsForPeriod;
             break;
         }
       }
@@ -353,10 +353,10 @@ export class TableDataExtractor {
         phaseName: formattedPhaseName,
         cumulativeContributions: portfolioData.totalContributions,
         annualContributions,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        taxableBrokerage: taxableBrokerageContributions,
+        taxDeferred: taxDeferredContributions,
+        taxFree: taxFreeContributions,
+        cashSavings: cashSavingsContributions,
         totalPortfolioValue,
         netCashFlow,
         historicalYear,
@@ -380,27 +380,27 @@ export class TableDataExtractor {
       const totalPortfolioValue = portfolioData.totalValue;
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-      let cashSavings = 0;
-      let taxableBrokerage = 0;
-      let taxDeferred = 0;
-      let taxFree = 0;
+      let cashSavingsWithdrawals = 0;
+      let taxableBrokerageWithdrawals = 0;
+      let taxDeferredWithdrawals = 0;
+      let taxFreeWithdrawals = 0;
 
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'savings':
-            cashSavings += account.withdrawalsForPeriod;
+            cashSavingsWithdrawals += account.withdrawalsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxableBrokerage += account.withdrawalsForPeriod;
+            taxableBrokerageWithdrawals += account.withdrawalsForPeriod;
             break;
           case '401k':
           case 'ira':
           case 'hsa':
-            taxDeferred += account.withdrawalsForPeriod;
+            taxDeferredWithdrawals += account.withdrawalsForPeriod;
             break;
           case 'roth401k':
           case 'rothIra':
-            taxFree += account.withdrawalsForPeriod;
+            taxFreeWithdrawals += account.withdrawalsForPeriod;
             break;
         }
       }
@@ -410,7 +410,7 @@ export class TableDataExtractor {
       const taxesData = data.taxes;
 
       const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-      const grossIncome = ordinaryIncome + taxDeferred;
+      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
       const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
       const totalExpenses = expensesData?.totalExpenses ?? 0;
       const netIncome = grossIncome - incomeTax;
@@ -426,10 +426,10 @@ export class TableDataExtractor {
         annualWithdrawals: portfolioData.withdrawalsForPeriod,
         cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        taxableBrokerage: taxableBrokerageWithdrawals,
+        taxDeferred: taxDeferredWithdrawals,
+        taxFree: taxFreeWithdrawals,
+        cashSavings: cashSavingsWithdrawals,
         totalPortfolioValue,
         netCashFlow,
         withdrawalRate,
