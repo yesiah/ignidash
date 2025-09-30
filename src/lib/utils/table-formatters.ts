@@ -1,6 +1,19 @@
 import type { TableColumn } from '@/lib/types/table';
 import type { ColumnFormat } from '@/lib/types/column-format';
-import { type SingleSimulationTableRow, SIMULATION_TABLE_CONFIG } from '@/lib/schemas/single-simulation-table-schema';
+import {
+  type SingleSimulationTableRow,
+  SIMULATION_TABLE_CONFIG,
+  type SingleSimulationCashFlowTableRow,
+  SIMULATION_CASHFLOW_TABLE_CONFIG,
+  type SingleSimulationReturnsTableRow,
+  SIMULATION_RETURNS_TABLE_CONFIG,
+  type SingleSimulationTaxesTableRow,
+  SIMULATION_TAXES_TABLE_CONFIG,
+  type SingleSimulationContributionsTableRow,
+  SIMULATION_CONTRIBUTIONS_TABLE_CONFIG,
+  type SingleSimulationWithdrawalsTableRow,
+  SIMULATION_WITHDRAWALS_TABLE_CONFIG,
+} from '@/lib/schemas/single-simulation-table-schema';
 import {
   type MultiSimulationTableRow,
   MULTI_SIMULATION_TABLE_CONFIG,
@@ -51,6 +64,47 @@ export const generateSimulationTableColumns = (): TableColumn<SingleSimulationTa
     key: key as keyof SingleSimulationTableRow,
     title: config.title,
     format: (value: SingleSimulationTableRow[keyof SingleSimulationTableRow]) => formatValue(value, config.format),
+  }));
+};
+
+export const generateCashFlowTableColumns = (): TableColumn<SingleSimulationCashFlowTableRow>[] => {
+  return Object.entries(SIMULATION_CASHFLOW_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationCashFlowTableRow,
+    title: config.title,
+    format: (value: SingleSimulationCashFlowTableRow[keyof SingleSimulationCashFlowTableRow]) => formatValue(value, config.format),
+  }));
+};
+
+export const generateReturnsTableColumns = (): TableColumn<SingleSimulationReturnsTableRow>[] => {
+  return Object.entries(SIMULATION_RETURNS_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationReturnsTableRow,
+    title: config.title,
+    format: (value: SingleSimulationReturnsTableRow[keyof SingleSimulationReturnsTableRow]) => formatValue(value, config.format),
+  }));
+};
+
+export const generateTaxesTableColumns = (): TableColumn<SingleSimulationTaxesTableRow>[] => {
+  return Object.entries(SIMULATION_TAXES_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationTaxesTableRow,
+    title: config.title,
+    format: (value: SingleSimulationTaxesTableRow[keyof SingleSimulationTaxesTableRow]) => formatValue(value, config.format),
+  }));
+};
+
+export const generateContributionsTableColumns = (): TableColumn<SingleSimulationContributionsTableRow>[] => {
+  return Object.entries(SIMULATION_CONTRIBUTIONS_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationContributionsTableRow,
+    title: config.title,
+    format: (value: SingleSimulationContributionsTableRow[keyof SingleSimulationContributionsTableRow]) =>
+      formatValue(value, config.format),
+  }));
+};
+
+export const generateWithdrawalsTableColumns = (): TableColumn<SingleSimulationWithdrawalsTableRow>[] => {
+  return Object.entries(SIMULATION_WITHDRAWALS_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationWithdrawalsTableRow,
+    title: config.title,
+    format: (value: SingleSimulationWithdrawalsTableRow[keyof SingleSimulationWithdrawalsTableRow]) => formatValue(value, config.format),
   }));
 };
 
