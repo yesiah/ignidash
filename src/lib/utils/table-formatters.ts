@@ -59,7 +59,7 @@ const formatHistoricalRanges = (ranges: Array<{ startYear: number; endYear: numb
     .join(', ');
 };
 
-export const generateSimulationTableColumns = (): TableColumn<SingleSimulationTableRow>[] => {
+export const generatePortfolioTableColumns = (): TableColumn<SingleSimulationTableRow>[] => {
   return Object.entries(SIMULATION_TABLE_CONFIG).map(([key, config]) => ({
     key: key as keyof SingleSimulationTableRow,
     title: config.title,

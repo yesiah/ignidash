@@ -6,18 +6,13 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
-import type { SingleSimulationTableRow } from '@/lib/schemas/single-simulation-table-schema';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
-import {
-  generateSimulationTableColumns,
-  generateMultiSimulationTableColumns,
-  generateYearlyAggregateTableColumns,
-} from '@/lib/utils/table-formatters';
-import { useSingleSimulationTableData } from '@/lib/stores/quick-plan-store';
+import { generateMultiSimulationTableColumns, generateYearlyAggregateTableColumns } from '@/lib/utils/table-formatters';
 
 import TableTypeSelector, { TableType } from '../table-type-selector';
 import Table from '../tables/table';
+import SingleSimulationDataTable from '../tables/single-simulation-data-table';
 import DrillDownBreadcrumb from '../drill-down-breadcrumb';
 
 interface TableWithSelectedSeedProps {
@@ -27,16 +22,7 @@ interface TableWithSelectedSeedProps {
 }
 
 function TableWithSelectedSeed({ currentCategory, onEscPressed, simulation }: TableWithSelectedSeedProps) {
-  const tableData = useSingleSimulationTableData(simulation, currentCategory);
-
-  return (
-    <Table<SingleSimulationTableRow>
-      columns={generateSimulationTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <SingleSimulationDataTable simulation={simulation} currentCategory={currentCategory} onEscPressed={onEscPressed} />;
 }
 
 interface MultiSimulationDataTableSectionProps {
