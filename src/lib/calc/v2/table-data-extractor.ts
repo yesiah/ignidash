@@ -307,11 +307,12 @@ export class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
+      const annualContributions = portfolioData.contributionsForPeriod;
 
       let cashSavings = 0;
-      let taxableBrokerageHoldings = 0;
-      let taxDeferredHoldings = 0;
-      let taxFreeHoldings = 0;
+      let taxableBrokerage = 0;
+      let taxDeferred = 0;
+      let taxFree = 0;
 
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
@@ -319,16 +320,16 @@ export class TableDataExtractor {
             cashSavings += account.contributionsForPeriod;
             break;
           case 'taxableBrokerage':
-            taxableBrokerageHoldings += account.contributionsForPeriod;
+            taxableBrokerage += account.contributionsForPeriod;
             break;
           case '401k':
           case 'ira':
           case 'hsa':
-            taxDeferredHoldings += account.contributionsForPeriod;
+            taxDeferred += account.contributionsForPeriod;
             break;
           case 'roth401k':
           case 'rothIra':
-            taxFreeHoldings += account.contributionsForPeriod;
+            taxFree += account.contributionsForPeriod;
             break;
         }
       }
@@ -338,10 +339,10 @@ export class TableDataExtractor {
         age: currDateYear - startDateYear + startAge,
         phaseName: formattedPhaseName,
         cumulativeContributions: portfolioData.totalContributions,
-        annualContributions: portfolioData.contributionsForPeriod,
-        taxableBrokerageHoldings,
-        taxDeferredHoldings,
-        taxFreeHoldings,
+        annualContributions,
+        taxableBrokerage,
+        taxDeferred,
+        taxFree,
         cashSavings,
         totalPortfolioValue,
         netCashFlow: null,
@@ -402,9 +403,9 @@ export class TableDataExtractor {
         annualWithdrawals: portfolioData.withdrawalsForPeriod,
         cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
-        taxableBrokerageHoldings: taxableBrokerage,
-        taxDeferredHoldings: taxDeferred,
-        taxFreeHoldings: taxFree,
+        taxableBrokerage,
+        taxDeferred,
+        taxFree,
         cashSavings,
         totalPortfolioValue,
         netCashFlow: null,
