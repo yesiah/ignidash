@@ -1,5 +1,9 @@
 import { SimulationCategory } from '@/lib/types/simulation-category';
-import type { SingleSimulationTableRow, SingleSimulationCashFlowTableRow } from '@/lib/schemas/single-simulation-table-schema';
+import type {
+  SingleSimulationTableRow,
+  SingleSimulationCashFlowTableRow,
+  SingleSimulationTaxesTableRow,
+} from '@/lib/schemas/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
 
@@ -160,6 +164,80 @@ export class TableDataExtractor {
         expenses,
         netCashFlow,
         savingsRate,
+        historicalYear,
+      };
+    });
+  }
+
+  private extractSingleSimulationTaxesData(simulation: SimulationResult): SingleSimulationTaxesTableRow[] {
+    const startAge = simulation.context.startAge;
+    const historicalRanges = simulation.context.historicalRanges ?? null;
+    const startDateYear = new Date().getFullYear();
+
+    let cumulativeIncomeTaxAmount = 0;
+    let cumulativeCapGainsTaxAmount = 0;
+    let cumulativeTaxAmount = 0;
+
+    return simulation.data.map((data, idx) => {
+      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const currDateYear = new Date(data.date).getFullYear();
+
+      const phaseName = data.phase?.name ?? null;
+      const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
+
+      const taxesData = data.taxes;
+
+      const annualIncomeTaxAmount = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const annualCapGainsTaxAmount = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
+      const totalAnnualTaxAmount = annualIncomeTaxAmount + annualCapGainsTaxAmount;
+
+      cumulativeIncomeTaxAmount += annualIncomeTaxAmount;
+      cumulativeCapGainsTaxAmount += annualCapGainsTaxAmount;
+      cumulativeTaxAmount += totalAnnualTaxAmount;
+
+      const portfolioData = data.portfolio;
+
+      let annualTaxDeferredWithdrawals = 0;
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
+            break;
+          default:
+            break;
+        }
+      }
+
+      const incomesData = data.incomes;
+
+      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+      const annualRealizedCapGains = portfolioData.realizedGainsForPeriod;
+      const grossIncome = ordinaryIncome + annualTaxDeferredWithdrawals + annualRealizedCapGains;
+
+      return {
+        year: idx,
+        age: currDateYear - startDateYear + startAge,
+        phaseName: formattedPhaseName,
+        grossIncome,
+        netIncome: taxesData?.incomeTaxes.netIncome ?? null,
+        realizedCapGains: annualRealizedCapGains,
+        netCapGains: taxesData?.capitalGainsTaxes.netCapitalGains ?? null,
+        taxableOrdinaryIncome: taxesData?.incomeTaxes.taxableOrdinaryIncome ?? null,
+        taxableCapGains: taxesData?.capitalGainsTaxes.taxableCapitalGains ?? null,
+        totalTaxableIncome: taxesData?.totalTaxableIncome ?? null,
+        annualIncomeTaxAmount,
+        cumulativeIncomeTaxAmount,
+        annualCapGainsTaxAmount,
+        cumulativeCapGainsTaxAmount,
+        totalAnnualTaxAmount,
+        cumulativeTaxAmount,
+        effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? null,
+        topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalTaxRate ?? null,
+        effectiveCapGainsTaxRate: taxesData?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? null,
+        topMarginalCapGainsTaxRate: taxesData?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? null,
+        capitalLossDeduction: taxesData?.incomeTaxes.capitalLossDeduction ?? null,
         historicalYear,
       };
     });
