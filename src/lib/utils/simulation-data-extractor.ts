@@ -50,7 +50,17 @@ export class SimulationDataExtractor {
     const startAge = context.startAge;
     const startDateYear = new Date().getFullYear();
 
-    const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn, earlyRetirementStockReturn } = data.slice(1).reduce(
+    const {
+      stocks,
+      bonds,
+      cash,
+      inflation,
+      count,
+      minStockReturn,
+      maxStockReturn,
+      earlyRetirementStockReturn,
+      yearsOfEarlyRetirement: _yearsOfEarlyRetirement,
+    } = data.slice(1).reduce(
       (acc, dp) => {
         const currDateYear = new Date(dp.date).getFullYear();
         const currAge = currDateYear - startDateYear + startAge;
@@ -59,8 +69,10 @@ export class SimulationDataExtractor {
         const stockReturn = returnsData.annualReturnRates.stocks;
 
         let earlyRetirementStockReturn = acc.earlyRetirementStockReturn;
+        let yearsOfEarlyRetirement = acc.yearsOfEarlyRetirement;
         if (retirementAge !== null && currAge >= retirementAge && currAge <= retirementAge + 5) {
           earlyRetirementStockReturn += stockReturn;
+          yearsOfEarlyRetirement += 1;
         }
 
         return {
@@ -72,6 +84,7 @@ export class SimulationDataExtractor {
           minStockReturn: Math.min(acc.minStockReturn, stockReturn),
           maxStockReturn: Math.max(acc.maxStockReturn, stockReturn),
           earlyRetirementStockReturn,
+          yearsOfEarlyRetirement,
         };
       },
       {
@@ -83,6 +96,7 @@ export class SimulationDataExtractor {
         minStockReturn: Infinity,
         maxStockReturn: -Infinity,
         earlyRetirementStockReturn: 0,
+        yearsOfEarlyRetirement: 0,
       }
     );
 
