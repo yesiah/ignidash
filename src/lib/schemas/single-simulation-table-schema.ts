@@ -23,7 +23,6 @@ export const singleSimulationTableRowSchema = z.object({
   taxFreeHoldings: z.number().nullable(),
   cashSavings: z.number().nullable(),
   historicalYear: z.number().nullable(),
-  // perAccountData: AccountDataWithTransactions[];
 });
 
 export type SingleSimulationTableRow = z.infer<typeof singleSimulationTableRowSchema>;
@@ -45,7 +44,6 @@ const SINGLE_SIMULATION_COLUMNS = {
   taxFreeHoldings: { title: 'Tax-Free Holdings', format: 'currency' },
   cashSavings: { title: 'Cash Savings', format: 'currency' },
   historicalYear: { title: 'Historical Year', format: 'number' },
-  // perAccountData: { title: 'Per Account Data', format: 'json' },
 } as const;
 
 export const SIMULATION_TABLE_CONFIG: Record<keyof SingleSimulationTableRow, { title: string; format: ColumnFormat }> =
@@ -68,8 +66,6 @@ export const singleSimulationCashFlowTableRowSchema = z.object({
   netCashFlow: z.number().nullable(),
   savingsRate: z.number().nullable(),
   historicalYear: z.number().nullable(),
-  // perIncomeData: IncomeData[];
-  // perExpenseData: ExpenseData[];
 });
 
 export type SingleSimulationCashFlowTableRow = z.infer<typeof singleSimulationCashFlowTableRowSchema>;
@@ -87,8 +83,6 @@ const SINGLE_SIMULATION_CASHFLOW_COLUMNS = {
   netCashFlow: { title: 'Net Cash Flow', format: 'currency' },
   savingsRate: { title: 'Savings Rate', format: 'percentage' },
   historicalYear: { title: 'Historical Year', format: 'number' },
-  // perIncomeData: { title: 'Per Income Data', format: 'json' },
-  // perExpenseData: { title: 'Per Expense Data', format: 'json' },
 } as const;
 
 export const SIMULATION_CASHFLOW_TABLE_CONFIG: Record<keyof SingleSimulationCashFlowTableRow, { title: string; format: ColumnFormat }> =
@@ -172,8 +166,6 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   topMarginalCapGainsTaxRate: z.number().nullable(),
   capitalLossDeduction: z.number().nullable(),
   historicalYear: z.number().nullable(),
-  // adjustments: Record<string, number>;
-  // deductions: Record<string, number>;
 });
 
 export type SingleSimulationTaxesTableRow = z.infer<typeof singleSimulationTaxesTableRowSchema>;
@@ -201,8 +193,6 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   topMarginalCapGainsTaxRate: { title: 'Top Marginal Capital Gains Tax Rate', format: 'percentage' },
   capitalLossDeduction: { title: 'Capital Loss Deduction', format: 'currency' },
   historicalYear: { title: 'Historical Year', format: 'number' },
-  // adjustments: { title: 'Adjustments', format: 'json' },
-  // deductions: { title: 'Deductions', format: 'json' },
 } as const;
 
 export const SIMULATION_TAXES_TABLE_CONFIG: Record<keyof SingleSimulationTaxesTableRow, { title: string; format: ColumnFormat }> =
@@ -225,7 +215,6 @@ export const singleSimulationContributionsTableRowSchema = z.object({
   totalPortfolioValue: z.number().nullable(),
   netCashFlow: z.number().nullable(),
   historicalYear: z.number().nullable(),
-  // perAccountData: AccountDataWithTransactions[];
 });
 
 export type SingleSimulationContributionsTableRow = z.infer<typeof singleSimulationContributionsTableRowSchema>;
@@ -243,7 +232,6 @@ const SINGLE_SIMULATION_CONTRIBUTIONS_COLUMNS = {
   totalPortfolioValue: { title: 'Total Portfolio Value', format: 'currency' },
   netCashFlow: { title: 'Net Cash Flow', format: 'currency' },
   historicalYear: { title: 'Historical Year', format: 'number' },
-  // perAccountData: { title: 'Per Account Data', format: 'json' },
 } as const;
 
 export const SIMULATION_CONTRIBUTIONS_TABLE_CONFIG: Record<
@@ -271,7 +259,6 @@ export const singleSimulationWithdrawalsTableRowSchema = z.object({
   netCashFlow: z.number().nullable(),
   withdrawalRate: z.number().nullable(),
   historicalYear: z.number().nullable(),
-  // perAccountData: AccountDataWithTransactions[];
 });
 
 export type SingleSimulationWithdrawalsTableRow = z.infer<typeof singleSimulationWithdrawalsTableRowSchema>;
@@ -292,7 +279,6 @@ const SINGLE_SIMULATION_WITHDRAWALS_COLUMNS = {
   netCashFlow: { title: 'Net Cash Flow', format: 'currency' },
   withdrawalRate: { title: 'Withdrawal Rate', format: 'percentage' },
   historicalYear: { title: 'Historical Year', format: 'number' },
-  // perAccountData: { title: 'Per Account Data', format: 'json' },
 } as const;
 
 export const SIMULATION_WITHDRAWALS_TABLE_CONFIG: Record<
