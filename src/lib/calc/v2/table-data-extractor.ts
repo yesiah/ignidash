@@ -7,6 +7,15 @@ import type { MultiSimulationAnalysis } from './multi-simulation-analyzer';
 import type { SimulationResult, MultiSimulationResult } from './simulation-engine';
 
 export class TableDataExtractor {
+  // export enum SimulationCategory {
+  //   Portfolio = 'Portfolio',
+  //   CashFlow = 'Cash Flow',
+  //   Taxes = 'Taxes',
+  //   Returns = 'Returns',
+  //   Contributions = 'Contributions',
+  //   Withdrawals = 'Withdrawals',
+  // }
+
   extractSingleSimulationData(simulation: SimulationResult, category: SimulationCategory): SingleSimulationTableRow[] {
     return simulation.data.map((data, idx) => {
       const startAge = simulation.context.startAge;
@@ -22,6 +31,33 @@ export class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const portfolioValue = portfolioData.totalValue;
+      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+      const annualContributions = portfolioData.contributionsForPeriod;
+
+      let cashSavings = 0;
+      let taxableBrokerage = 0;
+      let taxDeferred = 0;
+      let taxFree = 0;
+
+      for (const account of Object.values(portfolioData.perAccountData)) {
+        switch (account.type) {
+          case 'savings':
+            cashSavings += account.totalValue;
+            break;
+          case 'taxableBrokerage':
+            taxableBrokerage += account.totalValue;
+            break;
+          case '401k':
+          case 'ira':
+          case 'hsa':
+            taxDeferred += account.totalValue;
+            break;
+          case 'roth401k':
+          case 'rothIra':
+            taxFree += account.totalValue;
+            break;
+        }
+      }
 
       const assetAllocation = portfolioData.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
       const stocksAllocation = assetAllocation.stocks;
@@ -29,23 +65,28 @@ export class TableDataExtractor {
       const cashAllocation = assetAllocation.cash;
 
       const returnsData = data.returns;
-      const stockReturn = returnsData?.annualReturnRates.stocks ?? null;
-      const bondReturn = returnsData?.annualReturnRates.bonds ?? null;
-      const cashReturn = returnsData?.annualReturnRates.cash ?? null;
-      const inflationRate = returnsData?.annualInflationRate ?? null;
+      const {
+        stocks: stockAmount,
+        bonds: bondAmount,
+        cash: cashAmount,
+      } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
 
       return {
         year: idx,
         age: currDateYear - startDateYear + startAge,
         phaseName: formattedPhaseName,
         portfolioValue,
+        annualReturns: stockAmount + bondAmount + cashAmount,
+        annualWithdrawals,
+        annualContributions,
+        netPortfolioChange: stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals,
         stockValue: portfolioValue * stocksAllocation,
-        stockReturn,
         bondValue: portfolioValue * bondsAllocation,
-        bondReturn,
         cashValue: portfolioValue * cashAllocation,
-        cashReturn,
-        inflationRate,
+        taxableBrokerage,
+        taxDeferred,
+        taxFree,
+        cashSavings,
         historicalYear,
       };
     });
