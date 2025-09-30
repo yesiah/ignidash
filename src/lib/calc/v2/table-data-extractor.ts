@@ -313,6 +313,7 @@ export class TableDataExtractor {
       let taxableBrokerage = 0;
       let taxDeferred = 0;
       let taxFree = 0;
+      let taxDeferredWithdrawals = 0;
 
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
@@ -326,6 +327,7 @@ export class TableDataExtractor {
           case 'ira':
           case 'hsa':
             taxDeferred += account.contributionsForPeriod;
+            taxDeferredWithdrawals += account.withdrawalsForPeriod;
             break;
           case 'roth401k':
           case 'rothIra':
@@ -333,6 +335,17 @@ export class TableDataExtractor {
             break;
         }
       }
+
+      const incomesData = data.incomes;
+      const expensesData = data.expenses;
+      const taxesData = data.taxes;
+
+      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const totalExpenses = expensesData?.totalExpenses ?? 0;
+      const netIncome = grossIncome - incomeTax;
+      const netCashFlow = netIncome - totalExpenses;
 
       return {
         year: idx,
@@ -345,7 +358,7 @@ export class TableDataExtractor {
         taxFree,
         cashSavings,
         totalPortfolioValue,
-        netCashFlow: null,
+        netCashFlow,
         historicalYear,
       };
     });
@@ -392,6 +405,16 @@ export class TableDataExtractor {
         }
       }
 
+      const incomesData = data.incomes;
+      const expensesData = data.expenses;
+      const taxesData = data.taxes;
+
+      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
+      const grossIncome = ordinaryIncome + taxDeferred;
+      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const totalExpenses = expensesData?.totalExpenses ?? 0;
+      const netIncome = grossIncome - incomeTax;
+      const netCashFlow = netIncome - totalExpenses;
       const withdrawalRate =
         totalPortfolioValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalPortfolioValue + annualWithdrawals)) * 100 : null;
 
@@ -408,7 +431,7 @@ export class TableDataExtractor {
         taxFree,
         cashSavings,
         totalPortfolioValue,
-        netCashFlow: null,
+        netCashFlow,
         withdrawalRate,
         historicalYear,
       };
