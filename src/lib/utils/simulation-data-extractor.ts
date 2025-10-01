@@ -62,7 +62,7 @@ export class SimulationDataExtractor {
 
           let earlyRetirementStocks = acc.earlyRetirementStocks;
           let yearsOfEarlyRetirement = acc.yearsOfEarlyRetirement;
-          if (retirementAge !== null && currAge >= retirementAge && currAge <= retirementAge + 3) {
+          if (retirementAge !== null && currAge >= retirementAge && currAge < retirementAge + 5) {
             earlyRetirementStocks += stockReturn;
             yearsOfEarlyRetirement += 1;
           }
