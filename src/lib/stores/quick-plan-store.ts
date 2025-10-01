@@ -149,7 +149,6 @@ const cleanupExistingData = () => {
   try {
     const parsed = JSON.parse(stored);
     if (parsed.state?.preferences?.dataStorage === 'none') {
-      // Only keep preferences, remove inputs
       const cleanedData = {
         state: {
           preferences: parsed.state.preferences,
@@ -159,7 +158,6 @@ const cleanupExistingData = () => {
       localStorage.setItem('quick-plan-storage', JSON.stringify(cleanedData));
     }
   } catch (error) {
-    // Handle parsing errors - remove corrupted data
     console.warn('Failed to parse quick-plan storage:', error);
     localStorage.removeItem('quick-plan-storage');
   }
