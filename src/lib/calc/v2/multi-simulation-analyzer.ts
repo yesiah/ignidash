@@ -50,30 +50,15 @@ export class MultiSimulationAnalyzer {
 
     switch (sortMode) {
       case 'finalPortfolioValue':
-        return {
-          ...base,
-          finalPortfolioValue: 1,
-        };
+        return { ...base, finalPortfolioValue: 1 };
       case 'retirementAge':
-        return {
-          ...base,
-          retirementAge: 1,
-        };
+        return { ...base, retirementAge: 1 };
       case 'bankruptcyAge':
-        return {
-          ...base,
-          bankruptcyAge: 1,
-        };
+        return { ...base, bankruptcyAge: 1 };
       case 'averageStockReturn':
-        return {
-          ...base,
-          averageStockReturn: 1,
-        };
+        return { ...base, averageStockReturn: 1 };
       case 'earlyRetirementStockReturn':
-        return {
-          ...base,
-          earlyRetirementStockReturn: 1,
-        };
+        return { ...base, earlyRetirementStockReturn: 1 };
     }
   }
 
