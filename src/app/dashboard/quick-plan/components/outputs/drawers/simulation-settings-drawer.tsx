@@ -1,14 +1,16 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useSimulationSettings, useUpdateSimulationSettings } from '@/lib/stores/quick-plan-store';
+import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
-import { Field, FieldGroup, Fieldset, Label, Description } from '@/components/catalyst/fieldset';
+import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import { type SimulationSettingsInputs, simulationSettingsSchema } from '@/lib/schemas/simulation-settings-schema';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
@@ -21,7 +23,14 @@ interface SimulationSettingsDrawerProps {
 export default function SimulationSettingsDrawer({ setOpen }: SimulationSettingsDrawerProps) {
   const simulationSettings = useSimulationSettings();
 
-  const { control, register, handleSubmit, reset } = useForm({
+  const {
+    control,
+    register,
+    unregister,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(simulationSettingsSchema),
     defaultValues: simulationSettings,
   });
@@ -33,6 +42,12 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
   };
 
   const simulationMode = useWatch({ control, name: 'simulationMode' });
+
+  useEffect(() => {
+    if (simulationMode !== 'historicalReturns') {
+      unregister('historicalStartYearOverride');
+    }
+  }, [simulationMode, unregister]);
 
   let simulationModeDesc;
   switch (simulationMode) {
@@ -80,6 +95,27 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
                   <Description>{simulationModeDesc}</Description>
                 </Field>
                 <Divider />
+                {simulationMode === 'historicalReturns' && (
+                  <>
+                    <Field>
+                      <Label htmlFor="historicalStartYearOverride" className="flex w-full items-center justify-between">
+                        <span className="whitespace-nowrap">Historical Start Year</span>
+                        <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                      </Label>
+                      <NumberInput
+                        name="historicalStartYearOverride"
+                        control={control}
+                        id="historicalStartYearOverride"
+                        inputMode="numeric"
+                        placeholder="1929"
+                        decimalScale={0}
+                      />
+                      {errors.historicalStartYearOverride && <ErrorMessage>{errors.historicalStartYearOverride?.message}</ErrorMessage>}
+                      <Description>Start your simulation from a specific historical year or leave blank to use a random year.</Description>
+                    </Field>
+                    <Divider />
+                  </>
+                )}
               </FieldGroup>
             </Fieldset>
             <DialogActions>
