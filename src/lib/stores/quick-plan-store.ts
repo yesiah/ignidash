@@ -58,7 +58,7 @@ interface QuickPlanState {
       | 'historicalReturns'
       | 'monteCarloStochasticReturns'
       | 'monteCarloHistoricalReturns';
-    monteCarloSortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn';
+    monteCarloSortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn';
   };
 
   actions: {

@@ -33,34 +33,70 @@ export interface MultiSimulationAnalysis {
   results: Percentiles<SimulationResult>;
 }
 
-type MetricKey = 'success' | 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn';
+type MetricKey = 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn';
 type NormalizedValues = Record<MetricKey, number>;
 
 export class MultiSimulationAnalyzer {
-  private static buildWeights(sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn') {
+  private static buildWeights(
+    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn'
+  ) {
     const base: Record<MetricKey, number> = {
-      success: 0.25,
       finalPortfolioValue: 0.25,
       retirementAge: 0.25,
       bankruptcyAge: 0.25,
       averageStockReturn: 0,
+      earlyRetirementStockReturn: 0,
     };
 
     switch (sortMode) {
-      case 'retirementAge':
-        return { ...base, retirementAge: 1, success: 0, finalPortfolioValue: 0, bankruptcyAge: 0, averageStockReturn: 0 };
       case 'finalPortfolioValue':
-        return { ...base, finalPortfolioValue: 1, success: 0, retirementAge: 0, bankruptcyAge: 0, averageStockReturn: 0 };
+        return {
+          ...base,
+          finalPortfolioValue: 1,
+          success: 0,
+          retirementAge: 0,
+          bankruptcyAge: 0,
+          averageStockReturn: 0,
+          earlyRetirementStockReturn: 0,
+        };
+      case 'retirementAge':
+        return {
+          ...base,
+          retirementAge: 1,
+          success: 0,
+          finalPortfolioValue: 0,
+          bankruptcyAge: 0,
+          averageStockReturn: 0,
+          earlyRetirementStockReturn: 0,
+        };
       case 'bankruptcyAge':
-        return { ...base, bankruptcyAge: 1, success: 0, finalPortfolioValue: 0, retirementAge: 0, averageStockReturn: 0 };
+        return {
+          ...base,
+          bankruptcyAge: 1,
+          success: 0,
+          finalPortfolioValue: 0,
+          retirementAge: 0,
+          averageStockReturn: 0,
+          earlyRetirementStockReturn: 0,
+        };
       case 'averageStockReturn':
-        return { ...base, averageStockReturn: 1, success: 0, finalPortfolioValue: 0, retirementAge: 0, bankruptcyAge: 0 };
+        return {
+          ...base,
+          averageStockReturn: 1,
+          success: 0,
+          finalPortfolioValue: 0,
+          retirementAge: 0,
+          bankruptcyAge: 0,
+          earlyRetirementStockReturn: 0,
+        };
+      case 'earlyRetirementStockReturn':
+        throw new Error('Not implemented yet');
     }
   }
 
   analyzeV2(
     multiSimulationResult: MultiSimulationResult,
-    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn'
+    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn'
   ): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
@@ -110,23 +146,23 @@ export class MultiSimulationAnalyzer {
       const normalizedFinalPortfolioValueA = this.normalize(lastDpA.portfolio.totalValue, minFinalPortfolioValue, finalPortfolioValueRange);
       const normalizedFinalPortfolioValueB = this.normalize(lastDpB.portfolio.totalValue, minFinalPortfolioValue, finalPortfolioValueRange);
 
-      const successA = Number(retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1);
-      const successB = Number(retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1);
+      const _successA = Number(retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1);
+      const _successB = Number(retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1);
 
       const valuesA: NormalizedValues = {
-        success: successA,
         finalPortfolioValue: normalizedFinalPortfolioValueA,
         retirementAge: normalizedRetirementAgeA,
         bankruptcyAge: normalizedBankruptcyAgeA,
         averageStockReturn: normalizedAverageStockReturnA,
+        earlyRetirementStockReturn: 0,
       };
 
       const valuesB: NormalizedValues = {
-        success: successB,
         finalPortfolioValue: normalizedFinalPortfolioValueB,
         retirementAge: normalizedRetirementAgeB,
         bankruptcyAge: normalizedBankruptcyAgeB,
         averageStockReturn: normalizedAverageStockReturnB,
+        earlyRetirementStockReturn: 0,
       };
 
       const scoreA = this.calculateScore(valuesA, weights);

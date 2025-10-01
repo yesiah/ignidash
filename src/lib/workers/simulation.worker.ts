@@ -50,7 +50,7 @@ const simulationAPI = {
 
   async getDerivedMultiSimulationData(
     handle: string,
-    sortMode: 'retirementAge' | 'finalPortfolioValue' | 'bankruptcyAge' | 'averageStockReturn',
+    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn',
     category: SimulationCategory
   ): Promise<DerivedMultiSimulationData> {
     if (!cache || cache.handle !== handle) throw new Error('Simulation not found');
