@@ -46,12 +46,15 @@ import { SimulationCategory } from '@/lib/types/simulation-category';
 // STATE INTERFACE & DEFAULT STATE
 // ================================
 
-export type SimulationMode =
-  | 'fixedReturns'
-  | 'stochasticReturns'
-  | 'historicalReturns'
-  | 'monteCarloStochasticReturns'
-  | 'monteCarloHistoricalReturns';
+export const simulationModes = [
+  'fixedReturns',
+  'stochasticReturns',
+  'historicalReturns',
+  'monteCarloStochasticReturns',
+  'monteCarloHistoricalReturns',
+] as const;
+
+export type SimulationMode = (typeof simulationModes)[number];
 
 export type MonteCarloSortMode =
   | 'finalPortfolioValue'
