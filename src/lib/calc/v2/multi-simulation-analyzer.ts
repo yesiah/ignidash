@@ -2,6 +2,7 @@ import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
+import type { MonteCarloSortMode } from '@/lib/stores/quick-plan-store';
 
 import type { SimulationDataPoint, MultiSimulationResult, SimulationResult } from './simulation-engine';
 import type { PortfolioData, AccountDataWithTransactions } from './portfolio';
@@ -18,14 +19,11 @@ export interface MultiSimulationAnalysis {
   results: Percentiles<SimulationResult>;
 }
 
-type MetricKey = 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn';
-type NormalizedValues = Record<MetricKey, number>;
+type NormalizedValues = Record<MonteCarloSortMode, number>;
 
 export class MultiSimulationAnalyzer {
-  private static buildWeights(
-    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn'
-  ) {
-    const base: Record<MetricKey, number> = {
+  private static buildWeights(sortMode: MonteCarloSortMode) {
+    const base: Record<MonteCarloSortMode, number> = {
       finalPortfolioValue: 0,
       retirementAge: 0,
       bankruptcyAge: 0,
@@ -47,10 +45,7 @@ export class MultiSimulationAnalyzer {
     }
   }
 
-  analyzeV2(
-    multiSimulationResult: MultiSimulationResult,
-    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn'
-  ): MultiSimulationAnalysis {
+  analyzeV2(multiSimulationResult: MultiSimulationResult, sortMode: MonteCarloSortMode): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
     const numDataPoints = simulations[0][1]?.data.length;
@@ -173,8 +168,8 @@ export class MultiSimulationAnalyzer {
     return { success: successCount / simulations.length, results };
   }
 
-  private calculateScore(values: NormalizedValues, weights: Record<MetricKey, number>): number {
-    return (Object.keys(weights) as MetricKey[]).reduce((sum, key) => sum + weights[key] * values[key], 0);
+  private calculateScore(values: NormalizedValues, weights: Record<MonteCarloSortMode, number>): number {
+    return (Object.keys(weights) as MonteCarloSortMode[]).reduce((sum, key) => sum + weights[key] * values[key], 0);
   }
 
   analyze(multiSimulationResult: MultiSimulationResult): MultiSimulationAnalysis {

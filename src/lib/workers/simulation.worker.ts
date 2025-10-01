@@ -1,6 +1,7 @@
 import * as Comlink from 'comlink';
 import { v4 as uuidv4 } from 'uuid';
 
+import type { MonteCarloSortMode } from '@/lib/stores/quick-plan-store';
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { MultiSimulationAnalyzer, type MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-analyzer';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
@@ -50,7 +51,7 @@ const simulationAPI = {
 
   async getDerivedMultiSimulationData(
     handle: string,
-    sortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn',
+    sortMode: MonteCarloSortMode,
     category: SimulationCategory
   ): Promise<DerivedMultiSimulationData> {
     if (!cache || cache.handle !== handle) throw new Error('Simulation not found');

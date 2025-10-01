@@ -46,6 +46,20 @@ import { SimulationCategory } from '@/lib/types/simulation-category';
 // STATE INTERFACE & DEFAULT STATE
 // ================================
 
+export type SimulationMode =
+  | 'fixedReturns'
+  | 'stochasticReturns'
+  | 'historicalReturns'
+  | 'monteCarloStochasticReturns'
+  | 'monteCarloHistoricalReturns';
+
+export type MonteCarloSortMode =
+  | 'finalPortfolioValue'
+  | 'retirementAge'
+  | 'bankruptcyAge'
+  | 'averageStockReturn'
+  | 'earlyRetirementStockReturn';
+
 interface QuickPlanState {
   inputs: QuickPlanInputs;
 
@@ -54,13 +68,8 @@ interface QuickPlanState {
     showReferenceLines: boolean;
     simulationSeed: number;
     sidebarCollapsed: boolean;
-    simulationMode:
-      | 'fixedReturns'
-      | 'stochasticReturns'
-      | 'historicalReturns'
-      | 'monteCarloStochasticReturns'
-      | 'monteCarloHistoricalReturns';
-    monteCarloSortMode: 'finalPortfolioValue' | 'retirementAge' | 'bankruptcyAge' | 'averageStockReturn' | 'earlyRetirementStockReturn';
+    simulationMode: SimulationMode;
+    monteCarloSortMode: MonteCarloSortMode;
   };
 
   actions: {
