@@ -1,6 +1,7 @@
 import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
 import { nyuHistoricalData, NyuHistoricalYearData, getNyuDataRange } from '../data/nyu-historical-data';
 import { AssetReturnRates } from '../asset';
+import { PhaseData } from '../v2/phase';
 import { SeededRandom } from './seeded-random';
 
 export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
@@ -10,7 +11,11 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   private currentHistoricalYear: number;
   private historicalRanges: Array<{ startYear: number; endYear: number }> = [];
 
-  constructor(seed: number, startYearOverride: number | undefined) {
+  constructor(
+    seed: number,
+    startYearOverride: number | undefined,
+    private retirementStartYearOverride: number | undefined
+  ) {
     this.historicalDataRange = getNyuDataRange();
     this.historicalData = nyuHistoricalData;
     this.rng = new SeededRandom(seed);
@@ -25,7 +30,7 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
     return this.historicalDataRange.startYear + randomOffset;
   }
 
-  getReturns(): ReturnsWithMetadata {
+  getReturns(phaseData: PhaseData | null): ReturnsWithMetadata {
     if (this.currentHistoricalYear <= this.historicalDataRange.endYear) {
       this.historicalRanges[this.historicalRanges.length - 1].endYear = this.currentHistoricalYear;
     } else {

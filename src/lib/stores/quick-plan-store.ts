@@ -422,6 +422,11 @@ export const useSimulationResult = (
   let startYearOverride = useQuickPlanStore((state) => state.preferences.simulationSettings.historicalStartYearOverride);
   startYearOverride = !hasSeedOverride ? startYearOverride : undefined;
 
+  let retirementStartYearOverride = useQuickPlanStore(
+    (state) => state.preferences.simulationSettings.historicalRetirementStartYearOverride
+  );
+  retirementStartYearOverride = !hasSeedOverride ? retirementStartYearOverride : undefined;
+
   return useMemo(() => {
     const timeline = inputs.timeline;
     if (!timeline) return null;
@@ -437,7 +442,7 @@ export const useSimulationResult = (
         return engine.runSimulation(returnsProvider, timeline);
       }
       case 'historicalReturns': {
-        const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed, startYearOverride);
+        const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed, startYearOverride, retirementStartYearOverride);
         const res = engine.runSimulation(returnsProvider, timeline);
         const historicalRanges = returnsProvider.getHistoricalRanges();
         return {
@@ -449,7 +454,7 @@ export const useSimulationResult = (
         };
       }
     }
-  }, [inputs, seed, simulationMode, startYearOverride]);
+  }, [inputs, seed, simulationMode, startYearOverride, retirementStartYearOverride]);
 };
 
 export const useMultiSimulationResult = (

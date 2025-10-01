@@ -1,6 +1,7 @@
 import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
 import { SeededRandom } from './seeded-random';
+import { PhaseData } from '../v2/phase';
 
 interface MarketVolatility {
   stocks: number;
@@ -77,7 +78,7 @@ export class StochasticReturnsProvider implements ReturnsProvider {
     this.volatility = DEFAULT_VOLATILITY;
   }
 
-  getReturns(): ReturnsWithMetadata {
+  getReturns(phaseData: PhaseData | null): ReturnsWithMetadata {
     // Generate independent standard normal random variables
     const independentRandoms = [this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian(), this.rng.nextGaussian()];
 

@@ -2,9 +2,13 @@ import { describe, it, expect } from 'vitest';
 
 import { LcgHistoricalBacktestReturnsProvider } from './lcg-historical-backtest-returns-provider';
 import { getNyuDataRange, nyuHistoricalData } from '../data/nyu-historical-data';
+import { PhaseData } from '../v2/phase';
 
 describe('LcgHistoricalBacktestReturnsProvider', () => {
   const dataRange = getNyuDataRange();
+  const phaseData: PhaseData = {
+    name: 'accumulation',
+  };
 
   describe('core functionality', () => {
     it('should return exact NYU historical data for the selected year', () => {
@@ -12,7 +16,7 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       let provider: LcgHistoricalBacktestReturnsProvider | null = null;
 
       for (let seed = 1; seed < 1000; seed++) {
-        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed);
+        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed, undefined, undefined);
         const historicalRanges = testProvider.getHistoricalRanges();
         const startYear = historicalRanges[0].startYear;
 
@@ -23,7 +27,7 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       }
 
       expect(provider).not.toBeNull();
-      const result = provider!.getReturns();
+      const result = provider!.getReturns(phaseData);
 
       // Get the expected data for 1929
       const expectedData = nyuHistoricalData.find((d) => d.year === 1929)!;
@@ -36,11 +40,11 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
     });
 
     it('should produce consistent results with same seed', () => {
-      const provider1 = new LcgHistoricalBacktestReturnsProvider(42);
-      const provider2 = new LcgHistoricalBacktestReturnsProvider(42);
+      const provider1 = new LcgHistoricalBacktestReturnsProvider(42, undefined, undefined);
+      const provider2 = new LcgHistoricalBacktestReturnsProvider(42, undefined, undefined);
 
-      const result1 = provider1.getReturns();
-      const result2 = provider2.getReturns();
+      const result1 = provider1.getReturns(phaseData);
+      const result2 = provider2.getReturns(phaseData);
 
       const historicalRanges1 = provider1.getHistoricalRanges();
       const historicalRanges2 = provider2.getHistoricalRanges();
@@ -54,9 +58,9 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       const baseSeed = 54321;
 
       // Create providers for different scenarios
-      const provider1 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 1 * 1009);
-      const provider2 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 2 * 1009);
-      const provider3 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 3 * 1009);
+      const provider1 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 1 * 1009, undefined, undefined);
+      const provider2 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 2 * 1009, undefined, undefined);
+      const provider3 = new LcgHistoricalBacktestReturnsProvider(baseSeed + 3 * 1009, undefined, undefined);
 
       const historicalRanges1 = provider1.getHistoricalRanges();
       const historicalRanges2 = provider2.getHistoricalRanges();
@@ -87,7 +91,7 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       let provider: LcgHistoricalBacktestReturnsProvider | null = null;
 
       for (let seed = 1; seed < 1000; seed++) {
-        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed);
+        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed, undefined, undefined);
         const historicalRanges = testProvider.getHistoricalRanges();
         const startYear = historicalRanges[0].startYear;
 
@@ -98,13 +102,13 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       }
 
       expect(provider).not.toBeNull();
-      provider!.getReturns();
+      provider!.getReturns(phaseData);
       const historicalRanges1 = provider!.getHistoricalRanges();
       expect(historicalRanges1[0].startYear).toBe(1928);
       expect(historicalRanges1[0].endYear).toBe(1928);
 
       // Year 2 should progress to 1929
-      provider!.getReturns();
+      provider!.getReturns(phaseData);
       const historicalRanges2 = provider!.getHistoricalRanges();
       expect(historicalRanges2[0].startYear).toBe(1928);
       expect(historicalRanges2[0].endYear).toBe(1929);
@@ -115,7 +119,7 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       let provider: LcgHistoricalBacktestReturnsProvider | null = null;
 
       for (let seed = 1; seed < 1000; seed++) {
-        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed);
+        const testProvider = new LcgHistoricalBacktestReturnsProvider(seed, undefined, undefined);
         const historicalRanges = testProvider.getHistoricalRanges();
         const startYear = historicalRanges[0].startYear;
 
@@ -126,13 +130,13 @@ describe('LcgHistoricalBacktestReturnsProvider', () => {
       }
 
       expect(provider).not.toBeNull();
-      provider!.getReturns();
+      provider!.getReturns(phaseData);
       const historicalRanges1 = provider!.getHistoricalRanges();
       expect(historicalRanges1[0].startYear).toBe(2024);
       expect(historicalRanges1[0].endYear).toBe(2024);
 
       // Year 2 should trigger a loop
-      provider!.getReturns();
+      provider!.getReturns(phaseData);
       const historicalRanges2 = provider!.getHistoricalRanges();
       expect(historicalRanges2[1].startYear).toBe(1928); // Should have looped
     });

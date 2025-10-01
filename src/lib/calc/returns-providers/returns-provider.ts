@@ -20,6 +20,7 @@
  */
 
 import { AssetReturnRates, AssetReturnAmounts } from '../asset';
+import { PhaseData } from '../v2/phase';
 
 /**
  * Represents asset returns data combined with relevant metadata.
@@ -45,5 +46,5 @@ export interface ReturnsProvider<TExtras extends Record<string, unknown> = Recor
    * Get the real returns from the provider.
    * @returns The real asset returns from the provider.
    */
-  getReturns(): ReturnsWithMetadata<TExtras>;
+  getReturns(phaseData: PhaseData | null): ReturnsWithMetadata<TExtras>;
 }

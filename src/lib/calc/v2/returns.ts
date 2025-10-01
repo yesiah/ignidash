@@ -26,7 +26,8 @@ export class ReturnsProcessor {
     private simulationState: SimulationState,
     private returnsProvider: ReturnsProvider
   ) {
-    const returns = this.returnsProvider.getReturns();
+    const phaseData = this.simulationState.phase;
+    const returns = this.returnsProvider.getReturns(phaseData);
 
     this.cachedAnnualReturnRates = returns.returns;
     this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;
@@ -36,7 +37,8 @@ export class ReturnsProcessor {
   process(): ReturnsData {
     const currentYear = Math.floor(this.simulationState.time.year);
     if (currentYear !== this.lastYear) {
-      const returns = this.returnsProvider.getReturns();
+      const phaseData = this.simulationState.phase;
+      const returns = this.returnsProvider.getReturns(phaseData);
 
       this.cachedAnnualReturnRates = returns.returns;
       this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;

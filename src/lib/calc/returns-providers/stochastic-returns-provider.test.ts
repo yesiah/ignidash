@@ -3,8 +3,13 @@ import { describe, it, expect } from 'vitest';
 import { defaultState } from '@/lib/stores/quick-plan-store';
 
 import { StochasticReturnsProvider } from './stochastic-returns-provider';
+import { PhaseData } from '../v2/phase';
 
 describe('StochasticReturnsProvider', () => {
+  const phaseData: PhaseData = {
+    name: 'accumulation',
+  };
+
   describe('generateNormalReturn', () => {
     it('should apply normal distribution formula correctly', () => {
       const provider = new StochasticReturnsProvider(defaultState.inputs, 12345);
@@ -77,8 +82,8 @@ describe('StochasticReturnsProvider', () => {
       const provider1 = new StochasticReturnsProvider(defaultState.inputs, 999);
       const provider2 = new StochasticReturnsProvider(defaultState.inputs, 999);
 
-      const result1 = provider1.getReturns(); // Year 1 of simulation
-      const result2 = provider2.getReturns(); // Year 1 of simulation
+      const result1 = provider1.getReturns(phaseData); // Year 1 of simulation
+      const result2 = provider2.getReturns(phaseData); // Year 1 of simulation
 
       expect(result1.returns.stocks).toBe(result2.returns.stocks);
       expect(result1.returns.bonds).toBe(result2.returns.bonds);
@@ -118,7 +123,7 @@ describe('StochasticReturnsProvider', () => {
 
         // Simulate multiple years within each scenario
         for (let year = 1; year <= yearsPerScenario; year++) {
-          const result = scenarioProvider.getReturns();
+          const result = scenarioProvider.getReturns(phaseData);
 
           // Convert real returns back to nominal for statistical analysis
           const nominalStock = (1 + result.returns.stocks) * (1 + result.metadata.inflationRate / 100) - 1;
