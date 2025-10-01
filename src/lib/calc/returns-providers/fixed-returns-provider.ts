@@ -1,6 +1,6 @@
-import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
-import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
-import { PhaseData } from '../v2/phase';
+import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
+import type { PhaseData } from '../v2/phase';
 
 export class FixedReturnsProvider implements ReturnsProvider {
   constructor(private inputs: QuickPlanInputs) {}

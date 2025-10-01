@@ -19,8 +19,8 @@
  * - Fisher equation implementation for accurate real return conversion
  */
 
-import { AssetReturnRates, AssetReturnAmounts } from '../asset';
-import { PhaseData } from '../v2/phase';
+import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
+import type { PhaseData } from '../v2/phase';
 
 /**
  * Represents asset returns data combined with relevant metadata.

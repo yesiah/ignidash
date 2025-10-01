@@ -1,9 +1,8 @@
-import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
-import { nyuHistoricalData, NyuHistoricalYearData, getNyuDataRange } from '../data/nyu-historical-data';
-import { AssetReturnRates } from '../asset';
-import { PhaseData } from '../v2/phase';
+import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
+import { nyuHistoricalData, type NyuHistoricalYearData, getNyuDataRange } from '../data/nyu-historical-data';
+import type { AssetReturnRates } from '../asset';
 import { SeededRandom } from './seeded-random';
-import { PhaseName } from '../v2/phase';
+import type { PhaseData, PhaseName } from '../v2/phase';
 
 export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   private readonly historicalDataRange: { startYear: number; endYear: number };

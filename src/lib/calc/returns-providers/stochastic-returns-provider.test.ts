@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { defaultState } from '@/lib/stores/quick-plan-store';
 
 import { StochasticReturnsProvider } from './stochastic-returns-provider';
-import { PhaseData } from '../v2/phase';
+import type { PhaseData } from '../v2/phase';
 
 describe('StochasticReturnsProvider', () => {
   const phaseData: PhaseData = {

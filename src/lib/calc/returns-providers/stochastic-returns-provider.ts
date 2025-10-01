@@ -1,7 +1,7 @@
-import { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
-import { ReturnsProvider, ReturnsWithMetadata } from './returns-provider';
+import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
 import { SeededRandom } from './seeded-random';
-import { PhaseData } from '../v2/phase';
+import type { PhaseData } from '../v2/phase';
 
 interface MarketVolatility {
   stocks: number;
