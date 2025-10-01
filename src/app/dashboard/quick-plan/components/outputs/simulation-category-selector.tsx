@@ -34,7 +34,13 @@ export default function SimulationCategorySelector({
   selectedSeed,
 }: SimulationCategorySelectorProps) {
   const percentiles = ['P10', 'P25', 'P50', 'P75', 'P90'] as const;
-  const sortModeOptions = ['retirementAge', 'bankruptcyAge', 'finalPortfolioValue', 'averageStockReturn'] as const;
+  const sortModeOptions = [
+    'finalPortfolioValue',
+    'retirementAge',
+    'bankruptcyAge',
+    'averageStockReturn',
+    'earlyRetirementStockReturn',
+  ] as const;
 
   const monteCarloSortMode = useMonteCarloSortMode();
   const updateMonteCarloSortMode = useUpdateMonteCarloSortMode();
