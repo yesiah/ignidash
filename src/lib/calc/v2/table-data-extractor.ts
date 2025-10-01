@@ -9,6 +9,7 @@ import type {
 } from '@/lib/schemas/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
+import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 
 import type { MultiSimulationAnalysis } from './multi-simulation-analyzer';
 import type { SimulationResult, MultiSimulationResult } from './simulation-engine';
@@ -500,17 +501,20 @@ export class TableDataExtractor {
 
       const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
 
+      const totalPortfolioValues = simulations.simulations.map(([, sim]) => sim.data[i].portfolio.totalValue);
+      const percentiles: Percentiles<number> = StatsUtils.calculatePercentilesFromValues(totalPortfolioValues.sort((a, b) => a - b));
+
       res.push({
         year: i,
         age: currDateYear - startDateYear + startAge,
         percentAccumulation: 0,
         percentRetirement: 0,
         percentBankrupt: 0,
-        p10PortfolioValue: analysis.results.p10.data[i]?.portfolio.totalValue ?? null,
-        p25PortfolioValue: analysis.results.p25.data[i]?.portfolio.totalValue ?? null,
-        p50PortfolioValue: analysis.results.p50.data[i]?.portfolio.totalValue ?? null,
-        p75PortfolioValue: analysis.results.p75.data[i]?.portfolio.totalValue ?? null,
-        p90PortfolioValue: analysis.results.p90.data[i]?.portfolio.totalValue ?? null,
+        p10PortfolioValue: percentiles.p10,
+        p25PortfolioValue: percentiles.p25,
+        p50PortfolioValue: percentiles.p50,
+        p75PortfolioValue: percentiles.p75,
+        p90PortfolioValue: percentiles.p90,
       });
     }
 
