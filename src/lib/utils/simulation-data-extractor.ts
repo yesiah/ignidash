@@ -62,6 +62,7 @@ export class SimulationDataExtractor {
 
           let earlyRetirementStocks = acc.earlyRetirementStocks;
           let totalWeight = acc.totalWeight;
+
           if (retirementAge !== null && currAge >= retirementAge && currAge < retirementAge + 5) {
             const yearIntoRetirement = currAge - retirementAge + 1;
             const weight = 6 - yearIntoRetirement;
