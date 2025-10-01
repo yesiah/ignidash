@@ -10,11 +10,11 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   private currentHistoricalYear: number;
   private historicalRanges: Array<{ startYear: number; endYear: number }> = [];
 
-  constructor(seed: number) {
+  constructor(seed: number, startYearOverride: number | undefined) {
     this.historicalDataRange = getNyuDataRange();
     this.historicalData = nyuHistoricalData;
     this.rng = new SeededRandom(seed);
-    this.currentHistoricalYear = this.generateRandomStartYear();
+    this.currentHistoricalYear = startYearOverride || this.generateRandomStartYear();
     this.historicalRanges = [{ startYear: this.currentHistoricalYear, endYear: this.currentHistoricalYear }];
   }
 

@@ -254,8 +254,8 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     super(inputs);
   }
 
-  runSingleSimulation(seed: number): SimulationResult {
-    const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed);
+  runSingleSimulation(seed: number, startYearOverride: number | undefined): SimulationResult {
+    const returnsProvider = new LcgHistoricalBacktestReturnsProvider(seed, startYearOverride);
 
     const timeline = this.inputs.timeline;
     if (!timeline) throw new Error('Must have timeline data for simulation');
@@ -279,7 +279,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     const simulations: Array<[number, SimulationResult]> = [];
     for (let i = 0; i < numSimulations; i++) {
       const simulationSeed = this.baseSeed + i * 1009;
-      const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed);
+      const returnsProvider = new LcgHistoricalBacktestReturnsProvider(simulationSeed, undefined);
 
       const result = this.runSimulation(returnsProvider, timeline);
       const historicalRanges = returnsProvider.getHistoricalRanges();
