@@ -92,7 +92,7 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
                   </Label>
                   <NumberInput id="inflationRate" control={control} name="inflationRate" inputMode="decimal" placeholder="3%" suffix="%" />
                   {errors.inflationRate && <ErrorMessage>{errors.inflationRate?.message}</ErrorMessage>}
-                  <Description>Expected annual inflation rate, used to calculate real returns.</Description>
+                  <Description>Expected annual inflation rate used to calculate real returns.</Description>
                 </Field>
                 <Divider />
               </FieldGroup>
