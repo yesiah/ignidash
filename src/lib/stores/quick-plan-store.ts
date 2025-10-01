@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+'use client';
+
+import { useMemo, useRef, useEffect } from 'react';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -453,12 +455,17 @@ export const useMultiSimulationResult = (
   );
 
   const handle = handleData?.handle;
+  const prevHandleRef = useRef(handle);
 
   const { data: { analysis, tableData, yearlyTableData } = {} } = useSWR(
     handle ? ['derived', handle, sortMode, category] : null,
     async () => worker.getDerivedMultiSimulationData(handle!, sortMode, category),
-    { revalidateOnFocus: false, keepPreviousData: true }
+    { revalidateOnFocus: false, keepPreviousData: prevHandleRef.current === handle }
   );
+
+  useEffect(() => {
+    prevHandleRef.current = handle;
+  }, [handle]);
 
   return { analysis, tableData, yearlyTableData, isLoading };
 };
