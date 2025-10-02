@@ -683,11 +683,11 @@ export const useCashRealReturn = () =>
  * Validation State Selectors
  * These hooks check if sections or the entire form have valid data for calculations
  */
-export const useIsCalculationReady = () =>
-  useQuickPlanStore(
-    (state) =>
-      state.inputs.timeline !== undefined &&
-      Object.keys(state.inputs.accounts).length > 0 &&
-      Object.keys(state.inputs.incomes).length > 0 &&
-      Object.keys(state.inputs.expenses).length > 0
-  );
+export const useIsCalculationReady = () => {
+  const timeline = useTimelineData();
+  const accounts = useAccountsData();
+  const incomes = useIncomesData();
+  const expenses = useExpensesData();
+
+  return timeline !== undefined && Object.keys(accounts).length > 0 && Object.keys(incomes).length > 0 && Object.keys(expenses).length > 0;
+};
