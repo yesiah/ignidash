@@ -2,11 +2,12 @@
 
 import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/quick-plan-store';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
+import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationResults from './results-pages/single-simulation-results';
 import MultiSimulationResults from './results-pages/multi-simulation-results';
 
-interface Step {
+interface CompletionStep {
   name: string;
   status: 'complete' | 'upcoming';
 }
@@ -15,7 +16,7 @@ export default function ResultsSections() {
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady();
   const simulationMode = useSimulationMode();
 
-  const steps: Step[] = [
+  const steps: CompletionStep[] = [
     { name: 'Set up your timeline', status: timelineIsReady ? 'complete' : 'upcoming' },
     { name: 'Add at least one account', status: accountsAreReady ? 'complete' : 'upcoming' },
     { name: 'Add at least one income', status: incomesAreReady ? 'complete' : 'upcoming' },
@@ -26,6 +27,9 @@ export default function ResultsSections() {
     return (
       <div className="flex h-[calc(100vh-7.375rem)] flex-col items-center justify-center gap-8 lg:h-[calc(100vh-4.3125rem)]">
         <div className="px-4 py-12 sm:px-6 lg:px-8">
+          <Subheading className="mb-4" level={3}>
+            Prepare Your Simulation
+          </Subheading>
           <nav aria-label="Progress" className="flex justify-center">
             <ol role="list" className="space-y-6">
               {steps.map((step) => (
