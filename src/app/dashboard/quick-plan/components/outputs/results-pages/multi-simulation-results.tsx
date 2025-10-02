@@ -74,7 +74,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoading) {
     return (
       <div className="text-muted-foreground flex h-full items-center justify-center">
-        <p>Completed {Math.floor(completedSimulations / 10) * 10} / 1000 simulations</p>
+        <p>Completed {Math.floor(completedSimulations / 10) * 10} / 1000 simulations...</p>
       </div>
     );
   }
