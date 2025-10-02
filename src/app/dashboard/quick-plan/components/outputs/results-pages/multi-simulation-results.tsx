@@ -78,8 +78,10 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
 
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4">
+        <p className="text-muted-foreground">
+          Completed <strong>{roundedSimulations}</strong> / <strong>1000</strong> simulations...
+        </p>
         <ProgressBar progressPercent={progressPercent} />
-        <p className="text-muted-foreground">Completed {roundedSimulations} / 1000 simulations...</p>
       </div>
     );
   }
