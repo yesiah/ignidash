@@ -75,7 +75,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoading) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4">
-        <ProgressBar />
+        <ProgressBar progressPercent={Math.floor(completedSimulations / 10) * 10} />
         <p className="text-muted-foreground">Completed {Math.floor(completedSimulations / 10) * 10} / 1000 simulations...</p>
       </div>
     );
