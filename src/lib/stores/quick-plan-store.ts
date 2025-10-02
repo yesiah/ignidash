@@ -65,7 +65,7 @@ export type MonteCarloSortMode =
   | 'averageStockReturn'
   | 'earlyRetirementStockReturn';
 
-export type SimulationStatus = 'none' | 'loading' | 'loaded';
+export type SimulationStatus = 'none' | 'loading';
 
 interface QuickPlanState {
   inputs: QuickPlanInputs;
@@ -482,12 +482,10 @@ export const useMultiSimulationResult = (
   useEffect(() => {
     if (isLoading) {
       updateSimulationStatus('loading');
-    } else if (!isLoading && handle) {
-      updateSimulationStatus('loaded');
-    } else if (!isLoading && !handle) {
+    } else {
       updateSimulationStatus('none');
     }
-  }, [isLoading, handle, updateSimulationStatus]);
+  }, [isLoading, updateSimulationStatus]);
 
   useEffect(() => {
     prevHandleRef.current = handle;
