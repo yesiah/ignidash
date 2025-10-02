@@ -11,8 +11,8 @@ export default function ResultsSections() {
 
   if (!isCalculationReady) {
     return (
-      <div className="text-muted-foreground text-center">
-        <p>Results content will be displayed here</p>
+      <div className="flex h-[calc(100vh-7.375rem)] flex-col items-center justify-center gap-8 lg:h-[calc(100vh-4.3125rem)]">
+        <p className="text-muted-foreground">Results content will be displayed here...</p>
       </div>
     );
   }
