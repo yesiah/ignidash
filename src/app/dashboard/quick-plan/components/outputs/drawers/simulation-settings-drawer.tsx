@@ -160,7 +160,7 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
           </form>
         </Card>
         {(simulationMode === 'historicalReturns' || simulationMode === 'monteCarloHistoricalReturns') && (
-          <Card>
+          <Card className="mt-4">
             <Subheading level={4}>Notable Historical Years</Subheading>
             <DescriptionList>
               <DescriptionTerm>1929—1932</DescriptionTerm>
