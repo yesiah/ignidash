@@ -3,24 +3,20 @@
 import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/quick-plan-store';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
+import { HourglassIcon, LandmarkIcon, BanknoteArrowUpIcon, BanknoteArrowDownIcon } from 'lucide-react';
 
 import SingleSimulationResults from './results-pages/single-simulation-results';
 import MultiSimulationResults from './results-pages/multi-simulation-results';
-
-interface CompletionStep {
-  name: string;
-  status: 'complete' | 'upcoming';
-}
 
 export default function ResultsSections() {
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady();
   const simulationMode = useSimulationMode();
 
-  const steps: CompletionStep[] = [
-    { name: 'Set up your timeline', status: timelineIsReady ? 'complete' : 'upcoming' },
-    { name: 'Add at least one account', status: accountsAreReady ? 'complete' : 'upcoming' },
-    { name: 'Add at least one income', status: incomesAreReady ? 'complete' : 'upcoming' },
-    { name: 'Add at least one expense', status: expensesAreReady ? 'complete' : 'upcoming' },
+  const steps = [
+    { name: 'Set up your timeline', icon: HourglassIcon, status: timelineIsReady ? 'complete' : 'upcoming' },
+    { name: 'Add at least one account', icon: LandmarkIcon, status: accountsAreReady ? 'complete' : 'upcoming' },
+    { name: 'Add at least one income', icon: BanknoteArrowUpIcon, status: incomesAreReady ? 'complete' : 'upcoming' },
+    { name: 'Add at least one expense', icon: BanknoteArrowDownIcon, status: expensesAreReady ? 'complete' : 'upcoming' },
   ];
 
   if (!(timelineIsReady && accountsAreReady && incomesAreReady && expensesAreReady)) {
