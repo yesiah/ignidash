@@ -73,10 +73,13 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   };
 
   if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoading) {
+    const roundedSimulations = Math.floor(completedSimulations / 10) * 10;
+    const progressPercent = (roundedSimulations / 1000) * 100;
+
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4">
-        <ProgressBar progressPercent={Math.floor(completedSimulations / 10) * 10} />
-        <p className="text-muted-foreground">Completed {Math.floor(completedSimulations / 10) * 10} / 1000 simulations...</p>
+        <ProgressBar progressPercent={progressPercent} />
+        <p className="text-muted-foreground">Completed {roundedSimulations} / 1000 simulations...</p>
       </div>
     );
   }
