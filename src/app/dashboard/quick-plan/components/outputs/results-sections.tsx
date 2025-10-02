@@ -75,33 +75,25 @@ export default function ResultsSections() {
               <ol role="list" className="space-y-6">
                 {steps.map((step) => (
                   <li key={step.name}>
-                    {step.status === 'complete' ? (
-                      <button className="group focus-outline cursor-pointer" onClick={step.onClick} type="button">
-                        <span className="flex items-start">
-                          <span className="relative flex size-5 shrink-0 items-center justify-center">
+                    <button className="group focus-outline cursor-pointer" onClick={step.onClick} type="button">
+                      <span className="flex items-start">
+                        <span className="relative flex size-5 shrink-0 items-center justify-center">
+                          {step.status === 'complete' ? (
                             <CheckCircleIcon
                               aria-hidden="true"
                               className="size-full text-rose-600 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300"
                             />
-                          </span>
-                          <span className="text-muted-foreground group-hover:text-foreground ml-3 text-sm font-medium">{step.name}</span>
-                          <step.icon className="ml-3 size-5 shrink-0 text-rose-600 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300" />
-                        </span>
-                      </button>
-                    ) : (
-                      <button className="group focus-outline cursor-pointer" onClick={step.onClick} type="button">
-                        <span className="flex items-start">
-                          <span className="relative flex size-5 shrink-0 items-center justify-center">
+                          ) : (
                             <XCircleIcon
                               aria-hidden="true"
                               className="size-full text-stone-300 group-hover:text-stone-400 dark:text-white/25 dark:group-hover:text-white/50"
                             />
-                          </span>
-                          <span className="text-muted-foreground group-hover:text-foreground ml-3 text-sm font-medium">{step.name}</span>
-                          <step.icon className="ml-3 size-5 shrink-0 text-rose-600 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300" />
+                          )}
                         </span>
-                      </button>
-                    )}
+                        <span className="text-muted-foreground group-hover:text-foreground ml-3 text-sm font-medium">{step.name}</span>
+                        <step.icon className="ml-3 size-5 shrink-0 text-rose-600 group-hover:text-rose-800 dark:text-rose-400 dark:group-hover:text-rose-300" />
+                      </span>
+                    </button>
                   </li>
                 ))}
               </ol>
