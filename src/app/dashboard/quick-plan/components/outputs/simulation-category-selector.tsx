@@ -63,7 +63,7 @@ export default function SimulationCategorySelector({
         ))}
       </div>
       {setCurrentPercentile && currentPercentile && (
-        <div className="border-border/50 flex shrink-0 border-l sm:gap-1.5 sm:px-2">
+        <div className="border-border flex shrink-0 border-l sm:gap-1.5 sm:px-2">
           <Dropdown>
             <DropdownButton plain aria-label="Open sort mode options" disabled={!!selectedSeed}>
               <ArrowUpDownIcon data-slot="icon" />
