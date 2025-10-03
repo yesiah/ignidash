@@ -291,9 +291,9 @@ export default function SingleSimulationTaxesBarChart({
             margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
             tabIndex={-1}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-            <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
-            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+            <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
+            <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
+            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
             {!isStacked && (
               <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
                 {transformedChartData.map((entry, idx) => (
