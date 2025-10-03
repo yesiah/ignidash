@@ -36,7 +36,7 @@ export default function ResultsColumnHeader() {
       break;
     case 'monteCarloStochasticReturns':
     case 'monteCarloHistoricalReturns':
-      title = `Monte Carlo Results | Base Seed #${seed}`;
+      title = `Monte Carlo Results`;
       break;
   }
 
