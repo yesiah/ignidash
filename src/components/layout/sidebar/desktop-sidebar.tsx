@@ -46,7 +46,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
                     var(--color-emphasized-background) 11px
                   )`,
                 }}
-              ></div>
+              />
             </li>
             <li className="mb-1">
               <ul role="list" className="space-y-1.5">
