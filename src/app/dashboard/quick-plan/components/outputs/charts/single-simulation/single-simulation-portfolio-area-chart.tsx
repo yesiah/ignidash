@@ -176,10 +176,11 @@ export default function SingleSimulationPortfolioAreaChart({
             onClick={onClick}
           >
             <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} dataKey="age" interval={interval} />
+            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
             <YAxis
               tick={{ fill: foregroundMutedColor }}
               axisLine={false}
+              tickLine={false}
               hide={isSmallScreen}
               tickFormatter={(value: number) => formatNumber(value, 1, '$')}
             />
