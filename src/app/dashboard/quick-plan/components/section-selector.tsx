@@ -68,7 +68,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
 
   return (
     <>
-      <div className="border-border/50 from-emphasized-background to-background fixed top-[4.0625rem] z-30 -mx-2 w-full border-b border-dashed bg-gradient-to-r py-2 sm:-mx-3 lg:top-0 lg:-mx-4 lg:w-[calc(100%-18rem)] lg:py-4 lg:group-data-[state=collapsed]/sidebar:w-[calc(100%-4rem)]">
+      <div className="border-border/50 from-emphasized-background to-background fixed top-[4.0625rem] z-30 -mx-2 w-full border-b border-dashed bg-gradient-to-l py-2 sm:-mx-3 lg:top-0 lg:-mx-4 lg:w-[calc(100%-18rem)] lg:py-4 lg:group-data-[state=collapsed]/sidebar:w-[calc(100%-4rem)]">
         <div className="mr-4 flex items-stretch justify-between sm:mr-6 lg:mr-8">
           <nav
             aria-label="Tabs"
@@ -82,7 +82,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 className={cn(
                   'text-muted-foreground focus-visible:ring-primary flex items-center gap-2 p-2 lowercase focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:p-4',
                   { 'text-foreground': tab.value === activeSection },
-                  { 'hover:bg-background': tab.value !== activeSection }
+                  { 'hover:bg-emphasized-background': tab.value !== activeSection }
                 )}
               >
                 <tab.icon className={cn('size-5 lg:size-6', { 'text-primary': tab.value === activeSection })} aria-hidden="true" />
