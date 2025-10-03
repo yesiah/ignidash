@@ -12,7 +12,7 @@ interface DisclosureCardProps {
 
 export default function DisclosureCard({ title, desc, icon: Icon, children }: DisclosureCardProps) {
   return (
-    <Disclosure as="div" className="bg-emphasized-background border-border/50 my-2 rounded-lg border shadow-sm dark:shadow-black/30">
+    <Disclosure as="div" className="bg-emphasized-background border-border/50 my-2 rounded-lg border shadow-sm dark:shadow-black/50">
       <DisclosureButton className="group data-open:border-border/50 focus-outline flex w-full items-center justify-between p-4 data-open:border-b data-open:pb-5">
         <div className="flex w-full items-center justify-between text-left">
           <div className="flex flex-col gap-2 transition-opacity duration-150 group-data-hover:opacity-75">
