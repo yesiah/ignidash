@@ -11,12 +11,7 @@ interface ColumnHeaderProps {
 
 export default function ColumnHeader({ title, icon: Icon, iconButton, className }: ColumnHeaderProps) {
   return (
-    <div
-      className={cn(
-        'border-border/50 bg-emphasized-background fixed top-0 z-10 -mx-2 border-b py-4 shadow-lg sm:-mx-3 lg:-mx-4 dark:shadow-black/50',
-        className
-      )}
-    >
+    <div className={cn('border-border/50 bg-emphasized-background fixed top-0 z-10 -mx-2 border-b py-4 sm:-mx-3 lg:-mx-4', className)}>
       <div className="mx-4 flex items-center justify-between sm:mx-6 lg:mx-8">
         <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight lowercase">
           <Icon className="text-primary h-8 w-8" aria-hidden="true" />
