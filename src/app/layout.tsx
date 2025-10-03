@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: 'Ignidash - AI-Powered FIRE Calculator',
   description:
     'Plan your path to Financial Independence with AI-powered insights. Model different FIRE strategies, plan life events, and share your journey.',
-  icons: '/icon.ico',
+  icons: '/icons8-investment-portfolio-office-m-96.png',
 };
 
 export default function RootLayout({
