@@ -16,7 +16,6 @@ export default function SidebarBrand({ onClose }: SidebarBrandProps) {
       <div className="mx-3 flex w-full items-center justify-between group-data-[state=collapsed]/sidebar:hidden">
         <Link href="/dashboard" className="focus-outline flex items-center" onClick={onClose}>
           <div className="px-1">
-            {/* <a target="_blank" href="https://icons8.com/icon/31138/investment-portfolio">Investment Portfolio</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> */}
             <Image src="/icons8-investment-portfolio-80.png" alt="Ignidash logo" width={32} height={32} className="shrink-0" />
           </div>
           <span className="relative ml-1 text-2xl font-bold tracking-tight">
