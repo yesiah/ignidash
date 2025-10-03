@@ -22,7 +22,7 @@ export default function SectionContainer({ children, showBottomBorder, location 
       break;
   }
 
-  const borderClass = showBottomBorder ? 'border-border/50 border-b' : '';
+  const borderClass = showBottomBorder ? 'border-border/50 border-b border-dashed' : '';
   return (
     <div className={cn('py-5', borderClass, outerXMarginClass, className)}>
       <div className={innerXMarginClass}>{children}</div>

@@ -44,7 +44,7 @@ function DisclosureSectionContent({
 
   return (
     <div className="contents">
-      <div className="border-border/50 -mx-2 border-b sm:-mx-3 lg:-mx-4">
+      <div className="border-border/50 -mx-2 border-b border-dashed sm:-mx-3 lg:-mx-4">
         <DisclosureButton
           ref={disclosureButtonRef}
           onClick={() => {
@@ -57,7 +57,7 @@ function DisclosureSectionContent({
               toggleDisclosure({ open, close, key: disclosureKey });
             }
           }}
-          className="focus-visible:ring-primary group from-emphasized-background flex w-full items-center justify-between bg-gradient-to-l px-4 py-4 hover:to-rose-500/50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:py-8"
+          className="focus-visible:ring-primary group from-emphasized-background to-background flex w-full items-center justify-between bg-gradient-to-r px-4 py-4 hover:to-rose-500/50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:py-8"
         >
           <div className="flex w-full items-center justify-between text-left">
             <div className="flex items-center gap-2 font-medium">
@@ -71,7 +71,7 @@ function DisclosureSectionContent({
           </div>
         </DisclosureButton>
       </div>
-      <DisclosurePanel className="border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4">
+      <DisclosurePanel className="border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b border-dashed sm:-mx-3 lg:-mx-4">
         <div className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}>{children}</div>
       </DisclosurePanel>
     </div>
