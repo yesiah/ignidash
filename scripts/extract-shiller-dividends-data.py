@@ -40,9 +40,33 @@ annual = annual[["Year", "DividendYield", "BondYield"]]
 
 # Write TypeScript
 with open(OUTPUT_TS, "w") as f:
+    f.write("""/**
+                * Historical stock dividend yield and bond yield data (1928-present)
+                *
+                * Source: Robert Shiller's publicly available dataset
+                * (http://www.econ.yale.edu/~shiller/data.htm)
+                *
+                * - stockYield: Annualized dividend yield of the S&P Composite index.
+                *   Calculated as (12 x monthly dividend) ÷ stock price, using December values.
+                *
+                * - bondYield: Yield of 10-year U.S. Treasury bonds (GS10), taken directly from Shiller.
+                *   Values are given as fractions (e.g., 0.045 = 4.5%).
+                *
+                * Only December observations are included (one value per year).
+                *
+                * Generated automatically - do not edit manually.
+                */
+                \n""")
+
+    f.write("export interface ShillerHistoricalYearData {\n")
+    f.write("  year: number;\n")
+    f.write("  stockYield: number;\n")
+    f.write("  bondYield: number;\n")
+    f.write("}\n\n")
+
     f.write("export const shillerHistoricalData: ShillerHistoricalYearData[] = [\n")
     for _, row in annual.iterrows():
-        year = int(row["Year"])  # ensure integer, no .0
+        year = int(row["Year"])  # ensure integer
         f.write(
             f"  {{ year: {year}, stockYield: {row['DividendYield']:.4f}, bondYield: {row['BondYield']:.4f} }},\n"
         )
