@@ -20,7 +20,7 @@ export default function SidebarBrand({ onClose }: SidebarBrandProps) {
           </div>
           <span className="relative ml-1 text-2xl font-bold tracking-tight">
             Ignidash
-            <span className="text-muted-foreground absolute top-6 left-0 text-sm/6 font-medium tracking-tighter lowercase">
+            <span className="text-muted-foreground absolute top-6 left-0 text-xs/6 font-medium tracking-tighter lowercase">
               ▸ beta 1.0.0
             </span>
           </span>
