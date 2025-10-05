@@ -164,12 +164,16 @@ export class StochasticReturnsProvider implements ReturnsProvider {
    * @returns Log-normal distributed return rate as a decimal
    */
   private generateLogNormalReturn(expectedReturn: number, volatility: number, z: number): number {
+    const mean = 1 + expectedReturn;
+    const variance = volatility * volatility;
+
     // Convert expected return to log-normal parameters
     // E[R] = exp(μ + σ²/2) - 1, so μ = ln(1 + E[R]) - σ²/2 (Reference: https://www.statlect.com/probability-distributions/log-normal-distribution)
-    const mu = Math.log(1 + expectedReturn) - 0.5 * volatility * volatility;
+    const sigmaLog = Math.sqrt(Math.log(1 + variance / (mean * mean)));
+    const mu = Math.log(mean) - 0.5 * sigmaLog * sigmaLog;
 
     // Generate log-normal return (Reference: https://en.wikipedia.org/wiki/Log-normal_distribution#Generation_and_parameters)
-    return Math.exp(mu + volatility * z) - 1;
+    return Math.exp(mu + sigmaLog * z) - 1;
   }
 
   /**

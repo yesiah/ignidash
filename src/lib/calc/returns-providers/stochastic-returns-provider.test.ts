@@ -51,9 +51,12 @@ describe('StochasticReturnsProvider', () => {
 
       const result = generateLogNormalReturn.call(provider, expectedReturn, volatility, zScore);
 
-      // Calculate expected value using the log-normal formula
-      const mu = Math.log(1 + expectedReturn) - 0.5 * volatility * volatility;
-      const expectedValue = Math.exp(mu + volatility * zScore) - 1;
+      // Calculate expected value using the corrected log-normal formula
+      const mean = 1 + expectedReturn;
+      const variance = volatility * volatility;
+      const sigma = Math.sqrt(Math.log(1 + variance / (mean * mean)));
+      const mu = Math.log(mean) - 0.5 * sigma * sigma;
+      const expectedValue = Math.exp(mu + sigma * zScore) - 1;
 
       // Verify the exact calculation
       expect(result).toBeCloseTo(expectedValue, 10);
