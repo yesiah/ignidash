@@ -157,10 +157,13 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   /**
    * Generate return from log-normal distribution
    *
-   * @param expectedReturn - Expected return rate as a decimal (e.g., 0.1 for 10%)
-   * @param volatility - Annual volatility as a decimal (e.g., 0.2 for 20%)
+   * @param expectedReturn - Arithmetic mean of historical annual returns (e.g., 0.1 for 10%)
+   * @param volatility - Standard deviation of historical annual arithmetic returns (e.g., 0.2 for 20%)
    * @param z - Standard normal random variable
    * @returns Log-normal distributed return rate as a decimal
+   *
+   * Note: Converts arithmetic moments to log-space parameters assuming
+   * the gross return (1+R) follows a log-normal distribution
    */
   private generateLogNormalReturn(expectedReturn: number, volatility: number, z: number): number {
     // Reference: https://en.wikipedia.org/wiki/Log-normal_distribution#Generation_and_parameters
@@ -182,10 +185,13 @@ export class StochasticReturnsProvider implements ReturnsProvider {
    * Generate a non-negative yield from log-normal distribution
    * Used for bond and stock yields which cannot be negative
    *
-   * @param expectedYield - Expected yield as a decimal (e.g., 0.03 for 3%)
-   * @param volatility - Annual volatility as a decimal (e.g., 0.03 for 3%)
+   * @param expectedYield - Arithmetic mean of historical annual yields (e.g., 0.03 for 3%)
+   * @param volatility - Standard deviation of historical annual arithmetic yields (e.g., 0.01 for 1%)
    * @param z - Standard normal random variable
    * @returns Log-normal distributed yield as a decimal (always >= 0)
+   *
+   * Note: Converts arithmetic moments to log-space parameters assuming
+   * the yield follows a log-normal distribution
    */
   private generateLogNormalYield(expectedYield: number, volatility: number, z: number): number {
     const mean = expectedYield;
