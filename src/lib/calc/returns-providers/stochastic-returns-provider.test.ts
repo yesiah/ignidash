@@ -327,5 +327,86 @@ describe('StochasticReturnsProvider', () => {
       // The log of stock returns should follow normal distribution properties
       testDistributionProperties(logStockReturns, meanLogStock, logStockStdDev, 'log-stocks');
     });
+
+    it('should generate yields with correct lognormal distribution properties', () => {
+      const inputs = {
+        ...defaultState.inputs,
+        marketAssumptions: {
+          stockReturn: 10,
+          stockYield: 3.5,
+          bondReturn: 5,
+          bondYield: 4.5,
+          cashReturn: 3,
+          inflationRate: 2.5,
+          simulationMode: 'monteCarlo' as const,
+        },
+      };
+
+      const baseSeed = 42;
+      const numSimulations = 10000;
+
+      const yields = {
+        bondYield: [] as number[],
+        stockYield: [] as number[],
+        inflation: [] as number[],
+      };
+
+      // Collect yields from many simulations
+      const yearsPerScenario = 30;
+      const numScenarios = Math.floor(numSimulations / yearsPerScenario);
+
+      for (let scenario = 0; scenario < numScenarios; scenario++) {
+        const scenarioSeed = baseSeed + scenario * 1009;
+        const scenarioProvider = new StochasticReturnsProvider(inputs, scenarioSeed);
+
+        for (let year = 1; year <= yearsPerScenario; year++) {
+          const result = scenarioProvider.getReturns(phaseData);
+
+          // Convert real yields back to nominal for statistical analysis
+          const nominalBondYield = (1 + result.metadata.bondYield / 100) * (1 + result.metadata.inflationRate / 100) - 1;
+          const nominalStockYield = (1 + result.metadata.stockYield / 100) * (1 + result.metadata.inflationRate / 100) - 1;
+
+          yields.bondYield.push(nominalBondYield);
+          yields.stockYield.push(nominalStockYield);
+          yields.inflation.push(result.metadata.inflationRate / 100);
+        }
+      }
+
+      // Calculate means
+      const totalDataPoints = yields.bondYield.length;
+      const meanBondYield = yields.bondYield.reduce((sum, val) => sum + val, 0) / totalDataPoints;
+      const meanStockYield = yields.stockYield.reduce((sum, val) => sum + val, 0) / totalDataPoints;
+
+      // Calculate standard deviations
+      const calcStdDev = (values: number[], mean: number) => {
+        const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+        return Math.sqrt(variance);
+      };
+
+      const bondYieldStdDev = calcStdDev(yields.bondYield, meanBondYield);
+      const stockYieldStdDev = calcStdDev(yields.stockYield, meanStockYield);
+
+      // Verify means converge to expected values
+      expect(meanBondYield).toBeCloseTo(0.045); // 4.5%
+      expect(meanStockYield).toBeCloseTo(0.035); // 3.5%
+
+      // Verify standard deviations match expected volatilities (from DEFAULT_VOLATILITY)
+      expect(bondYieldStdDev).toBeCloseTo(0.03); // 3% volatility
+      expect(stockYieldStdDev).toBeCloseTo(0.02); // 2% volatility
+
+      // Test lognormal constraints - yields should always be >= 0
+      const minBondYield = Math.min(...yields.bondYield);
+      const minStockYield = Math.min(...yields.stockYield);
+
+      expect(minBondYield).toBeGreaterThanOrEqual(0);
+      expect(minStockYield).toBeGreaterThanOrEqual(0);
+
+      // Verify no yields exceeded reasonable bounds (e.g., < 100%)
+      const maxBondYield = Math.max(...yields.bondYield);
+      const maxStockYield = Math.max(...yields.stockYield);
+
+      expect(maxBondYield).toBeLessThan(1.0); // Less than 100%
+      expect(maxStockYield).toBeLessThan(1.0); // Less than 100%
+    });
   });
 });
