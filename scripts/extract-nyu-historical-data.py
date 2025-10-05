@@ -11,75 +11,36 @@ This script processes the NYU Stern historical data to create annual returns for
 Data spans from 1928 to present with annual granularity.
 """
 
-import csv
-import re
-from typing import List, Tuple, Dict
-from dataclasses import dataclass
-from decimal import Decimal, getcontext
+import pandas as pd
+import os
 
-# Set high precision for financial calculations
-getcontext().prec = 28
+# Input / output files
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)
 
-@dataclass
-class NyuAnnualData:
-    """Annual financial data from NYU Stern dataset"""
-    year: int
-    inflation_rate: Decimal
-    stock_return: Decimal
-    cash_return: Decimal
-    bond_return: Decimal
+INPUT_CSV = os.path.join(project_root, 'src/lib/calc/data/nyu-historical-data.csv')
+OUTPUT_TS = os.path.join(project_root, 'src/lib/calc/data/nyu-historical-data.ts')
 
-def parse_percentage(pct_str: str) -> Decimal:
-    """Convert percentage string (e.g., '45.49%') to decimal (e.g., 0.4549)"""
-    # Remove % sign and convert to decimal, then divide by 100
-    clean_str = pct_str.strip().rstrip('%')
-    return Decimal(clean_str) / Decimal('100')
+# Load CSV
+df = pd.read_csv(INPUT_CSV)
 
-def parse_csv_file(filepath: str) -> List[NyuAnnualData]:
-    """Parse the NYU CSV file and return annual data points"""
-    annual_data = []
-    
-    with open(filepath, 'r', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        
-        # Skip header
-        next(reader)
-        
-        for row in reader:
-            if len(row) < 6 or not row[0].strip():
-                continue
-                
-            try:
-                # Parse year
-                year = int(row[0].strip())
-                
-                # Parse percentage columns and convert to decimals
-                inflation_rate = parse_percentage(row[1])  # Column 1: Inflation Rate
-                stock_return = parse_percentage(row[2])    # Column 2: S&P 500 (includes dividends)
-                cash_return = parse_percentage(row[4])     # Column 4: 3-month T. Bill (Real)
-                bond_return = parse_percentage(row[5])     # Column 5: 10-year T.Bonds
-                
-                annual_data.append(NyuAnnualData(
-                    year=year,
-                    inflation_rate=inflation_rate,
-                    stock_return=stock_return,
-                    cash_return=cash_return,
-                    bond_return=bond_return
-                ))
-                
-            except (ValueError, IndexError) as e:
-                print(f"Skipping row due to parsing error: {row} - {e}")
-                continue
-    
-    return annual_data
+# Drop rows without year
+df = df.dropna(subset=[df.columns[0]])
 
-def generate_typescript_file(annual_data: List[NyuAnnualData], output_path: str):
-    """Generate TypeScript file with NYU historical data"""
-    
-    # Sort by year
-    annual_data.sort(key=lambda x: x.year)
-    
-    ts_content = '''/**
+# Parse columns (assuming: Year, Inflation, Stock, ?, Cash, Bond)
+df.columns = df.columns.str.strip()
+df['year'] = df.iloc[:, 0].astype(int)
+
+# Convert percentage strings to decimals
+for i, col_name in [(1, 'inflationRate'), (2, 'stockReturn'), (4, 'cashReturn'), (5, 'bondReturn')]:
+    df[col_name] = df.iloc[:, i].str.rstrip('%').astype(float) / 100.0
+
+# Select needed columns
+df = df[['year', 'stockReturn', 'bondReturn', 'cashReturn', 'inflationRate']]
+
+# Write TypeScript
+with open(OUTPUT_TS, 'w') as f:
+    f.write('''/**
  * NYU Stern historical financial market data (1928-present)
  * 
  * Real annual returns for stocks, bonds, cash, plus inflation rates.
@@ -97,18 +58,14 @@ export interface NyuHistoricalYearData {
 }
 
 export const nyuHistoricalData: NyuHistoricalYearData[] = [
-'''
+''')
     
-    # Add data points
-    for data in annual_data:
-        stock_return = float(data.stock_return)
-        bond_return = float(data.bond_return)
-        cash_return = float(data.cash_return)
-        inflation_rate = float(data.inflation_rate)
-        
-        ts_content += f'  {{ year: {data.year}, stockReturn: {stock_return:.6f}, bondReturn: {bond_return:.6f}, cashReturn: {cash_return:.6f}, inflationRate: {inflation_rate:.6f} }},\n'
+    for _, row in df.iterrows():
+        f.write(f'  {{ year: {int(row["year"])}, stockReturn: {row["stockReturn"]:.6f}, '
+                f'bondReturn: {row["bondReturn"]:.6f}, cashReturn: {row["cashReturn"]:.6f}, '
+                f'inflationRate: {row["inflationRate"]:.6f} }},\n')
     
-    ts_content += '''];
+    f.write('''];
 
 /**
  * Get NYU historical data for a specific year range
@@ -122,8 +79,8 @@ export function getNyuHistoricalData(startYear: number, endYear: number): NyuHis
  */
 export function getNyuDataRange(): { startYear: number; endYear: number } {
   return {
-    startYear: nyuHistoricalData[0]?.year ?? 1928,
-    endYear: nyuHistoricalData[nyuHistoricalData.length - 1]?.year ?? new Date().getFullYear()
+    startYear: nyuHistoricalData[0].year,
+    endYear: nyuHistoricalData[nyuHistoricalData.length - 1].year,
   };
 }
 
@@ -172,62 +129,30 @@ export function calculateNyuHistoricalStats(data: NyuHistoricalYearData[]) {
     }
   };
 }
-'''
-    
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(ts_content)
+''')
 
-def main():
-    """Main execution function"""
-    import os
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)
-    
-    csv_path = os.path.join(project_root, 'src/lib/calc/data/nyu-historical-data.csv')
-    output_path = os.path.join(project_root, 'src/lib/calc/data/nyu-historical-data.ts')
-    
-    print("Parsing NYU CSV data...")
-    annual_data = parse_csv_file(csv_path)
-    print(f"Parsed {len(annual_data)} annual data points")
-    
-    if annual_data:
-        print(f"Data range: {annual_data[0].year} - {annual_data[-1].year}")
-        
-        print("Generating TypeScript file...")
-        generate_typescript_file(annual_data, output_path)
-        print(f"Generated {output_path}")
-        
-        # Print sample statistics
-        if len(annual_data) > 0:
-            stock_returns = [float(d.stock_return) for d in annual_data]
-            bond_returns = [float(d.bond_return) for d in annual_data]
-            cash_returns = [float(d.cash_return) for d in annual_data]
-            inflation_rates = [float(d.inflation_rate) for d in annual_data]
+# Compute and display summary stats
+stock_returns = df['stockReturn'].values
+bond_returns = df['bondReturn'].values
+cash_returns = df['cashReturn'].values
+inflation_rates = df['inflationRate'].values
 
-            # Nominal returns
-            stock_nominal = [(1 + r) * (1 + i) - 1 for r, i in zip(stock_returns, inflation_rates)]
-            bond_nominal  = [(1 + r) * (1 + i) - 1 for r, i in zip(bond_returns, inflation_rates)]
-            cash_nominal  = [(1 + r) * (1 + i) - 1 for r, i in zip(cash_returns, inflation_rates)]
+# Nominal returns
+stock_nominal = (1 + stock_returns) * (1 + inflation_rates) - 1
+bond_nominal = (1 + bond_returns) * (1 + inflation_rates) - 1
+cash_nominal = (1 + cash_returns) * (1 + inflation_rates) - 1
 
-            def mean(xs): 
-                return sum(xs) / len(xs)
+print(f"✅ Parsed {len(df)} annual data points")
+print(f"Data range: {int(df['year'].min())} - {int(df['year'].max())}")
+print(f"Generated {OUTPUT_TS}")
 
-            def std(xs): 
-                m = mean(xs)
-                return (sum((x - m) ** 2 for x in xs) / len(xs)) ** 0.5
+print(f"\nSample Statistics (Real):")
+print(f"Stocks - Mean: {stock_returns.mean():6.2%}, Std: {stock_returns.std(ddof=1):6.2%}")
+print(f"Bonds  - Mean: {bond_returns.mean():6.2%}, Std: {bond_returns.std(ddof=1):6.2%}")
+print(f"Cash   - Mean: {cash_returns.mean():6.2%}, Std: {cash_returns.std(ddof=1):6.2%}")
+print(f"Infl   - Mean: {inflation_rates.mean():6.2%}, Std: {inflation_rates.std(ddof=1):6.2%}")
 
-            print(f"\nSample Statistics (Real):")
-            print(f"Stocks - Mean: {mean(stock_returns):6.2%}, Std: {std(stock_returns):6.2%}")
-            print(f"Bonds  - Mean: {mean(bond_returns):6.2%}, Std: {std(bond_returns):6.2%}")
-            print(f"Cash   - Mean: {mean(cash_returns):6.2%}, Std: {std(cash_returns):6.2%}")
-            print(f"Infl   - Mean: {mean(inflation_rates):6.2%}, Std: {std(inflation_rates):6.2%}")
-
-            print(f"\nSample Statistics (Nominal):")
-            print(f"Stocks - Mean: {mean(stock_nominal):6.2%}, Std: {std(stock_nominal):6.2%}")
-            print(f"Bonds  - Mean: {mean(bond_nominal):6.2%}, Std: {std(bond_nominal):6.2%}")
-            print(f"Cash   - Mean: {mean(cash_nominal):6.2%}, Std: {std(cash_nominal):6.2%}")
-    else:
-        print("No annual data generated!")
-
-if __name__ == "__main__":
-    main()
+print(f"\nSample Statistics (Nominal):")
+print(f"Stocks - Mean: {stock_nominal.mean():6.2%}, Std: {stock_nominal.std(ddof=1):6.2%}")
+print(f"Bonds  - Mean: {bond_nominal.mean():6.2%}, Std: {bond_nominal.std(ddof=1):6.2%}")
+print(f"Cash   - Mean: {cash_nominal.mean():6.2%}, Std: {cash_nominal.std(ddof=1):6.2%}")
