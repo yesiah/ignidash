@@ -46,6 +46,10 @@ shiller_df = parse_ts_data(os.path.join(project_root, "src/lib/calc/data/shiller
 # --- Merge datasets by year ---
 merged_df = pd.merge(nyu_df, shiller_df, on="year", how="inner")
 
+# --- Convert real returns → nominal returns using exact identity ---
+for col in ["stockReturn", "bondReturn", "cashReturn"]:
+    merged_df[f"{col}_nominal"] = (1 + merged_df[col]) * (1 + merged_df["inflationRate"]) - 1
+
 print("Merged Data Sample:")
 print(merged_df.head())
 print('\n...')
@@ -53,7 +57,14 @@ print(merged_df.tail())
 print('\n')
 
 # --- Compute correlation matrix ---
-corr_matrix = merged_df[["stockReturn", "bondReturn", "cashReturn", "inflationRate", "bondYield", "stockYield"]].corr()
+corr_matrix = merged_df[[
+    "stockReturn_nominal",
+    "bondReturn_nominal",
+    "cashReturn_nominal",
+    "inflationRate",
+    "bondYield",
+    "stockYield"
+]].corr()
 
 print("Correlation Matrix (1928-2024):")
-print(corr_matrix.round(3))
+print(corr_matrix.round(2))
