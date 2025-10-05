@@ -186,13 +186,19 @@ export class StochasticReturnsProvider implements ReturnsProvider {
    * @returns Log-normal distributed yield as a decimal (always >= 0)
    */
   private generateLogNormalYield(expectedYield: number, volatility: number, z: number): number {
-    // Similar to generateLogNormalReturn, but without the "-1"
     // For yields, we model the level itself as log-normal, not the change
-    // E[Y] = exp(μ + σ²/2), so μ = ln(E[Y]) - σ²/2
-    const mu = Math.log(expectedYield) - 0.5 * volatility * volatility;
+    // The yield Y is always positive (unlike returns which can be negative)
+
+    const mean = expectedYield;
+    const variance = volatility * volatility;
+
+    // Convert arithmetic volatility to log-space parameters
+    // E[Y] = exp(μ + σ²/2), so:
+    const sigmaLog = Math.sqrt(Math.log(1 + variance / (mean * mean)));
+    const mu = Math.log(mean) - 0.5 * sigmaLog * sigmaLog;
 
     // Generate log-normal yield (always positive)
-    return Math.exp(mu + volatility * z);
+    return Math.exp(mu + sigmaLog * z);
   }
 
   /**
