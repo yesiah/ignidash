@@ -19,8 +19,8 @@ interface MarketVolatility {
 const DEFAULT_VOLATILITY: MarketVolatility = {
   stockReturn: 0.18,
   bondReturn: 0.06,
-  cashReturn: 0.01,
-  inflation: 0.02,
+  cashReturn: 0.03,
+  inflation: 0.04,
   bondYield: 0.03,
   stockYield: 0.02,
 };
