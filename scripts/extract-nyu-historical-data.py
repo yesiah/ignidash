@@ -203,12 +203,29 @@ def main():
             bond_returns = [float(d.bond_return) for d in annual_data]
             cash_returns = [float(d.cash_return) for d in annual_data]
             inflation_rates = [float(d.inflation_rate) for d in annual_data]
-            
-            print(f"\nSample Statistics:")
-            print(f"Stocks - Mean: {sum(stock_returns)/len(stock_returns):6.2%}, Std: {(sum([(x-sum(stock_returns)/len(stock_returns))**2 for x in stock_returns])/len(stock_returns))**0.5:6.2%}")
-            print(f"Bonds  - Mean: {sum(bond_returns)/len(bond_returns):6.2%}, Std: {(sum([(x-sum(bond_returns)/len(bond_returns))**2 for x in bond_returns])/len(bond_returns))**0.5:6.2%}")
-            print(f"Cash   - Mean: {sum(cash_returns)/len(cash_returns):6.2%}, Std: {(sum([(x-sum(cash_returns)/len(cash_returns))**2 for x in cash_returns])/len(cash_returns))**0.5:6.2%}")
-            print(f"Infl   - Mean: {sum(inflation_rates)/len(inflation_rates):6.2%}, Std: {(sum([(x-sum(inflation_rates)/len(inflation_rates))**2 for x in inflation_rates])/len(inflation_rates))**0.5:6.2%}")
+
+            # Nominal returns
+            stock_nominal = [(1 + r) * (1 + i) - 1 for r, i in zip(stock_returns, inflation_rates)]
+            bond_nominal  = [(1 + r) * (1 + i) - 1 for r, i in zip(bond_returns, inflation_rates)]
+            cash_nominal  = [(1 + r) * (1 + i) - 1 for r, i in zip(cash_returns, inflation_rates)]
+
+            def mean(xs): 
+                return sum(xs) / len(xs)
+
+            def std(xs): 
+                m = mean(xs)
+                return (sum((x - m) ** 2 for x in xs) / len(xs)) ** 0.5
+
+            print(f"\nSample Statistics (Real):")
+            print(f"Stocks - Mean: {mean(stock_returns):6.2%}, Std: {std(stock_returns):6.2%}")
+            print(f"Bonds  - Mean: {mean(bond_returns):6.2%}, Std: {std(bond_returns):6.2%}")
+            print(f"Cash   - Mean: {mean(cash_returns):6.2%}, Std: {std(cash_returns):6.2%}")
+            print(f"Infl   - Mean: {mean(inflation_rates):6.2%}, Std: {std(inflation_rates):6.2%}")
+
+            print(f"\nSample Statistics (Nominal):")
+            print(f"Stocks - Mean: {mean(stock_nominal):6.2%}, Std: {std(stock_nominal):6.2%}")
+            print(f"Bonds  - Mean: {mean(bond_nominal):6.2%}, Std: {std(bond_nominal):6.2%}")
+            print(f"Cash   - Mean: {mean(cash_nominal):6.2%}, Std: {std(cash_nominal):6.2%}")
     else:
         print("No annual data generated!")
 
