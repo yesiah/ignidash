@@ -64,6 +64,15 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
                   {errors.stockReturn && <ErrorMessage>{errors.stockReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for stocks and other volatile investments.</Description>
                 </Field>
+                <Field>
+                  <Label htmlFor="stockYield" className="flex w-full items-center justify-between">
+                    <span>Dividend Yield</span>
+                    <span className="text-muted-foreground text-sm/6">—</span>
+                  </Label>
+                  <NumberInput name="stockYield" control={control} id="stockYield" inputMode="decimal" placeholder="3%" suffix="%" />
+                  {errors.stockYield && <ErrorMessage>{errors.stockYield?.message}</ErrorMessage>}
+                  <Description>Percentage of stock value paid out as taxable dividends annually.</Description>
+                </Field>
                 <Divider />
                 <Field>
                   <Label htmlFor="bondReturn" className="flex w-full items-center justify-between">
@@ -73,6 +82,15 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
                   <NumberInput id="bondReturn" control={control} name="bondReturn" inputMode="decimal" placeholder="5%" suffix="%" />
                   {errors.bondReturn && <ErrorMessage>{errors.bondReturn?.message}</ErrorMessage>}
                   <Description>Expected annual return for bonds.</Description>
+                </Field>
+                <Field>
+                  <Label htmlFor="bondYield" className="flex w-full items-center justify-between">
+                    <span>Bond Yield</span>
+                    <span className="text-muted-foreground text-sm/6">—</span>
+                  </Label>
+                  <NumberInput id="bondYield" control={control} name="bondYield" inputMode="decimal" placeholder="3%" suffix="%" />
+                  {errors.bondYield && <ErrorMessage>{errors.bondYield?.message}</ErrorMessage>}
+                  <Description>Percentage of bond value paid out as taxable interest annually.</Description>
                 </Field>
                 <Divider />
                 <Field>
