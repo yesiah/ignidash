@@ -5,7 +5,7 @@
  * (http://www.econ.yale.edu/~shiller/data.htm)
  *
  * - stockYield: Annualized dividend yield of the S&P Composite index.
- *   Calculated as (12 x monthly dividend) ÷ stock price, using December values.
+ *   Calculated as (12 x monthly dividend) / stock price, using December values.
  *
  * - bondYield: Yield of 10-year U.S. Treasury bonds (GS10), taken directly from Shiller.
  *   Values are given as fractions (e.g., 0.045 = 4.5%).

@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+"""
+Extract historical stock dividend yield and bond yield data from Shiller's dataset.
+
+This script processes Robert Shiller's publicly available data to extract:
+- Stock dividend yield (S&P Composite)
+- Bond yield (10-year Treasury GS10)
+
+Data spans from 1928 to present with annual granularity (December values).
+"""
+
 import pandas as pd
 import os
 
@@ -14,74 +25,69 @@ df = pd.read_csv(INPUT_CSV)
 # Drop rows without Date
 df = df.dropna(subset=["Date"])
 
-# Ensure Date is string and split
+# Parse Date into Year and Month
 df["Date"] = df["Date"].astype(str)
-df["Year"] = df["Date"].str.split(".").str[0].astype(int)
-df["Month"] = df["Date"].str.split(".").str[1].fillna("0").astype(int)
+df["year"] = df["Date"].str.split(".").str[0].astype(int)
+df["month"] = df["Date"].str.split(".").str[1].fillna("0").astype(int)
 
-# Force numeric types (some cells may be strings)
+# Force numeric types
 for col in ["S&P Comp. P", "Dividend D", "Long Interest Rate GS10"]:
     df[col] = pd.to_numeric(df[col], errors="coerce")
 
-# Compute dividend yield = dividend / price
-df["DividendYield"] = df["Dividend D"] / df["S&P Comp. P"]
+# Calculate yields
+df["stockYield"] = df["Dividend D"] / df["S&P Comp. P"]
+df["bondYield"] = df["Long Interest Rate GS10"] / 100.0
 
-# Bond yield = GS10 / 100 (convert % to fraction)
-df["BondYield"] = df["Long Interest Rate GS10"] / 100.0
-
-# Take December values for each year
-annual = df[df["Month"] == 12].copy()
-
-# Filter to 1928+
-annual = annual[annual["Year"] >= 1928]
+# Take December values for each year, filter to 1928+
+df = df[(df["month"] == 12) & (df["year"] >= 1928)]
 
 # Select needed columns
-annual = annual[["Year", "DividendYield", "BondYield"]]
+df = df[["year", "stockYield", "bondYield"]]
 
 # Write TypeScript
 with open(OUTPUT_TS, "w") as f:
     f.write("""/**
-                * Historical stock dividend yield and bond yield data (1928-present)
-                *
-                * Source: Robert Shiller's publicly available dataset
-                * (http://www.econ.yale.edu/~shiller/data.htm)
-                *
-                * - stockYield: Annualized dividend yield of the S&P Composite index.
-                *   Calculated as (12 x monthly dividend) ÷ stock price, using December values.
-                *
-                * - bondYield: Yield of 10-year U.S. Treasury bonds (GS10), taken directly from Shiller.
-                *   Values are given as fractions (e.g., 0.045 = 4.5%).
-                *
-                * Only December observations are included (one value per year).
-                *
-                * Generated automatically - do not edit manually.
-                */
-                \n""")
+ * Historical stock dividend yield and bond yield data (1928-present)
+ *
+ * Source: Robert Shiller's publicly available dataset
+ * (http://www.econ.yale.edu/~shiller/data.htm)
+ *
+ * - stockYield: Annualized dividend yield of the S&P Composite index.
+ *   Calculated as (12 x monthly dividend) / stock price, using December values.
+ *
+ * - bondYield: Yield of 10-year U.S. Treasury bonds (GS10), taken directly from Shiller.
+ *   Values are given as fractions (e.g., 0.045 = 4.5%).
+ *
+ * Only December observations are included (one value per year).
+ *
+ * Generated automatically - do not edit manually.
+ */
 
-    f.write("export interface ShillerHistoricalYearData {\n")
-    f.write("  year: number;\n")
-    f.write("  stockYield: number;\n")
-    f.write("  bondYield: number;\n")
-    f.write("}\n\n")
+export interface ShillerHistoricalYearData {
+  year: number;
+  stockYield: number;
+  bondYield: number;
+}
 
-    f.write("export const shillerHistoricalData: ShillerHistoricalYearData[] = [\n")
-    for _, row in annual.iterrows():
-        year = int(row["Year"])  # ensure integer
-        f.write(
-            f"  {{ year: {year}, stockYield: {row['DividendYield']:.4f}, bondYield: {row['BondYield']:.4f} }},\n"
-        )
+export const shillerHistoricalData: ShillerHistoricalYearData[] = [
+""")
+    
+    for _, row in df.iterrows():
+        f.write(f'  {{ year: {int(row["year"])}, stockYield: {row["stockYield"]:.4f}, '
+                f'bondYield: {row["bondYield"]:.4f} }},\n')
+    
     f.write("];\n")
 
-# Compute summary stats
-stock_mean = annual["DividendYield"].mean()
-stock_std = annual["DividendYield"].std(ddof=1)
-stock_max = annual["DividendYield"].max()
-stock_min = annual["DividendYield"].min()
-bond_mean = annual["BondYield"].mean()
-bond_std = annual["BondYield"].std(ddof=1)
-bond_max = annual["BondYield"].max()
-bond_min = annual["BondYield"].min()
+# Compute and display summary stats
+stock_yields = df["stockYield"].values
+bond_yields = df["bondYield"].values
 
-print(f"✅ Wrote {len(annual)} years of data to {OUTPUT_TS}")
-print(f"📊 Stock Yield: mean={stock_mean:.4f}, std={stock_std:.4f}, min={stock_min:.4f}, max={stock_max:.4f}")
-print(f"📊 Bond Yield: mean={bond_mean:.4f}, std={bond_std:.4f}, min={bond_min:.4f}, max={bond_max:.4f}")
+print(f"✅ Parsed {len(df)} annual data points")
+print(f"Data range: {int(df['year'].min())} - {int(df['year'].max())}")
+print(f"Generated {OUTPUT_TS}")
+
+print(f"\nSample Statistics:")
+print(f"Stock Yield - Mean: {stock_yields.mean():.4f}, Std: {stock_yields.std(ddof=1):.4f}, "
+      f"Min: {stock_yields.min():.4f}, Max: {stock_yields.max():.4f}")
+print(f"Bond Yield  - Mean: {bond_yields.mean():.4f}, Std: {bond_yields.std(ddof=1):.4f}, "
+      f"Min: {bond_yields.min():.4f}, Max: {bond_yields.max():.4f}")
