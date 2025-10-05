@@ -4,9 +4,9 @@ import { SeededRandom } from './seeded-random';
 import type { PhaseData } from '../v2/phase';
 
 interface MarketVolatility {
-  stock: number;
-  bond: number;
-  cash: number;
+  stockReturn: number;
+  bondReturn: number;
+  cashReturn: number;
   inflation: number;
   bondYield: number;
   stockYield: number;
@@ -17,9 +17,9 @@ interface MarketVolatility {
  * Based on long-term historical data
  */
 const DEFAULT_VOLATILITY: MarketVolatility = {
-  stock: 0.18,
-  bond: 0.06,
-  cash: 0.01,
+  stockReturn: 0.18,
+  bondReturn: 0.06,
+  cashReturn: 0.01,
   inflation: 0.02,
   bondYield: 0.02,
   stockYield: 0.03,
@@ -30,13 +30,13 @@ const DEFAULT_VOLATILITY: MarketVolatility = {
  * Based on historical correlations
  */
 const CORRELATION_MATRIX = [
-  // Stocks, Bonds, Cash, Inflation, BondYield, StockYield
-  [1.0, -0.1, 0.05, -0.15, -0.05, 0.3], // Stocks
-  [-0.1, 1.0, 0.2, -0.3, 0.7, -0.1], // Bonds
-  [0.05, 0.2, 1.0, 0.6, 0.3, 0.05], // Cash
-  [-0.15, -0.3, 0.6, 1.0, 0.4, -0.2], // Inflation
-  [-0.05, 0.7, 0.3, 0.4, 1.0, -0.05], // BondYield
-  [0.3, -0.1, 0.05, -0.2, -0.05, 1.0], // StockYield
+  // StockReturn, BondReturn, CashReturn, Inflation, BondYield, StockYield
+  [1.0, -0.1, 0.05, 0.05, -0.05, 0.15], // StockReturn
+  [-0.1, 1.0, 0.2, -0.45, 0.55, -0.1], // BondReturn
+  [0.05, 0.2, 1.0, 0.6, 0.3, 0.05], // CashReturn
+  [0.05, -0.45, 0.6, 1.0, 0.4, -0.1], // Inflation
+  [-0.05, 0.55, 0.3, 0.4, 1.0, -0.05], // BondYield
+  [0.15, -0.1, 0.05, -0.1, -0.05, 1.0], // StockYield
 ];
 
 /**
@@ -102,9 +102,9 @@ export class StochasticReturnsProvider implements ReturnsProvider {
     const expectedStockYield = this.inputs.marketAssumptions.stockYield / 100;
 
     // Generate nominal returns using appropriate distributions
-    const nominalStockReturn = this.generateLogNormalReturn(expectedStockReturn, this.volatility.stock, correlatedRandoms[0]);
-    const nominalBondReturn = this.generateNormalReturn(expectedBondReturn, this.volatility.bond, correlatedRandoms[1]);
-    const nominalCashReturn = this.generateNormalReturn(expectedCashReturn, this.volatility.cash, correlatedRandoms[2]);
+    const nominalStockReturn = this.generateLogNormalReturn(expectedStockReturn, this.volatility.stockReturn, correlatedRandoms[0]);
+    const nominalBondReturn = this.generateNormalReturn(expectedBondReturn, this.volatility.bondReturn, correlatedRandoms[1]);
+    const nominalCashReturn = this.generateNormalReturn(expectedCashReturn, this.volatility.cashReturn, correlatedRandoms[2]);
     const inflation = this.generateNormalReturn(expectedInflation, this.volatility.inflation, correlatedRandoms[3]);
 
     // Generate yields - use normal distribution with bounds
@@ -125,13 +125,13 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   /**
    * Apply correlation matrix using Cholesky decomposition
    *
-   * @param independentRandoms - Array of 4 independent standard normal random variables
-   * @returns Array of 4 correlated random variables for [stocks, bonds, cash, inflation]
+   * @param independentRandoms - Array of 6 independent standard normal random variables
+   * @returns Array of 6 correlated random variables for [stocks, bonds, cash, inflation, bondYield, stockYield]
    */
   private applyCorrelation(independentRandoms: number[]): number[] {
-    const correlated = [0, 0, 0, 0];
+    const correlated = [0, 0, 0, 0, 0, 0];
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
       for (let j = 0; j <= i; j++) {
         correlated[i] += CHOLESKY_MATRIX[i][j] * independentRandoms[j];
       }
