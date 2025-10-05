@@ -6,7 +6,7 @@ export class FixedReturnsProvider implements ReturnsProvider {
   constructor(private inputs: QuickPlanInputs) {}
 
   getReturns(phaseData: PhaseData | null): ReturnsWithMetadata {
-    const { stockReturn, bondReturn, cashReturn, inflationRate } = this.inputs.marketAssumptions;
+    const { stockReturn, bondReturn, cashReturn, inflationRate, bondYield, stockYield } = this.inputs.marketAssumptions;
 
     const realStockReturn = (1 + stockReturn / 100) / (1 + inflationRate / 100) - 1;
     const realBondReturn = (1 + bondReturn / 100) / (1 + inflationRate / 100) - 1;
@@ -14,7 +14,7 @@ export class FixedReturnsProvider implements ReturnsProvider {
 
     return {
       returns: { stocks: realStockReturn, bonds: realBondReturn, cash: realCashReturn },
-      metadata: { inflationRate },
+      metadata: { inflationRate, bondYield, stockYield },
     };
   }
 }

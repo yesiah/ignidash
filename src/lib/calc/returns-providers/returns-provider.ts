@@ -32,6 +32,8 @@ export interface ReturnsWithMetadata<TExtras extends Record<string, unknown> = R
   amounts?: AssetReturnAmounts;
   metadata: {
     inflationRate: number;
+    bondYield: number;
+    stockYield: number;
     /** Optional extras that providers can add for simulation-specific data */
     extras?: TExtras;
   };

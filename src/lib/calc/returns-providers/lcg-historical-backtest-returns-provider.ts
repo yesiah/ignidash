@@ -1,5 +1,6 @@
 import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
 import { nyuHistoricalData, type NyuHistoricalYearData, getNyuDataRange } from '../data/nyu-historical-data';
+import { shillerHistoricalData, type ShillerHistoricalYearData } from '../data/shiller-historical-yield-data';
 import type { AssetReturnRates } from '../asset';
 import { SeededRandom } from './seeded-random';
 import type { PhaseData, PhaseName } from '../v2/phase';
@@ -7,6 +8,7 @@ import type { PhaseData, PhaseName } from '../v2/phase';
 export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   private readonly historicalDataRange: { startYear: number; endYear: number };
   private readonly historicalData: NyuHistoricalYearData[];
+  private readonly historicalYieldData: ShillerHistoricalYearData[];
   private readonly rng: SeededRandom;
   private currentHistoricalYear: number;
   private historicalRanges: Array<{ startYear: number; endYear: number }> = [];
@@ -19,6 +21,7 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
   ) {
     this.historicalDataRange = getNyuDataRange();
     this.historicalData = nyuHistoricalData;
+    this.historicalYieldData = shillerHistoricalData;
     this.rng = new SeededRandom(seed);
     this.currentHistoricalYear = startYearOverride || this.generateRandomStartYear();
     this.historicalRanges = [{ startYear: this.currentHistoricalYear, endYear: this.currentHistoricalYear }];
@@ -48,12 +51,21 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
     }
 
     const yearData = this.historicalData.find((data) => data.year === this.currentHistoricalYear);
-    if (!yearData) throw new Error(`Historical data not found for year ${this.currentHistoricalYear}`);
+    const yieldData = this.historicalYieldData.find((data) => data.year === this.currentHistoricalYear);
+
+    if (!yearData || !yieldData) throw new Error(`Historical data not found for year ${this.currentHistoricalYear}`);
 
     this.currentHistoricalYear += 1;
 
     const returns: AssetReturnRates = { stocks: yearData.stockReturn, bonds: yearData.bondReturn, cash: yearData.cashReturn };
-    return { returns, metadata: { inflationRate: yearData.inflationRate * 100 } };
+    return {
+      returns,
+      metadata: {
+        inflationRate: yearData.inflationRate * 100,
+        bondYield: yieldData.bondYield * 100,
+        stockYield: yieldData.stockYield * 100,
+      },
+    };
   }
 
   getHistoricalRanges(): Array<{ startYear: number; endYear: number }> {
