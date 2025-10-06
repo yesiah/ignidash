@@ -436,17 +436,19 @@ export class Portfolio {
       taxFree: { dividendYield: 0, bondYield: 0 },
     };
 
-    this.accounts.forEach((account) => {
-      const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
+    this.accounts
+      .filter((account) => account.getAccountType() !== 'savings')
+      .forEach((account) => {
+        const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
 
-      (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
-        yieldsForPeriod[category].dividendYield += accountYieldsForPeriod[category].dividendYield;
-        yieldsForPeriod[category].bondYield += accountYieldsForPeriod[category].bondYield;
+        (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
+          yieldsForPeriod[category].dividendYield += accountYieldsForPeriod[category].dividendYield;
+          yieldsForPeriod[category].bondYield += accountYieldsForPeriod[category].bondYield;
 
-        totalYields[category].dividendYield += accountTotalYields[category].dividendYield;
-        totalYields[category].bondYield += accountTotalYields[category].bondYield;
+          totalYields[category].dividendYield += accountTotalYields[category].dividendYield;
+          totalYields[category].bondYield += accountTotalYields[category].bondYield;
+        });
       });
-    });
 
     return { yieldsForPeriod, totalYields };
   }
@@ -556,14 +558,7 @@ export class SavingsAccount extends Account {
   }
 
   applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
-    return {
-      yieldsForPeriod: {
-        taxable: { dividendYield: 0, bondYield: 0 },
-        taxDeferred: { dividendYield: 0, bondYield: 0 },
-        taxFree: { dividendYield: 0, bondYield: 0 },
-      },
-      totalYields: this.totalYields,
-    };
+    throw new Error('Savings account should not receive yields');
   }
 
   applyContribution(amount: number): void {
