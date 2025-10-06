@@ -92,7 +92,6 @@ export class FinancialSimulationEngine {
         // Get annual data from processors
         const annualPortfolioDataBeforeTaxes = portfolioProcessor.getAnnualData();
         const annualIncomesData = incomesProcessor.getAnnualData();
-        const annualExpensesData = expensesProcessor.getAnnualData();
         const annualReturnsData = returnsProcessor.getAnnualData();
 
         // Process taxes
@@ -102,6 +101,9 @@ export class FinancialSimulationEngine {
           annualTaxesData,
           expensesProcessor
         );
+
+        // Process expenses last to account for discretionary expenses from tax refunds
+        const annualExpensesData = expensesProcessor.getAnnualData();
 
         // Update simulation state
         simulationState.annualData.expenses.push(annualExpensesData);
