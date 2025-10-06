@@ -641,14 +641,60 @@ export class InvestmentAccount extends Account {
   }
 
   applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
-    return {
-      yieldsForPeriod: {
-        taxable: { dividendYield: 0, bondYield: 0 },
-        taxDeferred: { dividendYield: 0, bondYield: 0 },
-        taxFree: { dividendYield: 0, bondYield: 0 },
-      },
-      totalYields: this.totalYields,
-    };
+    const { dividendYield, bondYield } = yields;
+
+    const bondsPercent = this.currPercentBonds;
+    const stocksPercent = 1 - bondsPercent;
+
+    const currentBondsValue = this.totalValue * bondsPercent;
+    const currentStocksValue = this.totalValue * stocksPercent;
+
+    const bondYieldAmount = currentBondsValue * bondYield;
+    const dividendYieldAmount = currentStocksValue * dividendYield;
+
+    switch (this.type) {
+      case 'savings':
+        throw new Error('Savings account should not be of type InvestmentAccount');
+      case 'taxableBrokerage':
+        this.totalYields.taxable.bondYield += bondYieldAmount;
+        this.totalYields.taxable.dividendYield += dividendYieldAmount;
+
+        return {
+          yieldsForPeriod: {
+            taxable: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
+            taxDeferred: { bondYield: 0, dividendYield: 0 },
+            taxFree: { bondYield: 0, dividendYield: 0 },
+          },
+          totalYields: { ...this.totalYields },
+        };
+      case '401k':
+      case 'ira':
+      case 'hsa':
+        this.totalYields.taxDeferred.bondYield += bondYieldAmount;
+        this.totalYields.taxDeferred.dividendYield += dividendYieldAmount;
+
+        return {
+          yieldsForPeriod: {
+            taxable: { bondYield: 0, dividendYield: 0 },
+            taxDeferred: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
+            taxFree: { bondYield: 0, dividendYield: 0 },
+          },
+          totalYields: { ...this.totalYields },
+        };
+      case 'roth401k':
+      case 'rothIra':
+        this.totalYields.taxFree.bondYield += bondYieldAmount;
+        this.totalYields.taxFree.dividendYield += dividendYieldAmount;
+
+        return {
+          yieldsForPeriod: {
+            taxable: { bondYield: 0, dividendYield: 0 },
+            taxDeferred: { bondYield: 0, dividendYield: 0 },
+            taxFree: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
+          },
+          totalYields: { ...this.totalYields },
+        };
+    }
   }
 
   applyContribution(amount: number): void {
