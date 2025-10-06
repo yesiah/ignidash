@@ -37,9 +37,17 @@ export class ExpensesProcessor {
     };
 
     const currentMonthlyData = this.monthlyData[this.monthlyData.length - 1];
+    if (!currentMonthlyData) {
+      console.error('No current monthly data found when processing discretionary expense. This should not happen!');
+
+      const result = { totalExpenses: amount, perExpenseData: { [discretionaryExpense.id]: discretionaryExpense } };
+      this.monthlyData.push(result);
+
+      return result;
+    }
 
     currentMonthlyData.totalExpenses += amount;
-    currentMonthlyData.perExpenseData['4ad31cac-7e17-47c4-af4e-784e080c05dd'] = discretionaryExpense;
+    currentMonthlyData.perExpenseData[discretionaryExpense.id] = discretionaryExpense;
 
     return currentMonthlyData;
   }
