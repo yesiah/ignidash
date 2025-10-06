@@ -147,7 +147,6 @@ export class PortfolioProcessor {
     }
 
     const age = this.simulationState.time.age;
-    const totalForPeriod = grossCashFlow;
     const contributionRules = this.contributionRules.getRules().sort((a, b) => a.getRank() - b.getRank());
 
     let remainingToContribute = grossCashFlow;
@@ -194,9 +193,13 @@ export class PortfolioProcessor {
           this.extraSavingsAccount.applyContribution(remainingToContribute);
           byAccount[this.extraSavingsAccount.getAccountID()] =
             (byAccount[this.extraSavingsAccount.getAccountID()] || 0) + remainingToContribute;
+
+          remainingToContribute = 0;
           break;
       }
     }
+
+    const totalForPeriod = grossCashFlow - remainingToContribute;
 
     return { totalForPeriod, byAccount };
   }
