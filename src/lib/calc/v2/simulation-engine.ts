@@ -86,6 +86,7 @@ export class FinancialSimulationEngine {
       const returnsData = returnsProcessor.process();
       const incomesData = incomesProcessor.process(returnsData);
       const expensesData = expensesProcessor.process(returnsData);
+
       const { discretionaryExpense: monthlyDiscretionaryExpense } = portfolioProcessor.processCashFlows(incomesData, expensesData);
       expensesProcessor.processDiscretionaryExpense(monthlyDiscretionaryExpense);
 
