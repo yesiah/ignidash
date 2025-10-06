@@ -29,6 +29,21 @@ export class ExpensesProcessor {
     return result;
   }
 
+  processDiscretionaryExpense(amount: number): ExpensesData {
+    const discretionaryExpense: ExpenseData = {
+      id: '4ad31cac-7e17-47c4-af4e-784e080c05dd',
+      name: '[System] Extra Spending',
+      amount,
+    };
+
+    const currentMonthlyData = this.monthlyData[this.monthlyData.length - 1];
+
+    currentMonthlyData.totalExpenses += amount;
+    currentMonthlyData.perExpenseData['4ad31cac-7e17-47c4-af4e-784e080c05dd'] = discretionaryExpense;
+
+    return currentMonthlyData;
+  }
+
   getMonthlyData(): ExpensesData[] {
     return this.monthlyData;
   }
