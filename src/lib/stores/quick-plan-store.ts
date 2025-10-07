@@ -460,7 +460,7 @@ export const useMultiSimulationResult = (
     swrKey,
     async () => {
       await mutate(() => true, undefined, { revalidate: false });
-      return worker.runSimulation(inputs, simulationSeed, 1000, simulationMode, Comlink.proxy(onProgress));
+      return worker.runSimulation(inputs, simulationSeed, 500, simulationMode, Comlink.proxy(onProgress));
     },
     { revalidateOnFocus: false }
   );
