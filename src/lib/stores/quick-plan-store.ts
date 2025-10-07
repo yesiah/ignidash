@@ -1,7 +1,7 @@
 'use client';
 
 import * as Comlink from 'comlink';
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState, useCallback } from 'react';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -454,17 +454,11 @@ export const useMultiSimulationResult = (
   const worker = getSimulationWorker();
 
   const [completedSimulations, setCompletedSimulations] = useState(0);
+  const onProgress = useCallback((completed: number) => setCompletedSimulations(completed), []);
 
   const { data: handleData, isLoading } = useSWR(
     ['simulationHandle', inputs, simulationSeed, simulationMode],
-    async () =>
-      worker.runSimulation(
-        inputs,
-        simulationSeed,
-        1000,
-        simulationMode,
-        Comlink.proxy((completed: number) => setCompletedSimulations(completed))
-      ),
+    async () => worker.runSimulation(inputs, simulationSeed, 1000, simulationMode, Comlink.proxy(onProgress)),
     { revalidateOnFocus: false }
   );
 
