@@ -6,6 +6,7 @@ import { ContributionRules } from './contribution-rules';
 import type { IncomesData } from './incomes';
 import type { ExpensesData } from './expenses';
 import type { TaxesData } from './taxes';
+import { uniformLifetimeMap } from '../data/rmds-table';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 
@@ -309,6 +310,51 @@ export class PortfolioProcessor {
   }
 
   processRequiredMinimumDistributions(): void {
+    const age = this.simulationState.time.age;
+    if (age < 73) {
+      console.warn('RMDs should not be processed for ages under 73');
+      return;
+    }
+
+    const byAccount: Record<string, number> = {};
+    const realizedGainsByAccount: Record<string, number> = {};
+    const earningsWithdrawnByAccount: Record<string, number> = {};
+
+    let totalForPeriod = 0;
+    let realizedGainsForPeriod = 0;
+    let earningsWithdrawnForPeriod = 0;
+
+    const accountsWithRMDs = this.simulationState.portfolio.getAccounts().filter((account) => account.getHasRMDs());
+    for (const account of accountsWithRMDs) {
+      if (!(account.getTotalValue() > 0)) continue;
+
+      const lookupAge = Math.min(age, 120);
+      const rmdAmount = account.getTotalValue() / uniformLifetimeMap[lookupAge];
+
+      const { realizedGains, earningsWithdrawn } = account.applyWithdrawal(rmdAmount);
+      realizedGainsByAccount[account.getAccountID()] = realizedGains;
+      realizedGainsForPeriod += realizedGains;
+      earningsWithdrawnByAccount[account.getAccountID()] = earningsWithdrawn;
+      earningsWithdrawnForPeriod += earningsWithdrawn;
+
+      byAccount[account.getAccountID()] = rmdAmount;
+      totalForPeriod += rmdAmount;
+    }
+
+    const _rmdWithdrawalsData: TransactionsBreakdown & {
+      realizedGainsForPeriod: number;
+      realizedGainsByAccount: Record<string, number>;
+      earningsWithdrawnForPeriod: number;
+      earningsWithdrawnByAccount: Record<string, number>;
+    } = {
+      totalForPeriod,
+      byAccount,
+      realizedGainsForPeriod,
+      realizedGainsByAccount,
+      earningsWithdrawnForPeriod,
+      earningsWithdrawnByAccount,
+    };
+
     return;
   }
 
@@ -598,6 +644,10 @@ export abstract class Account {
 
   getTotalEarningsWithdrawn(): number {
     return this.totalEarningsWithdrawn;
+  }
+
+  getHasRMDs(): boolean {
+    return this.type === 'ira' || this.type === '401k';
   }
 
   abstract getAccountData(): AccountData;

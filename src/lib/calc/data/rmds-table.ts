@@ -13,7 +13,7 @@ export interface UniformLifetimeEntry {
   lifeExpectancyFactor: number;
 }
 
-export const UNIFORM_LIFETIME_TABLE: UniformLifetimeEntry[] = [
+export const uniformLifetimeTable: UniformLifetimeEntry[] = [
   { age: 72, lifeExpectancyFactor: 27.4 },
   { age: 73, lifeExpectancyFactor: 26.5 },
   { age: 74, lifeExpectancyFactor: 25.5 },
@@ -68,8 +68,8 @@ export const UNIFORM_LIFETIME_TABLE: UniformLifetimeEntry[] = [
 /**
  * A lookup map for O(1) access by age.
  */
-export const UNIFORM_LIFETIME_MAP: Record<number, number> = Object.fromEntries(
-  UNIFORM_LIFETIME_TABLE.map(({ age, lifeExpectancyFactor }) => [age, lifeExpectancyFactor])
+export const uniformLifetimeMap: Record<number, number> = Object.fromEntries(
+  uniformLifetimeTable.map(({ age, lifeExpectancyFactor }) => [age, lifeExpectancyFactor])
 );
 
 /**
@@ -77,5 +77,5 @@ export const UNIFORM_LIFETIME_MAP: Record<number, number> = Object.fromEntries(
  * Returns undefined if the age is outside the Uniform Lifetime Table range.
  */
 export function getLifeExpectancyFactor(age: number): number | undefined {
-  return UNIFORM_LIFETIME_MAP[age];
+  return uniformLifetimeMap[age];
 }
