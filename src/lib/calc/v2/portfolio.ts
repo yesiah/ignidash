@@ -296,7 +296,6 @@ export class PortfolioProcessor {
       }
     }
 
-    // TODO: Handle going into debt (remainingToWithdraw > 0 after drawdown loop)
     // TODO: Handle Required Minimum Distributions starting age 73
 
     const totalForPeriod = Math.abs(grossCashFlow) - remainingToWithdraw;
@@ -323,9 +322,9 @@ export class PortfolioProcessor {
         { accountType: 'rothIra', modifier: 'contributionsOnly' },
         { accountType: '401k' },
         { accountType: 'ira' },
-        { accountType: 'hsa' },
         { accountType: 'roth401k' },
         { accountType: 'rothIra' },
+        { accountType: 'hsa' },
       ];
     } else {
       return [
@@ -333,9 +332,9 @@ export class PortfolioProcessor {
         { accountType: 'taxableBrokerage' },
         { accountType: '401k' },
         { accountType: 'ira' },
-        { accountType: 'hsa' },
         { accountType: 'roth401k' },
         { accountType: 'rothIra' },
+        { accountType: 'hsa' },
       ];
     }
   }
