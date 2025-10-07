@@ -59,7 +59,10 @@ export class TaxProcessor {
       annualIncomesData,
       annualReturnsData
     );
+
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
+    const grossDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.dividendYield;
+    const grossIncomeTaxedAsCapGains = grossRealizedGains + grossDividendIncome;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
     const adjustedGrossIncome = Math.max(0, grossOrdinaryIncome + capitalLossDeduction);
@@ -68,7 +71,7 @@ export class TaxProcessor {
     const deductionUsedForGains = STANDARD_DEDUCTION_SINGLE - deductionUsedForOrdinary;
 
     const taxableOrdinaryIncome = Math.max(0, adjustedGrossIncome - deductionUsedForOrdinary);
-    const taxableCapitalGains = Math.max(0, grossRealizedGains - deductionUsedForGains);
+    const taxableCapitalGains = Math.max(0, grossIncomeTaxedAsCapGains - deductionUsedForGains);
 
     const { incomeTaxAmount, topMarginalTaxRate } = this.processIncomeTaxes(taxableOrdinaryIncome);
     const incomeTaxes: IncomeTaxesData = {
@@ -87,9 +90,9 @@ export class TaxProcessor {
     const capitalGainsTaxes: CapitalGainsTaxesData = {
       taxableCapitalGains,
       capitalGainsTaxAmount,
-      effectiveCapitalGainsTaxRate: grossRealizedGains > 0 ? capitalGainsTaxAmount / grossRealizedGains : 0,
+      effectiveCapitalGainsTaxRate: grossIncomeTaxedAsCapGains > 0 ? capitalGainsTaxAmount / grossIncomeTaxedAsCapGains : 0,
       topMarginalCapitalGainsTaxRate,
-      netCapitalGains: grossRealizedGains - capitalGainsTaxAmount,
+      netCapitalGains: grossIncomeTaxedAsCapGains - capitalGainsTaxAmount,
     };
 
     const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
