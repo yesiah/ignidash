@@ -36,7 +36,7 @@ export class ReturnsProcessor {
 
     this.cachedAnnualReturnRates = returns.returns;
     this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;
-    this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield, bondYield: returns.metadata.bondYield };
+    this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield / 100, bondYield: returns.metadata.bondYield / 100 };
     this.lastYear = this.simulationState.time.year;
   }
 
@@ -48,7 +48,7 @@ export class ReturnsProcessor {
 
       this.cachedAnnualReturnRates = returns.returns;
       this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;
-      this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield, bondYield: returns.metadata.bondYield };
+      this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield / 100, bondYield: returns.metadata.bondYield / 100 };
       this.lastYear = currentYear;
     }
 
