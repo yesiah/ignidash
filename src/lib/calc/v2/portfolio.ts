@@ -296,8 +296,6 @@ export class PortfolioProcessor {
       }
     }
 
-    // TODO: Handle Required Minimum Distributions starting age 73
-
     const totalForPeriod = Math.abs(grossCashFlow) - remainingToWithdraw;
 
     return {
@@ -308,6 +306,10 @@ export class PortfolioProcessor {
       earningsWithdrawnForPeriod,
       earningsWithdrawnByAccount,
     };
+  }
+
+  private processRequiredMinimumDistributions(): void {
+    throw new Error('Method not implemented.');
   }
 
   private getWithdrawalOrder(): Array<WithdrawalOrderItem> {
