@@ -477,11 +477,7 @@ export const useMultiSimulationResult = (
 
   const updateSimulationStatus = useUpdateSimulationStatus();
   useEffect(() => {
-    if (isLoading) {
-      updateSimulationStatus('loading');
-    } else {
-      updateSimulationStatus('none');
-    }
+    updateSimulationStatus(isLoading ? 'loading' : 'none');
   }, [isLoading, updateSimulationStatus]);
 
   useEffect(() => {
