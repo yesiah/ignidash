@@ -186,12 +186,15 @@ export class TaxProcessor {
     annualReturnsData: ReturnsData
   ): { grossOrdinaryIncome: number; taxDeferredContributions: number } {
     const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
-    const grossIncomeFromTaxDeferredWithdrawals = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, [
-      '401k',
-      'ira',
-      'hsa',
-    ]);
     const grossIncomeFromInterest = annualReturnsData.yieldAmountsForPeriod.taxable.bondYield;
+
+    const age = this.simulationState.time.age;
+    const rothEarningsQualifiedWithdrawalAge = 59.5;
+
+    let grossIncomeFromTaxDeferredWithdrawals = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
+    if (age < rothEarningsQualifiedWithdrawalAge) {
+      grossIncomeFromTaxDeferredWithdrawals += this.getEarningsWithdrawnFromRothAccountTypes(annualPortfolioDataBeforeTaxes);
+    }
 
     const taxDeferredContributions = this.getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
 
