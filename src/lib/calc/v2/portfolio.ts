@@ -34,6 +34,7 @@ export class PortfolioProcessor {
       transactionsBreakdown: { totalForPeriod: contributionsForPeriod, byAccount: contributionsByAccount },
       discretionaryExpense,
     } = this.processContributions(grossCashFlow, incomesData);
+
     const {
       totalForPeriod: withdrawalsForPeriod,
       byAccount: withdrawalsByAccount,
