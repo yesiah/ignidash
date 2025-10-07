@@ -437,8 +437,6 @@ export const useSimulationResult = (
   }, [inputs, seed, simulationMode, startYearOverride, retirementStartYearOverride]);
 };
 
-const NUM_SIMULATIONS = 1000;
-
 export const useMultiSimulationResult = (
   simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
   category: SimulationCategory
@@ -463,7 +461,7 @@ export const useMultiSimulationResult = (
       worker.runSimulation(
         inputs,
         simulationSeed,
-        NUM_SIMULATIONS,
+        1000,
         simulationMode,
         Comlink.proxy((completed: number) => setCompletedSimulations(completed))
       ),
