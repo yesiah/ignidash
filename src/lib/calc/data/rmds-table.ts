@@ -64,3 +64,18 @@ export const UNIFORM_LIFETIME_TABLE: UniformLifetimeEntry[] = [
   { age: 119, lifeExpectancyFactor: 2.3 },
   { age: 120, lifeExpectancyFactor: 2.0 },
 ];
+
+/**
+ * A lookup map for O(1) access by age.
+ */
+export const UNIFORM_LIFETIME_MAP: Record<number, number> = Object.fromEntries(
+  UNIFORM_LIFETIME_TABLE.map(({ age, lifeExpectancyFactor }) => [age, lifeExpectancyFactor])
+);
+
+/**
+ * Get the life expectancy factor for a given age.
+ * Returns undefined if the age is outside the Uniform Lifetime Table range.
+ */
+export function getLifeExpectancyFactor(age: number): number | undefined {
+  return UNIFORM_LIFETIME_MAP[age];
+}
