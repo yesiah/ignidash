@@ -459,8 +459,8 @@ export const useMultiSimulationResult = (
   const swrKey = ['simulationHandle', inputs, simulationSeed, simulationMode];
   const { data: handleData, isLoading } = useSWR(
     swrKey,
-    () => {
-      mutate(() => true, undefined, { revalidate: false });
+    async () => {
+      await mutate(() => true, undefined, { revalidate: false });
       return worker.runSimulation(inputs, simulationSeed, 1000, simulationMode, Comlink.proxy(onProgress));
     },
     { revalidateOnFocus: false }
