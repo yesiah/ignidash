@@ -268,19 +268,22 @@ export class PortfolioProcessor {
     const withdrawalOrder = this.getWithdrawalOrder();
     let remainingToWithdraw = Math.abs(grossCashFlow);
 
-    for (const withdrawalOrderItem of withdrawalOrder) {
+    for (const { accountType, modifier } of withdrawalOrder) {
       if (remainingToWithdraw <= 0) break;
 
-      const accountsOfType = this.simulationState.portfolio
-        .getAccounts()
-        .filter((account) => account.getAccountType() === withdrawalOrderItem.accountType);
+      const accountsOfType = this.simulationState.portfolio.getAccounts().filter((account) => account.getAccountType() === accountType);
       if (accountsOfType.length === 0) continue;
 
       for (const account of accountsOfType) {
         if (remainingToWithdraw <= 0) break;
         if (!(account.getTotalValue() > 0)) continue;
 
-        const withdrawFromThisAccount = Math.min(remainingToWithdraw, account.getTotalValue());
+        let maxWithdrawable = account.getTotalValue();
+        if (modifier === 'contributionsOnly' && account instanceof InvestmentAccount) {
+          maxWithdrawable = Math.min(maxWithdrawable, account.getContributionBasis()!);
+        }
+
+        const withdrawFromThisAccount = Math.min(remainingToWithdraw, maxWithdrawable);
 
         const { realizedGains, earningsWithdrawn } = account.applyWithdrawal(withdrawFromThisAccount);
         realizedGainsByAccount[account.getAccountID()] = realizedGains;
@@ -309,8 +312,6 @@ export class PortfolioProcessor {
   }
 
   private getWithdrawalOrder(): Array<WithdrawalOrderItem> {
-    // TODO: Create more sophisticated drawdown strategy based on tax, penalty efficiency
-
     const age = this.simulationState.time.age;
     const regularQualifiedWithdrawalAge = 59.5;
 
