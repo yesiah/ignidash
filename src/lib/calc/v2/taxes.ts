@@ -25,6 +25,7 @@ export interface IncomeTaxesData {
 export interface TaxesData {
   incomeTaxes: IncomeTaxesData;
   capitalGainsTaxes: CapitalGainsTaxesData;
+  earlyWithdrawalPenalties: EarlyWithdrawalPenaltyData;
   totalTaxesDue: number;
   totalTaxesRefund: number;
   totalTaxableIncome: number;
@@ -35,6 +36,7 @@ export interface TaxesData {
 export interface EarlyWithdrawalPenaltyData {
   taxDeferredPenaltyAmount: number;
   taxFreePenaltyAmount: number;
+  totalPenaltyAmount: number;
 }
 
 const STANDARD_DEDUCTION_SINGLE = 15000;
@@ -100,12 +102,16 @@ export class TaxProcessor {
       netCapitalGains: grossIncomeTaxedAsCapGains - capitalGainsTaxAmount,
     };
 
-    const totalTaxLiability = incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount;
+    const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes);
+
+    const totalTaxLiability =
+      incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount + earlyWithdrawalPenalties.totalPenaltyAmount;
     const difference = totalTaxLiability - annualIncomesData.totalAmountWithheld;
 
     return {
       incomeTaxes,
       capitalGainsTaxes,
+      earlyWithdrawalPenalties,
       totalTaxesDue: difference > 0 ? difference : 0,
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
       totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
@@ -171,7 +177,7 @@ export class TaxProcessor {
       taxDeferredPenaltyAmount += taxDeferredWithdrawalsFromHsa * 0.2;
     }
 
-    return { taxDeferredPenaltyAmount, taxFreePenaltyAmount };
+    return { taxDeferredPenaltyAmount, taxFreePenaltyAmount, totalPenaltyAmount: taxDeferredPenaltyAmount + taxFreePenaltyAmount };
   }
 
   private getGrossOrdinaryIncome(
