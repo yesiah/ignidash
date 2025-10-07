@@ -362,12 +362,8 @@ describe('StochasticReturnsProvider', () => {
         for (let year = 1; year <= yearsPerScenario; year++) {
           const result = scenarioProvider.getReturns(phaseData);
 
-          // Convert real yields back to nominal for statistical analysis
-          const nominalBondYield = (1 + result.metadata.bondYield / 100) * (1 + result.metadata.inflationRate / 100) - 1;
-          const nominalStockYield = (1 + result.metadata.stockYield / 100) * (1 + result.metadata.inflationRate / 100) - 1;
-
-          yields.bondYield.push(nominalBondYield);
-          yields.stockYield.push(nominalStockYield);
+          yields.bondYield.push(result.metadata.bondYield / 100);
+          yields.stockYield.push(result.metadata.stockYield / 100);
           yields.inflation.push(result.metadata.inflationRate / 100);
         }
       }

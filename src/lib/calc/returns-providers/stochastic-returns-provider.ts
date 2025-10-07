@@ -124,13 +124,9 @@ export class StochasticReturnsProvider implements ReturnsProvider {
     const realBondReturn = (1 + nominalBondReturn) / (1 + inflation) - 1;
     const realCashReturn = (1 + nominalCashReturn) / (1 + inflation) - 1;
 
-    // Calculate real yields using Fisher equation
-    const realBondYield = (1 + nominalBondYield) / (1 + inflation) - 1;
-    const realStockYield = (1 + nominalStockYield) / (1 + inflation) - 1;
-
     return {
       returns: { stocks: realStockReturn, bonds: realBondReturn, cash: realCashReturn },
-      metadata: { inflationRate: inflation * 100, bondYield: realBondYield * 100, stockYield: realStockYield * 100 },
+      metadata: { inflationRate: inflation * 100, bondYield: nominalBondYield * 100, stockYield: nominalStockYield * 100 },
     };
   }
 
