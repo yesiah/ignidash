@@ -12,7 +12,7 @@ type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string,
 type WithdrawalModifier = 'contributionsOnly';
 
 interface WithdrawalOrderItem {
-  type: AccountInputs['type'];
+  accountType: AccountInputs['type'];
   modifier?: WithdrawalModifier;
 }
 
@@ -268,12 +268,12 @@ export class PortfolioProcessor {
     const withdrawalOrder = this.getWithdrawalOrder();
     let remainingToWithdraw = Math.abs(grossCashFlow);
 
-    for (const accountType of withdrawalOrder) {
+    for (const withdrawalOrderItem of withdrawalOrder) {
       if (remainingToWithdraw <= 0) break;
 
       const accountsOfType = this.simulationState.portfolio
         .getAccounts()
-        .filter((account) => account.getAccountType() === accountType.type);
+        .filter((account) => account.getAccountType() === withdrawalOrderItem.accountType);
       if (accountsOfType.length === 0) continue;
 
       for (const account of accountsOfType) {
@@ -316,25 +316,25 @@ export class PortfolioProcessor {
 
     if (age < regularQualifiedWithdrawalAge) {
       return [
-        { type: 'savings' },
-        { type: 'taxableBrokerage' },
-        { type: 'roth401k', modifier: 'contributionsOnly' },
-        { type: 'rothIra', modifier: 'contributionsOnly' },
-        { type: '401k' },
-        { type: 'ira' },
-        { type: 'hsa' },
-        { type: 'roth401k' },
-        { type: 'rothIra' },
+        { accountType: 'savings' },
+        { accountType: 'taxableBrokerage' },
+        { accountType: 'roth401k', modifier: 'contributionsOnly' },
+        { accountType: 'rothIra', modifier: 'contributionsOnly' },
+        { accountType: '401k' },
+        { accountType: 'ira' },
+        { accountType: 'hsa' },
+        { accountType: 'roth401k' },
+        { accountType: 'rothIra' },
       ];
     } else {
       return [
-        { type: 'savings' },
-        { type: 'taxableBrokerage' },
-        { type: '401k' },
-        { type: 'ira' },
-        { type: 'hsa' },
-        { type: 'roth401k' },
-        { type: 'rothIra' },
+        { accountType: 'savings' },
+        { accountType: 'taxableBrokerage' },
+        { accountType: '401k' },
+        { accountType: 'ira' },
+        { accountType: 'hsa' },
+        { accountType: 'roth401k' },
+        { accountType: 'rothIra' },
       ];
     }
   }
