@@ -270,9 +270,10 @@ export class PortfolioProcessor {
     if (age < 73) throw new Error('RMDs should not be processed for ages under 73');
 
     const withdrawalsByAccount: Record<string, number> = {};
+    const rmdsByAccount: Record<string, number> = {};
+
     const realizedGainsByAccount: Record<string, number> = {};
     const earningsWithdrawnByAccount: Record<string, number> = {};
-    const rmdsByAccount: Record<string, number> = {};
 
     let totalForPeriod = 0;
     let realizedGainsForPeriod = 0;
