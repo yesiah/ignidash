@@ -84,29 +84,10 @@ export class PortfolioProcessor {
       })
     );
 
-    const totalValue = this.simulationState.portfolio.getTotalValue();
-    const totalWithdrawals = this.simulationState.portfolio.getTotalWithdrawals();
-    const totalContributions = this.simulationState.portfolio.getTotalContributions();
-    const totalRealizedGains = this.simulationState.portfolio.getTotalRealizedGains();
-    const totalEarningsWithdrawn = this.simulationState.portfolio.getTotalEarningsWithdrawn();
-    const totalRmds = this.simulationState.portfolio.getTotalRmds();
-    const assetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
-
-    const result = {
-      totalValue,
-      totalWithdrawals,
-      totalContributions,
-      totalRealizedGains,
-      totalEarningsWithdrawn,
-      totalRmds,
-      withdrawalsForPeriod,
-      contributionsForPeriod,
-      realizedGainsForPeriod,
-      earningsWithdrawnForPeriod,
-      rmdsForPeriod: 0,
-      perAccountData,
-      assetAllocation,
-    };
+    const result = this.buildPortfolioData(
+      { withdrawalsForPeriod, contributionsForPeriod, realizedGainsForPeriod, earningsWithdrawnForPeriod, rmdsForPeriod: 0 },
+      perAccountData
+    );
 
     this.monthlyData.push(result);
     return { portfolioData: result, discretionaryExpense };
@@ -177,30 +158,13 @@ export class PortfolioProcessor {
       })
     );
 
-    const totalValue = this.simulationState.portfolio.getTotalValue();
-    const totalWithdrawals = this.simulationState.portfolio.getTotalWithdrawals();
-    const totalContributions = this.simulationState.portfolio.getTotalContributions();
-    const totalRealizedGains = this.simulationState.portfolio.getTotalRealizedGains();
-    const totalEarningsWithdrawn = this.simulationState.portfolio.getTotalEarningsWithdrawn();
-    const totalRmds = this.simulationState.portfolio.getTotalRmds();
-    const assetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
+    const portfolioData = this.buildPortfolioData(
+      { withdrawalsForPeriod, contributionsForPeriod, realizedGainsForPeriod, earningsWithdrawnForPeriod, rmdsForPeriod: 0 },
+      perAccountData
+    );
 
     return {
-      portfolioData: {
-        totalValue,
-        totalWithdrawals,
-        totalContributions,
-        totalRealizedGains,
-        totalEarningsWithdrawn,
-        totalRmds,
-        withdrawalsForPeriod,
-        contributionsForPeriod,
-        realizedGainsForPeriod,
-        earningsWithdrawnForPeriod,
-        rmdsForPeriod: 0,
-        perAccountData,
-        assetAllocation,
-      },
+      portfolioData,
       discretionaryExpense,
     };
   }
@@ -406,32 +370,42 @@ export class PortfolioProcessor {
       })
     );
 
-    const totalValue = this.simulationState.portfolio.getTotalValue();
-    const totalWithdrawals = this.simulationState.portfolio.getTotalWithdrawals();
-    const totalContributions = this.simulationState.portfolio.getTotalContributions();
-    const totalRealizedGains = this.simulationState.portfolio.getTotalRealizedGains();
-    const totalEarningsWithdrawn = this.simulationState.portfolio.getTotalEarningsWithdrawn();
-    const totalRmds = this.simulationState.portfolio.getTotalRmds();
-    const assetAllocation = this.simulationState.portfolio.getWeightedAssetAllocation();
-
-    const result = {
-      totalValue,
-      totalWithdrawals,
-      totalContributions,
-      totalRealizedGains,
-      totalEarningsWithdrawn,
-      totalRmds,
-      withdrawalsForPeriod: totalForPeriod,
-      contributionsForPeriod: totalForPeriod,
-      realizedGainsForPeriod,
-      earningsWithdrawnForPeriod,
-      rmdsForPeriod: totalForPeriod,
-      perAccountData,
-      assetAllocation,
-    };
+    const result = this.buildPortfolioData(
+      {
+        withdrawalsForPeriod: totalForPeriod,
+        contributionsForPeriod: totalForPeriod,
+        realizedGainsForPeriod,
+        earningsWithdrawnForPeriod,
+        rmdsForPeriod: totalForPeriod,
+      },
+      perAccountData
+    );
 
     this.monthlyData.push(result);
     return result;
+  }
+
+  private buildPortfolioData(
+    forPeriodData: {
+      withdrawalsForPeriod: number;
+      contributionsForPeriod: number;
+      realizedGainsForPeriod: number;
+      earningsWithdrawnForPeriod: number;
+      rmdsForPeriod: number;
+    },
+    perAccountData: Record<string, AccountDataWithTransactions>
+  ): PortfolioData {
+    return {
+      totalValue: this.simulationState.portfolio.getTotalValue(),
+      totalWithdrawals: this.simulationState.portfolio.getTotalWithdrawals(),
+      totalContributions: this.simulationState.portfolio.getTotalContributions(),
+      totalRealizedGains: this.simulationState.portfolio.getTotalRealizedGains(),
+      totalEarningsWithdrawn: this.simulationState.portfolio.getTotalEarningsWithdrawn(),
+      totalRmds: this.simulationState.portfolio.getTotalRmds(),
+      ...forPeriodData,
+      perAccountData,
+      assetAllocation: this.simulationState.portfolio.getWeightedAssetAllocation(),
+    };
   }
 
   private getWithdrawalOrder(): Array<WithdrawalOrderItem> {
