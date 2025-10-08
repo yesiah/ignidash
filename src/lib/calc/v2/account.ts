@@ -40,6 +40,14 @@ export abstract class Account {
     protected totalYields: AssetYieldAmounts
   ) {}
 
+  getTotalValue(): number {
+    return this.totalValue;
+  }
+
+  getAccountName(): string {
+    return this.name;
+  }
+
   getAccountID(): string {
     return this.id;
   }
@@ -48,24 +56,16 @@ export abstract class Account {
     return this.type;
   }
 
-  getAccountName(): string {
-    return this.name;
-  }
-
-  getTotalValue(): number {
-    return this.totalValue;
-  }
-
-  getTotalWithdrawals(): number {
-    return this.totalWithdrawals;
+  getTotalReturns(): AssetReturnAmounts {
+    return this.totalReturns;
   }
 
   getTotalContributions(): number {
     return this.totalContributions;
   }
 
-  getTotalReturns(): AssetReturnAmounts {
-    return this.totalReturns;
+  getTotalWithdrawals(): number {
+    return this.totalWithdrawals;
   }
 
   getTotalRealizedGains(): number {
@@ -78,6 +78,10 @@ export abstract class Account {
 
   getTotalRmds(): number {
     return this.totalRmds;
+  }
+
+  getTotalYields(): AssetYieldAmounts {
+    return this.totalYields;
   }
 
   getHasRMDs(): boolean {
