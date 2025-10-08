@@ -453,9 +453,9 @@ export class PortfolioProcessor {
     } else {
       return [
         { accountType: 'savings' },
-        { accountType: 'taxableBrokerage' },
         { accountType: '401k' },
         { accountType: 'ira' },
+        { accountType: 'taxableBrokerage' },
         { accountType: 'roth401k' },
         { accountType: 'rothIra' },
         { accountType: 'hsa' },
