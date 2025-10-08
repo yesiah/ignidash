@@ -356,7 +356,7 @@ export class PortfolioProcessor {
     for (const account of accountsWithRMDs) {
       if (!(account.getTotalValue() > 0)) continue;
 
-      const lookupAge = Math.min(age, 120);
+      const lookupAge = Math.min(Math.floor(age), 120);
       const rmdAmount = account.getTotalValue() / uniformLifetimeMap[lookupAge];
 
       const { realizedGains, earningsWithdrawn } = account.applyWithdrawal(rmdAmount, 'rmd');
