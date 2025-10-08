@@ -91,7 +91,7 @@ export class FinancialSimulationEngine {
       const expensesData = expensesProcessor.process(returnsData);
 
       const { discretionaryExpense: monthlyDiscretionaryExpense } = portfolioProcessor.processCashFlows(incomesData, expensesData);
-      expensesProcessor.processDiscretionaryExpense(monthlyDiscretionaryExpense);
+      if (monthlyDiscretionaryExpense) expensesProcessor.processDiscretionaryExpense(monthlyDiscretionaryExpense);
 
       if (simulationState.time.month % 12 === 0) {
         // Get annual data from processors
@@ -105,7 +105,7 @@ export class FinancialSimulationEngine {
           portfolioProcessor.processTaxes(annualPortfolioDataBeforeTaxes, annualTaxesData);
 
         // Process expenses last to account for discretionary expenses from tax refunds
-        expensesProcessor.processDiscretionaryExpense(annualDiscretionaryExpense);
+        if (annualDiscretionaryExpense) expensesProcessor.processDiscretionaryExpense(annualDiscretionaryExpense);
         const annualExpensesData = expensesProcessor.getAnnualData();
 
         // Update simulation state
