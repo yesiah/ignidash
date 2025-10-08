@@ -18,9 +18,11 @@ interface WithdrawalOrderItem {
 }
 
 const EXTRA_SAVINGS_ACCOUNT_ID = '54593a0d-7b4f-489d-a5bd-42500afba532';
+const RMD_SAVINGS_ACCOUNT_ID = 'd7288042-1f83-4e50-9a6a-b1ef7a6191cc';
 
 export class PortfolioProcessor {
   private extraSavingsAccount: SavingsAccount;
+  private rmdSavingsAccount: SavingsAccount;
   private monthlyData: PortfolioData[] = [];
 
   constructor(
@@ -31,6 +33,12 @@ export class PortfolioProcessor {
       type: 'savings' as const,
       id: EXTRA_SAVINGS_ACCOUNT_ID,
       name: '[System] Extra Savings',
+      currentValue: 0,
+    });
+    this.rmdSavingsAccount = new SavingsAccount({
+      type: 'savings' as const,
+      id: RMD_SAVINGS_ACCOUNT_ID,
+      name: '[System] RMD Savings',
       currentValue: 0,
     });
   }
@@ -316,7 +324,7 @@ export class PortfolioProcessor {
       return;
     }
 
-    const byAccount: Record<string, number> = {};
+    const byAccountWithdrawals: Record<string, number> = {};
     const realizedGainsByAccount: Record<string, number> = {};
     const earningsWithdrawnByAccount: Record<string, number> = {};
 
@@ -337,7 +345,7 @@ export class PortfolioProcessor {
       earningsWithdrawnByAccount[account.getAccountID()] = earningsWithdrawn;
       earningsWithdrawnForPeriod += earningsWithdrawn;
 
-      byAccount[account.getAccountID()] = rmdAmount;
+      byAccountWithdrawals[account.getAccountID()] = rmdAmount;
       totalForPeriod += rmdAmount;
     }
 
@@ -348,12 +356,25 @@ export class PortfolioProcessor {
       earningsWithdrawnByAccount: Record<string, number>;
     } = {
       totalForPeriod,
-      byAccount,
+      byAccount: byAccountWithdrawals,
       realizedGainsForPeriod,
       realizedGainsByAccount,
       earningsWithdrawnForPeriod,
       earningsWithdrawnByAccount,
     };
+
+    const byAccountContributions: Record<string, number> = {};
+
+    const portfolioHasRmdSavingsAccount = this.simulationState.portfolio
+      .getAccounts()
+      .some((account) => account.getAccountID() === this.rmdSavingsAccount.getAccountID());
+    if (!portfolioHasRmdSavingsAccount) {
+      this.simulationState.portfolio.addRmdSavingsAccount(this.rmdSavingsAccount);
+    }
+
+    this.rmdSavingsAccount.applyContribution(totalForPeriod);
+    byAccountContributions[this.rmdSavingsAccount.getAccountID()] =
+      (byAccountContributions[this.rmdSavingsAccount.getAccountID()] || 0) + totalForPeriod;
 
     return;
   }
@@ -461,6 +482,10 @@ export class Portfolio {
 
   addExtraSavingsAccount(extraSavingsAccount: SavingsAccount): void {
     this.accounts.push(extraSavingsAccount);
+  }
+
+  addRmdSavingsAccount(rmdSavingsAccount: SavingsAccount): void {
+    this.accounts.push(rmdSavingsAccount);
   }
 
   getWeightedAssetAllocation(): AssetAllocation | null {
