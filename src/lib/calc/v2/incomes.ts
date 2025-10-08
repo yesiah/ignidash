@@ -39,10 +39,6 @@ export class IncomesProcessor {
     return result;
   }
 
-  getMonthlyData(): IncomesData[] {
-    return this.monthlyData;
-  }
-
   resetMonthlyData(): void {
     this.monthlyData = [];
   }

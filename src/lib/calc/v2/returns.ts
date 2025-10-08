@@ -29,6 +29,7 @@ export interface ReturnsData {
   annualInflationRate: number;
   annualYieldRates: AssetYieldRates;
 
+  // Per account data
   perAccountData: Record<string, AccountDataWithReturns>;
 }
 
@@ -100,10 +101,6 @@ export class ReturnsProcessor {
 
     this.monthlyData.push(result);
     return result;
-  }
-
-  getMonthlyData(): ReturnsData[] {
-    return this.monthlyData;
   }
 
   resetMonthlyData(): void {

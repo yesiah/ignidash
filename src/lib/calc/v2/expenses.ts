@@ -57,10 +57,6 @@ export class ExpensesProcessor {
     return currentMonthlyData;
   }
 
-  getMonthlyData(): ExpensesData[] {
-    return this.monthlyData;
-  }
-
   resetMonthlyData(): void {
     this.monthlyData = [];
   }

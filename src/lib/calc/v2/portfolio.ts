@@ -463,10 +463,6 @@ export class PortfolioProcessor {
     }
   }
 
-  getMonthlyData(): PortfolioData[] {
-    return this.monthlyData;
-  }
-
   resetMonthlyData(): void {
     this.monthlyData = [];
   }
