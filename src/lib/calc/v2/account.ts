@@ -85,7 +85,6 @@ export abstract class Account {
   }
 
   abstract getAccountData(): AccountData;
-
   abstract applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts };
   abstract applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts };
   abstract applyContribution(amount: number): void;
