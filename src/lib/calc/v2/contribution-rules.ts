@@ -1,7 +1,8 @@
 import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 
-import { Account, type PortfolioData } from './portfolio';
+import type { PortfolioData } from './portfolio';
+import { Account } from './account';
 import type { IncomesData } from './incomes';
 
 export class ContributionRules {

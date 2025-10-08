@@ -5,7 +5,8 @@ import type { ReturnsProvider } from '../returns-providers/returns-provider';
 import { StochasticReturnsProvider } from '../returns-providers/stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '../returns-providers/lcg-historical-backtest-returns-provider';
 
-import { type AccountDataWithTransactions, Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
+import { Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
+import type { AccountDataWithTransactions } from './account';
 import { ContributionRules } from './contribution-rules';
 import { PhaseIdentifier, type PhaseData } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
