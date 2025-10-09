@@ -68,7 +68,7 @@ export class TaxProcessor {
     );
 
     const grossRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
-    const grossDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.dividendYield;
+    const grossDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
     const grossIncomeTaxedAsCapGains = grossRealizedGains + grossDividendIncome;
 
     const capitalLossDeduction = Math.min(0, Math.max(-3000, grossRealizedGains));
@@ -186,7 +186,7 @@ export class TaxProcessor {
     annualReturnsData: ReturnsData
   ): { grossOrdinaryIncome: number; taxDeferredContributions: number } {
     const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
-    const grossIncomeFromInterest = annualReturnsData.yieldAmountsForPeriod.taxable.bondYield;
+    const grossIncomeFromInterest = annualReturnsData.yieldAmountsForPeriod.taxable.bonds;
 
     const age = this.simulationState.time.age;
     const rothEarningsQualifiedWithdrawalAge = 59.5;

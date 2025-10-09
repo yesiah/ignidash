@@ -14,7 +14,8 @@ export class FixedReturnsProvider implements ReturnsProvider {
 
     return {
       returns: { stocks: realStockReturn, bonds: realBondReturn, cash: realCashReturn },
-      metadata: { inflationRate, bondYield, stockYield },
+      yields: { stocks: stockYield, bonds: bondYield, cash: cashReturn },
+      metadata: { inflationRate },
     };
   }
 }

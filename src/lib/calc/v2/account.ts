@@ -98,9 +98,9 @@ export abstract class Account {
 export class SavingsAccount extends Account {
   constructor(data: AccountInputs) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, {
-      taxable: { dividendYield: 0, bondYield: 0 },
-      taxDeferred: { dividendYield: 0, bondYield: 0 },
-      taxFree: { dividendYield: 0, bondYield: 0 },
+      taxable: { stocks: 0, bonds: 0, cash: 0 },
+      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+      taxFree: { stocks: 0, bonds: 0, cash: 0 },
     });
   }
 
@@ -162,9 +162,9 @@ export abstract class InvestmentAccount extends Account {
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, {
-      taxable: { dividendYield: 0, bondYield: 0 },
-      taxDeferred: { dividendYield: 0, bondYield: 0 },
-      taxFree: { dividendYield: 0, bondYield: 0 },
+      taxable: { stocks: 0, bonds: 0, cash: 0 },
+      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+      taxFree: { stocks: 0, bonds: 0, cash: 0 },
     });
     this.initialPercentBonds = (data.percentBonds ?? 0) / 100;
     this.currPercentBonds = (data.percentBonds ?? 0) / 100;
@@ -213,7 +213,7 @@ export abstract class InvestmentAccount extends Account {
   }
 
   applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
-    const { dividendYield, bondYield } = yields;
+    const { stocks: dividendYield, bonds: bondYield } = yields;
 
     const bondsPercent = this.currPercentBonds;
     const stocksPercent = 1 - bondsPercent;
@@ -228,41 +228,41 @@ export abstract class InvestmentAccount extends Account {
       case 'savings':
         throw new Error('Savings account should not be of type InvestmentAccount');
       case 'taxableBrokerage':
-        this.totalYields.taxable.bondYield += bondYieldAmount;
-        this.totalYields.taxable.dividendYield += dividendYieldAmount;
+        this.totalYields.taxable.bonds += bondYieldAmount;
+        this.totalYields.taxable.stocks += dividendYieldAmount;
 
         return {
           yieldsForPeriod: {
-            taxable: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
-            taxDeferred: { bondYield: 0, dividendYield: 0 },
-            taxFree: { bondYield: 0, dividendYield: 0 },
+            taxable: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
+            taxDeferred: { bonds: 0, stocks: 0, cash: 0 },
+            taxFree: { bonds: 0, stocks: 0, cash: 0 },
           },
           totalYields: { ...this.totalYields },
         };
       case '401k':
       case 'ira':
       case 'hsa':
-        this.totalYields.taxDeferred.bondYield += bondYieldAmount;
-        this.totalYields.taxDeferred.dividendYield += dividendYieldAmount;
+        this.totalYields.taxDeferred.bonds += bondYieldAmount;
+        this.totalYields.taxDeferred.stocks += dividendYieldAmount;
 
         return {
           yieldsForPeriod: {
-            taxable: { bondYield: 0, dividendYield: 0 },
-            taxDeferred: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
-            taxFree: { bondYield: 0, dividendYield: 0 },
+            taxable: { bonds: 0, stocks: 0, cash: 0 },
+            taxDeferred: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
+            taxFree: { bonds: 0, stocks: 0, cash: 0 },
           },
           totalYields: { ...this.totalYields },
         };
       case 'roth401k':
       case 'rothIra':
-        this.totalYields.taxFree.bondYield += bondYieldAmount;
-        this.totalYields.taxFree.dividendYield += dividendYieldAmount;
+        this.totalYields.taxFree.bonds += bondYieldAmount;
+        this.totalYields.taxFree.stocks += dividendYieldAmount;
 
         return {
           yieldsForPeriod: {
-            taxable: { bondYield: 0, dividendYield: 0 },
-            taxDeferred: { bondYield: 0, dividendYield: 0 },
-            taxFree: { bondYield: bondYieldAmount, dividendYield: dividendYieldAmount },
+            taxable: { bonds: 0, stocks: 0, cash: 0 },
+            taxDeferred: { bonds: 0, stocks: 0, cash: 0 },
+            taxFree: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
           },
           totalYields: { ...this.totalYields },
         };

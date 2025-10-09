@@ -4,7 +4,7 @@ export type TaxCategory = 'taxable' | 'taxDeferred' | 'taxFree';
 export type AssetReturnRates = Record<AssetClass, number>;
 export type AssetReturnAmounts = Record<AssetClass, number>;
 
-export type AssetYieldRates = { dividendYield: number; bondYield: number };
-export type AssetYieldAmounts = Record<TaxCategory, { dividendYield: number; bondYield: number }>;
+export type AssetYieldRates = Record<AssetClass, number>;
+export type AssetYieldAmounts = Record<TaxCategory, Record<AssetClass, number>>;
 
 export type AssetAllocation = Record<AssetClass, number>;

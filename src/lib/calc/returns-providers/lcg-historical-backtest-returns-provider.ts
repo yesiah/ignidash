@@ -58,14 +58,12 @@ export class LcgHistoricalBacktestReturnsProvider implements ReturnsProvider {
     this.currentHistoricalYear += 1;
 
     const returns: AssetReturnRates = { stocks: yearData.stockReturn, bonds: yearData.bondReturn, cash: yearData.cashReturn };
+    const nominalCashYield = (1 + returns.cash) * (1 + yearData.inflationRate) - 1;
 
     return {
       returns,
-      metadata: {
-        inflationRate: yearData.inflationRate * 100,
-        bondYield: yieldData.bondYield * 100,
-        stockYield: yieldData.stockYield * 100,
-      },
+      yields: { stocks: yieldData.stockYield * 100, bonds: yieldData.bondYield * 100, cash: nominalCashYield * 100 },
+      metadata: { inflationRate: yearData.inflationRate * 100 },
     };
   }
 

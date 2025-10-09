@@ -362,8 +362,8 @@ describe('StochasticReturnsProvider', () => {
         for (let year = 1; year <= yearsPerScenario; year++) {
           const result = scenarioProvider.getReturns(phaseData);
 
-          yields.bondYield.push(result.metadata.bondYield / 100);
-          yields.stockYield.push(result.metadata.stockYield / 100);
+          yields.bondYield.push(result.yields.bonds / 100);
+          yields.stockYield.push(result.yields.stocks / 100);
           yields.inflation.push(result.metadata.inflationRate / 100);
         }
       }

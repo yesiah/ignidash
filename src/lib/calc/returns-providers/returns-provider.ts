@@ -19,7 +19,7 @@
  * - Fisher equation implementation for accurate real return conversion
  */
 
-import type { AssetReturnRates, AssetReturnAmounts } from '../asset';
+import type { AssetReturnRates, AssetYieldRates } from '../asset';
 import type { PhaseData } from '../v2/phase';
 
 /**
@@ -29,11 +29,9 @@ import type { PhaseData } from '../v2/phase';
  */
 export interface ReturnsWithMetadata<TExtras extends Record<string, unknown> = Record<string, unknown>> {
   returns: AssetReturnRates;
-  amounts?: AssetReturnAmounts;
+  yields: AssetYieldRates;
   metadata: {
     inflationRate: number;
-    bondYield: number;
-    stockYield: number;
     /** Optional extras that providers can add for simulation-specific data */
     extras?: TExtras;
   };

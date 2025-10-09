@@ -49,7 +49,11 @@ export class ReturnsProcessor {
 
     this.cachedAnnualReturnRates = returns.returns;
     this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;
-    this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield / 100, bondYield: returns.metadata.bondYield / 100 };
+    this.cachedAnnualYieldRates = {
+      stocks: returns.yields.stocks / 100,
+      bonds: returns.yields.bonds / 100,
+      cash: returns.yields.cash / 100,
+    };
     this.lastYear = this.simulationState.time.year;
   }
 
@@ -61,7 +65,11 @@ export class ReturnsProcessor {
 
       this.cachedAnnualReturnRates = returns.returns;
       this.cachedAnnualInflationRate = returns.metadata.inflationRate / 100;
-      this.cachedAnnualYieldRates = { dividendYield: returns.metadata.stockYield / 100, bondYield: returns.metadata.bondYield / 100 };
+      this.cachedAnnualYieldRates = {
+        stocks: returns.yields.stocks / 100,
+        bonds: returns.yields.bonds / 100,
+        cash: returns.yields.cash / 100,
+      };
       this.lastYear = currentYear;
     }
 
@@ -72,8 +80,9 @@ export class ReturnsProcessor {
     };
     const inflationRateForPeriod = Math.pow(1 + this.cachedAnnualInflationRate, 1 / 12) - 1;
     const yieldRatesForPeriod: AssetYieldRates = {
-      dividendYield: this.cachedAnnualYieldRates.dividendYield / 12,
-      bondYield: this.cachedAnnualYieldRates.bondYield / 12,
+      stocks: this.cachedAnnualYieldRates.stocks / 12,
+      bonds: this.cachedAnnualYieldRates.bonds / 12,
+      cash: this.cachedAnnualYieldRates.cash / 12,
     };
 
     const { yieldsForPeriod: yieldAmountsForPeriod, totalYields: totalYieldAmounts } =
@@ -123,8 +132,9 @@ export class ReturnsProcessor {
           acc.returnAmountsForPeriod.cash += curr.returnAmountsForPeriod.cash;
 
           (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
-            acc.yieldAmountsForPeriod[category].dividendYield += curr.yieldAmountsForPeriod[category].dividendYield;
-            acc.yieldAmountsForPeriod[category].bondYield += curr.yieldAmountsForPeriod[category].bondYield;
+            acc.yieldAmountsForPeriod[category].stocks += curr.yieldAmountsForPeriod[category].stocks;
+            acc.yieldAmountsForPeriod[category].bonds += curr.yieldAmountsForPeriod[category].bonds;
+            acc.yieldAmountsForPeriod[category].cash += curr.yieldAmountsForPeriod[category].cash;
           });
 
           Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
@@ -143,9 +153,9 @@ export class ReturnsProcessor {
         {
           returnAmountsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
           yieldAmountsForPeriod: {
-            taxable: { dividendYield: 0, bondYield: 0 },
-            taxDeferred: { dividendYield: 0, bondYield: 0 },
-            taxFree: { dividendYield: 0, bondYield: 0 },
+            taxable: { stocks: 0, bonds: 0, cash: 0 },
+            taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+            taxFree: { stocks: 0, bonds: 0, cash: 0 },
           },
           perAccountData: {} as Record<string, AccountDataWithReturns>,
         }

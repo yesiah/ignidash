@@ -619,14 +619,14 @@ export class Portfolio {
 
   applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
     const yieldsForPeriod: AssetYieldAmounts = {
-      taxable: { dividendYield: 0, bondYield: 0 },
-      taxDeferred: { dividendYield: 0, bondYield: 0 },
-      taxFree: { dividendYield: 0, bondYield: 0 },
+      taxable: { stocks: 0, bonds: 0, cash: 0 },
+      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+      taxFree: { stocks: 0, bonds: 0, cash: 0 },
     };
     const totalYields: AssetYieldAmounts = {
-      taxable: { dividendYield: 0, bondYield: 0 },
-      taxDeferred: { dividendYield: 0, bondYield: 0 },
-      taxFree: { dividendYield: 0, bondYield: 0 },
+      taxable: { stocks: 0, bonds: 0, cash: 0 },
+      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+      taxFree: { stocks: 0, bonds: 0, cash: 0 },
     };
 
     this.accounts
@@ -635,11 +635,13 @@ export class Portfolio {
         const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
 
         (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
-          yieldsForPeriod[category].dividendYield += accountYieldsForPeriod[category].dividendYield;
-          yieldsForPeriod[category].bondYield += accountYieldsForPeriod[category].bondYield;
+          yieldsForPeriod[category].stocks += accountYieldsForPeriod[category].stocks;
+          yieldsForPeriod[category].bonds += accountYieldsForPeriod[category].bonds;
+          yieldsForPeriod[category].cash += accountYieldsForPeriod[category].cash;
 
-          totalYields[category].dividendYield += accountTotalYields[category].dividendYield;
-          totalYields[category].bondYield += accountTotalYields[category].bondYield;
+          totalYields[category].stocks += accountTotalYields[category].stocks;
+          totalYields[category].bonds += accountTotalYields[category].bonds;
+          totalYields[category].cash += accountTotalYields[category].cash;
         });
       });
 

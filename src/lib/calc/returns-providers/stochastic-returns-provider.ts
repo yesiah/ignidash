@@ -126,7 +126,8 @@ export class StochasticReturnsProvider implements ReturnsProvider {
 
     return {
       returns: { stocks: realStockReturn, bonds: realBondReturn, cash: realCashReturn },
-      metadata: { inflationRate: inflation * 100, bondYield: nominalBondYield * 100, stockYield: nominalStockYield * 100 },
+      yields: { stocks: nominalStockYield * 100, bonds: nominalBondYield * 100, cash: nominalCashReturn * 100 },
+      metadata: { inflationRate: inflation * 100 },
     };
   }
 
