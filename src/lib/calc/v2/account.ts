@@ -269,7 +269,7 @@ export abstract class InvestmentAccount extends Account {
     }
   }
 
-  applyContribution(amount: number): void {
+  protected applyContributionShared(amount: number): void {
     if (amount < 0) throw new Error('Contribution amount must be non-negative');
     if (amount === 0) return;
 
@@ -323,7 +323,7 @@ export class TaxableBrokerageAccount extends InvestmentAccount {
   }
 
   applyContribution(amount: number): void {
-    super.applyContribution(amount);
+    super.applyContributionShared(amount);
     this.costBasis += amount;
   }
 
@@ -348,6 +348,10 @@ export class TaxDeferredAccount extends InvestmentAccount {
     super(data);
   }
 
+  applyContribution(amount: number): void {
+    super.applyContributionShared(amount);
+  }
+
   applyWithdrawal(amount: number, type: WithdrawalType): { realizedGains: number; earningsWithdrawn: number } {
     super.applyWithdrawalShared(amount, type);
     return { realizedGains: 0, earningsWithdrawn: 0 };
@@ -369,7 +373,7 @@ export class TaxFreeAccount extends InvestmentAccount {
   }
 
   applyContribution(amount: number): void {
-    super.applyContribution(amount);
+    super.applyContributionShared(amount);
     this.contributionBasis += amount;
   }
 
