@@ -1,6 +1,13 @@
 import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 
-import { type Account, SavingsAccount, InvestmentAccount, type AccountDataWithTransactions } from './account';
+import {
+  type Account,
+  SavingsAccount,
+  TaxableBrokerageAccount,
+  TaxDeferredAccount,
+  TaxFreeAccount,
+  type AccountDataWithTransactions,
+} from './account';
 import type { SimulationState } from './simulation-engine';
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation, AssetYieldRates, AssetYieldAmounts, TaxCategory } from '../asset';
 import { ContributionRules } from './contribution-rules';
@@ -236,8 +243,8 @@ export class PortfolioProcessor {
         if (!(account.getTotalValue() > 0)) continue;
 
         let maxWithdrawable = account.getTotalValue();
-        if (modifier === 'contributionsOnly' && account instanceof InvestmentAccount) {
-          maxWithdrawable = Math.min(maxWithdrawable, account.getContributionBasis()!);
+        if (modifier === 'contributionsOnly' && account instanceof TaxFreeAccount) {
+          maxWithdrawable = Math.min(maxWithdrawable, account.getContributionBasis());
         }
 
         const withdrawFromThisAccount = Math.min(remainingToWithdraw, maxWithdrawable);
@@ -480,10 +487,18 @@ export class Portfolio {
 
   constructor(data: AccountInputs[]) {
     this.accounts = data.map((accountData) => {
-      if (accountData.type !== 'savings') {
-        return new InvestmentAccount(accountData);
-      } else {
-        return new SavingsAccount(accountData);
+      switch (accountData.type) {
+        case 'savings':
+          return new SavingsAccount(accountData);
+        case 'taxableBrokerage':
+          return new TaxableBrokerageAccount(accountData);
+        case 'roth401k':
+        case 'rothIra':
+          return new TaxFreeAccount(accountData);
+        case '401k':
+        case 'ira':
+        case 'hsa':
+          return new TaxDeferredAccount(accountData);
       }
     });
   }

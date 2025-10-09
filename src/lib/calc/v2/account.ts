@@ -1,6 +1,6 @@
 import type { AccountInputs, InvestmentAccountType } from '@/lib/schemas/account-form-schema';
 
-import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation, AssetYieldRates, AssetYieldAmounts } from '../asset';
+import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation, AssetYieldRates, AssetYieldAmounts, TaxCategory } from '../asset';
 
 type WithdrawalType = 'rmd' | 'regular';
 
@@ -154,12 +154,11 @@ export class SavingsAccount extends Account {
   }
 }
 
-export class InvestmentAccount extends Account {
+export abstract class InvestmentAccount extends Account {
+  abstract readonly taxCategory: TaxCategory;
+
   private initialPercentBonds: number;
   private currPercentBonds: number;
-
-  private costBasis: number | undefined;
-  private contributionBasis: number | undefined;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, {
@@ -169,9 +168,6 @@ export class InvestmentAccount extends Account {
     });
     this.initialPercentBonds = (data.percentBonds ?? 0) / 100;
     this.currPercentBonds = (data.percentBonds ?? 0) / 100;
-
-    if ('costBasis' in data) this.costBasis = data.costBasis;
-    if ('contributionBasis' in data) this.contributionBasis = data.contributionBasis;
   }
 
   getAccountData(): AccountData {
@@ -193,10 +189,6 @@ export class InvestmentAccount extends Account {
       type: this.type,
       assetAllocation,
     };
-  }
-
-  getContributionBasis(): number | undefined {
-    return this.contributionBasis;
   }
 
   applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts } {
@@ -293,13 +285,11 @@ export class InvestmentAccount extends Account {
     this.currPercentBonds = newTotalValue ? (currentBondValue + bondContribution) / newTotalValue : this.initialPercentBonds;
 
     this.totalContributions += amount;
-    if (this.costBasis !== undefined) this.costBasis += amount;
-    if (this.contributionBasis !== undefined) this.contributionBasis += amount;
   }
 
-  applyWithdrawal(amount: number, type: WithdrawalType): { realizedGains: number; earningsWithdrawn: number } {
+  protected applyWithdrawalShared(amount: number, type: WithdrawalType): void {
     if (amount < 0) throw new Error('Withdrawal amount must be non-negative');
-    if (amount === 0) return { realizedGains: 0, earningsWithdrawn: 0 };
+    if (amount === 0) return;
     if (amount > this.totalValue) throw new Error('Insufficient funds for withdrawal');
 
     const currentBondValue = this.totalValue * this.currPercentBonds;
@@ -309,6 +299,36 @@ export class InvestmentAccount extends Account {
 
     let bondWithdrawal = currentBondValue - targetBondValue;
     bondWithdrawal = Math.max(0, Math.min(amount, bondWithdrawal, currentBondValue));
+
+    this.totalValue = newTotalValue;
+    this.currPercentBonds = newTotalValue ? (currentBondValue - bondWithdrawal) / newTotalValue : this.initialPercentBonds;
+
+    this.totalWithdrawals += amount;
+    if (type === 'rmd') this.totalRmds += amount;
+  }
+}
+
+export class TaxableBrokerageAccount extends InvestmentAccount {
+  readonly taxCategory: TaxCategory = 'taxable';
+
+  private costBasis: number;
+
+  constructor(data: AccountInputs & { type: 'taxableBrokerage' }) {
+    super(data);
+    this.costBasis = data.costBasis!;
+  }
+
+  getCostBasis(): number {
+    return this.costBasis;
+  }
+
+  applyContribution(amount: number): void {
+    super.applyContribution(amount);
+    this.costBasis += amount;
+  }
+
+  applyWithdrawal(amount: number, type: WithdrawalType): { realizedGains: number; earningsWithdrawn: number } {
+    super.applyWithdrawalShared(amount, type);
 
     let realizedGains = 0;
     if (this.costBasis !== undefined) {
@@ -320,6 +340,45 @@ export class InvestmentAccount extends Account {
       this.totalRealizedGains += realizedGains;
     }
 
+    return { realizedGains, earningsWithdrawn: 0 };
+  }
+}
+
+export class TaxDeferredAccount extends InvestmentAccount {
+  readonly taxCategory: TaxCategory = 'taxDeferred';
+
+  constructor(data: AccountInputs & { type: 'ira' | '401k' | 'hsa' }) {
+    super(data);
+  }
+
+  applyWithdrawal(amount: number, type: WithdrawalType): { realizedGains: number; earningsWithdrawn: number } {
+    super.applyWithdrawalShared(amount, type);
+    return { realizedGains: 0, earningsWithdrawn: 0 };
+  }
+}
+
+export class TaxFreeAccount extends InvestmentAccount {
+  readonly taxCategory: TaxCategory = 'taxFree';
+
+  private contributionBasis: number;
+
+  constructor(data: AccountInputs & { type: 'rothIra' | 'roth401k' }) {
+    super(data);
+    this.contributionBasis = data.contributionBasis!;
+  }
+
+  getContributionBasis(): number {
+    return this.contributionBasis;
+  }
+
+  applyContribution(amount: number): void {
+    super.applyContribution(amount);
+    this.contributionBasis += amount;
+  }
+
+  applyWithdrawal(amount: number, type: WithdrawalType): { realizedGains: number; earningsWithdrawn: number } {
+    super.applyWithdrawalShared(amount, type);
+
     let earningsWithdrawn = 0;
     if (this.contributionBasis !== undefined) {
       const contributionWithdrawn = Math.min(amount, this.contributionBasis);
@@ -329,12 +388,6 @@ export class InvestmentAccount extends Account {
       this.totalEarningsWithdrawn += earningsWithdrawn;
     }
 
-    this.totalValue = newTotalValue;
-    this.currPercentBonds = newTotalValue ? (currentBondValue - bondWithdrawal) / newTotalValue : this.initialPercentBonds;
-
-    this.totalWithdrawals += amount;
-    if (type === 'rmd') this.totalRmds += amount;
-
-    return { realizedGains, earningsWithdrawn };
+    return { earningsWithdrawn, realizedGains: 0 };
   }
 }
