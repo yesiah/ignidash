@@ -26,6 +26,8 @@ export interface AccountDataWithTransactions extends AccountData {
 }
 
 export abstract class Account {
+  abstract readonly taxCategory: TaxCategory;
+
   constructor(
     protected totalValue: number,
     protected name: string,
@@ -96,11 +98,13 @@ export abstract class Account {
 }
 
 export class SavingsAccount extends Account {
+  readonly taxCategory: TaxCategory = 'cashSavings';
+
   constructor(data: AccountInputs) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, {
-      taxable: { stocks: 0, bonds: 0, cash: 0 },
-      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-      taxFree: { stocks: 0, bonds: 0, cash: 0 },
+      stocks: 0,
+      bonds: 0,
+      cash: 0,
     });
   }
 
@@ -155,16 +159,14 @@ export class SavingsAccount extends Account {
 }
 
 export abstract class InvestmentAccount extends Account {
-  abstract readonly taxCategory: TaxCategory;
-
   private initialPercentBonds: number;
   private currPercentBonds: number;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
     super(data.currentValue, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, {
-      taxable: { stocks: 0, bonds: 0, cash: 0 },
-      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-      taxFree: { stocks: 0, bonds: 0, cash: 0 },
+      stocks: 0,
+      bonds: 0,
+      cash: 0,
     });
     this.initialPercentBonds = (data.percentBonds ?? 0) / 100;
     this.currPercentBonds = (data.percentBonds ?? 0) / 100;
@@ -224,49 +226,13 @@ export abstract class InvestmentAccount extends Account {
     const bondYieldAmount = currentBondsValue * bondYield;
     const dividendYieldAmount = currentStocksValue * dividendYield;
 
-    switch (this.type) {
-      case 'savings':
-        throw new Error('Savings account should not be of type InvestmentAccount');
-      case 'taxableBrokerage':
-        this.totalYields.taxable.bonds += bondYieldAmount;
-        this.totalYields.taxable.stocks += dividendYieldAmount;
+    this.totalYields.bonds += bondYieldAmount;
+    this.totalYields.stocks += dividendYieldAmount;
 
-        return {
-          yieldsForPeriod: {
-            taxable: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
-            taxDeferred: { bonds: 0, stocks: 0, cash: 0 },
-            taxFree: { bonds: 0, stocks: 0, cash: 0 },
-          },
-          totalYields: { ...this.totalYields },
-        };
-      case '401k':
-      case 'ira':
-      case 'hsa':
-        this.totalYields.taxDeferred.bonds += bondYieldAmount;
-        this.totalYields.taxDeferred.stocks += dividendYieldAmount;
-
-        return {
-          yieldsForPeriod: {
-            taxable: { bonds: 0, stocks: 0, cash: 0 },
-            taxDeferred: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
-            taxFree: { bonds: 0, stocks: 0, cash: 0 },
-          },
-          totalYields: { ...this.totalYields },
-        };
-      case 'roth401k':
-      case 'rothIra':
-        this.totalYields.taxFree.bonds += bondYieldAmount;
-        this.totalYields.taxFree.stocks += dividendYieldAmount;
-
-        return {
-          yieldsForPeriod: {
-            taxable: { bonds: 0, stocks: 0, cash: 0 },
-            taxDeferred: { bonds: 0, stocks: 0, cash: 0 },
-            taxFree: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
-          },
-          totalYields: { ...this.totalYields },
-        };
-    }
+    return {
+      yieldsForPeriod: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
+      totalYields: { ...this.totalYields },
+    };
   }
 
   protected applyContributionShared(amount: number): void {

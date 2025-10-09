@@ -617,16 +617,21 @@ export class Portfolio {
     return { returnsForPeriod, totalReturns, byAccount };
   }
 
-  applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
-    const yieldsForPeriod: AssetYieldAmounts = {
+  applyYields(yields: AssetYieldRates): {
+    yieldsForPeriod: Record<TaxCategory, AssetYieldAmounts>;
+    totalYields: Record<TaxCategory, AssetYieldAmounts>;
+  } {
+    const yieldsForPeriod: Record<TaxCategory, AssetYieldAmounts> = {
       taxable: { stocks: 0, bonds: 0, cash: 0 },
       taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
       taxFree: { stocks: 0, bonds: 0, cash: 0 },
+      cashSavings: { stocks: 0, bonds: 0, cash: 0 },
     };
-    const totalYields: AssetYieldAmounts = {
+    const totalYields: Record<TaxCategory, AssetYieldAmounts> = {
       taxable: { stocks: 0, bonds: 0, cash: 0 },
       taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
       taxFree: { stocks: 0, bonds: 0, cash: 0 },
+      cashSavings: { stocks: 0, bonds: 0, cash: 0 },
     };
 
     this.accounts
@@ -634,15 +639,15 @@ export class Portfolio {
       .forEach((account) => {
         const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
 
-        (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
-          yieldsForPeriod[category].stocks += accountYieldsForPeriod[category].stocks;
-          yieldsForPeriod[category].bonds += accountYieldsForPeriod[category].bonds;
-          yieldsForPeriod[category].cash += accountYieldsForPeriod[category].cash;
+        const taxCategory = account.taxCategory;
 
-          totalYields[category].stocks += accountTotalYields[category].stocks;
-          totalYields[category].bonds += accountTotalYields[category].bonds;
-          totalYields[category].cash += accountTotalYields[category].cash;
-        });
+        yieldsForPeriod[taxCategory].stocks += accountYieldsForPeriod.stocks;
+        yieldsForPeriod[taxCategory].bonds += accountYieldsForPeriod.bonds;
+        yieldsForPeriod[taxCategory].cash += accountYieldsForPeriod.cash;
+
+        totalYields[taxCategory].stocks += accountTotalYields.stocks;
+        totalYields[taxCategory].bonds += accountTotalYields.bonds;
+        totalYields[taxCategory].cash += accountTotalYields.cash;
       });
 
     return { yieldsForPeriod, totalYields };

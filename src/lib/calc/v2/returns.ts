@@ -15,13 +15,13 @@ export interface AccountDataWithReturns {
 export interface ReturnsData {
   // Total return data
   totalReturnAmounts: AssetReturnAmounts;
-  totalYieldAmounts: AssetYieldAmounts;
+  totalYieldAmounts: Record<TaxCategory, AssetYieldAmounts>;
 
   // Monthly return data
   returnAmountsForPeriod: AssetReturnAmounts;
   returnRatesForPeriod: AssetReturnRates;
   inflationRateForPeriod: number;
-  yieldAmountsForPeriod: AssetYieldAmounts;
+  yieldAmountsForPeriod: Record<TaxCategory, AssetYieldAmounts>;
   yieldRatesForPeriod: AssetYieldRates;
 
   // Annual return data
@@ -131,7 +131,7 @@ export class ReturnsProcessor {
           acc.returnAmountsForPeriod.bonds += curr.returnAmountsForPeriod.bonds;
           acc.returnAmountsForPeriod.cash += curr.returnAmountsForPeriod.cash;
 
-          (['taxable', 'taxDeferred', 'taxFree'] as TaxCategory[]).forEach((category) => {
+          (['taxable', 'taxDeferred', 'taxFree', 'cashSavings'] as TaxCategory[]).forEach((category) => {
             acc.yieldAmountsForPeriod[category].stocks += curr.yieldAmountsForPeriod[category].stocks;
             acc.yieldAmountsForPeriod[category].bonds += curr.yieldAmountsForPeriod[category].bonds;
             acc.yieldAmountsForPeriod[category].cash += curr.yieldAmountsForPeriod[category].cash;
@@ -156,6 +156,7 @@ export class ReturnsProcessor {
             taxable: { stocks: 0, bonds: 0, cash: 0 },
             taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
             taxFree: { stocks: 0, bonds: 0, cash: 0 },
+            cashSavings: { stocks: 0, bonds: 0, cash: 0 },
           },
           perAccountData: {} as Record<string, AccountDataWithReturns>,
         }
