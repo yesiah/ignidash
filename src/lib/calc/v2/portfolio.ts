@@ -634,21 +634,19 @@ export class Portfolio {
       cashSavings: { stocks: 0, bonds: 0, cash: 0 },
     };
 
-    this.accounts
-      .filter((account) => account.getAccountType() !== 'savings')
-      .forEach((account) => {
-        const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
+    this.accounts.forEach((account) => {
+      const { yieldsForPeriod: accountYieldsForPeriod, totalYields: accountTotalYields } = account.applyYields(yields);
 
-        const taxCategory = account.taxCategory;
+      const taxCategory = account.taxCategory;
 
-        yieldsForPeriod[taxCategory].stocks += accountYieldsForPeriod.stocks;
-        yieldsForPeriod[taxCategory].bonds += accountYieldsForPeriod.bonds;
-        yieldsForPeriod[taxCategory].cash += accountYieldsForPeriod.cash;
+      yieldsForPeriod[taxCategory].stocks += accountYieldsForPeriod.stocks;
+      yieldsForPeriod[taxCategory].bonds += accountYieldsForPeriod.bonds;
+      yieldsForPeriod[taxCategory].cash += accountYieldsForPeriod.cash;
 
-        totalYields[taxCategory].stocks += accountTotalYields.stocks;
-        totalYields[taxCategory].bonds += accountTotalYields.bonds;
-        totalYields[taxCategory].cash += accountTotalYields.cash;
-      });
+      totalYields[taxCategory].stocks += accountTotalYields.stocks;
+      totalYields[taxCategory].bonds += accountTotalYields.bonds;
+      totalYields[taxCategory].cash += accountTotalYields.cash;
+    });
 
     return { yieldsForPeriod, totalYields };
   }

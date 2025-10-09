@@ -139,7 +139,15 @@ export class SavingsAccount extends Account {
   }
 
   applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
-    throw new Error('Savings account should not receive yields');
+    const { cash: cashYield } = yields;
+
+    const cashYieldAmount = this.totalValue * cashYield;
+    this.totalYields.cash += cashYieldAmount;
+
+    return {
+      yieldsForPeriod: { cash: cashYieldAmount, bonds: 0, stocks: 0 },
+      totalYields: { ...this.totalYields },
+    };
   }
 
   applyContribution(amount: number): void {
