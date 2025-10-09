@@ -186,7 +186,8 @@ export class TaxProcessor {
     annualReturnsData: ReturnsData
   ): { grossOrdinaryIncome: number; taxDeferredContributions: number } {
     const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
-    const grossIncomeFromInterest = annualReturnsData.yieldAmountsForPeriod.taxable.bonds;
+    const grossIncomeFromInterest =
+      annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
 
     const age = this.simulationState.time.age;
     const rothEarningsQualifiedWithdrawalAge = 59.5;
