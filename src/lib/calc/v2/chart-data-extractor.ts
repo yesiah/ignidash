@@ -70,13 +70,19 @@ export class ChartDataExtractor {
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const portfolioData = data.portfolio;
       const realizedGains = portfolioData.realizedGainsForPeriod;
 
       let taxDeferredWithdrawals = 0;
+      let earlyTaxFreeEarningsWithdrawals = 0;
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
+          case 'roth401k':
+          case 'rothIra':
+            if (age < 59.5) earlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
+            break;
           case '401k':
           case 'ira':
           case 'hsa':
@@ -112,6 +118,7 @@ export class ChartDataExtractor {
         perExpenseData: Object.values(expensesData.perExpenseData),
         ordinaryIncome,
         taxDeferredWithdrawals,
+        earlyTaxFreeEarningsWithdrawals,
         taxableDividendIncome,
         taxableInterestIncome,
         realizedGains,

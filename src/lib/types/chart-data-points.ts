@@ -41,6 +41,7 @@ export interface SingleSimulationCashFlowChartDataPoint {
   perExpenseData: ExpenseData[];
   ordinaryIncome: number;
   taxDeferredWithdrawals: number;
+  earlyTaxFreeEarningsWithdrawals: number;
   taxableDividendIncome: number;
   taxableInterestIncome: number;
   realizedGains: number;
