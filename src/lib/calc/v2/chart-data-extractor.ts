@@ -106,7 +106,13 @@ export class ChartDataExtractor {
       const expensesData = data.expenses!;
 
       const ordinaryIncome = incomesData.totalGrossIncome;
-      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
+      const grossIncome =
+        ordinaryIncome +
+        taxDeferredWithdrawals +
+        earlyTaxFreeEarningsWithdrawals +
+        realizedGains +
+        taxableDividendIncome +
+        taxableInterestIncome;
       const expenses = expensesData.totalExpenses;
       const netIncome = grossIncome - incomeTax;
       const netCashFlow = netIncome - expenses;
