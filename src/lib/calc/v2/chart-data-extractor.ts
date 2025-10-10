@@ -90,6 +90,10 @@ export class ChartDataExtractor {
       const expensesData = data.expenses!;
       const taxesData = data.taxes!;
 
+      const returnsData = data.returns!;
+      const taxableDividendIncome = returnsData.yieldAmountsForPeriod.taxable.stocks;
+      const taxableInterestIncome = returnsData.yieldAmountsForPeriod.taxable.bonds + returnsData.yieldAmountsForPeriod.taxable.cash;
+
       const ordinaryIncome = incomesData.totalGrossIncome;
       const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
       const incomeTax = taxesData.incomeTaxes.incomeTaxAmount;
@@ -104,6 +108,8 @@ export class ChartDataExtractor {
         perExpenseData: Object.values(expensesData.perExpenseData),
         ordinaryIncome,
         taxDeferredWithdrawals,
+        taxableDividendIncome,
+        taxableInterestIncome,
         grossIncome,
         incomeTax,
         expenses,
