@@ -74,7 +74,11 @@ export interface SingleSimulationTaxesChartDataPoint {
   age: number;
 
   /* Ordinary Income */
+  ordinaryIncome: number;
   grossIncome: number;
+  taxDeferredWithdrawals: number;
+  earlyTaxFreeEarningsWithdrawals: number;
+  taxableInterestIncome: number;
   taxableOrdinaryIncome: number;
   annualIncomeTaxAmount: number;
   totalIncomeTaxAmount: number;
@@ -83,6 +87,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   netIncome: number;
 
   /* Cap Gains */
+  realizedGains: number;
+  taxableDividendIncome: number;
   taxableCapGains: number;
   annualCapGainsTaxAmount: number;
   totalCapGainsTaxAmount: number;

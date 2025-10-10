@@ -163,12 +163,12 @@ export class ChartDataExtractor {
       const annualRealizedGains = portfolioData.realizedGainsForPeriod;
 
       let annualTaxDeferredWithdrawals = 0;
-      let annualTaxFreeEarningsWithdrawals = 0;
+      let annualEarlyTaxFreeEarningsWithdrawals = 0;
       for (const account of Object.values(portfolioData.perAccountData)) {
         switch (account.type) {
           case 'roth401k':
           case 'rothIra':
-            if (age < 59.5) annualTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
+            if (age < 59.5) annualEarlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
             break;
           case '401k':
           case 'ira':
@@ -190,21 +190,26 @@ export class ChartDataExtractor {
       const grossIncome =
         ordinaryIncome +
         annualTaxDeferredWithdrawals +
-        annualTaxFreeEarningsWithdrawals +
+        annualEarlyTaxFreeEarningsWithdrawals +
         annualRealizedGains +
         taxableDividendIncome +
         taxableInterestIncome;
 
       return {
         age: currDateYear - startDateYear + startAge,
+        ordinaryIncome,
         grossIncome,
+        taxDeferredWithdrawals: annualTaxDeferredWithdrawals,
+        earlyTaxFreeEarningsWithdrawals: annualEarlyTaxFreeEarningsWithdrawals,
+        taxableInterestIncome,
         taxableOrdinaryIncome: taxesData.incomeTaxes.taxableOrdinaryIncome,
         annualIncomeTaxAmount,
         totalIncomeTaxAmount,
         effectiveIncomeTaxRate: taxesData.incomeTaxes.effectiveIncomeTaxRate,
         topMarginalIncomeTaxRate: taxesData.incomeTaxes.topMarginalTaxRate,
         netIncome: taxesData.incomeTaxes.netIncome,
-        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction,
+        realizedGains: annualRealizedGains,
+        taxableDividendIncome,
         taxableCapGains: taxesData.capitalGainsTaxes.taxableCapitalGains,
         annualCapGainsTaxAmount,
         totalCapGainsTaxAmount,
@@ -219,6 +224,7 @@ export class ChartDataExtractor {
         totalNetIncome: taxesData.incomeTaxes.netIncome + taxesData.capitalGainsTaxes.netCapitalGains,
         adjustments: taxesData.adjustments,
         deductions: taxesData.deductions,
+        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction,
       };
     });
   }
