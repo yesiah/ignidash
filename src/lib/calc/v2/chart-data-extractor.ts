@@ -72,6 +72,7 @@ export class ChartDataExtractor {
       const currDateYear = new Date(data.date).getFullYear();
 
       const portfolioData = data.portfolio;
+      const realizedGains = portfolioData.realizedGainsForPeriod;
 
       let taxDeferredWithdrawals = 0;
       for (const account of Object.values(portfolioData.perAccountData)) {
@@ -86,17 +87,20 @@ export class ChartDataExtractor {
         }
       }
 
-      const incomesData = data.incomes!;
-      const expensesData = data.expenses!;
       const taxesData = data.taxes!;
+      const incomeTax = taxesData.incomeTaxes.incomeTaxAmount;
+      const capGainsTax = taxesData.capitalGainsTaxes.capitalGainsTaxAmount;
+      const earlyWithdrawalPenalties = taxesData.earlyWithdrawalPenalties.totalPenaltyAmount;
 
       const returnsData = data.returns!;
       const taxableDividendIncome = returnsData.yieldAmountsForPeriod.taxable.stocks;
       const taxableInterestIncome = returnsData.yieldAmountsForPeriod.taxable.bonds + returnsData.yieldAmountsForPeriod.taxable.cash;
 
+      const incomesData = data.incomes!;
+      const expensesData = data.expenses!;
+
       const ordinaryIncome = incomesData.totalGrossIncome;
       const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
-      const incomeTax = taxesData.incomeTaxes.incomeTaxAmount;
       const expenses = expensesData.totalExpenses;
       const netIncome = grossIncome - incomeTax;
       const netCashFlow = netIncome - expenses;
@@ -110,8 +114,11 @@ export class ChartDataExtractor {
         taxDeferredWithdrawals,
         taxableDividendIncome,
         taxableInterestIncome,
+        realizedGains,
         grossIncome,
         incomeTax,
+        capGainsTax,
+        earlyWithdrawalPenalties,
         expenses,
         netIncome,
         netCashFlow,

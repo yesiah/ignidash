@@ -43,8 +43,11 @@ export interface SingleSimulationCashFlowChartDataPoint {
   taxDeferredWithdrawals: number;
   taxableDividendIncome: number;
   taxableInterestIncome: number;
+  realizedGains: number;
   grossIncome: number;
   incomeTax: number;
+  capGainsTax: number;
+  earlyWithdrawalPenalties: number;
   expenses: number;
   netIncome: number;
   netCashFlow: number;
