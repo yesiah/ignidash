@@ -53,7 +53,6 @@ interface SingleSimulationWithdrawalsBarChartProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'
@@ -99,12 +98,6 @@ export default function SingleSimulationWithdrawalsBarChart({
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions },
         { name: 'Total RMDs', amount: item.totalRequiredMinimumDistributions },
-      ]);
-      break;
-    case 'rothEarnings':
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Roth Earnings', amount: item.annualRothEarningsWithdrawals },
-        { name: 'Total Roth Earnings', amount: item.totalRothEarningsWithdrawals },
       ]);
       break;
     case 'earlyWithdrawalPenalties':

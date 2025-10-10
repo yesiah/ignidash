@@ -198,7 +198,6 @@ function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, s
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'

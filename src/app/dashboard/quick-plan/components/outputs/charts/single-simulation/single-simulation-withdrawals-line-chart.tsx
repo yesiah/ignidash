@@ -29,7 +29,6 @@ interface CustomTooltipProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'
@@ -52,7 +51,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
-      | 'rothEarnings'
       | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
       | 'withdrawalRate'
@@ -119,7 +117,6 @@ interface SingleSimulationWithdrawalsLineChartProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'
@@ -174,10 +171,6 @@ export default function SingleSimulationWithdrawalsLineChart({
       break;
     case 'requiredMinimumDistributions':
       dataKeys.push('annualRequiredMinimumDistributions', 'totalRequiredMinimumDistributions');
-      formatter = (value: number) => formatNumber(value, 1, '$');
-      break;
-    case 'rothEarnings':
-      dataKeys.push('annualRothEarningsWithdrawals', 'totalRothEarningsWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'earlyWithdrawalPenalties':

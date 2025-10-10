@@ -21,7 +21,6 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
-      | 'rothEarnings'
       | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
       | 'withdrawalRate'
@@ -33,7 +32,6 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'
@@ -86,7 +84,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
               e.target.value !== 'taxCategory' &&
               e.target.value !== 'realizedGains' &&
               e.target.value !== 'requiredMinimumDistributions' &&
-              e.target.value !== 'rothEarnings' &&
               e.target.value !== 'earlyWithdrawalPenalties' &&
               e.target.value !== 'earlyWithdrawals' &&
               e.target.value !== 'withdrawalRate';
@@ -101,7 +98,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                   | 'taxCategory'
                   | 'realizedGains'
                   | 'requiredMinimumDistributions'
-                  | 'rothEarnings'
                   | 'earlyWithdrawalPenalties'
                   | 'earlyWithdrawals'
                   | 'withdrawalRate'
@@ -117,9 +113,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
           <option value="withdrawalRate">Withdrawal Rate</option>
           <optgroup label="Taxable Brokerage">
             <option value="realizedGains">Realized Gains</option>
-          </optgroup>
-          <optgroup label="Tax Free">
-            <option value="rothEarnings">Roth Earnings Withdrawals</option>
           </optgroup>
           <optgroup label="Issues & Penalties">
             <option value="earlyWithdrawals">Early Withdrawals</option>

@@ -15,7 +15,6 @@ interface SingleSimulationWithdrawalsBarChartCardProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'rothEarnings'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'withdrawalRate'
@@ -45,9 +44,6 @@ export default function SingleSimulationWithdrawalsBarChartCard({
       break;
     case 'requiredMinimumDistributions':
       title = 'Required Minimum Distributions';
-      break;
-    case 'rothEarnings':
-      title = 'Roth Earnings Withdrawals';
       break;
     case 'earlyWithdrawalPenalties':
       title = 'Early Withdrawal Penalties';
