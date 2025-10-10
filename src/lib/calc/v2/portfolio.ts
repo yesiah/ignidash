@@ -97,6 +97,7 @@ export class PortfolioProcessor {
     let contributionsForPeriod = annualPortfolioDataBeforeTaxes.contributionsForPeriod;
     let realizedGainsForPeriod = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod;
     let earningsWithdrawnForPeriod = annualPortfolioDataBeforeTaxes.earningsWithdrawnForPeriod;
+    const rmdsForPeriod = annualPortfolioDataBeforeTaxes.rmdsForPeriod;
 
     let contributionsByAccount: Record<string, number> = {};
     let withdrawalsByAccount: Record<string, number> = {};
@@ -131,7 +132,7 @@ export class PortfolioProcessor {
     );
 
     const portfolioData = this.buildPortfolioData(
-      { withdrawalsForPeriod, contributionsForPeriod, realizedGainsForPeriod, earningsWithdrawnForPeriod, rmdsForPeriod: 0 },
+      { withdrawalsForPeriod, contributionsForPeriod, realizedGainsForPeriod, earningsWithdrawnForPeriod, rmdsForPeriod },
       perAccountData
     );
 
