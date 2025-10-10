@@ -110,8 +110,8 @@ export default function SingleSimulationWithdrawalsBarChart({
       break;
     case 'rmds':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual RMDs', amount: item.annualRmds },
-        { name: 'Total RMDs', amount: item.totalRmds },
+        { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions },
+        { name: 'Total RMDs', amount: item.totalRequiredMinimumDistributions },
       ]);
       break;
     case 'rothEarnings':

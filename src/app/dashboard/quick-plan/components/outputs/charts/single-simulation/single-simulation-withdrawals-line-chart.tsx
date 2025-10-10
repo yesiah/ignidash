@@ -173,7 +173,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'rmds':
-      dataKeys.push('annualRmds', 'totalRmds');
+      dataKeys.push('annualRequiredMinimumDistributions', 'totalRequiredMinimumDistributions');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'rothEarnings':
