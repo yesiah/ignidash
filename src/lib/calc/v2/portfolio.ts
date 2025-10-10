@@ -310,7 +310,7 @@ export class PortfolioProcessor {
     const portfolioHasRmdSavingsAccount = this.simulationState.portfolio
       .getAccounts()
       .some((account) => account.getAccountID() === this.rmdSavingsAccount.getAccountID());
-    if (!portfolioHasRmdSavingsAccount) {
+    if (!portfolioHasRmdSavingsAccount && totalForPeriod > 0) {
       this.simulationState.portfolio.addRmdSavingsAccount(this.rmdSavingsAccount);
     }
 
