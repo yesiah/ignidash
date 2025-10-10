@@ -29,7 +29,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
         .filter((data) => data.age === selectedAge)
         .flatMap(({ age, perAccountData, ...rest }) =>
           Object.entries(rest)
-            .filter(([name]) => ['stocks', 'bonds', 'cash'].includes(name))
+            .filter(([name]) => ['stockHoldings', 'bondHoldings', 'cashHoldings'].includes(name))
             .map(([name, value]) => ({ name, value }))
         );
       break;
@@ -59,9 +59,9 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
               const cashAllocation = assetAllocation.cash;
 
               return [
-                { name: 'stocks', value: totalValue * stocksAllocation },
-                { name: 'bonds', value: totalValue * bondsAllocation },
-                { name: 'cash', value: totalValue * cashAllocation },
+                { name: 'stockHoldings', value: totalValue * stocksAllocation },
+                { name: 'bondHoldings', value: totalValue * bondsAllocation },
+                { name: 'cashHoldings', value: totalValue * cashAllocation },
               ];
             })
         );

@@ -20,7 +20,7 @@ interface CustomTooltipProps {
     dataKey: keyof SingleSimulationPortfolioChartDataPoint;
     payload:
       | SingleSimulationPortfolioChartDataPoint
-      | ({ age: number; stocks: number; bonds: number; cash: number } & AccountDataWithTransactions);
+      | ({ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithTransactions);
   }>;
   label?: number;
   startAge: number;
@@ -102,12 +102,13 @@ export default function SingleSimulationPortfolioAreaChart({
 
   let chartData:
     | SingleSimulationPortfolioChartDataPoint[]
-    | Array<{ age: number; stocks: number; bonds: number; cash: number } & AccountDataWithTransactions> = rawChartData;
+    | Array<{ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithTransactions> =
+    rawChartData;
 
   const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint | keyof AccountDataWithTransactions)[] = [];
   switch (dataView) {
     case 'assetClass':
-      dataKeys.push('stocks', 'bonds', 'cash');
+      dataKeys.push('stockHoldings', 'bondHoldings', 'cashHoldings');
       break;
     case 'taxCategory':
       dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
@@ -132,15 +133,15 @@ export default function SingleSimulationPortfolioAreaChart({
             return {
               age,
               ...account,
-              stocks: totalValue * stocksAllocation,
-              bonds: totalValue * bondsAllocation,
-              cash: totalValue * cashAllocation,
+              stockHoldings: totalValue * stocksAllocation,
+              bondHoldings: totalValue * bondsAllocation,
+              cashHoldings: totalValue * cashAllocation,
             };
           })
       );
 
       chartData = perAccountData;
-      dataKeys.push('stocks', 'bonds', 'cash');
+      dataKeys.push('stockHoldings', 'bondHoldings', 'cashHoldings');
       break;
   }
 

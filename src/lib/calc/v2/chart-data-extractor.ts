@@ -52,9 +52,9 @@ export class ChartDataExtractor {
 
       return {
         age: currDateYear - startDateYear + startAge,
-        stocks: totalValue * stocksAllocation,
-        bonds: totalValue * bondsAllocation,
-        cash: totalValue * cashAllocation,
+        stockHoldings: totalValue * stocksAllocation,
+        bondHoldings: totalValue * bondsAllocation,
+        cashHoldings: totalValue * cashAllocation,
         taxableBrokerage,
         taxDeferred,
         taxFree,

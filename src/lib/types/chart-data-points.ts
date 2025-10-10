@@ -25,9 +25,9 @@ export interface StochasticWithdrawalsChartDataPoint {
 
 export interface SingleSimulationPortfolioChartDataPoint {
   age: number;
-  stocks: number;
-  bonds: number;
-  cash: number;
+  stockHoldings: number;
+  bondHoldings: number;
+  cashHoldings: number;
   taxableBrokerage: number;
   taxDeferred: number;
   taxFree: number;
