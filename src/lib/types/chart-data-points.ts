@@ -72,6 +72,8 @@ export interface SingleSimulationReturnsChartDataPoint {
 
 export interface SingleSimulationTaxesChartDataPoint {
   age: number;
+
+  /* Ordinary Income */
   grossIncome: number;
   taxableOrdinaryIncome: number;
   annualIncomeTaxAmount: number;
@@ -79,21 +81,29 @@ export interface SingleSimulationTaxesChartDataPoint {
   effectiveIncomeTaxRate: number;
   topMarginalIncomeTaxRate: number;
   netIncome: number;
-  capitalLossDeduction: number | undefined;
+
+  /* Cap Gains */
   taxableCapGains: number;
   annualCapGainsTaxAmount: number;
   totalCapGainsTaxAmount: number;
   effectiveCapGainsTaxRate: number;
   topMarginalCapGainsTaxRate: number;
   netCapGains: number;
+
+  /* Early Withdrawal Penalties */
   annualEarlyWithdrawalPenalties: number;
   totalEarlyWithdrawalPenalties: number;
+
+  /* Totals */
   totalTaxableIncome: number;
   totalAnnualTaxAmount: number;
   totalTaxAmount: number;
   totalNetIncome: number;
+
+  /* Adjustments & Deductions */
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
+  capitalLossDeduction: number | undefined;
 }
 
 export interface SingleSimulationContributionsChartDataPoint {
