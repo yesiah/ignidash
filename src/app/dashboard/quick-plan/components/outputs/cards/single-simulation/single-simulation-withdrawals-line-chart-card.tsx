@@ -20,10 +20,10 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
       | 'totalAmounts'
       | 'taxCategory'
       | 'realizedGains'
-      | 'rmds'
+      | 'requiredMinimumDistributions'
       | 'rothEarnings'
-      | 'ewPenalties'
-      | 'nonQualified'
+      | 'earlyWithdrawalPenalties'
+      | 'earlyWithdrawals'
       | 'withdrawalRate'
       | 'custom'
   ) => void;
@@ -32,10 +32,10 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom';
   setCustomDataID: (name: string) => void;
@@ -85,10 +85,10 @@ export default function SingleSimulationWithdrawalsLineChartCard({
               e.target.value !== 'totalAmounts' &&
               e.target.value !== 'taxCategory' &&
               e.target.value !== 'realizedGains' &&
-              e.target.value !== 'rmds' &&
+              e.target.value !== 'requiredMinimumDistributions' &&
               e.target.value !== 'rothEarnings' &&
-              e.target.value !== 'ewPenalties' &&
-              e.target.value !== 'nonQualified' &&
+              e.target.value !== 'earlyWithdrawalPenalties' &&
+              e.target.value !== 'earlyWithdrawals' &&
               e.target.value !== 'withdrawalRate';
             if (isCustomSelection) {
               setDataView('custom');
@@ -100,10 +100,10 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                   | 'totalAmounts'
                   | 'taxCategory'
                   | 'realizedGains'
-                  | 'rmds'
+                  | 'requiredMinimumDistributions'
                   | 'rothEarnings'
-                  | 'ewPenalties'
-                  | 'nonQualified'
+                  | 'earlyWithdrawalPenalties'
+                  | 'earlyWithdrawals'
                   | 'withdrawalRate'
               );
               setCustomDataID('');
@@ -113,7 +113,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
           <option value="taxCategory">Tax Category</option>
           <option value="annualAmounts">Annual Withdrawals</option>
           <option value="totalAmounts">Total Withdrawals</option>
-          <option value="rmds">Required Minimum Distributions</option>
+          <option value="requiredMinimumDistributions">Required Minimum Distributions</option>
           <option value="withdrawalRate">Withdrawal Rate</option>
           <optgroup label="Taxable Brokerage">
             <option value="realizedGains">Realized Gains</option>
@@ -122,8 +122,8 @@ export default function SingleSimulationWithdrawalsLineChartCard({
             <option value="rothEarnings">Roth Earnings Withdrawals</option>
           </optgroup>
           <optgroup label="Issues & Penalties">
-            <option value="nonQualified">Non-Qualified Withdrawals</option>
-            <option value="ewPenalties">Early Withdrawal Penalties</option>
+            <option value="earlyWithdrawals">Early Withdrawals</option>
+            <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
           </optgroup>
           <optgroup label="By Account">
             {uniqueAccounts.map((account) => (

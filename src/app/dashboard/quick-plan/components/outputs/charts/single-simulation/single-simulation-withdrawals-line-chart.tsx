@@ -28,10 +28,10 @@ interface CustomTooltipProps {
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom';
 }
@@ -51,10 +51,10 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'totalAmounts'
       | 'taxCategory'
       | 'realizedGains'
-      | 'rmds'
+      | 'requiredMinimumDistributions'
       | 'rothEarnings'
-      | 'ewPenalties'
-      | 'nonQualified'
+      | 'earlyWithdrawalPenalties'
+      | 'earlyWithdrawals'
       | 'withdrawalRate'
       | 'custom'
   ) => {
@@ -118,10 +118,10 @@ interface SingleSimulationWithdrawalsLineChartProps {
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom';
   customDataID: string;
@@ -172,7 +172,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       dataKeys.push('annualRealizedGains', 'totalRealizedGains');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'rmds':
+    case 'requiredMinimumDistributions':
       dataKeys.push('annualRequiredMinimumDistributions', 'totalRequiredMinimumDistributions');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
@@ -180,12 +180,12 @@ export default function SingleSimulationWithdrawalsLineChart({
       dataKeys.push('annualRothEarningsWithdrawals', 'totalRothEarningsWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'ewPenalties':
+    case 'earlyWithdrawalPenalties':
       dataKeys.push('annualEarlyWithdrawalPenalties', 'totalEarlyWithdrawalPenalties');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'nonQualified':
-      dataKeys.push('annualNonQualified', 'totalNonQualified');
+    case 'earlyWithdrawals':
+      dataKeys.push('annualEarlyWithdrawals', 'totalEarlyWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'withdrawalRate':

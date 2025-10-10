@@ -14,10 +14,10 @@ interface SingleSimulationWithdrawalsBarChartCardProps {
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom';
   customDataID: string;
@@ -43,17 +43,17 @@ export default function SingleSimulationWithdrawalsBarChartCard({
     case 'realizedGains':
       title = 'Realized Gains';
       break;
-    case 'rmds':
+    case 'requiredMinimumDistributions':
       title = 'Required Minimum Distributions';
       break;
     case 'rothEarnings':
       title = 'Roth Earnings Withdrawals';
       break;
-    case 'ewPenalties':
+    case 'earlyWithdrawalPenalties':
       title = 'Early Withdrawal Penalties';
       break;
-    case 'nonQualified':
-      title = 'Non-Qualified Withdrawals';
+    case 'earlyWithdrawals':
+      title = 'Early Withdrawals';
       break;
     case 'withdrawalRate':
       title = 'Withdrawal Rate';

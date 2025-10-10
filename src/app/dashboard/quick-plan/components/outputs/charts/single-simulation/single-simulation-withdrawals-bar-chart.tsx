@@ -52,10 +52,10 @@ interface SingleSimulationWithdrawalsBarChartProps {
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom';
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
@@ -76,27 +76,14 @@ export default function SingleSimulationWithdrawalsBarChart({
   let transformedChartData: { name: string; amount: number }[] = [];
   switch (dataView) {
     case 'annualAmounts':
-      transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Annual Withdrawals',
-          amount: item.annualWithdrawals,
-        },
-      ]);
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Annual Withdrawals', amount: item.annualWithdrawals }]);
       break;
     case 'totalAmounts':
-      transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Total Withdrawals',
-          amount: item.totalWithdrawals,
-        },
-      ]);
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Total Withdrawals', amount: item.totalWithdrawals }]);
       break;
     case 'taxCategory':
       transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Taxable Withdrawals',
-          amount: item.taxableBrokerage,
-        },
+        { name: 'Taxable Withdrawals', amount: item.taxableBrokerage },
         { name: 'Tax Deferred Withdrawals', amount: item.taxDeferred },
         { name: 'Tax Free Withdrawals', amount: item.taxFree },
         { name: 'Cash Savings Withdrawals', amount: item.cashSavings },
@@ -108,7 +95,7 @@ export default function SingleSimulationWithdrawalsBarChart({
         { name: 'Total Realized Gains', amount: item.totalRealizedGains },
       ]);
       break;
-    case 'rmds':
+    case 'requiredMinimumDistributions':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions },
         { name: 'Total RMDs', amount: item.totalRequiredMinimumDistributions },
@@ -120,16 +107,16 @@ export default function SingleSimulationWithdrawalsBarChart({
         { name: 'Total Roth Earnings', amount: item.totalRothEarningsWithdrawals },
       ]);
       break;
-    case 'ewPenalties':
+    case 'earlyWithdrawalPenalties':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual EW Penalties', amount: item.annualEarlyWithdrawalPenalties },
         { name: 'Total EW Penalties', amount: item.totalEarlyWithdrawalPenalties },
       ]);
       break;
-    case 'nonQualified':
+    case 'earlyWithdrawals':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Non-Qualified', amount: item.annualNonQualified },
-        { name: 'Total Non-Qualified', amount: item.totalNonQualified },
+        { name: 'Annual Early Withdrawals', amount: item.annualEarlyWithdrawals },
+        { name: 'Total Early Withdrawals', amount: item.totalEarlyWithdrawals },
       ]);
       break;
     case 'withdrawalRate':

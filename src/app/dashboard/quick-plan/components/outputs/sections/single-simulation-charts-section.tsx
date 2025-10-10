@@ -197,10 +197,10 @@ function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, s
     | 'totalAmounts'
     | 'taxCategory'
     | 'realizedGains'
-    | 'rmds'
+    | 'requiredMinimumDistributions'
     | 'rothEarnings'
-    | 'ewPenalties'
-    | 'nonQualified'
+    | 'earlyWithdrawalPenalties'
+    | 'earlyWithdrawals'
     | 'withdrawalRate'
     | 'custom'
   >('taxCategory');
