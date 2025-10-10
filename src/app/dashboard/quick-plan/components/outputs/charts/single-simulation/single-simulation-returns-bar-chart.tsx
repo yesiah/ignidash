@@ -14,12 +14,13 @@ const CustomLabelListContent = (props: any) => {
     return null;
   }
 
-  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts') => {
+  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom') => {
     switch (mode) {
       case 'rates':
         return `${(value * 100).toFixed(2)}%`;
       case 'annualAmounts':
       case 'totalAmounts':
+      case 'custom':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -59,11 +60,17 @@ const COLORS = ['var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--for
 
 interface SingleSimulationReturnsBarChartProps {
   age: number;
-  dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
+  dataView: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom';
   rawChartData: SingleSimulationReturnsChartDataPoint[];
+  customDataID: string;
 }
 
-export default function SingleSimulationReturnsBarChart({ age, dataView, rawChartData }: SingleSimulationReturnsBarChartProps) {
+export default function SingleSimulationReturnsBarChart({
+  age,
+  dataView,
+  rawChartData,
+  customDataID,
+}: SingleSimulationReturnsBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
@@ -95,6 +102,26 @@ export default function SingleSimulationReturnsBarChart({ age, dataView, rawChar
         { name: 'Total Bonds', amount: item.totalBondsAmount },
         { name: 'Total Cash', amount: item.totalCashAmount },
       ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'custom':
+      if (!customDataID) {
+        console.warn('Custom data name is required for custom data view');
+        transformedChartData = [];
+        break;
+      }
+
+      transformedChartData = [
+        ...chartData
+          .flatMap(({ perAccountData }) =>
+            perAccountData.flatMap(({ id, returnAmountsForPeriod }) => [
+              { id, name: 'Stocks Amount', amount: returnAmountsForPeriod.stocks },
+              { id, name: 'Bonds Amount', amount: returnAmountsForPeriod.bonds },
+              { id, name: 'Cash Amount', amount: returnAmountsForPeriod.cash },
+            ])
+          )
+          .filter(({ id }) => id === customDataID),
+      ];
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
   }

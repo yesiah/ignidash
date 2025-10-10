@@ -9,13 +9,15 @@ import SingleSimulationReturnsBarChart from '../../charts/single-simulation/sing
 interface SingleSimulationReturnsBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationReturnsChartDataPoint[];
-  dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
+  dataView: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom';
+  customDataID: string;
 }
 
 export default function SingleSimulationReturnsBarChartCard({
   selectedAge,
   rawChartData,
   dataView,
+  customDataID,
 }: SingleSimulationReturnsBarChartCardProps) {
   let title;
   switch (dataView) {
@@ -28,6 +30,9 @@ export default function SingleSimulationReturnsBarChartCard({
     case 'totalAmounts':
       title = 'Total Returns';
       break;
+    case 'custom':
+      title = 'Custom Account';
+      break;
   }
 
   return (
@@ -38,7 +43,7 @@ export default function SingleSimulationReturnsBarChartCard({
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
       </div>
-      <SingleSimulationReturnsBarChart age={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+      <SingleSimulationReturnsBarChart age={selectedAge} rawChartData={rawChartData} dataView={dataView} customDataID={customDataID} />
     </Card>
   );
 }

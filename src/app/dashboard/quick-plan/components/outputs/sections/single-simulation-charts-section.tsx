@@ -134,7 +134,8 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
 function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationReturnsChartData(simulation);
 
-  const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'totalAmounts'>('rates');
+  const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'totalAmounts' | 'custom'>('rates');
+  const [customDataID, setCustomDataID] = useState<string>('');
 
   return (
     <>
@@ -145,9 +146,16 @@ function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, start
         selectedAge={selectedAge}
         dataView={dataView}
         setDataView={setDataView}
+        customDataID={customDataID}
+        setCustomDataID={setCustomDataID}
         startAge={startAge}
       />
-      <SingleSimulationReturnsBarChartCard selectedAge={selectedAge} rawChartData={rawChartData} dataView={dataView} />
+      <SingleSimulationReturnsBarChartCard
+        selectedAge={selectedAge}
+        rawChartData={rawChartData}
+        dataView={dataView}
+        customDataID={customDataID}
+      />
     </>
   );
 }

@@ -8,6 +8,7 @@ import { formatNumber, formatChartString } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-data-points';
+import type { AccountDataWithReturns } from '@/lib/calc/v2/returns';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 interface CustomTooltipProps {
@@ -17,12 +18,14 @@ interface CustomTooltipProps {
     name: string;
     color: string;
     dataKey: keyof SingleSimulationReturnsChartDataPoint;
-    payload: SingleSimulationReturnsChartDataPoint;
+    payload:
+      | SingleSimulationReturnsChartDataPoint
+      | ({ age: number; stocksAmount: number; bondsAmount: number; cashAmount: number } & AccountDataWithReturns);
   }>;
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
+  dataView: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -33,12 +36,13 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
 
-  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts') => {
+  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom') => {
     switch (mode) {
       case 'rates':
         return `${(value * 100).toFixed(2)}%`;
       case 'annualAmounts':
       case 'totalAmounts':
+      case 'custom':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -51,6 +55,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       break;
     case 'annualAmounts':
     case 'totalAmounts':
+    case 'custom':
       totalFooter = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
@@ -97,7 +102,8 @@ interface SingleSimulationReturnsLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'rates' | 'annualAmounts' | 'totalAmounts';
+  dataView: 'rates' | 'annualAmounts' | 'totalAmounts' | 'custom';
+  customDataID: string;
   startAge: number;
 }
 
@@ -108,6 +114,7 @@ export default function SingleSimulationReturnsLineChart({
   onAgeSelect,
   selectedAge,
   dataView,
+  customDataID,
   startAge,
 }: SingleSimulationReturnsLineChartProps) {
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
@@ -120,7 +127,9 @@ export default function SingleSimulationReturnsLineChart({
     () => setClickedOutsideChart(false)
   );
 
-  const chartData: SingleSimulationReturnsChartDataPoint[] = rawChartData;
+  let chartData:
+    | SingleSimulationReturnsChartDataPoint[]
+    | Array<{ age: number; stocksAmount: number; bondsAmount: number; cashAmount: number } & AccountDataWithReturns> = rawChartData;
 
   const dataKeys: (keyof SingleSimulationReturnsChartDataPoint)[] = [];
   const yAxisDomain: [number, number] | undefined = undefined;
@@ -137,6 +146,30 @@ export default function SingleSimulationReturnsLineChart({
     case 'totalAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('totalStocksAmount', 'totalBondsAmount', 'totalCashAmount');
+      break;
+    case 'custom':
+      if (!customDataID) {
+        console.warn('Custom data name is required for custom data view');
+        break;
+      }
+
+      const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
+        Object.values(perAccountData)
+          .filter((account) => account.id === customDataID)
+          .map((account) => {
+            return {
+              age,
+              ...account,
+              stocksAmount: account.returnAmountsForPeriod.stocks,
+              bondsAmount: account.returnAmountsForPeriod.bonds,
+              cashAmount: account.returnAmountsForPeriod.cash,
+            };
+          })
+      );
+
+      chartData = perAccountData;
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('stocksAmount', 'bondsAmount', 'cashAmount');
       break;
   }
 

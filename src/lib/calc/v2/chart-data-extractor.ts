@@ -203,6 +203,7 @@ export class ChartDataExtractor {
         stocksAmount: returnsData.returnAmountsForPeriod.stocks,
         bondsAmount: returnsData.returnAmountsForPeriod.bonds,
         cashAmount: returnsData.returnAmountsForPeriod.cash,
+        perAccountData: Object.values(returnsData.perAccountData),
       };
     });
   }
