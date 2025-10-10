@@ -114,7 +114,7 @@ export class ChartDataExtractor {
         taxableDividendIncome +
         taxableInterestIncome;
       const expenses = expensesData.totalExpenses;
-      const netIncome = grossIncome - incomeTax;
+      const netIncome = grossIncome - incomeTax - capGainsTax - earlyWithdrawalPenalties;
       const netCashFlow = netIncome - expenses;
       const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
 
