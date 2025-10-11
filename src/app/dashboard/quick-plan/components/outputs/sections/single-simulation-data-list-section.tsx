@@ -90,10 +90,13 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionTerm className="font-bold">Savings Rate</DescriptionTerm>
           <DescriptionDetails className="font-bold">{savingsRate !== null ? `${formatNumber(savingsRate, 1)}%` : 'N/A'}</DescriptionDetails>
 
-          <DescriptionTerm className="font-bold">Operating Cash Flow</DescriptionTerm>
+          <DescriptionTerm className="font-bold">Operating Cash Flow*</DescriptionTerm>
           <DescriptionDetails className="font-bold">{formatNumber(operatingCashFlow, 2, '$')}</DescriptionDetails>
         </DescriptionList>
       </Card>
+      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">
+        *Earned income minus all taxes and expenses. Investment income and portfolio withdrawals are excluded.
+      </p>
     </div>
   );
 }
