@@ -89,6 +89,33 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       break;
     case 'incomes':
     case 'expenses':
+      tooltipBodyComponent = (
+        <div className="flex flex-col gap-2">
+          {payload.map((entry) => (
+            <p
+              key={entry.dataKey}
+              style={{ backgroundColor: entry.color }}
+              className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
+            >
+              <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+              <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+            </p>
+          ))}
+        </div>
+      );
+      tooltipFooterComponent = (
+        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
     case 'custom':
     case 'savingsRate':
       tooltipBodyComponent = (
