@@ -50,10 +50,10 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     case 'net':
       const entry: SingleSimulationCashFlowChartDataPoint = payload[0].payload as SingleSimulationCashFlowChartDataPoint;
 
-      const grossIncome = entry.grossIncome;
-      const incomeTax = entry.incomeTax;
+      const earnedIncome = entry.earnedIncome;
+      const taxesAndPenalties = entry.incomeTax + entry.capGainsTax + entry.earlyWithdrawalPenalties;
       const expenses = entry.expenses;
-      const netCashFlow = entry.netCashFlow;
+      const operatingCashFlow = entry.operatingCashFlow;
 
       tooltipBodyComponent = (
         <div className="flex flex-col gap-2">
@@ -61,15 +61,15 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             style={{ backgroundColor: 'var(--chart-2)' }}
             className="border-foreground/50 text-foreground flex justify-between rounded-lg border px-2 text-sm"
           >
-            <span className="mr-2">{`${formatChartString('grossIncome')}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(grossIncome, 1, '$')}</span>
+            <span className="mr-2">{`${formatChartString('earnedIncome')}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(earnedIncome, 1, '$')}</span>
           </p>
           <p
             style={{ backgroundColor: 'var(--chart-4)' }}
             className="border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm"
           >
-            <span className="mr-2">{`${formatChartString('incomeTax')}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(incomeTax, 1, '$')}</span>
+            <span className="mr-2">{`${formatChartString('taxesAndPenalties')}:`}</span>
+            <span className="ml-1 font-semibold">{formatNumber(taxesAndPenalties, 1, '$')}</span>
           </p>
           <p
             style={{ backgroundColor: 'var(--chart-4)' }}
@@ -82,8 +82,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       );
       tooltipFooterComponent = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Net Cash Flow:</span>
-          <span className="ml-1 font-semibold">{formatNumber(netCashFlow, 3, '$')}</span>
+          <span className="mr-2">Operating Cash Flow:</span>
+          <span className="ml-1 font-semibold">{formatNumber(operatingCashFlow, 3, '$')}</span>
         </p>
       );
       break;
@@ -159,18 +159,18 @@ export default function SingleSimulationCashFlowLineChart({
   let formatter = undefined;
   switch (dataView) {
     case 'net':
-      dataKeys.push('netCashFlow');
+      dataKeys.push('operatingCashFlow');
       strokeColors.push('url(#colorGradient)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'incomes':
-      dataKeys.push('earnedIncome', 'taxDeferredWithdrawals', 'incomeTax', 'netIncome');
-      strokeColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
+      dataKeys.push('earnedIncome');
+      strokeColors.push('var(--chart-2)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'expenses':
-      dataKeys.push('expenses', 'incomeTax');
-      strokeColors.push('var(--chart-4)', 'var(--chart-1)');
+      dataKeys.push('expenses', 'incomeTax', 'capGainsTax', 'earlyWithdrawalPenalties');
+      strokeColors.push('var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'custom':
@@ -214,8 +214,9 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => `${value.toFixed(2)}%`;
       break;
     default:
-      dataKeys.push('netCashFlow');
+      dataKeys.push('operatingCashFlow');
       strokeColors.push('url(#colorGradient)');
+      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
   }
 

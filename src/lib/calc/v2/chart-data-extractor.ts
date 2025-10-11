@@ -70,71 +70,33 @@ export class ChartDataExtractor {
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
-
-      const portfolioData = data.portfolio;
-      const realizedGains = portfolioData.realizedGainsForPeriod;
-
-      let taxDeferredWithdrawals = 0;
-      let earlyTaxFreeEarningsWithdrawals = 0;
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case 'roth401k':
-          case 'rothIra':
-            if (age < 59.5) earlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
-            break;
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferredWithdrawals += account.withdrawalsForPeriod;
-            break;
-          default:
-            break;
-        }
-      }
 
       const taxesData = data.taxes!;
+
       const incomeTax = taxesData.incomeTaxes.incomeTaxAmount;
       const capGainsTax = taxesData.capitalGainsTaxes.capitalGainsTaxAmount;
       const earlyWithdrawalPenalties = taxesData.earlyWithdrawalPenalties.totalPenaltyAmount;
-
-      const returnsData = data.returns!;
-      const taxableDividendIncome = returnsData.yieldAmountsForPeriod.taxable.stocks;
-      const taxableInterestIncome = returnsData.yieldAmountsForPeriod.taxable.bonds + returnsData.yieldAmountsForPeriod.taxable.cash;
+      const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
 
       const incomesData = data.incomes!;
       const expensesData = data.expenses!;
 
       const earnedIncome = incomesData.totalGrossIncome;
-      const grossIncome =
-        earnedIncome +
-        taxDeferredWithdrawals +
-        earlyTaxFreeEarningsWithdrawals +
-        realizedGains +
-        taxableDividendIncome +
-        taxableInterestIncome;
+      const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
       const expenses = expensesData.totalExpenses;
-      const netIncome = grossIncome - incomeTax - capGainsTax - earlyWithdrawalPenalties;
-      const netCashFlow = netIncome - expenses;
-      const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
+      const operatingCashFlow = earnedIncomeAfterTax - expenses;
+      const savingsRate = earnedIncomeAfterTax > 0 ? (operatingCashFlow / earnedIncomeAfterTax) * 100 : null;
 
       return {
         age: currDateYear - startDateYear + startAge,
         perIncomeData: Object.values(incomesData.perIncomeData),
         perExpenseData: Object.values(expensesData.perExpenseData),
         earnedIncome,
-        taxDeferredWithdrawals,
-        earlyTaxFreeEarningsWithdrawals,
-        taxableDividendIncome,
-        taxableInterestIncome,
-        realizedGains,
-        grossIncome,
         incomeTax,
         capGainsTax,
         earlyWithdrawalPenalties,
         expenses,
-        netIncome,
-        netCashFlow,
+        operatingCashFlow,
         savingsRate,
       };
     });
@@ -202,7 +164,7 @@ export class ChartDataExtractor {
         taxableInterestIncome;
 
       return {
-        age: currDateYear - startDateYear + startAge,
+        age,
         ordinaryIncome,
         grossIncome,
         taxDeferredWithdrawals: annualTaxDeferredWithdrawals,
