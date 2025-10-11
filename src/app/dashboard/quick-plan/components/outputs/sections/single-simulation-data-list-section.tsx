@@ -101,15 +101,18 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-/* FIX TAXES */
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
-
   const annualRealizedGains = portfolioData.realizedGainsForPeriod;
 
   let annualTaxDeferredWithdrawals = 0;
+  let annualEarlyTaxFreeEarningsWithdrawals = 0;
   for (const account of Object.values(portfolioData.perAccountData)) {
     switch (account.type) {
+      case 'roth401k':
+      case 'rothIra':
+        if (selectedAge < 59.5) annualEarlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
+        break;
       case '401k':
       case 'ira':
       case 'hsa':
@@ -119,6 +122,8 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         break;
     }
   }
+
+  const taxableRetirementDistributions = annualTaxDeferredWithdrawals + annualEarlyTaxFreeEarningsWithdrawals;
 
   const incomesData = dp.incomes;
   const taxesData = dp.taxes;
@@ -130,31 +135,31 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalTaxLiability = incomeTax + capGainsTax;
 
   return (
-    <div>
-      <Card className="my-0">
-        <Subheading level={4}>
-          <span className="mr-2">Details</span>
-          <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
-        </Subheading>
-        <DescriptionList>
-          <DescriptionTerm>Gross Income*</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+    <Card className="my-0">
+      <Subheading level={4}>
+        <span className="mr-2">Details</span>
+        <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
+      </Subheading>
+      <DescriptionList>
+        <DescriptionTerm>Gross Income*</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
 
-          <DescriptionTerm>Income Tax</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Taxable Retirement Distributions</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(taxableRetirementDistributions, 2, '$')}</DescriptionDetails>
 
-          <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(annualRealizedGains, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Income Tax</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
-          <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Realized Capital Gains</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(annualRealizedGains, 2, '$')}</DescriptionDetails>
 
-          <DescriptionTerm className="font-bold">Total Tax Liability</DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(totalTaxLiability, 2, '$')}</DescriptionDetails>
-        </DescriptionList>
-      </Card>
-      <p className="text-muted-foreground mt-2 ml-2 text-sm/6">*Includes tax-deferred withdrawals from 401(k), HSA, and IRA.</p>
-    </div>
+        <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
+
+        <DescriptionTerm className="font-bold">Total Tax Liability</DescriptionTerm>
+        <DescriptionDetails className="font-bold">{formatNumber(totalTaxLiability, 2, '$')}</DescriptionDetails>
+      </DescriptionList>
+    </Card>
   );
 }
 
