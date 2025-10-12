@@ -24,21 +24,21 @@ export interface OperatingCashFlowData {
   operatingCashFlow: number;
 }
 
-export interface AnnualTaxesData {
+export interface BasicTaxesData {
   incomeTax: number;
   capGainsTax: number;
   earlyWithdrawalPenalties: number;
   totalTaxesAndPenalties: number;
 }
 
-export interface AnnualContributionsData {
+export interface ContributionsByTaxCategory {
   cashSavingsContributions: number;
   taxableBrokerageContributions: number;
   taxDeferredContributions: number;
   taxFreeContributions: number;
 }
 
-export interface AnnualWithdrawalsData {
+export interface WithdrawalsByTaxCategory {
   cashSavingsWithdrawals: number;
   taxableBrokerageWithdrawals: number;
   taxDeferredWithdrawals: number;
@@ -162,7 +162,7 @@ export class SimulationDataExtractor {
     };
   }
 
-  static getAnnualTaxesData(dp: SimulationDataPoint): AnnualTaxesData {
+  static getBasicTaxesData(dp: SimulationDataPoint): BasicTaxesData {
     const taxesData = dp.taxes;
 
     const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
@@ -177,7 +177,7 @@ export class SimulationDataExtractor {
     const incomesData = dp.incomes;
     const expensesData = dp.expenses;
 
-    const { totalTaxesAndPenalties } = this.getAnnualTaxesData(dp);
+    const { totalTaxesAndPenalties } = this.getBasicTaxesData(dp);
 
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
     const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
@@ -187,7 +187,7 @@ export class SimulationDataExtractor {
     return { earnedIncome, earnedIncomeAfterTax, totalExpenses, operatingCashFlow };
   }
 
-  static getAnnualContributionsData(dp: SimulationDataPoint): AnnualContributionsData {
+  static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
     const portfolioData = dp.portfolio;
 
     let cashSavingsContributions = 0;
@@ -218,7 +218,7 @@ export class SimulationDataExtractor {
     return { cashSavingsContributions, taxableBrokerageContributions, taxDeferredContributions, taxFreeContributions };
   }
 
-  static getAnnualWithdrawalsData(dp: SimulationDataPoint, age: number): AnnualWithdrawalsData {
+  static getWithdrawalsByTaxCategory(dp: SimulationDataPoint, age: number): WithdrawalsByTaxCategory {
     const portfolioData = dp.portfolio;
 
     let cashSavingsWithdrawals = 0;
