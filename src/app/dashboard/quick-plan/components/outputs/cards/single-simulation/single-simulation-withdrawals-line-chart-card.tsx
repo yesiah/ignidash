@@ -108,7 +108,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
         >
           <option value="taxCategory">Tax Category</option>
           <option value="annualAmounts">Annual Withdrawals</option>
-          <option value="cumulativeAmounts">Total Withdrawals</option>
+          <option value="cumulativeAmounts">Cumulative Withdrawals</option>
           <option value="requiredMinimumDistributions">Required Minimum Distributions</option>
           <option value="withdrawalRate">Withdrawal Rate</option>
           <optgroup label="Taxable Brokerage">
