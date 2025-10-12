@@ -12,8 +12,34 @@ import SingleSimulationTaxesLineChart from '../../charts/single-simulation/singl
 interface SingleSimulationTaxesLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome') => void;
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  setDataView: (
+    view:
+      | 'marginalRates'
+      | 'effectiveRates'
+      | 'annualAmounts'
+      | 'cumulativeAmounts'
+      | 'netIncome'
+      | 'taxableIncome'
+      | 'investmentIncome'
+      | 'retirementDistributions'
+      | 'ordinaryIncome'
+      | 'capGainsAndDividends'
+      | 'earlyWithdrawalPenalties'
+      | 'adjustmentsAndDeductions'
+  ) => void;
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   keyMetrics: KeyMetrics;
   startAge: number;
@@ -44,7 +70,19 @@ export default function SingleSimulationTaxesLineChartCard({
           value={dataView}
           onChange={(e) =>
             setDataView(
-              e.target.value as 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome'
+              e.target.value as
+                | 'marginalRates'
+                | 'effectiveRates'
+                | 'annualAmounts'
+                | 'cumulativeAmounts'
+                | 'netIncome'
+                | 'taxableIncome'
+                | 'investmentIncome'
+                | 'retirementDistributions'
+                | 'ordinaryIncome'
+                | 'capGainsAndDividends'
+                | 'earlyWithdrawalPenalties'
+                | 'adjustmentsAndDeductions'
             )
           }
         >
@@ -57,6 +95,16 @@ export default function SingleSimulationTaxesLineChartCard({
             <option value="netIncome">Net Income After Tax</option>
             <option value="annualAmounts">Annual Taxes</option>
             <option value="cumulativeAmounts">Cumulative Taxes</option>
+            <option value="adjustmentsAndDeductions">Adjustments &amp; Deductions</option>
+          </optgroup>
+          <optgroup label="Income Sources">
+            <option value="investmentIncome">Investment Income</option>
+            <option value="retirementDistributions">Retirement Distributions</option>
+            <option value="ordinaryIncome">Ordinary Income</option>
+            <option value="capGainsAndDividends">Capital Gains &amp; Dividends</option>
+          </optgroup>
+          <optgroup label="Issues & Penalties">
+            <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
           </optgroup>
         </Select>
       </div>

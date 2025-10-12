@@ -23,7 +23,19 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -36,7 +48,19 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
 
   const formatValue = (
     value: number,
-    mode: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome'
+    mode:
+      | 'marginalRates'
+      | 'effectiveRates'
+      | 'annualAmounts'
+      | 'cumulativeAmounts'
+      | 'netIncome'
+      | 'taxableIncome'
+      | 'investmentIncome'
+      | 'retirementDistributions'
+      | 'ordinaryIncome'
+      | 'capGainsAndDividends'
+      | 'earlyWithdrawalPenalties'
+      | 'adjustmentsAndDeductions'
   ) => {
     switch (mode) {
       case 'marginalRates':
@@ -46,6 +70,12 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       case 'cumulativeAmounts':
       case 'netIncome':
       case 'taxableIncome':
+      case 'investmentIncome':
+      case 'retirementDistributions':
+      case 'ordinaryIncome':
+      case 'capGainsAndDividends':
+      case 'earlyWithdrawalPenalties':
+      case 'adjustmentsAndDeductions':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -141,7 +171,19 @@ interface SingleSimulationTaxesLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
   startAge: number;
 }
 
@@ -197,6 +239,28 @@ export default function SingleSimulationTaxesLineChart({
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'totalTaxableIncome');
+      break;
+    case 'investmentIncome':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('taxableInterestIncome', 'taxableDividendIncome');
+      break;
+    case 'retirementDistributions':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+      break;
+    case 'ordinaryIncome':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('earnedIncome', 'taxableInterestIncome', 'taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+      break;
+    case 'capGainsAndDividends':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('realizedGains', 'taxableDividendIncome');
+      break;
+    case 'earlyWithdrawalPenalties':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
+      break;
+    case 'adjustmentsAndDeductions':
       break;
   }
 

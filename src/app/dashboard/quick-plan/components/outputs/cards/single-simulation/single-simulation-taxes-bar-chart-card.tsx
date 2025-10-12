@@ -13,7 +13,19 @@ import SingleSimulationTaxesBarChart from '../../charts/single-simulation/single
 interface SingleSimulationTaxesBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationTaxesChartDataPoint[];
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
   setReferenceLineMode: (mode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates') => void;
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
   referenceLineModes: readonly ('hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates')[];
@@ -48,6 +60,24 @@ export default function SingleSimulationTaxesBarChartCard({
       break;
     case 'taxableIncome':
       title = 'Taxable Income';
+      break;
+    case 'investmentIncome':
+      title = 'Investment Income';
+      break;
+    case 'retirementDistributions':
+      title = 'Retirement Distributions';
+      break;
+    case 'ordinaryIncome':
+      title = 'Ordinary Income';
+      break;
+    case 'capGainsAndDividends':
+      title = 'Capital Gains & Dividends';
+      break;
+    case 'earlyWithdrawalPenalties':
+      title = 'Early Withdrawal Penalties';
+      break;
+    case 'adjustmentsAndDeductions':
+      title = 'Adjustments & Deductions';
       break;
   }
 

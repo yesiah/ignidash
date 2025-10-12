@@ -34,7 +34,19 @@ interface TaxableIncomeTooltipProps {
   startAge: number;
   age: number;
   disabled: boolean;
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
 }
 
 const TaxableIncomeTooltip = ({ active, payload, startAge, age, disabled, dataView }: TaxableIncomeTooltipProps) => {
@@ -116,7 +128,19 @@ const CustomLabelListContent = (props: any) => {
 
   const formatValue = (
     value: number,
-    mode: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome'
+    mode:
+      | 'marginalRates'
+      | 'effectiveRates'
+      | 'annualAmounts'
+      | 'cumulativeAmounts'
+      | 'netIncome'
+      | 'taxableIncome'
+      | 'investmentIncome'
+      | 'retirementDistributions'
+      | 'ordinaryIncome'
+      | 'capGainsAndDividends'
+      | 'earlyWithdrawalPenalties'
+      | 'adjustmentsAndDeductions'
   ) => {
     switch (mode) {
       case 'marginalRates':
@@ -126,6 +150,12 @@ const CustomLabelListContent = (props: any) => {
       case 'cumulativeAmounts':
       case 'netIncome':
       case 'taxableIncome':
+      case 'investmentIncome':
+      case 'retirementDistributions':
+      case 'ordinaryIncome':
+      case 'capGainsAndDividends':
+      case 'earlyWithdrawalPenalties':
+      case 'adjustmentsAndDeductions':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -165,7 +195,19 @@ const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--cha
 
 interface SingleSimulationTaxesBarChartProps {
   age: number;
-  dataView: 'marginalRates' | 'effectiveRates' | 'annualAmounts' | 'cumulativeAmounts' | 'netIncome' | 'taxableIncome';
+  dataView:
+    | 'marginalRates'
+    | 'effectiveRates'
+    | 'annualAmounts'
+    | 'cumulativeAmounts'
+    | 'netIncome'
+    | 'taxableIncome'
+    | 'investmentIncome'
+    | 'retirementDistributions'
+    | 'ordinaryIncome'
+    | 'capGainsAndDividends'
+    | 'earlyWithdrawalPenalties'
+    | 'adjustmentsAndDeductions';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
   startAge: number;
@@ -266,6 +308,44 @@ export default function SingleSimulationTaxesBarChart({
 
       formatter = (value: number) => formatNumber(value, 1, '$');
       isStacked = true;
+      break;
+    case 'investmentIncome':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Taxable Interest Income', amount: item.taxableInterestIncome },
+        { name: 'Taxable Dividend Income', amount: item.taxableDividendIncome },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'retirementDistributions':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Tax-Deferred Withdrawals', amount: item.taxDeferredWithdrawals },
+        { name: 'Early Roth Earnings Withdrawals', amount: item.earlyRothEarningsWithdrawals },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'ordinaryIncome':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Earned Income', amount: item.earnedIncome },
+        { name: 'Taxable Interest Income', amount: item.taxableInterestIncome },
+        { name: 'Taxable Retirement Distributions', amount: item.taxDeferredWithdrawals + item.earlyRothEarningsWithdrawals },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'capGainsAndDividends':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Realized Gains', amount: item.realizedGains },
+        { name: 'Taxable Dividend Income', amount: item.taxableDividendIncome },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'earlyWithdrawalPenalties':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Annual EW Penalties', amount: item.annualEarlyWithdrawalPenalties },
+        { name: 'Cumulative EW Penalties', amount: item.cumulativeEarlyWithdrawalPenalties },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'adjustmentsAndDeductions':
       break;
   }
 
