@@ -271,6 +271,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
   const totalExpenses = expensesData?.totalExpenses ?? 0;
   const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
+
   const withdrawalRate = totalValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalValue + annualWithdrawals)) * 100 : null;
 
   return (

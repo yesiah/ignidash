@@ -106,44 +106,35 @@ export class TableDataExtractor {
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
 
-      const portfolioData = data.portfolio;
+      const taxesData = data.taxes;
 
-      let taxDeferredWithdrawals = 0;
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferredWithdrawals += account.withdrawalsForPeriod;
-            break;
-          default:
-            break;
-        }
-      }
+      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
+      const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
+      const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
 
       const incomesData = data.incomes;
       const expensesData = data.expenses;
-      const taxesData = data.taxes;
 
-      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-      const grossIncome = ordinaryIncome + taxDeferredWithdrawals;
-      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+      const earnedIncome = incomesData?.totalGrossIncome ?? 0;
+      const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
       const expenses = expensesData?.totalExpenses ?? 0;
-      const netIncome = grossIncome - incomeTax;
-      const netCashFlow = netIncome - expenses;
-      const savingsRate = netIncome > 0 ? (netCashFlow / netIncome) * 100 : null;
+      const operatingCashFlow = earnedIncomeAfterTax - expenses;
+
+      const savingsRate = earnedIncomeAfterTax > 0 ? (operatingCashFlow / earnedIncomeAfterTax) * 100 : null;
 
       return {
         year: idx,
         age: currDateYear - startDateYear + startAge,
         phaseName: formattedPhaseName,
-        ordinaryIncome,
-        taxDeferredWithdrawals,
-        grossIncome,
+        earnedIncome,
+        earnedIncomeAfterTax,
         incomeTax,
-        netIncome,
+        capGainsTax,
+        earlyWithdrawalPenalties,
+        totalTaxesAndPenalties,
         expenses,
-        netCashFlow,
+        operatingCashFlow,
         savingsRate,
         historicalYear,
       };
@@ -410,6 +401,7 @@ export class TableDataExtractor {
       const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
       const totalExpenses = expensesData?.totalExpenses ?? 0;
       const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
+
       const withdrawalRate =
         totalPortfolioValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalPortfolioValue + annualWithdrawals)) * 100 : null;
 
