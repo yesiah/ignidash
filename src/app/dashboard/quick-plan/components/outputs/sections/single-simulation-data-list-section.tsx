@@ -8,6 +8,7 @@ import { formatNumber } from '@/lib/utils';
 import Card from '@/components/ui/card';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
+import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
 
 interface DataListCardProps {
   dp: SimulationDataPoint;
@@ -54,21 +55,10 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const taxesData = dp.taxes;
+  const { totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
+  const { earnedIncome, totalExpenses, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
 
-  const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-  const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-  const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-  const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
-
-  const incomesData = dp.incomes;
-  const expensesData = dp.expenses;
-
-  const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-  const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
-  const totalExpenses = expensesData?.totalExpenses ?? 0;
-  const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
-  const savingsRate = earnedIncomeAfterTax > 0 ? (operatingCashFlow / earnedIncomeAfterTax) * 100 : null;
+  const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
     <div>
@@ -102,43 +92,23 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const portfolioData = dp.portfolio;
-  const annualRealizedGains = portfolioData.realizedGainsForPeriod;
+  const {
+    realizedGains,
+    taxDeferredWithdrawals,
+    earlyTaxFreeEarningsWithdrawals,
+    taxableDividendIncome,
+    taxableInterestIncome,
+    earnedIncome,
+    grossIncome,
+  } = SimulationDataExtractor.getTaxableIncomeSources(dp, selectedAge);
 
-  let annualTaxDeferredWithdrawals = 0;
-  let annualEarlyTaxFreeEarningsWithdrawals = 0;
-  for (const account of Object.values(portfolioData.perAccountData)) {
-    switch (account.type) {
-      case 'roth401k':
-      case 'rothIra':
-        if (selectedAge < 59.5) annualEarlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
-        break;
-      case '401k':
-      case 'ira':
-      case 'hsa':
-        annualTaxDeferredWithdrawals += account.withdrawalsForPeriod;
-        break;
-      default:
-        break;
-    }
-  }
+  const {
+    incomeTaxAmount: incomeTax,
+    capGainsTaxAmount: capGainsTax,
+    totalTaxesAndPenalties,
+  } = SimulationDataExtractor.getTaxAmountsByType(dp);
 
-  const taxableRetirementDistributions = annualTaxDeferredWithdrawals + annualEarlyTaxFreeEarningsWithdrawals;
-
-  const returnsData = dp.returns;
-  const taxableDividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
-  const taxableInterestIncome =
-    (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.taxable.cash ?? 0);
-
-  const incomesData = dp.incomes;
-  const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-  const grossIncome = earnedIncome + taxableRetirementDistributions + annualRealizedGains + taxableDividendIncome + taxableInterestIncome;
-
-  const taxesData = dp.taxes;
-  const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-  const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-  const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-  const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
+  const taxableRetirementDistributions = taxDeferredWithdrawals + earlyTaxFreeEarningsWithdrawals;
 
   return (
     <Card className="my-0">
@@ -160,7 +130,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Realized Capital Gains & Dividends</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(annualRealizedGains + taxableDividendIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatNumber(realizedGains + taxableDividendIncome, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
         <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>
@@ -212,20 +182,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualContributions = portfolioData.contributionsForPeriod;
 
-  const taxesData = dp.taxes;
-
-  const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-  const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-  const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-  const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
-
-  const incomesData = dp.incomes;
-  const expensesData = dp.expenses;
-
-  const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-  const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
-  const totalExpenses = expensesData?.totalExpenses ?? 0;
-  const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
+  const { operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
 
   return (
     <div>
@@ -257,22 +214,8 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-  const taxesData = dp.taxes;
-
-  const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-  const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-  const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-  const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
-
-  const incomesData = dp.incomes;
-  const expensesData = dp.expenses;
-
-  const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-  const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
-  const totalExpenses = expensesData?.totalExpenses ?? 0;
-  const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
-
-  const withdrawalRate = totalValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalValue + annualWithdrawals)) * 100 : null;
+  const { operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
+  const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);
 
   return (
     <div>
