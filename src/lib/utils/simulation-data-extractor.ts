@@ -24,10 +24,10 @@ export interface OperatingCashFlowData {
   operatingCashFlow: number;
 }
 
-export interface BasicTaxesData {
-  incomeTax: number;
-  capGainsTax: number;
-  earlyWithdrawalPenalties: number;
+export interface TaxAmountsByType {
+  incomeTaxAmount: number;
+  capGainsTaxAmount: number;
+  earlyWithdrawalPenaltiesAmount: number;
   totalTaxesAndPenalties: number;
 }
 
@@ -162,22 +162,22 @@ export class SimulationDataExtractor {
     };
   }
 
-  static getBasicTaxesData(dp: SimulationDataPoint): BasicTaxesData {
+  static getTaxAmountsByType(dp: SimulationDataPoint): TaxAmountsByType {
     const taxesData = dp.taxes;
 
-    const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-    const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-    const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-    const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
+    const incomeTaxAmount = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
+    const capGainsTaxAmount = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
+    const earlyWithdrawalPenaltiesAmount = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
+    const totalTaxesAndPenalties = incomeTaxAmount + capGainsTaxAmount + earlyWithdrawalPenaltiesAmount;
 
-    return { incomeTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties };
+    return { incomeTaxAmount, capGainsTaxAmount, earlyWithdrawalPenaltiesAmount, totalTaxesAndPenalties };
   }
 
   static getOperatingCashFlowData(dp: SimulationDataPoint): OperatingCashFlowData {
     const incomesData = dp.incomes;
     const expensesData = dp.expenses;
 
-    const { totalTaxesAndPenalties } = this.getBasicTaxesData(dp);
+    const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
 
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
     const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
