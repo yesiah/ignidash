@@ -181,6 +181,8 @@ export class TableDataExtractor {
         annualTotalTaxesAndPenalties,
         cumulativeTotalTaxesAndPenalties,
         totalNetIncome: (taxesData?.incomeTaxes.netIncome ?? 0) + (taxesData?.capitalGainsTaxes.netCapitalGains ?? 0),
+        taxDeferredContributions: taxesData?.adjustments.taxDeferredContributions ?? null,
+        standardDeduction: taxesData?.deductions.standardDeduction ?? null,
         capitalLossDeduction: taxesData?.incomeTaxes.capitalLossDeduction ?? null,
         historicalYear,
       };
