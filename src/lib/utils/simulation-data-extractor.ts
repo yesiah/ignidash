@@ -312,21 +312,30 @@ export class SimulationDataExtractor {
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'roth401k':
-        case 'rothIra':
+        case 'rothIra': {
           if (age < 59.5) {
-            earlyTaxFreeEarningsWithdrawals += account.earningsWithdrawnForPeriod;
-            totalEarlyWithdrawals += account.earningsWithdrawnForPeriod;
+            const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
+
+            earlyTaxFreeEarningsWithdrawals += annualEarningsWithdrawn;
+            totalEarlyWithdrawals += annualEarningsWithdrawn;
           }
           break;
+        }
         case '401k':
-        case 'ira':
-          taxDeferredWithdrawals += account.withdrawalsForPeriod;
-          if (age < 59.5) totalEarlyWithdrawals += account.withdrawalsForPeriod;
+        case 'ira': {
+          const annualWithdrawals = account.withdrawalsForPeriod;
+
+          taxDeferredWithdrawals += annualWithdrawals;
+          if (age < 59.5) totalEarlyWithdrawals += annualWithdrawals;
           break;
-        case 'hsa':
-          taxDeferredWithdrawals += account.withdrawalsForPeriod;
-          if (age < 65) totalEarlyWithdrawals += account.withdrawalsForPeriod;
+        }
+        case 'hsa': {
+          const annualWithdrawals = account.withdrawalsForPeriod;
+
+          taxDeferredWithdrawals += annualWithdrawals;
+          if (age < 65) totalEarlyWithdrawals += annualWithdrawals;
           break;
+        }
         default:
           break;
       }
