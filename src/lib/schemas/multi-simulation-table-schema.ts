@@ -19,10 +19,12 @@ export const multiSimulationTableRowSchema = z.object({
   averageInflationRate: z.number().nullable(),
   lifetimeIncomeTaxes: z.number().nullable(),
   lifetimeCapGainsTaxes: z.number().nullable(),
-  lifetimeTaxes: z.number().nullable(),
+  lifetimeEarlyWithdrawalPenalties: z.number().nullable(),
+  lifetimeTaxesAndPenalties: z.number().nullable(),
   lifetimeContributions: z.number().nullable(),
   lifetimeWithdrawals: z.number().nullable(),
   lifetimeRealizedGains: z.number().nullable(),
+  lifetimeRequiredMinimumDistributions: z.number().nullable(),
   historicalRanges: z.array(z.object({ startYear: z.number(), endYear: z.number() })).nullable(),
 });
 
@@ -44,10 +46,12 @@ const MULTI_SIMULATION_COLUMNS = {
   averageInflationRate: { title: 'Mean Inflation Rate', format: 'percentage' },
   lifetimeIncomeTaxes: { title: 'Lifetime Income Taxes', format: 'currency' },
   lifetimeCapGainsTaxes: { title: 'Lifetime Cap Gains Taxes', format: 'currency' },
-  lifetimeTaxes: { title: 'Lifetime Taxes', format: 'currency' },
+  lifetimeEarlyWithdrawalPenalties: { title: 'Lifetime Early Withdrawal Penalties', format: 'currency' },
+  lifetimeTaxesAndPenalties: { title: 'Lifetime Taxes & Penalties', format: 'currency' },
   lifetimeContributions: { title: 'Lifetime Contributions', format: 'currency' },
   lifetimeWithdrawals: { title: 'Lifetime Withdrawals', format: 'currency' },
   lifetimeRealizedGains: { title: 'Lifetime Realized Gains', format: 'currency' },
+  lifetimeRequiredMinimumDistributions: { title: 'Lifetime RMDs', format: 'currency' },
   historicalRanges: { title: 'Historical Ranges', format: 'historicalRanges' },
 } as const;
 

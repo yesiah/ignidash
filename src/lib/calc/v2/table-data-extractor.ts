@@ -365,20 +365,22 @@ export class TableDataExtractor {
       const finalPhaseName = lastDp.phase?.name ?? null;
       const formattedFinalPhaseName = finalPhaseName !== null ? finalPhaseName.charAt(0).toUpperCase() + finalPhaseName.slice(1) : null;
 
-      const { lifetimeIncomeTaxes, lifetimeCapGainsTaxes } = data.reduce(
+      const { lifetimeIncomeTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties } = data.reduce(
         (acc, dp) => {
           const incomeTax = dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
           const capGainsTax = dp.taxes?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
+          const earlyWithdrawalPenalty = dp.taxes?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
 
           return {
             lifetimeIncomeTaxes: acc.lifetimeIncomeTaxes + incomeTax,
             lifetimeCapGainsTaxes: acc.lifetimeCapGainsTaxes + capGainsTax,
+            lifetimeEarlyWithdrawalPenalties: acc.lifetimeEarlyWithdrawalPenalties + earlyWithdrawalPenalty,
           };
         },
-        { lifetimeIncomeTaxes: 0, lifetimeCapGainsTaxes: 0 }
+        { lifetimeIncomeTaxes: 0, lifetimeCapGainsTaxes: 0, lifetimeEarlyWithdrawalPenalties: 0 }
       );
 
-      const lifetimeTaxes = lifetimeIncomeTaxes + lifetimeCapGainsTaxes;
+      const lifetimeTaxesAndPenalties = lifetimeIncomeTaxes + lifetimeCapGainsTaxes + lifetimeEarlyWithdrawalPenalties;
 
       return {
         seed,
@@ -396,10 +398,12 @@ export class TableDataExtractor {
         averageInflationRate,
         lifetimeIncomeTaxes,
         lifetimeCapGainsTaxes,
-        lifetimeTaxes,
+        lifetimeEarlyWithdrawalPenalties,
+        lifetimeTaxesAndPenalties,
         lifetimeContributions: lastDp.portfolio.totalContributions,
         lifetimeWithdrawals: lastDp.portfolio.totalWithdrawals,
         lifetimeRealizedGains: lastDp.portfolio.totalRealizedGains,
+        lifetimeRequiredMinimumDistributions: lastDp.portfolio.totalRmds,
         historicalRanges,
       };
     });
