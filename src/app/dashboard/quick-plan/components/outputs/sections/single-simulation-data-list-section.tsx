@@ -94,7 +94,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const {
     realizedGains,
     taxDeferredWithdrawals,
-    earlyTaxFreeEarningsWithdrawals,
+    earlyRothEarningsWithdrawals,
     taxableDividendIncome,
     taxableInterestIncome,
     earnedIncome,
@@ -102,7 +102,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   } = SimulationDataExtractor.getTaxableIncomeSources(dp, selectedAge);
   const { incomeTax, capGainsTax, totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
 
-  const taxableRetirementDistributions = taxDeferredWithdrawals + earlyTaxFreeEarningsWithdrawals;
+  const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
 
   return (
     <Card className="my-0">

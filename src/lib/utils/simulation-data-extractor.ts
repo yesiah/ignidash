@@ -62,7 +62,7 @@ export interface HoldingsByAssetClass {
 export interface TaxableIncomeSources {
   realizedGains: number;
   taxDeferredWithdrawals: number;
-  earlyTaxFreeEarningsWithdrawals: number;
+  earlyRothEarningsWithdrawals: number;
   earlyWithdrawals: number;
   taxableDividendIncome: number;
   taxableInterestIncome: number;
@@ -307,7 +307,7 @@ export class SimulationDataExtractor {
     const realizedGains = portfolioData.realizedGainsForPeriod;
 
     let taxDeferredWithdrawals = 0;
-    let earlyTaxFreeEarningsWithdrawals = 0;
+    let earlyRothEarningsWithdrawals = 0;
     let earlyWithdrawals = 0;
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
@@ -316,7 +316,7 @@ export class SimulationDataExtractor {
           if (age < 59.5) {
             const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
 
-            earlyTaxFreeEarningsWithdrawals += annualEarningsWithdrawn;
+            earlyRothEarningsWithdrawals += annualEarningsWithdrawn;
             earlyWithdrawals += annualEarningsWithdrawn;
           }
           break;
@@ -341,7 +341,7 @@ export class SimulationDataExtractor {
       }
     }
 
-    const taxableRetirementDistributions = taxDeferredWithdrawals + earlyTaxFreeEarningsWithdrawals;
+    const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
 
     const returnsData = dp.returns;
     const taxableDividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
@@ -355,7 +355,7 @@ export class SimulationDataExtractor {
     return {
       realizedGains,
       taxDeferredWithdrawals,
-      earlyTaxFreeEarningsWithdrawals,
+      earlyRothEarningsWithdrawals,
       earlyWithdrawals,
       taxableDividendIncome,
       taxableInterestIncome,

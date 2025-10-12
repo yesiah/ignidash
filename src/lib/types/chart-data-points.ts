@@ -50,7 +50,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   earnedIncome: number;
   grossIncome: number;
   taxDeferredWithdrawals: number;
-  earlyTaxFreeEarningsWithdrawals: number;
+  earlyRothEarningsWithdrawals: number;
   taxableInterestIncome: number;
   taxableOrdinaryIncome: number;
   annualIncomeTax: number;

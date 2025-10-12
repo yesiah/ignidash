@@ -98,7 +98,7 @@ export class ChartDataExtractor {
       const {
         realizedGains,
         taxDeferredWithdrawals,
-        earlyTaxFreeEarningsWithdrawals,
+        earlyRothEarningsWithdrawals,
         taxableDividendIncome,
         taxableInterestIncome,
         earnedIncome,
@@ -112,7 +112,7 @@ export class ChartDataExtractor {
         earnedIncome,
         grossIncome,
         taxDeferredWithdrawals,
-        earlyTaxFreeEarningsWithdrawals,
+        earlyRothEarningsWithdrawals,
         taxableInterestIncome,
         taxableOrdinaryIncome: taxesData.incomeTaxes.taxableOrdinaryIncome,
         annualIncomeTax,

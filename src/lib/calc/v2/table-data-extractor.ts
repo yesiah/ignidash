@@ -143,7 +143,7 @@ export class TableDataExtractor {
       const {
         realizedGains,
         taxDeferredWithdrawals,
-        earlyTaxFreeEarningsWithdrawals,
+        earlyRothEarningsWithdrawals,
         taxableDividendIncome,
         taxableInterestIncome,
         earnedIncome,
@@ -159,7 +159,7 @@ export class TableDataExtractor {
         earnedIncome,
         grossIncome,
         taxDeferredWithdrawals,
-        earlyTaxFreeEarningsWithdrawals,
+        earlyRothEarningsWithdrawals,
         taxableInterestIncome,
         taxableOrdinaryIncome: taxesData?.incomeTaxes.taxableOrdinaryIncome ?? 0,
         annualIncomeTax,
