@@ -115,69 +115,72 @@ export class TableDataExtractor {
     const historicalRanges = simulation.context.historicalRanges ?? null;
     const startDateYear = new Date().getFullYear();
 
-    let cumulativeIncomeTaxAmount = 0;
-    let cumulativeCapGainsTaxAmount = 0;
-    let cumulativeTaxAmount = 0;
+    let cumulativeIncomeTax = 0;
+    let cumulativeCapGainsTax = 0;
+    let cumulativeEarlyWithdrawalPenalties = 0;
+    let cumulativeTotalTaxesAndPenalties = 0;
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
 
+      const {
+        incomeTax: annualIncomeTax,
+        capGainsTax: annualCapGainsTax,
+        earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties,
+        totalTaxesAndPenalties: annualTotalTaxesAndPenalties,
+      } = SimulationDataExtractor.getTaxAmountsByType(data);
+
+      cumulativeIncomeTax += annualIncomeTax;
+      cumulativeCapGainsTax += annualCapGainsTax;
+      cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
+      cumulativeTotalTaxesAndPenalties += annualTotalTaxesAndPenalties;
+
+      const {
+        realizedGains,
+        taxDeferredWithdrawals,
+        earlyTaxFreeEarningsWithdrawals,
+        taxableDividendIncome,
+        taxableInterestIncome,
+        earnedIncome,
+        grossIncome,
+      } = SimulationDataExtractor.getTaxableIncomeSources(data, age);
+
       const taxesData = data.taxes;
-
-      const annualIncomeTaxAmount = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-      const annualCapGainsTaxAmount = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-      const totalAnnualTaxAmount = annualIncomeTaxAmount + annualCapGainsTaxAmount;
-
-      cumulativeIncomeTaxAmount += annualIncomeTaxAmount;
-      cumulativeCapGainsTaxAmount += annualCapGainsTaxAmount;
-      cumulativeTaxAmount += totalAnnualTaxAmount;
-
-      const portfolioData = data.portfolio;
-
-      let taxDeferredWithdrawals = 0;
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferredWithdrawals += account.withdrawalsForPeriod;
-            break;
-          default:
-            break;
-        }
-      }
-
-      const incomesData = data.incomes;
-
-      const ordinaryIncome = incomesData?.totalGrossIncome ?? 0;
-      const realizedCapGains = portfolioData.realizedGainsForPeriod;
-      const grossIncome = ordinaryIncome + taxDeferredWithdrawals + realizedCapGains;
 
       return {
         year: idx,
-        age: currDateYear - startDateYear + startAge,
+        age,
         phaseName: formattedPhaseName,
+        earnedIncome,
         grossIncome,
-        netIncome: taxesData?.incomeTaxes.netIncome ?? null,
-        realizedCapGains,
-        netCapGains: taxesData?.capitalGainsTaxes.netCapitalGains ?? null,
-        taxableOrdinaryIncome: taxesData?.incomeTaxes.taxableOrdinaryIncome ?? null,
-        taxableCapGains: taxesData?.capitalGainsTaxes.taxableCapitalGains ?? null,
-        totalTaxableIncome: taxesData?.totalTaxableIncome ?? null,
-        annualIncomeTaxAmount,
-        cumulativeIncomeTaxAmount,
-        annualCapGainsTaxAmount,
-        cumulativeCapGainsTaxAmount,
-        totalAnnualTaxAmount,
-        cumulativeTaxAmount,
-        effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? null,
-        topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalTaxRate ?? null,
-        effectiveCapGainsTaxRate: taxesData?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? null,
-        topMarginalCapGainsTaxRate: taxesData?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? null,
+        taxDeferredWithdrawals,
+        earlyTaxFreeEarningsWithdrawals,
+        taxableInterestIncome,
+        taxableOrdinaryIncome: taxesData?.incomeTaxes.taxableOrdinaryIncome ?? 0,
+        annualIncomeTax,
+        cumulativeIncomeTax,
+        effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? 0,
+        topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalTaxRate ?? 0,
+        netIncome: taxesData?.incomeTaxes.netIncome ?? 0,
+        realizedGains,
+        taxableDividendIncome,
+        taxableCapGains: taxesData?.capitalGainsTaxes.taxableCapitalGains ?? 0,
+        annualCapGainsTax,
+        cumulativeCapGainsTax,
+        effectiveCapGainsTaxRate: taxesData?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? 0,
+        topMarginalCapGainsTaxRate: taxesData?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? 0,
+        netCapGains: taxesData?.capitalGainsTaxes.netCapitalGains ?? 0,
+        annualEarlyWithdrawalPenalties,
+        cumulativeEarlyWithdrawalPenalties,
+        totalTaxableIncome: taxesData?.totalTaxableIncome ?? 0,
+        annualTotalTaxesAndPenalties,
+        cumulativeTotalTaxesAndPenalties,
+        totalNetIncome: (taxesData?.incomeTaxes.netIncome ?? 0) + (taxesData?.capitalGainsTaxes.netCapitalGains ?? 0),
         capitalLossDeduction: taxesData?.incomeTaxes.capitalLossDeduction ?? null,
         historicalYear,
       };
