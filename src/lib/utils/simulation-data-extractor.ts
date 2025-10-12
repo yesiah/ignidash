@@ -59,6 +59,17 @@ export interface HoldingsByAssetClass {
   cashHoldings: number;
 }
 
+export interface TaxableIncomeSources {
+  realizedGains: number;
+  taxDeferredWithdrawals: number;
+  earlyTaxFreeEarningsWithdrawals: number;
+  totalEarlyWithdrawals: number;
+  taxableDividendIncome: number;
+  taxableInterestIncome: number;
+  earnedIncome: number;
+  totalGrossIncome: number;
+}
+
 export class SimulationDataExtractor {
   static getMilestonesData(data: SimulationDataPoint[], startAge: number): MilestonesData {
     let yearsToRetirement: number | null = null;
