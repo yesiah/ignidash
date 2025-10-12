@@ -46,6 +46,19 @@ export interface AnnualWithdrawalsData {
   earlyWithdrawals: number;
 }
 
+export interface HoldingsByTaxCategory {
+  cashSavings: number;
+  taxableBrokerageHoldings: number;
+  taxDeferredHoldings: number;
+  taxFreeHoldings: number;
+}
+
+export interface HoldingsByAssetClass {
+  stockHoldings: number;
+  bondHoldings: number;
+  cashHoldings: number;
+}
+
 export class SimulationDataExtractor {
   static getMilestonesData(data: SimulationDataPoint[], startAge: number): MilestonesData {
     let yearsToRetirement: number | null = null;
@@ -229,6 +242,53 @@ export class SimulationDataExtractor {
     }
 
     return { cashSavingsWithdrawals, taxableBrokerageWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, earlyWithdrawals };
+  }
+
+  static getHoldingsByTaxCategory(dp: SimulationDataPoint): HoldingsByTaxCategory {
+    const portfolioData = dp.portfolio;
+
+    let cashSavings = 0;
+    let taxableBrokerageHoldings = 0;
+    let taxDeferredHoldings = 0;
+    let taxFreeHoldings = 0;
+
+    for (const account of Object.values(portfolioData.perAccountData)) {
+      switch (account.type) {
+        case 'savings':
+          cashSavings += account.totalValue;
+          break;
+        case 'taxableBrokerage':
+          taxableBrokerageHoldings += account.totalValue;
+          break;
+        case '401k':
+        case 'ira':
+        case 'hsa':
+          taxDeferredHoldings += account.totalValue;
+          break;
+        case 'roth401k':
+        case 'rothIra':
+          taxFreeHoldings += account.totalValue;
+          break;
+      }
+    }
+
+    return { cashSavings, taxableBrokerageHoldings, taxDeferredHoldings, taxFreeHoldings };
+  }
+
+  static getHoldingsByAssetClass(dp: SimulationDataPoint): HoldingsByAssetClass {
+    const portfolioData = dp.portfolio;
+    const totalValue = portfolioData.totalValue;
+
+    const assetAllocation = portfolioData.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
+    const stocksAllocation = assetAllocation.stocks;
+    const bondsAllocation = assetAllocation.bonds;
+    const cashAllocation = assetAllocation.cash;
+
+    return {
+      stockHoldings: totalValue * stocksAllocation,
+      bondHoldings: totalValue * bondsAllocation,
+      cashHoldings: totalValue * cashAllocation,
+    };
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
