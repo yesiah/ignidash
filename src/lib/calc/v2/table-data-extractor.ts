@@ -27,6 +27,7 @@ export class TableDataExtractor {
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -49,7 +50,7 @@ export class TableDataExtractor {
 
       return {
         year: idx,
-        age: currDateYear - startDateYear + startAge,
+        age,
         phaseName: formattedPhaseName,
         totalPortfolioValue,
         annualReturns: stockAmount + bondAmount + cashAmount,
@@ -76,30 +77,24 @@ export class TableDataExtractor {
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
 
-      const taxesData = data.taxes;
-
-      const incomeTax = taxesData?.incomeTaxes.incomeTaxAmount ?? 0;
-      const capGainsTax = taxesData?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
-      const earlyWithdrawalPenalties = taxesData?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
-      const totalTaxesAndPenalties = incomeTax + capGainsTax + earlyWithdrawalPenalties;
-
-      const incomesData = data.incomes;
-      const expensesData = data.expenses;
-
-      const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-      const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
-      const expenses = expensesData?.totalExpenses ?? 0;
-      const operatingCashFlow = earnedIncomeAfterTax - expenses;
-
-      const savingsRate = earnedIncomeAfterTax > 0 ? (operatingCashFlow / earnedIncomeAfterTax) * 100 : null;
+      const { incomeTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
+        SimulationDataExtractor.getTaxAmountsByType(data);
+      const {
+        earnedIncome,
+        earnedIncomeAfterTax,
+        totalExpenses: expenses,
+        operatingCashFlow,
+      } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
         year: idx,
-        age: currDateYear - startDateYear + startAge,
+        age,
         phaseName: formattedPhaseName,
         earnedIncome,
         earnedIncomeAfterTax,
