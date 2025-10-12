@@ -17,6 +17,7 @@ export class ChartDataExtractor {
 
     return simulation.data.map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const portfolioData = data.portfolio;
 
@@ -29,7 +30,7 @@ export class ChartDataExtractor {
       } = SimulationDataExtractor.getHoldingsByTaxCategory(data);
 
       return {
-        age: currDateYear - startDateYear + startAge,
+        age,
         stockHoldings,
         bondHoldings,
         cashHoldings,
@@ -48,6 +49,7 @@ export class ChartDataExtractor {
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const {
         incomeTaxAmount: incomeTax,
@@ -58,7 +60,7 @@ export class ChartDataExtractor {
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
-        age: currDateYear - startDateYear + startAge,
+        age,
         perIncomeData: Object.values(data.incomes!.perIncomeData),
         perExpenseData: Object.values(data.expenses!.perExpenseData),
         earnedIncome,
@@ -149,11 +151,12 @@ export class ChartDataExtractor {
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const returnsData = data.returns!;
 
       return {
-        age: currDateYear - startDateYear + startAge,
+        age,
         stocksRate: returnsData.annualReturnRates.stocks,
         bondsRate: returnsData.annualReturnRates.bonds,
         cashRate: returnsData.annualReturnRates.cash,
@@ -175,6 +178,7 @@ export class ChartDataExtractor {
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
+      const age = currDateYear - startDateYear + startAge;
 
       const portfolioData = data.portfolio;
       const annualContributions = portfolioData.contributionsForPeriod;
@@ -187,7 +191,7 @@ export class ChartDataExtractor {
       } = SimulationDataExtractor.getContributionsByTaxCategory(data);
 
       return {
-        age: currDateYear - startDateYear + startAge,
+        age,
         cumulativeContributions: portfolioData.totalContributions,
         annualContributions,
         perAccountData: Object.values(portfolioData.perAccountData),
@@ -211,6 +215,7 @@ export class ChartDataExtractor {
       const age = currDateYear - startDateYear + startAge;
 
       const portfolioData = data.portfolio;
+      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
       const {
         taxableBrokerageWithdrawals: taxableBrokerage,
@@ -230,7 +235,7 @@ export class ChartDataExtractor {
       return {
         age,
         cumulativeWithdrawals: portfolioData.totalWithdrawals,
-        annualWithdrawals: portfolioData.withdrawalsForPeriod,
+        annualWithdrawals,
         cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
         cumulativeRequiredMinimumDistributions: portfolioData.totalRmds,
