@@ -25,7 +25,7 @@ interface CustomTooltipProps {
   disabled: boolean;
   dataView:
     | 'annualAmounts'
-    | 'totalAmounts'
+    | 'cumulativeAmounts'
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
@@ -47,7 +47,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     value: number,
     mode:
       | 'annualAmounts'
-      | 'totalAmounts'
+      | 'cumulativeAmounts'
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
@@ -113,7 +113,7 @@ interface SingleSimulationWithdrawalsLineChartProps {
   selectedAge: number;
   dataView:
     | 'annualAmounts'
-    | 'totalAmounts'
+    | 'cumulativeAmounts'
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
@@ -157,8 +157,8 @@ export default function SingleSimulationWithdrawalsLineChart({
       dataKeys.push('annualWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'totalAmounts':
-      dataKeys.push('totalWithdrawals');
+    case 'cumulativeAmounts':
+      dataKeys.push('cumulativeWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'taxCategory':
@@ -166,19 +166,19 @@ export default function SingleSimulationWithdrawalsLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'realizedGains':
-      dataKeys.push('annualRealizedGains', 'totalRealizedGains');
+      dataKeys.push('annualRealizedGains', 'cumulativeRealizedGains');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'requiredMinimumDistributions':
-      dataKeys.push('annualRequiredMinimumDistributions', 'totalRequiredMinimumDistributions');
+      dataKeys.push('annualRequiredMinimumDistributions', 'cumulativeRequiredMinimumDistributions');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'earlyWithdrawalPenalties':
-      dataKeys.push('annualEarlyWithdrawalPenalties', 'totalEarlyWithdrawalPenalties');
+      dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'earlyWithdrawals':
-      dataKeys.push('annualEarlyWithdrawals', 'totalEarlyWithdrawals');
+      dataKeys.push('annualEarlyWithdrawals', 'cumulativeEarlyWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'withdrawalRate':
@@ -200,7 +200,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       );
 
       chartData = perAccountData;
-      dataKeys.push('annualWithdrawals', 'totalWithdrawals');
+      dataKeys.push('annualWithdrawals', 'cumulativeWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
   }

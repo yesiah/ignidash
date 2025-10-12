@@ -259,7 +259,7 @@ export class ChartDataExtractor {
 
       return {
         age: currDateYear - startDateYear + startAge,
-        totalContributions: portfolioData.totalContributions,
+        cumulativeContributions: portfolioData.totalContributions,
         annualContributions: portfolioData.contributionsForPeriod,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxableBrokerage,
@@ -274,8 +274,8 @@ export class ChartDataExtractor {
     const startAge = simulation.context.startAge;
     const startDateYear = new Date().getFullYear();
 
-    let totalEarlyWithdrawalPenalties = 0;
-    let totalEarlyWithdrawals = 0;
+    let cumulativeEarlyWithdrawalPenalties = 0;
+    let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.slice(1).map((data) => {
       const currDateYear = new Date(data.date).getFullYear();
@@ -318,24 +318,24 @@ export class ChartDataExtractor {
 
       const taxesData = data.taxes!;
       const annualEarlyWithdrawalPenalties = taxesData.earlyWithdrawalPenalties.totalPenaltyAmount;
-      totalEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
-      totalEarlyWithdrawals += annualEarlyWithdrawals;
+      cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
+      cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
       const withdrawalRate = totalValue + annualWithdrawals > 0 ? (annualWithdrawals / (totalValue + annualWithdrawals)) * 100 : null;
 
       return {
         age,
-        totalWithdrawals: portfolioData.totalWithdrawals,
+        cumulativeWithdrawals: portfolioData.totalWithdrawals,
         annualWithdrawals: portfolioData.withdrawalsForPeriod,
-        totalRealizedGains: portfolioData.totalRealizedGains,
+        cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
-        totalRequiredMinimumDistributions: portfolioData.totalRmds,
+        cumulativeRequiredMinimumDistributions: portfolioData.totalRmds,
         annualRequiredMinimumDistributions: portfolioData.rmdsForPeriod,
-        totalRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
+        cumulativeRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
         annualRothEarningsWithdrawals: portfolioData.earningsWithdrawnForPeriod,
-        totalEarlyWithdrawalPenalties,
+        cumulativeEarlyWithdrawalPenalties,
         annualEarlyWithdrawalPenalties,
-        totalEarlyWithdrawals,
+        cumulativeEarlyWithdrawals,
         annualEarlyWithdrawals,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxableBrokerage,

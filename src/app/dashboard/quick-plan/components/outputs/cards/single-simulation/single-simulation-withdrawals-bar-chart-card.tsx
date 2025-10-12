@@ -11,7 +11,7 @@ interface SingleSimulationWithdrawalsBarChartCardProps {
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
   dataView:
     | 'annualAmounts'
-    | 'totalAmounts'
+    | 'cumulativeAmounts'
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
@@ -33,8 +33,8 @@ export default function SingleSimulationWithdrawalsBarChartCard({
     case 'annualAmounts':
       title = 'Annual Withdrawals';
       break;
-    case 'totalAmounts':
-      title = 'Total Withdrawals';
+    case 'cumulativeAmounts':
+      title = 'Cumulative Withdrawals';
       break;
     case 'taxCategory':
       title = 'By Tax Category';

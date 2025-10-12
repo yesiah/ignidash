@@ -23,7 +23,7 @@ interface CustomTooltipProps {
   label?: number;
   startAge: number;
   disabled: boolean;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -81,7 +81,7 @@ interface SingleSimulationContributionsLineChartProps {
   showReferenceLines: boolean;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  dataView: 'annualAmounts' | 'totalAmounts' | 'taxCategory' | 'custom';
+  dataView: 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom';
   customDataID: string;
   startAge: number;
 }
@@ -116,8 +116,8 @@ export default function SingleSimulationContributionsLineChart({
     case 'annualAmounts':
       dataKeys.push('annualContributions');
       break;
-    case 'totalAmounts':
-      dataKeys.push('totalContributions');
+    case 'cumulativeAmounts':
+      dataKeys.push('cumulativeContributions');
       break;
     case 'taxCategory':
       dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
@@ -137,7 +137,7 @@ export default function SingleSimulationContributionsLineChart({
       );
 
       chartData = perAccountData;
-      dataKeys.push('annualContributions', 'totalContributions');
+      dataKeys.push('annualContributions', 'cumulativeContributions');
       break;
   }
 

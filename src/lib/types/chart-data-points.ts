@@ -107,7 +107,7 @@ export interface SingleSimulationTaxesChartDataPoint {
 
 export interface SingleSimulationContributionsChartDataPoint {
   age: number;
-  totalContributions: number;
+  cumulativeContributions: number;
   annualContributions: number;
   perAccountData: AccountDataWithTransactions[];
   taxableBrokerage: number;
@@ -118,12 +118,12 @@ export interface SingleSimulationContributionsChartDataPoint {
 
 export interface SingleSimulationWithdrawalsChartDataPoint {
   age: number;
-  totalWithdrawals: number;
-  totalRealizedGains: number;
-  totalRequiredMinimumDistributions: number;
-  totalEarlyWithdrawals: number;
-  totalRothEarningsWithdrawals: number;
-  totalEarlyWithdrawalPenalties: number;
+  cumulativeWithdrawals: number;
+  cumulativeRealizedGains: number;
+  cumulativeRequiredMinimumDistributions: number;
+  cumulativeEarlyWithdrawals: number;
+  cumulativeRothEarningsWithdrawals: number;
+  cumulativeEarlyWithdrawalPenalties: number;
   annualWithdrawals: number;
   annualRealizedGains: number;
   annualRequiredMinimumDistributions: number;

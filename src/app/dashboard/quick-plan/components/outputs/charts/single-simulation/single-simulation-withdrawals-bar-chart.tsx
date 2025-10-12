@@ -49,7 +49,7 @@ interface SingleSimulationWithdrawalsBarChartProps {
   age: number;
   dataView:
     | 'annualAmounts'
-    | 'totalAmounts'
+    | 'cumulativeAmounts'
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
@@ -77,8 +77,8 @@ export default function SingleSimulationWithdrawalsBarChart({
     case 'annualAmounts':
       transformedChartData = chartData.flatMap((item) => [{ name: 'Annual Withdrawals', amount: item.annualWithdrawals }]);
       break;
-    case 'totalAmounts':
-      transformedChartData = chartData.flatMap((item) => [{ name: 'Total Withdrawals', amount: item.totalWithdrawals }]);
+    case 'cumulativeAmounts':
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Cumulative Withdrawals', amount: item.cumulativeWithdrawals }]);
       break;
     case 'taxCategory':
       transformedChartData = chartData.flatMap((item) => [
@@ -91,25 +91,25 @@ export default function SingleSimulationWithdrawalsBarChart({
     case 'realizedGains':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual Realized Gains', amount: item.annualRealizedGains },
-        { name: 'Total Realized Gains', amount: item.totalRealizedGains },
+        { name: 'Cumulative Realized Gains', amount: item.cumulativeRealizedGains },
       ]);
       break;
     case 'requiredMinimumDistributions':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions },
-        { name: 'Total RMDs', amount: item.totalRequiredMinimumDistributions },
+        { name: 'Cumulative RMDs', amount: item.cumulativeRequiredMinimumDistributions },
       ]);
       break;
     case 'earlyWithdrawalPenalties':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual EW Penalties', amount: item.annualEarlyWithdrawalPenalties },
-        { name: 'Total EW Penalties', amount: item.totalEarlyWithdrawalPenalties },
+        { name: 'Cumulative EW Penalties', amount: item.cumulativeEarlyWithdrawalPenalties },
       ]);
       break;
     case 'earlyWithdrawals':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual Early Withdrawals', amount: item.annualEarlyWithdrawals },
-        { name: 'Total Early Withdrawals', amount: item.totalEarlyWithdrawals },
+        { name: 'Cumulative Early Withdrawals', amount: item.cumulativeEarlyWithdrawals },
       ]);
       break;
     case 'withdrawalRate':

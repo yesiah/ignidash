@@ -17,7 +17,7 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
   setDataView: (
     view:
       | 'annualAmounts'
-      | 'totalAmounts'
+      | 'cumulativeAmounts'
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
@@ -28,7 +28,7 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
   ) => void;
   dataView:
     | 'annualAmounts'
-    | 'totalAmounts'
+    | 'cumulativeAmounts'
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
@@ -80,7 +80,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
           onChange={(e) => {
             const isCustomSelection =
               e.target.value !== 'annualAmounts' &&
-              e.target.value !== 'totalAmounts' &&
+              e.target.value !== 'cumulativeAmounts' &&
               e.target.value !== 'taxCategory' &&
               e.target.value !== 'realizedGains' &&
               e.target.value !== 'requiredMinimumDistributions' &&
@@ -94,7 +94,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
               setDataView(
                 e.target.value as
                   | 'annualAmounts'
-                  | 'totalAmounts'
+                  | 'cumulativeAmounts'
                   | 'taxCategory'
                   | 'realizedGains'
                   | 'requiredMinimumDistributions'
@@ -108,7 +108,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
         >
           <option value="taxCategory">Tax Category</option>
           <option value="annualAmounts">Annual Withdrawals</option>
-          <option value="totalAmounts">Total Withdrawals</option>
+          <option value="cumulativeAmounts">Total Withdrawals</option>
           <option value="requiredMinimumDistributions">Required Minimum Distributions</option>
           <option value="withdrawalRate">Withdrawal Rate</option>
           <optgroup label="Taxable Brokerage">
