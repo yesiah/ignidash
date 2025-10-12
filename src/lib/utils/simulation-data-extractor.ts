@@ -346,7 +346,7 @@ export class SimulationDataExtractor {
     const returnsData = dp.returns;
     const taxableDividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
     const taxableInterestIncome =
-      (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.taxable.cash ?? 0);
+      (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.cashSavings.cash ?? 0);
 
     const incomesData = dp.incomes;
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
