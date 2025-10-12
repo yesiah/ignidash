@@ -36,35 +36,9 @@ export class TableDataExtractor {
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
       const annualContributions = portfolioData.contributionsForPeriod;
 
-      let cashSavings = 0;
-      let taxableBrokerageHoldings = 0;
-      let taxDeferredHoldings = 0;
-      let taxFreeHoldings = 0;
-
-      for (const account of Object.values(portfolioData.perAccountData)) {
-        switch (account.type) {
-          case 'savings':
-            cashSavings += account.totalValue;
-            break;
-          case 'taxableBrokerage':
-            taxableBrokerageHoldings += account.totalValue;
-            break;
-          case '401k':
-          case 'ira':
-          case 'hsa':
-            taxDeferredHoldings += account.totalValue;
-            break;
-          case 'roth401k':
-          case 'rothIra':
-            taxFreeHoldings += account.totalValue;
-            break;
-        }
-      }
-
-      const assetAllocation = portfolioData.assetAllocation ?? { stocks: 0, bonds: 0, cash: 0 };
-      const stocksAllocation = assetAllocation.stocks;
-      const bondsAllocation = assetAllocation.bonds;
-      const cashAllocation = assetAllocation.cash;
+      const { taxableBrokerageHoldings, taxDeferredHoldings, taxFreeHoldings, cashSavings } =
+        SimulationDataExtractor.getHoldingsByTaxCategory(data);
+      const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
 
       const returnsData = data.returns;
       const {
@@ -82,9 +56,9 @@ export class TableDataExtractor {
         annualWithdrawals,
         annualContributions,
         netPortfolioChange: stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals,
-        stockHoldings: totalPortfolioValue * stocksAllocation,
-        bondHoldings: totalPortfolioValue * bondsAllocation,
-        cashHoldings: totalPortfolioValue * cashAllocation,
+        stockHoldings,
+        bondHoldings,
+        cashHoldings,
         taxableBrokerageHoldings,
         taxDeferredHoldings,
         taxFreeHoldings,
