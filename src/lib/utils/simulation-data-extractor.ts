@@ -63,11 +63,11 @@ export interface TaxableIncomeSources {
   realizedGains: number;
   taxDeferredWithdrawals: number;
   earlyTaxFreeEarningsWithdrawals: number;
-  totalEarlyWithdrawals: number;
+  earlyWithdrawals: number;
   taxableDividendIncome: number;
   taxableInterestIncome: number;
   earnedIncome: number;
-  totalGrossIncome: number;
+  grossIncome: number;
 }
 
 export class SimulationDataExtractor {
@@ -308,7 +308,7 @@ export class SimulationDataExtractor {
 
     let taxDeferredWithdrawals = 0;
     let earlyTaxFreeEarningsWithdrawals = 0;
-    let totalEarlyWithdrawals = 0;
+    let earlyWithdrawals = 0;
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'roth401k':
@@ -317,7 +317,7 @@ export class SimulationDataExtractor {
             const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
 
             earlyTaxFreeEarningsWithdrawals += annualEarningsWithdrawn;
-            totalEarlyWithdrawals += annualEarningsWithdrawn;
+            earlyWithdrawals += annualEarningsWithdrawn;
           }
           break;
         }
@@ -326,14 +326,14 @@ export class SimulationDataExtractor {
           const annualWithdrawals = account.withdrawalsForPeriod;
 
           taxDeferredWithdrawals += annualWithdrawals;
-          if (age < 59.5) totalEarlyWithdrawals += annualWithdrawals;
+          if (age < 59.5) earlyWithdrawals += annualWithdrawals;
           break;
         }
         case 'hsa': {
           const annualWithdrawals = account.withdrawalsForPeriod;
 
           taxDeferredWithdrawals += annualWithdrawals;
-          if (age < 65) totalEarlyWithdrawals += annualWithdrawals;
+          if (age < 65) earlyWithdrawals += annualWithdrawals;
           break;
         }
         default:
@@ -350,17 +350,17 @@ export class SimulationDataExtractor {
 
     const incomesData = dp.incomes;
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-    const totalGrossIncome = earnedIncome + taxableRetirementDistributions + realizedGains + taxableDividendIncome + taxableInterestIncome;
+    const grossIncome = earnedIncome + taxableRetirementDistributions + realizedGains + taxableDividendIncome + taxableInterestIncome;
 
     return {
       realizedGains,
       taxDeferredWithdrawals,
       earlyTaxFreeEarningsWithdrawals,
-      totalEarlyWithdrawals,
+      earlyWithdrawals,
       taxableDividendIncome,
       taxableInterestIncome,
       earnedIncome,
-      totalGrossIncome,
+      grossIncome,
     };
   }
 
