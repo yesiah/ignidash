@@ -311,7 +311,7 @@ export class ChartDataExtractor {
           case 'roth401k':
           case 'rothIra':
             taxFree += account.withdrawalsForPeriod;
-            if (age < 59.5) annualEarlyWithdrawals += account.withdrawalsForPeriod;
+            if (age < 59.5) annualEarlyWithdrawals += account.earningsWithdrawnForPeriod;
             break;
         }
       }
