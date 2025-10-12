@@ -347,9 +347,9 @@ export default function SingleSimulationTaxesBarChart({
       break;
     case 'adjustmentsAndDeductions':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Tax-Deferred Contributions', amount: item.adjustments.taxDeferredContributions ?? 0 },
-        { name: 'Capital Loss Deduction', amount: item.adjustments.capitalLossDeduction ?? 0 },
-        { name: 'Standard Deduction', amount: item.deductions.standardDeduction ?? 0 },
+        { name: 'Tax-Deferred Contributions', amount: item.taxDeferredContributions },
+        { name: 'Capital Loss Deduction', amount: item.capitalLossDeduction },
+        { name: 'Standard Deduction', amount: item.standardDeduction },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;

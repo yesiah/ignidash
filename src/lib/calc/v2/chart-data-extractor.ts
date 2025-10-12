@@ -136,7 +136,9 @@ export class ChartDataExtractor {
         totalNetIncome: taxesData.incomeTaxes.netIncome + taxesData.capitalGainsTaxes.netCapitalGains,
         adjustments: taxesData.adjustments,
         deductions: taxesData.deductions,
-        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction,
+        taxDeferredContributions: taxesData.adjustments.taxDeferredContributions ?? 0,
+        standardDeduction: taxesData.deductions.standardDeduction ?? 0,
+        capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction ?? 0,
       };
     });
   }

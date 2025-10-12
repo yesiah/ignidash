@@ -266,6 +266,8 @@ export default function SingleSimulationTaxesLineChart({
       dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
       break;
     case 'adjustmentsAndDeductions':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('taxDeferredContributions', 'capitalLossDeduction', 'standardDeduction');
       break;
   }
 
