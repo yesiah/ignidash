@@ -102,11 +102,10 @@ export class FinancialSimulationEngine {
 
         // Process taxes
         let annualTaxesData = taxProcessor.process(annualPortfolioDataBeforeTaxes, annualIncomesData, annualReturnsData);
-        let { totalTaxesDue } = annualTaxesData;
-        const { totalTaxesRefund } = annualTaxesData;
+        const { totalTaxesDue, totalTaxesRefund } = annualTaxesData;
 
         // Process portfolio updates after calculating taxes
-        let processTaxesResult = portfolioProcessor.processTaxes(annualPortfolioDataBeforeTaxes, { totalTaxesDue, totalTaxesRefund });
+        const processTaxesResult = portfolioProcessor.processTaxes(annualPortfolioDataBeforeTaxes, { totalTaxesDue, totalTaxesRefund });
         let { portfolioData: annualPortfolioDataAfterTaxes } = processTaxesResult;
         const { discretionaryExpense: annualDiscretionaryExpense } = processTaxesResult;
 
@@ -115,12 +114,12 @@ export class FinancialSimulationEngine {
 
           for (let i = 0; i < 50; i++) {
             annualTaxesData = taxProcessor.process(annualPortfolioDataAfterTaxes, annualIncomesData, annualReturnsData);
-            totalTaxesDue = annualTaxesData.totalTaxesDue;
+            const totalTaxesDue = annualTaxesData.totalTaxesDue;
 
             const remainingTaxesDue = totalTaxesDue - totalTaxesPaid;
             if (Math.abs(remainingTaxesDue) < 1) break;
 
-            processTaxesResult = portfolioProcessor.processTaxes(annualPortfolioDataAfterTaxes, {
+            const processTaxesResult = portfolioProcessor.processTaxes(annualPortfolioDataAfterTaxes, {
               totalTaxesDue: remainingTaxesDue,
               totalTaxesRefund: 0,
             });
