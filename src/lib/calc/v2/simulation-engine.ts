@@ -112,7 +112,7 @@ export class FinancialSimulationEngine {
         if (totalTaxesDue > 0) {
           let totalTaxesPaid = totalTaxesDue;
 
-          for (let i = 0; i < 50; i++) {
+          for (let i = 0; i < 10; i++) {
             annualTaxesData = taxProcessor.process(annualPortfolioDataAfterTaxes, annualIncomesData, annualReturnsData);
             const totalTaxesDue = annualTaxesData.totalTaxesDue;
 
