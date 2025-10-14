@@ -23,20 +23,20 @@ export class ChartDataExtractor {
 
       const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
       const {
-        taxableBrokerageBalance: taxableBrokerage,
-        taxDeferredBalance: taxDeferred,
-        taxFreeBalance: taxFree,
+        taxableBrokerageValue: taxableValue,
+        taxDeferredValue,
+        taxFreeValue,
         cashSavings,
-      } = SimulationDataExtractor.getBalanceByTaxCategory(data);
+      } = SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
 
       return {
         age,
         stockHoldings,
         bondHoldings,
         cashHoldings,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
+        taxableValue,
+        taxDeferredValue,
+        taxFreeValue,
         cashSavings,
         perAccountData: Object.values(portfolioData.perAccountData),
       };

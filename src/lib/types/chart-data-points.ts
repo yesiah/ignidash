@@ -8,9 +8,9 @@ export interface SingleSimulationPortfolioChartDataPoint {
   stockHoldings: number;
   bondHoldings: number;
   cashHoldings: number;
-  taxableBrokerage: number;
-  taxDeferred: number;
-  taxFree: number;
+  taxableValue: number;
+  taxDeferredValue: number;
+  taxFreeValue: number;
   cashSavings: number;
   perAccountData: AccountDataWithTransactions[];
 }

@@ -46,7 +46,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
         .filter((data) => data.age === selectedAge)
         .flatMap(({ age, perAccountData, ...rest }) =>
           Object.entries(rest)
-            .filter(([name]) => ['taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings'].includes(name))
+            .filter(([name]) => ['taxableValue', 'taxDeferredValue', 'taxFreeValue', 'cashSavings'].includes(name))
             .map(([name, value]) => ({ name, value }))
         );
       break;
