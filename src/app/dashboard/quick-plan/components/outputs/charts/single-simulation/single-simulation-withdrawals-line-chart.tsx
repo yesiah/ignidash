@@ -12,6 +12,8 @@ import type { AccountDataWithTransactions } from '@/lib/calc/v2/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { uniformLifetimeMap } from '@/lib/calc/data/rmds-table';
 
+import TimeSeriesLegend from '../time-series-legend';
+
 interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{
@@ -283,20 +285,7 @@ export default function SingleSimulationWithdrawalsLineChart({
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div
-        className={cn('mt-2 grid grid-cols-2 gap-2 sm:flex sm:justify-center sm:gap-x-4', { 'ml-16': !isSmallScreen })}
-        role="group"
-        aria-label="Chart legend"
-      >
-        {dataKeys.map((dataKey, index) => (
-          <div key={dataKey} className="flex items-center gap-x-2 text-sm font-medium">
-            <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: COLORS[index % COLORS.length] }} className="size-5 shrink-0">
-              <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-            </svg>
-            {formatChartString(dataKey)}
-          </div>
-        ))}
-      </div>
+      <TimeSeriesLegend colors={COLORS} legendStrokeColor={legendStrokeColor} dataKeys={dataKeys} isSmallScreen={isSmallScreen} />
     </div>
   );
 }
