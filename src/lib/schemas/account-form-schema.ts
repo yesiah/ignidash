@@ -76,6 +76,22 @@ export const accountTypeForDisplay = (type: AccountInputs['type']): string => {
   }
 };
 
+export const taxCategoryFromAccountTypeForDisplay = (type: AccountInputs['type']): string => {
+  switch (type) {
+    case 'savings':
+      return 'Cash Savings';
+    case 'taxableBrokerage':
+      return 'Taxable Brokerage';
+    case 'roth401k':
+    case 'rothIra':
+      return 'Tax-Free';
+    case '401k':
+    case 'ira':
+    case 'hsa':
+      return 'Tax-Deferred';
+  }
+};
+
 export const accountTypeRequiresIncomeForContributions = (type: AccountInputs['type']): boolean => {
   switch (type) {
     case 'savings':

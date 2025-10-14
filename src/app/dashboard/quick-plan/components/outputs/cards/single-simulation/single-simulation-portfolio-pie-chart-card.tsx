@@ -7,6 +7,8 @@ import Card from '@/components/ui/card';
 import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatChartString, formatNumber } from '@/lib/utils';
+import { useAccountData } from '@/lib/stores/quick-plan-store';
+import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
 
@@ -23,8 +25,9 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
   dataView,
   customDataID,
 }: SingleSimulationPortfolioAssetTypePieChartCardProps) {
-  let title = '';
+  const accountData = useAccountData(customDataID !== '' ? customDataID : null);
 
+  let title = '';
   let chartData: { name: string; value: number }[] = [];
   switch (dataView) {
     case 'assetClass':
@@ -48,7 +51,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
         );
       break;
     case 'custom':
-      title = 'Custom Account';
+      title = accountData ? `${accountData.name} — ${taxCategoryFromAccountTypeForDisplay(accountData.type)}` : 'Custom Account';
       chartData = rawChartData
         .filter((data) => data.age === selectedAge)
         .flatMap(({ age, perAccountData }) =>
