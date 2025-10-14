@@ -61,6 +61,17 @@ export default function SingleSimulationContributionsBarChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
+  const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    taxCategory: {
+      mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
+      desktop: ['Taxable Contributions', 'Tax-Deferred Contributions', 'Tax-Free Contributions', 'Cash Contributions'],
+    },
+  };
+
+  const getLabelsForScreenSize = (dataView: keyof typeof labelConfig, isSmallScreen: boolean) => {
+    return labelConfig[dataView][isSmallScreen ? 'mobile' : 'desktop'];
+  };
+
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let transformedChartData: { name: string; amount: number }[] = [];
@@ -71,14 +82,16 @@ export default function SingleSimulationContributionsBarChart({
     case 'cumulativeAmounts':
       transformedChartData = chartData.flatMap((item) => [{ name: 'Cumulative Contributions', amount: item.cumulativeContributions }]);
       break;
-    case 'taxCategory':
+    case 'taxCategory': {
+      const [taxableLabel, taxDeferredLabel, taxFreeLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Taxable Contributions', amount: item.taxableContributions },
-        { name: 'Tax-Deferred Contributions', amount: item.taxDeferredContributions },
-        { name: 'Tax-Free Contributions', amount: item.taxFreeContributions },
-        { name: 'Cash Contributions', amount: item.cashContributions },
+        { name: taxableLabel, amount: item.taxableContributions },
+        { name: taxDeferredLabel, amount: item.taxDeferredContributions },
+        { name: taxFreeLabel, amount: item.taxFreeContributions },
+        { name: cashLabel, amount: item.cashContributions },
       ]);
       break;
+    }
     case 'custom':
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
@@ -103,7 +116,7 @@ export default function SingleSimulationContributionsBarChart({
   const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
-  const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
+  const shouldUseCustomTick = transformedChartData.length > 5 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 50 : 0;
 
