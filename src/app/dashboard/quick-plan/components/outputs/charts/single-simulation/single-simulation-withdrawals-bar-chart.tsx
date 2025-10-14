@@ -70,6 +70,25 @@ export default function SingleSimulationWithdrawalsBarChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
+  const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    taxCategory: {
+      mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
+      desktop: ['Taxable Withdrawals', 'Tax-Deferred Withdrawals', 'Tax-Free Withdrawals', 'Cash Withdrawals'],
+    },
+    realizedGains: {
+      mobile: ['Annual Gains', 'Cumulative Gains'],
+      desktop: ['Annual Realized Gains', 'Cumulative Realized Gains'],
+    },
+    earlyWithdrawals: {
+      mobile: ['Annual EWs', 'Cumulative EWs'],
+      desktop: ['Annual Early Withdrawals', 'Cumulative Early Withdrawals'],
+    },
+  };
+
+  const getLabelsForScreenSize = (dataView: keyof typeof labelConfig, isSmallScreen: boolean) => {
+    return labelConfig[dataView][isSmallScreen ? 'mobile' : 'desktop'];
+  };
+
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let transformedChartData: { name: string; amount: number }[] = [];
@@ -80,20 +99,24 @@ export default function SingleSimulationWithdrawalsBarChart({
     case 'cumulativeAmounts':
       transformedChartData = chartData.flatMap((item) => [{ name: 'Cumulative Withdrawals', amount: item.cumulativeWithdrawals }]);
       break;
-    case 'taxCategory':
+    case 'taxCategory': {
+      const [taxableLabel, taxDeferredLabel, taxFreeLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Taxable Withdrawals', amount: item.taxableWithdrawals },
-        { name: 'Tax-Deferred Withdrawals', amount: item.taxDeferredWithdrawals },
-        { name: 'Tax-Free Withdrawals', amount: item.taxFreeWithdrawals },
-        { name: 'Cash Withdrawals', amount: item.cashWithdrawals },
+        { name: taxableLabel, amount: item.taxableWithdrawals },
+        { name: taxDeferredLabel, amount: item.taxDeferredWithdrawals },
+        { name: taxFreeLabel, amount: item.taxFreeWithdrawals },
+        { name: cashLabel, amount: item.cashWithdrawals },
       ]);
       break;
-    case 'realizedGains':
+    }
+    case 'realizedGains': {
+      const [annualLabel, cumulativeLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Realized Gains', amount: item.annualRealizedGains },
-        { name: 'Cumulative Realized Gains', amount: item.cumulativeRealizedGains },
+        { name: annualLabel, amount: item.annualRealizedGains },
+        { name: cumulativeLabel, amount: item.cumulativeRealizedGains },
       ]);
       break;
+    }
     case 'requiredMinimumDistributions':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions },
@@ -106,12 +129,14 @@ export default function SingleSimulationWithdrawalsBarChart({
         { name: 'Cumulative EW Penalties', amount: item.cumulativeEarlyWithdrawalPenalties },
       ]);
       break;
-    case 'earlyWithdrawals':
+    case 'earlyWithdrawals': {
+      const [annualLabel, cumulativeLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Early Withdrawals', amount: item.annualEarlyWithdrawals },
-        { name: 'Cumulative Early Withdrawals', amount: item.cumulativeEarlyWithdrawals },
+        { name: annualLabel, amount: item.annualEarlyWithdrawals },
+        { name: cumulativeLabel, amount: item.cumulativeEarlyWithdrawals },
       ]);
       break;
+    }
     case 'withdrawalRate':
       break;
     case 'custom':
