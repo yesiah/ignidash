@@ -41,7 +41,7 @@ export default function TimeSeriesLegend({
           <svg viewBox="0 0 6 6" aria-hidden="true" style={{ fill: colors[index % colors.length] }} className="size-5 shrink-0">
             <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
           </svg>
-          <span className="truncate">{formatChartString(dataKey)}</span>
+          <span className="line-clamp-2 tracking-tighter sm:tracking-normal">{formatChartString(dataKey)}</span>
         </div>
       ))}
     </div>
