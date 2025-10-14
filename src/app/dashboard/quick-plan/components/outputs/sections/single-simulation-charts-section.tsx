@@ -302,9 +302,9 @@ function SingleSimulationChartsSection({
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title={headerText} desc="Interactive charts to explore your simulation." className="mb-4" />
-      <div className="grid grid-cols-1 gap-2 @[92rem]:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
         {chartsComponents}
-        <div className="@[92rem]:col-span-2">
+        <div className="@[96rem]:col-span-2">
           <SingleSimulationDataListSection simulation={simulation} selectedAge={selectedAge} currentCategory={currentCategory} />
         </div>
       </div>
