@@ -93,10 +93,10 @@ export interface SingleSimulationContributionsChartDataPoint {
   cumulativeContributions: number;
   annualContributions: number;
   perAccountData: AccountDataWithTransactions[];
-  taxableBrokerage: number;
-  taxDeferred: number;
-  taxFree: number;
-  cashSavings: number;
+  taxableContributions: number;
+  taxDeferredContributions: number;
+  taxFreeContributions: number;
+  cashContributions: number;
 }
 
 export interface SingleSimulationWithdrawalsChartDataPoint {

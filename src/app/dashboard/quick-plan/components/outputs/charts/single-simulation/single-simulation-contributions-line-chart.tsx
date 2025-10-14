@@ -122,7 +122,7 @@ export default function SingleSimulationContributionsLineChart({
       dataKeys.push('cumulativeContributions');
       break;
     case 'taxCategory':
-      dataKeys.push('taxableBrokerage', 'taxDeferred', 'taxFree', 'cashSavings');
+      dataKeys.push('taxableContributions', 'taxDeferredContributions', 'taxFreeContributions', 'cashContributions');
       break;
     case 'custom':
       if (!customDataID) {

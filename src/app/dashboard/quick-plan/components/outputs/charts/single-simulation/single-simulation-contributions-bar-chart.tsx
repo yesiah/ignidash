@@ -66,30 +66,17 @@ export default function SingleSimulationContributionsBarChart({
   let transformedChartData: { name: string; amount: number }[] = [];
   switch (dataView) {
     case 'annualAmounts':
-      transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Annual Contributions',
-          amount: item.annualContributions,
-        },
-      ]);
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Annual Contributions', amount: item.annualContributions }]);
       break;
     case 'cumulativeAmounts':
-      transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Cumulative Contributions',
-          amount: item.cumulativeContributions,
-        },
-      ]);
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Cumulative Contributions', amount: item.cumulativeContributions }]);
       break;
     case 'taxCategory':
       transformedChartData = chartData.flatMap((item) => [
-        {
-          name: 'Taxable Contributions',
-          amount: item.taxableBrokerage,
-        },
-        { name: 'Tax-Deferred Contributions', amount: item.taxDeferred },
-        { name: 'Tax-Free Contributions', amount: item.taxFree },
-        { name: 'Cash Savings Contributions', amount: item.cashSavings },
+        { name: 'Taxable Contributions', amount: item.taxableContributions },
+        { name: 'Tax-Deferred Contributions', amount: item.taxDeferredContributions },
+        { name: 'Tax-Free Contributions', amount: item.taxFreeContributions },
+        { name: 'Cash Contributions', amount: item.cashContributions },
       ]);
       break;
     case 'custom':

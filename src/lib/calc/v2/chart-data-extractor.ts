@@ -183,10 +183,10 @@ export class ChartDataExtractor {
       const annualContributions = portfolioData.contributionsForPeriod;
 
       const {
-        taxableBrokerageContributions: taxableBrokerage,
-        taxDeferredContributions: taxDeferred,
-        taxFreeContributions: taxFree,
-        cashSavingsContributions: cashSavings,
+        taxableBrokerageContributions: taxableContributions,
+        taxDeferredContributions,
+        taxFreeContributions,
+        cashSavingsContributions: cashContributions,
       } = SimulationDataExtractor.getContributionsByTaxCategory(data);
 
       return {
@@ -194,10 +194,10 @@ export class ChartDataExtractor {
         cumulativeContributions: portfolioData.totalContributions,
         annualContributions,
         perAccountData: Object.values(portfolioData.perAccountData),
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        taxableContributions,
+        taxDeferredContributions,
+        taxFreeContributions,
+        cashContributions,
       };
     });
   }
