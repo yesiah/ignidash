@@ -74,20 +74,37 @@ export default function SingleSimulationReturnsBarChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
+  const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    rates: {
+      mobile: ['Stock Return', 'Bond Return', 'Cash Return', 'Inflation Rate'],
+      desktop: ['Real Stock Return', 'Real Bond Return', 'Real Cash Return', 'Inflation Rate'],
+    },
+    cumulativeAmounts: {
+      mobile: ['Cumul. Stock', 'Cumul. Bond', 'Cumul. Cash'],
+      desktop: ['Cumulative Stock Growth', 'Cumulative Bond Growth', 'Cumulative Cash Growth'],
+    },
+  };
+
+  const getLabelsForScreenSize = (dataView: keyof typeof labelConfig, isSmallScreen: boolean) => {
+    return labelConfig[dataView][isSmallScreen ? 'mobile' : 'desktop'];
+  };
+
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let formatter = undefined;
   let transformedChartData: { name: string; amount: number }[] = [];
   switch (dataView) {
-    case 'rates':
+    case 'rates': {
+      const [stockLabel, bondLabel, cashLabel, inflationLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Real Stock Return', amount: item.realStockReturn },
-        { name: 'Real Bond Return', amount: item.realBondReturn },
-        { name: 'Real Cash Return', amount: item.realCashReturn },
-        { name: 'Inflation Rate', amount: item.inflationRate },
+        { name: stockLabel, amount: item.realStockReturn },
+        { name: bondLabel, amount: item.realBondReturn },
+        { name: cashLabel, amount: item.realCashReturn },
+        { name: inflationLabel, amount: item.inflationRate },
       ]);
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
+    }
     case 'annualAmounts':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Stock Growth', amount: item.annualStockGrowth },
@@ -96,14 +113,16 @@ export default function SingleSimulationReturnsBarChart({
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'cumulativeAmounts':
+    case 'cumulativeAmounts': {
+      const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Cumulative Stock Growth', amount: item.cumulativeStockGrowth },
-        { name: 'Cumulative Bond Growth', amount: item.cumulativeBondGrowth },
-        { name: 'Cumulative Cash Growth', amount: item.cumulativeCashGrowth },
+        { name: stockLabel, amount: item.cumulativeStockGrowth },
+        { name: bondLabel, amount: item.cumulativeBondGrowth },
+        { name: cashLabel, amount: item.cumulativeCashGrowth },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
+    }
     case 'custom':
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
