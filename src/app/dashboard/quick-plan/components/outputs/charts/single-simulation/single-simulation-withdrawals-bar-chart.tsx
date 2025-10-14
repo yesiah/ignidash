@@ -83,8 +83,8 @@ export default function SingleSimulationWithdrawalsBarChart({
     case 'taxCategory':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Taxable Withdrawals', amount: item.taxableBrokerage },
-        { name: 'Tax Deferred Withdrawals', amount: item.taxDeferred },
-        { name: 'Tax Free Withdrawals', amount: item.taxFree },
+        { name: 'Tax-Deferred Withdrawals', amount: item.taxDeferred },
+        { name: 'Tax-Free Withdrawals', amount: item.taxFree },
         { name: 'Cash Savings Withdrawals', amount: item.cashSavings },
       ]);
       break;

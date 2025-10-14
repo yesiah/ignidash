@@ -87,8 +87,8 @@ export default function SingleSimulationContributionsBarChart({
           name: 'Taxable Contributions',
           amount: item.taxableBrokerage,
         },
-        { name: 'Tax Deferred Contributions', amount: item.taxDeferred },
-        { name: 'Tax Free Contributions', amount: item.taxFree },
+        { name: 'Tax-Deferred Contributions', amount: item.taxDeferred },
+        { name: 'Tax-Free Contributions', amount: item.taxFree },
         { name: 'Cash Savings Contributions', amount: item.cashSavings },
       ]);
       break;
