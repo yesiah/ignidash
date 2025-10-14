@@ -363,7 +363,7 @@ export default function SingleSimulationTaxesBarChart({
   const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
-  const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
+  const shouldUseCustomTick = transformedChartData.length > 5 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 50 : 0;
 

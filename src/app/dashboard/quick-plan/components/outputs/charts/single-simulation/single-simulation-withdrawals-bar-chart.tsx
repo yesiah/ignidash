@@ -138,7 +138,7 @@ export default function SingleSimulationWithdrawalsBarChart({
   const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
-  const shouldUseCustomTick = transformedChartData.length > 5 || isSmallScreen;
+  const shouldUseCustomTick = transformedChartData.length > 5 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 50 : 0;
 
