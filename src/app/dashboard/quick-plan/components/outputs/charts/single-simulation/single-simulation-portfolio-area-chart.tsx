@@ -35,6 +35,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
 
+  const total = payload.reduce((sum, item) => sum + item.value, 0);
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -49,19 +51,16 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
             className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+            <span className="ml-1 font-semibold">
+              {formatNumber(entry.value, 1, '$')}
+              {total > 0 && ` (${formatNumber((entry.value / total) * 100, 1)}%)`}
+            </span>
           </p>
         ))}
       </div>
       <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
         <span className="mr-2">Total:</span>
-        <span className="ml-1 font-semibold">
-          {formatNumber(
-            payload.reduce((sum, item) => sum + item.value, 0),
-            3,
-            '$'
-          )}
-        </span>
+        <span className="ml-1 font-semibold">{formatNumber(total, 3, '$')}</span>
       </p>
     </div>
   );
