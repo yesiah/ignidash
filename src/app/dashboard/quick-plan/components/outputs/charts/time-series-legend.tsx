@@ -1,3 +1,5 @@
+'use client';
+
 import { cn, formatChartString } from '@/lib/utils';
 
 interface TimeSeriesLegendProps {
@@ -32,7 +34,7 @@ export default function TimeSeriesLegend({
       {dataKeys.map((dataKey, index) => (
         <div
           key={dataKey}
-          className="flex items-center gap-x-2 pr-4 text-sm font-medium"
+          className="flex cursor-default items-center gap-x-2 pr-4 text-sm font-medium"
           onMouseEnter={() => onMouseEnter?.(dataKey)}
           onMouseLeave={() => onMouseLeave?.()}
         >
