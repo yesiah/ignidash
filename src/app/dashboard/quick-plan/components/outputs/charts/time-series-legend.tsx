@@ -12,7 +12,7 @@ export default function TimeSeriesLegend({ colors, legendStrokeColor, dataKeys, 
 
   return (
     <div
-      className={cn('divide-border/50 mt-2 gap-2 divide-x sm:gap-x-4', {
+      className={cn('divide-border/50 mt-2 gap-x-4 gap-y-2 divide-x', {
         'ml-16': !isSmallScreen,
         'grid grid-cols-2': useGridLayout,
         'sm:flex sm:justify-center': !useGridLayout,
