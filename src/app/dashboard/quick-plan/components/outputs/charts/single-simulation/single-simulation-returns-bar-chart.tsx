@@ -81,26 +81,26 @@ export default function SingleSimulationReturnsBarChart({
   switch (dataView) {
     case 'rates':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Stocks Rate', amount: item.stocksRate },
-        { name: 'Bonds Rate', amount: item.bondsRate },
-        { name: 'Cash Rate', amount: item.cashRate },
+        { name: 'Real Stock Return', amount: item.realStockReturn },
+        { name: 'Real Bond Return', amount: item.realBondReturn },
+        { name: 'Real Cash Return', amount: item.realCashReturn },
         { name: 'Inflation Rate', amount: item.inflationRate },
       ]);
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     case 'annualAmounts':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Stocks Amount', amount: item.annualStocksAmount },
-        { name: 'Bonds Amount', amount: item.annualBondsAmount },
-        { name: 'Cash Amount', amount: item.annualCashAmount },
+        { name: 'Stock Growth', amount: item.annualStockGrowth },
+        { name: 'Bond Growth', amount: item.annualBondGrowth },
+        { name: 'Cash Growth', amount: item.annualCashGrowth },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'cumulativeAmounts':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Cumulative Stocks', amount: item.cumulativeStocksAmount },
-        { name: 'Cumulative Bonds', amount: item.cumulativeBondsAmount },
-        { name: 'Cumulative Cash', amount: item.cumulativeCashAmount },
+        { name: 'Cumulative Stock Growth', amount: item.cumulativeStockGrowth },
+        { name: 'Cumulative Bond Growth', amount: item.cumulativeBondGrowth },
+        { name: 'Cumulative Cash Growth', amount: item.cumulativeCashGrowth },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
@@ -115,9 +115,9 @@ export default function SingleSimulationReturnsBarChart({
         ...chartData
           .flatMap(({ perAccountData }) =>
             perAccountData.flatMap(({ id, returnAmountsForPeriod }) => [
-              { id, name: 'Stocks Amount', amount: returnAmountsForPeriod.stocks },
-              { id, name: 'Bonds Amount', amount: returnAmountsForPeriod.bonds },
-              { id, name: 'Cash Amount', amount: returnAmountsForPeriod.cash },
+              { id, name: 'Stock Growth', amount: returnAmountsForPeriod.stocks },
+              { id, name: 'Bond Growth', amount: returnAmountsForPeriod.bonds },
+              { id, name: 'Cash Growth', amount: returnAmountsForPeriod.cash },
             ])
           )
           .filter(({ id }) => id === customDataID),

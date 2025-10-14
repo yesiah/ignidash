@@ -156,16 +156,16 @@ export class ChartDataExtractor {
 
       return {
         age,
-        stocksRate: returnsData.annualReturnRates.stocks,
-        bondsRate: returnsData.annualReturnRates.bonds,
-        cashRate: returnsData.annualReturnRates.cash,
+        realStockReturn: returnsData.annualReturnRates.stocks,
+        realBondReturn: returnsData.annualReturnRates.bonds,
+        realCashReturn: returnsData.annualReturnRates.cash,
         inflationRate: returnsData.annualInflationRate,
-        cumulativeStocksAmount: returnsData.totalReturnAmounts.stocks,
-        cumulativeBondsAmount: returnsData.totalReturnAmounts.bonds,
-        cumulativeCashAmount: returnsData.totalReturnAmounts.cash,
-        annualStocksAmount: returnsData.returnAmountsForPeriod.stocks,
-        annualBondsAmount: returnsData.returnAmountsForPeriod.bonds,
-        annualCashAmount: returnsData.returnAmountsForPeriod.cash,
+        cumulativeStockGrowth: returnsData.totalReturnAmounts.stocks,
+        cumulativeBondGrowth: returnsData.totalReturnAmounts.bonds,
+        cumulativeCashGrowth: returnsData.totalReturnAmounts.cash,
+        annualStockGrowth: returnsData.returnAmountsForPeriod.stocks,
+        annualBondGrowth: returnsData.returnAmountsForPeriod.bonds,
+        annualCashGrowth: returnsData.returnAmountsForPeriod.cash,
         perAccountData: Object.values(returnsData.perAccountData),
       };
     });

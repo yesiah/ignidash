@@ -30,16 +30,16 @@ export interface SingleSimulationCashFlowChartDataPoint {
 
 export interface SingleSimulationReturnsChartDataPoint {
   age: number;
-  stocksRate: number;
-  bondsRate: number;
-  cashRate: number;
+  realStockReturn: number;
+  realBondReturn: number;
+  realCashReturn: number;
   inflationRate: number;
-  cumulativeStocksAmount: number;
-  cumulativeBondsAmount: number;
-  cumulativeCashAmount: number;
-  annualStocksAmount: number;
-  annualBondsAmount: number;
-  annualCashAmount: number;
+  cumulativeStockGrowth: number;
+  cumulativeBondGrowth: number;
+  cumulativeCashGrowth: number;
+  annualStockGrowth: number;
+  annualBondGrowth: number;
+  annualCashGrowth: number;
   perAccountData: AccountDataWithReturns[];
 }
 
