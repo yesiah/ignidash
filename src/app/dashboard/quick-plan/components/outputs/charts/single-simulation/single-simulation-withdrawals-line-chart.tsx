@@ -10,6 +10,7 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/v2/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import { uniformLifetimeMap } from '@/lib/calc/data/rmds-table';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -78,6 +79,16 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             '$'
           )}
         </span>
+      </p>
+    );
+  } else if (dataView === 'requiredMinimumDistributions' && label && label >= 73) {
+    const lookupAge = Math.min(Math.floor(label), 120);
+    const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
+
+    tooltipFooterComponent = (
+      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+        <span className="mr-2">Life Expectancy Factor:</span>
+        <span className="ml-1 font-semibold">{lifeExpectancyFactor}</span>
       </p>
     );
   }
