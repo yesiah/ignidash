@@ -4,31 +4,32 @@ import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, ReferenceLine, Tooltip } from 'recharts';
 
-import { formatNumber, formatChartString } from '@/lib/utils';
+import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
 import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/v2/taxes';
 import { Divider } from '@/components/catalyst/divider';
 
-type TaxableIncomeTooltipPayload = {
+type IncomeCalculationsTooltipPayload = {
   name: string;
   taxableOrdinaryIncome: number;
   taxableCapGains: number;
   grossIncome: number;
+  adjustedGrossIncome: number;
   totalTaxableIncome: number;
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
 };
 
-interface TaxableIncomeTooltipProps {
+interface IncomeCalculationsTooltipProps {
   active?: boolean;
   payload?: Array<{
     value: number;
     name: string;
     color: string;
-    dataKey: keyof TaxableIncomeTooltipPayload;
-    payload: TaxableIncomeTooltipPayload;
+    dataKey: keyof IncomeCalculationsTooltipPayload;
+    payload: IncomeCalculationsTooltipPayload;
   }>;
   label?: number;
   startAge: number;
@@ -49,7 +50,7 @@ interface TaxableIncomeTooltipProps {
     | 'adjustmentsAndDeductions';
 }
 
-const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, dataView }: TaxableIncomeTooltipProps) => {
+const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, dataView }: IncomeCalculationsTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
@@ -105,7 +106,9 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
           <p
             key={entry.dataKey}
             style={{ backgroundColor: entry.color }}
-            className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm ${needsBgTextColor.includes(entry.color) ? 'text-background' : 'text-foreground'}`}
+            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
+              'text-background': needsBgTextColor.includes(entry.color),
+            })}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
             <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
@@ -334,6 +337,7 @@ export default function SingleSimulationTaxesBarChart({
           taxableOrdinaryIncome: item.taxableOrdinaryIncome,
           taxableCapGains: item.taxableCapGains,
           grossIncome: item.grossIncome,
+          adjustedGrossIncome: item.adjustedGrossIncome,
           totalTaxableIncome: item.totalTaxableIncome,
           adjustments: item.adjustments,
           deductions: item.deductions,
@@ -357,8 +361,16 @@ export default function SingleSimulationTaxesBarChart({
     case 'adjustedGrossIncome':
       transformedChartData = chartData.map((item) => ({
         name: 'AGI',
-        amount: item.adjustedGrossIncome,
+        taxableOrdinaryIncome: item.taxableOrdinaryIncome,
+        taxableCapGains: item.taxableCapGains,
+        grossIncome: item.grossIncome,
+        adjustedGrossIncome: item.adjustedGrossIncome,
+        totalTaxableIncome: item.totalTaxableIncome,
+        adjustments: item.adjustments,
+        deductions: item.deductions,
       }));
+
+      dataKeys = ['adjustedGrossIncome'];
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'investmentIncome':
@@ -443,24 +455,25 @@ export default function SingleSimulationTaxesBarChart({
             <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
             <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
             <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {!isStacked && (
-              <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
-                {transformedChartData.map((entry, idx) => (
-                  <Cell
-                    key={`cell-${idx}`}
-                    fill={COLORS[idx % COLORS.length]}
-                    stroke={COLORS[idx % COLORS.length]}
-                    strokeWidth={3}
-                    fillOpacity={0.5}
+            {!isStacked &&
+              dataKeys.map((dataKey, idx) => (
+                <Bar key={`${dataKey}-${idx}`} dataKey={dataKey} maxBarSize={250} minPointSize={20}>
+                  {transformedChartData.map((entry, idx) => (
+                    <Cell
+                      key={`cell-${idx}`}
+                      fill={COLORS[idx % COLORS.length]}
+                      stroke={COLORS[idx % COLORS.length]}
+                      strokeWidth={3}
+                      fillOpacity={0.5}
+                    />
+                  ))}
+                  <LabelList
+                    dataKey={dataKey}
+                    position="middle"
+                    content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
                   />
-                ))}
-                <LabelList
-                  dataKey="amount"
-                  position="middle"
-                  content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
-                />
-              </Bar>
-            )}
+                </Bar>
+              ))}
             {isStacked &&
               dataKeys.map((dataKey, idx) => (
                 <Bar
