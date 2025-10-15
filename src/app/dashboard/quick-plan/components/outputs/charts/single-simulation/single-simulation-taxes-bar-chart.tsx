@@ -48,6 +48,13 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
 
   const entry = payload[0].payload;
 
+  const grossIncome = (
+    <p className="flex justify-between text-sm font-semibold">
+      <span className="mr-2">Gross Income:</span>
+      <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+    </p>
+  );
+
   const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
     <p key={name} className="flex justify-between text-sm font-semibold">
       <span className="mr-2">{`${formatChartString(name)}:`}</span>
@@ -66,10 +73,7 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
     case 'taxableIncome': {
       const header = (
         <div className="mx-1 mb-2 flex flex-col gap-2">
-          <p className="flex justify-between text-sm font-semibold">
-            <span className="mr-2">Gross Income:</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
-          </p>
+          {grossIncome}
           <Divider />
           <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
           {adjustments}
@@ -114,10 +118,7 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
     case 'adjustedGrossIncome': {
       const header = (
         <div className="mx-1 mb-2 flex flex-col gap-2">
-          <p className="flex justify-between text-sm font-semibold">
-            <span className="mr-2">Gross Income:</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
-          </p>
+          {grossIncome}
           <Divider />
           <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
           {adjustments}
