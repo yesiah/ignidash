@@ -63,6 +63,7 @@ export interface TaxableIncomeSources {
   realizedGains: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
+  totalRetirementDistributions: number;
   earlyWithdrawals: number;
   dividendIncome: number;
   interestIncome: number;
@@ -361,6 +362,7 @@ export class SimulationDataExtractor {
       realizedGains,
       taxDeferredWithdrawals,
       earlyRothEarningsWithdrawals,
+      totalRetirementDistributions: retirementDistributions,
       earlyWithdrawals,
       dividendIncome,
       interestIncome,
