@@ -328,6 +328,7 @@ export default function SingleSimulationTaxesBarChart({
       transformedChartData = chartData.map((item) => {
         hasOrdinaryIncome = item.taxableOrdinaryIncome > 0 || hasOrdinaryIncome;
         hasCapGains = item.taxableCapGains > 0 || hasCapGains;
+
         return {
           name: 'Total Taxable Income',
           taxableOrdinaryIncome: item.taxableOrdinaryIncome,
@@ -344,6 +345,7 @@ export default function SingleSimulationTaxesBarChart({
         dataKeys.push('taxableOrdinaryIncome');
         stackedColors.push(COLORS[0]);
       }
+
       if (hasCapGains) {
         dataKeys.push('taxableCapGains');
         stackedColors.push(COLORS[1]);
