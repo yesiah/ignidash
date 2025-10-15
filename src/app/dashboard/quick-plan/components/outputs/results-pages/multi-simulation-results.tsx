@@ -24,7 +24,7 @@ interface MultiSimulationResultsProps {
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
   const startAge = useCurrentAge()!;
   const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
-  const { analysis, tableData, yearlyTableData, isLoading, completedSimulations } = useMultiSimulationResult(
+  const { analysis, tableData, yearlyTableData, isLoadingOrValidating, completedSimulations } = useMultiSimulationResult(
     simulationMode,
     currentCategory
   );
@@ -72,7 +72,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     success: selectedSeed === null ? (analysis?.success ?? 0) : baseMetrics.success,
   };
 
-  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoading) {
+  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoadingOrValidating) {
     const roundedSimulations = Math.floor(completedSimulations / 10) * 10;
     const progressPercent = (roundedSimulations / 500) * 100;
 

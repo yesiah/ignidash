@@ -444,7 +444,7 @@ export const useMultiSimulationResult = (
   analysis: MultiSimulationAnalysis | undefined;
   tableData: MultiSimulationTableRow[] | undefined;
   yearlyTableData: YearlyAggregateTableRow[] | undefined;
-  isLoading: boolean;
+  isLoadingOrValidating: boolean;
   completedSimulations: number;
 } => {
   const inputs = useQuickPlanStore((state) => state.inputs);
@@ -456,7 +456,11 @@ export const useMultiSimulationResult = (
   const onProgress = useCallback((completed: number) => setCompletedSimulations(completed), []);
 
   const swrKey = ['simulationHandle', inputs, simulationSeed, simulationMode];
-  const { data: handleData, isLoading } = useSWR(
+  const {
+    data: handleData,
+    isLoading,
+    isValidating,
+  } = useSWR(
     swrKey,
     async () => {
       await mutate(() => true, undefined, { revalidate: false });
@@ -476,14 +480,14 @@ export const useMultiSimulationResult = (
 
   const updateSimulationStatus = useUpdateSimulationStatus();
   useEffect(() => {
-    updateSimulationStatus(isLoading ? 'loading' : 'none');
-  }, [isLoading, updateSimulationStatus]);
+    updateSimulationStatus(isLoading || isValidating ? 'loading' : 'none');
+  }, [isLoading, isValidating, updateSimulationStatus]);
 
   useEffect(() => {
     prevHandleRef.current = handle;
   }, [handle]);
 
-  return { analysis, tableData, yearlyTableData, isLoading, completedSimulations };
+  return { analysis, tableData, yearlyTableData, isLoadingOrValidating: isLoading || isValidating, completedSimulations };
 };
 
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
