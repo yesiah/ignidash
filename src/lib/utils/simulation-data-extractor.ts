@@ -68,6 +68,8 @@ export interface TaxableIncomeSources {
   taxableInterestIncome: number;
   earnedIncome: number;
   grossIncome: number;
+  grossOrdinaryIncome: number;
+  grossCapGains: number;
 }
 
 export class SimulationDataExtractor {
@@ -350,7 +352,10 @@ export class SimulationDataExtractor {
 
     const incomesData = dp.incomes;
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
-    const grossIncome = earnedIncome + taxableRetirementDistributions + realizedGains + taxableDividendIncome + taxableInterestIncome;
+
+    const grossOrdinaryIncome = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
+    const grossCapGains = realizedGains + taxableDividendIncome;
+    const grossIncome = grossOrdinaryIncome + grossCapGains;
 
     return {
       realizedGains,
@@ -361,6 +366,8 @@ export class SimulationDataExtractor {
       taxableInterestIncome,
       earnedIncome,
       grossIncome,
+      grossOrdinaryIncome,
+      grossCapGains,
     };
   }
 

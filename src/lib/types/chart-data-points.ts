@@ -45,10 +45,11 @@ export interface SingleSimulationReturnsChartDataPoint {
 
 export interface SingleSimulationTaxesChartDataPoint {
   age: number;
+  grossIncome: number;
+  adjustedGrossIncome: number;
 
   /* Ordinary Income */
   earnedIncome: number;
-  grossIncome: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
   taxableRetirementDistributions: number;

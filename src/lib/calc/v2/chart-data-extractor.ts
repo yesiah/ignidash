@@ -103,19 +103,23 @@ export class ChartDataExtractor {
         taxableInterestIncome,
         earnedIncome,
         grossIncome,
+        grossOrdinaryIncome,
+        grossCapGains,
       } = SimulationDataExtractor.getTaxableIncomeSources(data, age);
 
       const taxesData = data.taxes!;
 
       return {
         age,
-        earnedIncome,
         grossIncome,
+        adjustedGrossIncome: taxesData.adjustedGrossIncome,
+        earnedIncome,
         taxDeferredWithdrawals,
         earlyRothEarningsWithdrawals,
         taxableRetirementDistributions: taxDeferredWithdrawals + earlyRothEarningsWithdrawals,
         taxableInterestIncome,
         taxableOrdinaryIncome: taxesData.incomeTaxes.taxableOrdinaryIncome,
+        grossOrdinaryIncome,
         annualIncomeTax,
         cumulativeIncomeTax,
         effectiveIncomeTaxRate: taxesData.incomeTaxes.effectiveIncomeTaxRate,
@@ -123,6 +127,7 @@ export class ChartDataExtractor {
         realizedGains,
         taxableDividendIncome,
         taxableCapGains: taxesData.capitalGainsTaxes.taxableCapitalGains,
+        grossCapGains,
         annualCapGainsTax,
         cumulativeCapGainsTax,
         effectiveCapGainsTaxRate: taxesData.capitalGainsTaxes.effectiveCapitalGainsTaxRate,
