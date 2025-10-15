@@ -35,19 +35,7 @@ interface IncomeCalculationsTooltipProps {
   startAge: number;
   age: number;
   disabled: boolean;
-  dataView:
-    | 'marginalRates'
-    | 'effectiveRates'
-    | 'annualAmounts'
-    | 'cumulativeAmounts'
-    | 'taxableIncome'
-    | 'adjustedGrossIncome'
-    | 'investmentIncome'
-    | 'retirementDistributions'
-    | 'ordinaryIncome'
-    | 'capGainsAndDividends'
-    | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+  dataView: 'taxableIncome' | 'adjustedGrossIncome';
 }
 
 const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, dataView }: IncomeCalculationsTooltipProps) => {
@@ -74,56 +62,89 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
     </p>
   ));
 
-  const header = (
-    <div className="mx-1 mb-2 flex flex-col gap-2">
-      <p className="flex justify-between text-sm font-semibold">
-        <span className="mr-2">Gross Income:</span>
-        <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
-      </p>
-      <Divider />
-      <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
-      {adjustments}
-      <Divider />
-      {dataView === 'taxableIncome' && (
-        <>
+  switch (dataView) {
+    case 'taxableIncome': {
+      const header = (
+        <div className="mx-1 mb-2 flex flex-col gap-2">
+          <p className="flex justify-between text-sm font-semibold">
+            <span className="mr-2">Gross Income:</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+          </p>
+          <Divider />
+          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
+          {adjustments}
+          <Divider />
           <p className="text-muted-foreground -mb-2 text-xs/6">Deductions</p>
           {deductions}
           <Divider />
-        </>
-      )}
-    </div>
-  );
+        </div>
+      );
 
-  return (
-    <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-      <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-        <span>Age {age}</span>
-        <span className="text-muted-foreground">{yearForAge}</span>
-      </p>
-      {header}
-      <div className="flex flex-col gap-2">
-        {payload.map((entry) => (
-          <p
-            key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
-            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-              'text-background': needsBgTextColor.includes(entry.color),
-            })}
-          >
-            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+      return (
+        <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
+          <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
+            <span>Age {age}</span>
+            <span className="text-muted-foreground">{yearForAge}</span>
           </p>
-        ))}
-        <p
-          style={{ backgroundColor: 'var(--chart-3)' }}
-          className={`border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm`}
-        >
-          <span className="mr-2">{`${formatChartString('totalTaxableIncome')}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(entry.totalTaxableIncome, 1, '$')}</span>
-        </p>
-      </div>
-    </div>
-  );
+          {header}
+          <div className="flex flex-col gap-2">
+            {payload.map((entry) => (
+              <p
+                key={entry.dataKey}
+                style={{ backgroundColor: entry.color }}
+                className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
+                  'text-background': needsBgTextColor.includes(entry.color),
+                })}
+              >
+                <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+                <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+              </p>
+            ))}
+            <p
+              style={{ backgroundColor: 'var(--chart-3)' }}
+              className={`border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm`}
+            >
+              <span className="mr-2">{`${formatChartString('totalTaxableIncome')}:`}</span>
+              <span className="ml-1 font-semibold">{formatNumber(entry.totalTaxableIncome, 1, '$')}</span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+    case 'adjustedGrossIncome': {
+      const header = (
+        <div className="mx-1 mb-2 flex flex-col gap-2">
+          <p className="flex justify-between text-sm font-semibold">
+            <span className="mr-2">Gross Income:</span>
+            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+          </p>
+          <Divider />
+          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
+          {adjustments}
+          <Divider />
+        </div>
+      );
+
+      return (
+        <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
+          <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
+            <span>Age {age}</span>
+            <span className="text-muted-foreground">{yearForAge}</span>
+          </p>
+          {header}
+          <div className="flex flex-col gap-2">
+            <p
+              style={{ backgroundColor: 'var(--chart-2)' }}
+              className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm`}
+            >
+              <span className="mr-2">{`${formatChartString('adjustedGrossIncome')}:`}</span>
+              <span className="ml-1 font-semibold">{formatNumber(entry.adjustedGrossIncome, 1, '$')}</span>
+            </p>
+          </div>
+        </div>
+      );
+    }
+  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
