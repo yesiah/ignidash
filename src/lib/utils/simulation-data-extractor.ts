@@ -64,8 +64,8 @@ export interface TaxableIncomeSources {
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
   earlyWithdrawals: number;
-  taxableDividendIncome: number;
-  taxableInterestIncome: number;
+  dividendIncome: number;
+  interestIncome: number;
   earnedIncome: number;
   grossIncome: number;
   grossOrdinaryIncome: number;
@@ -343,18 +343,18 @@ export class SimulationDataExtractor {
       }
     }
 
-    const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
+    const retirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
 
     const returnsData = dp.returns;
-    const taxableDividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
-    const taxableInterestIncome =
+    const dividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
+    const interestIncome =
       (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.cashSavings.cash ?? 0);
 
     const incomesData = dp.incomes;
     const earnedIncome = incomesData?.totalGrossIncome ?? 0;
 
-    const grossOrdinaryIncome = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
-    const grossCapGains = realizedGains + taxableDividendIncome;
+    const grossOrdinaryIncome = earnedIncome + retirementDistributions + interestIncome;
+    const grossCapGains = realizedGains + dividendIncome;
     const grossIncome = grossOrdinaryIncome + grossCapGains;
 
     return {
@@ -362,8 +362,8 @@ export class SimulationDataExtractor {
       taxDeferredWithdrawals,
       earlyRothEarningsWithdrawals,
       earlyWithdrawals,
-      taxableDividendIncome,
-      taxableInterestIncome,
+      dividendIncome,
+      interestIncome,
       earnedIncome,
       grossIncome,
       grossOrdinaryIncome,

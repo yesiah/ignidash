@@ -299,8 +299,8 @@ export default function SingleSimulationTaxesBarChart({
       break;
     case 'investmentIncome':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Taxable Interest Income', amount: item.taxableInterestIncome },
-        { name: 'Taxable Dividend Income', amount: item.taxableDividendIncome },
+        { name: 'Interest Income', amount: item.interestIncome },
+        { name: 'Dividend Income', amount: item.dividendIncome },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
@@ -314,15 +314,15 @@ export default function SingleSimulationTaxesBarChart({
     case 'ordinaryIncome':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Earned Income', amount: item.earnedIncome },
-        { name: 'Taxable Interest Income', amount: item.taxableInterestIncome },
-        { name: 'Taxable Retirement Distributions', amount: item.taxableRetirementDistributions },
+        { name: 'Interest Income', amount: item.interestIncome },
+        { name: 'Retirement Distributions', amount: item.retirementDistributions },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'capGainsAndDividends':
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Realized Gains', amount: item.realizedGains },
-        { name: 'Taxable Dividend Income', amount: item.taxableDividendIncome },
+        { name: 'Dividend Income', amount: item.dividendIncome },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;

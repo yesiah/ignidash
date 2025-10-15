@@ -93,18 +93,11 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const {
-    realizedGains,
-    taxDeferredWithdrawals,
-    earlyRothEarningsWithdrawals,
-    taxableDividendIncome,
-    taxableInterestIncome,
-    earnedIncome,
-    grossIncome,
-  } = SimulationDataExtractor.getTaxableIncomeSources(dp, selectedAge);
+  const { realizedGains, taxDeferredWithdrawals, earlyRothEarningsWithdrawals, dividendIncome, interestIncome, earnedIncome, grossIncome } =
+    SimulationDataExtractor.getTaxableIncomeSources(dp, selectedAge);
   const { incomeTax, capGainsTax, totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
 
-  const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
+  const retirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
 
   return (
     <Card className="my-0">
@@ -116,17 +109,17 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionTerm>Earned Income</DescriptionTerm>
         <DescriptionDetails>{formatNumber(earnedIncome, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Taxable Retirement Distributions</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(taxableRetirementDistributions, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Retirement Distributions</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(retirementDistributions, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Taxable Interest Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(taxableInterestIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Interest Income</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(interestIncome, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Income Tax</DescriptionTerm>
         <DescriptionDetails>{formatNumber(incomeTax, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Realized Capital Gains & Dividends</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(realizedGains + taxableDividendIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatNumber(realizedGains + dividendIncome, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Capital Gains Tax</DescriptionTerm>
         <DescriptionDetails>{formatNumber(capGainsTax, 2, '$')}</DescriptionDetails>

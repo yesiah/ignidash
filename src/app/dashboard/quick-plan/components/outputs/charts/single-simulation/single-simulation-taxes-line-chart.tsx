@@ -244,7 +244,7 @@ export default function SingleSimulationTaxesLineChart({
       break;
     case 'investmentIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableInterestIncome', 'taxableDividendIncome');
+      dataKeys.push('interestIncome', 'dividendIncome');
       break;
     case 'retirementDistributions':
       formatter = (value: number) => formatNumber(value, 1, '$');
@@ -252,11 +252,11 @@ export default function SingleSimulationTaxesLineChart({
       break;
     case 'ordinaryIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('earnedIncome', 'taxableInterestIncome', 'taxableRetirementDistributions');
+      dataKeys.push('earnedIncome', 'interestIncome', 'retirementDistributions');
       break;
     case 'capGainsAndDividends':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('realizedGains', 'taxableDividendIncome');
+      dataKeys.push('realizedGains', 'dividendIncome');
       break;
     case 'earlyWithdrawalPenalties':
       formatter = (value: number) => formatNumber(value, 1, '$');

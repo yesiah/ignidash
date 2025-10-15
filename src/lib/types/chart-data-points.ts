@@ -52,10 +52,10 @@ export interface SingleSimulationTaxesChartDataPoint {
   earnedIncome: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
-  taxableRetirementDistributions: number;
-  taxableInterestIncome: number;
-  taxableOrdinaryIncome: number;
+  retirementDistributions: number;
+  interestIncome: number;
   grossOrdinaryIncome: number;
+  taxableOrdinaryIncome: number;
   annualIncomeTax: number;
   cumulativeIncomeTax: number;
   effectiveIncomeTaxRate: number;
@@ -63,9 +63,9 @@ export interface SingleSimulationTaxesChartDataPoint {
 
   /* Cap Gains */
   realizedGains: number;
-  taxableDividendIncome: number;
-  taxableCapGains: number;
+  dividendIncome: number;
   grossCapGains: number;
+  taxableCapGains: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;
   effectiveCapGainsTaxRate: number;
