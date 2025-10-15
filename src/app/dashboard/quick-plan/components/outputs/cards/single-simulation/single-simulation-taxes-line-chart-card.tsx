@@ -86,27 +86,27 @@ export default function SingleSimulationTaxesLineChartCard({
             )
           }
         >
-          <optgroup label="Tax Rates">
-            <option value="marginalRates">Top Marginal Rates</option>
-            <option value="effectiveRates">Effective Rates</option>
-          </optgroup>
           <optgroup label="Tax Amounts">
             <option value="annualAmounts">Annual Taxes</option>
             <option value="cumulativeAmounts">Cumulative Taxes</option>
             <option value="adjustmentsAndDeductions">Adjustments &amp; Deductions</option>
           </optgroup>
-          <optgroup label="Issues & Penalties">
-            <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
-          </optgroup>
           <optgroup label="Income Calculations">
             <option value="taxableIncome">Taxable Income</option>
             <option value="adjustedGrossIncome">Adjusted Gross Income (AGI)</option>
           </optgroup>
+          <optgroup label="Tax Rates">
+            <option value="marginalRates">Top Marginal Rates</option>
+            <option value="effectiveRates">Effective Rates</option>
+          </optgroup>
           <optgroup label="Income Sources">
+            <option value="ordinaryIncome">Ordinary Income</option>
+            <option value="capGainsAndDividends">Capital Gains &amp; Dividends</option>
             <option value="investmentIncome">Investment Income</option>
             <option value="retirementDistributions">Retirement Distributions</option>
-            <option value="ordinaryIncome">All Ordinary Income</option>
-            <option value="capGainsAndDividends">Capital Gains &amp; Dividends</option>
+          </optgroup>
+          <optgroup label="Issues & Penalties">
+            <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
           </optgroup>
         </Select>
       </div>
