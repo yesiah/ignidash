@@ -231,12 +231,12 @@ export default function SingleSimulationTaxesBarChart({
       desktop: ['Effective Income Tax Rate', 'Effective Cap Gains Tax Rate'],
     },
     annualAmounts: {
-      mobile: ['Income Tax', 'Cap Gains Tax', 'Total Taxes'],
-      desktop: ['Income Tax', 'Cap Gains Tax', 'Total Taxes & Penalties'],
+      mobile: ['Income Tax', 'Cap Gains Tax'],
+      desktop: ['Income Tax', 'Cap Gains Tax'],
     },
     cumulativeAmounts: {
-      mobile: ['Cumul. Income Tax', 'Cumul. CG Tax', 'Cumul. Taxes'],
-      desktop: ['Cumulative Income Tax', 'Cumulative Cap Gains Tax', 'Cumulative Taxes & Penalties'],
+      mobile: ['Cumul. Income Tax', 'Cumul. CG Tax'],
+      desktop: ['Cumulative Income Tax', 'Cumulative Cap Gains Tax'],
     },
     retirementDistributions: {
       mobile: ['Tax-Deferred', 'Early Roth'],
@@ -294,21 +294,19 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'annualAmounts': {
-      const [incomeTaxLabel, capGainsTaxLabel, totalTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      const [incomeTaxLabel, capGainsTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
         { name: incomeTaxLabel, amount: item.annualIncomeTax },
         { name: capGainsTaxLabel, amount: item.annualCapGainsTax },
-        { name: totalTaxLabel, amount: item.annualTotalTaxesAndPenalties },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'cumulativeAmounts': {
-      const [incomeTaxLabel, capGainsTaxLabel, totalTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      const [incomeTaxLabel, capGainsTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
         { name: incomeTaxLabel, amount: item.cumulativeIncomeTax },
         { name: capGainsTaxLabel, amount: item.cumulativeCapGainsTax },
-        { name: totalTaxLabel, amount: item.cumulativeTotalTaxesAndPenalties },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
