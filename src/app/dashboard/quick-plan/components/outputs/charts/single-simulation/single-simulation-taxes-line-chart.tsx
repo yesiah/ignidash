@@ -31,7 +31,6 @@ interface CustomTooltipProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -56,7 +55,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'effectiveRates'
       | 'annualAmounts'
       | 'cumulativeAmounts'
-      | 'netIncome'
       | 'taxableIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
@@ -71,7 +69,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
         return `${(value * 100).toFixed(1)}%`;
       case 'annualAmounts':
       case 'cumulativeAmounts':
-      case 'netIncome':
       case 'taxableIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
@@ -93,7 +90,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       break;
     case 'annualAmounts':
     case 'cumulativeAmounts':
-    case 'netIncome':
     case 'investmentIncome':
     case 'retirementDistributions':
     case 'ordinaryIncome':
@@ -187,7 +183,6 @@ interface SingleSimulationTaxesLineChartProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -242,10 +237,6 @@ export default function SingleSimulationTaxesLineChart({
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('cumulativeIncomeTax', 'cumulativeCapGainsTax');
-      break;
-    case 'netIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('netIncome', 'netCapGains');
       break;
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');

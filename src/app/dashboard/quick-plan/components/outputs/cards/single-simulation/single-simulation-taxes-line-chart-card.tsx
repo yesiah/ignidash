@@ -18,7 +18,6 @@ interface SingleSimulationTaxesLineChartCardProps {
       | 'effectiveRates'
       | 'annualAmounts'
       | 'cumulativeAmounts'
-      | 'netIncome'
       | 'taxableIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
@@ -32,7 +31,6 @@ interface SingleSimulationTaxesLineChartCardProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -75,7 +73,6 @@ export default function SingleSimulationTaxesLineChartCard({
                 | 'effectiveRates'
                 | 'annualAmounts'
                 | 'cumulativeAmounts'
-                | 'netIncome'
                 | 'taxableIncome'
                 | 'investmentIncome'
                 | 'retirementDistributions'
@@ -92,7 +89,6 @@ export default function SingleSimulationTaxesLineChartCard({
           </optgroup>
           <optgroup label="Tax Amounts">
             <option value="taxableIncome">Taxable Income</option>
-            <option value="netIncome">Net Income After Tax</option>
             <option value="annualAmounts">Annual Taxes</option>
             <option value="cumulativeAmounts">Cumulative Taxes</option>
             <option value="adjustmentsAndDeductions">Adjustments &amp; Deductions</option>

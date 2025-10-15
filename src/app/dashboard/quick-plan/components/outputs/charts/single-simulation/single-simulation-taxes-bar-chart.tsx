@@ -39,7 +39,6 @@ interface TaxableIncomeTooltipProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -133,7 +132,6 @@ const CustomLabelListContent = (props: any) => {
       | 'effectiveRates'
       | 'annualAmounts'
       | 'cumulativeAmounts'
-      | 'netIncome'
       | 'taxableIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
@@ -148,7 +146,6 @@ const CustomLabelListContent = (props: any) => {
         return `${(value * 100).toFixed(1)}%`;
       case 'annualAmounts':
       case 'cumulativeAmounts':
-      case 'netIncome':
       case 'taxableIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
@@ -200,7 +197,6 @@ interface SingleSimulationTaxesBarChartProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -267,14 +263,6 @@ export default function SingleSimulationTaxesBarChart({
         { name: 'Cumulative Income Tax', amount: item.cumulativeIncomeTax },
         { name: 'Cumulative Cap Gains Tax', amount: item.cumulativeCapGainsTax },
         { name: 'Cumulative Taxes & Penalties', amount: item.cumulativeTotalTaxesAndPenalties },
-      ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
-      break;
-    case 'netIncome':
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Net Income', amount: item.netIncome },
-        { name: 'Net Cap Gains', amount: item.netCapGains },
-        { name: 'Total Net Income', amount: item.totalNetIncome },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;

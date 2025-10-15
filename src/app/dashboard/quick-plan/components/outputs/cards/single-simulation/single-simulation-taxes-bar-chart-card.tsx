@@ -18,7 +18,6 @@ interface SingleSimulationTaxesBarChartCardProps {
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
@@ -54,9 +53,6 @@ export default function SingleSimulationTaxesBarChartCard({
       break;
     case 'cumulativeAmounts':
       title = 'Cumulative Taxes';
-      break;
-    case 'netIncome':
-      title = 'Net After Tax';
       break;
     case 'taxableIncome':
       title = 'Taxable Income';

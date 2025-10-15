@@ -105,7 +105,6 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
     | 'effectiveRates'
     | 'annualAmounts'
     | 'cumulativeAmounts'
-    | 'netIncome'
     | 'taxableIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
