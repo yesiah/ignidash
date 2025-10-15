@@ -246,6 +246,10 @@ export default function SingleSimulationTaxesBarChart({
       mobile: ['Earned Income', 'Interest Income', 'Retirement Dist.'],
       desktop: ['Earned Income', 'Interest Income', 'Retirement Distributions'],
     },
+    earlyWithdrawalPenalties: {
+      mobile: ['Annual EW Penalty', 'Cumul. EW Penalty'],
+      desktop: ['Annual EW Penalties', 'Cumulative EW Penalties'],
+    },
     adjustmentsAndDeductions: {
       mobile: ['Tax-Deferred', 'CL Deduction', 'Std. Deduction'],
       desktop: ['Tax-Deferred Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
@@ -373,13 +377,15 @@ export default function SingleSimulationTaxesBarChart({
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
-    case 'earlyWithdrawalPenalties':
+    case 'earlyWithdrawalPenalties': {
+      const [annualLabel, cumulativeLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual EW Penalties', amount: item.annualEarlyWithdrawalPenalties },
-        { name: 'Cumulative EW Penalties', amount: item.cumulativeEarlyWithdrawalPenalties },
+        { name: annualLabel, amount: item.annualEarlyWithdrawalPenalties },
+        { name: cumulativeLabel, amount: item.cumulativeEarlyWithdrawalPenalties },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
+    }
     case 'adjustmentsAndDeductions': {
       const [taxDeferredLabel, capLossLabel, standardDeductionLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
