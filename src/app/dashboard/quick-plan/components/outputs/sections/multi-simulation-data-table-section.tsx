@@ -52,7 +52,7 @@ function MultiSimulationDataTableSection({
   let headerText: string | React.ReactNode;
   let headerDesc: string;
 
-  if (activeSeed !== null && simulation) {
+  if (activeSeed && simulation) {
     headerText = <DrillDownBreadcrumb activeSeed={activeSeed} removeActiveSeed={removeActiveSeed} rootLabel="Data Table" />;
     headerDesc = 'Year-by-year progression and outcome for this simulation.';
   } else if (currentTableType === TableType.YearlyResults) {
@@ -64,7 +64,7 @@ function MultiSimulationDataTableSection({
   }
 
   let tableComponent;
-  if (activeSeed !== null && simulation) {
+  if (activeSeed && simulation) {
     tableComponent = (
       <TableWithSelectedSeed
         currentCategory={currentCategory}
@@ -95,7 +95,7 @@ function MultiSimulationDataTableSection({
   return (
     <SectionContainer showBottomBorder>
       <SectionHeader title={headerText} desc={headerDesc} className="mb-4" />
-      <TableTypeSelector currentType={currentTableType} setCurrentType={setCurrentTableType} />
+      {!activeSeed && <TableTypeSelector currentType={currentTableType} setCurrentType={setCurrentTableType} />}
       {tableComponent}
     </SectionContainer>
   );
