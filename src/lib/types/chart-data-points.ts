@@ -120,3 +120,19 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   cashWithdrawals: number;
   withdrawalRate: number | null;
 }
+
+export interface MultiSimulationPortfolioChartDataPoint {
+  age: number;
+  p10TotalPortfolioValue: number;
+  p25TotalPortfolioValue: number;
+  p50TotalPortfolioValue: number;
+  p75TotalPortfolioValue: number;
+  p90TotalPortfolioValue: number;
+}
+
+export interface MultiSimulationPhasesChartDataPoint {
+  age: number;
+  percentAccumulation: number;
+  percentRetirement: number;
+  percentBankrupt: number;
+}

@@ -5,12 +5,19 @@ import type {
   SingleSimulationReturnsChartDataPoint,
   SingleSimulationContributionsChartDataPoint,
   SingleSimulationWithdrawalsChartDataPoint,
+  MultiSimulationPortfolioChartDataPoint,
+  MultiSimulationPhasesChartDataPoint,
 } from '@/lib/types/chart-data-points';
 import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
+import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 
-import type { SimulationResult } from './simulation-engine';
+import type { SimulationResult, MultiSimulationResult } from './simulation-engine';
 
 export class ChartDataExtractor {
+  // ================================
+  // SINGLE SIMULATION DATA EXTRACTION
+  // ================================
+
   extractSingleSimulationPortfolioChartData(simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] {
     const startAge = simulation.context.startAge;
     const startDateYear = new Date().getFullYear();
@@ -256,5 +263,87 @@ export class ChartDataExtractor {
         withdrawalRate,
       };
     });
+  }
+
+  // ================================
+  // MULTI SIMULATION DATA EXTRACTION
+  // ================================
+
+  extractMultiSimulationPortfolioChartData(simulations: MultiSimulationResult): MultiSimulationPortfolioChartDataPoint[] {
+    const res: MultiSimulationPortfolioChartDataPoint[] = [];
+
+    const simulationLength = simulations.simulations[0][1].data.length;
+
+    const startAge = simulations.simulations[0][1].context.startAge;
+    const startDateYear = new Date().getFullYear();
+
+    for (let i = 0; i < simulationLength; i++) {
+      if (simulations.simulations[i][1].data.length !== simulationLength) {
+        throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
+      }
+
+      const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
+
+      const totalPortfolioValues = simulations.simulations.map(([, sim]) => sim.data[i].portfolio.totalValue);
+      const percentiles: Percentiles<number> = StatsUtils.calculatePercentilesFromValues(totalPortfolioValues.sort((a, b) => a - b));
+
+      res.push({
+        age: currDateYear - startDateYear + startAge,
+        p10TotalPortfolioValue: percentiles.p10,
+        p25TotalPortfolioValue: percentiles.p25,
+        p50TotalPortfolioValue: percentiles.p50,
+        p75TotalPortfolioValue: percentiles.p75,
+        p90TotalPortfolioValue: percentiles.p90,
+      });
+    }
+
+    return res;
+  }
+
+  extractMultiSimulationPhasesChartData(simulations: MultiSimulationResult): MultiSimulationPhasesChartDataPoint[] {
+    const res: MultiSimulationPhasesChartDataPoint[] = [];
+
+    const simulationLength = simulations.simulations[0][1].data.length;
+    const numSimulations = simulations.simulations.length;
+
+    const startAge = simulations.simulations[0][1].context.startAge;
+    const startDateYear = new Date().getFullYear();
+
+    for (let i = 0; i < simulationLength; i++) {
+      if (simulations.simulations[i][1].data.length !== simulationLength) {
+        throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
+      }
+
+      const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
+
+      let accumulationCount = 0;
+      let retirementCount = 0;
+      let bankruptCount = 0;
+
+      for (const [, sim] of simulations.simulations) {
+        const phaseName = sim.data[i].phase?.name;
+
+        if (sim.data[i].portfolio.totalValue <= 0.1) {
+          bankruptCount++;
+        } else if (!phaseName || phaseName === 'accumulation') {
+          accumulationCount++;
+        } else if (phaseName === 'retirement') {
+          retirementCount++;
+        }
+      }
+
+      const percentAccumulation = accumulationCount / numSimulations;
+      const percentRetirement = retirementCount / numSimulations;
+      const percentBankrupt = bankruptCount / numSimulations;
+
+      res.push({
+        age: currDateYear - startDateYear + startAge,
+        percentAccumulation,
+        percentRetirement,
+        percentBankrupt,
+      });
+    }
+
+    return res;
   }
 }
