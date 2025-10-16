@@ -80,19 +80,19 @@ function MultiSimulationResultsForPercentile({ currentPercentile, analysis, ...s
   let simulation: SimulationResult;
   switch (currentPercentile) {
     case 'P10':
-      simulation = analysis.results.p10;
+      ({ result: simulation } = analysis.results.p10);
       break;
     case 'P25':
-      simulation = analysis.results.p25;
+      ({ result: simulation } = analysis.results.p25);
       break;
     case 'P50':
-      simulation = analysis.results.p50;
+      ({ result: simulation } = analysis.results.p50);
       break;
     case 'P75':
-      simulation = analysis.results.p75;
+      ({ result: simulation } = analysis.results.p75);
       break;
     case 'P90':
-      simulation = analysis.results.p90;
+      ({ result: simulation } = analysis.results.p90);
       break;
   }
 
@@ -121,6 +121,7 @@ interface MultiSimulationResultsProps {
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
   const startAge = useCurrentAge()!;
   const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+
   const { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating, completedSimulations } = useMultiSimulationResult(
     simulationMode,
     currentCategory

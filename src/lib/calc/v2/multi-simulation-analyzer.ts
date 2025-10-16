@@ -8,7 +8,7 @@ import { TableDataExtractor } from './table-data-extractor';
 
 export interface MultiSimulationAnalysis {
   success: number;
-  results: Percentiles<SimulationResult>;
+  results: Percentiles<{ seed: number; result: SimulationResult }>;
 }
 
 type NormalizedValues = Record<MonteCarloSortMode, number>;
@@ -124,9 +124,6 @@ export class MultiSimulationAnalyzer {
         finalPortfolioValueRange
       );
 
-      const _successA = Number(retirementAgeA !== null && lastDpA.portfolio.totalValue > 0.1);
-      const _successB = Number(retirementAgeB !== null && lastDpB.portfolio.totalValue > 0.1);
-
       const valuesA: NormalizedValues = {
         finalPortfolioValue: normalizedFinalPortfolioValueA,
         retirementAge: normalizedRetirementAgeA,
@@ -155,7 +152,7 @@ export class MultiSimulationAnalyzer {
       if (finalDp.portfolio.totalValue > 0.1 && finalDp.phase?.name === 'retirement') successCount++;
     }
 
-    const results = StatsUtils.calculatePercentilesFromValues(sortedSimulations.map((s) => s[1]));
+    const results = StatsUtils.calculatePercentilesFromValues(sortedSimulations.map((s) => ({ seed: s[0], result: s[1] })));
 
     return { success: successCount / simulations.length, results };
   }
