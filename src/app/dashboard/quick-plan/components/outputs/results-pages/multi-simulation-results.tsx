@@ -87,6 +87,8 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     currentCategory
   );
 
+  const p50KeyMetrics = useKeyMetrics(analysis?.results.p50.result);
+
   const [currentPercentile, setCurrentPercentile] = useState<'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null>(null);
   const [selectedSeedFromTable, setSelectedSeedFromTable] = useState<number | null>(null);
 
@@ -107,8 +109,6 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
 
   const seed = useSimulationSeed();
   useEffect(() => setSelectedSeedFromTable(null), [seed, simulationMode]);
-
-  const p50KeyMetrics = useKeyMetrics(analysis?.results.p50.result);
 
   if (!analysis || !p50KeyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
     const roundedSimulations = Math.floor(completedSimulations / 10) * 10;
