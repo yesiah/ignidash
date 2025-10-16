@@ -304,7 +304,6 @@ export class ChartDataExtractor {
     const res: MultiSimulationPhasesChartDataPoint[] = [];
 
     const simulationLength = simulations.simulations[0][1].data.length;
-    const numSimulations = simulations.simulations.length;
 
     const startAge = simulations.simulations[0][1].context.startAge;
     const startDateYear = new Date().getFullYear();
@@ -316,25 +315,7 @@ export class ChartDataExtractor {
 
       const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
 
-      let accumulationCount = 0;
-      let retirementCount = 0;
-      let bankruptCount = 0;
-
-      for (const [, sim] of simulations.simulations) {
-        const phaseName = sim.data[i].phase?.name;
-
-        if (sim.data[i].portfolio.totalValue <= 0.1) {
-          bankruptCount++;
-        } else if (!phaseName || phaseName === 'accumulation') {
-          accumulationCount++;
-        } else if (phaseName === 'retirement') {
-          retirementCount++;
-        }
-      }
-
-      const percentAccumulation = accumulationCount / numSimulations;
-      const percentRetirement = retirementCount / numSimulations;
-      const percentBankrupt = bankruptCount / numSimulations;
+      const { percentAccumulation, percentRetirement, percentBankrupt } = SimulationDataExtractor.getPercentInPhaseForYear(simulations, i);
 
       res.push({
         age: currDateYear - startDateYear + startAge,

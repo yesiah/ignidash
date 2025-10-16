@@ -1,4 +1,4 @@
-import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import type { MultiSimulationResult, SimulationDataPoint, SimulationResult } from '@/lib/calc/v2/simulation-engine';
 
 export interface MilestonesData {
   yearsToRetirement: number | null;
@@ -71,6 +71,12 @@ export interface TaxableIncomeSources {
   grossIncome: number;
   grossOrdinaryIncome: number;
   grossCapGains: number;
+}
+
+export interface PercentInPhaseForYear {
+  percentAccumulation: number;
+  percentRetirement: number;
+  percentBankrupt: number;
 }
 
 export class SimulationDataExtractor {
@@ -385,5 +391,31 @@ export class SimulationDataExtractor {
     const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
     return totalValue + annualWithdrawals > 0 ? annualWithdrawals / (totalValue + annualWithdrawals) : null;
+  }
+
+  static getPercentInPhaseForYear(simulations: MultiSimulationResult, year: number): PercentInPhaseForYear {
+    const numSimulations = simulations.simulations.length;
+
+    let accumulationCount = 0;
+    let retirementCount = 0;
+    let bankruptCount = 0;
+
+    for (const [, sim] of simulations.simulations) {
+      const phaseName = sim.data[year].phase?.name;
+
+      if (sim.data[year].portfolio.totalValue <= 0.1) {
+        bankruptCount++;
+      } else if (!phaseName || phaseName === 'accumulation') {
+        accumulationCount++;
+      } else if (phaseName === 'retirement') {
+        retirementCount++;
+      }
+    }
+
+    const percentAccumulation = accumulationCount / numSimulations;
+    const percentRetirement = retirementCount / numSimulations;
+    const percentBankrupt = bankruptCount / numSimulations;
+
+    return { percentAccumulation, percentRetirement, percentBankrupt };
   }
 }
