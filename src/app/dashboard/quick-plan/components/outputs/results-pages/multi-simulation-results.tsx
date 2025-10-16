@@ -11,27 +11,38 @@ import {
 } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
+import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
+import type { MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-analyzer';
 import { useResultsState } from '@/hooks/use-results-state';
 import ProgressBar from '@/components/ui/progress-bar';
+import { SimulationCategory } from '@/lib/types/simulation-category';
 
 import SimulationMetrics from '../simulation-metrics';
 import MultiSimulationMainResults from './multi-simulation-main-results';
 
-interface MultiSimulationResultsProps {
+interface MultiSimulationResultsSharedProps {
+  tableData: MultiSimulationTableRow[];
+  yearlyTableData: YearlyAggregateTableRow[];
+  chartData: MultiSimulationChartData;
+  setCurrentCategory: (category: SimulationCategory) => void;
+  currentCategory: SimulationCategory;
+  setSelectedSeed: (seed: number | null) => void;
+  setCurrentPercentile: (percentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90' | null) => void;
+  onAgeSelect: (age: number) => void;
+  selectedAge: number;
+}
+
+interface MultiSimulationResultsForSelectedSeedProps extends MultiSimulationResultsSharedProps {
+  selectedSeed: number;
   simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
 }
 
-export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
-  const startAge = useCurrentAge()!;
-  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
-  const { analysis, tableData, yearlyTableData, isLoadingOrValidating, completedSimulations } = useMultiSimulationResult(
-    simulationMode,
-    currentCategory
-  );
-
-  const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90'>('P50');
-  const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
-
+function MultiSimulationResultsForSelectedSeed({
+  selectedSeed,
+  simulationMode,
+  ...sharedProps
+}: MultiSimulationResultsForSelectedSeedProps) {
   let simulationModeForSelectedSeed: 'stochasticReturns' | 'historicalReturns';
   switch (simulationMode) {
     case 'monteCarloStochasticReturns':
@@ -42,37 +53,86 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
       break;
   }
 
-  let simulation: SimulationResult | null | undefined = useSimulationResult(simulationModeForSelectedSeed, selectedSeed);
-  if (!selectedSeed) {
-    switch (currentPercentile) {
-      case 'P10':
-        simulation = analysis?.results.p10;
-        break;
-      case 'P25':
-        simulation = analysis?.results.p25;
-        break;
-      case 'P50':
-        simulation = analysis?.results.p50;
-        break;
-      case 'P75':
-        simulation = analysis?.results.p75;
-        break;
-      case 'P90':
-        simulation = analysis?.results.p90;
-        break;
-    }
+  const simulation: SimulationResult = useSimulationResult(simulationModeForSelectedSeed, selectedSeed)!;
+  const keyMetrics = useKeyMetrics(simulation)!;
+
+  return (
+    <>
+      <SectionContainer showBottomBorder className="mb-0">
+        <SimulationMetrics keyMetrics={keyMetrics} />
+      </SectionContainer>
+      <MultiSimulationMainResults
+        simulationAndKeyMetrics={{ simulation, keyMetrics }}
+        currentPercentile={null}
+        selectedSeed={selectedSeed}
+        {...sharedProps}
+      />
+    </>
+  );
+}
+
+interface MultiSimulationResultsForPercentileProps extends MultiSimulationResultsSharedProps {
+  currentPercentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
+  analysis: MultiSimulationAnalysis;
+}
+
+function MultiSimulationResultsForPercentile({ currentPercentile, analysis, ...sharedProps }: MultiSimulationResultsForPercentileProps) {
+  let simulation: SimulationResult;
+  switch (currentPercentile) {
+    case 'P10':
+      simulation = analysis.results.p10;
+      break;
+    case 'P25':
+      simulation = analysis.results.p25;
+      break;
+    case 'P50':
+      simulation = analysis.results.p50;
+      break;
+    case 'P75':
+      simulation = analysis.results.p75;
+      break;
+    case 'P90':
+      simulation = analysis.results.p90;
+      break;
   }
+
+  const baseMetrics = useKeyMetrics(simulation)!;
+  const keyMetrics = baseMetrics && { ...baseMetrics, success: analysis?.success ?? 0 };
+
+  return (
+    <>
+      <SectionContainer showBottomBorder className="mb-0">
+        <SimulationMetrics keyMetrics={keyMetrics} />
+      </SectionContainer>
+      <MultiSimulationMainResults
+        simulationAndKeyMetrics={{ simulation, keyMetrics }}
+        currentPercentile={currentPercentile}
+        selectedSeed={null}
+        {...sharedProps}
+      />
+    </>
+  );
+}
+
+interface MultiSimulationResultsProps {
+  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
+}
+
+export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
+  const startAge = useCurrentAge()!;
+  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+  const { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating, completedSimulations } = useMultiSimulationResult(
+    simulationMode,
+    currentCategory
+  );
+
+  const [currentPercentile, setCurrentPercentile] = useState<'P10' | 'P25' | 'P50' | 'P75' | 'P90' | null>(null);
+  const [selectedSeed, setSelectedSeed] = useState<number | null>(null);
 
   const seed = useSimulationSeed();
   useEffect(() => setSelectedSeed(null), [seed, simulationMode]);
 
-  const baseMetrics = useKeyMetrics(simulation);
-  const keyMetrics = baseMetrics && {
-    ...baseMetrics,
-    success: selectedSeed === null ? (analysis?.success ?? 0) : baseMetrics.success,
-  };
-
-  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !simulation || isLoadingOrValidating) {
+  if (!analysis || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
     const roundedSimulations = Math.floor(completedSimulations / 10) * 10;
     const progressPercent = (roundedSimulations / 500) * 100;
 
@@ -86,25 +146,23 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     );
   }
 
-  return (
-    <>
-      <SectionContainer showBottomBorder className="mb-0">
-        <SimulationMetrics keyMetrics={keyMetrics} />
-      </SectionContainer>
-      <MultiSimulationMainResults
-        simulation={simulation}
-        keyMetrics={keyMetrics}
-        tableData={tableData}
-        yearlyTableData={yearlyTableData}
-        setCurrentCategory={setCurrentCategory}
-        currentCategory={currentCategory}
-        setCurrentPercentile={setCurrentPercentile}
-        currentPercentile={currentPercentile}
-        setSelectedSeed={setSelectedSeed}
-        selectedSeed={selectedSeed}
-        onAgeSelect={onAgeSelect}
-        selectedAge={selectedAge}
-      />
-    </>
-  );
+  const sharedProps: MultiSimulationResultsSharedProps = {
+    tableData,
+    yearlyTableData,
+    chartData,
+    setCurrentCategory,
+    currentCategory,
+    setSelectedSeed,
+    setCurrentPercentile,
+    onAgeSelect,
+    selectedAge,
+  };
+
+  if (selectedSeed !== null) {
+    return <MultiSimulationResultsForSelectedSeed selectedSeed={selectedSeed} simulationMode={simulationMode} {...sharedProps} />;
+  } else if (currentPercentile !== null) {
+    return <MultiSimulationResultsForPercentile currentPercentile={currentPercentile} analysis={analysis} {...sharedProps} />;
+  } else {
+    return <MultiSimulationMainResults simulationAndKeyMetrics={null} currentPercentile={null} selectedSeed={null} {...sharedProps} />;
+  }
 }

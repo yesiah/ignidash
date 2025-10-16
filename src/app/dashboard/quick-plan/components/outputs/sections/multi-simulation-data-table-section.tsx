@@ -26,7 +26,7 @@ function TableWithSelectedSeed({ currentCategory, onEscPressed, simulation }: Ta
 }
 
 interface MultiSimulationDataTableSectionProps {
-  simulation: SimulationResult;
+  simulation: SimulationResult | null | undefined;
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
   currentCategory: SimulationCategory;
@@ -50,7 +50,7 @@ function MultiSimulationDataTableSection({
   let headerText: string | React.ReactNode;
   let headerDesc: string;
 
-  if (selectedSeed !== null) {
+  if (selectedSeed !== null && simulation) {
     headerText = <DrillDownBreadcrumb selectedSeed={selectedSeed} setSelectedSeed={setSelectedSeed} rootLabel="Data Table" />;
     headerDesc = 'Year-by-year progression and outcome for this simulation.';
   } else if (currentTableType === TableType.YearlyResults) {
@@ -62,7 +62,7 @@ function MultiSimulationDataTableSection({
   }
 
   let tableComponent;
-  if (selectedSeed !== null) {
+  if (selectedSeed !== null && simulation) {
     tableComponent = (
       <TableWithSelectedSeed
         currentCategory={currentCategory}

@@ -245,7 +245,6 @@ interface SingleSimulationChartsSectionProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   currentCategory: SimulationCategory;
-  currentPercentile?: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
   setSelectedSeed?: (seed: number | null) => void;
   selectedSeed?: number | null;
 }
@@ -256,7 +255,6 @@ function SingleSimulationChartsSection({
   onAgeSelect,
   selectedAge,
   currentCategory,
-  currentPercentile,
   setSelectedSeed,
   selectedSeed,
 }: SingleSimulationChartsSectionProps) {

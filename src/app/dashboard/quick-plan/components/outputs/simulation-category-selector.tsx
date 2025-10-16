@@ -21,8 +21,8 @@ interface SimulationCategorySelectorProps {
   className?: string;
   setCurrentCategory: (category: SimulationCategory) => void;
   currentCategory: SimulationCategory;
-  setCurrentPercentile?: (percentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90') => void;
-  currentPercentile?: 'P10' | 'P25' | 'P50' | 'P75' | 'P90';
+  setCurrentPercentile?: (percentile: 'P10' | 'P25' | 'P50' | 'P75' | 'P90' | null) => void;
+  currentPercentile?: 'P10' | 'P25' | 'P50' | 'P75' | 'P90' | null;
   selectedSeed?: number | null;
 }
 
@@ -65,7 +65,7 @@ export default function SimulationCategorySelector({
           </button>
         ))}
       </div>
-      {setCurrentPercentile && currentPercentile && (
+      {setCurrentPercentile && (
         <div className="border-border/50 flex shrink-0 border-l sm:gap-1.5 sm:px-2">
           <Dropdown>
             <DropdownButton plain aria-label="Open sort mode options" disabled={!!selectedSeed}>
@@ -90,7 +90,7 @@ export default function SimulationCategorySelector({
             </DropdownButton>
             <DropdownMenu>
               {percentiles.map((percentile) => (
-                <DropdownItem key={percentile} onClick={() => setCurrentPercentile(percentile)}>
+                <DropdownItem key={percentile} onClick={() => setCurrentPercentile(currentPercentile !== percentile ? percentile : null)}>
                   <CheckIcon data-slot="icon" className={cn({ invisible: currentPercentile !== percentile })} />
                   <DropdownLabel>{percentile}</DropdownLabel>
                 </DropdownItem>

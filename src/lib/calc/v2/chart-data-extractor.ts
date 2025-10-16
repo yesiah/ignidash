@@ -282,7 +282,7 @@ export class ChartDataExtractor {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
       }
 
-      const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
+      const currDateYear = new Date(simulations.simulations[0][1].data[i].date).getFullYear();
 
       const totalPortfolioValues = simulations.simulations.map(([, sim]) => sim.data[i].portfolio.totalValue);
       const percentiles: Percentiles<number> = StatsUtils.calculatePercentilesFromValues(totalPortfolioValues.sort((a, b) => a - b));
@@ -313,7 +313,7 @@ export class ChartDataExtractor {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
       }
 
-      const currDateYear = new Date(simulations.simulations[i][1].data[0].date).getFullYear();
+      const currDateYear = new Date(simulations.simulations[0][1].data[i].date).getFullYear();
 
       const { percentAccumulation, percentRetirement, percentBankrupt } = SimulationDataExtractor.getPercentInPhaseForYear(simulations, i);
 
