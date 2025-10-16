@@ -11,7 +11,7 @@ import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationPortfolioAreaChart from '../../charts/single-simulation/single-simulation-portfolio-area-chart';
 
-interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
+interface SingleSimulationPortfolioAreaChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
   keyMetrics: KeyMetrics;
   onAgeSelect: (age: number) => void;
@@ -23,7 +23,7 @@ interface SingleSimulationPortfolioAssetTypeAreaChartCardProps {
   startAge: number;
 }
 
-export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
+export default function SingleSimulationPortfolioAreaChartCard({
   rawChartData,
   keyMetrics,
   onAgeSelect,
@@ -33,7 +33,7 @@ export default function SingleSimulationPortfolioAssetTypeAreaChartCard({
   setCustomDataID,
   customDataID,
   startAge,
-}: SingleSimulationPortfolioAssetTypeAreaChartCardProps) {
+}: SingleSimulationPortfolioAreaChartCardProps) {
   const showReferenceLines = useShowReferenceLines();
 
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
