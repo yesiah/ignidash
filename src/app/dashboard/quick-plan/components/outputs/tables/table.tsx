@@ -219,8 +219,8 @@ export default function Table<T extends Record<string, unknown>>({
                         aria-label={onRowClick ? `View details for simulation number ${String(row[keyField])}` : undefined}
                       >
                         {columns.map((col, index) => {
-                          const rawVal = row[col.key];
-                          const displayVal = col.format ? col.format(rawVal) : String(rawVal);
+                          const rawValue = row[col.key];
+                          const displayValue = col.format ? col.format(rawValue) : String(rawValue);
 
                           if (index === 0) {
                             return (
@@ -231,7 +231,7 @@ export default function Table<T extends Record<string, unknown>>({
                                   hoveredColumn === col.key && 'bg-emphasized-background/50'
                                 )}
                               >
-                                {displayVal}
+                                {displayValue}
                               </td>
                             );
                           }
@@ -244,7 +244,7 @@ export default function Table<T extends Record<string, unknown>>({
                                 hoveredColumn === col.key && 'bg-emphasized-background/50'
                               )}
                             >
-                              {displayVal}
+                              {displayValue}
                             </td>
                           );
                         })}
