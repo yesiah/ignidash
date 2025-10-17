@@ -152,7 +152,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   return (
     <>
       <SectionContainer showBottomBorder className="mb-0">
-        <SimulationMetrics keyMetrics={p50KeyMetrics} />
+        <SimulationMetrics keyMetrics={{ ...p50KeyMetrics, success: analysis.success }} />
       </SectionContainer>
       <MultiSimulationMainResults simulationAndKeyMetrics={null} {...sharedProps} />
     </>
