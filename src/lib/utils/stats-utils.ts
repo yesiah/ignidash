@@ -40,11 +40,11 @@ export class StatsUtils {
   }
 
   static standardDeviation(values: number[]): number {
-    if (values.length === 0) return 0;
+    if (values.length <= 1) return 0;
 
     const avg = this.average(values);
     const squaredDiffs = values.map((val) => Math.pow(val - avg, 2));
-    const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length;
+    const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / (values.length - 1);
 
     return Math.sqrt(variance);
   }

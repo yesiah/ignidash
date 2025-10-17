@@ -25,20 +25,17 @@ function PortfolioDataListCardV2({ chartData, selectedAge }: DataListCardProps) 
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
-        <DescriptionTerm>P10 Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.p10TotalPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Average Portfolio Value</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(data.averageTotalPortfolioValue, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>P25 Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.p25TotalPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Min Portfolio Value</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(data.minTotalPortfolioValue, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>P50 Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.p50TotalPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Max Portfolio Value</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(data.maxTotalPortfolioValue, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>P75 Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.p75TotalPortfolioValue, 2, '$')}</DescriptionDetails>
-
-        <DescriptionTerm>P90 Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.p90TotalPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Standard Deviation (±1 SD)</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(data.stdDevTotalPortfolioValue, 2, '$')}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
