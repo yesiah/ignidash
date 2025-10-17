@@ -196,17 +196,23 @@ export default function Table<T extends Record<string, unknown>>({
                           onRowClick && 'cursor-pointer',
                           selectedRow === String(row[keyField]) && 'bg-emphasized-background/50'
                         )}
-                        onClick={() => {
-                          setSelectedRow(String(row[keyField]));
-                          onRowClick?.(row);
+                        onClick={(e) => {
+                          e.preventDefault();
+                          withScrollPreservation(() => {
+                            setSelectedRow(String(row[keyField]));
+                            onRowClick?.(row);
+                          })();
                         }}
+                        onMouseDown={(e) => e.preventDefault()}
                         onBlur={() => setSelectedRow(null)}
                         tabIndex={0}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
-                            setSelectedRow(String(row[keyField]));
-                            onRowClick?.(row);
+                            withScrollPreservation(() => {
+                              setSelectedRow(String(row[keyField]));
+                              onRowClick?.(row);
+                            })();
                           }
                         }}
                         role={onRowClick ? 'button' : undefined}
