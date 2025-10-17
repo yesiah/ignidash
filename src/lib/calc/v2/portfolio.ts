@@ -113,9 +113,12 @@ export class PortfolioProcessor {
     let realizedGainsByAccount: Record<string, number> = {};
     let earningsWithdrawnByAccount: Record<string, number> = {};
 
+    // Account for annual shortfall before processing tax refund
+    const taxesRefundAfterShortfall = Math.max(0, taxesData.totalTaxesRefund - shortfallForPeriod);
+
     let discretionaryExpense = 0;
-    if (taxesData.totalTaxesRefund > 0) {
-      const { transactionsBreakdown: res, discretionaryExpense: expense } = this.processContributions(taxesData.totalTaxesRefund);
+    if (taxesRefundAfterShortfall > 0) {
+      const { transactionsBreakdown: res, discretionaryExpense: expense } = this.processContributions(taxesRefundAfterShortfall);
       contributionsForPeriod += res.totalForPeriod;
       contributionsByAccount = res.byAccount;
       discretionaryExpense += expense;
