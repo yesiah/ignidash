@@ -196,6 +196,9 @@ export default function Table<T extends Record<string, unknown>>({
                           onRowClick && 'cursor-pointer',
                           selectedRow === String(row[keyField]) && 'bg-emphasized-background/50'
                         )}
+                        role={onRowClick ? 'button' : undefined}
+                        aria-label={onRowClick ? `View details for simulation number ${String(row[keyField])}` : undefined}
+                        tabIndex={0}
                         onClick={(e) => {
                           e.preventDefault();
                           withScrollPreservation(() => {
@@ -204,7 +207,6 @@ export default function Table<T extends Record<string, unknown>>({
                           })();
                         }}
                         onMouseDown={(e) => e.preventDefault()}
-                        tabIndex={0}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
@@ -214,8 +216,6 @@ export default function Table<T extends Record<string, unknown>>({
                             })();
                           }
                         }}
-                        role={onRowClick ? 'button' : undefined}
-                        aria-label={onRowClick ? `View details for simulation number ${String(row[keyField])}` : undefined}
                       >
                         {columns.map((col, index) => {
                           const rawValue = row[col.key];
