@@ -27,7 +27,7 @@ function DrillDownBreadcrumb({ removeActiveSeed, activeSeed }: DrillDownBreadcru
   const withScrollPreservation = useScrollPreservation();
 
   return (
-    <nav aria-label="Breadcrumb" className="flex">
+    <nav aria-label="Breadcrumb" className="border-border/50 flex border-t border-dashed py-2">
       <ol role="list" className="flex items-center space-x-2">
         <li>
           <div>
@@ -36,14 +36,14 @@ function DrillDownBreadcrumb({ removeActiveSeed, activeSeed }: DrillDownBreadcru
               className="text-muted-foreground hover:text-foreground focus-outline"
               onClick={withScrollPreservation(() => removeActiveSeed())}
             >
-              <span className="lowercase">Monte Carlo Results</span>
+              <span className="underline underline-offset-2">All Results</span>
             </button>
           </div>
         </li>
         <li>
           <div className="flex items-center">
             <ChevronRightIcon aria-hidden="true" className="size-5 shrink-0" />
-            <span className="ml-2">{`Seed #${activeSeed}`}</span>
+            <span className="ml-2 font-semibold">{`Seed #${activeSeed}`}</span>
           </div>
         </li>
       </ol>
