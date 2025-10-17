@@ -27,8 +27,8 @@ function DrillDownBreadcrumb({ removeActiveSeed, activeSeed }: DrillDownBreadcru
   const withScrollPreservation = useScrollPreservation();
 
   return (
-    <nav aria-label="Breadcrumb" className="border-border/50 flex border-t border-dashed py-2">
-      <ol role="list" className="flex items-center space-x-2 px-1">
+    <nav aria-label="Breadcrumb" className="border-border/50 -mx-2 flex border-t border-dashed py-2 sm:-mx-3 lg:-mx-4">
+      <ol role="list" className="mx-2 flex items-center space-x-2 px-1 sm:mx-3 lg:mx-4">
         <li>
           <div>
             <button
