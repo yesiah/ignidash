@@ -34,7 +34,7 @@ export class StatsUtils {
   }
 
   static average(values: number[]): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) return -1;
 
     return values.reduce((sum, val) => sum + val, 0) / values.length;
   }
@@ -50,10 +50,12 @@ export class StatsUtils {
   }
 
   static minFromSorted(sortedValues: number[]): number {
+    if (sortedValues.length === 0) return -1;
     return sortedValues[0];
   }
 
   static maxFromSorted(sortedValues: number[]): number {
+    if (sortedValues.length === 0) return -1;
     return sortedValues[sortedValues.length - 1];
   }
 

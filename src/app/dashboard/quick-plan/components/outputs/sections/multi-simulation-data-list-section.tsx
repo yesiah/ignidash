@@ -45,6 +45,16 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
   const data = chartData.phasesData.find((item) => item.age === selectedAge);
   if (!data) return null;
 
+  const formattedAverageRetirementAge =
+    data.averageRetirementAge !== -1 && data.averageYearsToRetirement !== -1
+      ? `${formatNumber(data.averageRetirementAge, 0)} (in ${formatNumber(data.averageYearsToRetirement, 0)} years)`
+      : '∞ (never retires)';
+
+  const formattedAverageBankruptcyAge =
+    data.averageBankruptcyAge !== -1 && data.averageYearsToBankruptcy !== -1
+      ? `${formatNumber(data.averageBankruptcyAge, 0)} (in ${formatNumber(data.averageYearsToBankruptcy, 0)} years)`
+      : '∞ (never goes bankrupt)';
+
   return (
     <Card className="my-0">
       <Subheading level={4}>
@@ -56,13 +66,13 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
         <DescriptionDetails>{`${formatNumber(data.chanceOfRetirement * 100, 1)}%`}</DescriptionDetails>
 
         <DescriptionTerm>Average Retirement Age</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(data.averageRetirementAge, 0)} (in ${formatNumber(data.averageYearsToRetirement, 0)} years)`}</DescriptionDetails>
+        <DescriptionDetails>{formattedAverageRetirementAge}</DescriptionDetails>
 
         <DescriptionTerm>Chance of Bankruptcy</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(data.chanceOfBankruptcy * 100, 1)}%`}</DescriptionDetails>
 
         <DescriptionTerm>Average Bankruptcy Age</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(data.averageBankruptcyAge, 0)} (in ${formatNumber(data.averageYearsToBankruptcy, 0)} years)`}</DescriptionDetails>
+        <DescriptionDetails>{formattedAverageBankruptcyAge}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
