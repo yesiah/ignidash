@@ -95,6 +95,8 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   const removeActiveSeed = useCallback(() => {
     setCurrentPercentile(null);
     setSelectedSeedFromTable(null);
+
+    // Reset to default category when removing active seed
     setCurrentCategory(SimulationCategory.Portfolio);
   }, [setCurrentCategory]);
 
