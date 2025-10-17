@@ -46,7 +46,9 @@ export default function MultiSimulationMainResults({
   setSelectedSeedFromTable,
 }: MultiSimulationMainResultsProps) {
   const availableCategories =
-    simulationAndKeyMetrics !== null ? Object.values(SimulationCategory) : [SimulationCategory.Portfolio, SimulationCategory.Phases];
+    simulationAndKeyMetrics !== null
+      ? Object.values(SimulationCategory).filter((category) => category !== 'Phases')
+      : [SimulationCategory.Portfolio, SimulationCategory.Phases];
 
   return (
     <>

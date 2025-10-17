@@ -27,7 +27,7 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
         className="from-emphasized-background to-background bg-gradient-to-l py-0 xl:sticky xl:top-[4.3125rem] xl:z-10"
       >
         <SimulationCategorySelector
-          availableCategories={Object.values(SimulationCategory)}
+          availableCategories={Object.values(SimulationCategory).filter((category) => category !== 'Phases')}
           setCurrentCategory={setCurrentCategory}
           currentCategory={currentCategory}
         />

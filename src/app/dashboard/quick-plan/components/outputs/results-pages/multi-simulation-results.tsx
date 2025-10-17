@@ -95,7 +95,8 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   const removeActiveSeed = useCallback(() => {
     setCurrentPercentile(null);
     setSelectedSeedFromTable(null);
-  }, []);
+    setCurrentCategory(SimulationCategory.Portfolio);
+  }, [setCurrentCategory]);
 
   const { activeSeed, activeSeedType } = useMemo(() => {
     if (selectedSeedFromTable !== null) {
