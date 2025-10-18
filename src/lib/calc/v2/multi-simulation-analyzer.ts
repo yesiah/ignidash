@@ -37,7 +37,7 @@ export class MultiSimulationAnalyzer {
     }
   }
 
-  analyzeV2(multiSimulationResult: MultiSimulationResult, sortMode: MonteCarloSortMode): MultiSimulationAnalysis {
+  analyze(multiSimulationResult: MultiSimulationResult, sortMode: MonteCarloSortMode): MultiSimulationAnalysis {
     const simulations = multiSimulationResult.simulations;
 
     const numDataPoints = simulations[0][1]?.data.length;

@@ -50,7 +50,7 @@ const mergeAPI = {
     const { res } = cache;
 
     const analyzer = new MultiSimulationAnalyzer();
-    const analysis = analyzer.analyzeV2(res, sortMode);
+    const analysis = analyzer.analyze(res, sortMode);
 
     const tableExtractor = new TableDataExtractor();
     const tableData = tableExtractor.extractMultiSimulationData(res, category);
