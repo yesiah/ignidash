@@ -132,7 +132,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   }, [selectedSeedFromTable, quickSelectPercentile, analysis]);
 
   const seed = useSimulationSeed();
-  useEffect(() => updateSelectedSeedFromTable(null), [seed, updateSelectedSeedFromTable, simulationMode]);
+  useEffect(() => removeActiveSeed(), [seed, simulationMode, removeActiveSeed]);
 
   if (!analysis || !p50KeyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
     const progressPercent = (completedSimulations / 500) * 100;
