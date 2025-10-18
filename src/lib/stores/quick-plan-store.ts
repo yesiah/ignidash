@@ -77,6 +77,7 @@ interface QuickPlanState {
     quickSelectPercentile: QuickSelectPercentile;
     selectedSeedFromTable: number | null;
     simulationStatus: SimulationStatus;
+    category: SimulationCategory;
   };
 
   preferences: {
@@ -116,6 +117,7 @@ interface QuickPlanState {
     updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
     updateSelectedSeedFromTable: (seed: number | null) => void;
     updateSimulationStatus: (status: SimulationStatus) => void;
+    updateCategory: (category: SimulationCategory) => void;
 
     /* Preferences */
     updateDataStoragePreference: (value: QuickPlanState['preferences']['dataStorage']) => void;
@@ -143,6 +145,7 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     quickSelectPercentile: 'p50',
     selectedSeedFromTable: null,
     simulationStatus: 'none',
+    category: SimulationCategory.Portfolio,
   },
   preferences: {
     dataStorage: 'localStorage',
@@ -264,6 +267,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             set((state) => {
               state.results.simulationStatus = status;
             }),
+          updateCategory: (category) =>
+            set((state) => {
+              state.results.category = category;
+            }),
           updateDataStoragePreference: (value) =>
             set((state) => {
               state.preferences.dataStorage = value as 'localStorage' | 'none';
@@ -364,6 +371,7 @@ export const useBaseContributionRuleData = () => useQuickPlanStore((state) => st
 export const useQuickSelectPercentile = () => useQuickPlanStore((state) => state.results.quickSelectPercentile);
 export const useSelectedSeedFromTable = () => useQuickPlanStore((state) => state.results.selectedSeedFromTable);
 export const useSimulationStatus = () => useQuickPlanStore((state) => state.results.simulationStatus);
+export const useResultsCategory = () => useQuickPlanStore((state) => state.results.category);
 
 /**
  * Action selectors
@@ -385,6 +393,7 @@ export const useUpdateBaseContributionRule = () => useQuickPlanStore((state) => 
 export const useUpdateQuickSelectPercentile = () => useQuickPlanStore((state) => state.actions.updateQuickSelectPercentile);
 export const useUpdateSelectedSeedFromTable = () => useQuickPlanStore((state) => state.actions.updateSelectedSeedFromTable);
 export const useUpdateSimulationStatus = () => useQuickPlanStore((state) => state.actions.updateSimulationStatus);
+export const useUpdateResultsCategory = () => useQuickPlanStore((state) => state.actions.updateCategory);
 export const useUpdateDataStoragePreference = () => useQuickPlanStore((state) => state.actions.updateDataStoragePreference);
 export const useUpdateShowReferenceLines = () => useQuickPlanStore((state) => state.actions.updateShowReferenceLines);
 export const useUpdateSimulationSeed = () => useQuickPlanStore((state) => state.actions.updateSimulationSeed);
@@ -463,8 +472,7 @@ export const useSimulationResult = (
 };
 
 export const useMultiSimulationResult = (
-  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
-  category: SimulationCategory
+  simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns'
 ): {
   analysis: MultiSimulationAnalysis | undefined;
   tableData: MultiSimulationTableRow[] | undefined;
@@ -476,6 +484,7 @@ export const useMultiSimulationResult = (
   const inputs = useQuickPlanStore((state) => state.inputs);
   const simulationSeed = useSimulationSeed();
   const sortMode = useMonteCarloSortMode();
+  const category = useResultsCategory();
   const mergeWorker = getMergeWorker();
 
   const [completedSimulations, setCompletedSimulations] = useState(0);

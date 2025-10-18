@@ -3,7 +3,6 @@
 import { useState, memo } from 'react';
 
 import SectionContainer from '@/components/ui/section-container';
-import { SimulationCategory } from '@/lib/types/simulation-category';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
@@ -14,20 +13,18 @@ import Table from '../tables/table';
 import SingleSimulationDataTable from '../tables/single-simulation-data-table';
 
 interface TableWithSelectedSeedProps {
-  currentCategory: SimulationCategory;
   onEscPressed: () => void;
   simulation: SimulationResult;
 }
 
-function TableWithSelectedSeed({ currentCategory, onEscPressed, simulation }: TableWithSelectedSeedProps) {
-  return <SingleSimulationDataTable simulation={simulation} currentCategory={currentCategory} onEscPressed={onEscPressed} />;
+function TableWithSelectedSeed({ onEscPressed, simulation }: TableWithSelectedSeedProps) {
+  return <SingleSimulationDataTable simulation={simulation} onEscPressed={onEscPressed} />;
 }
 
 interface MultiSimulationDataTableSectionProps {
   simulation: SimulationResult | null | undefined;
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
-  currentCategory: SimulationCategory;
   activeSeed: number | undefined;
   handleSeedFromTableChange: (seed: number | null) => void;
 }
@@ -36,7 +33,6 @@ function MultiSimulationDataTableSection({
   simulation,
   tableData,
   yearlyTableData,
-  currentCategory,
   activeSeed,
   handleSeedFromTableChange,
 }: MultiSimulationDataTableSectionProps) {
@@ -48,11 +44,7 @@ function MultiSimulationDataTableSection({
   let tableComponent;
   if (activeSeed && simulation) {
     tableComponent = (
-      <TableWithSelectedSeed
-        currentCategory={currentCategory}
-        onEscPressed={withScrollPreservation(() => handleSeedFromTableChange(null))}
-        simulation={simulation}
-      />
+      <TableWithSelectedSeed onEscPressed={withScrollPreservation(() => handleSeedFromTableChange(null))} simulation={simulation} />
     );
   } else {
     switch (currentTableType) {

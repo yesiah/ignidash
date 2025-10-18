@@ -17,8 +17,6 @@ interface MultiSimulationMainResultsProps {
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
   chartData: MultiSimulationChartData;
-  setCurrentCategory: (category: SimulationCategory) => void;
-  currentCategory: SimulationCategory;
   handlePercentileChange: (percentile: 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null) => void;
   removeActiveSeed: () => void;
   activeSeed?: number | undefined;
@@ -33,8 +31,6 @@ export default function MultiSimulationMainResults({
   tableData,
   yearlyTableData,
   chartData,
-  setCurrentCategory,
-  currentCategory,
   handlePercentileChange,
   removeActiveSeed,
   activeSeed,
@@ -56,8 +52,6 @@ export default function MultiSimulationMainResults({
       >
         <SimulationCategorySelector
           availableCategories={availableCategories}
-          setCurrentCategory={setCurrentCategory}
-          currentCategory={currentCategory}
           handlePercentileChange={handlePercentileChange}
           removeActiveSeed={removeActiveSeed}
           activeSeed={activeSeed}
@@ -65,25 +59,14 @@ export default function MultiSimulationMainResults({
         />
       </SectionContainer>
       {simulationAndKeyMetrics !== null ? (
-        <SingleSimulationChartsSection
-          {...simulationAndKeyMetrics}
-          onAgeSelect={onAgeSelect}
-          selectedAge={selectedAge}
-          currentCategory={currentCategory}
-        />
+        <SingleSimulationChartsSection {...simulationAndKeyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
       ) : (
-        <MultiSimulationChartsSection
-          chartData={chartData}
-          onAgeSelect={onAgeSelect}
-          selectedAge={selectedAge}
-          currentCategory={currentCategory}
-        />
+        <MultiSimulationChartsSection chartData={chartData} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
       )}
       <MultiSimulationDataTableSection
         simulation={simulationAndKeyMetrics?.simulation}
         tableData={tableData}
         yearlyTableData={yearlyTableData}
-        currentCategory={currentCategory}
         activeSeed={activeSeed}
         handleSeedFromTableChange={handleSeedFromTableChange}
       />

@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 
-import { useCurrentAge } from '@/lib/stores/quick-plan-store';
+import { useCurrentAge, useResultsCategory } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
@@ -52,15 +52,16 @@ interface MultiSimulationChartsSectionProps {
   chartData: MultiSimulationChartData;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  currentCategory: SimulationCategory;
 }
 
-function MultiSimulationChartsSection({ chartData, onAgeSelect, selectedAge, currentCategory }: MultiSimulationChartsSectionProps) {
+function MultiSimulationChartsSection({ chartData, onAgeSelect, selectedAge }: MultiSimulationChartsSectionProps) {
+  const resultsCategory = useResultsCategory();
+
   const startAge = useCurrentAge()!;
   const props: ChartsCategoryProps = { chartData, onAgeSelect, selectedAge, startAge };
 
   let chartsComponents = null;
-  switch (currentCategory) {
+  switch (resultsCategory) {
     case SimulationCategory.Portfolio:
       chartsComponents = <PortfolioCharts {...props} />;
       break;
@@ -81,7 +82,7 @@ function MultiSimulationChartsSection({ chartData, onAgeSelect, selectedAge, cur
       <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
         {chartsComponents}
         <div className="@[96rem]:col-span-2">
-          <MultiSimulationDataListSection chartData={chartData} selectedAge={selectedAge} currentCategory={currentCategory} />
+          <MultiSimulationDataListSection chartData={chartData} selectedAge={selectedAge} />
         </div>
       </div>
     </SectionContainer>

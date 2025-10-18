@@ -11,6 +11,7 @@ import {
   useSingleSimulationTaxesChartData,
   useSingleSimulationContributionsChartData,
   useSingleSimulationWithdrawalsChartData,
+  useResultsCategory,
 } from '@/lib/stores/quick-plan-store';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import { SimulationCategory } from '@/lib/types/simulation-category';
@@ -242,21 +243,16 @@ interface SingleSimulationChartsSectionProps {
   keyMetrics: KeyMetrics;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  currentCategory: SimulationCategory;
 }
 
-function SingleSimulationChartsSection({
-  simulation,
-  keyMetrics,
-  onAgeSelect,
-  selectedAge,
-  currentCategory,
-}: SingleSimulationChartsSectionProps) {
+function SingleSimulationChartsSection({ simulation, keyMetrics, onAgeSelect, selectedAge }: SingleSimulationChartsSectionProps) {
+  const resultsCategory = useResultsCategory();
+
   const startAge = simulation.context.startAge;
   const props: ChartsCategoryProps = { simulation, keyMetrics, onAgeSelect, selectedAge, startAge };
 
   let chartsComponents = null;
-  switch (currentCategory) {
+  switch (resultsCategory) {
     case SimulationCategory.Portfolio:
       chartsComponents = <PortfolioCharts {...props} />;
       break;
@@ -289,7 +285,7 @@ function SingleSimulationChartsSection({
       <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
         {chartsComponents}
         <div className="@[96rem]:col-span-2">
-          <SingleSimulationDataListSection simulation={simulation} selectedAge={selectedAge} currentCategory={currentCategory} />
+          <SingleSimulationDataListSection simulation={simulation} selectedAge={selectedAge} />
         </div>
       </div>
     </SectionContainer>

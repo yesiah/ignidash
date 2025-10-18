@@ -18,7 +18,7 @@ interface SingleSimulationMainResultsProps {
 export default function SingleSimulationMainResults({ simulation, keyMetrics }: SingleSimulationMainResultsProps) {
   const startAge = simulation.context.startAge;
 
-  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+  const { selectedAge, onAgeSelect } = useResultsState(startAge);
 
   return (
     <>
@@ -26,20 +26,10 @@ export default function SingleSimulationMainResults({ simulation, keyMetrics }: 
         showBottomBorder
         className="from-emphasized-background to-background bg-gradient-to-l py-0 xl:sticky xl:top-[4.3125rem] xl:z-10"
       >
-        <SimulationCategorySelector
-          availableCategories={Object.values(SimulationCategory).filter((category) => category !== 'Phases')}
-          setCurrentCategory={setCurrentCategory}
-          currentCategory={currentCategory}
-        />
+        <SimulationCategorySelector availableCategories={Object.values(SimulationCategory).filter((category) => category !== 'Phases')} />
       </SectionContainer>
-      <SingleSimulationChartsSection
-        simulation={simulation}
-        keyMetrics={keyMetrics}
-        onAgeSelect={onAgeSelect}
-        selectedAge={selectedAge}
-        currentCategory={currentCategory}
-      />
-      <SingleSimulationDataTableSection simulation={simulation} currentCategory={currentCategory} />
+      <SingleSimulationChartsSection simulation={simulation} keyMetrics={keyMetrics} onAgeSelect={onAgeSelect} selectedAge={selectedAge} />
+      <SingleSimulationDataTableSection simulation={simulation} />
     </>
   );
 }

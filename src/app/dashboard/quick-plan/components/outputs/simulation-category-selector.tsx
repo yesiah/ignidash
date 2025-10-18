@@ -14,7 +14,13 @@ import {
   DropdownHeader,
   DropdownDivider,
 } from '@/components/catalyst/dropdown';
-import { useMonteCarloSortMode, useUpdateMonteCarloSortMode, useQuickSelectPercentile } from '@/lib/stores/quick-plan-store';
+import {
+  useMonteCarloSortMode,
+  useUpdateMonteCarloSortMode,
+  useQuickSelectPercentile,
+  useResultsCategory,
+  useUpdateResultsCategory,
+} from '@/lib/stores/quick-plan-store';
 import { formatChartString } from '@/lib/utils';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 
@@ -54,8 +60,6 @@ function DrillDownBreadcrumb({ removeActiveSeed, activeSeed }: DrillDownBreadcru
 interface SimulationCategorySelectorProps {
   className?: string;
   availableCategories: SimulationCategory[];
-  setCurrentCategory: (category: SimulationCategory) => void;
-  currentCategory: SimulationCategory;
   handlePercentileChange?: (percentile: 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null) => void;
   removeActiveSeed?: () => void;
   activeSeed?: number | undefined;
@@ -65,8 +69,6 @@ interface SimulationCategorySelectorProps {
 export default function SimulationCategorySelector({
   className,
   availableCategories,
-  setCurrentCategory,
-  currentCategory,
   handlePercentileChange,
   removeActiveSeed,
   activeSeed,
@@ -74,6 +76,7 @@ export default function SimulationCategorySelector({
 }: SimulationCategorySelectorProps) {
   const quickSelectPercentile = useQuickSelectPercentile();
   const percentiles = ['p10', 'p25', 'p50', 'p75', 'p90'] as const;
+
   const sortModeOptions = [
     'finalPortfolioValue',
     'retirementAge',
@@ -85,6 +88,9 @@ export default function SimulationCategorySelector({
   const monteCarloSortMode = useMonteCarloSortMode();
   const updateMonteCarloSortMode = useUpdateMonteCarloSortMode();
 
+  const updateResultsCategory = useUpdateResultsCategory();
+  const resultsCategory = useResultsCategory();
+
   const withScrollPreservation = useScrollPreservation();
 
   return (
@@ -94,11 +100,11 @@ export default function SimulationCategorySelector({
           {availableCategories.map((category) => (
             <button
               key={category}
-              onClick={withScrollPreservation(() => setCurrentCategory(category))}
+              onClick={withScrollPreservation(() => updateResultsCategory(category))}
               type="button"
               className={cn(
                 'text-muted-foreground bg-background hover:bg-emphasized-background focus-outline border-border/50 relative inline-flex items-center rounded-full border px-3 py-2 text-sm font-semibold focus:z-10',
-                { 'text-foreground bg-emphasized-background': currentCategory === category }
+                { 'text-foreground bg-emphasized-background': resultsCategory === category }
               )}
             >
               <span className="whitespace-nowrap">{category}</span>

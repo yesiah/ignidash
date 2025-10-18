@@ -8,6 +8,7 @@ import Card from '@/components/ui/card';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
 import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
+import { useResultsCategory } from '@/lib/stores/quick-plan-store';
 
 interface DataListCardProps {
   chartData: MultiSimulationChartData;
@@ -81,12 +82,13 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
 interface MultiSimulationDataListSectionProps {
   chartData: MultiSimulationChartData;
   selectedAge: number;
-  currentCategory: SimulationCategory;
 }
 
-function MultiSimulationDataListSection({ chartData, selectedAge, currentCategory }: MultiSimulationDataListSectionProps) {
+function MultiSimulationDataListSection({ chartData, selectedAge }: MultiSimulationDataListSectionProps) {
+  const resultsCategory = useResultsCategory();
+
   const props: DataListCardProps = { chartData, selectedAge };
-  switch (currentCategory) {
+  switch (resultsCategory) {
     case SimulationCategory.Portfolio:
       return (
         <div className="grid grid-cols-1 gap-2">

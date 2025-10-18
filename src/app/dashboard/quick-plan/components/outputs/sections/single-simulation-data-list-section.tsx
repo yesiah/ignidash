@@ -9,6 +9,7 @@ import Card from '@/components/ui/card';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
 import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
+import { useResultsCategory } from '@/lib/stores/quick-plan-store';
 
 interface DataListCardProps {
   dp: SimulationDataPoint;
@@ -230,10 +231,11 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 interface SingleSimulationDataListSectionProps {
   simulation: SimulationResult;
   selectedAge: number;
-  currentCategory: SimulationCategory;
 }
 
-function SingleSimulationDataListSection({ simulation, selectedAge, currentCategory }: SingleSimulationDataListSectionProps) {
+function SingleSimulationDataListSection({ simulation, selectedAge }: SingleSimulationDataListSectionProps) {
+  const resultsCategory = useResultsCategory();
+
   const dp = useMemo(() => {
     return simulation.data.find((dp) => {
       const startAge = simulation.context.startAge;
@@ -247,7 +249,7 @@ function SingleSimulationDataListSection({ simulation, selectedAge, currentCateg
   if (!dp) return null;
 
   const props: DataListCardProps = { dp, selectedAge };
-  switch (currentCategory) {
+  switch (resultsCategory) {
     case SimulationCategory.Portfolio:
       return (
         <div className="grid grid-cols-1 gap-2">

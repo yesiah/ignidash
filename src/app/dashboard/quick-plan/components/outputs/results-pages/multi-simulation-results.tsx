@@ -10,6 +10,7 @@ import {
   useCurrentAge,
   useUpdateQuickSelectPercentile,
   useUpdateSelectedSeedFromTable,
+  useUpdateResultsCategory,
   type QuickSelectPercentile,
 } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
@@ -28,8 +29,6 @@ interface MultiSimulationResultsSharedProps {
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
   chartData: MultiSimulationChartData;
-  setCurrentCategory: (category: SimulationCategory) => void;
-  currentCategory: SimulationCategory;
   handlePercentileChange: (percentile: 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null) => void;
   onAgeSelect: (age: number) => void;
   selectedAge: number;
@@ -83,38 +82,37 @@ interface MultiSimulationResultsProps {
 
 export default function MultiSimulationResults({ simulationMode }: MultiSimulationResultsProps) {
   const startAge = useCurrentAge()!;
-  const { selectedAge, onAgeSelect, currentCategory, setCurrentCategory } = useResultsState(startAge);
+  const { selectedAge, onAgeSelect } = useResultsState(startAge);
 
-  const { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating, completedSimulations } = useMultiSimulationResult(
-    simulationMode,
-    currentCategory
-  );
+  const { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating, completedSimulations } =
+    useMultiSimulationResult(simulationMode);
 
   const p50KeyMetrics = useKeyMetrics(analysis?.results.p50.result);
 
   const updateQuickSelectPercentile = useUpdateQuickSelectPercentile();
   const updateSelectedSeedFromTable = useUpdateSelectedSeedFromTable();
+  const updateResultsCategory = useUpdateResultsCategory();
 
   const removeActiveSeed = useCallback(() => {
     updateQuickSelectPercentile(null);
     updateSelectedSeedFromTable(null);
-    setCurrentCategory(SimulationCategory.Portfolio);
-  }, [setCurrentCategory, updateQuickSelectPercentile, updateSelectedSeedFromTable]);
+    updateResultsCategory(SimulationCategory.Portfolio);
+  }, [updateResultsCategory, updateQuickSelectPercentile, updateSelectedSeedFromTable]);
 
   const handlePercentileChange = useCallback(
     (percentile: QuickSelectPercentile) => {
       updateQuickSelectPercentile(percentile);
-      setCurrentCategory(SimulationCategory.Portfolio);
+      updateResultsCategory(SimulationCategory.Portfolio);
     },
-    [setCurrentCategory, updateQuickSelectPercentile]
+    [updateResultsCategory, updateQuickSelectPercentile]
   );
 
   const handleSeedFromTableChange = useCallback(
     (seed: number | null) => {
       updateSelectedSeedFromTable(seed);
-      setCurrentCategory(SimulationCategory.Portfolio);
+      updateResultsCategory(SimulationCategory.Portfolio);
     },
-    [setCurrentCategory, updateSelectedSeedFromTable]
+    [updateResultsCategory, updateSelectedSeedFromTable]
   );
 
   const { activeSeed, activeSeedType } = useActiveSeed(analysis);
@@ -139,8 +137,6 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     tableData,
     yearlyTableData,
     chartData,
-    setCurrentCategory,
-    currentCategory,
     handlePercentileChange,
     onAgeSelect,
     selectedAge,

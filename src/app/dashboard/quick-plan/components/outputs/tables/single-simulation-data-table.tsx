@@ -17,6 +17,7 @@ import {
   useSingleSimulationTaxesTableData,
   useSingleSimulationContributionsTableData,
   useSingleSimulationWithdrawalsTableData,
+  useResultsCategory,
 } from '@/lib/stores/quick-plan-store';
 import {
   generatePortfolioTableColumns,
@@ -114,14 +115,15 @@ function WithdrawalsTable({ simulation, onEscPressed }: TableCategoryProps) {
 
 interface SingleSimulationDataTableProps {
   simulation: SimulationResult;
-  currentCategory: SimulationCategory;
   onEscPressed?: () => void;
 }
 
-export default function SingleSimulationDataTable({ simulation, currentCategory, onEscPressed }: SingleSimulationDataTableProps) {
+export default function SingleSimulationDataTable({ simulation, onEscPressed }: SingleSimulationDataTableProps) {
+  const resultsCategory = useResultsCategory();
+
   const props: TableCategoryProps = { simulation, onEscPressed };
 
-  switch (currentCategory) {
+  switch (resultsCategory) {
     case SimulationCategory.Portfolio:
       return <PortfolioTable {...props} />;
     case SimulationCategory.CashFlow:
