@@ -33,7 +33,6 @@ const mergeAPI = {
 
     const handle = uuidv4();
     cache = { handle, res: merged };
-
     return { handle };
   },
 
