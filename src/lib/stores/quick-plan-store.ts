@@ -455,7 +455,7 @@ export const useMultiSimulationResult = (
   const worker = getSimulationWorker();
 
   const [completedSimulations, setCompletedSimulations] = useState(0);
-  const onProgress = useCallback((completed: number) => setCompletedSimulations(completed), []);
+  const onProgress = useCallback(() => setCompletedSimulations((prev) => prev + 1), []);
 
   const swrKey = ['simulationHandle', inputs, simulationSeed, simulationMode];
   const {

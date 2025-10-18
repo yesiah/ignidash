@@ -268,7 +268,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
     return this.runSimulation(returnsProvider, timeline);
   }
 
-  runMonteCarloSimulation(numSimulations: number, onProgress?: (completed: number) => void): MultiSimulationResult {
+  runMonteCarloSimulation(numSimulations: number, onProgress?: () => void): MultiSimulationResult {
     const timeline = this.inputs.timeline;
     if (!timeline) throw new Error('Must have timeline data for simulation');
 
@@ -280,7 +280,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
       const result = this.runSimulation(returnsProvider, timeline);
       simulations.push([simulationSeed, result]);
 
-      if (onProgress) onProgress(i + 1);
+      if (onProgress) onProgress();
     }
 
     return { simulations };
@@ -317,7 +317,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
     };
   }
 
-  runLcgHistoricalBacktest(numSimulations: number, onProgress?: (completed: number) => void): MultiSimulationResult {
+  runLcgHistoricalBacktest(numSimulations: number, onProgress?: () => void): MultiSimulationResult {
     const timeline = this.inputs.timeline;
     if (!timeline) throw new Error('Must have timeline data for simulation');
 
@@ -339,7 +339,7 @@ export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEn
         },
       ]);
 
-      if (onProgress) onProgress(i + 1);
+      if (onProgress) onProgress();
     }
 
     return { simulations };

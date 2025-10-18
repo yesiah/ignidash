@@ -31,7 +31,7 @@ const simulationAPI = {
     baseSeed: number,
     numSimulations: number,
     simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',
-    onProgress?: (completed: number) => void
+    onProgress?: () => void
   ): Promise<{ handle: string }> {
     const handle = uuidv4();
 
