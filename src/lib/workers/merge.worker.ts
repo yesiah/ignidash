@@ -28,12 +28,12 @@ const mergeAPI = {
   },
 
   async getMergedResult(): Promise<{ handle: string }> {
-    const handle = uuidv4();
-
     const merged: MultiSimulationResult = { simulations: partialResults.flatMap((r) => r.simulations) };
     partialResults = [];
 
+    const handle = uuidv4();
     cache = { handle, res: merged };
+
     return { handle };
   },
 
