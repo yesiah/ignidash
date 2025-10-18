@@ -18,7 +18,7 @@ import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
 import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
 import { useResultsState } from '@/hooks/use-results-state';
-import { useActiveSeed } from '@/hooks/use-active-seed';
+import { useActiveSeed, useRemoveActiveSeed } from '@/hooks/use-active-seed';
 import ProgressBar from '@/components/ui/progress-bar';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 
@@ -93,11 +93,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   const updateSelectedSeedFromTable = useUpdateSelectedSeedFromTable();
   const updateResultsCategory = useUpdateResultsCategory();
 
-  const removeActiveSeed = useCallback(() => {
-    updateQuickSelectPercentile(null);
-    updateSelectedSeedFromTable(null);
-    updateResultsCategory(SimulationCategory.Portfolio);
-  }, [updateResultsCategory, updateQuickSelectPercentile, updateSelectedSeedFromTable]);
+  const removeActiveSeed = useRemoveActiveSeed();
 
   const handlePercentileChange = useCallback(
     (percentile: QuickSelectPercentile) => {
