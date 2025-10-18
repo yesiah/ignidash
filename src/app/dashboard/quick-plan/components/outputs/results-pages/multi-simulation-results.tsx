@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 
 import {
   useMultiSimulationResult,
@@ -8,6 +8,10 @@ import {
   useSimulationResult,
   useSimulationSeed,
   useCurrentAge,
+  useQuickSelectPercentile,
+  useUpdateQuickSelectPercentile,
+  useSelectedSeedFromTable,
+  useUpdateSelectedSeedFromTable,
 } from '@/lib/stores/quick-plan-store';
 import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/v2/simulation-engine';
@@ -89,43 +93,46 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
 
   const p50KeyMetrics = useKeyMetrics(analysis?.results.p50.result);
 
-  const [currentPercentile, setCurrentPercentile] = useState<'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null>(null);
-  const [selectedSeedFromTable, setSelectedSeedFromTable] = useState<number | null>(null);
+  const quickSelectPercentile = useQuickSelectPercentile();
+  const updateQuickSelectPercentile = useUpdateQuickSelectPercentile();
+
+  const selectedSeedFromTable = useSelectedSeedFromTable();
+  const updateSelectedSeedFromTable = useUpdateSelectedSeedFromTable();
 
   const removeActiveSeed = useCallback(() => {
-    setCurrentPercentile(null);
-    setSelectedSeedFromTable(null);
+    updateQuickSelectPercentile(null);
+    updateSelectedSeedFromTable(null);
     setCurrentCategory(SimulationCategory.Portfolio);
-  }, [setCurrentCategory]);
+  }, [setCurrentCategory, updateQuickSelectPercentile, updateSelectedSeedFromTable]);
 
   const handlePercentileChange = useCallback(
-    (percentile: typeof currentPercentile) => {
-      setCurrentPercentile(percentile);
+    (percentile: typeof quickSelectPercentile) => {
+      updateQuickSelectPercentile(percentile);
       setCurrentCategory(SimulationCategory.Portfolio);
     },
-    [setCurrentCategory]
+    [setCurrentCategory, updateQuickSelectPercentile]
   );
 
   const handleSeedFromTableChange = useCallback(
     (seed: number | null) => {
-      setSelectedSeedFromTable(seed);
+      updateSelectedSeedFromTable(seed);
       setCurrentCategory(SimulationCategory.Portfolio);
     },
-    [setCurrentCategory]
+    [setCurrentCategory, updateSelectedSeedFromTable]
   );
 
   const { activeSeed, activeSeedType } = useMemo(() => {
     if (selectedSeedFromTable !== null) {
       return { activeSeed: selectedSeedFromTable, activeSeedType: 'table' as const };
-    } else if (currentPercentile !== null) {
-      return { activeSeed: analysis?.results[currentPercentile].seed, activeSeedType: 'percentile' as const };
+    } else if (quickSelectPercentile !== null) {
+      return { activeSeed: analysis?.results[quickSelectPercentile].seed, activeSeedType: 'percentile' as const };
     } else {
       return { activeSeed: undefined };
     }
-  }, [selectedSeedFromTable, currentPercentile, analysis]);
+  }, [selectedSeedFromTable, quickSelectPercentile, analysis]);
 
   const seed = useSimulationSeed();
-  useEffect(() => setSelectedSeedFromTable(null), [seed, simulationMode]);
+  useEffect(() => updateSelectedSeedFromTable(null), [seed, updateSelectedSeedFromTable, simulationMode]);
 
   if (!analysis || !p50KeyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
     const progressPercent = (completedSimulations / 500) * 100;
@@ -147,7 +154,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     setCurrentCategory,
     currentCategory,
     setCurrentPercentile: handlePercentileChange,
-    currentPercentile,
+    currentPercentile: quickSelectPercentile,
     onAgeSelect,
     selectedAge,
     setSelectedSeedFromTable: handleSeedFromTableChange,

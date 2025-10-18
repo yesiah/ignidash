@@ -67,12 +67,17 @@ export type MonteCarloSortMode =
   | 'averageStockReturn'
   | 'earlyRetirementStockReturn';
 
+export type QuickSelectPercentile = 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null;
 export type SimulationStatus = 'none' | 'loading';
 
 interface QuickPlanState {
   inputs: QuickPlanInputs;
 
-  simulationStatus: SimulationStatus;
+  results: {
+    quickSelectPercentile: QuickSelectPercentile;
+    selectedSeedFromTable: number | null;
+    simulationStatus: SimulationStatus;
+  };
 
   preferences: {
     dataStorage: 'localStorage' | 'none';
@@ -107,7 +112,9 @@ interface QuickPlanState {
     deleteContributionRule: (id: string) => void;
     updateBaseContributionRule: (data: BaseContributionInputs) => void;
 
-    /* Simulation Status */
+    /* Results */
+    updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
+    updateSelectedSeedFromTable: (seed: number | null) => void;
     updateSimulationStatus: (status: SimulationStatus) => void;
 
     /* Preferences */
@@ -132,7 +139,11 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
     baseContributionRule: { type: 'save' },
     marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
   },
-  simulationStatus: 'none',
+  results: {
+    quickSelectPercentile: 'p50',
+    selectedSeedFromTable: null,
+    simulationStatus: 'none',
+  },
   preferences: {
     dataStorage: 'localStorage',
     showReferenceLines: true,
@@ -241,9 +252,17 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             set((state) => {
               state.inputs.baseContributionRule = { ...data };
             }),
+          updateQuickSelectPercentile: (percentile) =>
+            set((state) => {
+              state.results.quickSelectPercentile = percentile;
+            }),
+          updateSelectedSeedFromTable: (seed) =>
+            set((state) => {
+              state.results.selectedSeedFromTable = seed;
+            }),
           updateSimulationStatus: (status) =>
             set((state) => {
-              state.simulationStatus = status;
+              state.results.simulationStatus = status;
             }),
           updateDataStoragePreference: (value) =>
             set((state) => {
@@ -342,7 +361,9 @@ export const useContributionRuleData = (id: string | null) =>
   useQuickPlanStore((state) => (id !== null ? state.inputs.contributionRules[id] : null));
 export const useBaseContributionRuleData = () => useQuickPlanStore((state) => state.inputs.baseContributionRule);
 
-export const useSimulationStatus = () => useQuickPlanStore((state) => state.simulationStatus);
+export const useQuickSelectPercentile = () => useQuickPlanStore((state) => state.results.quickSelectPercentile);
+export const useSelectedSeedFromTable = () => useQuickPlanStore((state) => state.results.selectedSeedFromTable);
+export const useSimulationStatus = () => useQuickPlanStore((state) => state.results.simulationStatus);
 
 /**
  * Action selectors
@@ -361,6 +382,8 @@ export const useReorderContributionRules = () => useQuickPlanStore((state) => st
 export const useDeleteContributionRule = () => useQuickPlanStore((state) => state.actions.deleteContributionRule);
 export const useUpdateBaseContributionRule = () => useQuickPlanStore((state) => state.actions.updateBaseContributionRule);
 
+export const useUpdateQuickSelectPercentile = () => useQuickPlanStore((state) => state.actions.updateQuickSelectPercentile);
+export const useUpdateSelectedSeedFromTable = () => useQuickPlanStore((state) => state.actions.updateSelectedSeedFromTable);
 export const useUpdateSimulationStatus = () => useQuickPlanStore((state) => state.actions.updateSimulationStatus);
 export const useUpdateDataStoragePreference = () => useQuickPlanStore((state) => state.actions.updateDataStoragePreference);
 export const useUpdateShowReferenceLines = () => useQuickPlanStore((state) => state.actions.updateShowReferenceLines);
