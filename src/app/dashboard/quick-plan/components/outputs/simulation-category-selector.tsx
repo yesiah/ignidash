@@ -142,7 +142,7 @@ export default function SimulationCategorySelector({
                 {percentiles.map((percentile) => (
                   <DropdownItem
                     key={percentile}
-                    onClick={() => handlePercentileChange(quickSelectPercentile !== percentile ? percentile : null)}
+                    onClick={withScrollPreservation(() => handlePercentileChange(quickSelectPercentile !== percentile ? percentile : null))}
                   >
                     <CheckIcon data-slot="icon" className={cn({ invisible: quickSelectPercentile !== percentile })} />
                     <DropdownLabel className="uppercase">{percentile}</DropdownLabel>
