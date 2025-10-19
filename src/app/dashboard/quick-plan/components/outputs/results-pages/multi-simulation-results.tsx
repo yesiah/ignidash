@@ -111,7 +111,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
     [updateResultsCategory, updateSelectedSeedFromTable]
   );
 
-  const { activeSeed, activeSeedType } = useActiveSeed(analysis);
+  const { activeSeed, activeSeedType } = useActiveSeed();
 
   const seed = useSimulationSeed();
   useEffect(() => removeActiveSeed(), [seed, simulationMode, removeActiveSeed]);

@@ -5,15 +5,12 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 import { useActiveSeed, useRemoveActiveSeed } from '@/hooks/use-active-seed';
-import { useDerivedMultiSimulationData } from '@/lib/stores/quick-plan-store';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Kbd, KbdGroup } from '@/components/ui/kbd';
 
 export default function DrillDownBreadcrumb() {
-  const { analysis } = useDerivedMultiSimulationData();
-
-  const { activeSeed } = useActiveSeed(analysis);
+  const { activeSeed } = useActiveSeed();
   const removeActiveSeed = useRemoveActiveSeed();
 
   const withScrollPreservation = useScrollPreservation();

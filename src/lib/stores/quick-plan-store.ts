@@ -77,9 +77,9 @@ interface QuickPlanState {
   results: {
     quickSelectPercentile: QuickSelectPercentile;
     selectedSeedFromTable: number | null;
+    selectedSeedFromQuickPercentile: number | null;
     simulationStatus: SimulationStatus;
     category: SimulationCategory;
-    handle: string | undefined;
   };
 
   preferences: {
@@ -118,9 +118,9 @@ interface QuickPlanState {
     /* Results */
     updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
     updateSelectedSeedFromTable: (seed: number | null) => void;
+    updateSelectedSeedFromQuickPercentile: (seed: number | null) => void;
     updateSimulationStatus: (status: SimulationStatus) => void;
     updateCategory: (category: SimulationCategory) => void;
-    updateHandle: (handle: string | undefined) => void;
 
     /* Preferences */
     updateDataStoragePreference: (value: QuickPlanState['preferences']['dataStorage']) => void;
@@ -147,9 +147,9 @@ export const defaultState: Omit<QuickPlanState, 'actions'> = {
   results: {
     quickSelectPercentile: 'p50',
     selectedSeedFromTable: null,
+    selectedSeedFromQuickPercentile: null,
     simulationStatus: 'none',
     category: SimulationCategory.Portfolio,
-    handle: undefined,
   },
   preferences: {
     dataStorage: 'localStorage',
@@ -267,6 +267,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
             set((state) => {
               state.results.selectedSeedFromTable = seed;
             }),
+          updateSelectedSeedFromQuickPercentile: (seed) =>
+            set((state) => {
+              state.results.selectedSeedFromQuickPercentile = seed;
+            }),
           updateSimulationStatus: (status) =>
             set((state) => {
               state.results.simulationStatus = status;
@@ -274,10 +278,6 @@ export const useQuickPlanStore = create<QuickPlanState>()(
           updateCategory: (category) =>
             set((state) => {
               state.results.category = category;
-            }),
-          updateHandle: (handle) =>
-            set((state) => {
-              state.results.handle = handle;
             }),
           updateDataStoragePreference: (value) =>
             set((state) => {
@@ -378,9 +378,9 @@ export const useBaseContributionRuleData = () => useQuickPlanStore((state) => st
 
 export const useQuickSelectPercentile = () => useQuickPlanStore((state) => state.results.quickSelectPercentile);
 export const useSelectedSeedFromTable = () => useQuickPlanStore((state) => state.results.selectedSeedFromTable);
+export const useSelectedSeedFromQuickPercentile = () => useQuickPlanStore((state) => state.results.selectedSeedFromQuickPercentile);
 export const useSimulationStatus = () => useQuickPlanStore((state) => state.results.simulationStatus);
 export const useResultsCategory = () => useQuickPlanStore((state) => state.results.category);
-export const useSimulationHandle = () => useQuickPlanStore((state) => state.results.handle);
 
 /**
  * Action selectors
@@ -401,9 +401,10 @@ export const useUpdateBaseContributionRule = () => useQuickPlanStore((state) => 
 
 export const useUpdateQuickSelectPercentile = () => useQuickPlanStore((state) => state.actions.updateQuickSelectPercentile);
 export const useUpdateSelectedSeedFromTable = () => useQuickPlanStore((state) => state.actions.updateSelectedSeedFromTable);
+export const useUpdateSelectedSeedFromQuickPercentile = () =>
+  useQuickPlanStore((state) => state.actions.updateSelectedSeedFromQuickPercentile);
 export const useUpdateSimulationStatus = () => useQuickPlanStore((state) => state.actions.updateSimulationStatus);
 export const useUpdateResultsCategory = () => useQuickPlanStore((state) => state.actions.updateCategory);
-export const useUpdateSimulationHandle = () => useQuickPlanStore((state) => state.actions.updateHandle);
 export const useUpdateDataStoragePreference = () => useQuickPlanStore((state) => state.actions.updateDataStoragePreference);
 export const useUpdateShowReferenceLines = () => useQuickPlanStore((state) => state.actions.updateShowReferenceLines);
 export const useUpdateSimulationSeed = () => useQuickPlanStore((state) => state.actions.updateSimulationSeed);
@@ -542,11 +543,6 @@ export const useMultiSimulationResult = (
   const handle = handleData?.handle;
   const prevHandle = usePrevious(handle);
 
-  const updateHandle = useUpdateSimulationHandle();
-  useEffect(() => {
-    updateHandle(handle);
-  }, [handle, updateHandle]);
-
   const sortMode = useMonteCarloSortMode();
   const category = useResultsCategory();
   const { data: { analysis, tableData, yearlyTableData, chartData } = {} } = useSWR(
@@ -555,34 +551,19 @@ export const useMultiSimulationResult = (
     { ...swrOptions, keepPreviousData: prevHandle === handle }
   );
 
+  const quickSelectPercentile = useQuickSelectPercentile();
+  const updateSelectedSeedFromPercentile = useUpdateSelectedSeedFromQuickPercentile();
+  useEffect(() => {
+    const seed = quickSelectPercentile !== null ? (analysis?.results[quickSelectPercentile].seed ?? null) : null;
+    updateSelectedSeedFromPercentile(seed);
+  }, [analysis?.results, quickSelectPercentile, updateSelectedSeedFromPercentile]);
+
   const updateSimulationStatus = useUpdateSimulationStatus();
   useEffect(() => {
     updateSimulationStatus(isLoading || isValidating ? 'loading' : 'none');
   }, [isLoading, isValidating, updateSimulationStatus]);
 
   return { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating: isLoading || isValidating, completedSimulations };
-};
-
-export const useDerivedMultiSimulationData = (): {
-  analysis: MultiSimulationAnalysis | undefined;
-  tableData: MultiSimulationTableRow[] | undefined;
-  yearlyTableData: YearlyAggregateTableRow[] | undefined;
-  chartData: MultiSimulationChartData | undefined;
-} => {
-  const mergeWorker = getMergeWorker();
-
-  const handle = useSimulationHandle();
-  const prevHandle = usePrevious(handle);
-
-  const sortMode = useMonteCarloSortMode();
-  const category = useResultsCategory();
-  const { data: { analysis, tableData, yearlyTableData, chartData } = {} } = useSWR(
-    handle ? ['derived', handle, sortMode, category] : null,
-    () => mergeWorker.getDerivedMultiSimulationData(handle!, sortMode, category),
-    { revalidateOnFocus: false, revalidateIfStale: false, revalidateOnReconnect: false, keepPreviousData: prevHandle === handle }
-  );
-
-  return { analysis, tableData, yearlyTableData, chartData };
 };
 
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
