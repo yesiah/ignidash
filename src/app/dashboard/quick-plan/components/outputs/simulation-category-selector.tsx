@@ -42,7 +42,7 @@ function DrillDownBreadcrumb({ removeActiveSeed, activeSeed }: DrillDownBreadcru
               className="text-muted-foreground hover:text-foreground focus-outline"
               onClick={withScrollPreservation(() => removeActiveSeed())}
             >
-              <span className="underline underline-offset-2">All Results</span>
+              <span className="underline underline-offset-2">Monte Carlo Results</span>
             </button>
           </div>
         </li>
