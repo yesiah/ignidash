@@ -16,6 +16,5 @@ export function useRegenSimulation() {
     label: 'Regenerate simulation',
     handleClick,
     isDisabled,
-    className: !isDisabled ? 'hover:-rotate-180 transition-transform duration-300' : '',
   };
 }

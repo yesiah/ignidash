@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 type SurfaceColor = 'default' | 'emphasized';
 
@@ -36,16 +37,21 @@ export default function IconButton({
   }
 
   return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={onClick}
-      disabled={isDisabled}
-      className={cn('ring-border focus-outline rounded-full p-2 transition-transform hover:ring', className, hoverClass, {
-        'cursor-not-allowed opacity-50': isDisabled,
-      })}
-    >
-      <Icon aria-hidden="true" className={cn('size-5', iconClassName)} />
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          onClick={onClick}
+          disabled={isDisabled}
+          className={cn('ring-border focus-outline rounded-full p-2 transition-transform hover:ring', className, hoverClass, {
+            'cursor-not-allowed opacity-50': isDisabled,
+          })}
+        >
+          <Icon aria-hidden="true" className={cn('size-5', iconClassName)} />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
   );
 }

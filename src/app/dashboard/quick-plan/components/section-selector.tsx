@@ -39,7 +39,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const [timelineOpen, setTimelineOpen] = useState(false);
   const [simulationSettingsOpen, setSimulationSettingsOpen] = useState(false);
 
-  const { icon, label, handleClick, isDisabled, className } = useRegenSimulation();
+  const { icon, label, handleClick, isDisabled } = useRegenSimulation();
 
   const expectedReturnsTitleComponent = (
     <div className="flex items-center gap-2">
@@ -110,14 +110,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 onClick={() => setSimulationSettingsOpen(true)}
                 surfaceColor="emphasized"
               />
-              <IconButton
-                icon={icon}
-                label={label}
-                onClick={handleClick}
-                className={className}
-                surfaceColor="emphasized"
-                isDisabled={isDisabled}
-              />
+              <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
             </div>
           )}
         </div>

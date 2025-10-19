@@ -13,7 +13,7 @@ import SimulationSettingsDrawer from './drawers/simulation-settings-drawer';
 import DrillDownBreadcrumb from './drill-down-breadcrumb';
 
 export default function ResultsColumnHeader() {
-  const { icon, label, handleClick, isDisabled, className } = useRegenSimulation();
+  const { icon, label, handleClick, isDisabled } = useRegenSimulation();
   const [simulationSettingsOpen, setSimulationSettingsOpen] = useState(false);
 
   const simulationSettingsTitleComponent = (
@@ -54,14 +54,7 @@ export default function ResultsColumnHeader() {
               onClick={() => setSimulationSettingsOpen(true)}
               surfaceColor="emphasized"
             />
-            <IconButton
-              icon={icon}
-              label={label}
-              onClick={handleClick}
-              className={className}
-              surfaceColor="emphasized"
-              isDisabled={isDisabled}
-            />
+            <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
           </div>
         }
         className="w-[calc(100%-42rem)] group-data-[state=collapsed]/sidebar:w-[calc(100%-28rem)]"
