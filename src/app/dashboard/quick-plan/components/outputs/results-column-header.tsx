@@ -37,7 +37,7 @@ export default function ResultsColumnHeader() {
       break;
     case 'monteCarloStochasticReturns':
     case 'monteCarloHistoricalReturns':
-      title = <DrillDownBreadcrumb simulationMode={simulationMode} />;
+      title = <DrillDownBreadcrumb />;
       break;
   }
 

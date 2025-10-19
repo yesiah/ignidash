@@ -563,6 +563,28 @@ export const useMultiSimulationResult = (
   return { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating: isLoading || isValidating, completedSimulations };
 };
 
+export const useDerivedMultiSimulationData = (): {
+  analysis: MultiSimulationAnalysis | undefined;
+  tableData: MultiSimulationTableRow[] | undefined;
+  yearlyTableData: YearlyAggregateTableRow[] | undefined;
+  chartData: MultiSimulationChartData | undefined;
+} => {
+  const mergeWorker = getMergeWorker();
+
+  const handle = useSimulationHandle();
+  const prevHandle = usePrevious(handle);
+
+  const sortMode = useMonteCarloSortMode();
+  const category = useResultsCategory();
+  const { data: { analysis, tableData, yearlyTableData, chartData } = {} } = useSWR(
+    handle ? ['derived', handle, sortMode, category] : null,
+    () => mergeWorker.getDerivedMultiSimulationData(handle!, sortMode, category),
+    { revalidateOnFocus: false, revalidateIfStale: false, revalidateOnReconnect: false, keepPreviousData: prevHandle === handle }
+  );
+
+  return { analysis, tableData, yearlyTableData, chartData };
+};
+
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
   return useMemo(() => {
     if (!simulationResult) return null;
