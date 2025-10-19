@@ -18,7 +18,7 @@ export default function TableTypeSelector({ className, setCurrentType, currentTy
   const withScrollPreservation = useScrollPreservation();
 
   return (
-    <div className={cn('isolate -ml-1 flex gap-x-2 overflow-x-auto pb-2 pl-1', className)}>
+    <div className={cn('isolate -mt-1 -ml-1 flex gap-x-2 overflow-x-auto pt-1 pb-2 pl-1', className)}>
       {Object.values(TableType).map((type) => (
         <button
           key={type}
