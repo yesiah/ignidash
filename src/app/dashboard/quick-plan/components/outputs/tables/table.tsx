@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
 
 import type { TableColumn } from '@/lib/types/table';
@@ -17,7 +17,6 @@ interface TableProps<T extends Record<string, unknown>> {
   itemsPerPage?: number;
   showPagination?: boolean;
   onRowClick?: (row: T) => void;
-  onEscPressed?: () => void;
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -35,7 +34,6 @@ export default function Table<T extends Record<string, unknown>>({
   itemsPerPage = 10,
   showPagination = true,
   onRowClick,
-  onEscPressed,
 }: TableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortState, setSortState] = useState<SortState<T>>({
@@ -44,7 +42,6 @@ export default function Table<T extends Record<string, unknown>>({
   });
   const [hoveredColumn, setHoveredColumn] = useState<keyof T | null>(null);
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const tableRef = useRef<HTMLTableElement>(null);
 
   const withScrollPreservation = useScrollPreservation();
   const handleSort = withScrollPreservation((column: keyof T) => {
@@ -102,13 +99,6 @@ export default function Table<T extends Record<string, unknown>>({
   const handlePageChange = withScrollPreservation((page: number) => setCurrentPage(page));
   useEffect(() => setCurrentPage(1), [data]);
 
-  useEffect(() => {
-    if (onEscPressed && tableRef.current) {
-      const firstRow = tableRef.current.querySelector('tbody tr');
-      if (firstRow) (firstRow as HTMLElement).focus({ preventScroll: true });
-    }
-  }, [onEscPressed]);
-
   return (
     <>
       <Card removeInternalPadding className={cn('-mx-2 my-0 border-x-0 sm:mx-0 sm:border', className)}>
@@ -116,16 +106,7 @@ export default function Table<T extends Record<string, unknown>>({
           <div className="flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle">
-                <table
-                  ref={tableRef}
-                  className="divide-border/50 bg-background relative min-w-full divide-y"
-                  onKeyDown={(e: React.KeyboardEvent) => {
-                    if (e.key === 'Escape' && onEscPressed) {
-                      e.preventDefault();
-                      onEscPressed();
-                    }
-                  }}
-                >
+                <table className="divide-border/50 bg-background relative min-w-full divide-y">
                   <thead className="bg-emphasized-background">
                     <tr className="text-foreground">
                       {columns.map((col, index) => {

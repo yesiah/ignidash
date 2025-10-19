@@ -13,12 +13,11 @@ import Table from '../tables/table';
 import SingleSimulationDataTable from '../tables/single-simulation-data-table';
 
 interface TableWithSelectedSeedProps {
-  onEscPressed: () => void;
   simulation: SimulationResult;
 }
 
-function TableWithSelectedSeed({ onEscPressed, simulation }: TableWithSelectedSeedProps) {
-  return <SingleSimulationDataTable simulation={simulation} onEscPressed={onEscPressed} />;
+function TableWithSelectedSeed({ simulation }: TableWithSelectedSeedProps) {
+  return <SingleSimulationDataTable simulation={simulation} />;
 }
 
 interface MultiSimulationDataTableSectionProps {
@@ -43,9 +42,7 @@ function MultiSimulationDataTableSection({
 
   let tableComponent;
   if (activeSeed && simulation) {
-    tableComponent = (
-      <TableWithSelectedSeed onEscPressed={withScrollPreservation(() => handleSeedFromTableChange(null))} simulation={simulation} />
-    );
+    tableComponent = <TableWithSelectedSeed simulation={simulation} />;
   } else {
     switch (currentTableType) {
       case TableType.AllSimulations:

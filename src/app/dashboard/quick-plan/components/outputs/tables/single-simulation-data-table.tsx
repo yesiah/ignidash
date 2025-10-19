@@ -32,96 +32,52 @@ import Table from './table';
 
 interface TableCategoryProps {
   simulation: SimulationResult;
-  onEscPressed?: () => void;
 }
 
-function PortfolioTable({ simulation, onEscPressed }: TableCategoryProps) {
+function PortfolioTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationPortfolioTableData(simulation);
 
-  return (
-    <Table<SingleSimulationPortfolioTableRow>
-      columns={generatePortfolioTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationPortfolioTableRow> columns={generatePortfolioTableColumns()} data={tableData} keyField="year" />;
 }
 
-function CashFlowTable({ simulation, onEscPressed }: TableCategoryProps) {
+function CashFlowTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationCashFlowTableData(simulation);
 
-  return (
-    <Table<SingleSimulationCashFlowTableRow>
-      columns={generateCashFlowTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationCashFlowTableRow> columns={generateCashFlowTableColumns()} data={tableData} keyField="year" />;
 }
 
-function ReturnsTable({ simulation, onEscPressed }: TableCategoryProps) {
+function ReturnsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationReturnsTableData(simulation);
 
-  return (
-    <Table<SingleSimulationReturnsTableRow>
-      columns={generateReturnsTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationReturnsTableRow> columns={generateReturnsTableColumns()} data={tableData} keyField="year" />;
 }
 
-function TaxesTable({ simulation, onEscPressed }: TableCategoryProps) {
+function TaxesTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationTaxesTableData(simulation);
 
-  return (
-    <Table<SingleSimulationTaxesTableRow>
-      columns={generateTaxesTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationTaxesTableRow> columns={generateTaxesTableColumns()} data={tableData} keyField="year" />;
 }
 
-function ContributionsTable({ simulation, onEscPressed }: TableCategoryProps) {
+function ContributionsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationContributionsTableData(simulation);
 
-  return (
-    <Table<SingleSimulationContributionsTableRow>
-      columns={generateContributionsTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationContributionsTableRow> columns={generateContributionsTableColumns()} data={tableData} keyField="year" />;
 }
 
-function WithdrawalsTable({ simulation, onEscPressed }: TableCategoryProps) {
+function WithdrawalsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationWithdrawalsTableData(simulation);
 
-  return (
-    <Table<SingleSimulationWithdrawalsTableRow>
-      columns={generateWithdrawalsTableColumns()}
-      data={tableData}
-      keyField="year"
-      onEscPressed={onEscPressed}
-    />
-  );
+  return <Table<SingleSimulationWithdrawalsTableRow> columns={generateWithdrawalsTableColumns()} data={tableData} keyField="year" />;
 }
 
 interface SingleSimulationDataTableProps {
   simulation: SimulationResult;
-  onEscPressed?: () => void;
 }
 
-export default function SingleSimulationDataTable({ simulation, onEscPressed }: SingleSimulationDataTableProps) {
+export default function SingleSimulationDataTable({ simulation }: SingleSimulationDataTableProps) {
   const resultsCategory = useResultsCategory();
 
-  const props: TableCategoryProps = { simulation, onEscPressed };
+  const props: TableCategoryProps = { simulation };
 
   switch (resultsCategory) {
     case SimulationCategory.Portfolio:
