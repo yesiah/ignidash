@@ -119,9 +119,9 @@ export default function SimulationCategorySelector({
               </DropdownButton>
               <DropdownMenu>
                 <DropdownHeader>
-                  <div className="pr-6">
+                  <div>
+                    <div className="text-sm/7 font-semibold text-stone-800 dark:text-white">Sort By</div>
                     <div className="text-xs text-stone-500 dark:text-stone-400">Sort simulations by this metric.</div>
-                    <div className="text-sm/7 font-semibold text-stone-800 dark:text-white">Quick Select</div>
                   </div>
                 </DropdownHeader>
                 <DropdownDivider />
@@ -139,9 +139,9 @@ export default function SimulationCategorySelector({
               </DropdownButton>
               <DropdownMenu>
                 <DropdownHeader>
-                  <div className="pr-6">
-                    <div className="text-xs text-stone-500 dark:text-stone-400">Jump to this percentile.</div>
-                    <div className="text-sm/7 font-semibold text-stone-800 dark:text-white">Quick Select</div>
+                  <div>
+                    <div className="text-sm/7 font-semibold text-stone-800 dark:text-white">Pick Percentile</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400">View this percentile of chosen metric.</div>
                   </div>
                 </DropdownHeader>
                 <DropdownDivider />
