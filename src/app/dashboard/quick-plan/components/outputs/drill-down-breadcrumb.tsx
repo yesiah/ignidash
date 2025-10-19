@@ -7,6 +7,8 @@ import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
 import { useActiveSeed, useRemoveActiveSeed } from '@/hooks/use-active-seed';
 import { useMultiSimulationResult } from '@/lib/stores/quick-plan-store';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Kbd, KbdGroup } from '@/components/ui/kbd';
 
 interface DrillDownBreadcrumbProps {
   simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns';
@@ -29,19 +31,32 @@ export default function DrillDownBreadcrumb({ simulationMode }: DrillDownBreadcr
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [activeSeed, removeActiveSeed]);
 
+  const isMac = navigator.userAgent.includes('Mac');
+
   return (
     <nav aria-label="Breadcrumb" className="flex">
       <ol role="list" className="flex items-center space-x-2">
         <li>
           <div>
-            <button
-              type="button"
-              className={cn('focus-outline', { 'text-muted-foreground hover:text-foreground': !!activeSeed })}
-              onClick={withScrollPreservation(removeActiveSeed)}
-              disabled={!activeSeed}
-            >
-              <span className="relative lowercase">Monte Carlo Results</span>
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className={cn('focus-outline lowercase', { 'text-muted-foreground hover:text-foreground': !!activeSeed })}
+                  onClick={withScrollPreservation(removeActiveSeed)}
+                  disabled={!activeSeed}
+                >
+                  Monte Carlo Results
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <KbdGroup>
+                  <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
+                  <span>+</span>
+                  <Kbd>{isMac ? 'esc' : 'Esc'}</Kbd>
+                </KbdGroup>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </li>
         {activeSeed && (
