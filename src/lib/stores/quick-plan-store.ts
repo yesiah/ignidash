@@ -491,6 +491,8 @@ export const useMultiSimulationResult = (
   const [completedSimulations, setCompletedSimulations] = useState(0);
   const onProgress = useCallback(() => setCompletedSimulations((prev) => prev + 1), []);
 
+  const swrOptions = { revalidateOnFocus: false, revalidateIfStale: false, revalidateOnReconnect: false };
+
   const swrKey = ['simulationHandle', inputs, simulationSeed, simulationMode];
   const {
     data: handleData,
@@ -527,7 +529,7 @@ export const useMultiSimulationResult = (
       releaseWorkerPool();
       return mergeWorker.getMergedResult();
     },
-    { revalidateOnFocus: false, revalidateIfStale: false, revalidateOnReconnect: false }
+    swrOptions
   );
 
   const handle = handleData?.handle;
@@ -536,7 +538,7 @@ export const useMultiSimulationResult = (
   const { data: { analysis, tableData, yearlyTableData, chartData } = {} } = useSWR(
     handle ? ['derived', handle, sortMode, category] : null,
     () => mergeWorker.getDerivedMultiSimulationData(handle!, sortMode, category),
-    { revalidateOnFocus: false, keepPreviousData: prevHandleRef.current === handle }
+    { ...swrOptions, keepPreviousData: prevHandleRef.current === handle }
   );
 
   const updateSimulationStatus = useUpdateSimulationStatus();
