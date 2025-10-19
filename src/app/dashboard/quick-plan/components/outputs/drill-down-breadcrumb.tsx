@@ -37,7 +37,7 @@ export default function DrillDownBreadcrumb({ simulationMode }: DrillDownBreadcr
             <button
               type="button"
               className={cn('focus-outline', { 'text-muted-foreground hover:text-foreground': !!activeSeed })}
-              onClick={withScrollPreservation(() => removeActiveSeed())}
+              onClick={withScrollPreservation(removeActiveSeed)}
               disabled={!activeSeed}
             >
               <span className="lowercase">Monte Carlo Results</span>
