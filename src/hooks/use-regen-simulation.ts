@@ -13,7 +13,7 @@ export function useRegenSimulation() {
 
   return {
     icon: RefreshCwIcon,
-    label: 'Regenerate simulation',
+    label: 'Regenerate Simulation',
     handleClick,
     isDisabled,
   };

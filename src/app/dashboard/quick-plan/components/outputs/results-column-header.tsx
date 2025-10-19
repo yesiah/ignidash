@@ -48,13 +48,13 @@ export default function ResultsColumnHeader() {
         icon={PresentationIcon}
         iconButton={
           <div className="flex items-center gap-x-1">
+            <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
             <IconButton
               icon={SlidersHorizontalIcon}
               label="Simulation Settings"
               onClick={() => setSimulationSettingsOpen(true)}
               surfaceColor="emphasized"
             />
-            <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
           </div>
         }
         className="w-[calc(100%-42rem)] group-data-[state=collapsed]/sidebar:w-[calc(100%-28rem)]"

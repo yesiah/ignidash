@@ -19,7 +19,7 @@ export default function SidebarToggle({ className }: SidebarToggleProps) {
   return (
     <IconButton
       icon={sidebarCollapsed ? ArrowRightToLineIcon : ArrowLeftToLineIcon}
-      label="Toggle sidebar"
+      label="Toggle Sidebar"
       onClick={handleToggle}
       surfaceColor="emphasized"
       className={cn('hidden lg:inline-block', className)}
