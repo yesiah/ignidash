@@ -26,7 +26,7 @@ function PortfolioDataListCardV2({ chartData, selectedAge }: DataListCardProps) 
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
-        <DescriptionTerm>Average Portfolio Value</DescriptionTerm>
+        <DescriptionTerm>Mean Portfolio Value</DescriptionTerm>
         <DescriptionDetails>{formatNumber(data.averageTotalPortfolioValue, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Min Portfolio Value</DescriptionTerm>
@@ -66,13 +66,13 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
         <DescriptionTerm>Chance of Retirement</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(data.chanceOfRetirement * 100, 1)}%`}</DescriptionDetails>
 
-        <DescriptionTerm>Average Retirement Age</DescriptionTerm>
+        <DescriptionTerm>Mean Retirement Age</DescriptionTerm>
         <DescriptionDetails>{formattedAverageRetirementAge}</DescriptionDetails>
 
         <DescriptionTerm>Chance of Bankruptcy</DescriptionTerm>
         <DescriptionDetails>{`${formatNumber(data.chanceOfBankruptcy * 100, 1)}%`}</DescriptionDetails>
 
-        <DescriptionTerm>Average Bankruptcy Age</DescriptionTerm>
+        <DescriptionTerm>Mean Bankruptcy Age</DescriptionTerm>
         <DescriptionDetails>{formattedAverageBankruptcyAge}</DescriptionDetails>
       </DescriptionList>
     </Card>
