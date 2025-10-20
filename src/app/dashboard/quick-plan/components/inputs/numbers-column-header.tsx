@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { CalculatorIcon, TrendingUpIcon, BanknoteXIcon, HourglassIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
-import { demoInputs3 } from '@/lib/stores/demo-inputs-data';
-import { useUpdateInputs } from '@/lib/stores/quick-plan-store';
 
 import ExpectedReturnsDrawer from './drawers/expected-returns-drawer';
 import TaxSettingsDrawer from './drawers/tax-settings-drawer';
@@ -36,11 +34,6 @@ export default function NumbersColumnHeader() {
       <span>Timeline</span>
     </div>
   );
-
-  const updateInputs = useUpdateInputs();
-  useEffect(() => {
-    updateInputs(demoInputs3);
-  }, [updateInputs]);
 
   return (
     <>
