@@ -156,7 +156,7 @@ export const demoInputs2: QuickPlanInputs = {
     },
     'expense-2': {
       id: 'expense-2',
-      name: 'rent',
+      name: 'apartment rent',
       amount: 2000,
       frequency: 'monthly',
       timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 35 } },
