@@ -207,7 +207,7 @@ export const demoInputs2: QuickPlanInputs = {
       accountId: 'account-1',
       rank: 1,
       contributionType: 'unlimited',
-      incomeIds: ['income-1'],
+      incomeIds: ['income-1', 'income-2'],
     },
     'contribution-rule-2': {
       id: 'contribution-rule-2',
@@ -220,9 +220,7 @@ export const demoInputs2: QuickPlanInputs = {
       id: 'contribution-rule-3',
       accountId: 'account-4',
       rank: 3,
-      contributionType: 'dollarAmount',
-      dollarAmount: 4150,
-      incomeIds: ['income-1'],
+      contributionType: 'unlimited',
     },
     'contribution-rule-4': {
       id: 'contribution-rule-4',
