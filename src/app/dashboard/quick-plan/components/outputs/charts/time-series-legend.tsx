@@ -34,7 +34,9 @@ export default function TimeSeriesLegend({
       {dataKeys.map((dataKey, index) => (
         <div
           key={dataKey}
-          className="flex cursor-default items-center gap-x-2 pr-4 text-sm font-medium"
+          className={cn('flex cursor-default items-center gap-x-2 pr-4 text-sm font-medium', {
+            'border-border/50 last:border-r': useGridLayout,
+          })}
           onMouseEnter={() => onMouseEnter?.(dataKey)}
           onMouseLeave={() => onMouseLeave?.()}
         >
