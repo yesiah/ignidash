@@ -313,6 +313,44 @@ export class ChartDataExtractor {
     const startAge = simulations.simulations[0][1].context.startAge;
     const startDateYear = new Date().getFullYear();
 
+    const milestonesData = simulations.simulations.map(([, sim]) => SimulationDataExtractor.getMilestonesData(sim.data, startAge));
+
+    const sortedYearsToRetirement = milestonesData
+      .map((m) => m.yearsToRetirement)
+      .filter((v): v is number => v !== null)
+      .sort((a, b) => a - b);
+    const sortedRetirementAge = milestonesData
+      .map((m) => m.retirementAge)
+      .filter((v): v is number => v !== null)
+      .sort((a, b) => a - b);
+    const sortedYearsToBankruptcy = milestonesData
+      .map((m) => m.yearsToBankruptcy)
+      .filter((v): v is number => v !== null)
+      .sort((a, b) => a - b);
+    const sortedBankruptcyAge = milestonesData
+      .map((m) => m.bankruptcyAge)
+      .filter((v): v is number => v !== null)
+      .sort((a, b) => a - b);
+
+    const chanceOfRetirement = sortedYearsToRetirement.length / milestonesData.length;
+    const chanceOfBankruptcy = sortedYearsToBankruptcy.length / milestonesData.length;
+
+    const averageYearsToRetirement = StatsUtils.average(sortedYearsToRetirement);
+    const minYearsToRetirement = StatsUtils.minFromSorted(sortedYearsToRetirement);
+    const maxYearsToRetirement = StatsUtils.maxFromSorted(sortedYearsToRetirement);
+
+    const averageRetirementAge = StatsUtils.average(sortedRetirementAge);
+    const minRetirementAge = StatsUtils.minFromSorted(sortedRetirementAge);
+    const maxRetirementAge = StatsUtils.maxFromSorted(sortedRetirementAge);
+
+    const averageYearsToBankruptcy = StatsUtils.average(sortedYearsToBankruptcy);
+    const minYearsToBankruptcy = StatsUtils.minFromSorted(sortedYearsToBankruptcy);
+    const maxYearsToBankruptcy = StatsUtils.maxFromSorted(sortedYearsToBankruptcy);
+
+    const averageBankruptcyAge = StatsUtils.average(sortedBankruptcyAge);
+    const minBankruptcyAge = StatsUtils.minFromSorted(sortedBankruptcyAge);
+    const maxBankruptcyAge = StatsUtils.maxFromSorted(sortedBankruptcyAge);
+
     for (let i = 0; i < simulationLength; i++) {
       if (simulations.simulations[i][1].data.length !== simulationLength) {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
@@ -322,44 +360,6 @@ export class ChartDataExtractor {
 
       const { percentAccumulation, numberAccumulation, percentRetirement, numberRetirement, percentBankrupt, numberBankrupt } =
         SimulationDataExtractor.getPercentInPhaseForYear(simulations, i);
-
-      const milestonesData = simulations.simulations.map(([, sim]) => SimulationDataExtractor.getMilestonesData(sim.data, startAge));
-
-      const sortedYearsToRetirement = milestonesData
-        .map((m) => m.yearsToRetirement)
-        .filter((v): v is number => v !== null)
-        .sort((a, b) => a - b);
-      const sortedRetirementAge = milestonesData
-        .map((m) => m.retirementAge)
-        .filter((v): v is number => v !== null)
-        .sort((a, b) => a - b);
-      const sortedYearsToBankruptcy = milestonesData
-        .map((m) => m.yearsToBankruptcy)
-        .filter((v): v is number => v !== null)
-        .sort((a, b) => a - b);
-      const sortedBankruptcyAge = milestonesData
-        .map((m) => m.bankruptcyAge)
-        .filter((v): v is number => v !== null)
-        .sort((a, b) => a - b);
-
-      const chanceOfRetirement = sortedYearsToRetirement.length / milestonesData.length;
-      const chanceOfBankruptcy = sortedYearsToBankruptcy.length / milestonesData.length;
-
-      const averageYearsToRetirement = StatsUtils.average(sortedYearsToRetirement);
-      const minYearsToRetirement = StatsUtils.minFromSorted(sortedYearsToRetirement);
-      const maxYearsToRetirement = StatsUtils.maxFromSorted(sortedYearsToRetirement);
-
-      const averageRetirementAge = StatsUtils.average(sortedRetirementAge);
-      const minRetirementAge = StatsUtils.minFromSorted(sortedRetirementAge);
-      const maxRetirementAge = StatsUtils.maxFromSorted(sortedRetirementAge);
-
-      const averageYearsToBankruptcy = StatsUtils.average(sortedYearsToBankruptcy);
-      const minYearsToBankruptcy = StatsUtils.minFromSorted(sortedYearsToBankruptcy);
-      const maxYearsToBankruptcy = StatsUtils.maxFromSorted(sortedYearsToBankruptcy);
-
-      const averageBankruptcyAge = StatsUtils.average(sortedBankruptcyAge);
-      const minBankruptcyAge = StatsUtils.minFromSorted(sortedBankruptcyAge);
-      const maxBankruptcyAge = StatsUtils.maxFromSorted(sortedBankruptcyAge);
 
       res.push({
         age: currDateYear - startDateYear + startAge,

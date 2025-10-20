@@ -14,9 +14,9 @@ import type { MultiSimulationAnalysis } from '@/lib/calc/v2/multi-simulation-ana
 import { FixedReturnsProvider } from '@/lib/calc/returns-providers/fixed-returns-provider';
 import { StochasticReturnsProvider } from '@/lib/calc/returns-providers/stochastic-returns-provider';
 import { LcgHistoricalBacktestReturnsProvider } from '@/lib/calc/returns-providers/lcg-historical-backtest-returns-provider';
+import { KeyMetricsExtractor } from '@/lib/calc/v2/key-metrics-extractor';
 import { ChartDataExtractor } from '@/lib/calc/v2/chart-data-extractor';
 import { TableDataExtractor } from '@/lib/calc/v2/table-data-extractor';
-import { SimulationDataExtractor } from '@/lib/utils/simulation-data-extractor';
 import { createWorkerPool, releaseWorkerPool } from '@/lib/workers/simulation-worker-api';
 import { getMergeWorker } from '@/lib/workers/merge-worker-api';
 import type {
@@ -570,71 +570,7 @@ export const useMultiSimulationResult = (
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
   return useMemo(() => {
     if (!simulationResult) return null;
-    const { data, context } = simulationResult;
-
-    const startAge = context.startAge;
-    const retirementStrategy = context.retirementStrategy;
-
-    const initialPortfolio = data[0].portfolio.totalValue;
-    const finalPortfolio = data[data.length - 1].portfolio.totalValue;
-
-    let retirementAge: number | null = null;
-    let yearsToRetirement: number | null = null;
-
-    const { bankruptcyAge, yearsToBankruptcy } = SimulationDataExtractor.getMilestonesData(data, startAge);
-
-    let portfolioAtRetirement: number | null = null;
-    let progressToRetirement: number | null = null;
-
-    switch (retirementStrategy.type) {
-      case 'fixedAge':
-        retirementAge = retirementStrategy.retirementAge;
-        yearsToRetirement = retirementAge - startAge;
-
-        progressToRetirement = Math.min(startAge / retirementAge, 1);
-
-        for (const dp of data) {
-          const phase = dp.phase;
-          if (phase?.name === 'retirement') {
-            portfolioAtRetirement = dp.portfolio.totalValue;
-            break;
-          }
-        }
-
-        break;
-      case 'swrTarget':
-        for (const dp of data) {
-          const phase = dp.phase;
-          if (phase?.name === 'retirement') {
-            ({ retirementAge, yearsToRetirement } = SimulationDataExtractor.getMilestonesData(data, startAge));
-
-            portfolioAtRetirement = dp.portfolio.totalValue;
-            break;
-          }
-        }
-
-        if (portfolioAtRetirement !== null) {
-          progressToRetirement = Math.min(initialPortfolio / portfolioAtRetirement, 1);
-        }
-        break;
-    }
-
-    const success = Number(retirementAge !== null && finalPortfolio > 0.1);
-
-    const { lifetimeTaxesAndPenalties } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
-
-    return {
-      success,
-      startAge,
-      retirementAge,
-      yearsToRetirement,
-      bankruptcyAge,
-      yearsToBankruptcy,
-      portfolioAtRetirement,
-      lifetimeTaxesAndPenalties,
-      finalPortfolio,
-      progressToRetirement,
-    };
+    return KeyMetricsExtractor.extractSingleSimulation(simulationResult);
   }, [simulationResult]);
 };
 

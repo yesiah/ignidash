@@ -7,8 +7,10 @@ import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/sch
 import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
 import { ChartDataExtractor } from '@/lib/calc/v2/chart-data-extractor';
 import { TableDataExtractor } from '@/lib/calc/v2/table-data-extractor';
+import { KeyMetricsExtractor } from '@/lib/calc/v2/key-metrics-extractor';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import type { MultiSimulationResult } from '@/lib/calc/v2/simulation-engine';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 type CacheEntry = { handle: string; res: MultiSimulationResult };
 let cache: CacheEntry | null = null;
@@ -20,6 +22,7 @@ type DerivedMultiSimulationData = {
   tableData: MultiSimulationTableRow[];
   yearlyTableData: YearlyAggregateTableRow[];
   chartData: MultiSimulationChartData;
+  keyMetrics: KeyMetrics;
 };
 
 const mergeAPI = {
@@ -51,6 +54,8 @@ const mergeAPI = {
     const analyzer = new MultiSimulationAnalyzer();
     const analysis = analyzer.analyze(res, sortMode);
 
+    const keyMetrics = KeyMetricsExtractor.extractMultiSimulation(res);
+
     const tableExtractor = new TableDataExtractor();
     const tableData = tableExtractor.extractMultiSimulationData(res, category);
     const yearlyTableData = tableExtractor.extractMultiSimulationYearlyAggregateData(res, analysis, category);
@@ -59,7 +64,7 @@ const mergeAPI = {
     const portfolioData = chartExtractor.extractMultiSimulationPortfolioChartData(res);
     const phasesData = chartExtractor.extractMultiSimulationPhasesChartData(res);
 
-    return { analysis, tableData, yearlyTableData, chartData: { portfolioData, phasesData } };
+    return { analysis, tableData, yearlyTableData, chartData: { portfolioData, phasesData }, keyMetrics };
   },
 };
 
