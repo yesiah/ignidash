@@ -244,7 +244,7 @@ export const demoInputs3: QuickPlanInputs = {
     name: 'Demo Timeline 3',
     lifeExpectancy: 77,
     currentAge: 38,
-    retirementStrategy: { safeWithdrawalRate: 4, type: 'swrTarget' },
+    retirementStrategy: { safeWithdrawalRate: 4.5, type: 'swrTarget' },
   },
   incomes: {
     'income-1': {
@@ -252,28 +252,28 @@ export const demoInputs3: QuickPlanInputs = {
       name: 'marketing job',
       amount: 75000,
       frequency: 'yearly',
-      timeframe: { start: { type: 'now' }, end: { type: 'customDate', month: 6, year: 2026 } },
+      timeframe: { start: { type: 'now' }, end: { type: 'customDate', month: 6, year: 2028 } },
     },
     'income-2': {
       id: 'income-2',
       name: 'severance package',
       amount: 25000,
       frequency: 'oneTime',
-      timeframe: { start: { type: 'customDate', month: 6, year: 2026 } },
+      timeframe: { start: { type: 'customDate', month: 6, year: 2028 } },
     },
     'income-3': {
       id: 'income-3',
       name: 'part-time work',
       amount: 15000,
       frequency: 'yearly',
-      timeframe: { start: { type: 'customDate', month: 7, year: 2026 }, end: { type: 'customDate', month: 6, year: 2027 } },
+      timeframe: { start: { type: 'customDate', month: 7, year: 2028 }, end: { type: 'customDate', month: 6, year: 2029 } },
     },
     'income-4': {
       id: 'income-4',
       name: 'UX designer salary',
       amount: 65000,
       frequency: 'yearly',
-      timeframe: { start: { type: 'customDate', month: 7, year: 2027 }, end: { type: 'atRetirement' } },
+      timeframe: { start: { type: 'customDate', month: 7, year: 2029 }, end: { type: 'atRetirement' } },
       growth: { growthRate: 4, growthLimit: 120000 },
     },
     'income-5': {
@@ -299,21 +299,21 @@ export const demoInputs3: QuickPlanInputs = {
       name: 'bootcamp tuition',
       amount: 18000,
       frequency: 'oneTime',
-      timeframe: { start: { type: 'customDate', month: 7, year: 2026 } },
+      timeframe: { start: { type: 'customDate', month: 7, year: 2028 } },
     },
     'expense-3': {
       id: 'expense-3',
       name: 'certification & tools',
       amount: 3000,
       frequency: 'oneTime',
-      timeframe: { start: { type: 'customDate', month: 1, year: 2027 } },
+      timeframe: { start: { type: 'customDate', month: 1, year: 2029 } },
     },
     'expense-4': {
       id: 'expense-4',
       name: 'child daycare',
       amount: 15000,
       frequency: 'yearly',
-      timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 50 } },
+      timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 49 } },
     },
   },
   accounts: {
@@ -350,7 +350,7 @@ export const demoInputs3: QuickPlanInputs = {
     'account-5': {
       type: 'savings',
       id: 'account-5',
-      name: 'transition fund',
+      name: 'career change fund',
       currentValue: 40000,
     },
   },
@@ -385,6 +385,6 @@ export const demoInputs3: QuickPlanInputs = {
       percentRemaining: 30,
     },
   },
-  baseContributionRule: { type: 'save' },
+  baseContributionRule: { type: 'spend' },
   marketAssumptions: { stockReturn: 9, stockYield: 2.5, bondReturn: 4.5, bondYield: 4, cashReturn: 3, inflationRate: 3 },
 };
