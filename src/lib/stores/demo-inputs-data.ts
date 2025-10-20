@@ -20,8 +20,8 @@ export const demoInputs1: QuickPlanInputs = {
     'income-2': {
       id: 'income-2',
       name: 'freelance work',
-      amount: 12000,
-      frequency: 'yearly',
+      amount: 1000,
+      frequency: 'monthly',
       timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
       growth: { growthRate: 2, growthLimit: 50000 },
     },

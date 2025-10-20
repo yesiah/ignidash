@@ -93,6 +93,8 @@ interface QuickPlanState {
   };
 
   actions: {
+    updateInputs: (data: QuickPlanInputs) => void;
+
     /* Expected Returns */
     updateMarketAssumptions: (data: MarketAssumptionsInputs) => void;
 
@@ -174,6 +176,10 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       immer((set, get) => ({
         ...defaultState,
         actions: {
+          updateInputs: (data) =>
+            set((state) => {
+              state.inputs = { ...data };
+            }),
           updateMarketAssumptions: (data) =>
             set((state) => {
               state.inputs.marketAssumptions = { ...data };
@@ -389,6 +395,7 @@ export const useResultsCategory = () => useQuickPlanStore((state) => state.resul
  * Action selectors
  * These hooks provide access to update functions with built-in validation
  */
+export const useUpdateInputs = () => useQuickPlanStore((state) => state.actions.updateInputs);
 export const useUpdateMarketAssumptions = () => useQuickPlanStore((state) => state.actions.updateMarketAssumptions);
 export const useUpdateTimeline = () => useQuickPlanStore((state) => state.actions.updateTimeline);
 export const useUpdateIncomes = () => useQuickPlanStore((state) => state.actions.updateIncomes);
