@@ -16,7 +16,7 @@ export const demoInputs1: QuickPlanInputs = {
       amount: 87500,
       frequency: 'yearly',
       timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
-      growth: { growthRate: 3, growthLimit: 200000 },
+      growth: { growthRate: 3, growthLimit: 150000 },
     },
     'income-2': {
       id: 'income-2',
@@ -24,7 +24,7 @@ export const demoInputs1: QuickPlanInputs = {
       amount: 1000,
       frequency: 'monthly',
       timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
-      growth: { growthRate: 2, growthLimit: 50000 },
+      growth: { growthRate: 2, growthLimit: 25000 },
     },
   },
   expenses: {
@@ -42,7 +42,7 @@ export const demoInputs1: QuickPlanInputs = {
       amount: 5000,
       frequency: 'yearly',
       timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
-      growth: { growthRate: 5, growthLimit: 10000 },
+      growth: { growthRate: 5, growthLimit: 12500 },
     },
   },
   accounts: {
@@ -105,7 +105,7 @@ export const demoInputs1: QuickPlanInputs = {
       accountId: 'account-4',
       rank: 4,
       contributionType: 'unlimited',
-      maxValue: 50000,
+      maxValue: 30000,
     },
   },
   baseContributionRule: { type: 'spend' },
