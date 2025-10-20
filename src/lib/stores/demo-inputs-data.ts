@@ -307,8 +307,8 @@ export const demoInputs3: QuickPlanInputs = {
     },
     'expense-4': {
       id: 'expense-4',
-      name: 'child college fund',
-      amount: 10000,
+      name: 'child',
+      amount: 12000,
       frequency: 'yearly',
       timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 50 } },
     },
@@ -317,7 +317,7 @@ export const demoInputs3: QuickPlanInputs = {
     'account-1': {
       type: '401k',
       id: 'account-1',
-      name: 'old employer 401k',
+      name: 'marketing 401k',
       currentValue: 125000,
       percentBonds: 30,
     },
@@ -358,7 +358,7 @@ export const demoInputs3: QuickPlanInputs = {
       rank: 1,
       contributionType: 'dollarAmount',
       dollarAmount: 5000,
-      incomeIds: ['income-1', 'income-4'],
+      incomeIds: ['income-1'],
     },
     'contribution-rule-2': {
       id: 'contribution-rule-2',
