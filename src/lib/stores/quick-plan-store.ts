@@ -579,7 +579,7 @@ export const useMultiSimulationResult = (
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {
   return useMemo(() => {
     if (!simulationResult) return null;
-    return KeyMetricsExtractor.extractSingleSimulation(simulationResult);
+    return KeyMetricsExtractor.extractSingleSimulationMetrics(simulationResult);
   }, [simulationResult]);
 };
 

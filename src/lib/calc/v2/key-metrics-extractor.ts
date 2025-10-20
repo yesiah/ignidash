@@ -5,7 +5,7 @@ import { StatsUtils } from '@/lib/utils/stats-utils';
 import type { SimulationResult, MultiSimulationResult } from './simulation-engine';
 
 export abstract class KeyMetricsExtractor {
-  static extractSingleSimulation(simulation: SimulationResult): KeyMetrics {
+  static extractSingleSimulationMetrics(simulation: SimulationResult): KeyMetrics {
     const { data, context } = simulation;
 
     const startAge = context.startAge;
@@ -74,8 +74,8 @@ export abstract class KeyMetricsExtractor {
     };
   }
 
-  static extractMultiSimulation(simulations: MultiSimulationResult): KeyMetrics {
-    const keyMetricsList: KeyMetrics[] = simulations.simulations.map(([, sim]) => this.extractSingleSimulation(sim));
+  static extractMultiSimulationMetrics(simulations: MultiSimulationResult): KeyMetrics {
+    const keyMetricsList: KeyMetrics[] = simulations.simulations.map(([, sim]) => this.extractSingleSimulationMetrics(sim));
 
     const meanOrNull = (getter: (km: KeyMetrics) => number | null): number | null => {
       const values = keyMetricsList.map(getter).filter((v): v is number => v !== null);

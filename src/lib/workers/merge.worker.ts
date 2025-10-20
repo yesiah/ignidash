@@ -52,7 +52,7 @@ const mergeAPI = {
     const { res } = cache;
 
     const analysis = MultiSimulationAnalyzer.analyze(res, sortMode);
-    const keyMetrics = KeyMetricsExtractor.extractMultiSimulation(res);
+    const keyMetrics = KeyMetricsExtractor.extractMultiSimulationMetrics(res);
 
     const tableData = TableDataExtractor.extractMultiSimulationData(res, category);
     const yearlyTableData = TableDataExtractor.extractMultiSimulationYearlyAggregateData(res, analysis, category);
