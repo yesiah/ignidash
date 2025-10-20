@@ -70,6 +70,26 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
 
   const successColor = getSuccessColor(keyMetrics.success);
 
+  const progressToRetirement = keyMetrics.progressToRetirement;
+  const progressWidget =
+    progressToRetirement !== null ? (
+      <div className="relative h-8 w-8">
+        <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-primary/20" strokeWidth="6" />
+          <circle
+            cx="18"
+            cy="18"
+            r="15.5"
+            fill="none"
+            className="stroke-primary"
+            strokeWidth="6"
+            strokeDasharray={`${progressToRetirement * 97.4} 97.4`}
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+    ) : null;
+
   return (
     <dl className="grid grid-cols-2 gap-2 2xl:grid-cols-3">
       <MetricsCard
@@ -78,7 +98,7 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         className="col-span-2 2xl:col-span-1"
         statClassName={cn('ring-black dark:ring-white ring px-1 text-black dark:text-white', successColor)}
       />
-      <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-2" />
+      <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-2" statWidget={progressWidget} />
       <MetricsCard name="Retirement Age" stat={retirementAgeForDisplay} statContext={` (in ${yearsToRetirementForDisplay} years)`} />
       <MetricsCard name="Bankruptcy Age" stat={bankruptcyAgeForDisplay} statContext={` (in ${yearsToBankruptcyForDisplay} years)`} />
       <MetricsCard name="Lifetime Taxes" stat={lifetimeTaxesAndPenaltiesForDisplay} className="hidden 2xl:block" />
