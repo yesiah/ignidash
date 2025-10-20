@@ -490,6 +490,7 @@ export const useMultiSimulationResult = (
   tableData: MultiSimulationTableRow[] | undefined;
   yearlyTableData: YearlyAggregateTableRow[] | undefined;
   chartData: MultiSimulationChartData | undefined;
+  keyMetrics: KeyMetrics | undefined;
   isLoadingOrValidating: boolean;
   completedSimulations: number;
 } => {
@@ -546,7 +547,7 @@ export const useMultiSimulationResult = (
 
   const sortMode = useMonteCarloSortMode();
   const category = useResultsCategory();
-  const { data: { analysis, tableData, yearlyTableData, chartData } = {} } = useSWR(
+  const { data: { analysis, tableData, yearlyTableData, chartData, keyMetrics } = {} } = useSWR(
     handle ? ['derived', handle, sortMode, category] : null,
     () => mergeWorker.getDerivedMultiSimulationData(handle!, sortMode, category),
     { ...swrOptions, keepPreviousData: prevHandle === handle }
@@ -564,7 +565,15 @@ export const useMultiSimulationResult = (
     updateSimulationStatus(isLoading || isValidating ? 'loading' : 'none');
   }, [isLoading, isValidating, updateSimulationStatus]);
 
-  return { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating: isLoading || isValidating, completedSimulations };
+  return {
+    analysis,
+    tableData,
+    yearlyTableData,
+    chartData,
+    keyMetrics,
+    isLoadingOrValidating: isLoading || isValidating,
+    completedSimulations,
+  };
 };
 
 export const useKeyMetrics = (simulationResult: SimulationResult | null | undefined): KeyMetrics | null => {

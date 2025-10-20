@@ -84,10 +84,8 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   const startAge = useCurrentAge()!;
   const { selectedAge, onAgeSelect } = useResultsState(startAge);
 
-  const { analysis, tableData, yearlyTableData, chartData, isLoadingOrValidating, completedSimulations } =
+  const { analysis, tableData, yearlyTableData, chartData, keyMetrics, isLoadingOrValidating, completedSimulations } =
     useMultiSimulationResult(simulationMode);
-
-  const p50KeyMetrics = useKeyMetrics(analysis?.results.p50.result);
 
   const updateQuickSelectPercentile = useUpdateQuickSelectPercentile();
   const updateSelectedSeedFromTable = useUpdateSelectedSeedFromTable();
@@ -116,7 +114,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   const seed = useSimulationSeed();
   useEffect(() => removeActiveSeed(), [seed, simulationMode, removeActiveSeed]);
 
-  if (!analysis || !p50KeyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
+  if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {
     const progressPercent = (completedSimulations / 500) * 100;
 
     return (
@@ -154,7 +152,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
   return (
     <>
       <SectionContainer showBottomBorder className="mb-0">
-        <SimulationMetrics keyMetrics={{ ...p50KeyMetrics, success: analysis.success }} />
+        <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <MultiSimulationMainResults simulationAndKeyMetrics={null} {...sharedProps} />
     </>
