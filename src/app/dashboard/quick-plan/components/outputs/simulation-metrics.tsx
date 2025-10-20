@@ -78,10 +78,10 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         className="col-span-2 2xl:col-span-1"
         statClassName={cn('ring-black dark:ring-white ring px-1 text-black dark:text-white', successColor)}
       />
-      <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-1 2xl:col-span-2" />
+      <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-2" />
       <MetricsCard name="Retirement Age" stat={retirementAgeForDisplay} statContext={` (in ${yearsToRetirementForDisplay} years)`} />
       <MetricsCard name="Bankruptcy Age" stat={bankruptcyAgeForDisplay} statContext={` (in ${yearsToBankruptcyForDisplay} years)`} />
-      <MetricsCard name="Lifetime Taxes" stat={lifetimeTaxesAndPenaltiesForDisplay} />
+      <MetricsCard name="Lifetime Taxes" stat={lifetimeTaxesAndPenaltiesForDisplay} className="hidden 2xl:block" />
       <MetricsCard name="Retirement Portfolio" stat={portfolioAtRetirementForDisplay} className="2xl:col-span-2" />
       <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} />
     </dl>
