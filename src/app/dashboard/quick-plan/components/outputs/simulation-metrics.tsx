@@ -1,7 +1,5 @@
 'use client';
 
-import { useTheme } from 'next-themes';
-
 import { cn, formatNumber } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 
@@ -50,17 +48,14 @@ const formatMetrics = (keyMetrics: KeyMetrics) => {
 };
 
 const getSuccessColor = (success: number): string => {
-  if (success >= 0.8) return 'fill-green-400';
-  if (success >= 0.6) return 'fill-blue-500 dark:fill-blue-400';
-  if (success >= 0.4) return 'fill-yellow-400';
-  if (success >= 0.2) return 'fill-orange-400';
-  return 'fill-red-500';
+  if (success >= 0.8) return 'bg-green-400';
+  if (success >= 0.6) return 'bg-blue-500 dark:bg-blue-400';
+  if (success >= 0.4) return 'bg-yellow-400';
+  if (success >= 0.2) return 'bg-orange-400';
+  return 'bg-red-500';
 };
 
 export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
-  const { resolvedTheme } = useTheme();
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
-
   const {
     successForDisplay,
     retirementAgeForDisplay,
@@ -75,15 +70,14 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
 
   const successColor = getSuccessColor(keyMetrics.success);
 
-  const successWidget = (
-    <svg viewBox="0 0 8 8" aria-hidden="true" className={cn('inline size-8 shrink-0', successColor)}>
-      <rect x={0.5} y={0.5} width={7} height={7} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
-    </svg>
-  );
-
   return (
     <dl className="grid grid-cols-2 grid-rows-4 gap-2 2xl:grid-cols-3 2xl:grid-rows-3">
-      <MetricsCard name="Success" stat={successForDisplay} className="col-span-2 2xl:col-span-1" statWidget={successWidget} />
+      <MetricsCard
+        name="Success"
+        stat={successForDisplay}
+        className="col-span-2 2xl:col-span-1"
+        statClassName={cn('ring-foreground ring px-1', successColor)}
+      />
       <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} />
       <MetricsCard name="Retirement Age" stat={retirementAgeForDisplay} statContext={` (in ${yearsToRetirementForDisplay} years)`} />
       <MetricsCard name="Bankruptcy Age" stat={bankruptcyAgeForDisplay} statContext={` (in ${yearsToBankruptcyForDisplay} years)`} />
