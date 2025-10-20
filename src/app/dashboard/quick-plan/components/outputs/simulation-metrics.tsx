@@ -1,6 +1,6 @@
 'use client';
 
-import { UmbrellaIcon, TriangleAlertIcon, BanknoteXIcon, PiggyBankIcon, SunsetIcon } from 'lucide-react';
+import { UmbrellaIcon, TriangleAlertIcon, BanknoteXIcon, LandmarkIcon, SunsetIcon } from 'lucide-react';
 
 import { cn, formatNumber } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
@@ -115,7 +115,7 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         name="Retirement Portfolio"
         stat={portfolioAtRetirementForDisplay}
         className="2xl:col-span-2"
-        statWidget={<PiggyBankIcon className="text-primary h-10 w-10" />}
+        statWidget={<LandmarkIcon className="text-primary h-10 w-10" />}
       />
       <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} statWidget={<SunsetIcon className="text-primary h-10 w-10" />} />
     </dl>
