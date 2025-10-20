@@ -70,9 +70,7 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         statContext={` (in ${yearsToRetirementForDisplay} years)`}
         className="sm:col-span-2 2xl:col-span-1"
       />
-      {bankruptcyAgeForDisplay !== '∞' && (
-        <MetricsCard name="Bankruptcy Age" stat={bankruptcyAgeForDisplay} statContext={` (in ${yearsToBankruptcyForDisplay} years)`} />
-      )}
+      <MetricsCard name="Bankruptcy Age" stat={bankruptcyAgeForDisplay} statContext={` (in ${yearsToBankruptcyForDisplay} years)`} />
       <MetricsCard name="Lifetime Taxes" stat={lifetimeTaxesAndPenaltiesForDisplay} />
       <MetricsCard name="Retirement Portfolio" stat={portfolioAtRetirementForDisplay} className="2xl:col-span-2" />
       <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} className="col-span-2 sm:col-span-1" />
