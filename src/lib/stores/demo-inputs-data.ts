@@ -156,18 +156,17 @@ export const demoInputs2: QuickPlanInputs = {
     'expense-2': {
       id: 'expense-2',
       name: 'rent',
-      amount: 24000,
-      frequency: 'yearly',
+      amount: 2000,
+      frequency: 'monthly',
       timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 35 } },
       growth: { growthRate: 3 },
     },
     'expense-3': {
       id: 'expense-3',
-      name: 'house payment after purchase',
-      amount: 28000,
-      frequency: 'yearly',
+      name: 'mortgage payment',
+      amount: 2333,
+      frequency: 'monthly',
       timeframe: { start: { type: 'customAge', age: 35 }, end: { type: 'customAge', age: 50 } },
-      growth: { growthRate: 2 },
     },
   },
   accounts: {
