@@ -312,7 +312,7 @@ export const useQuickPlanStore = create<QuickPlanState>()(
       })),
       {
         name: 'quick-plan-storage',
-        version: 5,
+        version: 6,
         migrate: () => ({ ...defaultState }),
         partialize: (state) => {
           const baseResult = { preferences: state.preferences };
