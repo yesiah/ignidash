@@ -48,6 +48,7 @@ const formatMetrics = (keyMetrics: KeyMetrics) => {
 };
 
 const getSuccessColor = (success: number): string => {
+  if (success >= 0.8) return 'bg-green-400 dark:bg-green-600';
   if (success >= 0.6) return 'bg-blue-400 dark:bg-blue-600';
   if (success >= 0.4) return 'bg-orange-300 dark:bg-orange-700';
   if (success >= 0.2) return 'bg-orange-400 dark:bg-orange-600';
