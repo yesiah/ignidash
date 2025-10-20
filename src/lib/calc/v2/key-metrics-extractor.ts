@@ -76,36 +76,23 @@ export class KeyMetricsExtractor {
   static extractMultiSimulation(simulations: MultiSimulationResult): KeyMetrics {
     const keyMetricsList: KeyMetrics[] = simulations.simulations.map(([, sim]) => this.extractSingleSimulation(sim));
 
-    const meanRetirementAge = StatsUtils.average(keyMetricsList.map((km) => km.retirementAge).filter((v): v is number => v !== null));
-    const meanYearsToRetirement = StatsUtils.average(
-      keyMetricsList.map((km) => km.yearsToRetirement).filter((v): v is number => v !== null)
-    );
-    const meanBankruptcyAge = StatsUtils.average(keyMetricsList.map((km) => km.bankruptcyAge).filter((v): v is number => v !== null));
-    const meanYearsToBankruptcy = StatsUtils.average(
-      keyMetricsList.map((km) => km.yearsToBankruptcy).filter((v): v is number => v !== null)
-    );
-    const meanPortfolioAtRetirement = StatsUtils.average(
-      keyMetricsList.map((km) => km.portfolioAtRetirement).filter((v): v is number => v !== null)
-    );
-    const meanLifetimeTaxesAndPenalties = StatsUtils.average(keyMetricsList.map((km) => km.lifetimeTaxesAndPenalties));
-    const meanFinalPortfolio = StatsUtils.average(keyMetricsList.map((km) => km.finalPortfolio));
-    const meanProgressToRetirement = StatsUtils.average(
-      keyMetricsList.map((km) => km.progressToRetirement).filter((v): v is number => v !== null)
-    );
-
-    const aggregatedMetrics: KeyMetrics = {
-      success: keyMetricsList.reduce((sum, km) => sum + km.success, 0) / keyMetricsList.length,
-      startAge: keyMetricsList[0].startAge,
-      retirementAge: meanRetirementAge !== -1 ? meanRetirementAge : null,
-      yearsToRetirement: meanYearsToRetirement !== -1 ? meanYearsToRetirement : null,
-      bankruptcyAge: meanBankruptcyAge !== -1 ? meanBankruptcyAge : null,
-      yearsToBankruptcy: meanYearsToBankruptcy !== -1 ? meanYearsToBankruptcy : null,
-      portfolioAtRetirement: meanPortfolioAtRetirement !== -1 ? meanPortfolioAtRetirement : null,
-      lifetimeTaxesAndPenalties: meanLifetimeTaxesAndPenalties,
-      finalPortfolio: meanFinalPortfolio,
-      progressToRetirement: meanProgressToRetirement !== -1 ? meanProgressToRetirement : null,
+    const avgOrNull = (getter: (km: KeyMetrics) => number | null): number | null => {
+      const values = keyMetricsList.map(getter).filter((v): v is number => v !== null);
+      const avg = StatsUtils.average(values);
+      return avg !== -1 ? avg : null;
     };
 
-    return aggregatedMetrics;
+    return {
+      success: keyMetricsList.reduce((sum, km) => sum + km.success, 0) / keyMetricsList.length,
+      startAge: keyMetricsList[0].startAge,
+      retirementAge: avgOrNull((km) => km.retirementAge),
+      yearsToRetirement: avgOrNull((km) => km.yearsToRetirement),
+      bankruptcyAge: avgOrNull((km) => km.bankruptcyAge),
+      yearsToBankruptcy: avgOrNull((km) => km.yearsToBankruptcy),
+      portfolioAtRetirement: avgOrNull((km) => km.portfolioAtRetirement),
+      lifetimeTaxesAndPenalties: StatsUtils.average(keyMetricsList.map((km) => km.lifetimeTaxesAndPenalties)),
+      finalPortfolio: StatsUtils.average(keyMetricsList.map((km) => km.finalPortfolio)),
+      progressToRetirement: avgOrNull((km) => km.progressToRetirement),
+    };
   }
 }
