@@ -1,5 +1,7 @@
 'use client';
 
+import { useTheme } from 'next-themes';
+
 import { cn, formatNumber } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 
@@ -56,6 +58,9 @@ const getSuccessColor = (success: number): string => {
 };
 
 export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
+  const { resolvedTheme } = useTheme();
+  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
+
   const {
     successForDisplay,
     retirementAgeForDisplay,
@@ -71,8 +76,8 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
   const successColor = getSuccessColor(keyMetrics.success);
 
   const successWidget = (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={cn('inline size-6', successColor)}>
-      <circle r={12} cx={12} cy={12} />
+    <svg viewBox="0 0 6 6" aria-hidden="true" className={cn('inline size-6 shrink-0', successColor)}>
+      <rect x={0.5} y={0.5} width={5} height={5} stroke={legendStrokeColor} strokeWidth={0.5} paintOrder="stroke" />
     </svg>
   );
 
