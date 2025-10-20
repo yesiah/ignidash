@@ -73,8 +73,57 @@ export class KeyMetricsExtractor {
     };
   }
 
-  static extractMultiSimulation(simulations: MultiSimulationResult): KeyMetrics {
+  static extractMultiSimulation(simulations: MultiSimulationResult, mode: 'average' | 'percentiles'): KeyMetrics {
     const keyMetricsList: KeyMetrics[] = simulations.simulations.map(([, sim]) => this.extractSingleSimulation(sim));
+
+    const sortedRetirementAgesAndYears = keyMetricsList
+      .filter((km) => km.retirementAge !== null && km.yearsToRetirement !== null)
+      .map((km) => ({ retirementAge: km.retirementAge!, yearsToRetirement: km.yearsToRetirement! }))
+      .sort((a, b) => a.retirementAge - b.retirementAge);
+    const retirementAgesAndYearsPercentiles = StatsUtils.calculatePercentilesFromValues(sortedRetirementAgesAndYears);
+
+    const sortedBankruptcyAgesAndYears = keyMetricsList
+      .filter((km) => km.bankruptcyAge !== null && km.yearsToBankruptcy !== null)
+      .map((km) => ({ bankruptcyAge: km.bankruptcyAge!, yearsToBankruptcy: km.yearsToBankruptcy! }))
+      .sort((a, b) => a.bankruptcyAge - b.bankruptcyAge);
+    const bankruptcyAgesAndYearsPercentiles = StatsUtils.calculatePercentilesFromValues(sortedBankruptcyAgesAndYears);
+
+    const sortedPortfoliosAtRetirement = keyMetricsList
+      .filter((km) => km.portfolioAtRetirement !== null)
+      .map((km) => km.portfolioAtRetirement!)
+      .sort((a, b) => a - b);
+    const portfoliosAtRetirementPercentiles = StatsUtils.calculatePercentilesFromValues(sortedPortfoliosAtRetirement);
+
+    const sortedLifetimeTaxesAndPenalties = keyMetricsList.map((km) => km.lifetimeTaxesAndPenalties).sort((a, b) => a - b);
+    const lifetimeTaxesAndPenaltiesPercentiles = StatsUtils.calculatePercentilesFromValues(sortedLifetimeTaxesAndPenalties);
+
+    const sortedFinalPortfolios = keyMetricsList.map((km) => km.finalPortfolio).sort((a, b) => a - b);
+    const finalPortfoliosPercentiles = StatsUtils.calculatePercentilesFromValues(sortedFinalPortfolios);
+
+    const sortedProgressToRetirement = keyMetricsList
+      .filter((km) => km.progressToRetirement !== null)
+      .map((km) => km.progressToRetirement!)
+      .sort((a, b) => a - b);
+    const progressToRetirementPercentiles = StatsUtils.calculatePercentilesFromValues(sortedProgressToRetirement);
+
+    const aggregatedMetrics: KeyMetrics = {
+      success: keyMetricsList.reduce((sum, km) => sum + km.success, 0) / keyMetricsList.length,
+      startAge: keyMetricsList[0].startAge,
+      retirementAge: retirementAgesAndYearsPercentiles.p50.retirementAge,
+      yearsToRetirement: retirementAgesAndYearsPercentiles.p50.yearsToRetirement,
+      bankruptcyAge: bankruptcyAgesAndYearsPercentiles.p50.bankruptcyAge,
+      yearsToBankruptcy: bankruptcyAgesAndYearsPercentiles.p50.yearsToBankruptcy,
+      portfolioAtRetirement: portfoliosAtRetirementPercentiles.p50,
+      lifetimeTaxesAndPenalties: lifetimeTaxesAndPenaltiesPercentiles.p50,
+      finalPortfolio: finalPortfoliosPercentiles.p50,
+      progressToRetirement: progressToRetirementPercentiles.p50,
+    };
+
+    return aggregatedMetrics;
+  }
+
+  private extractMultiSimulationByPercentile(simulations: MultiSimulationResult): KeyMetrics {
+    const keyMetricsList: KeyMetrics[] = simulations.simulations.map(([, sim]) => KeyMetricsExtractor.extractSingleSimulation(sim));
 
     const sortedRetirementAgesAndYears = keyMetricsList
       .filter((km) => km.retirementAge !== null && km.yearsToRetirement !== null)
