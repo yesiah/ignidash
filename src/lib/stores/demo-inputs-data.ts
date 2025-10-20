@@ -54,7 +54,7 @@ export const demoInputs1: QuickPlanInputs = {
     'account-2': {
       type: 'rothIra',
       id: 'account-2',
-      name: 'vanguard roth ira',
+      name: 'vanguard roth',
       currentValue: 30000,
       contributionBasis: 15000,
       percentBonds: 20,
@@ -180,7 +180,7 @@ export const demoInputs2: QuickPlanInputs = {
     'account-2': {
       type: 'rothIra',
       id: 'account-2',
-      name: 'vanguard roth ira',
+      name: 'vanguard roth',
       currentValue: 42000,
       contributionBasis: 30000,
       percentBonds: 10,
