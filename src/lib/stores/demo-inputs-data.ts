@@ -364,8 +364,7 @@ export const demoInputs3: QuickPlanInputs = {
       id: 'contribution-rule-2',
       accountId: 'account-3',
       rank: 2,
-      contributionType: 'dollarAmount',
-      dollarAmount: 6500,
+      contributionType: 'unlimited',
       incomeIds: ['income-5'],
     },
     'contribution-rule-3': {
