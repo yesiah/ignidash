@@ -41,6 +41,7 @@ export const demoInputs1: QuickPlanInputs = {
       amount: 5000,
       frequency: 'yearly',
       timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
+      growth: { growthRate: 5, growthLimit: 10000 },
     },
   },
   accounts: {
@@ -57,7 +58,7 @@ export const demoInputs1: QuickPlanInputs = {
       name: 'vanguard roth',
       currentValue: 30000,
       contributionBasis: 15000,
-      percentBonds: 20,
+      percentBonds: 25,
     },
     'account-3': {
       type: 'taxableBrokerage',
