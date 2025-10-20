@@ -1,5 +1,7 @@
 'use client';
 
+import { ArmchairIcon, TriangleAlertIcon, ReceiptIcon, PiggyBankIcon, SunsetIcon } from 'lucide-react';
+
 import { cn, formatNumber } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 
@@ -59,9 +61,7 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
   const {
     successForDisplay,
     retirementAgeForDisplay,
-    yearsToRetirementForDisplay,
     bankruptcyAgeForDisplay,
-    yearsToBankruptcyForDisplay,
     portfolioAtRetirementForDisplay,
     lifetimeTaxesAndPenaltiesForDisplay,
     finalPortfolioForDisplay,
@@ -99,19 +99,25 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         statClassName={cn('ring-black dark:ring-white ring px-1 text-black dark:text-white', successColor)}
       />
       <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-2" statWidget={progressWidget} />
-      <MetricsCard
-        name="Retirement Age"
-        stat={retirementAgeForDisplay}
-        statContext={yearsToRetirementForDisplay !== '∞' ? ` (in ${yearsToRetirementForDisplay} years)` : undefined}
-      />
+      <MetricsCard name="Retirement Age" stat={retirementAgeForDisplay} statWidget={<ArmchairIcon className="text-primary h-8 w-8" />} />
       <MetricsCard
         name="Bankruptcy Age"
         stat={bankruptcyAgeForDisplay}
-        statContext={yearsToBankruptcyForDisplay !== '∞' ? ` (in ${yearsToBankruptcyForDisplay} years)` : undefined}
+        statWidget={<TriangleAlertIcon className="text-primary h-8 w-8" />}
       />
-      <MetricsCard name="Lifetime Taxes" stat={lifetimeTaxesAndPenaltiesForDisplay} className="hidden 2xl:block" />
-      <MetricsCard name="Retirement Portfolio" stat={portfolioAtRetirementForDisplay} className="2xl:col-span-2" />
-      <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} />
+      <MetricsCard
+        name="Lifetime Taxes"
+        stat={lifetimeTaxesAndPenaltiesForDisplay}
+        className="hidden 2xl:block"
+        statWidget={<ReceiptIcon className="text-primary h-8 w-8" />}
+      />
+      <MetricsCard
+        name="Retirement Portfolio"
+        stat={portfolioAtRetirementForDisplay}
+        className="2xl:col-span-2"
+        statWidget={<PiggyBankIcon className="text-primary h-8 w-8" />}
+      />
+      <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} statWidget={<SunsetIcon className="text-primary h-8 w-8" />} />
     </dl>
   );
 }
