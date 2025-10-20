@@ -173,9 +173,9 @@ export default function Table<T extends Record<string, unknown>>({
                       <tr
                         key={String(row[keyField])}
                         className={cn(
-                          'from-background focus-outline bg-gradient-to-r hover:to-rose-500/25',
+                          'focus-outline hover:bg-emphasized-background/50',
                           onRowClick && 'cursor-pointer',
-                          selectedRow === String(row[keyField]) && 'from-background bg-gradient-to-r to-rose-500/25'
+                          selectedRow === String(row[keyField]) && 'bg-emphasized-background/50'
                         )}
                         role={onRowClick ? 'button' : undefined}
                         aria-label={onRowClick ? `View details for simulation number ${String(row[keyField])}` : undefined}
