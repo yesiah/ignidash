@@ -128,14 +128,14 @@ export const demoInputs2: QuickPlanInputs = {
       amount: 145000,
       frequency: 'yearly',
       timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
-      growth: { growthRate: 4, growthLimit: 250000 },
+      growth: { growthRate: 5, growthLimit: 250000 },
     },
     'income-2': {
       id: 'income-2',
       name: 'RSU vesting',
       amount: 8750,
       frequency: 'quarterly',
-      timeframe: { start: { type: 'now' }, end: { type: 'customAge', age: 35 } },
+      timeframe: { start: { type: 'customAge', age: 30 }, end: { type: 'customAge', age: 35 } },
       growth: { growthRate: 10 },
     },
     'income-3': {
