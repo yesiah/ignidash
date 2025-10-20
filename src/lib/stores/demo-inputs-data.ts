@@ -138,8 +138,8 @@ export const demoInputs2: QuickPlanInputs = {
     'income-3': {
       id: 'income-3',
       name: 'side consulting',
-      amount: 1750,
-      frequency: 'monthly',
+      amount: 800,
+      frequency: 'biweekly',
       timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
       growth: { growthRate: 3 },
     },
