@@ -1,5 +1,6 @@
 import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
 
+// Standard Demo Inputs
 export const demoInputs1: QuickPlanInputs = {
   timeline: {
     id: 'demo-timeline1',
@@ -111,6 +112,7 @@ export const demoInputs1: QuickPlanInputs = {
   marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
 };
 
+// Early Retirement Demo Inputs
 export const demoInputs2: QuickPlanInputs = {
   timeline: {
     id: 'demo-timeline2',
@@ -235,6 +237,7 @@ export const demoInputs2: QuickPlanInputs = {
   marketAssumptions: { stockReturn: 9, stockYield: 2, bondReturn: 4, bondYield: 3.5, cashReturn: 3, inflationRate: 3 },
 };
 
+// Career Transition Demo Inputs
 export const demoInputs3: QuickPlanInputs = {
   timeline: {
     id: 'demo-timeline3',
@@ -386,6 +389,7 @@ export const demoInputs3: QuickPlanInputs = {
   marketAssumptions: { stockReturn: 9, stockYield: 2.5, bondReturn: 4.5, bondYield: 4, cashReturn: 3, inflationRate: 3 },
 };
 
+// High Income Demo Inputs
 export const demoInputs4: QuickPlanInputs = {
   timeline: {
     id: 'high-income-timeline',
