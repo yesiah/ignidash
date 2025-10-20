@@ -97,17 +97,17 @@ export const demoInputs1: QuickPlanInputs = {
       accountId: 'account-3',
       rank: 3,
       contributionType: 'percentRemaining',
-      percentRemaining: 50,
+      percentRemaining: 60,
     },
     'contribution-rule-4': {
       id: 'contribution-rule-4',
       accountId: 'account-4',
       rank: 4,
       contributionType: 'unlimited',
-      maxValue: 30000,
+      maxValue: 50000,
     },
   },
-  baseContributionRule: { type: 'save' },
+  baseContributionRule: { type: 'spend' },
   marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
 };
 
