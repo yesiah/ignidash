@@ -90,6 +90,8 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
       </div>
     ) : null;
 
+  const metricName = (name: string) => (keyMetrics.areValuesAverages ? `Mean ${name}` : name);
+
   return (
     <dl className="grid grid-cols-2 gap-2 2xl:grid-cols-3">
       <MetricsCard
@@ -98,26 +100,39 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
         className="col-span-2 2xl:col-span-1"
         statClassName={cn('ring-black dark:ring-white ring px-1 text-black dark:text-white', successColor)}
       />
-      <MetricsCard name="Progress to Retirement" stat={progressToRetirementForDisplay} className="col-span-2" statWidget={progressWidget} />
-      <MetricsCard name="Retirement Age" stat={retirementAgeForDisplay} statWidget={<UmbrellaIcon className="text-primary h-10 w-10" />} />
       <MetricsCard
-        name="Bankruptcy Age"
+        name={metricName('Progress to Retirement')}
+        stat={progressToRetirementForDisplay}
+        className="col-span-2"
+        statWidget={progressWidget}
+      />
+      <MetricsCard
+        name={metricName('Retirement Age')}
+        stat={retirementAgeForDisplay}
+        statWidget={<UmbrellaIcon className="text-primary h-10 w-10" />}
+      />
+      <MetricsCard
+        name={metricName('Bankruptcy Age')}
         stat={bankruptcyAgeForDisplay}
         statWidget={<TriangleAlertIcon className="text-primary h-10 w-10" />}
       />
       <MetricsCard
-        name="Lifetime Taxes"
+        name={metricName('Lifetime Taxes')}
         stat={lifetimeTaxesAndPenaltiesForDisplay}
         className="hidden 2xl:block"
         statWidget={<BanknoteXIcon className="text-primary h-10 w-10" />}
       />
       <MetricsCard
-        name="Retirement Portfolio"
+        name={metricName('Retirement Portfolio')}
         stat={portfolioAtRetirementForDisplay}
         className="2xl:col-span-2"
         statWidget={<LandmarkIcon className="text-primary h-10 w-10" />}
       />
-      <MetricsCard name="Final Portfolio" stat={finalPortfolioForDisplay} statWidget={<SunsetIcon className="text-primary h-10 w-10" />} />
+      <MetricsCard
+        name={metricName('Final Portfolio')}
+        stat={finalPortfolioForDisplay}
+        statWidget={<SunsetIcon className="text-primary h-10 w-10" />}
+      />
     </dl>
   );
 }

@@ -9,4 +9,5 @@ export interface KeyMetrics {
   lifetimeTaxesAndPenalties: number;
   finalPortfolio: number;
   progressToRetirement: number | null;
+  areValuesAverages: boolean;
 }

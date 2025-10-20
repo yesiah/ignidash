@@ -70,6 +70,7 @@ export class KeyMetricsExtractor {
       lifetimeTaxesAndPenalties,
       finalPortfolio,
       progressToRetirement,
+      areValuesAverages: false,
     };
   }
 
@@ -93,6 +94,7 @@ export class KeyMetricsExtractor {
       lifetimeTaxesAndPenalties: StatsUtils.average(keyMetricsList.map((km) => km.lifetimeTaxesAndPenalties)),
       finalPortfolio: StatsUtils.average(keyMetricsList.map((km) => km.finalPortfolio)),
       progressToRetirement: avgOrNull((km) => km.progressToRetirement),
+      areValuesAverages: true,
     };
   }
 }
