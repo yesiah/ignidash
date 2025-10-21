@@ -7,7 +7,10 @@ export const demoInputs1: QuickPlanInputs = {
     name: 'Demo Timeline 1',
     lifeExpectancy: 82,
     currentAge: 31,
-    retirementStrategy: { safeWithdrawalRate: 4, type: 'swrTarget' },
+    retirementStrategy: {
+      safeWithdrawalRate: 4,
+      type: 'swrTarget',
+    },
   },
   incomes: {
     'income-1': {
@@ -15,16 +18,36 @@ export const demoInputs1: QuickPlanInputs = {
       name: 'software engineer salary',
       amount: 87500,
       frequency: 'yearly',
-      timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
-      growth: { growthRate: 3, growthLimit: 150000 },
+      timeframe: {
+        start: {
+          type: 'now',
+        },
+        end: {
+          type: 'atRetirement',
+        },
+      },
+      growth: {
+        growthRate: 3,
+        growthLimit: 150000,
+      },
     },
     'income-2': {
       id: 'income-2',
       name: 'freelance work',
       amount: 1000,
       frequency: 'monthly',
-      timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
-      growth: { growthRate: 2, growthLimit: 25000 },
+      timeframe: {
+        start: {
+          type: 'now',
+        },
+        end: {
+          type: 'atRetirement',
+        },
+      },
+      growth: {
+        growthRate: 2,
+        growthLimit: 25000,
+      },
     },
   },
   expenses: {
@@ -33,16 +56,36 @@ export const demoInputs1: QuickPlanInputs = {
       name: 'living expenses',
       amount: 55000,
       frequency: 'yearly',
-      timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
-      growth: { growthRate: 3, growthLimit: 80000 },
+      timeframe: {
+        start: {
+          type: 'now',
+        },
+        end: {
+          type: 'atLifeExpectancy',
+        },
+      },
+      growth: {
+        growthRate: 3,
+        growthLimit: 80000,
+      },
     },
     'expense-2': {
       id: 'expense-2',
       name: 'vacations',
       amount: 5000,
+      growth: {
+        growthRate: 5,
+        growthLimit: 10000,
+      },
       frequency: 'yearly',
-      timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
-      growth: { growthRate: 5, growthLimit: 12500 },
+      timeframe: {
+        start: {
+          type: 'now',
+        },
+        end: {
+          type: 'atLifeExpectancy',
+        },
+      },
     },
   },
   accounts: {
@@ -108,8 +151,17 @@ export const demoInputs1: QuickPlanInputs = {
       maxValue: 30000,
     },
   },
-  baseContributionRule: { type: 'spend' },
-  marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
+  baseContributionRule: {
+    type: 'spend',
+  },
+  marketAssumptions: {
+    stockReturn: 10,
+    stockYield: 3.5,
+    bondReturn: 5,
+    bondYield: 4.5,
+    cashReturn: 3,
+    inflationRate: 3,
+  },
 };
 
 // Early Retirement Demo Inputs
