@@ -22,10 +22,12 @@ const formatMetrics = (keyMetrics: KeyMetrics) => {
     lifetimeTaxesAndPenalties,
     finalPortfolio,
     progressToRetirement,
+    areValuesMeans,
   } = keyMetrics;
 
   const formatters = {
-    success: (v: number) => (v >= 0.99 ? 'Yes!' : v <= 0.01 ? 'No' : `${formatNumber(v * 100, 1)}%`),
+    success: (v: number) =>
+      areValuesMeans ? `${formatNumber(v * 100, 1)}%` : v >= 0.99 ? 'Yes!' : v <= 0.01 ? 'No' : `${formatNumber(v * 100, 1)}%`,
     retirementAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
     yearsToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
     bankruptcyAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
