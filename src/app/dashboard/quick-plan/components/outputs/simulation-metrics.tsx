@@ -53,12 +53,12 @@ const getSuccessColor = (success: number): string => {
   if (success >= 0.8)
     return 'bg-green-50 text-green-700 inset-ring inset-ring-green-600/75 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/75';
   if (success >= 0.6)
-    return 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:inset-ring-blue-400/30';
+    return 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700/75 dark:bg-blue-400/10 dark:text-blue-400 dark:inset-ring-blue-400/75';
   if (success >= 0.4)
-    return 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-500 dark:inset-ring-yellow-400/20';
+    return 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600/75 dark:bg-yellow-400/10 dark:text-yellow-500 dark:inset-ring-yellow-400/75';
   if (success >= 0.2)
-    return 'bg-pink-50 text-pink-700 inset-ring inset-ring-pink-700/10 dark:bg-pink-400/10 dark:text-pink-400 dark:inset-ring-pink-400/20';
-  return 'bg-red-50 text-red-700 inset-ring inset-ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:inset-ring-red-400/20';
+    return 'bg-pink-50 text-pink-700 inset-ring inset-ring-pink-700/75 dark:bg-pink-400/10 dark:text-pink-400 dark:inset-ring-pink-400/75';
+  return 'bg-red-50 text-red-700 inset-ring inset-ring-red-600/75 dark:bg-red-400/10 dark:text-red-400 dark:inset-ring-red-400/75';
 };
 
 export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
