@@ -1,0 +1,194 @@
+{
+  "timeline": {
+    "id": "demo-timeline2",
+    "name": "Demo Timeline 2",
+    "lifeExpectancy": 87,
+    "currentAge": 28,
+    "retirementStrategy": {
+      "safeWithdrawalRate": 3.5,
+      "type": "swrTarget"
+    }
+  },
+  "incomes": {
+    "income-1": {
+      "id": "income-1",
+      "name": "tech salary",
+      "amount": 145000,
+      "frequency": "yearly",
+      "timeframe": {
+        "start": {
+          "type": "now"
+        },
+        "end": {
+          "type": "atRetirement"
+        }
+      },
+      "growth": {
+        "growthRate": 5,
+        "growthLimit": 250000
+      }
+    },
+    "income-2": {
+      "id": "income-2",
+      "name": "RSU vesting",
+      "amount": 8750,
+      "frequency": "quarterly",
+      "timeframe": {
+        "start": {
+          "type": "customAge",
+          "age": 30
+        },
+        "end": {
+          "type": "customAge",
+          "age": 35
+        }
+      },
+      "growth": {
+        "growthRate": 10
+      }
+    },
+    "income-3": {
+      "id": "income-3",
+      "name": "side consulting",
+      "amount": 800,
+      "frequency": "biweekly",
+      "timeframe": {
+        "start": {
+          "type": "now"
+        },
+        "end": {
+          "type": "atRetirement"
+        }
+      },
+      "growth": {
+        "growthRate": 3
+      }
+    }
+  },
+  "expenses": {
+    "expense-1": {
+      "id": "expense-1",
+      "name": "frugal living expenses",
+      "amount": 35000,
+      "frequency": "yearly",
+      "timeframe": {
+        "start": {
+          "type": "now"
+        },
+        "end": {
+          "type": "atLifeExpectancy"
+        }
+      },
+      "growth": {
+        "growthRate": 3,
+        "growthLimit": 50000
+      }
+    },
+    "expense-2": {
+      "id": "expense-2",
+      "name": "apartment rent",
+      "amount": 2000,
+      "frequency": "monthly",
+      "timeframe": {
+        "start": {
+          "type": "now"
+        },
+        "end": {
+          "type": "customAge",
+          "age": 35
+        }
+      },
+      "growth": {
+        "growthRate": 3
+      }
+    },
+    "expense-3": {
+      "id": "expense-3",
+      "name": "mortgage payment",
+      "amount": 2333,
+      "frequency": "monthly",
+      "timeframe": {
+        "start": {
+          "type": "customAge",
+          "age": 35
+        },
+        "end": {
+          "type": "customAge",
+          "age": 50
+        }
+      }
+    }
+  },
+  "accounts": {
+    "account-1": {
+      "type": "401k",
+      "id": "account-1",
+      "name": "fidelity 401k",
+      "currentValue": 85000,
+      "percentBonds": 10
+    },
+    "account-2": {
+      "type": "rothIra",
+      "id": "account-2",
+      "name": "vanguard roth",
+      "currentValue": 42000,
+      "contributionBasis": 30000,
+      "percentBonds": 10
+    },
+    "account-3": {
+      "type": "taxableBrokerage",
+      "id": "account-3",
+      "name": "schwab brokerage",
+      "currentValue": 120000,
+      "costBasis": 90000,
+      "percentBonds": 5
+    },
+    "account-4": {
+      "type": "hsa",
+      "id": "account-4",
+      "name": "fidelity hsa",
+      "currentValue": 15000,
+      "percentBonds": 10
+    }
+  },
+  "contributionRules": {
+    "contribution-rule-1": {
+      "id": "contribution-rule-1",
+      "accountId": "account-1",
+      "rank": 1,
+      "contributionType": "unlimited",
+      "incomeIds": ["income-1", "income-2"]
+    },
+    "contribution-rule-2": {
+      "id": "contribution-rule-2",
+      "accountId": "account-2",
+      "rank": 2,
+      "contributionType": "unlimited",
+      "incomeIds": ["income-1", "income-2", "income-3"]
+    },
+    "contribution-rule-3": {
+      "id": "contribution-rule-3",
+      "accountId": "account-4",
+      "rank": 3,
+      "contributionType": "unlimited"
+    },
+    "contribution-rule-4": {
+      "id": "contribution-rule-4",
+      "accountId": "account-3",
+      "rank": 4,
+      "contributionType": "percentRemaining",
+      "percentRemaining": 85
+    }
+  },
+  "baseContributionRule": {
+    "type": "save"
+  },
+  "marketAssumptions": {
+    "stockReturn": 9,
+    "stockYield": 2,
+    "bondReturn": 4,
+    "bondYield": 3.5,
+    "cashReturn": 3,
+    "inflationRate": 3
+  }
+}
