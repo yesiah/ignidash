@@ -29,7 +29,7 @@ export const timeFrameForDisplay = (startTimePoint: TimePoint, endTimePoint?: Ti
   const startLabel = labelFromType(startTimePoint);
   const endLabel = endTimePoint ? labelFromType(endTimePoint) : undefined;
 
-  return endLabel ? `${startLabel} to ${endLabel}` : startLabel;
+  return endLabel ? `${startLabel} → ${endLabel}` : startLabel;
 };
 
 export const growthForDisplay = (growthRate: Growth['growthRate'], growthLimit: Growth['growthLimit']) => {
