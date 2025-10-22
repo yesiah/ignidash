@@ -80,7 +80,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
               <div className="mt-auto flex items-center justify-end">
                 <Button outline onClick={() => setExpenseDialogOpen(true)} disabled={!!selectedExpenseID}>
                   <PlusIcon />
-                  Expenses
+                  Expense
                 </Button>
               </div>
             </>
