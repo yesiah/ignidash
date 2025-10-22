@@ -43,18 +43,26 @@ import SortableContributionItem from '../sortable-contribution-item';
 import ContributionItem from '../contribution-item';
 
 function getContributionRuleDesc(accounts: Record<string, AccountInputs>, contributionInputs: ContributionInputs) {
+  const accountType = accountTypeForDisplay(accounts[contributionInputs.accountId]?.type);
+
+  let description: string;
   switch (contributionInputs.contributionType) {
     case 'dollarAmount':
-      return (
-        <p>{`${formatNumber(contributionInputs.dollarAmount, 2, '$') + ' per year'} | ${accountTypeForDisplay(accounts[contributionInputs.accountId]?.type)}`}</p>
-      );
+      description = `${formatNumber(contributionInputs.dollarAmount, 2, '$')} per year`;
+      break;
     case 'percentRemaining':
-      return (
-        <p>{`${contributionInputs.percentRemaining}% remaining | ${accountTypeForDisplay(accounts[contributionInputs.accountId]?.type)}`}</p>
-      );
+      description = `${contributionInputs.percentRemaining}% remaining`;
+      break;
     case 'unlimited':
-      return <p>{`Unlimited | ${accountTypeForDisplay(accounts[contributionInputs.accountId]?.type)}`}</p>;
+      description = 'Unlimited';
+      break;
   }
+
+  return (
+    <p>
+      {description} | {accountType}
+    </p>
+  );
 }
 
 const COLORS = ['bg-[var(--chart-1)]', 'bg-[var(--chart-2)]', 'bg-[var(--chart-3)]', 'bg-[var(--chart-4)]'];
