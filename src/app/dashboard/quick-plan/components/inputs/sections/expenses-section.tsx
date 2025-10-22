@@ -65,7 +65,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
                         <p>{timeFrameForDisplay(expense.timeframe.start, expense.timeframe.end)}</p>
                       </>
                     }
-                    leftAddOnCharacter={expense.name.charAt(0).toUpperCase()}
+                    leftAddOn={expense.name.charAt(0).toUpperCase()}
                     onDropdownClickEdit={() => {
                       setExpenseDialogOpen(true);
                       setSelectedExpenseID(id);

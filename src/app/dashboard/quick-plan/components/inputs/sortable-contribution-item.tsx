@@ -8,7 +8,7 @@ interface SortableContributionItemProps {
   index: number;
   name: string | React.ReactNode;
   desc: string | React.ReactNode;
-  leftAddOnCharacter: string;
+  leftAddOn: string | React.ReactNode;
   onDropdownClickEdit: () => void;
   onDropdownClickDelete: () => void;
   colorClassName?: string;

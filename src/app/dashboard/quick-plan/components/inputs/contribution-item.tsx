@@ -7,7 +7,7 @@ interface ContributionItemProps {
   index: number;
   name: string | React.ReactNode;
   desc: string | React.ReactNode;
-  leftAddOnCharacter: string;
+  leftAddOn: string | React.ReactNode;
   onDropdownClickEdit: () => void;
   onDropdownClickDelete: () => void;
   style?: React.CSSProperties;

@@ -66,7 +66,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
                         <p>{timeFrameForDisplay(income.timeframe.start, income.timeframe.end)}</p>
                       </>
                     }
-                    leftAddOnCharacter={income.name.charAt(0).toUpperCase()}
+                    leftAddOn={income.name.charAt(0).toUpperCase()}
                     onDropdownClickEdit={() => {
                       setIncomeDialogOpen(true);
                       setSelectedIncomeID(id);

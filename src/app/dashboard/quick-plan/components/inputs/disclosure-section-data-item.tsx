@@ -9,7 +9,7 @@ interface DisclosureSectionDataItemProps {
   index: number;
   name: string | React.ReactNode;
   desc: string | React.ReactNode;
-  leftAddOnCharacter: string;
+  leftAddOn: string | React.ReactNode;
   onDropdownClickEdit: () => void;
   onDropdownClickDelete: () => void;
   ref?: React.Ref<HTMLLIElement>;
@@ -23,7 +23,7 @@ export default function DisclosureSectionDataItem({
   index,
   name,
   desc,
-  leftAddOnCharacter,
+  leftAddOn,
   onDropdownClickEdit,
   onDropdownClickDelete,
   ref,
@@ -47,7 +47,7 @@ export default function DisclosureSectionDataItem({
         {...(showDragHandle ? otherProps : {})}
       >
         {showDragHandle && <GripVerticalIcon className="size-5 shrink-0" />}
-        {leftAddOnCharacter}
+        {leftAddOn}
       </div>
       <div className="bg-emphasized-background border-border/50 flex flex-1 items-center justify-between truncate border-t border-r border-b">
         <div className="flex-1 truncate px-4 py-2">
