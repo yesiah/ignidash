@@ -7,7 +7,7 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { useIncomesData, useDeleteIncome } from '@/lib/stores/quick-plan-store';
+import { useIncomesData, useDeleteIncome, useUpdateIncomes } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/numbers-item-display-formatters';
@@ -32,7 +32,18 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
   const incomes = useIncomesData();
   const hasIncomes = Object.keys(incomes).length > 0;
 
+  const updateIncomes = useUpdateIncomes();
   const deleteIncome = useDeleteIncome();
+
+  const disableIncome = useCallback(
+    (id: string) => {
+      const income = incomes[id];
+      if (!income) return;
+
+      updateIncomes({ ...income, disabled: !income.disabled });
+    },
+    [incomes, updateIncomes]
+  );
 
   const handleClose = useCallback(() => {
     setSelectedIncomeID(null);
@@ -67,6 +78,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
                       </>
                     }
                     leftAddOn={<BanknoteArrowUpIcon className="size-8" />}
+                    disabled={income.disabled}
                     onDropdownClickEdit={() => {
                       setIncomeDialogOpen(true);
                       setSelectedIncomeID(id);
@@ -74,6 +86,7 @@ export default function IncomeSection({ toggleDisclosure, disclosureButtonRef, d
                     onDropdownClickDelete={() => {
                       setIncomeToDelete({ id, name: income.name });
                     }}
+                    onDropdownClickDisable={() => disableIncome(id)}
                     colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
                   />
                 ))}

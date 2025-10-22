@@ -73,7 +73,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
   const updateExpenses = useUpdateExpenses();
   const onSubmit = (data: ExpenseInputs) => {
     const expenseId = data.id === '' ? uuidv4() : data.id;
-    updateExpenses({ ...data, id: expenseId });
+    updateExpenses({ ...data, id: expenseId, disabled: false });
     onClose();
   };
 

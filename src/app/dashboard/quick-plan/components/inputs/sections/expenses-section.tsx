@@ -7,7 +7,7 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { useExpensesData, useDeleteExpense } from '@/lib/stores/quick-plan-store';
+import { useExpensesData, useDeleteExpense, useUpdateExpenses } from '@/lib/stores/quick-plan-store';
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/numbers-item-display-formatters';
@@ -32,7 +32,18 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
   const expenses = useExpensesData();
   const hasExpenses = Object.keys(expenses).length > 0;
 
+  const updateExpenses = useUpdateExpenses();
   const deleteExpense = useDeleteExpense();
+
+  const disableExpense = useCallback(
+    (id: string) => {
+      const expense = expenses[id];
+      if (!expense) return;
+
+      updateExpenses({ ...expense, disabled: !expense.disabled });
+    },
+    [expenses, updateExpenses]
+  );
 
   const handleClose = useCallback(() => {
     setSelectedExpenseID(null);
@@ -66,6 +77,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
                       </>
                     }
                     leftAddOn={<BanknoteArrowDownIcon className="size-8" />}
+                    disabled={expense.disabled}
                     onDropdownClickEdit={() => {
                       setExpenseDialogOpen(true);
                       setSelectedExpenseID(id);
@@ -73,6 +85,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
                     onDropdownClickDelete={() => {
                       setExpenseToDelete({ id, name: expense.name });
                     }}
+                    onDropdownClickDisable={() => disableExpense(id)}
                     colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
                   />
                 ))}

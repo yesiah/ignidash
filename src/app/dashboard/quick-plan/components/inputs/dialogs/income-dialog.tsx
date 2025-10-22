@@ -67,7 +67,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
   const updateIncomes = useUpdateIncomes();
   const onSubmit = (data: IncomeInputs) => {
     const incomeId = data.id === '' ? uuidv4() : data.id;
-    updateIncomes({ ...data, id: incomeId });
+    updateIncomes({ ...data, id: incomeId, disabled: false });
     onClose();
   };
 
