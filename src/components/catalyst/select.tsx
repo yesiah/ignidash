@@ -41,7 +41,7 @@ export const Select = forwardRef(function Select(
           // Border
           'border border-stone-950/25 data-hover:border-stone-950/50 dark:border-white/25 dark:data-hover:border-white/50',
           // Background color
-          'bg-transparent dark:bg-white/5 dark:*:bg-stone-800',
+          'bg-transparent dark:bg-white/5',
           // Hide default focus styles
           'focus:outline-hidden',
           // Invalid state
