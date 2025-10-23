@@ -45,7 +45,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
           end: { type: 'atLifeExpectancy' },
         },
         growth: {
-          growthRate: 3,
+          growthRate: 0,
         },
       }) as const satisfies Partial<ExpenseInputs>,
     [numExpenses]
@@ -481,7 +481,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
                               control={control}
                               id="growthRate"
                               inputMode="decimal"
-                              placeholder="3%"
+                              placeholder="0%"
                               suffix="%"
                             />
                             {errors.growth?.growthRate && <ErrorMessage>{errors.growth?.growthRate?.message}</ErrorMessage>}

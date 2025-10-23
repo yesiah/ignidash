@@ -137,16 +137,14 @@ export class Expense {
     let annualAmount = rawAmount * timesToApplyPerYear;
 
     if (this.lastYear !== Math.floor(year)) {
-      const nominalGrowthRate = this.growthRate;
-      if (nominalGrowthRate) {
-        const realGrowthRate = (1 + nominalGrowthRate / 100) / (1 + inflationRate) - 1;
-
+      if (this.growthRate) {
+        const realGrowthRate = this.growthRate / 100;
         annualAmount *= 1 + realGrowthRate;
 
         const growthLimit = this.growthLimit;
-        if (growthLimit !== undefined && nominalGrowthRate > 0) {
+        if (growthLimit !== undefined && realGrowthRate > 0) {
           annualAmount = Math.min(annualAmount, growthLimit);
-        } else if (growthLimit !== undefined && nominalGrowthRate < 0) {
+        } else if (growthLimit !== undefined && realGrowthRate < 0) {
           annualAmount = Math.max(annualAmount, growthLimit);
         }
 

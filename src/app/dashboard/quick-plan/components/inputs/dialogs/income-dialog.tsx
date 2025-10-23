@@ -45,7 +45,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
           end: { type: 'atRetirement' },
         },
         growth: {
-          growthRate: 3,
+          growthRate: 0,
         },
       }) as const satisfies Partial<IncomeInputs>,
     [numIncomes]
@@ -481,7 +481,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                               control={control}
                               id="growthRate"
                               inputMode="decimal"
-                              placeholder="3%"
+                              placeholder="0%"
                               suffix="%"
                             />
                             {errors.growth?.growthRate && <ErrorMessage>{errors.growth?.growthRate?.message}</ErrorMessage>}
