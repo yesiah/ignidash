@@ -219,10 +219,10 @@ export class TaxProcessor {
       const capitalLossDeduction = Math.max(grossRealizedGains, -3000);
       this.capitalLossCarryover = grossRealizedGains - capitalLossDeduction;
       return { grossRealizedGains: 0, capitalLossDeduction };
-    } else {
-      this.capitalLossCarryover = 0;
-      return { grossRealizedGains, capitalLossDeduction: 0 };
     }
+
+    this.capitalLossCarryover = 0;
+    return { grossRealizedGains, capitalLossDeduction: 0 };
   }
 
   private getContributionsForAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData, accountTypes: AccountInputs['type'][]): number {
