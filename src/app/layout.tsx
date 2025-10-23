@@ -3,6 +3,8 @@ import { Figtree, Geist_Mono, Geist } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 
+import { ConvexClientProvider } from './convex-client-provider';
+
 const figtree = Figtree({
   variable: '--font-figtree',
   subsets: ['latin'],
@@ -34,7 +36,7 @@ export default function RootLayout({
     <html lang="en" className="h-full scheme-light dark:scheme-dark" suppressHydrationWarning>
       <body className={`${figtree.variable} ${geistMono.variable} ${geist.variable} h-full antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>
