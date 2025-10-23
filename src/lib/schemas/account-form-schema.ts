@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema-helpers';
+import type { TaxCategory } from '@/lib/calc/asset';
 
 const baseAccountSchema = z.object({
   id: z.string(),
@@ -81,7 +82,7 @@ export const taxCategoryFromAccountTypeForDisplay = (type: AccountInputs['type']
     case 'savings':
       return 'Cash Savings';
     case 'taxableBrokerage':
-      return 'Taxable Brokerage';
+      return 'Taxable';
     case 'roth401k':
     case 'rothIra':
       return 'Tax-Free';
@@ -89,6 +90,22 @@ export const taxCategoryFromAccountTypeForDisplay = (type: AccountInputs['type']
     case 'ira':
     case 'hsa':
       return 'Tax-Deferred';
+  }
+};
+
+export const taxCategoryFromAccountType = (type: AccountInputs['type']): TaxCategory => {
+  switch (type) {
+    case 'savings':
+      return 'cashSavings';
+    case 'taxableBrokerage':
+      return 'taxable';
+    case 'roth401k':
+    case 'rothIra':
+      return 'taxFree';
+    case '401k':
+    case 'ira':
+    case 'hsa':
+      return 'taxDeferred';
   }
 };
 

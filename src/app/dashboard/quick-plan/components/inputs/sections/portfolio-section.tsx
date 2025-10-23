@@ -10,13 +10,16 @@ import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
-import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
+import { accountTypeForDisplay, taxCategoryFromAccountType } from '@/lib/schemas/account-form-schema';
+import type { TaxCategory } from '@/lib/calc/asset';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+
+const COLORS = ['bg-[var(--chart-1)]', 'bg-[var(--chart-2)]', 'bg-[var(--chart-3)]', 'bg-[var(--chart-4)]'];
 
 interface PortfolioSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -47,6 +50,13 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
     setSelectedSavingsID(null);
     setSavingsDialogOpen(false);
   }, []);
+
+  const colorMap: Record<TaxCategory, string> = {
+    taxable: COLORS[0],
+    taxDeferred: COLORS[1],
+    taxFree: COLORS[2],
+    cashSavings: COLORS[3],
+  };
 
   return (
     <>
@@ -88,7 +98,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
                     onDropdownClickDelete={() => {
                       setAccountToDelete({ id, name: account.name });
                     }}
-                    colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
+                    colorClassName={colorMap[taxCategoryFromAccountType(account.type)]}
                   />
                 ))}
               </ul>

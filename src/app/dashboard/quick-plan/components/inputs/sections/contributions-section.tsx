@@ -34,7 +34,8 @@ import {
   useAccountsData,
 } from '@/lib/stores/quick-plan-store';
 import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
-import { accountTypeForDisplay, type AccountInputs } from '@/lib/schemas/account-form-schema';
+import { accountTypeForDisplay, type AccountInputs, taxCategoryFromAccountType } from '@/lib/schemas/account-form-schema';
+import type { TaxCategory } from '@/lib/calc/asset';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
@@ -79,12 +80,15 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
   const [contributionRuleToDelete, setContributionRuleToDelete] = useState<{ id: string; name: string } | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const accounts = useAccountsData();
   const contributionRules = Object.values(useContributionRulesData());
-  const colorMap = useMemo(() => {
-    const map: Record<string, string> = {};
-    contributionRules.forEach((rule, i) => (map[rule.id] = COLORS[i % COLORS.length]));
-    return map;
-  }, [contributionRules]);
+
+  const colorMap: Record<TaxCategory, string> = {
+    taxable: COLORS[0],
+    taxDeferred: COLORS[1],
+    taxFree: COLORS[2],
+    cashSavings: COLORS[3],
+  };
 
   const sortedRules = useMemo(() => contributionRules.sort((a, b) => a.rank - b.rank), [contributionRules]);
   const sortedRuleIds = useMemo(() => sortedRules.map((rule) => rule.id), [sortedRules]);
@@ -96,8 +100,6 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
 
   const baseContributionRule = useBaseContributionRuleData();
   const updateBaseContributionRule = useUpdateBaseContributionRule();
-
-  const accounts = useAccountsData();
 
   const reorderContributionRules = useReorderContributionRules();
   const deleteContributionRule = useDeleteContributionRule();
@@ -185,7 +187,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                         onDropdownClickDelete={() => {
                           setContributionRuleToDelete({ id, name: 'Contribution ' + (index + 1) });
                         }}
-                        colorClassName={colorMap[id]}
+                        colorClassName={colorMap[taxCategoryFromAccountType(accounts[contributionRule.accountId]?.type)]}
                       />
                     ))}
                   </ul>
@@ -208,7 +210,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
                       onDropdownClickDelete={() => {
                         setContributionRuleToDelete({ id: activeId, name: 'Contribution ' + (activeIndex + 1) });
                       }}
-                      colorClassName={colorMap[activeId]}
+                      colorClassName={colorMap[taxCategoryFromAccountType(accounts[activeContributionRule.accountId]?.type)]}
                     />
                   ) : null}
                 </DragOverlay>
