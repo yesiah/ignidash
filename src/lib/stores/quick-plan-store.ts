@@ -525,7 +525,6 @@ export const useMultiSimulationResult = (
     swrKey,
     async () => {
       await Promise.all([mutate(() => true, undefined, { revalidate: false }), mergeWorker.reset()]);
-      setCompletedSimulations(0);
 
       const pool = createWorkerPool();
 
