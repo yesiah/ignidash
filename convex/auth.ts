@@ -1,13 +1,17 @@
 import { createClient, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
+import { requireActionCtx } from '@convex-dev/better-auth/utils';
+import { Resend } from '@convex-dev/resend';
+import { betterAuth } from 'better-auth';
+
 import { components } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
 import { query } from './_generated/server';
-import { betterAuth } from 'better-auth';
 
 const siteUrl = process.env.SITE_URL!;
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
+export const resend = new Resend(components.resend);
 
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
   return betterAuth({
@@ -18,6 +22,17 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
+      sendResetPassword: async ({ user, url }) => {
+        await resend.sendEmail(requireActionCtx(ctx), {
+          from: 'Joe <joe@schelske.dev>',
+          to: user.email,
+          subject: 'Reset your password',
+          text: `Click the link to reset your password: ${url}`,
+        });
+      },
+      onPasswordReset: async ({ user }, request) => {
+        console.log(`Password for user ${user.email} has been reset.`);
+      },
     },
     socialProviders: {
       google: {
@@ -31,6 +46,17 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       },
     },
     plugins: [convex()],
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url }) => {
+        await resend.sendEmail(requireActionCtx(ctx), {
+          from: 'Joe <joe@schelske.dev>',
+          to: user.email,
+          subject: 'Verify your email address',
+          text: `Click the link to verify your email: ${url}`,
+        });
+      },
+      sendOnSignUp: true,
+    },
   });
 };
 
