@@ -6,6 +6,16 @@ import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
 
 export default function SignUpPage() {
+  const handleEmailSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    await authClient.signUp.email({ email, password, name: email.split('@')[0], callbackURL: '/dashboard/quick-plan' });
+  };
+
   const handleGoogleSignUp = async () => await authClient.signIn.social({ provider: 'google', callbackURL: '/dashboard/quick-plan' });
 
   return (
@@ -18,7 +28,7 @@ export default function SignUpPage() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="border-border/25 from-emphasized-background to-background border bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
-            <form action="#" method="POST" className="space-y-6">
+            <form onSubmit={handleEmailSignUp} method="POST" className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-stone-900 dark:text-white">
                   Email address
