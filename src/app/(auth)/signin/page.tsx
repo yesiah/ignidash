@@ -19,7 +19,7 @@ export default function SignInPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
+          <div className="border-border/25 border bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
             <form action="#" method="POST" className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
@@ -144,9 +144,9 @@ export default function SignInPage() {
           </div>
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Don&apos;t have an account?{' '}
+            New to Ignidash?{' '}
             <Link href="/signup" className="font-semibold text-rose-600 hover:text-rose-500">
-              Sign up
+              Create an account
             </Link>
           </p>
         </div>
