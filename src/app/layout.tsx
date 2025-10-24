@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Figtree, Geist_Mono, Geist } from 'next/font/google';
-import './globals.css';
+
 import { ThemeProvider } from '@/components/providers/theme-provider';
 
 import { ConvexClientProvider } from './convex-client-provider';
+import './globals.css';
 
 const figtree = Figtree({
   variable: '--font-figtree',
