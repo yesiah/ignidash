@@ -24,17 +24,20 @@ export default function ResetPasswordPage() {
     const formData = new FormData(event.currentTarget);
     const newPassword = formData.get('password') as string;
 
-    const { error } = await authClient.resetPassword({
-      newPassword,
-      token,
-    });
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    router.push('/signin?reset=success');
+    await authClient.resetPassword(
+      {
+        newPassword,
+        token,
+      },
+      {
+        onError(context) {
+          alert(context.error.message);
+        },
+        onSuccess() {
+          router.push('/signin?reset=success');
+        },
+      }
+    );
   };
 
   return (
