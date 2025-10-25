@@ -83,7 +83,6 @@ export default function SignUpPage() {
                 </div>
               </div>
               <PasswordInput passwordType="new" />
-
               <div>
                 <button
                   type="submit"
@@ -94,7 +93,6 @@ export default function SignUpPage() {
                 </button>
               </div>
             </form>
-
             <GoogleSignIn />
           </div>
 

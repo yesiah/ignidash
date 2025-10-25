@@ -134,7 +134,6 @@ export default function SignInPage() {
                   </button>
                 </div>
               </form>
-
               <GoogleSignIn />
             </div>
 
