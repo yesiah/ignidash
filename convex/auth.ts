@@ -24,7 +24,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       enabled: true,
       sendResetPassword: async ({ user, url }) => {
         await resend.sendEmail(requireActionCtx(ctx), {
-          from: 'Joe <joe@schelske.dev>',
+          from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
           subject: 'Reset your password',
           text: `Click the link to reset your password: ${url}`,
@@ -49,7 +49,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         await resend.sendEmail(requireActionCtx(ctx), {
-          from: 'Joe <joe@schelske.dev>',
+          from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
           subject: 'Verify your email address',
           text: `Click the link to verify your email: ${url}`,
