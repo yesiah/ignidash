@@ -11,7 +11,7 @@ import { query } from './_generated/server';
 const siteUrl = process.env.SITE_URL!;
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
-export const resend = new Resend(components.resend);
+export const resend = new Resend(components.resend, { testMode: false });
 
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
   return betterAuth({
