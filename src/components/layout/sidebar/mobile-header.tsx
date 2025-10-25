@@ -21,7 +21,7 @@ interface MobileHeaderProps {
 
 export default function MobileHeader({ onMenuClick, currentPageTitle, currentPageIcon: Icon }: MobileHeaderProps) {
   const router = useRouter();
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.auth.getCurrentUserSafe);
 
   const image = user?.image;
 

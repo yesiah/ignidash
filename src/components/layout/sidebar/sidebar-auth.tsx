@@ -13,7 +13,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownDivider, DropdownLabel } 
 
 export default function SidebarAuth() {
   const router = useRouter();
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.auth.getCurrentUserSafe);
 
   const image = user?.image;
   const name = user?.name ?? 'Anonymous';

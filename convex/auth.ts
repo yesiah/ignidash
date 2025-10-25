@@ -60,9 +60,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
   });
 };
 
-export const getCurrentUser = query({
+export const getCurrentUserSafe = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
+    return authComponent.safeGetAuthUser(ctx);
   },
 });
