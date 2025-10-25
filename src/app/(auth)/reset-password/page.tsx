@@ -4,10 +4,12 @@ import { FireIcon } from '@heroicons/react/24/solid';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { authClient } from '@/lib/auth-client';
 
 export default function ResetPasswordPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleResetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,10 +24,17 @@ export default function ResetPasswordPage() {
     const formData = new FormData(event.currentTarget);
     const newPassword = formData.get('password') as string;
 
-    await authClient.resetPassword({
+    const { error } = await authClient.resetPassword({
       newPassword,
       token,
     });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    router.push('/signin?reset=success');
   };
 
   return (
