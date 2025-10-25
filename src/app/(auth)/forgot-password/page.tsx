@@ -1,6 +1,7 @@
 'use client';
 
 import { FireIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -10,7 +11,7 @@ import EmailInput from '../components/email-input';
 
 export default function ForgotPasswordPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [_dataMessage, setDataMessage] = useState<string | null>(null);
+  const [dataMessage, setDataMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRequestReset = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,19 +55,30 @@ export default function ForgotPasswordPage() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="border-border/25 from-emphasized-background to-background border bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
-            <form onSubmit={handleRequestReset} method="POST" className="space-y-6">
-              <EmailInput errorMessage={errorMessage} />
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex w-full justify-center rounded-md bg-rose-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-rose-500 dark:shadow-none dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
-                >
-                  {isLoading ? 'Sending...' : 'Send Reset Link'}
-                </button>
+            {dataMessage ? (
+              <div className="flex">
+                <div className="shrink-0">
+                  <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium">{dataMessage}</p>
+                </div>
               </div>
-            </form>
+            ) : (
+              <form onSubmit={handleRequestReset} method="POST" className="space-y-6">
+                <EmailInput errorMessage={errorMessage} />
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex w-full justify-center rounded-md bg-rose-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-rose-500 dark:shadow-none dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
+                  >
+                    {isLoading ? 'Sending...' : 'Send Reset Link'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </div>
