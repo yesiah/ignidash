@@ -4,18 +4,20 @@ import { FireIcon } from '@heroicons/react/24/solid';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { authClient } from '@/lib/auth-client';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleResetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const token = new URLSearchParams(window.location.search).get('token');
+    const token = searchParams.get('token');
     if (!token) {
       alert('Invalid or missing token. Please request a new password reset link.');
       return;
