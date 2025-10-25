@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FireIcon } from '@heroicons/react/24/solid';
+import { Authenticated, Unauthenticated } from 'convex/react';
 
 const navigation = [
   { name: 'How It Works', href: '/#how-it-works' },
@@ -15,6 +16,7 @@ const navigation = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
@@ -45,9 +47,16 @@ export default function Navbar() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/signin" className="text-sm/6 font-semibold text-gray-900">
-            Sign in <span aria-hidden="true">&rarr;</span>
-          </Link>
+          <Unauthenticated>
+            <Link href="/signin" className="text-sm/6 font-semibold text-gray-900">
+              Sign in <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </Unauthenticated>
+          <Authenticated>
+            <Link href="/dashboard/quick-plan" className="text-sm/6 font-semibold text-gray-900">
+              Dashboard <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </Authenticated>
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -80,12 +89,22 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="py-6">
-                <Link
-                  href="/signin"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Sign in
-                </Link>
+                <Unauthenticated>
+                  <Link
+                    href="/signin"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Sign in
+                  </Link>
+                </Unauthenticated>
+                <Authenticated>
+                  <Link
+                    href="/dashboard/quick-plan"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Dashboard
+                  </Link>
+                </Authenticated>
               </div>
             </div>
           </div>
