@@ -61,7 +61,7 @@ export default function SignInPage() {
                     className={cn(
                       'block w-full rounded-md bg-white px-3 py-1.5 pr-10 text-base text-stone-900 outline-1 -outline-offset-1 outline-stone-400 placeholder:text-stone-400 focus:outline-2 focus:-outline-offset-2 focus:outline-rose-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/25 dark:placeholder:text-stone-500 dark:focus:outline-rose-500',
                       {
-                        'text-red-900 outline-red-300 placeholder:text-red-300 focus:outline-red-600 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70 dark:focus:outline-red-400':
+                        'text-red-900 outline-red-300 placeholder:text-red-300 dark:text-red-400 dark:outline-red-500/50 dark:placeholder:text-red-400/70':
                           !!errorMessage,
                       }
                     )}
