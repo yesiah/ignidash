@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { CircleUserRoundIcon, LogInIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react';
+import { CircleUserRoundIcon, LogInIcon, LogOutIcon, SettingsIcon, UserIcon, LoaderIcon } from 'lucide-react';
 import * as Headless from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
@@ -46,7 +46,8 @@ export default function SidebarAuth() {
       <DropdownMenu className="z-[60] min-w-(--button-width)">
         <AuthLoading>
           <DropdownItem onClick={() => {}} disabled>
-            Loading...
+            <LoaderIcon data-slot="icon" />
+            <DropdownLabel>Loading...</DropdownLabel>
           </DropdownItem>
         </AuthLoading>
         <Unauthenticated>
