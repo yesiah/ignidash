@@ -19,11 +19,11 @@ export default function SignUpPage() {
     const formData = new FormData(event.currentTarget);
 
     const email = formData.get('email') as string;
-    const fullName = formData.get('full-name') as string;
+    const firstName = formData.get('first-name') as string;
     const password = formData.get('password') as string;
 
     await authClient.signUp.email(
-      { email, password, name: fullName, callbackURL: '/dashboard/quick-plan' },
+      { email, password, name: firstName, callbackURL: '/dashboard/quick-plan' },
       {
         onError: (ctx) => {
           setErrorMessage(ctx.error.message);
@@ -45,13 +45,13 @@ export default function SignUpPage() {
             <form onSubmit={handleEmailSignUp} method="POST" className="space-y-6">
               <EmailInput errorMessage={errorMessage} />
               <div>
-                <label htmlFor="full-name" className="block text-sm/6 font-medium text-stone-900 dark:text-white">
-                  Full name
+                <label htmlFor="first-name" className="block text-sm/6 font-medium text-stone-900 dark:text-white">
+                  First name
                 </label>
                 <div className="mt-2">
                   <input
-                    id="full-name"
-                    name="full-name"
+                    id="first-name"
+                    name="first-name"
                     type="text"
                     autoComplete="given-name"
                     required
