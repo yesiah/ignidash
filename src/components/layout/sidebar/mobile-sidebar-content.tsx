@@ -1,3 +1,5 @@
+'use client';
+
 import type { NavigationItem } from '@/lib/navigation';
 import { SidebarModeToggle } from '@/components/mode-toggle';
 
