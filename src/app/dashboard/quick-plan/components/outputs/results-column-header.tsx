@@ -48,9 +48,7 @@ export default function ResultsColumnHeader() {
         icon={PresentationIcon}
         iconButton={
           <div className="flex items-center gap-x-1">
-            {!isDisabled && (
-              <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
-            )}
+            <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
             <IconButton
               icon={SlidersHorizontalIcon}
               label="Simulation Settings"
