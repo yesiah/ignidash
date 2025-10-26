@@ -39,15 +39,29 @@ export default function SettingsPage() {
     };
   }, []);
 
+  const showSuccessNotification = (title: string, desc: string) => {
+    setNotificationState({ show: true, title, desc });
+
+    if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+
+    notificationTimeoutRef.current = setTimeout(() => {
+      setNotificationState({ show: false, title: '', desc: '' });
+    }, 3000);
+  };
+
   const user = useQuery(api.auth.getCurrentUserSafe);
 
-  const currentName = user?.name ?? 'Anonymous';
+  const currentName = user?.name ?? '';
   const [name, setName] = useState(currentName);
   const [nameFieldState, setNameFieldState] = useState<FieldState>({
     dataMessage: null,
     isLoading: false,
     errorMessage: null,
   });
+
+  useEffect(() => {
+    if (user?.name) setName(user.name);
+  }, [user?.name]);
 
   const handleNameSave = async () => {
     await authClient.updateUser(
@@ -61,13 +75,7 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setNameFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
-
-          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
-
-          notificationTimeoutRef.current = setTimeout(() => {
-            setNotificationState({ show: false, title: '', desc: '' });
-          }, 3000);
+          showSuccessNotification('Update successful!', ctx.data.message);
         },
       }
     );
@@ -81,6 +89,10 @@ export default function SettingsPage() {
     errorMessage: null,
   });
 
+  useEffect(() => {
+    if (user?.email) setEmail(user.email);
+  }, [user?.email]);
+
   const handleEmailSave = async () => {
     await authClient.changeEmail(
       { newEmail: email },
@@ -93,13 +105,7 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setEmailFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
-
-          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
-
-          notificationTimeoutRef.current = setTimeout(() => {
-            setNotificationState({ show: false, title: '', desc: '' });
-          }, 3000);
+          showSuccessNotification('Update successful!', ctx.data.message);
         },
       }
     );
@@ -125,13 +131,9 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setPasswordFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
-
-          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
-
-          notificationTimeoutRef.current = setTimeout(() => {
-            setNotificationState({ show: false, title: '', desc: '' });
-          }, 3000);
+          setCurrentPassword('');
+          setNewPassword('');
+          showSuccessNotification('Update successful!', ctx.data.message);
         },
       }
     );
@@ -163,8 +165,8 @@ export default function SettingsPage() {
                       />
                       {nameFieldState.errorMessage && <ErrorMessage>{nameFieldState.errorMessage}</ErrorMessage>}
                     </Field>
-                    <Button color="rose" type="button" onClick={handleNameSave} disabled={name === currentName}>
-                      Save
+                    <Button color="rose" type="button" onClick={handleNameSave} disabled={name === currentName || nameFieldState.isLoading}>
+                      {nameFieldState.isLoading ? 'Saving...' : 'Save'}
                     </Button>
                   </div>
                   <Divider />
@@ -183,8 +185,13 @@ export default function SettingsPage() {
                       />
                       {emailFieldState.errorMessage && <ErrorMessage>{emailFieldState.errorMessage}</ErrorMessage>}
                     </Field>
-                    <Button color="rose" type="button" onClick={handleEmailSave} disabled={email === currentEmail}>
-                      Save
+                    <Button
+                      color="rose"
+                      type="button"
+                      onClick={handleEmailSave}
+                      disabled={email === currentEmail || emailFieldState.isLoading}
+                    >
+                      {emailFieldState.isLoading ? 'Saving...' : 'Save'}
                     </Button>
                   </div>
                   <Divider />
@@ -216,8 +223,13 @@ export default function SettingsPage() {
                     {passwordFieldState.errorMessage && <ErrorMessage>{passwordFieldState.errorMessage}</ErrorMessage>}
                   </Field>
                   <DialogActions>
-                    <Button color="rose" type="button" onClick={handlePasswordSave} disabled={!currentPassword || !newPassword}>
-                      Update password
+                    <Button
+                      color="rose"
+                      type="button"
+                      onClick={handlePasswordSave}
+                      disabled={!currentPassword || !newPassword || passwordFieldState.isLoading}
+                    >
+                      {passwordFieldState.isLoading ? 'Updating password...' : 'Update password'}
                     </Button>
                   </DialogActions>
                 </FieldGroup>
