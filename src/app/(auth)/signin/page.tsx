@@ -157,7 +157,7 @@ export default function SignInPage() {
       </div>
       <SuccessNotification
         title="Password reset successful!"
-        description="You can now sign in with your new password."
+        desc="You can now sign in with your new password."
         setShow={setShowNotification}
         show={showNotification}
       />

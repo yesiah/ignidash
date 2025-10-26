@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
@@ -13,6 +13,7 @@ import { Text } from '@/components/catalyst/text';
 import { Divider } from '@/components/catalyst/divider';
 import { DialogActions } from '@/components/catalyst/dialog';
 import { authClient } from '@/lib/auth-client';
+import SuccessNotification from '@/components/ui/success-notification';
 
 import SettingsNavbar from './settings-navbar';
 
@@ -22,7 +23,22 @@ type FieldState = {
   errorMessage: string | null;
 };
 
+type NotificationState = {
+  show: boolean;
+  title: string;
+  desc: string;
+};
+
 export default function SettingsPage() {
+  const [notificationState, setNotificationState] = useState<NotificationState>({ show: false, title: '', desc: '' });
+  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+    };
+  }, []);
+
   const user = useQuery(api.auth.getCurrentUserSafe);
 
   const currentName = user?.name ?? 'Anonymous';
@@ -45,6 +61,13 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setNameFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
+          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
+
+          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+
+          notificationTimeoutRef.current = setTimeout(() => {
+            setNotificationState({ show: false, title: '', desc: '' });
+          }, 3000);
         },
       }
     );
@@ -70,6 +93,13 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setEmailFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
+          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
+
+          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+
+          notificationTimeoutRef.current = setTimeout(() => {
+            setNotificationState({ show: false, title: '', desc: '' });
+          }, 3000);
         },
       }
     );
@@ -95,6 +125,13 @@ export default function SettingsPage() {
         },
         onSuccess: (ctx) => {
           setPasswordFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
+          setNotificationState({ show: true, title: 'Update successful!', desc: ctx.data.message });
+
+          if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+
+          notificationTimeoutRef.current = setTimeout(() => {
+            setNotificationState({ show: false, title: '', desc: '' });
+          }, 3000);
         },
       }
     );
@@ -195,6 +232,7 @@ export default function SettingsPage() {
           <Card>This is card text.</Card>
         </SectionContainer>
       </main>
+      <SuccessNotification {...notificationState} setShow={(show: boolean) => setNotificationState((prev) => ({ ...prev, show }))} />
     </>
   );
 }
