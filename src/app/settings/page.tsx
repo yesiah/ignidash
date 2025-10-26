@@ -7,7 +7,7 @@ import { api } from '@/convex/_generated/api';
 import Card from '@/components/ui/card';
 import SectionContainer from '@/components/ui/section-container';
 import { Input } from '@/components/catalyst/input';
-import { Fieldset, FieldGroup, Field, Label, Legend } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Field, Label, Legend, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
 import { Text } from '@/components/catalyst/text';
 import { Divider } from '@/components/catalyst/divider';
@@ -21,23 +21,65 @@ export default function SettingsPage() {
 
   const currentName = user?.name ?? 'Anonymous';
   const [name, setName] = useState(currentName);
+  const [nameFieldError, setNameFieldError] = useState<string | null>(null);
 
   const handleNameSave = async () => {
-    await authClient.updateUser({ name });
+    await authClient.updateUser(
+      { name },
+      {
+        onError: (ctx) => {
+          setNameFieldError(ctx.error.message);
+        },
+        onRequest() {
+          setNameFieldError(null);
+        },
+        onSuccess: (ctx) => {
+          setNameFieldError(null);
+        },
+      }
+    );
   };
 
   const currentEmail = user?.email ?? '';
   const [email, setEmail] = useState(currentEmail);
+  const [emailFieldError, setEmailFieldError] = useState<string | null>(null);
 
   const handleEmailSave = async () => {
-    await authClient.changeEmail({ newEmail: email });
+    await authClient.changeEmail(
+      { newEmail: email },
+      {
+        onError: (ctx) => {
+          setEmailFieldError(ctx.error.message);
+        },
+        onRequest() {
+          setEmailFieldError(null);
+        },
+        onSuccess: (ctx) => {
+          setEmailFieldError(null);
+        },
+      }
+    );
   };
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [passwordFieldError, setPasswordFieldError] = useState<string | null>(null);
 
   const handlePasswordSave = async () => {
-    await authClient.changePassword({ currentPassword, newPassword, revokeOtherSessions: true });
+    await authClient.changePassword(
+      { currentPassword, newPassword, revokeOtherSessions: true },
+      {
+        onError: (ctx) => {
+          setPasswordFieldError(ctx.error.message);
+        },
+        onRequest() {
+          setPasswordFieldError(null);
+        },
+        onSuccess: (ctx) => {
+          setPasswordFieldError(null);
+        },
+      }
+    );
   };
 
   return (
@@ -61,7 +103,10 @@ export default function SettingsPage() {
                         inputMode="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        invalid={!!nameFieldError}
+                        aria-invalid={!!nameFieldError}
                       />
+                      {nameFieldError && <ErrorMessage>{nameFieldError}</ErrorMessage>}
                     </Field>
                     <Button color="rose" type="button" onClick={handleNameSave} disabled={name === currentName}>
                       Save
@@ -78,7 +123,10 @@ export default function SettingsPage() {
                         inputMode="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        invalid={!!emailFieldError}
+                        aria-invalid={!!emailFieldError}
                       />
+                      {emailFieldError && <ErrorMessage>{emailFieldError}</ErrorMessage>}
                     </Field>
                     <Button color="rose" type="button" onClick={handleEmailSave} disabled={email === currentEmail}>
                       Save
@@ -94,6 +142,8 @@ export default function SettingsPage() {
                       autoComplete="current-password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
+                      invalid={!!passwordFieldError}
+                      aria-invalid={!!passwordFieldError}
                     />
                   </Field>
                   <Field className="flex-1">
@@ -105,7 +155,10 @@ export default function SettingsPage() {
                       autoComplete="new-password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
+                      invalid={!!passwordFieldError}
+                      aria-invalid={!!passwordFieldError}
                     />
+                    {passwordFieldError && <ErrorMessage>{passwordFieldError}</ErrorMessage>}
                   </Field>
                   <DialogActions>
                     <Button color="rose" type="button" onClick={handlePasswordSave} disabled={!currentPassword || !newPassword}>
