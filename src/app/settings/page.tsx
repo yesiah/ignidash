@@ -3,8 +3,9 @@
 import Card from '@/components/ui/card';
 import SectionContainer from '@/components/ui/section-container';
 import { Input } from '@/components/catalyst/input';
-import { Fieldset, FieldGroup, Field, Label } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Field, Label, Legend } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
+import { Text } from '@/components/catalyst/text';
 
 import SettingsNavbar from './settings-navbar';
 
@@ -16,7 +17,9 @@ export default function SettingsPage() {
         <SectionContainer showBottomBorder={false}>
           <Card>
             <form onSubmit={(e) => e.preventDefault()}>
-              <Fieldset aria-label="User information">
+              <Fieldset>
+                <Legend>Profile information</Legend>
+                <Text>Update your name, email, and password.</Text>
                 <FieldGroup>
                   <div className="flex items-end gap-2">
                     <Field className="flex-1">
