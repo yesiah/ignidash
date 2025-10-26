@@ -16,7 +16,7 @@ import { authClient } from '@/lib/auth-client';
 import SuccessNotification from '@/components/ui/success-notification';
 import { useSuccessNotification } from '@/hooks/use-success-notification';
 
-import SettingsNavbar from './settings-navbar';
+import SettingsNavbar from './components/settings-navbar';
 
 type FieldState = {
   dataMessage: string | null;
