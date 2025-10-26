@@ -16,16 +16,18 @@ import { authClient } from '@/lib/auth-client';
 
 import SettingsNavbar from './settings-navbar';
 
+type FieldState = {
+  dataMessage: string | null;
+  isLoading: boolean;
+  errorMessage: string | null;
+};
+
 export default function SettingsPage() {
   const user = useQuery(api.auth.getCurrentUserSafe);
 
   const currentName = user?.name ?? 'Anonymous';
   const [name, setName] = useState(currentName);
-  const [nameFieldState, setNameFieldState] = useState<{
-    dataMessage: string | null;
-    isLoading: boolean;
-    errorMessage: string | null;
-  }>({
+  const [nameFieldState, setNameFieldState] = useState<FieldState>({
     dataMessage: null,
     isLoading: false,
     errorMessage: null,
@@ -50,11 +52,7 @@ export default function SettingsPage() {
 
   const currentEmail = user?.email ?? '';
   const [email, setEmail] = useState(currentEmail);
-  const [emailFieldState, setEmailFieldState] = useState<{
-    dataMessage: string | null;
-    isLoading: boolean;
-    errorMessage: string | null;
-  }>({
+  const [emailFieldState, setEmailFieldState] = useState<FieldState>({
     dataMessage: null,
     isLoading: false,
     errorMessage: null,
@@ -79,11 +77,7 @@ export default function SettingsPage() {
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [passwordFieldState, setPasswordFieldState] = useState<{
-    dataMessage: string | null;
-    isLoading: boolean;
-    errorMessage: string | null;
-  }>({
+  const [passwordFieldState, setPasswordFieldState] = useState<FieldState>({
     dataMessage: null,
     isLoading: false,
     errorMessage: null,
