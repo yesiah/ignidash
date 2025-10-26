@@ -11,6 +11,7 @@ import { Fieldset, FieldGroup, Field, Label, Legend } from '@/components/catalys
 import { Button } from '@/components/catalyst/button';
 import { Text } from '@/components/catalyst/text';
 import { Divider } from '@/components/catalyst/divider';
+import { DialogActions } from '@/components/catalyst/dialog';
 import { authClient } from '@/lib/auth-client';
 
 import SettingsNavbar from './settings-navbar';
@@ -32,6 +33,13 @@ export default function SettingsPage() {
     await authClient.changeEmail({ newEmail: email });
   };
 
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
+  const handlePasswordSave = async () => {
+    await authClient.changePassword({ currentPassword, newPassword, revokeOtherSessions: true });
+  };
+
   return (
     <>
       <SettingsNavbar />
@@ -51,7 +59,7 @@ export default function SettingsPage() {
                         name="name"
                         autoComplete="given-name"
                         inputMode="text"
-                        defaultValue={name}
+                        value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
                     </Field>
@@ -68,7 +76,7 @@ export default function SettingsPage() {
                         name="email"
                         autoComplete="email"
                         inputMode="text"
-                        defaultValue={email}
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </Field>
@@ -77,6 +85,33 @@ export default function SettingsPage() {
                     </Button>
                   </div>
                   <Divider />
+                  <Field className="flex-1">
+                    <Label htmlFor="current-password">Current password</Label>
+                    <Input
+                      id="current-password"
+                      name="current-password"
+                      type="password"
+                      autoComplete="current-password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                  </Field>
+                  <Field className="flex-1">
+                    <Label htmlFor="new-password">New password</Label>
+                    <Input
+                      id="new-password"
+                      name="new-password"
+                      type="password"
+                      autoComplete="new-password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </Field>
+                  <DialogActions>
+                    <Button color="rose" type="button" onClick={handlePasswordSave} disabled={!currentPassword || !newPassword}>
+                      Update password
+                    </Button>
+                  </DialogActions>
                 </FieldGroup>
               </Fieldset>
             </form>
