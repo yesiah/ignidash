@@ -13,7 +13,7 @@ export default function SettingsPage() {
   return (
     <>
       <SettingsNavbar />
-      <main className="mx-auto max-w-prose flex-1 overflow-y-auto pt-[4.25rem]">
+      <main className="mx-auto max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
         <SectionContainer showBottomBorder={false}>
           <Card>
             <form onSubmit={(e) => e.preventDefault()}>
