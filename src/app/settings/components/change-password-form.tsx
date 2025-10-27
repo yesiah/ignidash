@@ -9,7 +9,7 @@ import { Fieldset, FieldGroup, Field, Label, Legend, ErrorMessage } from '@/comp
 import { Button } from '@/components/catalyst/button';
 import { DialogActions } from '@/components/catalyst/dialog';
 import { authClient } from '@/lib/auth-client';
-import type { SettingsFieldState } from '@/lib/types/settings-field-state';
+import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field-state';
 
 interface ChangePasswordFormProps {
   showSuccessNotification: (title: string, message: string) => void;
@@ -18,29 +18,15 @@ interface ChangePasswordFormProps {
 export default function ChangePasswordForm({ showSuccessNotification }: ChangePasswordFormProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [passwordFieldState, setPasswordFieldState] = useState<SettingsFieldState>({
-    dataMessage: null,
-    isLoading: false,
-    errorMessage: null,
-  });
+  const { fieldState: passwordFieldState, createCallbacks: createPasswordCallbacks } = useAccountSettingsFieldState('Update successful!');
 
   const handlePasswordSave = async () => {
     await authClient.changePassword(
       { currentPassword, newPassword, revokeOtherSessions: true },
-      {
-        onError: (ctx) => {
-          setPasswordFieldState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false });
-        },
-        onRequest() {
-          setPasswordFieldState({ errorMessage: null, dataMessage: null, isLoading: true });
-        },
-        onSuccess: (ctx) => {
-          setPasswordFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          setCurrentPassword('');
-          setNewPassword('');
-          showSuccessNotification('Update successful!', ctx.data.message);
-        },
-      }
+      createPasswordCallbacks(() => {
+        setCurrentPassword('');
+        setNewPassword('');
+      })
     );
   };
 

@@ -10,7 +10,7 @@ import { Fieldset, FieldGroup, Field, Label, Legend, Description, ErrorMessage }
 import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
 import { authClient } from '@/lib/auth-client';
-import type { SettingsFieldState } from '@/lib/types/settings-field-state';
+import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field-state';
 
 import ChangePasswordForm from './change-password-form';
 
@@ -33,85 +33,32 @@ export default function ProfileInfoForm({
   showSuccessNotification,
 }: ProfileInfoFormProps) {
   const [name, setName] = useState(fetchedName);
-  const [nameFieldState, setNameFieldState] = useState<SettingsFieldState>({
-    dataMessage: null,
-    isLoading: false,
-    errorMessage: null,
-  });
+  const { fieldState: nameFieldState, createCallbacks: createNameCallbacks } = useAccountSettingsFieldState('Update successful!');
 
   useEffect(() => {
     if (fetchedName) setName(fetchedName);
   }, [fetchedName]);
 
   const handleNameSave = async () => {
-    await authClient.updateUser(
-      { name },
-      {
-        onError: (ctx) => {
-          setNameFieldState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false });
-        },
-        onRequest() {
-          setNameFieldState({ errorMessage: null, dataMessage: null, isLoading: true });
-        },
-        onSuccess: (ctx) => {
-          setNameFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          showSuccessNotification('Update successful!', ctx.data.message);
-        },
-      }
-    );
+    await authClient.updateUser({ name }, createNameCallbacks());
   };
 
   const [email, setEmail] = useState(fetchedEmail);
-  const [emailFieldState, setEmailFieldState] = useState<SettingsFieldState>({
-    dataMessage: null,
-    isLoading: false,
-    errorMessage: null,
-  });
+  const { fieldState: emailFieldState, createCallbacks: createEmailCallbacks } = useAccountSettingsFieldState('Update successful!');
 
   useEffect(() => {
     if (fetchedEmail) setEmail(fetchedEmail);
   }, [fetchedEmail]);
 
   const handleEmailSave = async () => {
-    await authClient.changeEmail(
-      { newEmail: email },
-      {
-        onError: (ctx) => {
-          setEmailFieldState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false });
-        },
-        onRequest() {
-          setEmailFieldState({ errorMessage: null, dataMessage: null, isLoading: true });
-        },
-        onSuccess: (ctx) => {
-          setEmailFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          showSuccessNotification('Update successful!', ctx.data.message);
-        },
-      }
-    );
+    await authClient.changeEmail({ newEmail: email }, createEmailCallbacks());
   };
 
-  const [sendVerificationEmailState, setSendVerificationEmailState] = useState<SettingsFieldState>({
-    dataMessage: null,
-    isLoading: false,
-    errorMessage: null,
-  });
+  const { fieldState: sendVerificationEmailState, createCallbacks: createSendVerificationEmailCallbacks } =
+    useAccountSettingsFieldState('Verification email sent!');
 
   const handleSendVerificationEmail = async () => {
-    await authClient.sendVerificationEmail(
-      { email: fetchedEmail, callbackURL: '/' },
-      {
-        onError(ctx) {
-          setSendVerificationEmailState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false });
-        },
-        onRequest() {
-          setSendVerificationEmailState({ errorMessage: null, dataMessage: null, isLoading: true });
-        },
-        onSuccess(ctx) {
-          setSendVerificationEmailState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-          showSuccessNotification('Verification email sent!', ctx.data.message);
-        },
-      }
-    );
+    await authClient.sendVerificationEmail({ email: fetchedEmail, callbackURL: '/' }, createSendVerificationEmailCallbacks());
   };
 
   return (
