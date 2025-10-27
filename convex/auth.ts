@@ -27,7 +27,16 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
           from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
           subject: 'Reset your password',
-          text: `Click the link to reset your password: ${url}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <p style="font-size: 16px; color: #333; line-height: 1.5;">
+                Click the link below to reset your password:
+              </p>
+              <p style="margin: 30px 0;">
+                <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: 600;">Reset Password</a>
+              </p>
+            </div>
+          `,
         });
       },
       onPasswordReset: async ({ user }, request) => {
@@ -48,7 +57,19 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
             from: 'Ignidash <noreply@mail.ignidash.com>',
             to: user.email,
             subject: 'Approve email change',
-            text: `You've requested to change your email address to ${newEmail}. Click the link to approve this change: ${url}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <p style="font-size: 16px; color: #333; line-height: 1.5;">
+                  You've requested to change your email address to <strong>${newEmail}</strong>.
+                </p>
+                <p style="font-size: 16px; color: #333; line-height: 1.5;">
+                  Click the link below to approve this change:
+                </p>
+                <p style="margin: 30px 0;">
+                  <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: 600;">Approve Email Change</a>
+                </p>
+              </div>
+            `,
           });
         },
       },
@@ -63,7 +84,16 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
           from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
           subject: 'Verify your email address',
-          text: `Click the link to verify your email: ${url}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <p style="font-size: 16px; color: #333; line-height: 1.5;">
+                Click the link below to verify your email:
+              </p>
+              <p style="margin: 30px 0;">
+                <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: 600;">Verify Email</a>
+              </p>
+            </div>
+          `,
         });
       },
       sendOnSignUp: true,
