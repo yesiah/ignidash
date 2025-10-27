@@ -10,13 +10,13 @@ import { useAccountsList } from '@/hooks/use-accounts-data';
 import ProfileInfoForm from './profile-info-form';
 
 export default function SettingsForms() {
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
 
   const isEmailVerified = data?.user.emailVerified ?? false;
   const fetchedName = data?.user.name ?? '';
   const fetchedEmail = data?.user.email ?? '';
 
-  const { accounts } = useAccountsList();
+  const { accounts, isLoading } = useAccountsList();
 
   const settingsCapabilities = useMemo(() => {
     const isSignedInWithSocialProvider = accounts?.some((account) => account.providerId !== 'credential') ?? false;
@@ -33,11 +33,15 @@ export default function SettingsForms() {
 
   return (
     <>
-      <main className="mx-auto max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
-        <ProfileInfoForm
-          userData={{ fetchedName, fetchedEmail, ...settingsCapabilities }}
-          showSuccessNotification={showSuccessNotification}
-        />
+      <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
+        {isPending || isLoading ? (
+          <div className="text-muted-foreground flex h-full items-center justify-center">Loading settings...</div>
+        ) : (
+          <ProfileInfoForm
+            userData={{ fetchedName, fetchedEmail, ...settingsCapabilities }}
+            showSuccessNotification={showSuccessNotification}
+          />
+        )}
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>
