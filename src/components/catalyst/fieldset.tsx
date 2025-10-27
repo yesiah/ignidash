@@ -11,7 +11,7 @@ export function Legend({ className, ...props }: { className?: string } & Omit<He
     <Headless.Legend
       data-slot="legend"
       {...props}
-      className={cn('text-base/6 font-semibold text-zinc-950 data-disabled:opacity-50 sm:text-sm/6 dark:text-white', className)}
+      className={cn('text-xl/6 font-semibold text-zinc-950 data-disabled:opacity-50 sm:text-lg/6 dark:text-white', className)}
     />
   );
 }

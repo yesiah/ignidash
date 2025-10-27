@@ -7,7 +7,6 @@ import SectionContainer from '@/components/ui/section-container';
 import { Input } from '@/components/catalyst/input';
 import { Fieldset, FieldGroup, Field, Label, Legend, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
-import { Text } from '@/components/catalyst/text';
 import { Divider } from '@/components/catalyst/divider';
 import { DialogActions } from '@/components/catalyst/dialog';
 import { authClient } from '@/lib/auth-client';
@@ -126,7 +125,6 @@ export default function ProfileInfoForm({
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <Legend>Profile information</Legend>
-            <Text>Update your name, email, and password.</Text>
             <FieldGroup>
               <div className="flex items-end gap-2">
                 <Field className="flex-1">
