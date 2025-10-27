@@ -7,7 +7,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { CircleUserRoundIcon, LogInIcon, LogOutIcon, SettingsIcon, LoaderIcon, CircleQuestionMarkIcon } from 'lucide-react';
 import * as Headless from '@headlessui/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
 
 import { authClient } from '@/lib/auth-client';
@@ -16,6 +16,7 @@ import { Navbar, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/
 
 export default function SettingsNavbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const user = useQuery(api.auth.getCurrentUserSafe);
 
   const image = user?.image;
@@ -26,7 +27,7 @@ export default function SettingsNavbar() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push('/signin');
+          router.push(`/signin?redirect=${encodeURIComponent(pathname)}`);
         },
       },
     });

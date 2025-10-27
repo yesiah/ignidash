@@ -6,7 +6,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { CircleUserRoundIcon, LogInIcon, LogOutIcon, SettingsIcon, LoaderIcon } from 'lucide-react';
 import * as Headless from '@headlessui/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
 
 import type { NavigationItem } from '@/lib/navigation';
@@ -21,6 +21,7 @@ interface MobileHeaderProps {
 
 export default function MobileHeader({ onMenuClick, currentPageTitle, currentPageIcon: Icon }: MobileHeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const user = useQuery(api.auth.getCurrentUserSafe);
 
   const name = user?.name ?? 'Anonymous';
@@ -31,7 +32,7 @@ export default function MobileHeader({ onMenuClick, currentPageTitle, currentPag
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push('/signin');
+          router.push(`/signin?redirect=${encodeURIComponent(pathname)}`);
         },
       },
     });

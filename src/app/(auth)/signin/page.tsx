@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { authClient } from '@/lib/auth-client';
 import SuccessNotification from '@/components/ui/success-notification';
+import { useRedirectUrl } from '@/hooks/use-redirect-url';
 
 import EmailInput from '../components/email-input';
 import PasswordInput from '../components/password-input';
@@ -16,6 +17,8 @@ export default function SignInPage() {
   const [showNotification, setShowNotification] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { safeRedirect, buildRedirectUrl } = useRedirectUrl();
 
   const handleEmailSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,7 +30,7 @@ export default function SignInPage() {
     const rememberMe = formData.get('remember-me') === 'on';
 
     await authClient.signIn.email(
-      { email, password, callbackURL: '/dashboard/quick-plan', rememberMe },
+      { email, password, callbackURL: safeRedirect, rememberMe },
       {
         onRequest() {
           setErrorMessage(null);
@@ -114,7 +117,7 @@ export default function SignInPage() {
 
                   <div className="text-sm/6">
                     <Link
-                      href="/forgot-password"
+                      href={buildRedirectUrl('/forgot-password')}
                       className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300"
                     >
                       Forgot password?
@@ -137,7 +140,10 @@ export default function SignInPage() {
 
             <p className="mt-10 text-center text-sm/6 text-stone-500 dark:text-stone-400">
               New to Ignidash?{' '}
-              <Link href="/signup" className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300">
+              <Link
+                href={buildRedirectUrl('/signup')}
+                className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300"
+              >
                 Create an account
               </Link>
             </p>
