@@ -18,11 +18,9 @@ interface SettingsFormsProps {
 export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
   const auth = useConvexAuth();
   const isAuthenticated = auth.isAuthenticated;
+  const isAuthLoading = auth.isLoading;
 
   const authData = usePreloadedQuery(preloadedUser);
-  const isEmailVerified = authData?.emailVerified ?? false;
-  const fetchedName = authData?.name ?? '';
-  const fetchedEmail = authData?.email ?? '';
 
   const { accounts: accountsData, isLoading: isAccountsDataLoading } = useAccountsList();
 
@@ -38,7 +36,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   const { notificationState, showSuccessNotification, setShow } = useSuccessNotification();
 
-  if (isAccountsDataLoading) {
+  if (isAccountsDataLoading || isAuthLoading || (isAuthenticated && !authData)) {
     return (
       <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
         <div
@@ -51,6 +49,10 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
       </main>
     );
   }
+
+  const isEmailVerified = authData?.emailVerified ?? false;
+  const fetchedName = authData?.name ?? '';
+  const fetchedEmail = authData?.email ?? '';
 
   return (
     <>

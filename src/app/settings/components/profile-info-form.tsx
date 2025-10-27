@@ -32,6 +32,8 @@ export default function ProfileInfoForm({
   userData: { fetchedName, fetchedEmail, ...otherUserData },
   showSuccessNotification,
 }: ProfileInfoFormProps) {
+  console.log('ProfileInfoForm otherUserData:', otherUserData);
+
   const [name, setName] = useState(fetchedName);
   const { fieldState: nameFieldState, createCallbacks: nameCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
