@@ -12,17 +12,20 @@ import ProfileInfoForm from './profile-info-form';
 
 interface SettingsFormsProps {
   preloadedUser: Preloaded<typeof api.auth.getCurrentUserSafe>;
+  preloadedIsSignedInWithSocialProvider: Preloaded<typeof api.auth.getIsSignedInWithSocialProvider>;
 }
 
-export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
+export default function SettingsForms({ preloadedUser, preloadedIsSignedInWithSocialProvider }: SettingsFormsProps) {
   const user = usePreloadedQuery(preloadedUser);
+  const isSignedInWithSocialProvider = usePreloadedQuery(preloadedIsSignedInWithSocialProvider);
+
   const { notificationState, showSuccessNotification, setShow } = useSuccessNotification();
 
   return (
     <>
       <main className="mx-auto max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
         <ProfileInfoForm
-          userData={{ fetchedName: user?.name ?? '', fetchedEmail: user?.email ?? '' }}
+          userData={{ fetchedName: user?.name ?? '', fetchedEmail: user?.email ?? '', isSignedInWithSocialProvider }}
           showSuccessNotification={showSuccessNotification}
         />
         <SectionContainer showBottomBorder>

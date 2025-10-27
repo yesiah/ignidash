@@ -66,3 +66,14 @@ export const getCurrentUserSafe = query({
     return authComponent.safeGetAuthUser(ctx);
   },
 });
+
+export const getIsSignedInWithSocialProvider = query({
+  args: {},
+  handler: async (ctx) => {
+    const authUser = await authComponent.safeGetAuthUser(ctx);
+    if (!authUser) return false;
+
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    return (await auth.api.listUserAccounts({ headers })).some((account) => account.providerId !== 'credential');
+  },
+});

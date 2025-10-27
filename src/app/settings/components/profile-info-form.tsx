@@ -22,11 +22,15 @@ interface ProfileInfoFormProps {
   userData: {
     fetchedName: string;
     fetchedEmail: string;
+    isSignedInWithSocialProvider: boolean;
   };
   showSuccessNotification: (title: string, desc: string) => void;
 }
 
-export default function ProfileInfoForm({ userData: { fetchedName, fetchedEmail }, showSuccessNotification }: ProfileInfoFormProps) {
+export default function ProfileInfoForm({
+  userData: { fetchedName, fetchedEmail, isSignedInWithSocialProvider },
+  showSuccessNotification,
+}: ProfileInfoFormProps) {
   const [name, setName] = useState(fetchedName);
   const [nameFieldState, setNameFieldState] = useState<FieldState>({
     dataMessage: null,
