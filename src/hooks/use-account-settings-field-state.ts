@@ -1,21 +1,23 @@
 import { useState } from 'react';
 
-import { useSuccessNotification } from './use-success-notification';
-
 export type SettingsFieldState = {
   dataMessage: string | null;
   isLoading: boolean;
   errorMessage: string | null;
 };
 
-export function useAccountSettingsFieldState({ successNotification }: { successNotification: string }) {
+export function useAccountSettingsFieldState({
+  successNotification,
+  showSuccessNotification,
+}: {
+  successNotification: string;
+  showSuccessNotification: (title: string, message: string) => void;
+}) {
   const [fieldState, setFieldState] = useState<SettingsFieldState>({
     dataMessage: null,
     isLoading: false,
     errorMessage: null,
   });
-
-  const { showSuccessNotification } = useSuccessNotification();
 
   const createCallbacks = (onSuccessExtra?: () => void) => ({
     onError: (ctx: { error: { message: string } }) => {

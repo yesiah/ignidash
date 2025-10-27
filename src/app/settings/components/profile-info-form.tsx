@@ -35,6 +35,7 @@ export default function ProfileInfoForm({
   const [name, setName] = useState(fetchedName);
   const { fieldState: nameFieldState, createCallbacks: nameCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
+    showSuccessNotification,
   });
 
   const handleNameSave = async () => await authClient.updateUser({ name }, nameCallbacks());
@@ -46,6 +47,7 @@ export default function ProfileInfoForm({
   const [email, setEmail] = useState(fetchedEmail);
   const { fieldState: emailFieldState, createCallbacks: emailCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
+    showSuccessNotification,
   });
 
   const handleEmailSave = async () => await authClient.changeEmail({ newEmail: email }, emailCallbacks());
@@ -56,6 +58,7 @@ export default function ProfileInfoForm({
 
   const { fieldState: sendVerificationEmailState, createCallbacks: sendVerificationEmailCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Verification email sent!',
+    showSuccessNotification,
   });
   const handleSendVerificationEmail = async () =>
     await authClient.sendVerificationEmail({ email: fetchedEmail, callbackURL: '/' }, sendVerificationEmailCallbacks());

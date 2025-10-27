@@ -21,9 +21,12 @@ export default function ChangePasswordForm({ showSuccessNotification }: ChangePa
 
   const { fieldState: passwordFieldState, createCallbacks: createPasswordCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
+    showSuccessNotification,
   });
 
-  const handlePasswordSave = async () => {
+  const handlePasswordSave = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     await authClient.changePassword(
       { currentPassword, newPassword, revokeOtherSessions: true },
       createPasswordCallbacks(() => {
