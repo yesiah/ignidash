@@ -41,6 +41,17 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       },
     },
     user: {
+      changeEmail: {
+        enabled: true,
+        sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
+          await resend.sendEmail(requireActionCtx(ctx), {
+            from: 'Ignidash <noreply@mail.ignidash.com>',
+            to: user.email,
+            subject: 'Approve email change',
+            text: `You've requested to change your email address to ${newEmail}. Click the link to approve this change: ${url}`,
+          });
+        },
+      },
       deleteUser: {
         enabled: true,
       },
