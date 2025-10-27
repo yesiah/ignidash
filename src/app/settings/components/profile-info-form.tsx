@@ -33,7 +33,7 @@ export default function ProfileInfoForm({
   showSuccessNotification,
 }: ProfileInfoFormProps) {
   const [name, setName] = useState(fetchedName);
-  const { fieldState: nameFieldState, createCallbacks: createNameCallbacks } = useAccountSettingsFieldState({
+  const { fieldState: nameFieldState, createCallbacks: nameCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
   });
 
@@ -41,12 +41,10 @@ export default function ProfileInfoForm({
     if (fetchedName) setName(fetchedName);
   }, [fetchedName]);
 
-  const handleNameSave = async () => {
-    await authClient.updateUser({ name }, createNameCallbacks());
-  };
+  const handleNameSave = async () => await authClient.updateUser({ name }, nameCallbacks());
 
   const [email, setEmail] = useState(fetchedEmail);
-  const { fieldState: emailFieldState, createCallbacks: createEmailCallbacks } = useAccountSettingsFieldState({
+  const { fieldState: emailFieldState, createCallbacks: emailCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Update successful!',
   });
 
@@ -54,18 +52,14 @@ export default function ProfileInfoForm({
     if (fetchedEmail) setEmail(fetchedEmail);
   }, [fetchedEmail]);
 
-  const handleEmailSave = async () => {
-    await authClient.changeEmail({ newEmail: email }, createEmailCallbacks());
-  };
+  const handleEmailSave = async () => await authClient.changeEmail({ newEmail: email }, emailCallbacks());
 
-  const { fieldState: sendVerificationEmailState, createCallbacks: createSendVerificationEmailCallbacks } = useAccountSettingsFieldState({
+  const { fieldState: sendVerificationEmailState, createCallbacks: sendVerificationEmailCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Verification email sent!',
   });
 
-  const handleSendVerificationEmail = async () => {
-    await authClient.sendVerificationEmail({ email: fetchedEmail, callbackURL: '/' }, createSendVerificationEmailCallbacks());
-  };
-
+  const handleSendVerificationEmail = async () =>
+    await authClient.sendVerificationEmail({ email: fetchedEmail, callbackURL: '/' }, sendVerificationEmailCallbacks());
   return (
     <>
       <Card className="my-6">
