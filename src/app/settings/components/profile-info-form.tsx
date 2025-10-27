@@ -17,15 +17,17 @@ type FieldState = {
   errorMessage: string | null;
 };
 
+type UserData = {
+  fetchedName: string;
+  fetchedEmail: string;
+  isSignedInWithSocialProvider: boolean;
+  canChangeEmail: boolean;
+  canChangePassword: boolean;
+  canChangeName: boolean;
+};
+
 interface ProfileInfoFormProps {
-  userData: {
-    fetchedName: string;
-    fetchedEmail: string;
-    isSignedInWithSocialProvider: boolean;
-    canChangeEmail: boolean;
-    canChangePassword: boolean;
-    canChangeName: boolean;
-  };
+  userData: UserData;
   showSuccessNotification: (title: string, desc: string) => void;
 }
 
