@@ -14,15 +14,15 @@ export default function SettingsForms() {
   const auth = useConvexAuth();
   const isAuthenticated = auth.isAuthenticated;
 
-  const { data: authData, isPending } = authClient.useSession();
+  const { data: authData, isPending: isAuthDataLoading } = authClient.useSession();
   const isEmailVerified = authData?.user.emailVerified ?? false;
   const fetchedName = authData?.user.name ?? '';
   const fetchedEmail = authData?.user.email ?? '';
 
-  const { accounts, isLoading } = useAccountsList();
+  const { accounts: accountsData, isLoading: isAccountsDataLoading } = useAccountsList();
 
   const settingsCapabilities = useMemo(() => {
-    const isSignedInWithSocialProvider = accounts?.some((account) => account.providerId !== 'credential') ?? false;
+    const isSignedInWithSocialProvider = accountsData?.some((account) => account.providerId !== 'credential') ?? false;
 
     return {
       canChangeEmail: !isSignedInWithSocialProvider,
@@ -30,14 +30,14 @@ export default function SettingsForms() {
       canChangeName: true,
       isEmailVerified,
     };
-  }, [accounts, isEmailVerified]);
+  }, [accountsData, isEmailVerified]);
 
   const { notificationState, showSuccessNotification, setShow } = useSuccessNotification();
 
   return (
     <>
       <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
-        {isPending || isLoading ? (
+        {isAuthDataLoading || isAccountsDataLoading ? (
           <div className="text-muted-foreground flex h-full items-center justify-center">Loading settings...</div>
         ) : (
           <ProfileInfoForm
