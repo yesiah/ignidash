@@ -34,23 +34,27 @@ export default function SettingsForms() {
 
   const { notificationState, showSuccessNotification, setShow } = useSuccessNotification();
 
+  if (isAuthDataLoading || isAccountsDataLoading) {
+    return (
+      <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
+        <div
+          role="status"
+          aria-label="Loading settings"
+          className="text-muted-foreground flex h-full items-center justify-center text-2xl sm:text-xl"
+        >
+          Loading settings<span className="loading-ellipsis" aria-hidden="true"></span>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
       <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
-        {isAuthDataLoading || isAccountsDataLoading ? (
-          <div
-            role="status"
-            aria-label="Loading settings"
-            className="text-muted-foreground flex h-full items-center justify-center text-2xl sm:text-xl"
-          >
-            Loading settings<span className="loading-ellipsis" aria-hidden="true"></span>
-          </div>
-        ) : (
-          <ProfileInfoForm
-            userData={{ isAuthenticated, fetchedName, fetchedEmail, ...settingsCapabilities }}
-            showSuccessNotification={showSuccessNotification}
-          />
-        )}
+        <ProfileInfoForm
+          userData={{ isAuthenticated, fetchedName, fetchedEmail, ...settingsCapabilities }}
+          showSuccessNotification={showSuccessNotification}
+        />
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>
