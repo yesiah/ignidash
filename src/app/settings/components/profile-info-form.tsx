@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { CircleUserRoundIcon, LockIcon, MailQuestionMarkIcon } from 'lucide-react';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 
 import Card from '@/components/ui/card';
 import { Input } from '@/components/catalyst/input';
@@ -33,7 +34,7 @@ interface ProfileInfoFormProps {
 }
 
 export default function ProfileInfoForm({
-  userData: { fetchedName, fetchedEmail, isSignedInWithSocialProvider },
+  userData: { fetchedName, fetchedEmail, ...otherUserData },
   showSuccessNotification,
 }: ProfileInfoFormProps) {
   const [name, setName] = useState(fetchedName);
@@ -206,24 +207,37 @@ export default function ProfileInfoForm({
               <MailQuestionMarkIcon className="text-primary h-6 w-6" aria-hidden="true" />
               Verify email
             </Legend>
-            <FieldGroup>
-              <Field>
-                <Button
-                  color="rose"
-                  type="button"
-                  className="w-full"
-                  data-slot="control"
-                  onClick={handleSendVerificationEmail}
-                  disabled={sendVerificationEmailState.isLoading}
-                >
-                  {sendVerificationEmailState.isLoading ? 'Sending...' : 'Send verification email'}
-                </Button>
-                <Description>
-                  <strong>Important:</strong> Click to receive a verification link in your email. You must verify your email to access all
-                  features.
-                </Description>
-              </Field>
-            </FieldGroup>
+            {!otherUserData.isEmailVerified ? (
+              <FieldGroup>
+                <Field>
+                  <Button
+                    color="rose"
+                    type="button"
+                    className="w-full"
+                    data-slot="control"
+                    onClick={handleSendVerificationEmail}
+                    disabled={sendVerificationEmailState.isLoading}
+                  >
+                    {sendVerificationEmailState.isLoading ? 'Sending...' : 'Send verification email'}
+                  </Button>
+                  <Description>
+                    <strong>Important:</strong> Click to receive a verification link in your email. You must verify your email to access all
+                    features.
+                  </Description>
+                </Field>
+              </FieldGroup>
+            ) : (
+              <div className="flex items-center justify-center p-8 sm:p-6">
+                <div className="shrink-0">
+                  <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-base/6 font-medium sm:text-sm/6">
+                    <strong>{fetchedEmail}</strong> is already verified.
+                  </p>
+                </div>
+              </div>
+            )}
           </Fieldset>
         </form>
       </Card>
