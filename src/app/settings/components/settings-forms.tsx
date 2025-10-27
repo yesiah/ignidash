@@ -38,7 +38,9 @@ export default function SettingsForms() {
     <>
       <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
         {isAuthDataLoading || isAccountsDataLoading ? (
-          <div className="text-muted-foreground flex h-full items-center justify-center">Loading settings...</div>
+          <div className="text-muted-foreground flex h-full items-center justify-center text-xl">
+            Loading settings<span className="loading-ellipsis"></span>
+          </div>
         ) : (
           <ProfileInfoForm
             userData={{ isAuthenticated, fetchedName, fetchedEmail, ...settingsCapabilities }}
