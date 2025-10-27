@@ -122,7 +122,7 @@ export default function ProfileInfoForm({
 
   return (
     <>
-      <Card>
+      <Card className="my-6">
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <Legend>Profile information</Legend>
@@ -170,7 +170,7 @@ export default function ProfileInfoForm({
           </Fieldset>
         </form>
       </Card>
-      <Card>
+      <Card className="my-6">
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
             <Legend>Change password</Legend>

@@ -27,7 +27,7 @@ export default function SettingsForms({ preloadedUser, preloadedSettingsCapabili
           userData={{ fetchedName: user?.name ?? '', fetchedEmail: user?.email ?? '', ...settingsCapabilities }}
           showSuccessNotification={showSuccessNotification}
         />
-        <Card>This is card text.</Card>
+        <Card className="my-6">This is card text.</Card>
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>
