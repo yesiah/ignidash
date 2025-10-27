@@ -80,24 +80,29 @@ export const getUserSettingsCapabilities = query({
         isEmailVerified: false,
       };
 
-    let isSignedInWithSocialProvider: boolean;
     try {
       const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
       const accounts = await auth.api.listUserAccounts({ headers, method: 'GET' });
 
-      isSignedInWithSocialProvider = accounts.some((account) => account.providerId !== 'credential');
+      const isSignedInWithSocialProvider = accounts.some((account) => account.providerId !== 'credential');
+
+      return {
+        isSignedInWithSocialProvider,
+        canChangeEmail: !isSignedInWithSocialProvider,
+        canChangePassword: !isSignedInWithSocialProvider,
+        canChangeName: true,
+        isEmailVerified: authUser.emailVerified,
+      };
     } catch (error) {
       console.error('Error fetching user accounts:', error);
 
-      isSignedInWithSocialProvider = false;
+      return {
+        isSignedInWithSocialProvider: false,
+        canChangeEmail: true,
+        canChangePassword: true,
+        canChangeName: true,
+        isEmailVerified: authUser.emailVerified,
+      };
     }
-
-    return {
-      isSignedInWithSocialProvider,
-      canChangeEmail: !isSignedInWithSocialProvider,
-      canChangePassword: !isSignedInWithSocialProvider,
-      canChangeName: true,
-      isEmailVerified: authUser.emailVerified,
-    };
   },
 });
