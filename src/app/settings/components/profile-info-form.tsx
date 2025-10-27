@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { CircleUserRoundIcon, LockIcon } from 'lucide-react';
 
 import Card from '@/components/ui/card';
 import { Input } from '@/components/catalyst/input';
@@ -125,7 +126,10 @@ export default function ProfileInfoForm({
       <Card className="my-6">
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend>Profile information</Legend>
+            <Legend className="flex items-center gap-2">
+              <CircleUserRoundIcon className="text-primary h-6 w-6" aria-hidden="true" />
+              Profile information
+            </Legend>
             <FieldGroup>
               <div className="flex items-end gap-2">
                 <Field className="flex-1">
@@ -173,7 +177,10 @@ export default function ProfileInfoForm({
       <Card className="my-6">
         <form onSubmit={(e) => e.preventDefault()}>
           <Fieldset>
-            <Legend>Change password</Legend>
+            <Legend className="flex items-center gap-2">
+              <LockIcon className="text-primary h-6 w-6" aria-hidden="true" />
+              Change password
+            </Legend>
             <FieldGroup>
               <Field className="flex-1">
                 <Label htmlFor="current-password">Current password</Label>
