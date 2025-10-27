@@ -6,15 +6,18 @@ import SuccessNotification from '@/components/ui/success-notification';
 import { useSuccessNotification } from '@/hooks/use-success-notification';
 import { authClient } from '@/lib/auth-client';
 import { useAccountsList } from '@/hooks/use-accounts-data';
+import { useConvexAuth } from 'convex/react';
 
 import ProfileInfoForm from './profile-info-form';
 
 export default function SettingsForms() {
-  const { data, isPending } = authClient.useSession();
+  const auth = useConvexAuth();
+  const isAuthenticated = auth.isAuthenticated;
 
-  const isEmailVerified = data?.user.emailVerified ?? false;
-  const fetchedName = data?.user.name ?? '';
-  const fetchedEmail = data?.user.email ?? '';
+  const { data: authData, isPending } = authClient.useSession();
+  const isEmailVerified = authData?.user.emailVerified ?? false;
+  const fetchedName = authData?.user.name ?? '';
+  const fetchedEmail = authData?.user.email ?? '';
 
   const { accounts, isLoading } = useAccountsList();
 
@@ -38,7 +41,7 @@ export default function SettingsForms() {
           <div className="text-muted-foreground flex h-full items-center justify-center">Loading settings...</div>
         ) : (
           <ProfileInfoForm
-            userData={{ fetchedName, fetchedEmail, ...settingsCapabilities }}
+            userData={{ isAuthenticated, fetchedName, fetchedEmail, ...settingsCapabilities }}
             showSuccessNotification={showSuccessNotification}
           />
         )}
