@@ -80,10 +80,15 @@ export const getUserSettingsCapabilities = query({
         isEmailVerified: false,
       };
 
-    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
-    const isSignedInWithSocialProvider = (await auth.api.listUserAccounts({ headers })).some(
-      (account) => account.providerId !== 'credential'
-    );
+    let isSignedInWithSocialProvider: boolean;
+    try {
+      const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+      const accounts = await auth.api.listUserAccounts({ headers, method: 'GET' });
+      isSignedInWithSocialProvider = accounts.some((account) => account.providerId !== 'credential');
+    } catch (error) {
+      console.error('Error fetching user accounts:', error);
+      isSignedInWithSocialProvider = false;
+    }
 
     return {
       isSignedInWithSocialProvider,
