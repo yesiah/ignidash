@@ -122,93 +122,110 @@ export default function ProfileInfoForm({
   };
 
   return (
-    <SectionContainer showBottomBorder>
-      <Card>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Fieldset>
-            <Legend>Profile information</Legend>
-            <FieldGroup>
-              <div className="flex items-end gap-2">
+    <>
+      <SectionContainer showBottomBorder>
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Fieldset>
+              <Legend>Profile information</Legend>
+              <FieldGroup>
+                <div className="flex items-end gap-2">
+                  <Field className="flex-1">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      autoComplete="given-name"
+                      inputMode="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      invalid={!!nameFieldState.errorMessage}
+                      aria-invalid={!!nameFieldState.errorMessage}
+                    />
+                    {nameFieldState.errorMessage && <ErrorMessage>{nameFieldState.errorMessage}</ErrorMessage>}
+                  </Field>
+                  <Button color="rose" type="button" onClick={handleNameSave} disabled={name === fetchedName || nameFieldState.isLoading}>
+                    {nameFieldState.isLoading ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
+                <Divider />
+                <div className="flex items-end gap-2">
+                  <Field className="flex-1">
+                    <Label htmlFor="email">Email address</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      autoComplete="email"
+                      inputMode="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      invalid={!!emailFieldState.errorMessage}
+                      aria-invalid={!!emailFieldState.errorMessage}
+                    />
+                    {emailFieldState.errorMessage && <ErrorMessage>{emailFieldState.errorMessage}</ErrorMessage>}
+                  </Field>
+                  <Button
+                    color="rose"
+                    type="button"
+                    onClick={handleEmailSave}
+                    disabled={email === fetchedEmail || emailFieldState.isLoading}
+                  >
+                    {emailFieldState.isLoading ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
+              </FieldGroup>
+            </Fieldset>
+          </form>
+        </Card>
+      </SectionContainer>
+      <SectionContainer showBottomBorder>
+        <Card>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Fieldset>
+              <Legend>Change password</Legend>
+              <FieldGroup>
                 <Field className="flex-1">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="current-password">Current password</Label>
                   <Input
-                    id="name"
-                    name="name"
-                    autoComplete="given-name"
-                    inputMode="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    invalid={!!nameFieldState.errorMessage}
-                    aria-invalid={!!nameFieldState.errorMessage}
+                    id="current-password"
+                    name="current-password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    invalid={!!passwordFieldState.errorMessage}
+                    aria-invalid={!!passwordFieldState.errorMessage}
                   />
-                  {nameFieldState.errorMessage && <ErrorMessage>{nameFieldState.errorMessage}</ErrorMessage>}
                 </Field>
-                <Button color="rose" type="button" onClick={handleNameSave} disabled={name === fetchedName || nameFieldState.isLoading}>
-                  {nameFieldState.isLoading ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
-              <Divider />
-              <div className="flex items-end gap-2">
                 <Field className="flex-1">
-                  <Label htmlFor="email">Email address</Label>
+                  <Label htmlFor="new-password">New password</Label>
                   <Input
-                    id="email"
-                    name="email"
-                    autoComplete="email"
-                    inputMode="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    invalid={!!emailFieldState.errorMessage}
-                    aria-invalid={!!emailFieldState.errorMessage}
+                    id="new-password"
+                    name="new-password"
+                    type="password"
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    invalid={!!passwordFieldState.errorMessage}
+                    aria-invalid={!!passwordFieldState.errorMessage}
                   />
-                  {emailFieldState.errorMessage && <ErrorMessage>{emailFieldState.errorMessage}</ErrorMessage>}
+                  {passwordFieldState.errorMessage && <ErrorMessage>{passwordFieldState.errorMessage}</ErrorMessage>}
                 </Field>
-                <Button color="rose" type="button" onClick={handleEmailSave} disabled={email === fetchedEmail || emailFieldState.isLoading}>
-                  {emailFieldState.isLoading ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
-              <Divider />
-              <Field className="flex-1">
-                <Label htmlFor="current-password">Current password</Label>
-                <Input
-                  id="current-password"
-                  name="current-password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  invalid={!!passwordFieldState.errorMessage}
-                  aria-invalid={!!passwordFieldState.errorMessage}
-                />
-              </Field>
-              <Field className="flex-1">
-                <Label htmlFor="new-password">New password</Label>
-                <Input
-                  id="new-password"
-                  name="new-password"
-                  type="password"
-                  autoComplete="new-password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  invalid={!!passwordFieldState.errorMessage}
-                  aria-invalid={!!passwordFieldState.errorMessage}
-                />
-                {passwordFieldState.errorMessage && <ErrorMessage>{passwordFieldState.errorMessage}</ErrorMessage>}
-              </Field>
-              <DialogActions>
-                <Button
-                  color="rose"
-                  type="button"
-                  onClick={handlePasswordSave}
-                  disabled={!currentPassword || !newPassword || passwordFieldState.isLoading}
-                >
-                  {passwordFieldState.isLoading ? 'Updating password...' : 'Update password'}
-                </Button>
-              </DialogActions>
-            </FieldGroup>
-          </Fieldset>
-        </form>
-      </Card>
-    </SectionContainer>
+                <DialogActions>
+                  <Button
+                    color="rose"
+                    type="button"
+                    onClick={handlePasswordSave}
+                    disabled={!currentPassword || !newPassword || passwordFieldState.isLoading}
+                  >
+                    {passwordFieldState.isLoading ? 'Saving...' : 'Save'}
+                  </Button>
+                </DialogActions>
+              </FieldGroup>
+            </Fieldset>
+          </form>
+        </Card>
+      </SectionContainer>
+    </>
   );
 }
