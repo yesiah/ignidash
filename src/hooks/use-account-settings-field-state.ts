@@ -14,12 +14,9 @@ export function useAccountSettingsFieldState() {
   });
 
   const createCallbacks = (onSuccessExtra?: () => void) => ({
-    onError: (ctx: { error: { message: string } }) => {
-      setFieldState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false });
-    },
-    onRequest: () => {
-      setFieldState({ errorMessage: null, dataMessage: null, isLoading: true });
-    },
+    onError: (ctx: { error: { message: string } }) =>
+      setFieldState({ errorMessage: ctx.error.message, dataMessage: null, isLoading: false }),
+    onRequest: () => setFieldState({ errorMessage: null, dataMessage: null, isLoading: true }),
     onSuccess: (ctx: { data: { message: string } }) => {
       setFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
       onSuccessExtra?.();

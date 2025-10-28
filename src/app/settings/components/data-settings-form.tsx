@@ -22,12 +22,10 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
   const [accountDeletionAlertOpen, setAccountDeletionAlertOpen] = useState(false);
 
   const { fieldState: deleteApplicationDataState } = useAccountSettingsFieldState();
-
   const deleteAppData = useResetStore();
   const handleDeleteApplicationData = async () => deleteAppData();
 
   const { fieldState: deleteAccountState, createCallbacks: deleteAccountCallbacks } = useAccountSettingsFieldState();
-
   const handleDeleteAccount = async () => {
     await authClient.deleteUser(
       { callbackURL: '/signin?deleted=success' },
@@ -105,6 +103,7 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
             onClick={async () => {
               await handleDeleteApplicationData();
               setAppDataAlertOpen(false);
+              showSuccessNotification('Application data deleted!');
             }}
           >
             Delete now
