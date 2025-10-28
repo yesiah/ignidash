@@ -57,7 +57,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   return (
     <>
-      <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
+      <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem] sm:px-6 lg:px-8">
         {isAuthenticated && (
           <ProfileInfoForm
             userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
