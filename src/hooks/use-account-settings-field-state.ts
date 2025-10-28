@@ -6,13 +6,7 @@ export type SettingsFieldState = {
   errorMessage: string | null;
 };
 
-export function useAccountSettingsFieldState({
-  successNotification,
-  showSuccessNotification,
-}: {
-  successNotification: string;
-  showSuccessNotification: (title: string, message: string) => void;
-}) {
+export function useAccountSettingsFieldState() {
   const [fieldState, setFieldState] = useState<SettingsFieldState>({
     dataMessage: null,
     isLoading: false,
@@ -28,7 +22,6 @@ export function useAccountSettingsFieldState({
     },
     onSuccess: (ctx: { data: { message: string } }) => {
       setFieldState({ errorMessage: null, dataMessage: ctx.data.message, isLoading: false });
-      showSuccessNotification(successNotification, ctx.data.message);
       onSuccessExtra?.();
     },
   });

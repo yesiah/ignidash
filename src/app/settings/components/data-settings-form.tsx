@@ -13,7 +13,7 @@ import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field
 import { useResetStore } from '@/lib/stores/quick-plan-store';
 
 interface DataSettingsFormProps {
-  showSuccessNotification: (title: string, message: string) => void;
+  showSuccessNotification: (title: string, desc?: string) => void;
   isAuthenticated: boolean;
 }
 
@@ -21,21 +21,18 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
   const [appDataAlertOpen, setAppDataAlertOpen] = useState(false);
   const [accountDeletionAlertOpen, setAccountDeletionAlertOpen] = useState(false);
 
-  const { fieldState: deleteApplicationDataState } = useAccountSettingsFieldState({
-    successNotification: 'Application data deleted!',
-    showSuccessNotification,
-  });
+  const { fieldState: deleteApplicationDataState } = useAccountSettingsFieldState();
 
   const deleteAppData = useResetStore();
   const handleDeleteApplicationData = async () => deleteAppData();
 
-  const { fieldState: deleteAccountState, createCallbacks: deleteAccountCallbacks } = useAccountSettingsFieldState({
-    successNotification: 'Account deletion initiated. Check your email for further instructions.',
-    showSuccessNotification,
-  });
+  const { fieldState: deleteAccountState, createCallbacks: deleteAccountCallbacks } = useAccountSettingsFieldState();
 
   const handleDeleteAccount = async () => {
-    await authClient.deleteUser({ callbackURL: '/signin?deleted=success' }, deleteAccountCallbacks());
+    await authClient.deleteUser(
+      { callbackURL: '/signin?deleted=success' },
+      deleteAccountCallbacks(() => showSuccessNotification('Account deletion initiated. Check your email for further instructions.'))
+    );
   };
 
   return (

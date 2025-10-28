@@ -6,7 +6,7 @@ import { Transition } from '@headlessui/react';
 
 interface SuccessNotificationProps {
   title: string;
-  desc: string;
+  desc?: string;
   setShow: (show: boolean) => void;
   show: boolean;
 }

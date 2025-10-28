@@ -22,7 +22,6 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
   const isAuthLoading = auth.isLoading;
 
   const authData = usePreloadedQuery(preloadedUser);
-
   const { accounts: accountsData, isLoading: isAccountsDataLoading } = useAccountsList();
 
   const settingsCapabilities = useMemo(() => {

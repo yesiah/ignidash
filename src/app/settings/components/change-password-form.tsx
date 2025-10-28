@@ -12,17 +12,14 @@ import { authClient } from '@/lib/auth-client';
 import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field-state';
 
 interface ChangePasswordFormProps {
-  showSuccessNotification: (title: string, message: string) => void;
+  showSuccessNotification: (title: string, desc?: string) => void;
 }
 
 export default function ChangePasswordForm({ showSuccessNotification }: ChangePasswordFormProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const { fieldState: passwordFieldState, createCallbacks: createPasswordCallbacks } = useAccountSettingsFieldState({
-    successNotification: 'Password changed successfully!',
-    showSuccessNotification,
-  });
+  const { fieldState: passwordFieldState, createCallbacks: createPasswordCallbacks } = useAccountSettingsFieldState();
 
   const handlePasswordSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,6 +29,7 @@ export default function ChangePasswordForm({ showSuccessNotification }: ChangePa
       createPasswordCallbacks(() => {
         setCurrentPassword('');
         setNewPassword('');
+        showSuccessNotification('Password changed successfully!');
       })
     );
   };

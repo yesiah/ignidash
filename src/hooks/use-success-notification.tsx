@@ -3,11 +3,11 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 type NotificationState = {
   show: boolean;
   title: string;
-  desc: string;
+  desc?: string;
 };
 
 export function useSuccessNotification() {
-  const [notificationState, setNotificationState] = useState<NotificationState>({ show: false, title: '', desc: '' });
+  const [notificationState, setNotificationState] = useState<NotificationState>({ show: false, title: '' });
   const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -16,13 +16,13 @@ export function useSuccessNotification() {
     };
   }, []);
 
-  const showSuccessNotification = useCallback((title: string, desc: string) => {
+  const showSuccessNotification = useCallback((title: string, desc?: string) => {
     setNotificationState({ show: true, title, desc });
 
     if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
 
     notificationTimeoutRef.current = setTimeout(() => {
-      setNotificationState({ show: false, title: '', desc: '' });
+      setNotificationState({ show: false, title: '' });
     }, 5000);
   }, []);
 

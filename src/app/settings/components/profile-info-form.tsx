@@ -14,6 +14,56 @@ import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field
 
 import ChangePasswordForm from './change-password-form';
 
+function useNameFieldHook(fetchedName: string, showSuccessNotification: (title: string, desc?: string) => void) {
+  const { fieldState: nameFieldState, createCallbacks: nameCallbacks } = useAccountSettingsFieldState();
+
+  const [name, setName] = useState(fetchedName);
+  const handleNameSave = async () =>
+    await authClient.updateUser(
+      { name },
+      nameCallbacks(() => showSuccessNotification('Name changed successfully!'))
+    );
+
+  useEffect(() => {
+    if (fetchedName) setName(fetchedName);
+  }, [fetchedName]);
+
+  return { name, setName, nameFieldState, handleNameSave };
+}
+
+function useEmailFieldHook(fetchedEmail: string, showSuccessNotification: (title: string, desc?: string) => void) {
+  const { fieldState: emailFieldState, createCallbacks: emailCallbacks } = useAccountSettingsFieldState();
+
+  const [email, setEmail] = useState(fetchedEmail);
+  const handleEmailSave = async () =>
+    await authClient.changeEmail(
+      { newEmail: email },
+      emailCallbacks(() => showSuccessNotification('Confirmation email sent to your current address!'))
+    );
+
+  useEffect(() => {
+    if (fetchedEmail) setEmail(fetchedEmail);
+  }, [fetchedEmail]);
+
+  return { email, setEmail, emailFieldState, handleEmailSave };
+}
+
+function useSendVerificationEmailFieldHook(fetchedEmail: string, showSuccessNotification: (title: string, desc?: string) => void) {
+  const { fieldState: sendVerificationEmailState, createCallbacks: sendVerificationEmailCallbacks } = useAccountSettingsFieldState();
+
+  const [isVerificationEmailSent, setIsVerificationEmailSent] = useState(false);
+  const handleSendVerificationEmail = async () =>
+    await authClient.sendVerificationEmail(
+      { email: fetchedEmail, callbackURL: '/settings' },
+      sendVerificationEmailCallbacks(() => {
+        setIsVerificationEmailSent(true);
+        showSuccessNotification('Verification email sent!');
+      })
+    );
+
+  return { isVerificationEmailSent, sendVerificationEmailState, handleSendVerificationEmail };
+}
+
 type UserData = {
   fetchedName: string;
   fetchedEmail: string;
@@ -25,47 +75,19 @@ type UserData = {
 
 interface ProfileInfoFormProps {
   userData: UserData;
-  showSuccessNotification: (title: string, desc: string) => void;
+  showSuccessNotification: (title: string, desc?: string) => void;
 }
 
 export default function ProfileInfoForm({
   userData: { fetchedName, fetchedEmail, ...otherUserData },
   showSuccessNotification,
 }: ProfileInfoFormProps) {
-  const [name, setName] = useState(fetchedName);
-  const { fieldState: nameFieldState, createCallbacks: nameCallbacks } = useAccountSettingsFieldState({
-    successNotification: 'Name changed successfully!',
-    showSuccessNotification,
-  });
-
-  const handleNameSave = async () => await authClient.updateUser({ name }, nameCallbacks());
-
-  useEffect(() => {
-    if (fetchedName) setName(fetchedName);
-  }, [fetchedName]);
-
-  const [email, setEmail] = useState(fetchedEmail);
-  const { fieldState: emailFieldState, createCallbacks: emailCallbacks } = useAccountSettingsFieldState({
-    successNotification: 'Confirmation email sent to your current address!',
-    showSuccessNotification,
-  });
-
-  const handleEmailSave = async () => await authClient.changeEmail({ newEmail: email }, emailCallbacks());
-
-  useEffect(() => {
-    if (fetchedEmail) setEmail(fetchedEmail);
-  }, [fetchedEmail]);
-
-  const [isVerificationEmailSent, setIsVerificationEmailSent] = useState(false);
-  const { fieldState: sendVerificationEmailState, createCallbacks: sendVerificationEmailCallbacks } = useAccountSettingsFieldState({
-    successNotification: 'Verification email sent!',
-    showSuccessNotification,
-  });
-  const handleSendVerificationEmail = async () =>
-    await authClient.sendVerificationEmail(
-      { email: fetchedEmail, callbackURL: '/settings' },
-      sendVerificationEmailCallbacks(() => setIsVerificationEmailSent(true))
-    );
+  const { name, setName, nameFieldState, handleNameSave } = useNameFieldHook(fetchedName, showSuccessNotification);
+  const { email, setEmail, emailFieldState, handleEmailSave } = useEmailFieldHook(fetchedEmail, showSuccessNotification);
+  const { isVerificationEmailSent, sendVerificationEmailState, handleSendVerificationEmail } = useSendVerificationEmailFieldHook(
+    fetchedEmail,
+    showSuccessNotification
+  );
 
   return (
     <>
