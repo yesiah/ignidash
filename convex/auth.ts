@@ -1,3 +1,4 @@
+import { RateLimiter, HOUR } from '@convex-dev/rate-limiter';
 import { createClient, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
@@ -13,6 +14,12 @@ const siteUrl = process.env.SITE_URL!;
 export const authComponent = createClient<DataModel>(components.betterAuth);
 export const resend = new Resend(components.resend, { testMode: false });
 
+const rateLimiter = new RateLimiter(components.rateLimiter, {
+  passwordReset: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
+  emailChange: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
+  emailVerification: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
+});
+
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
   return betterAuth({
     logger: {
@@ -23,6 +30,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     emailAndPassword: {
       enabled: true,
       sendResetPassword: async ({ user, url }) => {
+        const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'passwordReset', { key: user.id });
+        if (!ok) throw new Error(`Too many password reset requests. Please try again later.`);
+
         await resend.sendEmail(requireActionCtx(ctx), {
           from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
@@ -56,6 +66,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       changeEmail: {
         enabled: true,
         sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
+          const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailChange', { key: user.id });
+          if (!ok) throw new Error(`Too many email change requests. Please try again later.`);
+
           await resend.sendEmail(requireActionCtx(ctx), {
             from: 'Ignidash <noreply@mail.ignidash.com>',
             to: user.email,
@@ -83,6 +96,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     plugins: [convex()],
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
+        const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailVerification', { key: user.id });
+        if (!ok) throw new Error(`Too many email verification requests. Please try again later.`);
+
         await resend.sendEmail(requireActionCtx(ctx), {
           from: 'Ignidash <noreply@mail.ignidash.com>',
           to: user.email,
