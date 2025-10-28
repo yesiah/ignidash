@@ -4,6 +4,7 @@ import { convex } from '@convex-dev/better-auth/plugins';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
 import { Resend } from '@convex-dev/resend';
 import { betterAuth } from 'better-auth';
+import { APIError } from 'better-auth/api';
 
 import { components } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
@@ -31,7 +32,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       enabled: true,
       sendResetPassword: async ({ user, url }) => {
         const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'passwordReset', { key: user.id });
-        if (!ok) throw new Error(`Too many password reset requests. Please try again later.`);
+        if (!ok) throw new APIError('TOO_MANY_REQUESTS', { message: 'Too many password reset requests. Please try again later.' });
 
         await resend.sendEmail(requireActionCtx(ctx), {
           from: 'Ignidash <noreply@mail.ignidash.com>',
@@ -67,7 +68,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
         enabled: true,
         sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
           const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailChange', { key: user.id });
-          if (!ok) throw new Error(`Too many email change requests. Please try again later.`);
+          if (!ok) throw new APIError('TOO_MANY_REQUESTS', { message: 'Too many email change requests. Please try again later.' });
 
           await resend.sendEmail(requireActionCtx(ctx), {
             from: 'Ignidash <noreply@mail.ignidash.com>',
@@ -97,7 +98,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailVerification', { key: user.id });
-        if (!ok) throw new Error(`Too many email verification requests. Please try again later.`);
+        if (!ok) throw new APIError('TOO_MANY_REQUESTS', { message: 'Too many email verification requests. Please try again later.' });
 
         await resend.sendEmail(requireActionCtx(ctx), {
           from: 'Ignidash <noreply@mail.ignidash.com>',
