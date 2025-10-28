@@ -64,7 +64,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
             showSuccessNotification={showSuccessNotification}
           />
         )}
-        <DataSettingsForm showSuccessNotification={showSuccessNotification} />
+        <DataSettingsForm showSuccessNotification={showSuccessNotification} isAuthenticated={isAuthenticated} />
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>

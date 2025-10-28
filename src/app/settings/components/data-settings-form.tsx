@@ -14,9 +14,10 @@ import { useResetStore } from '@/lib/stores/quick-plan-store';
 
 interface DataSettingsFormProps {
   showSuccessNotification: (title: string, message: string) => void;
+  isAuthenticated: boolean;
 }
 
-export default function DataSettingsForm({ showSuccessNotification }: DataSettingsFormProps) {
+export default function DataSettingsForm({ showSuccessNotification, isAuthenticated }: DataSettingsFormProps) {
   const [appDataAlertOpen, setAppDataAlertOpen] = useState(false);
   const [accountDeletionAlertOpen, setAccountDeletionAlertOpen] = useState(false);
 
@@ -64,24 +65,28 @@ export default function DataSettingsForm({ showSuccessNotification }: DataSettin
                   including Simulator plans, but will not delete your account. This cannot be undone.
                 </Description>
               </Field>
-              <Divider />
-              <Field>
-                <Button
-                  color="rose"
-                  type="button"
-                  className="w-full"
-                  data-slot="control"
-                  onClick={() => setAccountDeletionAlertOpen(true)}
-                  disabled={deleteAccountState.isLoading}
-                >
-                  {deleteAccountState.isLoading ? 'Sending deletion email...' : 'Delete my account'}
-                </Button>
-                {deleteAccountState.errorMessage && <ErrorMessage>{deleteAccountState.errorMessage}</ErrorMessage>}
-                <Description>
-                  <strong className="text-red-500 dark:text-red-400">Warning:</strong> This action will initiate the deletion of your
-                  account. You will receive an email with instructions to confirm the deletion.
-                </Description>
-              </Field>
+              {isAuthenticated && (
+                <>
+                  <Divider />
+                  <Field>
+                    <Button
+                      color="rose"
+                      type="button"
+                      className="w-full"
+                      data-slot="control"
+                      onClick={() => setAccountDeletionAlertOpen(true)}
+                      disabled={deleteAccountState.isLoading}
+                    >
+                      {deleteAccountState.isLoading ? 'Sending deletion email...' : 'Delete my account'}
+                    </Button>
+                    {deleteAccountState.errorMessage && <ErrorMessage>{deleteAccountState.errorMessage}</ErrorMessage>}
+                    <Description>
+                      <strong className="text-red-500 dark:text-red-400">Warning:</strong> This action will initiate the deletion of your
+                      account. You will receive an email with instructions to confirm the deletion.
+                    </Description>
+                  </Field>
+                </>
+              )}
             </FieldGroup>
           </Fieldset>
         </form>

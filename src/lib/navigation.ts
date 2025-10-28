@@ -1,4 +1,4 @@
-import { HouseIcon, LandmarkIcon, ChartNoAxesCombinedIcon, Layers2Icon, ZapIcon, CircleQuestionMarkIcon } from 'lucide-react';
+import { LayoutDashboardIcon, LandmarkIcon, ChartNoAxesCombinedIcon, Layers2Icon, ZapIcon, CircleQuestionMarkIcon } from 'lucide-react';
 
 export interface NavigationItem {
   name: string;
@@ -10,7 +10,7 @@ export interface NavigationItem {
 }
 
 export const navigationItems: Omit<NavigationItem, 'current'>[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: HouseIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboardIcon },
   { name: 'Portfolio', href: '/dashboard/portfolio', icon: LandmarkIcon },
   { name: 'Simulator', href: '/dashboard/quick-plan', icon: ChartNoAxesCombinedIcon },
   { name: 'Compare', href: '/dashboard/compare', icon: Layers2Icon },
@@ -40,5 +40,5 @@ export function getCurrentPageTitle(currentPath: string): string {
 
 export function getCurrentPageIcon(currentPath: string): NavigationItem['icon'] {
   const item = navigationItems.find((item) => item.href === currentPath);
-  return item?.icon || HouseIcon;
+  return item?.icon || LayoutDashboardIcon;
 }
