@@ -56,12 +56,16 @@ export default function ProfileInfoForm({
     if (fetchedEmail) setEmail(fetchedEmail);
   }, [fetchedEmail]);
 
+  const [isVerificationEmailSent, setIsVerificationEmailSent] = useState(false);
   const { fieldState: sendVerificationEmailState, createCallbacks: sendVerificationEmailCallbacks } = useAccountSettingsFieldState({
     successNotification: 'Verification email sent! Check your inbox to verify your address.',
     showSuccessNotification,
   });
   const handleSendVerificationEmail = async () =>
-    await authClient.sendVerificationEmail({ email: fetchedEmail, callbackURL: '/settings' }, sendVerificationEmailCallbacks());
+    await authClient.sendVerificationEmail(
+      { email: fetchedEmail, callbackURL: '/settings' },
+      sendVerificationEmailCallbacks(() => setIsVerificationEmailSent(true))
+    );
 
   return (
     <>
@@ -147,7 +151,29 @@ export default function ProfileInfoForm({
               <MailQuestionMarkIcon className="text-primary h-6 w-6" aria-hidden="true" />
               Verify email
             </Legend>
-            {!otherUserData.isEmailVerified ? (
+            {otherUserData.isEmailVerified ? (
+              <div className="flex items-center justify-center p-8 sm:p-6">
+                <div className="shrink-0">
+                  <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-base/6 font-medium sm:text-sm/6">
+                    <strong>{fetchedEmail}</strong> is already verified.
+                  </p>
+                </div>
+              </div>
+            ) : isVerificationEmailSent ? (
+              <div className="flex items-center justify-center p-8 sm:p-6">
+                <div className="shrink-0">
+                  <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-base/6 font-medium sm:text-sm/6">
+                    Verification email sent to <strong>{fetchedEmail}</strong>.
+                  </p>
+                </div>
+              </div>
+            ) : (
               <FieldGroup>
                 <Field>
                   <Button
@@ -166,17 +192,6 @@ export default function ProfileInfoForm({
                   </Description>
                 </Field>
               </FieldGroup>
-            ) : (
-              <div className="flex items-center justify-center p-8 sm:p-6">
-                <div className="shrink-0">
-                  <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-base/6 font-medium sm:text-sm/6">
-                    <strong>{fetchedEmail}</strong> is already verified.
-                  </p>
-                </div>
-              </div>
             )}
           </Fieldset>
         </form>
