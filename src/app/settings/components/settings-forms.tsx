@@ -10,6 +10,7 @@ import { useAccountsList } from '@/hooks/use-accounts-data';
 import { useConvexAuth } from 'convex/react';
 
 import ProfileInfoForm from './profile-info-form';
+import DataSettingsForm from './data-settings-form';
 
 interface SettingsFormsProps {
   preloadedUser: Preloaded<typeof api.auth.getCurrentUserSafe>;
@@ -63,6 +64,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
             showSuccessNotification={showSuccessNotification}
           />
         )}
+        <DataSettingsForm showSuccessNotification={showSuccessNotification} />
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>

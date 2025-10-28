@@ -19,6 +19,7 @@ const rateLimiter = new RateLimiter(components.rateLimiter, {
   passwordReset: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   emailChange: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   emailVerification: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
+  deleteAccount: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
 });
 
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
@@ -92,6 +93,29 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       },
       deleteUser: {
         enabled: true,
+        sendDeleteAccountVerification: async ({ user, url, token }, request) => {
+          const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'deleteAccount', { key: user.id });
+          if (!ok) throw new APIError('TOO_MANY_REQUESTS', { message: 'Too many account deletion requests. Please try again later.' });
+
+          await resend.sendEmail(requireActionCtx(ctx), {
+            from: 'Ignidash <noreply@mail.ignidash.com>',
+            to: user.email,
+            subject: 'Account deletion request',
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 10px;">
+                  Hi there,
+                </p>
+                <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                  You've requested to delete your Ignidash account. We're sorry to see you go! To confirm this deletion, click the button below. Please note that this is irreversible.
+                </p>
+                <p style="margin: 30px 0; text-align: center;">
+                  <a href="${url}" style="display: inline-block; padding: 14px 28px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Delete my account</a>
+                </p>
+              </div>
+            `,
+          });
+        },
       },
     },
     plugins: [convex()],

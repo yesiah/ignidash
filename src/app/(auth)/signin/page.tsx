@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { authClient } from '@/lib/auth-client';
 import SuccessNotification from '@/components/ui/success-notification';
+import { useSuccessNotification } from '@/hooks/use-success-notification';
 import { useRedirectUrl } from '@/hooks/use-redirect-url';
 
 import EmailInput from '../components/email-input';
@@ -14,7 +15,8 @@ import PasswordInput from '../components/password-input';
 import GoogleSignIn from '../components/google-sign-in';
 
 export default function SignInPage() {
-  const [showNotification, setShowNotification] = useState(false);
+  const { notificationState, showSuccessNotification, setShow } = useSuccessNotification();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,18 +52,15 @@ export default function SignInPage() {
 
   const searchParams = useSearchParams();
   const resetSuccess = searchParams.get('reset') === 'success';
+  const deletedSuccess = searchParams.get('deleted') === 'success';
 
   useEffect(() => {
     if (resetSuccess) {
-      setShowNotification(true);
-
-      const timer = setTimeout(() => {
-        setShowNotification(false);
-      }, 5000);
-
-      return () => clearTimeout(timer);
+      showSuccessNotification('Password reset successful!', 'You can now sign in with your new password.');
+    } else if (deletedSuccess) {
+      showSuccessNotification('Account deletion successful!', "We're sorry to see you go.");
     }
-  }, [resetSuccess]);
+  }, [resetSuccess, deletedSuccess, showSuccessNotification]);
 
   return (
     <>
@@ -161,12 +160,7 @@ export default function SignInPage() {
           .
         </p>
       </div>
-      <SuccessNotification
-        title="Password reset successful!"
-        desc="You can now sign in with your new password."
-        setShow={setShowNotification}
-        show={showNotification}
-      />
+      <SuccessNotification {...notificationState} setShow={setShow} />
     </>
   );
 }
