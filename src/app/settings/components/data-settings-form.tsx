@@ -105,7 +105,7 @@ export default function DataSettingsForm({ showSuccessNotification }: DataSettin
               setAppDataAlertOpen(false);
             }}
           >
-            Delete
+            Delete now
           </Button>
         </AlertActions>
       </Alert>
