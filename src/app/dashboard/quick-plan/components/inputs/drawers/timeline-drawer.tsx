@@ -110,11 +110,10 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
             <Fieldset aria-label="Timeline details">
               <FieldGroup>
                 <Field>
-                  <Label htmlFor="currentAge">Current Age</Label>
+                  <Label htmlFor="currentAge">Your Age</Label>
                   <NumberInput name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
                   {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
                 </Field>
-                <Divider />
                 <Field>
                   <Label htmlFor="lifeExpectancy">Life Expectancy</Label>
                   <NumberInput name="lifeExpectancy" control={control} id="lifeExpectancy" inputMode="numeric" placeholder="78" />
