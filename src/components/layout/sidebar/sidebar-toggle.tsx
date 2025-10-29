@@ -1,6 +1,6 @@
 'use client';
 
-import { PanelLeftOpenIcon, PanelLeftCloseIcon } from 'lucide-react';
+import { PanelLeftIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,7 @@ export default function SidebarToggle({ className }: SidebarToggleProps) {
 
   return (
     <IconButton
-      icon={sidebarCollapsed ? PanelLeftOpenIcon : PanelLeftCloseIcon}
+      icon={PanelLeftIcon}
       label="Toggle Sidebar"
       onClick={handleToggle}
       surfaceColor="emphasized"
