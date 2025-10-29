@@ -72,7 +72,7 @@ export default function SignInForm() {
           </div>
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-            <div className="border-border/25 from-emphasized-background to-background border bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
+            <div className="border-border/25 from-emphasized-background to-background border-y bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:border sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
               <form onSubmit={handleEmailSignIn} method="POST" className="space-y-6">
                 <EmailInput errorMessage={errorMessage} />
                 <PasswordInput passwordType="current" />
