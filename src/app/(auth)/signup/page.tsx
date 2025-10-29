@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { authClient } from '@/lib/auth-client';
 import { useRedirectUrl } from '@/hooks/use-redirect-url';
+import { useRouter } from 'next/navigation';
 
 import EmailInput from '../components/email-input';
 import PasswordInput from '../components/password-input';
@@ -17,6 +18,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { safeRedirect, buildRedirectUrl } = useRedirectUrl();
+  const router = useRouter();
 
   const handleEmailSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,6 +39,7 @@ export default function SignUpPage() {
         onSuccess() {
           setErrorMessage(null);
           setIsLoading(false);
+          router.push(safeRedirect);
         },
         onError: (ctx) => {
           setErrorMessage(ctx.error.message);
