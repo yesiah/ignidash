@@ -24,11 +24,11 @@ export default function SignUpPage() {
     const formData = new FormData(event.currentTarget);
 
     const email = formData.get('email') as string;
-    const firstName = formData.get('first-name') as string;
+    const fullName = formData.get('full-name') as string;
     const password = formData.get('password') as string;
 
     await authClient.signUp.email(
-      { email, password, name: firstName, callbackURL: safeRedirect },
+      { email, password, name: fullName, callbackURL: safeRedirect },
       {
         onRequest() {
           setErrorMessage(null);
@@ -60,13 +60,13 @@ export default function SignUpPage() {
               <ErrorMessage errorMessage={errorMessage} />
               <EmailInput errorMessage={null} />
               <div>
-                <label htmlFor="first-name" className="block text-sm/6 font-medium text-stone-900 dark:text-white">
-                  First name
+                <label htmlFor="full-name" className="block text-sm/6 font-medium text-stone-900 dark:text-white">
+                  Full name
                 </label>
                 <div className="mt-2">
                   <input
-                    id="first-name"
-                    name="first-name"
+                    id="full-name"
+                    name="full-name"
                     type="text"
                     autoComplete="given-name"
                     required

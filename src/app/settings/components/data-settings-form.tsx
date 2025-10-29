@@ -125,8 +125,8 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
           <Button
             color="red"
             onClick={async () => {
-              await handleDeleteAccount();
               setAccountDeletionAlertOpen(false);
+              await handleDeleteAccount();
             }}
           >
             Send deletion email
