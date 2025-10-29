@@ -1,7 +1,8 @@
 import { betterFetch } from '@better-fetch/fetch';
-import type { Session } from '@/convex/auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+
+import type { Session } from '@/convex/auth';
 
 export async function middleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
