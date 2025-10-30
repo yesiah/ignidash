@@ -296,7 +296,7 @@ export default function PrivacyPage() {
               </p>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Information automatically collected</h3>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> Some information — such as your Internet Protocol (IP) address and/or browser and device
                 characteristics — is collected automatically when you visit our Services.
               </p>
@@ -324,26 +324,28 @@ export default function PrivacyPage() {
               <p className="mb-4">The information we collect includes:</p>
               <ul className="mb-4 ml-4 list-outside list-disc space-y-2">
                 <li>
-                  <strong>Log and Usage Data.</strong> Log and usage data is service-related, diagnostic, usage, and performance information
-                  our servers automatically collect when you access or use our Services and which we record in log files. Depending on how
-                  you interact with us, this log data may include your IP address, device information, browser type, and settings and
-                  information about your activity in the Services (such as the date/time stamps associated with your usage, pages and files
-                  viewed, searches, and other actions you take such as which features you use), device event information (such as system
-                  activity, error reports (sometimes called &quot;crash dumps&quot;), and hardware settings).
+                  <strong className="font-semibold italic">Log and Usage Data.</strong> Log and usage data is service-related, diagnostic,
+                  usage, and performance information our servers automatically collect when you access or use our Services and which we
+                  record in log files. Depending on how you interact with us, this log data may include your IP address, device information,
+                  browser type, and settings and information about your activity in the Services (such as the date/time stamps associated
+                  with your usage, pages and files viewed, searches, and other actions you take such as which features you use), device
+                  event information (such as system activity, error reports (sometimes called &quot;crash dumps&quot;), and hardware
+                  settings).
                 </li>
                 <li>
-                  <strong>Device Data.</strong> We collect device data such as information about your computer, phone, tablet, or other
-                  device you use to access the Services. Depending on the device used, this device data may include information such as your
-                  IP address (or proxy server), device and application identification numbers, location, browser type, hardware model,
-                  Internet service provider and/or mobile carrier, operating system, and system configuration information.
+                  <strong className="font-semibold italic">Device Data.</strong> We collect device data such as information about your
+                  computer, phone, tablet, or other device you use to access the Services. Depending on the device used, this device data
+                  may include information such as your IP address (or proxy server), device and application identification numbers,
+                  location, browser type, hardware model, Internet service provider and/or mobile carrier, operating system, and system
+                  configuration information.
                 </li>
                 <li>
-                  <strong>Location Data.</strong> We collect location data such as information about your device&apos;s location, which can
-                  be either precise or imprecise. How much information we collect depends on the type and settings of the device you use to
-                  access the Services. For example, we may use GPS and other technologies to collect geolocation data that tells us your
-                  current location (based on your IP address). You can opt out of allowing us to collect this information either by refusing
-                  access to the information or by disabling your Location setting on your device. However, if you choose to opt out, you may
-                  not be able to use certain aspects of the Services.
+                  <strong className="font-semibold italic">Location Data.</strong> We collect location data such as information about your
+                  device&apos;s location, which can be either precise or imprecise. How much information we collect depends on the type and
+                  settings of the device you use to access the Services. For example, we may use GPS and other technologies to collect
+                  geolocation data that tells us your current location (based on your IP address). You can opt out of allowing us to collect
+                  this information either by refusing access to the information or by disabling your Location setting on your device.
+                  However, if you choose to opt out, you may not be able to use certain aspects of the Services.
                 </li>
               </ul>
 
