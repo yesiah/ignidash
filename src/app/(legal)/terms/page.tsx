@@ -9,7 +9,7 @@ export default function TermsPage() {
           <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
             <div className="my-8">
               <h1 className="mb-2 text-3xl font-bold">Terms of Service</h1>
-              <p className="text-sm text-gray-600">Last updated: November 14, 2025</p>
+              <p className="text-muted-foreground text-sm">Last updated: November 14, 2025</p>
             </div>
 
             <section className="mb-8">
@@ -20,7 +20,7 @@ export default function TermsPage() {
               </p>
               <p className="mb-4">
                 We operate the website{' '}
-                <a href="https://www.ignidash.com" className="text-blue-600 hover:underline">
+                <a href="https://www.ignidash.com" className="text-primary hover:underline">
                   ignidash.com
                 </a>{' '}
                 (the &quot;Site&quot;), as well as any other related products and services that refer or link to these legal terms (the
@@ -33,7 +33,7 @@ export default function TermsPage() {
               </p>
               <p className="mb-4">
                 You can contact us by phone at 952-242-5109, email at{' '}
-                <a href="mailto:joe@schelske.dev" className="text-blue-600 hover:underline">
+                <a href="mailto:joe@schelske.dev" className="text-primary hover:underline">
                   joe@schelske.dev
                 </a>
                 , or by mail to 11101 Harrison Ave S, Minneapolis, MN 55437, United States.
@@ -47,7 +47,7 @@ export default function TermsPage() {
               <p className="mb-4">
                 We will provide you with prior notice of any scheduled changes to the Services you are using. The modified Legal Terms will
                 become effective upon posting or notifying you by{' '}
-                <a href="mailto:notice@mail.ignidash.com" className="text-blue-600 hover:underline">
+                <a href="mailto:notice@mail.ignidash.com" className="text-primary hover:underline">
                   notice@mail.ignidash.com
                 </a>
                 , as stated in the email message. By continuing to use the Services after the effective date of any changes, you agree to be
@@ -64,147 +64,147 @@ export default function TermsPage() {
               <h2 className="mb-4 text-2xl font-semibold">Table of Contents</h2>
               <ol className="list-inside list-decimal space-y-1 uppercase">
                 <li>
-                  <a href="#services" className="text-blue-600 hover:underline">
+                  <a href="#services" className="text-primary hover:underline">
                     Our Services
                   </a>
                 </li>
                 <li>
-                  <a href="#ip" className="text-blue-600 hover:underline">
+                  <a href="#ip" className="text-primary hover:underline">
                     Intellectual Property Rights
                   </a>
                 </li>
                 <li>
-                  <a href="#userreps" className="text-blue-600 hover:underline">
+                  <a href="#userreps" className="text-primary hover:underline">
                     User Representations
                   </a>
                 </li>
                 <li>
-                  <a href="#userreg" className="text-blue-600 hover:underline">
+                  <a href="#userreg" className="text-primary hover:underline">
                     User Registration
                   </a>
                 </li>
                 <li>
-                  <a href="#purchases" className="text-blue-600 hover:underline">
+                  <a href="#purchases" className="text-primary hover:underline">
                     Purchases and Payment
                   </a>
                 </li>
                 <li>
-                  <a href="#subscriptions" className="text-blue-600 hover:underline">
+                  <a href="#subscriptions" className="text-primary hover:underline">
                     Subscriptions
                   </a>
                 </li>
                 <li>
-                  <a href="#prohibited" className="text-blue-600 hover:underline">
+                  <a href="#prohibited" className="text-primary hover:underline">
                     Prohibited Activities
                   </a>
                 </li>
                 <li>
-                  <a href="#ugc" className="text-blue-600 hover:underline">
+                  <a href="#ugc" className="text-primary hover:underline">
                     User Generated Contributions
                   </a>
                 </li>
                 <li>
-                  <a href="#license" className="text-blue-600 hover:underline">
+                  <a href="#license" className="text-primary hover:underline">
                     Contribution License
                   </a>
                 </li>
                 <li>
-                  <a href="#socialmedia" className="text-blue-600 hover:underline">
+                  <a href="#socialmedia" className="text-primary hover:underline">
                     Social Media
                   </a>
                 </li>
                 <li>
-                  <a href="#thirdparty" className="text-blue-600 hover:underline">
+                  <a href="#thirdparty" className="text-primary hover:underline">
                     Third-Party Websites and Content
                   </a>
                 </li>
                 <li>
-                  <a href="#sitemanage" className="text-blue-600 hover:underline">
+                  <a href="#sitemanage" className="text-primary hover:underline">
                     Services Management
                   </a>
                 </li>
                 <li>
-                  <a href="#ppyes" className="text-blue-600 hover:underline">
+                  <a href="#ppyes" className="text-primary hover:underline">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#terms" className="text-blue-600 hover:underline">
+                  <a href="#terms" className="text-primary hover:underline">
                     Term and Termination
                   </a>
                 </li>
                 <li>
-                  <a href="#modifications" className="text-blue-600 hover:underline">
+                  <a href="#modifications" className="text-primary hover:underline">
                     Modifications and Interruptions
                   </a>
                 </li>
                 <li>
-                  <a href="#law" className="text-blue-600 hover:underline">
+                  <a href="#law" className="text-primary hover:underline">
                     Governing Law
                   </a>
                 </li>
                 <li>
-                  <a href="#disputes" className="text-blue-600 hover:underline">
+                  <a href="#disputes" className="text-primary hover:underline">
                     Dispute Resolution
                   </a>
                 </li>
                 <li>
-                  <a href="#corrections" className="text-blue-600 hover:underline">
+                  <a href="#corrections" className="text-primary hover:underline">
                     Corrections
                   </a>
                 </li>
                 <li>
-                  <a href="#disclaimer" className="text-blue-600 hover:underline">
+                  <a href="#disclaimer" className="text-primary hover:underline">
                     Disclaimer
                   </a>
                 </li>
                 <li>
-                  <a href="#liability" className="text-blue-600 hover:underline">
+                  <a href="#liability" className="text-primary hover:underline">
                     Limitations of Liability
                   </a>
                 </li>
                 <li>
-                  <a href="#indemnification" className="text-blue-600 hover:underline">
+                  <a href="#indemnification" className="text-primary hover:underline">
                     Indemnification
                   </a>
                 </li>
                 <li>
-                  <a href="#userdata" className="text-blue-600 hover:underline">
+                  <a href="#userdata" className="text-primary hover:underline">
                     User Data
                   </a>
                 </li>
                 <li>
-                  <a href="#electronic" className="text-blue-600 hover:underline">
+                  <a href="#electronic" className="text-primary hover:underline">
                     Electronic Communications, Transactions, and Signatures
                   </a>
                 </li>
                 <li>
-                  <a href="#california" className="text-blue-600 hover:underline">
+                  <a href="#california" className="text-primary hover:underline">
                     California Users and Residents
                   </a>
                 </li>
                 <li>
-                  <a href="#misc" className="text-blue-600 hover:underline">
+                  <a href="#misc" className="text-primary hover:underline">
                     Miscellaneous
                   </a>
                 </li>
                 <li>
-                  <a href="#addclause" className="text-blue-600 hover:underline">
+                  <a href="#addclause" className="text-primary hover:underline">
                     Nature of Service and Disclaimer of Financial Advice
                   </a>
                 </li>
                 <li>
-                  <a href="#addclauseb" className="text-blue-600 hover:underline">
+                  <a href="#addclauseb" className="text-primary hover:underline">
                     User Responsibility and Consultation with Professionals
                   </a>
                 </li>
                 <li>
-                  <a href="#addclausec" className="text-blue-600 hover:underline">
+                  <a href="#addclausec" className="text-primary hover:underline">
                     Accuracy of Projections
                   </a>
                 </li>
                 <li>
-                  <a href="#contact" className="text-blue-600 hover:underline">
+                  <a href="#contact" className="text-primary hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -264,7 +264,7 @@ export default function TermsPage() {
               <p className="mb-4">
                 If you wish to make any use of the Services, Content, or Marks other than as set out in this section or elsewhere in our
                 Legal Terms, please address your request to:{' '}
-                <a href="mailto:joe@schelske.dev" className="text-blue-600 hover:underline">
+                <a href="mailto:joe@schelske.dev" className="text-primary hover:underline">
                   joe@schelske.dev
                 </a>
                 . If we ever grant you the permission to post, reproduce, or publicly display any part of our Services or Content, you must
@@ -389,7 +389,7 @@ export default function TermsPage() {
                 All purchases are non-refundable. You can cancel your subscription at any time by logging into your account. Your
                 cancellation will take effect at the end of the current paid term. If you have any questions or are unsatisfied with our
                 Services, please email us at{' '}
-                <a href="mailto:joe@schelske.dev" className="text-blue-600 hover:underline">
+                <a href="mailto:joe@schelske.dev" className="text-primary hover:underline">
                   joe@schelske.dev
                 </a>
                 .
@@ -667,7 +667,7 @@ export default function TermsPage() {
                 We care about data privacy and security. Please review our Privacy Policy:{' '}
                 <a
                   href="https://www.ignidash.com/privacy"
-                  className="text-blue-600 hover:underline"
+                  className="text-primary hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -754,7 +754,7 @@ export default function TermsPage() {
                 The arbitration shall be commenced and conducted under the Commercial Arbitration Rules of the American Arbitration
                 Association (&quot;AAA&quot;) and, where appropriate, the AAA&apos;s Supplementary Procedures for Consumer Related Disputes
                 (&quot;AAA Consumer Rules&quot;), both of which are available at the{' '}
-                <a href="http://www.adr.org" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                <a href="http://www.adr.org" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                   American Arbitration Association (AAA) website
                 </a>
                 . Your arbitration fees and your share of arbitrator compensation shall be governed by the AAA Consumer Rules and, where
@@ -974,7 +974,7 @@ export default function TermsPage() {
                 <br />
                 Phone: 952-242-5109
                 <br />
-                <a href="mailto:joe@schelske.dev" className="text-blue-600 hover:underline">
+                <a href="mailto:joe@schelske.dev" className="text-primary hover:underline">
                   joe@schelske.dev
                 </a>
               </address>
