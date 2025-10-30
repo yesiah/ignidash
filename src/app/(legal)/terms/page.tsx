@@ -1,9 +1,12 @@
-import MainArea from '@/components/layout/main-area';
+import LegalNavbar from '../components/legal-navbar';
 
 export default function TermsPage() {
   return (
-    <MainArea hasSecondaryColumn={false}>
-      <h1 className="text-4xl font-extrabold tracking-tight">Terms of Service</h1>
-    </MainArea>
+    <>
+      <LegalNavbar title="Terms of Service" />
+      <main className="h-full overflow-y-auto">
+        <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8"></div>
+      </main>
+    </>
   );
 }

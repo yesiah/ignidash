@@ -5,7 +5,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { CircleUserRoundIcon, LogInIcon, LogOutIcon, LoaderIcon, CircleQuestionMarkIcon, LayoutDashboardIcon } from 'lucide-react';
+import {
+  CircleUserRoundIcon,
+  LogInIcon,
+  LogOutIcon,
+  LoaderIcon,
+  CircleQuestionMarkIcon,
+  LayoutDashboardIcon,
+  SettingsIcon,
+} from 'lucide-react';
 import * as Headless from '@headlessui/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
@@ -72,6 +80,10 @@ export default function LegalNavbar({ title }: LegalNavbarProps) {
                 <LayoutDashboardIcon data-slot="icon" />
                 <DropdownLabel>Dashboard</DropdownLabel>
               </DropdownItem>
+              <DropdownItem href="/settings">
+                <SettingsIcon data-slot="icon" />
+                <DropdownLabel>Settings</DropdownLabel>
+              </DropdownItem>
               <DropdownItem href={signInUrlWithRedirect}>
                 <LogInIcon data-slot="icon" />
                 <DropdownLabel>Sign in</DropdownLabel>
@@ -88,6 +100,10 @@ export default function LegalNavbar({ title }: LegalNavbarProps) {
               <DropdownItem href="/dashboard/quick-plan">
                 <LayoutDashboardIcon data-slot="icon" />
                 <DropdownLabel>Dashboard</DropdownLabel>
+              </DropdownItem>
+              <DropdownItem href="/settings">
+                <SettingsIcon data-slot="icon" />
+                <DropdownLabel>Settings</DropdownLabel>
               </DropdownItem>
               <DropdownItem onClick={() => signOut()}>
                 <LogOutIcon data-slot="icon" />
