@@ -48,8 +48,14 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">Summary of Key Points</h2>
               <p className="mb-4">
-                This summary provides key points from our Privacy Notice, but you can find out more details about any of these topics by
-                clicking the link following each key point or by using our table of contents below to find the section you are looking for.
+                <strong className="italic">
+                  This summary provides key points from our Privacy Notice, but you can find out more details about any of these topics by
+                  clicking the link following each key point or by using our{' '}
+                  <a href="#tableofcontents" className="text-primary hover:underline">
+                    table of contents
+                  </a>{' '}
+                  below to find the section you are looking for.
+                </strong>
               </p>
               <p className="mb-4">
                 <strong>What personal information do we process?</strong> When you visit, use, or navigate our Services, we may process
@@ -125,7 +131,7 @@ export default function PrivacyPage() {
               <p>Want to learn more about what we do with any information we collect? Review the Privacy Notice in full.</p>
             </section>
 
-            <section className="mb-8">
+            <section id="tableofcontents" className="mb-8 uppercase">
               <h2 className="mb-4 text-2xl font-semibold">Table of Contents</h2>
               <ol className="list-inside list-decimal space-y-1 uppercase">
                 <li>
