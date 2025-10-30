@@ -226,7 +226,7 @@ export default function PrivacyPage() {
               <h2 className="mb-4 text-2xl font-semibold">1. What Information Do We Collect?</h2>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Personal information you disclose to us</h3>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We collect personal information that you provide to us.
               </p>
               <p className="mb-4">

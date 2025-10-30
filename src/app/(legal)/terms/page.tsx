@@ -253,7 +253,7 @@ export default function TermsPage() {
                 </a>
                 &quot; section below, we grant you a non-exclusive, non-transferable, revocable license to:
               </p>
-              <ul className="mb-4 list-inside list-disc space-y-2">
+              <ul className="mb-4 ml-4 list-inside list-disc space-y-2">
                 <li>access the Services; and</li>
                 <li>download or print a copy of any portion of the Content to which you have properly gained access,</li>
               </ul>
@@ -299,7 +299,7 @@ export default function TermsPage() {
                 <strong>You are responsible for what you post or upload:</strong> By sending us Submissions through any part of the Services
                 you:
               </p>
-              <ul className="mb-4 list-inside list-disc space-y-2">
+              <ul className="mb-4 ml-4 list-inside list-disc space-y-2">
                 <li>
                   confirm that you have read and agree with our &quot;
                   <a href="#prohibited" className="text-primary hover:underline">
