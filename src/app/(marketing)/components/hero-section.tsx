@@ -37,7 +37,7 @@ export default function HeroSection() {
             >
               Get started
             </Link>
-            <a href="#how-it-works" className="text-sm/6 font-semibold">
+            <a href="#learn-more" className="text-sm/6 font-semibold">
               Learn more <span aria-hidden="true">→</span>
             </a>
           </div>
