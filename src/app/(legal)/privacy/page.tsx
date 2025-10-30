@@ -21,7 +21,7 @@ export default function PrivacyPage() {
               <ul className="mb-4 ml-4 list-outside list-disc space-y-2">
                 <li>
                   Visit our website at{' '}
-                  <a href="https://www.ignidash.com" className="text-primary hover:underline">
+                  <a href="https://www.ignidash.com" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                     ignidash.com
                   </a>{' '}
                   or any website of ours that links to this Privacy Notice
@@ -47,8 +47,8 @@ export default function PrivacyPage() {
 
             <section className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">Summary of Key Points</h2>
-              <p className="mb-4">
-                <strong className="italic">
+              <p className="mb-4 italic">
+                <strong>
                   This summary provides key points from our Privacy Notice, but you can find out more details about any of these topics by
                   clicking the link following each key point or by using our{' '}
                   <a href="#tableofcontents" className="text-primary hover:underline">
