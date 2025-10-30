@@ -20,7 +20,7 @@ export default function TermsPage() {
               </p>
               <p className="mb-4">
                 We operate the website{' '}
-                <a href="https://www.ignidash.com" className="text-primary hover:underline">
+                <a href="https://www.ignidash.com" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                   ignidash.com
                 </a>{' '}
                 (the &quot;Site&quot;), as well as any other related products and services that refer or link to these legal terms (the
@@ -505,7 +505,7 @@ export default function TermsPage() {
                 Services and through third-party websites. As such, any Contributions you transmit may be treated in accordance with the
                 Services&apos; Privacy Policy. When you create or make available any Contributions, you thereby represent and warrant that:
               </p>
-              <ul className="ml-4 list-outside list-disc space-y-2">
+              <ul className="mb-4 ml-4 list-outside list-disc space-y-2">
                 <li>
                   The creation, distribution, transmission, public display, or performance, and the accessing, downloading, or copying of
                   your Contributions do not and will not infringe the proprietary rights, including but not limited to the copyright,
@@ -550,7 +550,7 @@ export default function TermsPage() {
                   applicable law or regulation.
                 </li>
               </ul>
-              <p className="mt-4">
+              <p>
                 Any use of the Services in violation of the foregoing violates these Legal Terms and may result in, among other things,
                 termination or suspension of your rights to use the Services.
               </p>
