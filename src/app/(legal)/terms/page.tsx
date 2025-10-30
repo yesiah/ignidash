@@ -3,9 +3,9 @@ import LegalNavbar from '../components/legal-navbar';
 export default function TermsPage() {
   return (
     <>
-      <LegalNavbar title="Terms of Service" />
       <main className="h-full overflow-y-auto">
-        <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
+        <LegalNavbar title="Terms of Service" />
+        <div className="mx-auto max-w-prose px-4 pb-[2.125rem] sm:px-6 lg:px-8">
           <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
             <div className="my-8">
               <h1 className="mb-2 text-3xl font-bold">Terms of Service</h1>
