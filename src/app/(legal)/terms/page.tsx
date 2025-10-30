@@ -247,8 +247,11 @@ export default function TermsPage() {
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Your use of our Services</h3>
               <p className="mb-4">
-                Subject to your compliance with these Legal Terms, including the &quot;PROHIBITED ACTIVITIES&quot; section below, we grant
-                you a non-exclusive, non-transferable, revocable license to:
+                Subject to your compliance with these Legal Terms, including the &quot;
+                <a href="#prohibited" className="text-primary hover:underline">
+                  PROHIBITED ACTIVITIES
+                </a>
+                &quot; section below, we grant you a non-exclusive, non-transferable, revocable license to:
               </p>
               <ul className="mb-4 list-inside list-disc space-y-2">
                 <li>access the Services; and</li>
@@ -279,8 +282,12 @@ export default function TermsPage() {
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Your submissions</h3>
               <p className="mb-4">
-                Please review this section and the &quot;PROHIBITED ACTIVITIES&quot; section carefully prior to using our Services to
-                understand the (a) rights you give us and (b) obligations you have when you post or upload any content through the Services.
+                Please review this section and the &quot;
+                <a href="#prohibited" className="text-primary hover:underline">
+                  PROHIBITED ACTIVITIES
+                </a>
+                &quot; section carefully prior to using our Services to understand the (a) rights you give us and (b) obligations you have
+                when you post or upload any content through the Services.
               </p>
               <p className="mb-4">
                 <strong>Submissions:</strong> By directly sending us any question, comment, suggestion, idea, feedback, or other information
@@ -294,10 +301,13 @@ export default function TermsPage() {
               </p>
               <ul className="mb-4 list-inside list-disc space-y-2">
                 <li>
-                  confirm that you have read and agree with our &quot;PROHIBITED ACTIVITIES&quot; and will not post, send, publish, upload,
-                  or transmit through the Services any Submission that is illegal, harassing, hateful, harmful, defamatory, obscene,
-                  bullying, abusive, discriminatory, threatening to any person or group, sexually explicit, false, inaccurate, deceitful, or
-                  misleading;
+                  confirm that you have read and agree with our &quot;
+                  <a href="#prohibited" className="text-primary hover:underline">
+                    PROHIBITED ACTIVITIES
+                  </a>
+                  &quot; and will not post, send, publish, upload, or transmit through the Services any Submission that is illegal,
+                  harassing, hateful, harmful, defamatory, obscene, bullying, abusive, discriminatory, threatening to any person or group,
+                  sexually explicit, false, inaccurate, deceitful, or misleading;
                 </li>
                 <li>to the extent permissible by applicable law, waive any and all moral rights to any such Submission;</li>
                 <li>
