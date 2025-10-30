@@ -834,9 +834,10 @@ export default function PrivacyPage() {
                 .
               </p>
               <p className="mb-4" id="withdrawconsent">
-                <strong>Withdrawing your consent:</strong> If we are relying on your consent to process your personal information, which may
-                be express and/or implied consent depending on the applicable law, you have the right to withdraw your consent at any time.
-                You can withdraw your consent at any time by contacting us by using the contact details provided in the section &quot;
+                <strong className="underline">Withdrawing your consent:</strong> If we are relying on your consent to process your personal
+                information, which may be express and/or implied consent depending on the applicable law, you have the right to withdraw
+                your consent at any time. You can withdraw your consent at any time by contacting us by using the contact details provided
+                in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
                   HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
                 </a>
@@ -848,9 +849,9 @@ export default function PrivacyPage() {
                 other than consent.
               </p>
               <p className="mb-4">
-                <strong>Opting out of marketing and promotional communications:</strong> You can unsubscribe from our marketing and
-                promotional communications at any time by clicking on the unsubscribe link in the emails that we send, or by contacting us
-                using the details provided in the section &quot;
+                <strong className="underline">Opting out of marketing and promotional communications:</strong> You can unsubscribe from our
+                marketing and promotional communications at any time by clicking on the unsubscribe link in the emails that we send, or by
+                contacting us using the details provided in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
                   HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
                 </a>
@@ -872,10 +873,10 @@ export default function PrivacyPage() {
                 investigations, enforce our legal terms and/or comply with applicable legal requirements.
               </p>
               <p className="mb-4">
-                <strong>Cookies and similar technologies:</strong> Most Web browsers are set to accept cookies by default. If you prefer,
-                you can usually choose to set your browser to remove cookies and to reject cookies. If you choose to remove cookies or
-                reject cookies, this could affect certain features or services of our Services. For further information, please see our
-                Cookie Notice:{' '}
+                <strong className="underline">Cookies and similar technologies:</strong> Most Web browsers are set to accept cookies by
+                default. If you prefer, you can usually choose to set your browser to remove cookies and to reject cookies. If you choose to
+                remove cookies or reject cookies, this could affect certain features or services of our Services. For further information,
+                please see our Cookie Notice:{' '}
                 <a
                   href="https://www.ignidash.com/cookies"
                   className="text-primary hover:underline"
