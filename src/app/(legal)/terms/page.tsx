@@ -231,7 +231,7 @@ export default function TermsPage() {
             <section id="ip" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">2. Intellectual Property Rights</h2>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Our intellectual property</h3>
+              <h3 className="my-6 text-xl font-semibold">Our intellectual property</h3>
               <p className="mb-4">
                 We are the owner or the licensee of all intellectual property rights in our Services, including all source code, databases,
                 functionality, software, website designs, audio, video, text, photographs, and graphics in the Services (collectively, the
@@ -245,7 +245,7 @@ export default function TermsPage() {
                 The Content and Marks are provided in or through the Services &quot;AS IS&quot; for your personal, non-commercial use only.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Your use of our Services</h3>
+              <h3 className="my-6 text-xl font-semibold">Your use of our Services</h3>
               <p className="mb-4">
                 Subject to your compliance with these Legal Terms, including the &quot;
                 <a href="#prohibited" className="text-primary hover:underline">
@@ -280,7 +280,7 @@ export default function TermsPage() {
                 our Services will terminate immediately.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Your submissions</h3>
+              <h3 className="my-6 text-xl font-semibold">Your submissions</h3>
               <p className="mb-4">
                 Please review this section and the &quot;
                 <a href="#prohibited" className="text-primary hover:underline">
@@ -380,7 +380,7 @@ export default function TermsPage() {
             <section id="subscriptions" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">6. Subscriptions</h2>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Billing and Renewal</h3>
+              <h3 className="my-6 text-xl font-semibold">Billing and Renewal</h3>
               <p className="mb-4">
                 Your subscription will continue and automatically renew unless canceled. You consent to our charging your payment method on
                 a recurring basis without requiring your prior approval for each recurring charge, until such time as you cancel the
@@ -388,13 +388,13 @@ export default function TermsPage() {
                 subscribed to the Services.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Free Trial</h3>
+              <h3 className="my-6 text-xl font-semibold">Free Trial</h3>
               <p className="mb-4">
                 We offer a 7-day free trial to new users who register with the Services. The account will be charged according to the
                 user&apos;s chosen subscription at the end of the free trial.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Cancellation</h3>
+              <h3 className="my-6 text-xl font-semibold">Cancellation</h3>
               <p className="mb-4">
                 All purchases are non-refundable. You can cancel your subscription at any time by logging into your account. Your
                 cancellation will take effect at the end of the current paid term. If you have any questions or are unsatisfied with our
@@ -405,7 +405,7 @@ export default function TermsPage() {
                 .
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Fee Changes</h3>
+              <h3 className="my-6 text-xl font-semibold">Fee Changes</h3>
               <p>
                 We may, from time to time, make changes to the subscription fee and will communicate any price changes to you in accordance
                 with applicable law.
@@ -745,7 +745,7 @@ export default function TermsPage() {
             <section id="disputes" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">17. Dispute Resolution</h2>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Informal Negotiations</h3>
+              <h3 className="my-6 text-xl font-semibold">Informal Negotiations</h3>
               <p className="mb-4">
                 To expedite resolution and control the cost of any dispute, controversy, or claim related to these Legal Terms (each a
                 &quot;Dispute&quot; and collectively, the &quot;Disputes&quot;) brought by either you or us (individually, a
@@ -754,7 +754,7 @@ export default function TermsPage() {
                 Such informal negotiations commence upon written notice from one Party to the other Party.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Binding Arbitration</h3>
+              <h3 className="my-6 text-xl font-semibold">Binding Arbitration</h3>
               <p className="mb-4">
                 If the Parties are unable to resolve a Dispute through informal negotiations, the Dispute (except those Disputes expressly
                 excluded below) will be finally and exclusively resolved by binding arbitration. YOU UNDERSTAND THAT WITHOUT THIS PROVISION,
@@ -796,7 +796,7 @@ export default function TermsPage() {
                 Parties agree to submit to the personal jurisdiction of that court.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Restrictions</h3>
+              <h3 className="my-6 text-xl font-semibold">Restrictions</h3>
               <p className="mb-4">
                 The Parties agree that any arbitration shall be limited to the Dispute between the Parties individually. To the full extent
                 permitted by law, (a) no arbitration shall be joined with any other proceeding; (b) there is no right or authority for any
@@ -805,7 +805,7 @@ export default function TermsPage() {
                 persons.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Exceptions to Informal Negotiations and Arbitration</h3>
+              <h3 className="my-6 text-xl font-semibold">Exceptions to Informal Negotiations and Arbitration</h3>
               <p>
                 The Parties agree that the following Disputes are not subject to the above provisions concerning informal negotiations
                 binding arbitration: (a) any Disputes seeking to enforce or protect, or concerning the validity of, any of the intellectual

@@ -231,7 +231,7 @@ export default function PrivacyPage() {
             <section id="infocollect" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">1. What Information Do We Collect?</h2>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Personal information you disclose to us</h3>
+              <h3 className="my-6 text-xl font-semibold">Personal information you disclose to us</h3>
               <p className="mb-4 italic">
                 <strong>In Short:</strong> We collect personal information that you provide to us.
               </p>
@@ -295,7 +295,7 @@ export default function PrivacyPage() {
                 to such personal information.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Information automatically collected</h3>
+              <h3 className="my-6 text-xl font-semibold">Information automatically collected</h3>
               <p className="mb-4 italic">
                 <strong>In Short:</strong> Some information — such as your Internet Protocol (IP) address and/or browser and device
                 characteristics — is collected automatically when you visit our Services.
@@ -349,7 +349,7 @@ export default function PrivacyPage() {
                 </li>
               </ul>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Google API</h3>
+              <h3 className="my-6 text-xl font-semibold">Google API</h3>
               <p>
                 Our use of information received from Google APIs will adhere to{' '}
                 <a href="https://developers.google.com/terms/api-services-user-data-policy" className="text-primary hover:underline">
@@ -365,7 +365,7 @@ export default function PrivacyPage() {
                 .
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold" id="othersources">
+              <h3 className="my-6 text-xl font-semibold" id="othersources">
                 Information collected from other sources
               </h3>
               <p className="mb-4 italic">
@@ -638,7 +638,7 @@ export default function PrivacyPage() {
                 Services.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Use of AI Technologies</h3>
+              <h3 className="my-6 text-xl font-semibold">Use of AI Technologies</h3>
               <p className="mb-4">
                 We provide the AI Products through third-party service providers (&quot;AI Service Providers&quot;), including Anthropic and
                 OpenAI. As outlined in this Privacy Notice, your input, output, and personal information will be shared with and processed
@@ -649,20 +649,20 @@ export default function PrivacyPage() {
                 &quot; You must not use the AI Products in any way that violates the terms or policies of any AI Service Provider.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Our AI Products</h3>
+              <h3 className="my-6 text-xl font-semibold">Our AI Products</h3>
               <p className="mb-4">Our AI Products are designed for the following functions:</p>
               <ul className="mb-4 ml-4 list-outside list-disc">
                 <li>AI insights</li>
               </ul>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">How We Process Your Data Using AI</h3>
+              <h3 className="my-6 text-xl font-semibold">How We Process Your Data Using AI</h3>
               <p className="mb-4">
                 All personal information processed using our AI Products is handled in line with our Privacy Notice and our agreement with
                 third parties. This ensures high security and safeguards your personal information throughout the process, giving you peace
                 of mind about your data&apos;s safety.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">How to Opt Out</h3>
+              <h3 className="my-6 text-xl font-semibold">How to Opt Out</h3>
               <p className="mb-4">We believe in giving you the power to decide how your data is used. To opt out, you can:</p>
               <ul className="mb-4 ml-4 list-outside list-disc">
                 <li>Log in to your account settings and update your user account</li>
@@ -860,7 +860,7 @@ export default function PrivacyPage() {
                 service requests, or for other non-marketing purposes.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Account Information</h3>
+              <h3 className="my-6 text-xl font-semibold">Account Information</h3>
               <p className="mb-4">
                 If you would at any time like to review or change the information in your account or terminate your account, you can:
               </p>
@@ -923,7 +923,7 @@ export default function PrivacyPage() {
                 some circumstances by applicable law. More information is provided below.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Categories of Personal Information We Collect</h3>
+              <h3 className="my-6 text-xl font-semibold">Categories of Personal Information We Collect</h3>
               <p className="mb-4">
                 The table below shows the categories of personal information we have collected in the past twelve (12) months. The table
                 includes illustrative examples of each category and does not reflect the personal information we collect from you. For a
@@ -1055,7 +1055,7 @@ export default function PrivacyPage() {
                 <li>Category L - As long as the user has an account with us</li>
               </ul>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Sources of Personal Information</h3>
+              <h3 className="my-6 text-xl font-semibold">Sources of Personal Information</h3>
               <p className="mb-4">
                 Learn more about the sources of personal information we collect in &quot;
                 <a href="#infocollect" className="text-primary hover:underline">
@@ -1064,7 +1064,7 @@ export default function PrivacyPage() {
                 &quot;
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">How We Use and Share Personal Information</h3>
+              <h3 className="my-6 text-xl font-semibold">How We Use and Share Personal Information</h3>
               <p className="mb-4">
                 Learn more about how we use your personal information in the section, &quot;
                 <a href="#infouse" className="text-primary hover:underline">
@@ -1106,7 +1106,7 @@ export default function PrivacyPage() {
                 &quot;
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Your Rights</h3>
+              <h3 className="my-6 text-xl font-semibold">Your Rights</h3>
               <p className="mb-4">
                 You have rights under certain US state data protection laws. However, these rights are not absolute, and in certain cases,
                 we may decline your request as permitted by law. These rights include:
@@ -1168,7 +1168,7 @@ export default function PrivacyPage() {
                 </li>
               </ul>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">How to Exercise Your Rights</h3>
+              <h3 className="my-6 text-xl font-semibold">How to Exercise Your Rights</h3>
               <p className="mb-4">
                 To exercise these rights, you can contact us by visiting{' '}
                 <a href="mailto:joe@schelske.dev" className="text-primary hover:underline">
@@ -1187,7 +1187,7 @@ export default function PrivacyPage() {
                 behalf in accordance with applicable laws.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Request Verification</h3>
+              <h3 className="my-6 text-xl font-semibold">Request Verification</h3>
               <p className="mb-4">
                 Upon receiving your request, we will need to verify your identity to determine you are the same person about whom we have
                 the information in our system. We will only use personal information provided in your request to verify your identity or
@@ -1201,7 +1201,7 @@ export default function PrivacyPage() {
                 request on your behalf.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">Appeals</h3>
+              <h3 className="my-6 text-xl font-semibold">Appeals</h3>
               <p className="mb-4">
                 Under certain US state data protection laws, if we decline to take action regarding your request, you may appeal our
                 decision by emailing us at{' '}
@@ -1212,7 +1212,7 @@ export default function PrivacyPage() {
                 of the reasons for the decisions. If your appeal is denied, you may submit a complaint to your state attorney general.
               </p>
 
-              <h3 className="mt-6 mb-3 text-xl font-semibold">California &quot;Shine The Light&quot; Law</h3>
+              <h3 className="my-6 text-xl font-semibold">California &quot;Shine The Light&quot; Law</h3>
               <p>
                 California Civil Code Section 1798.83, also known as the &quot;Shine The Light&quot; law, permits our users who are
                 California residents to request and obtain from us, once a year and free of charge, information about categories of personal
