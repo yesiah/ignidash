@@ -368,7 +368,7 @@ export default function PrivacyPage() {
               <h3 className="mt-6 mb-3 text-xl font-semibold" id="othersources">
                 Information collected from other sources
               </h3>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We may collect limited data from public databases, marketing partners, social media platforms,
                 and other outside sources.
               </p>
@@ -454,7 +454,7 @@ export default function PrivacyPage() {
 
             <section id="legalbases" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">3. What Legal Bases Do We Rely On To Process Your Personal Information?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We only process your personal information when we believe it is necessary and we have a valid
                 legal reason (i.e., legal basis) to do so under applicable law, like with your consent, to comply with laws, to provide you
                 with services to enter into or fulfill our contractual obligations, to protect your rights, or to fulfill our legitimate
@@ -546,7 +546,7 @@ export default function PrivacyPage() {
 
             <section id="whoshare" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">4. When And With Whom Do We Share Your Personal Information?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We may share information in specific situations described in this section and/or with the
                 following categories of third parties.
               </p>
@@ -581,7 +581,7 @@ export default function PrivacyPage() {
 
             <section id="cookies" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">5. Do We Use Cookies And Other Tracking Technologies?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We may use cookies and other tracking technologies to collect and store your information.
               </p>
               <p className="mb-4">
@@ -621,7 +621,7 @@ export default function PrivacyPage() {
 
             <section id="ai" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">6. Do We Offer Artificial Intelligence-Based Products?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We offer products, features, or tools powered by artificial intelligence, machine learning, or
                 similar technologies.
               </p>
@@ -665,7 +665,7 @@ export default function PrivacyPage() {
 
             <section id="sociallogins" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">7. How Do We Handle Your Social Logins?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> If you choose to register or log in to our Services using a social media account, we may have
                 access to certain information about you.
               </p>
@@ -687,7 +687,7 @@ export default function PrivacyPage() {
 
             <section id="intltransfers" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">8. Is Your Information Transferred Internationally?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We may transfer, store, and process your information in countries other than your own.
               </p>
               <p className="mb-4">
@@ -719,7 +719,7 @@ export default function PrivacyPage() {
 
             <section id="inforetain" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">9. How Long Do We Keep Your Information?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We keep your information for as long as necessary to fulfill the purposes outlined in this
                 Privacy Notice unless otherwise required by law.
               </p>
@@ -739,7 +739,7 @@ export default function PrivacyPage() {
 
             <section id="infosafe" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">10. How Do We Keep Your Information Safe?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We aim to protect your personal information through a system of organizational and technical
                 security measures.
               </p>
@@ -756,7 +756,7 @@ export default function PrivacyPage() {
 
             <section id="infominors" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">11. Do We Collect Information From Minors?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> We do not knowingly collect data from or market to children under 18 years of age or the
                 equivalent age as specified by law in your jurisdiction.
               </p>
@@ -778,7 +778,7 @@ export default function PrivacyPage() {
 
             <section id="privacyrights" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">12. What Are Your Privacy Rights?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> Depending on your state of residence in the US or in some regions, such as the European Economic
                 Area (EEA), United Kingdom (UK), Switzerland, and Canada, you have rights that allow you greater access to and control over
                 your personal information. You may review, change, or terminate your account at any time, depending on your country,
@@ -912,7 +912,7 @@ export default function PrivacyPage() {
 
             <section id="uslaws" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">14. Do United States Residents Have Specific Privacy Rights?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> If you are a resident of California, Colorado, Connecticut, Delaware, Florida, Indiana, Iowa,
                 Kentucky, Maryland, Minnesota, Montana, Nebraska, New Hampshire, New Jersey, Oregon, Rhode Island, Tennessee, Texas, Utah,
                 or Virginia, you may have the right to request access to and receive details about the personal information we maintain
@@ -1209,7 +1209,7 @@ export default function PrivacyPage() {
 
             <section id="policyupdates" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">15. Do We Make Updates To This Notice?</h2>
-              <p className="mb-4">
+              <p className="mb-4 italic">
                 <strong>In Short:</strong> Yes, we will update this notice as necessary to stay compliant with relevant laws.
               </p>
               <p>
