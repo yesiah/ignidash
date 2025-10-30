@@ -25,7 +25,7 @@ export default function Navbar() {
             <span className="sr-only">Ignidash</span>
             <div className="flex items-center gap-2">
               <FireIcon className="text-primary h-8 w-8" aria-hidden="true" />
-              <span className="text-xl font-semibold text-stone-900 dark:text-white">Ignidash</span>
+              <span className="text-xl font-semibold">Ignidash</span>
             </div>
           </Link>
         </div>
@@ -41,22 +41,22 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <Link key={item.name} href={item.href} className="text-sm/6 font-semibold text-stone-900 dark:text-white">
+            <Link key={item.name} href={item.href} className="text-sm/6 font-semibold">
               {item.name}
             </Link>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <AuthLoading>
-            <span className="text-sm/6 font-semibold text-stone-900 dark:text-white">Loading...</span>
+            <span className="text-sm/6 font-semibold">Loading...</span>
           </AuthLoading>
           <Unauthenticated>
-            <Link href="/signin" className="text-sm/6 font-semibold text-stone-900 dark:text-white">
+            <Link href="/signin" className="text-sm/6 font-semibold">
               Sign in <span aria-hidden="true">&rarr;</span>
             </Link>
           </Unauthenticated>
           <Authenticated>
-            <Link href="/dashboard/quick-plan" className="text-sm/6 font-semibold text-stone-900 dark:text-white">
+            <Link href="/dashboard/quick-plan" className="text-sm/6 font-semibold">
               Dashboard <span aria-hidden="true">&rarr;</span>
             </Link>
           </Authenticated>
@@ -70,7 +70,7 @@ export default function Navbar() {
               <span className="sr-only">Ignidash</span>
               <div className="flex items-center gap-2">
                 <FireIcon className="text-primary h-8 w-8" aria-hidden="true" />
-                <span className="text-xl font-semibold text-stone-900 dark:text-white">Ignidash</span>
+                <span className="text-xl font-semibold">Ignidash</span>
               </div>
             </Link>
             <button
