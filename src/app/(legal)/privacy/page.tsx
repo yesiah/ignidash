@@ -599,10 +599,11 @@ export default function PrivacyPage() {
               <p className="mb-4">
                 To the extent these online tracking technologies are deemed to be a &quot;sale&quot;/&quot;sharing&quot; (which includes
                 targeted advertising, as defined under the applicable laws) under applicable US state laws, you can opt out of these online
-                tracking technologies by submitting a request as described below under section{' '}
+                tracking technologies by submitting a request as described below under section &quot;
                 <a href="#uslaws" className="text-primary hover:underline">
-                  &quot;DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?&quot;
+                  DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
                 </a>
+                &quot;
               </p>
               <p>
                 Specific information about how we use such technologies and how you can refuse certain cookies is set out in our Cookie
@@ -636,11 +637,11 @@ export default function PrivacyPage() {
               <p className="mb-4">
                 We provide the AI Products through third-party service providers (&quot;AI Service Providers&quot;), including Anthropic and
                 OpenAI. As outlined in this Privacy Notice, your input, output, and personal information will be shared with and processed
-                by these AI Service Providers to enable your use of our AI Products for purposes outlined in{' '}
+                by these AI Service Providers to enable your use of our AI Products for purposes outlined in &quot;
                 <a href="#legalbases" className="text-primary hover:underline">
-                  &quot;WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR PERSONAL INFORMATION?&quot;
-                </a>{' '}
-                You must not use the AI Products in any way that violates the terms or policies of any AI Service Provider.
+                  WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR PERSONAL INFORMATION?
+                </a>
+                &quot; You must not use the AI Products in any way that violates the terms or policies of any AI Service Provider.
               </p>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Our AI Products</h3>
@@ -693,11 +694,11 @@ export default function PrivacyPage() {
               <p className="mb-4">
                 Our servers are located in the United States, Germany and Singapore. Regardless of your location, please be aware that your
                 information may be transferred to, stored by, and processed by us in our facilities and in the facilities of the third
-                parties with whom we may share your personal information (see{' '}
+                parties with whom we may share your personal information (see &quot;
                 <a href="#whoshare" className="text-primary hover:underline">
-                  &quot;WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?&quot;
-                </a>{' '}
-                above), including facilities in the United States, and other countries.
+                  WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
+                </a>
+                &quot; above), including facilities in the United States, and other countries.
               </p>
               <p className="mb-4">
                 If you are a resident in the European Economic Area (EEA), United Kingdom (UK), or Switzerland, then these countries may not
@@ -791,11 +792,11 @@ export default function PrivacyPage() {
                 portability; and (v) not to be subject to automated decision-making. If a decision that produces legal or similarly
                 significant effects is made solely by automated means, we will inform you, explain the main factors, and offer a simple way
                 to request human review. In certain circumstances, you may also have the right to object to the processing of your personal
-                information. You can make such a request by contacting us by using the contact details provided in the section{' '}
+                information. You can make such a request by contacting us by using the contact details provided in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
-                  &quot;HOW CAN YOU CONTACT US ABOUT THIS NOTICE?&quot;
-                </a>{' '}
-                below.
+                  HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
+                </a>
+                &quot; below.
               </p>
               <p className="mb-4">We will consider and act upon any request in accordance with applicable data protection laws.</p>
               <p className="mb-4">
@@ -835,11 +836,11 @@ export default function PrivacyPage() {
               <p className="mb-4" id="withdrawconsent">
                 <strong>Withdrawing your consent:</strong> If we are relying on your consent to process your personal information, which may
                 be express and/or implied consent depending on the applicable law, you have the right to withdraw your consent at any time.
-                You can withdraw your consent at any time by contacting us by using the contact details provided in the section{' '}
+                You can withdraw your consent at any time by contacting us by using the contact details provided in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
-                  &quot;HOW CAN YOU CONTACT US ABOUT THIS NOTICE?&quot;
-                </a>{' '}
-                below or updating your preferences.
+                  HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
+                </a>
+                &quot; below or updating your preferences.
               </p>
               <p className="mb-4">
                 However, please note that this will not affect the lawfulness of the processing before its withdrawal nor, when applicable
@@ -849,13 +850,13 @@ export default function PrivacyPage() {
               <p className="mb-4">
                 <strong>Opting out of marketing and promotional communications:</strong> You can unsubscribe from our marketing and
                 promotional communications at any time by clicking on the unsubscribe link in the emails that we send, or by contacting us
-                using the details provided in the section{' '}
+                using the details provided in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
-                  &quot;HOW CAN YOU CONTACT US ABOUT THIS NOTICE?&quot;
-                </a>{' '}
-                below. You will then be removed from the marketing lists. However, we may still communicate with you — for example, to send
-                you service-related messages that are necessary for the administration and use of your account, to respond to service
-                requests, or for other non-marketing purposes.
+                  HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
+                </a>
+                &quot; below. You will then be removed from the marketing lists. However, we may still communicate with you — for example,
+                to send you service-related messages that are necessary for the administration and use of your account, to respond to
+                service requests, or for other non-marketing purposes.
               </p>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Account Information</h3>
@@ -925,10 +926,11 @@ export default function PrivacyPage() {
               <p className="mb-4">
                 The table below shows the categories of personal information we have collected in the past twelve (12) months. The table
                 includes illustrative examples of each category and does not reflect the personal information we collect from you. For a
-                comprehensive inventory of all personal information we process, please refer to the section{' '}
+                comprehensive inventory of all personal information we process, please refer to the section &quot;
                 <a href="#infocollect" className="text-primary hover:underline">
-                  &quot;WHAT INFORMATION DO WE COLLECT?&quot;
+                  WHAT INFORMATION DO WE COLLECT?
                 </a>
+                &quot;
               </p>
               <div className="mb-4 overflow-x-auto">
                 <table className="min-w-full border-collapse border border-gray-300">
@@ -1054,28 +1056,31 @@ export default function PrivacyPage() {
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Sources of Personal Information</h3>
               <p className="mb-4">
-                Learn more about the sources of personal information we collect in{' '}
+                Learn more about the sources of personal information we collect in &quot;
                 <a href="#infocollect" className="text-primary hover:underline">
-                  &quot;WHAT INFORMATION DO WE COLLECT?&quot;
+                  WHAT INFORMATION DO WE COLLECT?
                 </a>
+                &quot;
               </p>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">How We Use and Share Personal Information</h3>
               <p className="mb-4">
-                Learn more about how we use your personal information in the section,{' '}
+                Learn more about how we use your personal information in the section, &quot;
                 <a href="#infouse" className="text-primary hover:underline">
-                  &quot;HOW DO WE PROCESS YOUR INFORMATION?&quot;
+                  HOW DO WE PROCESS YOUR INFORMATION?
                 </a>
+                &quot;
               </p>
               <p className="mb-4">
                 <strong>Will your information be shared with anyone else?</strong>
               </p>
               <p className="mb-4">
                 We may disclose your personal information with our service providers pursuant to a written contract between us and each
-                service provider. Learn more about how we disclose personal information to in the section,{' '}
+                service provider. Learn more about how we disclose personal information to in the section, &quot;
                 <a href="#whoshare" className="text-primary hover:underline">
-                  &quot;WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?&quot;
+                  WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
                 </a>
+                &quot;
               </p>
               <p className="mb-4">
                 We may use your personal information for our own business purposes, such as for undertaking internal research for
@@ -1093,10 +1098,11 @@ export default function PrivacyPage() {
               </ul>
               <p className="mb-4">
                 The categories of third parties to whom we disclosed personal information for a business or commercial purpose can be found
-                under{' '}
+                under &quot;
                 <a href="#whoshare" className="text-primary hover:underline">
-                  &quot;WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?&quot;
+                  WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
                 </a>
+                &quot;
               </p>
 
               <h3 className="mt-6 mb-3 text-xl font-semibold">Your Rights</h3>
@@ -1200,10 +1206,11 @@ export default function PrivacyPage() {
                 information (if any) we disclosed to third parties for direct marketing purposes and the names and addresses of all third
                 parties with which we shared personal information in the immediately preceding calendar year. If you are a California
                 resident and would like to make such a request, please submit your request in writing to us by using the contact details
-                provided in the section{' '}
+                provided in the section &quot;
                 <a href="#contact" className="text-primary hover:underline">
-                  &quot;HOW CAN YOU CONTACT US ABOUT THIS NOTICE?&quot;
+                  HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
                 </a>
+                &quot;
               </p>
             </section>
 
