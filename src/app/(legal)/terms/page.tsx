@@ -62,7 +62,7 @@ export default function TermsPage() {
 
             <section className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">Table of Contents</h2>
-              <ol className="list-inside list-decimal space-y-1 uppercase">
+              <ol className="list-inside list-decimal space-y-2 uppercase">
                 <li>
                   <a href="#services" className="text-primary hover:underline">
                     Our Services
@@ -351,7 +351,7 @@ export default function TermsPage() {
             <section id="purchases" className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold uppercase">5. Purchases and Payment</h2>
               <p className="mb-4">We accept the following forms of payment:</p>
-              <ul className="mb-4 ml-4 list-outside list-disc space-y-1">
+              <ul className="mb-4 ml-4 list-outside list-disc space-y-2">
                 <li>Visa</li>
                 <li>Mastercard</li>
                 <li>American Express</li>
