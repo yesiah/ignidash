@@ -506,8 +506,11 @@ export default function PrivacyPage() {
               <h3 className="my-6 font-semibold italic underline">If you are located in Canada, this section applies to you.</h3>
               <p className="mb-4">
                 We may process your information if you have given us specific permission (i.e., express consent) to use your personal
-                information for a specific purpose, or in situations where your permission can be inferred (i.e., implied consent). You can
-                withdraw your consent at any time.
+                information for a specific purpose, or in situations where your permission can be inferred (i.e., implied consent). You can{' '}
+                <a href="#withdrawconsent" className="text-primary hover:underline">
+                  withdraw your consent
+                </a>{' '}
+                at any time.
               </p>
               <p className="mb-4">
                 In some exceptional cases, we may be legally permitted under applicable law to process your information without your
