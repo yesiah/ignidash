@@ -11,7 +11,6 @@ const navigation = [
   { name: 'Learn More', href: '/#learn-more' },
   { name: 'FAQ', href: '/#faq' },
   { name: 'Pricing', href: '/pricing' },
-  { name: 'Get Started', href: '/dashboard/quick-plan' },
 ];
 
 export default function Navbar() {
