@@ -1,6 +1,7 @@
 import { CheckIcon } from '@heroicons/react/20/solid';
 
 import Footer from '@/components/layout/footer';
+import { cn } from '@/lib/utils';
 
 import Navbar from '../components/navbar';
 
@@ -36,15 +37,11 @@ const tiers = [
   },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function PricingPage() {
   return (
     <>
       <Navbar />
-      <div className="relative isolate px-6 py-24 sm:py-32 lg:px-8">
+      <div className="relative isolate min-h-dvh px-6 py-24 sm:py-32 lg:px-8">
         <div aria-hidden="true" className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl">
           <div
             style={{
@@ -68,7 +65,7 @@ export default function PricingPage() {
           {tiers.map((tier, tierIdx) => (
             <div
               key={tier.id}
-              className={classNames(
+              className={cn(
                 tier.featured
                   ? 'relative bg-stone-900 shadow-2xl dark:bg-stone-800 dark:shadow-none'
                   : 'bg-white/60 sm:mx-8 lg:mx-0 dark:bg-white/2.5',
@@ -80,38 +77,27 @@ export default function PricingPage() {
                 'rounded-3xl p-8 ring-1 ring-stone-900/10 sm:p-10 dark:ring-white/10'
               )}
             >
-              <h3 id={tier.id} className={classNames(tier.featured ? 'text-rose-400' : 'text-primary', 'text-base/7 font-semibold')}>
+              <h3 id={tier.id} className={cn(tier.featured ? 'text-rose-400' : 'text-primary', 'text-base/7 font-semibold')}>
                 {tier.name}
               </h3>
               <p className="mt-4 flex items-baseline gap-x-2">
                 <span
-                  className={classNames(
-                    tier.featured ? 'text-white' : 'text-stone-900 dark:text-white',
-                    'text-5xl font-semibold tracking-tight'
-                  )}
+                  className={cn(tier.featured ? 'text-white' : 'text-stone-900 dark:text-white', 'text-5xl font-semibold tracking-tight')}
                 >
                   {tier.priceMonthly}
                 </span>
-                <span className={classNames(tier.featured ? 'text-stone-400' : 'text-stone-500 dark:text-stone-400', 'text-base')}>
-                  /month
-                </span>
+                <span className={cn(tier.featured ? 'text-stone-400' : 'text-stone-500 dark:text-stone-400', 'text-base')}>/month</span>
               </p>
-              <p className={classNames(tier.featured ? 'text-stone-300' : 'text-stone-600 dark:text-stone-300', 'mt-6 text-base/7')}>
+              <p className={cn(tier.featured ? 'text-stone-300' : 'text-stone-600 dark:text-stone-300', 'mt-6 text-base/7')}>
                 {tier.description}
               </p>
               <ul
                 role="list"
-                className={classNames(
-                  tier.featured ? 'text-stone-300' : 'text-stone-600 dark:text-stone-300',
-                  'mt-8 space-y-3 text-sm/6 sm:mt-10'
-                )}
+                className={cn(tier.featured ? 'text-stone-300' : 'text-stone-600 dark:text-stone-300', 'mt-8 space-y-3 text-sm/6 sm:mt-10')}
               >
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-x-3">
-                    <CheckIcon
-                      aria-hidden="true"
-                      className={classNames(tier.featured ? 'text-rose-400' : 'text-primary', 'h-6 w-5 flex-none')}
-                    />
+                    <CheckIcon aria-hidden="true" className={cn(tier.featured ? 'text-rose-400' : 'text-primary', 'h-6 w-5 flex-none')} />
                     {feature}
                   </li>
                 ))}
@@ -119,7 +105,7 @@ export default function PricingPage() {
               <a
                 href={tier.href}
                 aria-describedby={tier.id}
-                className={classNames(
+                className={cn(
                   tier.featured
                     ? 'bg-rose-500 text-white shadow-xs hover:bg-rose-400 focus-visible:outline-rose-500 dark:shadow-none'
                     : 'text-rose-600 inset-ring inset-ring-rose-200 hover:inset-ring-rose-300 focus-visible:outline-rose-600 dark:bg-white/10 dark:text-white dark:inset-ring-white/5 dark:hover:bg-white/20 dark:hover:inset-ring-white/5 dark:focus-visible:outline-white/75',

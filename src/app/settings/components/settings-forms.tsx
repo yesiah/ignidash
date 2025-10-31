@@ -5,7 +5,6 @@ import { Preloaded, usePreloadedQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useConvexAuth } from 'convex/react';
 
-import Footer from '@/components/layout/footer';
 import SuccessNotification from '@/components/ui/success-notification';
 import { useSuccessNotification } from '@/hooks/use-success-notification';
 import { useAccountsList } from '@/hooks/use-accounts-data';
@@ -39,7 +38,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   if (isAccountsDataLoading || isAuthLoading || (isAuthenticated && !authData)) {
     return (
-      <main className="mx-auto h-full max-w-prose flex-1 px-4 pt-[4.25rem]">
+      <main className="mx-auto flex min-h-dvh max-w-prose items-center justify-center px-4 pt-[4.25rem]">
         <div
           role="status"
           aria-label="Loading settings"
@@ -57,17 +56,14 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   return (
     <>
-      <main className="h-full">
-        <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
-          {isAuthenticated && (
-            <ProfileInfoForm
-              userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
-              showSuccessNotification={showSuccessNotification}
-            />
-          )}
-          <DataSettingsForm showSuccessNotification={showSuccessNotification} isAuthenticated={isAuthenticated} />
-        </div>
-        <Footer />
+      <main className="mx-auto min-h-dvh max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
+        {isAuthenticated && (
+          <ProfileInfoForm
+            userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
+            showSuccessNotification={showSuccessNotification}
+          />
+        )}
+        <DataSettingsForm showSuccessNotification={showSuccessNotification} isAuthenticated={isAuthenticated} />
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>
