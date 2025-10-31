@@ -19,7 +19,14 @@ import {
   DropdownHeader,
 } from '@/components/catalyst/dropdown';
 import { Avatar } from '@/components/catalyst/avatar';
-import { Navbar as CatalystNavbar, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/catalyst/navbar';
+import {
+  Navbar as CatalystNavbar,
+  NavbarItem,
+  NavbarLabel,
+  NavbarSection,
+  NavbarSpacer,
+  NavbarDivider,
+} from '@/components/catalyst/navbar';
 import { useThemeSwitcher } from '@/hooks/use-theme-switcher';
 
 function NavbarModeToggle() {
@@ -68,6 +75,15 @@ export default function Navbar({ title }: NavbarProps) {
         </Link>
         <NavbarLabel className="text-lg font-semibold tracking-tight">{title}</NavbarLabel>
       </div>
+      <NavbarDivider className="max-lg:hidden" />
+      <NavbarSection className="max-lg:hidden">
+        <NavbarItem href="/" current>
+          Home
+        </NavbarItem>
+        <NavbarItem href="/events">Events</NavbarItem>
+        <NavbarItem href="/orders">Orders</NavbarItem>
+      </NavbarSection>
+      <NavbarSpacer />
       <NavbarSpacer />
       <NavbarSection className="px-4">
         <NavbarModeToggle />
