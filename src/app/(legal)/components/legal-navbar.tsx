@@ -54,7 +54,7 @@ export default function LegalNavbar({ title }: LegalNavbarProps) {
   };
 
   return (
-    <Navbar className="border-border/50 from-emphasized-background to-background sticky top-0 z-40 w-full border-b bg-gradient-to-r shadow-sm">
+    <Navbar className="border-border/50 from-emphasized-background to-background fixed top-0 z-40 w-full border-b bg-gradient-to-r shadow-sm">
       <div className="flex items-center gap-2 px-4">
         <Link href="/" aria-label="Home">
           <FireIcon className="text-primary size-8 shrink-0" aria-hidden="true" />

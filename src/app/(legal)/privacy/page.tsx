@@ -1,13 +1,15 @@
 import { GlobeLockIcon } from 'lucide-react';
 
+import Footer from '@/app/(marketing)/components/footer';
+
 import LegalNavbar from '../components/legal-navbar';
 
 export default function PrivacyPage() {
   return (
     <>
-      <main className="h-full overflow-y-auto">
-        <LegalNavbar title="Privacy Policy" />
-        <div className="mx-auto max-w-prose px-4 pb-[2.125rem] sm:px-6 lg:px-8">
+      <LegalNavbar title="Privacy Policy" />
+      <main className="h-full">
+        <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
           <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
             <div className="my-8">
               <div className="flex items-center gap-4">
@@ -1284,6 +1286,7 @@ export default function PrivacyPage() {
             </section>
           </article>
         </div>
+        <Footer />
       </main>
     </>
   );
