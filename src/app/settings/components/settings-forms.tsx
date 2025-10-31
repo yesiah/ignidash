@@ -3,11 +3,12 @@
 import { useMemo } from 'react';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { useConvexAuth } from 'convex/react';
 
+import Footer from '@/components/layout/footer';
 import SuccessNotification from '@/components/ui/success-notification';
 import { useSuccessNotification } from '@/hooks/use-success-notification';
 import { useAccountsList } from '@/hooks/use-accounts-data';
-import { useConvexAuth } from 'convex/react';
 
 import ProfileInfoForm from './profile-info-form';
 import DataSettingsForm from './data-settings-form';
@@ -66,6 +67,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
           )}
           <DataSettingsForm showSuccessNotification={showSuccessNotification} isAuthenticated={isAuthenticated} />
         </div>
+        <Footer />
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>
