@@ -7,7 +7,7 @@ export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto min-h-dvh max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
+      <main className="border-border/50 lg:bg-emphasized-background mx-auto min-h-dvh max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:border-x lg:px-8">
         <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
           <div className="my-8">
             <div className="flex items-center gap-4">
@@ -920,9 +920,9 @@ export default function PrivacyPage() {
               &quot;
             </p>
             <div className="mb-4 overflow-x-auto">
-              <table className="min-w-full border-collapse border border-stone-300">
+              <table className="bg-background min-w-full border-collapse border border-stone-300">
                 <thead>
-                  <tr className="bg-stone-100 dark:bg-stone-900">
+                  <tr>
                     <th className="border border-stone-300 px-4 py-2 text-left">Category</th>
                     <th className="border border-stone-300 px-4 py-2 text-left">Examples</th>
                     <th className="border border-stone-300 px-4 py-2 text-left">Collected</th>
