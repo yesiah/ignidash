@@ -2,6 +2,7 @@
 
 import type { NavigationItem } from '@/lib/navigation';
 import { SidebarModeToggle } from '@/components/mode-toggle';
+import { cn } from '@/lib/utils';
 
 import SidebarLink from './sidebar-link';
 import SidebarBrand from './sidebar-brand';
@@ -57,7 +58,7 @@ export default function MobileSidebarContent({ navigation, secondaryNavigation, 
                 <li key={item.name}>
                   <SidebarLink href={item.href} current={item.current}>
                     <div className="p-2">
-                      <item.icon aria-hidden="true" className="size-6 shrink-0" />
+                      <item.icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': item.href === '/pricing' })} />
                     </div>
                     <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{item.name}</span>
                   </SidebarLink>
