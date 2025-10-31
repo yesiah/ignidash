@@ -5,16 +5,34 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { CircleUserRoundIcon, LogInIcon, LogOutIcon, LoaderIcon, CircleQuestionMarkIcon, LayoutDashboardIcon } from 'lucide-react';
+import { CircleUserRoundIcon, LogInIcon, LogOutIcon, LoaderIcon, LayoutDashboardIcon, SettingsIcon } from 'lucide-react';
 import * as Headless from '@headlessui/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
 
 import { authClient } from '@/lib/auth-client';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownDivider, DropdownLabel, DropdownHeader } from '@/components/catalyst/dropdown';
-import { Navbar, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/catalyst/navbar';
+import { Navbar as CatalystNavbar, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/catalyst/navbar';
+import { useThemeSwitcher } from '@/hooks/use-theme-switcher';
 
-export default function SettingsNavbar() {
+function NavbarModeToggle() {
+  const themeSwitcher = useThemeSwitcher();
+  if (!themeSwitcher) return null;
+
+  const { newTheme, label, icon: Icon, setTheme } = themeSwitcher;
+
+  return (
+    <NavbarItem aria-label={label} onClick={() => setTheme(newTheme)} className="focus-outline rounded-full">
+      <Icon className="size-8" />
+    </NavbarItem>
+  );
+}
+
+interface NavbarProps {
+  title: string;
+}
+
+export default function Navbar({ title }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const user = useQuery(api.auth.getCurrentUserSafe);
@@ -36,18 +54,16 @@ export default function SettingsNavbar() {
   };
 
   return (
-    <Navbar className="border-border/50 from-emphasized-background to-background fixed top-0 z-40 w-full border-b bg-gradient-to-r shadow-sm">
+    <CatalystNavbar className="border-border/50 from-emphasized-background to-background fixed top-0 z-40 w-full border-b bg-gradient-to-r shadow-sm">
       <div className="flex items-center gap-2 px-4">
         <Link href="/" aria-label="Home">
           <FireIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
         </Link>
-        <NavbarLabel className="text-lg font-semibold tracking-tight">Settings</NavbarLabel>
+        <NavbarLabel className="text-lg font-semibold tracking-tight">{title}</NavbarLabel>
       </div>
       <NavbarSpacer />
       <NavbarSection className="px-4">
-        <NavbarItem href="/help" aria-label="Help">
-          <CircleQuestionMarkIcon className="text-muted-foreground size-8" />
-        </NavbarItem>
+        <NavbarModeToggle />
         <Dropdown>
           <Headless.MenuButton aria-label="Account options" className="focus-outline shrink-0">
             {image ? (
@@ -68,6 +84,10 @@ export default function SettingsNavbar() {
                 <LayoutDashboardIcon data-slot="icon" />
                 <DropdownLabel>Dashboard</DropdownLabel>
               </DropdownItem>
+              <DropdownItem href="/settings">
+                <SettingsIcon data-slot="icon" />
+                <DropdownLabel>Settings</DropdownLabel>
+              </DropdownItem>
               <DropdownItem href={signInUrlWithRedirect}>
                 <LogInIcon data-slot="icon" />
                 <DropdownLabel>Sign in</DropdownLabel>
@@ -85,6 +105,10 @@ export default function SettingsNavbar() {
                 <LayoutDashboardIcon data-slot="icon" />
                 <DropdownLabel>Dashboard</DropdownLabel>
               </DropdownItem>
+              <DropdownItem href="/settings">
+                <SettingsIcon data-slot="icon" />
+                <DropdownLabel>Settings</DropdownLabel>
+              </DropdownItem>
               <DropdownItem onClick={() => signOut()}>
                 <LogOutIcon data-slot="icon" />
                 <DropdownLabel>Sign out</DropdownLabel>
@@ -93,6 +117,6 @@ export default function SettingsNavbar() {
           </DropdownMenu>
         </Dropdown>
       </NavbarSection>
-    </Navbar>
+    </CatalystNavbar>
   );
 }

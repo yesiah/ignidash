@@ -1,13 +1,12 @@
 import { HandshakeIcon } from 'lucide-react';
 
+import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
-
-import LegalNavbar from '../components/legal-navbar';
 
 export default function TermsPage() {
   return (
     <>
-      <LegalNavbar title="Terms of Service" />
+      <Navbar title="Terms of Service" />
       <main className="h-full">
         <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
           <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
