@@ -7,11 +7,26 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { FireIcon } from '@heroicons/react/24/solid';
 import { Authenticated, Unauthenticated, AuthLoading } from 'convex/react';
 
+import { useThemeSwitcher } from '@/hooks/use-theme-switcher';
+
 const navigation = [
   { name: 'Features', href: '/#features' },
   { name: 'FAQ', href: '/#faq' },
   { name: 'Pricing', href: '/pricing' },
 ];
+
+function NavbarModeToggle() {
+  const themeSwitcher = useThemeSwitcher();
+  if (!themeSwitcher) return null;
+
+  const { newTheme, label, icon: Icon, setTheme } = themeSwitcher;
+
+  return (
+    <button type="button" aria-label={label} onClick={() => setTheme(newTheme)} className="focus-outline rounded-full">
+      <Icon aria-hidden="true" className="size-6 shrink-0" />
+    </button>
+  );
+}
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,7 +60,8 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden items-center gap-6 lg:flex lg:flex-1 lg:justify-end">
+          <NavbarModeToggle />
           <AuthLoading>
             <span className="text-sm/6 font-semibold">Loading...</span>
           </AuthLoading>
