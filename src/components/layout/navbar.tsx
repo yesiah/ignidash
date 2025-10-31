@@ -29,7 +29,7 @@ function NavbarModeToggle() {
   const { newTheme, label, icon: Icon, setTheme } = themeSwitcher;
 
   return (
-    <NavbarItem aria-label={label} onClick={() => setTheme(newTheme)} className="focus-outline rounded-full">
+    <NavbarItem aria-label={label} onClick={() => setTheme(newTheme)}>
       <Icon data-slot="icon" />
     </NavbarItem>
   );
@@ -72,7 +72,7 @@ export default function Navbar({ title }: NavbarProps) {
       <NavbarSection className="px-4">
         <NavbarModeToggle />
         <Dropdown>
-          <DropdownButton as={NavbarItem} aria-label="Account options" className="focus-outline">
+          <DropdownButton as={NavbarItem} aria-label="Account options">
             {image ? <Avatar src={image} square /> : <CircleUserRoundIcon data-slot="icon" />}
           </DropdownButton>
           <DropdownMenu className="z-[60] min-w-(--button-width)">
