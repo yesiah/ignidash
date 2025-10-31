@@ -38,7 +38,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   if (isAccountsDataLoading || isAuthLoading || (isAuthenticated && !authData)) {
     return (
-      <main className="mx-auto h-full max-w-prose flex-1 overflow-y-auto px-4 pt-[4.25rem]">
+      <main className="mx-auto h-full max-w-prose flex-1 px-4 pt-[4.25rem]">
         <div
           role="status"
           aria-label="Loading settings"
@@ -56,7 +56,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   return (
     <>
-      <main className="h-full overflow-y-auto">
+      <main className="h-full">
         <div className="mx-auto max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
           {isAuthenticated && (
             <ProfileInfoForm
