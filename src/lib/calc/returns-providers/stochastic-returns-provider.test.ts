@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { defaultState } from '@/lib/stores/quick-plan-store';
+import { defaultState } from '@/lib/stores/simulator-store';
 
 import { StochasticReturnsProvider } from './stochastic-returns-provider';
 import type { PhaseData } from '../v2/phase';

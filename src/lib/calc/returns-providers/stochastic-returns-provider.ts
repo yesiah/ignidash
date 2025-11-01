@@ -1,4 +1,4 @@
-import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
 import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
 import { SeededRandom } from './seeded-random';
 import type { PhaseData } from '../v2/phase';
@@ -87,7 +87,7 @@ export class StochasticReturnsProvider implements ReturnsProvider {
   private volatility: MarketVolatility;
 
   constructor(
-    private inputs: QuickPlanInputs,
+    private inputs: SimulatorInputs,
     private seed: number
   ) {
     this.rng = new SeededRandom(this.seed);

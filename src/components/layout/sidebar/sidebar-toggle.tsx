@@ -4,7 +4,7 @@ import { PanelLeftIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import { cn } from '@/lib/utils';
-import { useSidebarCollapsed, useUpdateSidebarCollapsed } from '@/lib/stores/quick-plan-store';
+import { useSidebarCollapsed, useUpdateSidebarCollapsed } from '@/lib/stores/simulator-store';
 
 interface SidebarToggleProps {
   className?: string;

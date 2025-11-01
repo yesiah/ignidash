@@ -1,6 +1,6 @@
 import { RefreshCwIcon } from 'lucide-react';
 
-import { useUpdateSimulationSeed, useSimulationStatus, useSimulationMode } from '@/lib/stores/quick-plan-store';
+import { useUpdateSimulationSeed, useSimulationStatus, useSimulationMode } from '@/lib/stores/simulator-store';
 
 export function useRegenSimulation() {
   const updateSimulationSeed = useUpdateSimulationSeed();

@@ -7,7 +7,7 @@ import { DesktopSidebar } from '@/components/layout/sidebar/desktop-sidebar';
 import MobileHeader from '@/components/layout/sidebar/mobile-header';
 import MobileSidebar from '@/components/layout/sidebar/mobile-sidebar';
 import { getNavigation, getSecondaryNavigation, getCurrentPageTitle, getCurrentPageIcon } from '@/lib/navigation';
-import { useSidebarCollapsed } from '@/lib/stores/quick-plan-store';
+import { useSidebarCollapsed } from '@/lib/stores/simulator-store';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);

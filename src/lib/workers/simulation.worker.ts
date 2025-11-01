@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink';
 
-import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
 import {
   MonteCarloSimulationEngine,
   LcgHistoricalBacktestSimulationEngine,
@@ -11,7 +11,7 @@ import type { MergeWorkerAPI } from './merge.worker';
 
 const simulationAPI = {
   async runSimulation(
-    inputs: QuickPlanInputs,
+    inputs: SimulatorInputs,
     baseSeed: number,
     numSimulations: number,
     simulationMode: 'monteCarloStochasticReturns' | 'monteCarloHistoricalReturns',

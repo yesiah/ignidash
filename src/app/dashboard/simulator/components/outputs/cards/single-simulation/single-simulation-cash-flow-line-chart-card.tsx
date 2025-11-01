@@ -1,0 +1,108 @@
+'use client';
+
+import { useMemo, useCallback } from 'react';
+
+import { useShowReferenceLines } from '@/lib/stores/simulator-store';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
+import Card from '@/components/ui/card';
+import { Select } from '@/components/catalyst/select';
+import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
+import { Subheading } from '@/components/catalyst/heading';
+
+import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/single-simulation-cash-flow-line-chart';
+
+interface SingleSimulationCashFlowLineChartCardProps {
+  onAgeSelect: (age: number) => void;
+  selectedAge: number;
+  setDataView: (view: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate') => void;
+  dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
+  setCustomDataID: (name: string) => void;
+  customDataID: string;
+  rawChartData: SingleSimulationCashFlowChartDataPoint[];
+  keyMetrics: KeyMetrics;
+  startAge: number;
+}
+
+export default function SingleSimulationCashFlowLineChartCard({
+  onAgeSelect,
+  selectedAge,
+  setDataView,
+  dataView,
+  setCustomDataID,
+  customDataID,
+  rawChartData,
+  keyMetrics,
+  startAge,
+}: SingleSimulationCashFlowLineChartCardProps) {
+  const showReferenceLines = useShowReferenceLines();
+
+  const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
+    return Array.from(new Map(items.map((item) => [item.id, { id: item.id, name: item.name }])).values());
+  }, []);
+
+  const uniqueIncomes = useMemo(
+    () => getUniqueItems(rawChartData.flatMap((dataPoint) => dataPoint.perIncomeData)),
+    [getUniqueItems, rawChartData]
+  );
+  const uniqueExpenses = useMemo(
+    () => getUniqueItems(rawChartData.flatMap((dataPoint) => dataPoint.perExpenseData)),
+    [getUniqueItems, rawChartData]
+  );
+
+  return (
+    <Card className="my-0">
+      <div className="mb-4 flex items-center justify-between">
+        <Subheading level={4}>
+          <span className="mr-2">Cash Flow</span>
+          <span className="text-muted-foreground hidden sm:inline">Time Series</span>
+        </Subheading>
+        <Select
+          className="max-w-48 sm:max-w-64"
+          id="cash-flow-data-view"
+          name="cash-flow-data-view"
+          value={dataView === 'custom' ? customDataID : dataView}
+          onChange={(e) => {
+            const isCustomSelection =
+              e.target.value !== 'net' && e.target.value !== 'incomes' && e.target.value !== 'expenses' && e.target.value !== 'savingsRate';
+            if (isCustomSelection) {
+              setDataView('custom');
+              setCustomDataID(e.target.value);
+            } else {
+              setDataView(e.target.value as 'net' | 'incomes' | 'expenses' | 'savingsRate');
+              setCustomDataID('');
+            }
+          }}
+        >
+          <option value="net">Operating Cash Flow</option>
+          <option value="incomes">Income</option>
+          <option value="expenses">Expenses</option>
+          <option value="savingsRate">Savings Rate</option>
+          <optgroup label="By Income">
+            {uniqueIncomes.map((income) => (
+              <option key={income.id} value={income.id}>
+                {income.name}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="By Expense">
+            {uniqueExpenses.map((expense) => (
+              <option key={expense.id} value={expense.id}>
+                {expense.name}
+              </option>
+            ))}
+          </optgroup>
+        </Select>
+      </div>
+      <SingleSimulationCashFlowLineChart
+        onAgeSelect={onAgeSelect}
+        selectedAge={selectedAge}
+        keyMetrics={keyMetrics}
+        showReferenceLines={showReferenceLines}
+        rawChartData={rawChartData}
+        dataView={dataView}
+        customDataID={customDataID}
+        startAge={startAge}
+      />
+    </Card>
+  );
+}

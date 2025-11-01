@@ -6,7 +6,7 @@ import {
   useUpdateQuickSelectPercentile,
   useUpdateSelectedSeedFromTable,
   useUpdateResultsCategory,
-} from '@/lib/stores/quick-plan-store';
+} from '@/lib/stores/simulator-store';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 
 export function useActiveSeed() {

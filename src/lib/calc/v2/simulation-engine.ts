@@ -1,4 +1,4 @@
-import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
 import type { TimelineInputs, RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
 
 import type { ReturnsProvider } from '../returns-providers/returns-provider';
@@ -56,7 +56,7 @@ export interface SimulationState {
 }
 
 export class FinancialSimulationEngine {
-  constructor(protected readonly inputs: QuickPlanInputs) {}
+  constructor(protected readonly inputs: SimulatorInputs) {}
 
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
     // Init context and state
@@ -253,7 +253,7 @@ export interface MultiSimulationResult {
 
 export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
   constructor(
-    inputs: QuickPlanInputs,
+    inputs: SimulatorInputs,
     private baseSeed: number
   ) {
     super(inputs);
@@ -289,7 +289,7 @@ export class MonteCarloSimulationEngine extends FinancialSimulationEngine {
 
 export class LcgHistoricalBacktestSimulationEngine extends FinancialSimulationEngine {
   constructor(
-    inputs: QuickPlanInputs,
+    inputs: SimulatorInputs,
     private baseSeed: number
   ) {
     super(inputs);

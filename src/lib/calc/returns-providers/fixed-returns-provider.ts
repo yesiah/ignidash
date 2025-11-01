@@ -1,9 +1,9 @@
-import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
 import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
 import type { PhaseData } from '../v2/phase';
 
 export class FixedReturnsProvider implements ReturnsProvider {
-  constructor(private inputs: QuickPlanInputs) {}
+  constructor(private inputs: SimulatorInputs) {}
 
   getReturns(phaseData: PhaseData | null): ReturnsWithMetadata {
     const { stockReturn, bondReturn, cashReturn, inflationRate, bondYield, stockYield } = this.inputs.marketAssumptions;

@@ -1,10 +1,10 @@
 /**
  * 🔥 Demo Input Data
  *
- * This file contains prebuilt QuickPlanInputs demos for Ignidash.
+ * This file contains prebuilt SimulatorInputs demos for Ignidash.
  *
  * To add a new demo:
- * 1. Run your app and log a QuickPlanInputs object (e.g. `console.log(JSON.stringify(inputs, null, 2))`)
+ * 1. Run your app and log a SimulatorInputs object (e.g. `console.log(JSON.stringify(inputs, null, 2))`)
  * 2. Copy the JSON output into `demo-log.json` in the project root
  * 3. Run one of the following:
  *      npm run demo demoInputsX
@@ -43,12 +43,12 @@ function formatAsTsExport(obj: unknown, name: string): string {
   // Step 3. Convert all remaining double quotes to single quotes
   json = json.replace(/"/g, `'`);
 
-  return `\n\nexport const ${name}: QuickPlanInputs = ${json};\n`;
+  return `\n\nexport const ${name}: SimulatorInputs = ${json};\n`;
 }
 
 function ensureImportHeader(content: string): string {
-  const header = `import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';\n`;
-  return content.includes('QuickPlanInputs') ? content : `${header}\n${content}`;
+  const header = `import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';\n`;
+  return content.includes('SimulatorInputs') ? content : `${header}\n${content}`;
 }
 
 function run(): void {

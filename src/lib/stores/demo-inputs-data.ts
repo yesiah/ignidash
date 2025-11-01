@@ -1,7 +1,7 @@
-import type { QuickPlanInputs } from '@/lib/schemas/quick-plan-schema';
+import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
 
 // Standard Demo Inputs
-export const demoInputs1: QuickPlanInputs = {
+export const demoInputs1: SimulatorInputs = {
   timeline: {
     id: 'demo-timeline1',
     name: 'Demo Timeline 1',
@@ -165,7 +165,7 @@ export const demoInputs1: QuickPlanInputs = {
 };
 
 // Early Retirement Demo Inputs
-export const demoInputs2: QuickPlanInputs = {
+export const demoInputs2: SimulatorInputs = {
   timeline: {
     id: 'demo-timeline2',
     name: 'Demo Timeline 2',

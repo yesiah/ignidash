@@ -12,7 +12,7 @@ export interface NavigationItem {
 export const navigationItems: Omit<NavigationItem, 'current'>[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboardIcon },
   { name: 'Portfolio', href: '/dashboard/portfolio', icon: LandmarkIcon },
-  { name: 'Simulator', href: '/dashboard/quick-plan', icon: ChartNoAxesCombinedIcon },
+  { name: 'Simulator', href: '/dashboard/simulator', icon: ChartNoAxesCombinedIcon },
   { name: 'Insights', href: '/dashboard/insights', icon: ZapIcon },
 ];
 

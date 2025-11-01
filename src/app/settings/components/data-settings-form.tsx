@@ -10,7 +10,7 @@ import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
 import { authClient } from '@/lib/auth-client';
 import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field-state';
-import { useResetStore } from '@/lib/stores/quick-plan-store';
+import { useResetStore } from '@/lib/stores/simulator-store';
 
 interface DataSettingsFormProps {
   showSuccessNotification: (title: string, desc?: string) => void;

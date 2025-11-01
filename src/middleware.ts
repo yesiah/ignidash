@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   });
 
   if (session) {
-    return NextResponse.redirect(new URL('/dashboard/quick-plan', request.url));
+    return NextResponse.redirect(new URL('/dashboard/simulator', request.url));
   }
 
   return NextResponse.next();

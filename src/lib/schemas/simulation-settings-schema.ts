@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { simulationModes } from '@/lib/stores/quick-plan-store';
+import { simulationModes } from '@/lib/stores/simulator-store';
 import { coerceNumber } from '@/lib/utils/zod-schema-helpers';
 
 export const simulationSettingsSchema = z
