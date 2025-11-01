@@ -14,7 +14,7 @@ const tiers = [
     description: 'Everything you need to plan your path to financial independence.',
     features: [
       'Create and compare unlimited scenarios',
-      'Track progress with real-time investment data',
+      'Track progress with manual data entry',
       'Estimate taxes and explore withdrawal strategies',
       'Stress-test with Monte Carlo and historical data',
     ],
@@ -25,11 +25,12 @@ const tiers = [
     id: 'tier-pro-ai',
     href: '#',
     priceMonthly: '$15',
-    description: 'Use AI planning tools to refine and accelerate your plan.',
+    description: 'Use advanced AI-powered planning tools to refine and accelerate your plan.',
     features: [
       'Everything in Pro',
       'Ask questions about your scenarios with AI chat',
-      'AI analysis of trade-offs and planning strategies',
+      'Get AI analysis of trade-offs and strategies',
+      'Track progress with real-time investment data',
       '...',
     ],
     featured: true,
