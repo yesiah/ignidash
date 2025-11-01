@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { Trash2Icon } from 'lucide-react';
 
 import Card from '@/components/ui/card';
-import { Fieldset, FieldGroup, Field, Legend, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
-import { Select } from '@/components/catalyst/select';
+import { Fieldset, FieldGroup, Field, Legend, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 import { Button } from '@/components/catalyst/button';
 import { Divider } from '@/components/catalyst/divider';
 import { authClient } from '@/lib/auth-client';
 import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field-state';
-import { useResetStore, useDataStoragePreference, useUpdateDataStoragePreference } from '@/lib/stores/quick-plan-store';
+import { useResetStore } from '@/lib/stores/quick-plan-store';
 
 interface DataSettingsFormProps {
   showSuccessNotification: (title: string, desc?: string) => void;
@@ -21,9 +20,6 @@ interface DataSettingsFormProps {
 export default function DataSettingsForm({ showSuccessNotification, isAuthenticated }: DataSettingsFormProps) {
   const [appDataAlertOpen, setAppDataAlertOpen] = useState(false);
   const [accountDeletionAlertOpen, setAccountDeletionAlertOpen] = useState(false);
-
-  const dataStoragePreference = useDataStoragePreference();
-  const updateDataStoragePreference = useUpdateDataStoragePreference();
 
   const { fieldState: deleteApplicationDataState } = useAccountSettingsFieldState();
   const deleteAppData = useResetStore();
@@ -47,23 +43,6 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
               Manage data
             </Legend>
             <FieldGroup>
-              <Field>
-                <Label htmlFor="data-storage-preference">Data Storage Preference</Label>
-                <Select
-                  id="data-storage-preference"
-                  name="data-storage-preference"
-                  value={dataStoragePreference}
-                  onChange={(e) => updateDataStoragePreference(e.target.value as 'none' | 'localStorage')}
-                >
-                  <option value="localStorage">Local Storage</option>
-                  <option value="none">None</option>
-                  <option value="cloud" disabled>
-                    Cloud Sync (coming soon!)
-                  </option>
-                </Select>
-                <Description>Save your data in the browser for next time, or keep nothing after this session ends.</Description>
-              </Field>
-              <Divider />
               <Field>
                 <Button
                   color="rose"
