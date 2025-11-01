@@ -1,6 +1,14 @@
 'use client';
 
-import { CalculatorIcon, SlidersHorizontalIcon, PresentationIcon, TrendingUpIcon, BanknoteXIcon, HourglassIcon } from 'lucide-react';
+import {
+  CalculatorIcon,
+  SlidersHorizontalIcon,
+  PresentationIcon,
+  TrendingUpIcon,
+  BanknoteXIcon,
+  HourglassIcon,
+  SparklesIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -101,13 +109,14 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           )}
           {activeSection === 'results' && (
             <div className="flex items-center gap-x-1">
-              <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
+              <IconButton icon={SparklesIcon} label="Ask AI" onClick={() => {}} surfaceColor="emphasized" />
               <IconButton
                 icon={SlidersHorizontalIcon}
                 label="Simulation Settings"
                 onClick={() => setSimulationSettingsOpen(true)}
                 surfaceColor="emphasized"
               />
+              <IconButton icon={icon} label={label} onClick={handleClick} surfaceColor="emphasized" isDisabled={isDisabled} />
             </div>
           )}
         </div>
