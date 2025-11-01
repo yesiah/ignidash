@@ -28,7 +28,7 @@ export default function HeroSection() {
             <span className="bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">Smarter.</span>
           </h1>
           <p className="mt-8 text-lg font-medium text-pretty text-stone-500 sm:text-xl/8 dark:text-stone-300">
-            AI-powered simulations to explore your financial future.
+            Explore your financial future with AI-powered simulations.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
