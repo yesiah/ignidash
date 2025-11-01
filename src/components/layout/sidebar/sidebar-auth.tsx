@@ -21,7 +21,7 @@ export default function SidebarAuth() {
     <Dropdown>
       <Headless.MenuButton
         aria-label="Account options"
-        className="hover:bg-background border-border/50 focus-visible:ring-primary flex w-full items-center border-t border-dashed py-3 pl-4 text-base/6 font-semibold focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+        className="hover:bg-background border-border/50 focus-visible:ring-primary flex w-full items-center border-t py-3 pl-4 text-base/6 font-semibold focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
         {image ? (
           <Image alt="" src={image} className="size-8 shrink-0 rounded-full" width={32} height={32} />

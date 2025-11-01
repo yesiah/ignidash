@@ -14,7 +14,7 @@ interface DesktopSidebarProps {
 export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSidebarProps) {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col group-data-[state=collapsed]/sidebar:lg:w-16">
-      <div className="bg-emphasized-background border-border/50 flex grow flex-col border-r border-dashed">
+      <div className="bg-emphasized-background border-border/50 flex grow flex-col border-r">
         <div className="px-3">
           <SidebarBrand />
         </div>
