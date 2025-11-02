@@ -7,7 +7,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { cn } from '@/lib/utils';
 
-interface DisclosureSectionContentProps {
+interface DisclosureSectionProps {
   title: string;
   icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
@@ -18,8 +18,6 @@ interface DisclosureSectionContentProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
   disclosureButtonRef: RefObject<HTMLButtonElement | null>;
   disclosureKey: string;
-  open: boolean;
-  close: (focusableElement?: HTMLElement | RefObject<HTMLElement | null> | undefined) => void;
 }
 
 function DisclosureSectionContent({
@@ -33,7 +31,10 @@ function DisclosureSectionContent({
   disclosureKey,
   open,
   close,
-}: DisclosureSectionContentProps) {
+}: DisclosureSectionProps & {
+  open: boolean;
+  close: (focusableElement?: HTMLElement | RefObject<HTMLElement | null> | undefined) => void;
+}) {
   const hasInitialized = useRef<boolean>(false);
   useEffect(() => {
     if (defaultOpen && !hasInitialized.current) {
@@ -78,46 +79,10 @@ function DisclosureSectionContent({
   );
 }
 
-interface DisclosureSectionProps {
-  title: string;
-  icon: React.ForwardRefExoticComponent<
-    React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
-  >;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-  centerPanelContent: boolean;
-  toggleDisclosure: (newDisclosure: DisclosureState) => void;
-  disclosureButtonRef: RefObject<HTMLButtonElement | null>;
-  disclosureKey: string;
-}
-
-export default function DisclosureSection({
-  title,
-  icon: Icon,
-  children,
-  defaultOpen,
-  centerPanelContent,
-  toggleDisclosure,
-  disclosureButtonRef,
-  disclosureKey,
-}: DisclosureSectionProps) {
+export default function DisclosureSection({ defaultOpen, ...props }: DisclosureSectionProps) {
   return (
     <Disclosure defaultOpen={defaultOpen}>
-      {({ open, close }) => (
-        <DisclosureSectionContent
-          title={title}
-          icon={Icon}
-          defaultOpen={defaultOpen}
-          centerPanelContent={centerPanelContent}
-          toggleDisclosure={toggleDisclosure}
-          disclosureButtonRef={disclosureButtonRef}
-          disclosureKey={disclosureKey}
-          open={open}
-          close={close}
-        >
-          {children}
-        </DisclosureSectionContent>
-      )}
+      {({ open, close }) => <DisclosureSectionContent {...props} defaultOpen={defaultOpen} open={open} close={close} />}
     </Disclosure>
   );
 }
