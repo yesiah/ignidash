@@ -36,8 +36,6 @@ export default function DisclosureSectionDataItem({
   colorClassName,
   ...otherProps
 }: DisclosureSectionDataItemProps) {
-  // const needsBgTextColor = ['bg-[var(--chart-1)]'];
-
   return (
     <li key={id} className="col-span-1 flex shadow-md dark:shadow-black/50" ref={ref} style={style}>
       <div
