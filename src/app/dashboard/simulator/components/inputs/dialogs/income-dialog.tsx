@@ -203,16 +203,12 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                 <Field>
                   <Label htmlFor="frequency">Frequency</Label>
                   <Select {...register('frequency')} id="frequency" name="frequency">
-                    <optgroup label="Single Payment">
-                      <option value="oneTime">One-time</option>
-                    </optgroup>
-                    <optgroup label="Income Schedule">
-                      <option value="yearly">Yearly</option>
-                      <option value="quarterly">Quarterly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="biweekly">Biweekly</option>
-                      <option value="weekly">Weekly</option>
-                    </optgroup>
+                    <option value="oneTime">One-time</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="biweekly">Biweekly</option>
+                    <option value="weekly">Weekly</option>
                   </Select>
                 </Field>
               </div>
