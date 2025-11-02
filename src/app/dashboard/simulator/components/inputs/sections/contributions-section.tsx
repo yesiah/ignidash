@@ -175,9 +175,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
                           setContributionRuleDialogOpen(true);
                           setSelectedContributionRuleID(id);
                         }}
-                        onDropdownClickDelete={() => {
-                          setContributionRuleToDelete({ id, name: 'Contribution ' + (index + 1) });
-                        }}
+                        onDropdownClickDelete={() => setContributionRuleToDelete({ id, name: 'Contribution ' + (index + 1) })}
                         colorClassName={COLOR_MAP[taxCategoryFromAccountType(accounts[contributionRule.accountId]?.type)]}
                       />
                     ))}
@@ -198,9 +196,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
                         setContributionRuleDialogOpen(true);
                         setSelectedContributionRuleID(activeId);
                       }}
-                      onDropdownClickDelete={() => {
-                        setContributionRuleToDelete({ id: activeId, name: 'Contribution ' + (activeIndex + 1) });
-                      }}
+                      onDropdownClickDelete={() => setContributionRuleToDelete({ id: activeId, name: 'Contribution ' + (activeIndex + 1) })}
                       colorClassName={COLOR_MAP[taxCategoryFromAccountType(accounts[activeContributionRule.accountId]?.type)]}
                     />
                   ) : null}

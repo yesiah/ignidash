@@ -11,11 +11,21 @@ import { useIncomesData, useDeleteIncome, useUpdateIncomes } from '@/lib/stores/
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
+import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
 
 import IncomeDialog from '../dialogs/income-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+
+function getIncomeDesc(income: IncomeInputs) {
+  return (
+    <>
+      <p>{`${formatNumber(income.amount, 2, '$')} ${frequencyForDisplay(income.frequency)}`}</p>
+      <p>{timeFrameForDisplay(income.timeframe.start, income.timeframe.end)}</p>
+    </>
+  );
+}
 
 interface IncomesSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -63,21 +73,14 @@ export default function IncomesSection(props: IncomesSectionProps) {
                     id={id}
                     index={index}
                     name={income.name}
-                    desc={
-                      <>
-                        <p>{`${formatNumber(income.amount, 2, '$')} ${frequencyForDisplay(income.frequency)}`}</p>
-                        <p>{timeFrameForDisplay(income.timeframe.start, income.timeframe.end)}</p>
-                      </>
-                    }
+                    desc={getIncomeDesc(income)}
                     leftAddOn={<BanknoteArrowUpIcon className="size-8" />}
                     disabled={income.disabled}
                     onDropdownClickEdit={() => {
                       setIncomeDialogOpen(true);
                       setSelectedIncomeID(id);
                     }}
-                    onDropdownClickDelete={() => {
-                      setIncomeToDelete({ id, name: income.name });
-                    }}
+                    onDropdownClickDelete={() => setIncomeToDelete({ id, name: income.name })}
                     onDropdownClickDisable={() => disableIncome(id)}
                     colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
                   />

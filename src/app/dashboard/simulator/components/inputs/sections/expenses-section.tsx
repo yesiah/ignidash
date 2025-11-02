@@ -11,11 +11,21 @@ import { useExpensesData, useDeleteExpense, useUpdateExpenses } from '@/lib/stor
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
+import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+
+function getExpenseDesc(expense: ExpenseInputs) {
+  return (
+    <>
+      <p>{`${formatNumber(expense.amount, 2, '$')} ${frequencyForDisplay(expense.frequency)}`}</p>
+      <p>{timeFrameForDisplay(expense.timeframe.start, expense.timeframe.end)}</p>
+    </>
+  );
+}
 
 interface ExpensesSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
@@ -63,21 +73,14 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
                     id={id}
                     index={index}
                     name={expense.name}
-                    desc={
-                      <>
-                        <p>{`${formatNumber(expense.amount, 2, '$')} ${frequencyForDisplay(expense.frequency)}`}</p>
-                        <p>{timeFrameForDisplay(expense.timeframe.start, expense.timeframe.end)}</p>
-                      </>
-                    }
+                    desc={getExpenseDesc(expense)}
                     leftAddOn={<BanknoteArrowDownIcon className="size-8" />}
                     disabled={expense.disabled}
                     onDropdownClickEdit={() => {
                       setExpenseDialogOpen(true);
                       setSelectedExpenseID(id);
                     }}
-                    onDropdownClickDelete={() => {
-                      setExpenseToDelete({ id, name: expense.name });
-                    }}
+                    onDropdownClickDelete={() => setExpenseToDelete({ id, name: expense.name })}
                     onDropdownClickDisable={() => disableExpense(id)}
                     colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
                   />

@@ -12,12 +12,22 @@ import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { accountTypeForDisplay, taxCategoryFromAccountType } from '@/lib/schemas/account-form-schema';
 import type { TaxCategory } from '@/lib/calc/asset';
+import type { AccountInputs } from '@/lib/schemas/account-form-schema';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
+
+function getAccountDesc(account: AccountInputs) {
+  return (
+    <p>
+      {formatNumber(account.currentValue, 2, '$')} | {accountTypeForDisplay(account.type)}
+      {account.type !== 'savings' && ` | ${account.percentBonds ? `${formatNumber(account.percentBonds, 0)}% Bonds` : 'No Bonds'}`}
+    </p>
+  );
+}
 
 const COLOR_MAP: Record<TaxCategory, string> = {
   taxable: 'bg-[var(--chart-1)]',
@@ -69,13 +79,7 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                     id={id}
                     index={index}
                     name={account.name}
-                    desc={
-                      <p>
-                        {formatNumber(account.currentValue, 2, '$')} | {accountTypeForDisplay(account.type)}
-                        {account.type !== 'savings' &&
-                          ` | ${account.percentBonds ? `${formatNumber(account.percentBonds, 0)}% Bonds` : 'No Bonds'}`}
-                      </p>
-                    }
+                    desc={getAccountDesc(account)}
                     leftAddOn={account.type === 'savings' ? <PiggyBankIcon className="size-8" /> : <TrendingUpIcon className="size-8" />}
                     onDropdownClickEdit={() => {
                       if (account.type === 'savings') {
@@ -86,9 +90,7 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                         setSelectedAccountID(id);
                       }
                     }}
-                    onDropdownClickDelete={() => {
-                      setAccountToDelete({ id, name: account.name });
-                    }}
+                    onDropdownClickDelete={() => setAccountToDelete({ id, name: account.name })}
                     colorClassName={COLOR_MAP[taxCategoryFromAccountType(account.type)]}
                   />
                 ))}
