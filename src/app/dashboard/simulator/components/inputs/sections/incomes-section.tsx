@@ -23,7 +23,7 @@ interface IncomesSectionProps {
   disclosureKey: string;
 }
 
-export default function IncomesSection({ toggleDisclosure, disclosureButtonRef, disclosureKey }: IncomesSectionProps) {
+export default function IncomesSection(props: IncomesSectionProps) {
   const [incomeDialogOpen, setIncomeDialogOpen] = useState(false);
   const [selectedIncomeID, setSelectedIncomeID] = useState<string | null>(null);
 
@@ -52,15 +52,7 @@ export default function IncomesSection({ toggleDisclosure, disclosureButtonRef, 
 
   return (
     <>
-      <DisclosureSection
-        defaultOpen
-        title="Incomes"
-        icon={BanknoteArrowUpIcon}
-        centerPanelContent={!hasIncomes}
-        toggleDisclosure={toggleDisclosure}
-        disclosureButtonRef={disclosureButtonRef}
-        disclosureKey={disclosureKey}
-      >
+      <DisclosureSection defaultOpen title="Incomes" icon={BanknoteArrowUpIcon} centerPanelContent={!hasIncomes} {...props}>
         <div className="flex h-full flex-col">
           {hasIncomes && (
             <>

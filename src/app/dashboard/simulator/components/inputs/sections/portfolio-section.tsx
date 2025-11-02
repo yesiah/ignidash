@@ -27,7 +27,7 @@ interface PortfolioSectionProps {
   disclosureKey: string;
 }
 
-export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef, disclosureKey }: PortfolioSectionProps) {
+export default function PortfolioSection(props: PortfolioSectionProps) {
   const [accountDialogOpen, setAccountDialogOpen] = useState(false);
   const [selectedAccountID, setSelectedAccountID] = useState<string | null>(null);
 
@@ -60,14 +60,7 @@ export default function PortfolioSection({ toggleDisclosure, disclosureButtonRef
 
   return (
     <>
-      <DisclosureSection
-        title="Portfolio"
-        icon={LandmarkIcon}
-        centerPanelContent={!hasAccounts}
-        toggleDisclosure={toggleDisclosure}
-        disclosureButtonRef={disclosureButtonRef}
-        disclosureKey={disclosureKey}
-      >
+      <DisclosureSection title="Portfolio" icon={LandmarkIcon} centerPanelContent={!hasAccounts} {...props}>
         <div className="flex h-full flex-col gap-2">
           {hasAccounts && (
             <>

@@ -23,7 +23,7 @@ interface ExpensesSectionProps {
   disclosureKey: string;
 }
 
-export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef, disclosureKey }: ExpensesSectionProps) {
+export default function ExpensesSection(props: ExpensesSectionProps) {
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
   const [selectedExpenseID, setSelectedExpenseID] = useState<string | null>(null);
 
@@ -52,14 +52,7 @@ export default function ExpensesSection({ toggleDisclosure, disclosureButtonRef,
 
   return (
     <>
-      <DisclosureSection
-        title="Expenses"
-        icon={BanknoteArrowDownIcon}
-        centerPanelContent={!hasExpenses}
-        toggleDisclosure={toggleDisclosure}
-        disclosureButtonRef={disclosureButtonRef}
-        disclosureKey={disclosureKey}
-      >
+      <DisclosureSection title="Expenses" icon={BanknoteArrowDownIcon} centerPanelContent={!hasExpenses} {...props}>
         <div className="flex h-full flex-col">
           {hasExpenses && (
             <>

@@ -74,7 +74,7 @@ interface ContributionsSectionProps {
   disclosureKey: string;
 }
 
-export default function ContributionsSection({ toggleDisclosure, disclosureButtonRef, disclosureKey }: ContributionsSectionProps) {
+export default function ContributionsSection(props: ContributionsSectionProps) {
   const [contributionRuleDialogOpen, setContributionRuleDialogOpen] = useState(false);
   const [selectedContributionRuleID, setSelectedContributionRuleID] = useState<string | null>(null);
   const [contributionRuleToDelete, setContributionRuleToDelete] = useState<{ id: string; name: string } | null>(null);
@@ -137,14 +137,7 @@ export default function ContributionsSection({ toggleDisclosure, disclosureButto
 
   return (
     <>
-      <DisclosureSection
-        title="Contribution Order"
-        icon={HandCoinsIcon}
-        centerPanelContent
-        toggleDisclosure={toggleDisclosure}
-        disclosureButtonRef={disclosureButtonRef}
-        disclosureKey={disclosureKey}
-      >
+      <DisclosureSection title="Contribution Order" icon={HandCoinsIcon} centerPanelContent {...props}>
         <div className="flex h-full flex-col">
           <Field>
             <Label className="sr-only">Base Rule</Label>
