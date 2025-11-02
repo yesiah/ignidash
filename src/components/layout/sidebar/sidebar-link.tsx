@@ -1,15 +1,20 @@
+'use client';
+
 import Link from 'next/link';
 
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { useSidebarCollapsed } from '@/lib/stores/simulator-store';
 import { cn } from '@/lib/utils';
 
 interface SidebarLinkProps {
   href: string;
   current: boolean;
   children: React.ReactNode;
+  tooltipLabel?: string;
 }
 
-export default function SidebarLink({ href, current, children }: SidebarLinkProps) {
-  return (
+export default function SidebarLink({ href, current, children, tooltipLabel }: SidebarLinkProps) {
+  const linkComponent = (
     <Link
       href={href}
       className={cn(
@@ -20,5 +25,15 @@ export default function SidebarLink({ href, current, children }: SidebarLinkProp
     >
       {children}
     </Link>
+  );
+
+  const isSidebarCollapsed = useSidebarCollapsed();
+  if (!(tooltipLabel && isSidebarCollapsed)) return linkComponent;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{linkComponent}</TooltipTrigger>
+      <TooltipContent side="right">{tooltipLabel}</TooltipContent>
+    </Tooltip>
   );
 }

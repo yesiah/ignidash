@@ -24,7 +24,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
               <ul role="list" className="space-y-1.5">
                 {navigation.map((item) => (
                   <li key={item.name}>
-                    <SidebarLink href={item.href} current={item.current}>
+                    <SidebarLink href={item.href} current={item.current} tooltipLabel={item.name}>
                       <div className="p-2">
                         <item.icon aria-hidden="true" className="size-6 shrink-0" />
                       </div>
@@ -55,7 +55,7 @@ export function DesktopSidebar({ navigation, secondaryNavigation }: DesktopSideb
                 </li>
                 {secondaryNavigation.map((item) => (
                   <li key={item.name}>
-                    <SidebarLink href={item.href} current={item.current}>
+                    <SidebarLink href={item.href} current={item.current} tooltipLabel={item.name}>
                       <div className="p-2">
                         <item.icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': item.href === '/pricing' })} />
                       </div>
