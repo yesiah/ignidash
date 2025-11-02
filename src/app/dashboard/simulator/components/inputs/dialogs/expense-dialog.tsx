@@ -40,13 +40,8 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
         name: 'Expense ' + (numExpenses + 1),
         id: '',
         frequency: 'yearly',
-        timeframe: {
-          start: { type: 'now' },
-          end: { type: 'atLifeExpectancy' },
-        },
-        growth: {
-          growthRate: 0,
-        },
+        timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
+        growth: { growthRate: 0 },
       }) as const satisfies Partial<ExpenseInputs>,
     [numExpenses]
   );
@@ -145,7 +140,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
   const years = Array.from({ length: 2100 - currentYear + 1 }, (_, i) => currentYear + i);
 
   const timeline = useTimelineData();
-  const currentAge = timeline?.currentAge ?? 16;
+  const currentAge = timeline?.currentAge ?? 18;
   const lifeExpectancy = timeline?.lifeExpectancy ?? 110;
 
   const ages = Array.from({ length: lifeExpectancy - currentAge + 1 }, (_, i) => currentAge + i);

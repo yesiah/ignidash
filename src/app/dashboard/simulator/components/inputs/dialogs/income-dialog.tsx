@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef, MutableRefObject, useMemo } f
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { /* CoinsIcon, */ CalendarIcon, BanknoteArrowUpIcon, TrendingUpIcon } from 'lucide-react';
+import { CalendarIcon, BanknoteArrowUpIcon, TrendingUpIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
@@ -40,13 +40,8 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
         name: 'Income ' + (numIncomes + 1),
         id: '',
         frequency: 'yearly',
-        timeframe: {
-          start: { type: 'now' },
-          end: { type: 'atRetirement' },
-        },
-        growth: {
-          growthRate: 0,
-        },
+        timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
+        growth: { growthRate: 0 },
       }) as const satisfies Partial<IncomeInputs>,
     [numIncomes]
   );
@@ -145,7 +140,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
   const years = Array.from({ length: 2100 - currentYear + 1 }, (_, i) => currentYear + i);
 
   const timeline = useTimelineData();
-  const currentAge = timeline?.currentAge ?? 16;
+  const currentAge = timeline?.currentAge ?? 18;
   const lifeExpectancy = timeline?.lifeExpectancy ?? 110;
 
   const ages = Array.from({ length: lifeExpectancy - currentAge + 1 }, (_, i) => currentAge + i);
