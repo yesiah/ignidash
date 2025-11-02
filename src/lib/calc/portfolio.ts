@@ -14,7 +14,7 @@ import { ContributionRules } from './contribution-rules';
 import type { IncomesData } from './incomes';
 import type { ExpensesData } from './expenses';
 import type { AccountDataWithReturns } from './returns';
-import { uniformLifetimeMap } from './data/rmds-table';
+import { uniformLifetimeMap } from './historical-data/rmds-table';
 
 type TransactionsBreakdown = { totalForPeriod: number; byAccount: Record<string, number> };
 

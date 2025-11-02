@@ -10,7 +10,7 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
-import { uniformLifetimeMap } from '@/lib/calc/data/rmds-table';
+import { uniformLifetimeMap } from '@/lib/calc/historical-data/rmds-table';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
 
 import TimeSeriesLegend from '../time-series-legend';
