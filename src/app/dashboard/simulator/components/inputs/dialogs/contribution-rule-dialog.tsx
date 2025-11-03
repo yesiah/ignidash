@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { HandCoinsIcon } from 'lucide-react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { HandCoinsIcon, OctagonXIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, FieldErrors } from 'react-hook-form';
 
+import type { DisclosureState } from '@/lib/types/disclosure-state';
 import {
   useUpdateContributionRules,
   useContributionRuleData,
@@ -27,7 +30,6 @@ import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
-import { Divider } from '@/components/catalyst/divider';
 import { formatNumber } from '@/lib/utils';
 
 interface ContributionRuleDialogProps {
@@ -105,6 +107,30 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
       unregister('incomeIds');
     }
   }, [contributionType, unregister, selectedAccount]);
+
+  const stopContributingAtButtonRef = useRef<HTMLButtonElement>(null);
+
+  const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
+  const toggleDisclosure = useCallback(
+    (newDisclosure: DisclosureState) => {
+      if (activeDisclosure?.open && activeDisclosure.key !== newDisclosure.key) {
+        let targetRef = undefined;
+        switch (newDisclosure.key) {
+          case 'stopAt':
+            targetRef = stopContributingAtButtonRef.current;
+            break;
+        }
+
+        activeDisclosure.close(targetRef || undefined);
+      }
+
+      setActiveDisclosure({
+        ...newDisclosure,
+        open: !newDisclosure.open,
+      });
+    },
+    [activeDisclosure]
+  );
 
   return (
     <>
@@ -206,16 +232,55 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                   </Field>
                 )}
               </div>
-              <Divider />
-              <Field>
-                <Label htmlFor="maxBalance" className="flex w-full items-center justify-between">
-                  <span className="whitespace-nowrap">Maximum Balance</span>
-                  <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                </Label>
-                <NumberInput name="maxBalance" control={control} id="maxBalance" inputMode="decimal" placeholder="$15,000" prefix="$" />
-                {errors.maxBalance && <ErrorMessage>{errors.maxBalance?.message}</ErrorMessage>}
-                <Description>Stop contributing to this account once it reaches this balance.</Description>
-              </Field>
+              <Disclosure as="div" className="border-border/50 border-t pt-4">
+                {({ open, close }) => (
+                  <>
+                    <DisclosureButton
+                      ref={stopContributingAtButtonRef}
+                      onClick={() => {
+                        if (!open) close();
+                        toggleDisclosure({ open, close, key: 'stopAt' });
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          if (!open) close();
+                          toggleDisclosure({ open, close, key: 'stopAt' });
+                        }
+                      }}
+                      className="group data-open:border-border/50 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
+                    >
+                      <div className="flex items-center gap-2">
+                        <OctagonXIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
+                        <span className="text-base/7 font-semibold">Stop Contributing At</span>
+                        <span className="hidden sm:inline">|</span>
+                        <span className="text-muted-foreground hidden truncate sm:inline">...</span>
+                      </div>
+                      <span className="text-muted-foreground ml-6 flex h-7 items-center">
+                        <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
+                        <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
+                      </span>
+                    </DisclosureButton>
+                    <DisclosurePanel className="pt-4">
+                      <Field>
+                        <Label htmlFor="maxBalance" className="flex w-full items-center justify-between">
+                          <span className="whitespace-nowrap">Maximum Balance</span>
+                          <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                        </Label>
+                        <NumberInput
+                          name="maxBalance"
+                          control={control}
+                          id="maxBalance"
+                          inputMode="decimal"
+                          placeholder="$15,000"
+                          prefix="$"
+                        />
+                        {errors.maxBalance && <ErrorMessage>{errors.maxBalance?.message}</ErrorMessage>}
+                        <Description>Stop contributing to this account once it reaches this balance.</Description>
+                      </Field>
+                    </DisclosurePanel>
+                  </>
+                )}
+              </Disclosure>
             </FieldGroup>
           </DialogBody>
         </Fieldset>
