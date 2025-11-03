@@ -13,7 +13,7 @@ interface SingleSimulationDataTableSectionProps {
 
 function SingleSimulationDataTableSection({ simulation }: SingleSimulationDataTableSectionProps) {
   return (
-    <SectionContainer showBottomBorder className="mb-8">
+    <SectionContainer showBottomBorder className="mb-0">
       <SingleSimulationDataTable simulation={simulation} />
     </SectionContainer>
   );

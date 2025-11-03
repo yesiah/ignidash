@@ -60,7 +60,7 @@ function MultiSimulationDataTableSection({
   }
 
   return (
-    <SectionContainer showBottomBorder className="mb-8">
+    <SectionContainer showBottomBorder className="mb-0">
       {!activeSeed && <TableTypeSelector currentType={currentTableType} setCurrentType={setCurrentTableType} />}
       {tableComponent}
     </SectionContainer>

@@ -24,6 +24,7 @@ import { SimulationCategory } from '@/lib/types/simulation-category';
 
 import SimulationMetrics from '../simulation-metrics';
 import MultiSimulationMainResults from './multi-simulation-main-results';
+import FooterDisclaimer from './footer-disclaimer';
 
 interface MultiSimulationResultsSharedProps {
   tableData: MultiSimulationTableRow[];
@@ -72,6 +73,7 @@ function MultiSimulationResultsForActiveSeed({
         activeSeedType={activeSeedType}
         {...sharedProps}
       />
+      <FooterDisclaimer />
     </>
   );
 }
@@ -158,6 +160,7 @@ export default function MultiSimulationResults({ simulationMode }: MultiSimulati
         <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <MultiSimulationMainResults simulationAndKeyMetrics={null} {...sharedProps} />
+      <FooterDisclaimer />
     </>
   );
 }
