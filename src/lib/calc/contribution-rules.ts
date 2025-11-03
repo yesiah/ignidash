@@ -41,7 +41,9 @@ export class ContributionRule {
   ): number {
     const currentBalance = account.getBalance();
 
-    const remainingToMaxBalance = this.contributionInput.maxBalance ? this.contributionInput.maxBalance - currentBalance : Infinity;
+    const remainingToMaxBalance = this.contributionInput.maxBalance
+      ? Math.max(0, this.contributionInput.maxBalance - currentBalance)
+      : Infinity;
     const remainingToAccountTypeContributionLimit = this.getRemainingToAccountTypeContributionLimit(account, monthlyPortfolioData, age);
     let maxContribution = Math.min(remainingToMaxBalance, remainingToContribute, remainingToAccountTypeContributionLimit);
 
