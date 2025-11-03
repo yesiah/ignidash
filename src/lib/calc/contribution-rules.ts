@@ -56,7 +56,8 @@ export class ContributionRule {
     let contributionAmount;
     switch (this.contributionInput.contributionType) {
       case 'dollarAmount':
-        contributionAmount = this.contributionInput.dollarAmount;
+        const contributionsSoFar = this.getContributionsSoFarByAccountID(monthlyPortfolioData, account.getAccountID());
+        contributionAmount = Math.max(0, this.contributionInput.dollarAmount - contributionsSoFar);
         return Math.min(contributionAmount, maxContribution);
       case 'percentRemaining':
         contributionAmount = remainingToContribute * (this.contributionInput.percentRemaining / 100);
@@ -83,14 +84,21 @@ export class ContributionRule {
     const limit = getAnnualContributionLimit(getAccountTypeLimitKey(accountType), age);
     if (!Number.isFinite(limit)) return Infinity;
 
-    const contributions = this.getContributionsSoFar(monthlyPortfolioData, accountTypeGroup);
-    return Math.max(0, limit - contributions);
+    const contributionsSoFar = this.getContributionsSoFarByAccountTypes(monthlyPortfolioData, accountTypeGroup);
+    return Math.max(0, limit - contributionsSoFar);
   }
 
-  private getContributionsSoFar(monthlyPortfolioData: PortfolioData[], accountTypes: AccountInputs['type'][]): number {
+  private getContributionsSoFarByAccountTypes(monthlyPortfolioData: PortfolioData[], accountTypes: AccountInputs['type'][]): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))
+      .reduce((sum, account) => sum + account.contributionsForPeriod, 0);
+  }
+
+  private getContributionsSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {
+    return monthlyPortfolioData
+      .flatMap((data) => Object.values(data.perAccountData))
+      .filter((account) => account.id === accountID)
       .reduce((sum, account) => sum + account.contributionsForPeriod, 0);
   }
 }
