@@ -26,6 +26,7 @@ import {
   getAnnualContributionLimit,
 } from '@/lib/schemas/inputs/contribution-form-schema';
 import { accountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
+import { maxBalanceForDisplay } from '@/lib/utils/data-display-formatters';
 import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
@@ -75,6 +76,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
 
   const contributionType = useWatch({ control, name: 'contributionType' });
   const accountId = useWatch({ control, name: 'accountId' });
+  const maxBalance = useWatch({ control, name: 'maxBalance' }) as number | undefined;
 
   const getContributionTypeColSpan = () => {
     if (contributionType === 'dollarAmount' || contributionType === 'percentRemaining') return 'col-span-1';
@@ -108,7 +110,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     }
   }, [contributionType, unregister, selectedAccount]);
 
-  const stopContributingAtButtonRef = useRef<HTMLButtonElement>(null);
+  const stopContributionsButtonRef = useRef<HTMLButtonElement>(null);
 
   const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
   const toggleDisclosure = useCallback(
@@ -116,8 +118,8 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
       if (activeDisclosure?.open && activeDisclosure.key !== newDisclosure.key) {
         let targetRef = undefined;
         switch (newDisclosure.key) {
-          case 'stopAt':
-            targetRef = stopContributingAtButtonRef.current;
+          case 'stopContributions':
+            targetRef = stopContributionsButtonRef.current;
             break;
         }
 
@@ -236,24 +238,24 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 {({ open, close }) => (
                   <>
                     <DisclosureButton
-                      ref={stopContributingAtButtonRef}
+                      ref={stopContributionsButtonRef}
                       onClick={() => {
                         if (!open) close();
-                        toggleDisclosure({ open, close, key: 'stopAt' });
+                        toggleDisclosure({ open, close, key: 'stopContributions' });
                       }}
                       onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
                           if (!open) close();
-                          toggleDisclosure({ open, close, key: 'stopAt' });
+                          toggleDisclosure({ open, close, key: 'stopContributions' });
                         }
                       }}
                       className="group data-open:border-border/50 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
                     >
                       <div className="flex items-center gap-2">
                         <OctagonXIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                        <span className="text-base/7 font-semibold">Stop Contributing At</span>
+                        <span className="text-base/7 font-semibold">Stop Contributions</span>
                         <span className="hidden sm:inline">|</span>
-                        <span className="text-muted-foreground hidden truncate sm:inline">...</span>
+                        <span className="text-muted-foreground hidden truncate sm:inline">{maxBalanceForDisplay(maxBalance)}</span>
                       </div>
                       <span className="text-muted-foreground ml-6 flex h-7 items-center">
                         <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />

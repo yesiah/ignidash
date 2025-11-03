@@ -57,3 +57,8 @@ export const frequencyForDisplay = (frequency: Frequency) => {
       return 'weekly';
   }
 };
+
+export const maxBalanceForDisplay = (maxBalance: number | undefined) => {
+  if (maxBalance === undefined) return 'Never';
+  return `At Balance of ${formatNumber(maxBalance, 0, '$')}`;
+};
