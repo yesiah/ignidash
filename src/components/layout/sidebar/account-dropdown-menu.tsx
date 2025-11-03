@@ -7,12 +7,12 @@ import { Unauthenticated, Authenticated, AuthLoading } from 'convex/react';
 import { authClient } from '@/lib/auth-client';
 import { DropdownItem, DropdownMenu, DropdownDivider, DropdownLabel, DropdownHeader } from '@/components/catalyst/dropdown';
 
-interface AccountOptionsDropdownMenuProps {
+interface AccountDropdownMenuProps {
   fetchedName: string | undefined;
   fetchedEmail: string | undefined;
 }
 
-export default function AccountOptionsDropdownMenu({ fetchedName, fetchedEmail }: AccountOptionsDropdownMenuProps) {
+export default function AccountDropdownMenu({ fetchedName, fetchedEmail }: AccountDropdownMenuProps) {
   const router = useRouter();
   const pathname = usePathname();
 

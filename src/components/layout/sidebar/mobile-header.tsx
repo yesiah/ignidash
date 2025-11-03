@@ -10,7 +10,7 @@ import * as Headless from '@headlessui/react';
 import type { NavigationItem } from '@/lib/navigation';
 import { Dropdown } from '@/components/catalyst/dropdown';
 
-import AccountOptionsDropdownMenu from './account-options-dropdown-menu';
+import AccountDropdownMenu from './account-dropdown-menu';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
@@ -43,7 +43,7 @@ export default function MobileHeader({ onMenuClick, currentPageTitle, currentPag
             <CircleUserRoundIcon className="size-8 shrink-0 rounded-full" />
           )}
         </Headless.MenuButton>
-        <AccountOptionsDropdownMenu fetchedName={name} fetchedEmail={email} />
+        <AccountDropdownMenu fetchedName={name} fetchedEmail={email} />
       </Dropdown>
     </div>
   );

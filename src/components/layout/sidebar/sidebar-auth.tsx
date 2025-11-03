@@ -8,7 +8,7 @@ import * as Headless from '@headlessui/react';
 
 import { Dropdown } from '@/components/catalyst/dropdown';
 
-import AccountOptionsDropdownMenu from './account-options-dropdown-menu';
+import AccountDropdownMenu from './account-dropdown-menu';
 
 export default function SidebarAuth() {
   const user = useQuery(api.auth.getCurrentUserSafe);
@@ -32,7 +32,7 @@ export default function SidebarAuth() {
           {name}
         </span>
       </Headless.MenuButton>
-      <AccountOptionsDropdownMenu fetchedName={name} fetchedEmail={email} />
+      <AccountDropdownMenu fetchedName={name} fetchedEmail={email} />
     </Dropdown>
   );
 }
