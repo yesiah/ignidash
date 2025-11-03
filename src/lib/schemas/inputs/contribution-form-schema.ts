@@ -9,10 +9,32 @@ export const baseContributionSchema = z.object({
 
 export type BaseContributionInputs = z.infer<typeof baseContributionSchema>;
 
-const employerMatchSchema = z.object({
-  matchRate: percentageField(0, 100, 'Employer match rate'),
-  matchSalaryCap: percentageField(0, 100, 'Employer match salary cap'),
-});
+const employerMatchSchema = z
+  .object({
+    matchRate: percentageField(0, 100, 'Employer match rate').optional(),
+    matchSalaryCap: percentageField(0, 100, 'Employer match salary cap').optional(),
+  })
+  .optional()
+  .refine(
+    (data) => {
+      if (!data || data.matchSalaryCap === undefined) return true;
+      return data.matchRate !== undefined;
+    },
+    {
+      message: 'Match % required when Salary Cap % is specified',
+      path: ['matchRate'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (!data || data.matchRate === undefined) return true;
+      return data.matchSalaryCap !== undefined;
+    },
+    {
+      message: 'Salary Cap % required when Match % is specified',
+      path: ['matchSalaryCap'],
+    }
+  );
 
 const sharedContributionSchema = z.object({
   id: z.string(),
@@ -21,7 +43,7 @@ const sharedContributionSchema = z.object({
   maxBalance: currencyFieldForbidsZero('Max balance must be greater than zero').optional(),
   incomeIds: z.array(z.string()).optional(),
   disabled: z.boolean().optional(),
-  employerMatch: employerMatchSchema.optional(),
+  employerMatch: employerMatchSchema,
 });
 
 export const contributionFormSchema = z

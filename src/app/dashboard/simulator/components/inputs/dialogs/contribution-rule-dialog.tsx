@@ -109,6 +109,10 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     if (!(selectedAccount && supportsIncomeAllocation(selectedAccount.type))) {
       unregister('incomeIds');
     }
+
+    if (!(selectedAccount && supportsEmployerMatch(selectedAccount.type))) {
+      unregister('employerMatch');
+    }
   }, [contributionType, unregister, selectedAccount]);
 
   const stopContributionsButtonRef = useRef<HTMLButtonElement>(null);
