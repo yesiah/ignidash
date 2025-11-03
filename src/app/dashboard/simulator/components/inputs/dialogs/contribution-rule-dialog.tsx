@@ -14,11 +14,7 @@ import {
   useIncomesData,
 } from '@/lib/stores/simulator-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import {
-  contributionFormSchema,
-  type ContributionInputs,
-  accountTypeRequiresIncomeForContributions,
-} from '@/lib/schemas/contribution-form-schema';
+import { contributionFormSchema, type ContributionInputs, supportsIncomeAllocation } from '@/lib/schemas/contribution-form-schema';
 import { accountTypeForDisplay } from '@/lib/schemas/account-form-schema';
 import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
@@ -91,7 +87,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
       unregister('percentRemaining');
     }
 
-    if (!(selectedAccount && accountTypeRequiresIncomeForContributions(selectedAccount.type))) {
+    if (!(selectedAccount && supportsIncomeAllocation(selectedAccount.type))) {
       unregister('incomeIds');
     }
   }, [contributionType, unregister, selectedAccount]);
@@ -122,7 +118,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                 </Select>
                 {errors.accountId && <ErrorMessage>{errors.accountId?.message}</ErrorMessage>}
               </Field>
-              {selectedAccount && accountTypeRequiresIncomeForContributions(selectedAccount.type) && (
+              {selectedAccount && supportsIncomeAllocation(selectedAccount.type) && (
                 <Field>
                   <Label htmlFor="incomeIds">With Income(s)</Label>
                   <Select {...register('incomeIds')} id="incomeIds" name="incomeIds" multiple invalid={!!errors.incomeIds}>

@@ -43,16 +43,16 @@ export const contributionFormSchema = z
 
 export type ContributionInputs = z.infer<typeof contributionFormSchema>;
 
-export const accountTypeRequiresIncomeForContributions = (type: AccountInputs['type']): boolean => {
+export const supportsIncomeAllocation = (type: AccountInputs['type']): boolean => {
   switch (type) {
     case 'savings':
-    case 'taxableBrokerage':
-    case 'hsa':
       return false;
     case 'roth401k':
     case 'rothIra':
     case '401k':
     case 'ira':
+    case 'taxableBrokerage':
+    case 'hsa':
       return true;
   }
 };
