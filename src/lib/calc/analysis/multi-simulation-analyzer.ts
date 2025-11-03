@@ -3,8 +3,8 @@ import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-d
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 import type { MonteCarloSortMode } from '@/lib/stores/simulator-store';
 
-import type { MultiSimulationResult, SimulationResult } from './simulation-engine';
-import { TableDataExtractor } from './data-extractors/table-data-extractor';
+import type { MultiSimulationResult, SimulationResult } from '../simulation-engine';
+import { TableDataExtractor } from '../data-extractors/table-data-extractor';
 
 export interface MultiSimulationAnalysis {
   success: number;

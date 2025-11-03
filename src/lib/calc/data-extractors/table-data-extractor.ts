@@ -11,7 +11,7 @@ import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/sch
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 
-import type { MultiSimulationAnalysis } from '../multi-simulation-analyzer';
+import type { MultiSimulationAnalysis } from '../analysis/multi-simulation-analyzer';
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 
 export abstract class TableDataExtractor {
