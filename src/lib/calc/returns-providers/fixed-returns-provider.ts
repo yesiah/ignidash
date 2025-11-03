@@ -1,4 +1,5 @@
-import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
+import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
+
 import { ReturnsProvider, type ReturnsWithMetadata } from './returns-provider';
 import type { PhaseData } from '../phase';
 

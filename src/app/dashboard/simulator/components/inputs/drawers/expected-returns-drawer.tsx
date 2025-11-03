@@ -10,7 +10,7 @@ import {
   useBondsRealReturn,
   useCashRealReturn,
 } from '@/lib/stores/simulator-store';
-import { type MarketAssumptionsInputs, marketAssumptionsSchema } from '@/lib/schemas/market-assumptions-schema';
+import { type MarketAssumptionsInputs, marketAssumptionsSchema } from '@/lib/schemas/inputs/market-assumptions-schema';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';

@@ -34,8 +34,8 @@ import {
   useDeleteContributionRule,
   useAccountsData,
 } from '@/lib/stores/simulator-store';
-import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
-import { accountTypeForDisplay, type AccountInputs, taxCategoryFromAccountType } from '@/lib/schemas/account-form-schema';
+import type { ContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
+import { accountTypeForDisplay, type AccountInputs, taxCategoryFromAccountType } from '@/lib/schemas/inputs/account-form-schema';
 import type { TaxCategory } from '@/lib/calc/asset';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';

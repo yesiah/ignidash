@@ -14,7 +14,7 @@ import {
   isRothAccount,
   type RothAccountType,
   type InvestmentAccountType,
-} from '@/lib/schemas/account-form-schema';
+} from '@/lib/schemas/inputs/account-form-schema';
 import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';

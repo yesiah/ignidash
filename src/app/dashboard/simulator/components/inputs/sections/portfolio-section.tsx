@@ -10,9 +10,9 @@ import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
-import { accountTypeForDisplay, taxCategoryFromAccountType } from '@/lib/schemas/account-form-schema';
+import { accountTypeForDisplay, taxCategoryFromAccountType } from '@/lib/schemas/inputs/account-form-schema';
 import type { TaxCategory } from '@/lib/calc/asset';
-import type { AccountInputs } from '@/lib/schemas/account-form-schema';
+import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';

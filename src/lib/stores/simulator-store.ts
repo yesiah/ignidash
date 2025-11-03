@@ -8,7 +8,7 @@ import { immer } from 'zustand/middleware/immer';
 import useSWR, { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
+import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 import { FinancialSimulationEngine, type SimulationResult } from '@/lib/calc/simulation-engine';
 import type { MultiSimulationAnalysis } from '@/lib/calc/multi-simulation-analyzer';
 import { FixedReturnsProvider } from '@/lib/calc/returns-providers/fixed-returns-provider';
@@ -26,14 +26,14 @@ import type {
   SingleSimulationTaxesTableRow,
   SingleSimulationContributionsTableRow,
   SingleSimulationWithdrawalsTableRow,
-} from '@/lib/schemas/single-simulation-table-schema';
-import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
-import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
-import type { AccountInputs } from '@/lib/schemas/account-form-schema';
-import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
-import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
-import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/contribution-form-schema';
-import type { MarketAssumptionsInputs } from '@/lib/schemas/market-assumptions-schema';
+} from '@/lib/schemas/tables/single-simulation-table-schema';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
+import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
+import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
+import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
+import type { TimelineInputs } from '@/lib/schemas/inputs/timeline-form-schema';
+import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
+import type { MarketAssumptionsInputs } from '@/lib/schemas/inputs/market-assumptions-schema';
 import type { SimulationSettingsInputs } from '@/lib/schemas/simulation-settings-schema';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import type {

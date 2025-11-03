@@ -1,5 +1,5 @@
 import { formatNumber } from '@/lib/utils';
-import type { TimePoint, Growth, Frequency } from '@/lib/schemas/income-expenses-shared-schemas';
+import type { TimePoint, Growth, Frequency } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
 
 export const timeFrameForDisplay = (startTimePoint: TimePoint, endTimePoint?: TimePoint) => {
   function labelFromType(tp: TimePoint) {

@@ -13,13 +13,13 @@ import {
   SIMULATION_CONTRIBUTIONS_TABLE_CONFIG,
   type SingleSimulationWithdrawalsTableRow,
   SIMULATION_WITHDRAWALS_TABLE_CONFIG,
-} from '@/lib/schemas/single-simulation-table-schema';
+} from '@/lib/schemas/tables/single-simulation-table-schema';
 import {
   type MultiSimulationTableRow,
   MULTI_SIMULATION_TABLE_CONFIG,
   type YearlyAggregateTableRow,
   YEARLY_AGGREGATE_TABLE_CONFIG,
-} from '@/lib/schemas/multi-simulation-table-schema';
+} from '@/lib/schemas/tables/multi-simulation-table-schema';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

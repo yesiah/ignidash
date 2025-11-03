@@ -2,7 +2,7 @@
 
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import SectionContainer from '@/components/ui/section-container';
-import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import type { SimulationResult } from '@/lib/calc/simulation-engine';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import { MultiSimulationChartData } from '@/lib/types/chart-data-points';

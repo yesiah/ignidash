@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink';
 
-import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
+import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 import {
   MonteCarloSimulationEngine,
   LcgHistoricalBacktestSimulationEngine,

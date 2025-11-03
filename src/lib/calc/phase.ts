@@ -1,4 +1,4 @@
-import type { TimelineInputs } from '@/lib/schemas/timeline-form-schema';
+import type { TimelineInputs } from '@/lib/schemas/inputs/timeline-form-schema';
 
 import type { SimulationState } from './simulation-engine';
 

@@ -1,5 +1,5 @@
-import type { ContributionInputs } from '@/lib/schemas/contribution-form-schema';
-import type { AccountInputs } from '@/lib/schemas/account-form-schema';
+import type { ContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
+import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 
 import type { PortfolioData } from './portfolio';
 import { Account } from './account';

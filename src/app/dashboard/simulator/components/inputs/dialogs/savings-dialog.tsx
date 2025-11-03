@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 
 import { useUpdateAccounts, useSavingsData, useAccountsData } from '@/lib/stores/simulator-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import { accountFormSchema, type AccountInputs } from '@/lib/schemas/account-form-schema';
+import { accountFormSchema, type AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';

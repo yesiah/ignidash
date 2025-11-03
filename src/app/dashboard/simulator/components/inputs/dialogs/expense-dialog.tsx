@@ -10,7 +10,7 @@ import { useForm, useWatch, Controller } from 'react-hook-form';
 
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { useUpdateExpenses, useExpenseData, useExpensesData, useTimelineData } from '@/lib/stores/simulator-store';
-import { expenseFormSchema, type ExpenseInputs } from '@/lib/schemas/expense-form-schema';
+import { expenseFormSchema, type ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 import { timeFrameForDisplay, growthForDisplay } from '@/lib/utils/data-display-formatters';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';

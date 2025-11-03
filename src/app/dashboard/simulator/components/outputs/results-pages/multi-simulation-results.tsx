@@ -15,7 +15,7 @@ import {
 } from '@/lib/stores/simulator-store';
 import SectionContainer from '@/components/ui/section-container';
 import type { SimulationResult } from '@/lib/calc/simulation-engine';
-import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import type { MultiSimulationChartData } from '@/lib/types/chart-data-points';
 import { useResultsState } from '@/hooks/use-results-state';
 import { useActiveSeed, useRemoveActiveSeed } from '@/hooks/use-active-seed';

@@ -8,7 +8,7 @@ import type {
   SingleSimulationTaxesTableRow,
   SingleSimulationContributionsTableRow,
   SingleSimulationWithdrawalsTableRow,
-} from '@/lib/schemas/single-simulation-table-schema';
+} from '@/lib/schemas/tables/single-simulation-table-schema';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 import {
   useSingleSimulationPortfolioTableData,

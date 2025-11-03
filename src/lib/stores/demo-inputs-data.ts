@@ -1,4 +1,4 @@
-import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
+import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 
 // Standard Demo Inputs
 export const demoInputs1: SimulatorInputs = {

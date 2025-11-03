@@ -11,7 +11,7 @@ import { useExpensesData, useDeleteExpense, useUpdateExpenses } from '@/lib/stor
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
-import type { ExpenseInputs } from '@/lib/schemas/expense-form-schema';
+import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';

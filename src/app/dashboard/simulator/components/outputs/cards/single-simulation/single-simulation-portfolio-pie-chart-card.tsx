@@ -8,7 +8,7 @@ import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatChartString, formatNumber } from '@/lib/utils';
 import { useAccountData } from '@/lib/stores/simulator-store';
-import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/account-form-schema';
+import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
 

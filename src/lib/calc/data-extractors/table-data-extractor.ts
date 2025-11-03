@@ -6,8 +6,8 @@ import type {
   SingleSimulationReturnsTableRow,
   SingleSimulationContributionsTableRow,
   SingleSimulationWithdrawalsTableRow,
-} from '@/lib/schemas/single-simulation-table-schema';
-import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/multi-simulation-table-schema';
+} from '@/lib/schemas/tables/single-simulation-table-schema';
+import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 

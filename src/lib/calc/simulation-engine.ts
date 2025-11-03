@@ -1,5 +1,5 @@
-import type { SimulatorInputs } from '@/lib/schemas/simulator-schema';
-import type { TimelineInputs, RetirementStrategyInputs } from '@/lib/schemas/timeline-form-schema';
+import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
+import type { TimelineInputs, RetirementStrategyInputs } from '@/lib/schemas/inputs/timeline-form-schema';
 
 import type { ReturnsProvider } from './returns-providers/returns-provider';
 import { StochasticReturnsProvider } from './returns-providers/stochastic-returns-provider';

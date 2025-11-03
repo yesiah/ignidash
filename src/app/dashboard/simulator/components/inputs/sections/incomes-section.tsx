@@ -11,7 +11,7 @@ import { useIncomesData, useDeleteIncome, useUpdateIncomes } from '@/lib/stores/
 import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
-import type { IncomeInputs } from '@/lib/schemas/income-form-schema';
+import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
 
 import IncomeDialog from '../dialogs/income-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';

@@ -1,4 +1,4 @@
-import type { AccountInputs, InvestmentAccountType } from '@/lib/schemas/account-form-schema';
+import type { AccountInputs, InvestmentAccountType } from '@/lib/schemas/inputs/account-form-schema';
 
 import type { AssetReturnRates, AssetReturnAmounts, AssetAllocation, AssetYieldRates, AssetYieldAmounts, TaxCategory } from './asset';
 

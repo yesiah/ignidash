@@ -1,4 +1,4 @@
-import type { AccountInputs } from '@/lib/schemas/account-form-schema';
+import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 
 import type { SimulationState } from './simulation-engine';
 import { ReturnsProvider } from './returns-providers/returns-provider';
