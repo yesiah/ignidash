@@ -11,7 +11,7 @@ import { useForm, useWatch, Controller } from 'react-hook-form';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { useUpdateIncomes, useIncomeData, useIncomesData, useTimelineData } from '@/lib/stores/simulator-store';
 import { incomeFormSchema, type IncomeInputs, supportsWithholding } from '@/lib/schemas/inputs/income-form-schema';
-import { timeFrameForDisplay, growthForDisplay, taxTreatmentForDisplay } from '@/lib/utils/data-display-formatters';
+import { timeFrameForDisplay, growthForDisplay, incomeTaxTreatmentForDisplay } from '@/lib/utils/data-display-formatters';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
 import { Field, Fieldset, FieldGroup, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
@@ -37,7 +37,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
         frequency: 'yearly',
         timeframe: { start: { type: 'now' }, end: { type: 'atRetirement' } },
         growth: { growthRate: 0 },
-        taxTreatment: { type: 'wage', withholding: 20 },
+        taxes: { incomeType: 'wage', withholding: 20 },
       }) as const satisfies Partial<IncomeInputs>,
     [numIncomes]
   );
@@ -73,9 +73,9 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
   const growthRate = useWatch({ control, name: 'growth.growthRate' }) as number | undefined;
   const growthLimit = useWatch({ control, name: 'growth.growthLimit' }) as number | undefined;
 
-  const taxTreatment = useWatch({ control, name: 'taxTreatment' });
-  const taxTreatmentType = taxTreatment.type;
-  const withholding = taxTreatment.withholding as number | undefined;
+  const taxes = useWatch({ control, name: 'taxes' });
+  const incomeType = taxes.incomeType;
+  const withholding = taxes.withholding as number | undefined;
 
   useEffect(() => {
     if (frequency === 'oneTime') {
@@ -110,10 +110,10 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
       unregister('timeframe.end.age');
     }
 
-    if (!supportsWithholding(taxTreatmentType)) {
-      unregister('taxTreatment.withholding', { keepDefaultValue: true });
+    if (!supportsWithholding(incomeType)) {
+      unregister('taxes.withholding', { keepDefaultValue: true });
     }
-  }, [frequency, startType, endType, unregister, taxTreatmentType]);
+  }, [frequency, startType, endType, unregister, incomeType]);
 
   const getStartColSpan = () => {
     if (startType === 'customDate') return 'col-span-2';
@@ -127,8 +127,8 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
     return 'col-span-2';
   };
 
-  const getTaxTreatmentTypeColSpan = () => {
-    if (supportsWithholding(taxTreatmentType)) return 'col-span-1';
+  const getIncomeTypeColSpan = () => {
+    if (supportsWithholding(incomeType)) return 'col-span-1';
     return 'col-span-1 sm:col-span-2';
   };
 
@@ -536,7 +536,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                         <span className="text-base/7 font-semibold">Taxes</span>
                         <span className="hidden sm:inline">|</span>
                         <span className="text-muted-foreground hidden truncate sm:inline">
-                          {taxTreatmentForDisplay(taxTreatmentType, withholding)}
+                          {incomeTaxTreatmentForDisplay(incomeType, withholding)}
                         </span>
                       </div>
                       <span className="text-muted-foreground ml-6 flex h-7 items-center">
@@ -546,26 +546,26 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                     </DisclosureButton>
                     <DisclosurePanel className="pt-4">
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Field className={getTaxTreatmentTypeColSpan()}>
-                          <Label htmlFor="taxTreatment.type">Tax Treatment</Label>
-                          <Select {...register('taxTreatment.type')} id="taxTreatment.type" name="taxTreatment.type">
+                        <Field className={getIncomeTypeColSpan()}>
+                          <Label htmlFor="taxes.incomeType">Income Type</Label>
+                          <Select {...register('taxes.incomeType')} id="taxes.incomeType" name="taxes.incomeType">
                             <option value="wage">Wage</option>
                             <option value="selfEmployment">Self-Employment</option>
                             <option value="exempt">Tax-Exempt</option>
                           </Select>
                         </Field>
-                        {supportsWithholding(taxTreatmentType) && (
+                        {supportsWithholding(incomeType) && (
                           <Field>
-                            <Label htmlFor="taxTreatment.withholding">% Withholding</Label>
+                            <Label htmlFor="taxes.withholding">% Withholding</Label>
                             <NumberInput
-                              name="taxTreatment.withholding"
+                              name="taxes.withholding"
                               control={control}
-                              id="taxTreatment.withholding"
+                              id="taxes.withholding"
                               inputMode="decimal"
                               placeholder="20%"
                               suffix="%"
                             />
-                            {errors.taxTreatment?.withholding && <ErrorMessage>{errors.taxTreatment?.withholding?.message}</ErrorMessage>}
+                            {errors.taxes?.withholding && <ErrorMessage>{errors.taxes?.withholding?.message}</ErrorMessage>}
                           </Field>
                         )}
                       </div>

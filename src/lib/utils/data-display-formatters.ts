@@ -1,6 +1,6 @@
 import { formatNumber } from '@/lib/utils';
 import type { TimePoint, Growth, Frequency } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
-import type { TaxTreatmentType } from '@/lib/schemas/inputs/income-form-schema';
+import type { IncomeType } from '@/lib/schemas/inputs/income-form-schema';
 
 export const timeFrameForDisplay = (startTimePoint: TimePoint, endTimePoint?: TimePoint) => {
   function labelFromType(tp: TimePoint) {
@@ -64,8 +64,8 @@ export const maxBalanceForDisplay = (maxBalance: number | undefined) => {
   return `At Balance of ${formatNumber(maxBalance, 0, '$')}`;
 };
 
-export const taxTreatmentForDisplay = (type: TaxTreatmentType, withholding: number | undefined) => {
-  const typeLabels: Record<TaxTreatmentType, string> = {
+export const incomeTaxTreatmentForDisplay = (type: IncomeType, withholding: number | undefined) => {
+  const typeLabels: Record<IncomeType, string> = {
     wage: 'Wage',
     selfEmployment: 'Self-Employment',
     exempt: 'Tax-Exempt',

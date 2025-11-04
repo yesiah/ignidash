@@ -4,16 +4,16 @@ import { currencyFieldForbidsZero, percentageField } from '@/lib/utils/zod-schem
 
 import { growthSchema, frequencyTimeframeSchema } from './income-expenses-shared-schemas';
 
-export type TaxTreatmentType = 'wage' | 'selfEmployment' | 'exempt';
+export type IncomeType = 'wage' | 'selfEmployment' | 'exempt';
 
-export const taxTreatmentSchema = z
+export const incomeTaxSchema = z
   .object({
-    type: z.enum(['wage', 'selfEmployment', 'exempt']),
+    incomeType: z.enum(['wage', 'selfEmployment', 'exempt']),
     withholding: percentageField(0, 50, 'Withholding').optional(),
   })
   .refine(
     (data) => {
-      if (data.type === 'wage' || data.type === 'selfEmployment') {
+      if (data.incomeType === 'wage' || data.incomeType === 'selfEmployment') {
         return data.withholding !== undefined;
       }
       return true;
@@ -30,7 +30,7 @@ export const incomeFormSchema = z
     name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
     amount: currencyFieldForbidsZero('Income cannot be negative or zero'),
     growth: growthSchema.optional(),
-    taxTreatment: taxTreatmentSchema,
+    taxes: incomeTaxSchema,
     disabled: z.boolean().optional(),
   })
   .extend(frequencyTimeframeSchema.shape)
@@ -63,8 +63,8 @@ export const incomeFormSchema = z
 
 export type IncomeInputs = z.infer<typeof incomeFormSchema>;
 
-export const supportsWithholding = (taxTreatmentType: TaxTreatmentType): boolean => {
-  switch (taxTreatmentType) {
+export const supportsWithholding = (incomeType: IncomeType): boolean => {
+  switch (incomeType) {
     case 'wage':
     case 'selfEmployment':
       return true;
