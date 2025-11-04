@@ -340,7 +340,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                 control={control}
                                 id="employerMatch.matchAmount"
                                 inputMode="decimal"
-                                placeholder="$3,000"
+                                placeholder="$5,000"
                                 prefix="$"
                               />
                               {matchAmountError && <ErrorMessage>{matchAmountError.message}</ErrorMessage>}
