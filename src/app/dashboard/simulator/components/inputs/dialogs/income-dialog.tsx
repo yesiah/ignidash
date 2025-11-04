@@ -11,7 +11,7 @@ import { useForm, useWatch, Controller } from 'react-hook-form';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { useUpdateIncomes, useIncomeData, useIncomesData, useTimelineData } from '@/lib/stores/simulator-store';
 import { incomeFormSchema, type IncomeInputs, supportsWithholding } from '@/lib/schemas/inputs/income-form-schema';
-import { timeFrameForDisplay, growthForDisplay } from '@/lib/utils/data-display-formatters';
+import { timeFrameForDisplay, growthForDisplay, taxTreatmentForDisplay } from '@/lib/utils/data-display-formatters';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
 import { Field, Fieldset, FieldGroup, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
@@ -73,7 +73,9 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
   const growthRate = useWatch({ control, name: 'growth.growthRate' }) as number | undefined;
   const growthLimit = useWatch({ control, name: 'growth.growthLimit' }) as number | undefined;
 
-  const taxTreatmentType = useWatch({ control, name: 'taxTreatment.type' });
+  const taxTreatment = useWatch({ control, name: 'taxTreatment' });
+  const taxTreatmentType = taxTreatment.type;
+  const withholding = taxTreatment.withholding as number | undefined;
 
   useEffect(() => {
     if (frequency === 'oneTime') {
@@ -533,7 +535,9 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                         <BanknoteXIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
                         <span className="text-base/7 font-semibold">Taxes</span>
                         <span className="hidden sm:inline">|</span>
-                        <span className="text-muted-foreground hidden truncate sm:inline">...</span>
+                        <span className="text-muted-foreground hidden truncate sm:inline">
+                          {taxTreatmentForDisplay(taxTreatmentType, withholding)}
+                        </span>
                       </div>
                       <span className="text-muted-foreground ml-6 flex h-7 items-center">
                         <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
