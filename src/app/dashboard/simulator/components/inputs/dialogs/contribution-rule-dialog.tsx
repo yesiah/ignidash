@@ -116,7 +116,6 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     }
   }, [contributionType, unregister, selectedAccount]);
 
-  // Contribution type errors
   const { error: dollarAmountError } = getFieldState('dollarAmount');
   const { error: percentRemainingError } = getFieldState('percentRemaining');
 
