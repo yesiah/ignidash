@@ -545,7 +545,7 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
                           )}
                         />
                         <Label>Tax-Deductible</Label>
-                        <Description>Make this expense tax-deductible, meaning it will reduce your taxable income.</Description>
+                        <Description>If marked as tax-deductible, this expense will reduce your taxable income.</Description>
                       </CheckboxField>
                     </DisclosurePanel>
                   </>
