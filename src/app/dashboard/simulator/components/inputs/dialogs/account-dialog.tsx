@@ -4,17 +4,11 @@ import { useEffect, useMemo } from 'react';
 import { TrendingUpIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { useUpdateAccounts, useInvestmentData, useAccountsData } from '@/lib/stores/simulator-store';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
-import {
-  accountFormSchema,
-  type AccountInputs,
-  isRothAccount,
-  type RothAccountType,
-  type InvestmentAccountType,
-} from '@/lib/schemas/inputs/account-form-schema';
+import { accountFormSchema, type AccountInputs, isRothAccount, type RothAccountType } from '@/lib/schemas/inputs/account-form-schema';
 import NumberInput from '@/components/ui/number-input';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Select } from '@/components/catalyst/select';
@@ -48,6 +42,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
     unregister,
     control,
     handleSubmit,
+    getFieldState,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(accountFormSchema),
@@ -89,6 +84,10 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
     if (type === 'taxableBrokerage' || type === 'roth401k' || type === 'rothIra') return 'col-span-1';
     return 'col-span-2';
   };
+
+  const { error: costBasisError } = getFieldState('costBasis');
+  const { error: contributionBasisError } = getFieldState('contributionBasis');
+  const { error: percentBondsError } = getFieldState('percentBonds');
 
   return (
     <>
@@ -154,11 +153,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                       <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                     </Label>
                     <NumberInput name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="–" prefix="$" />
-                    {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message && (
-                      <ErrorMessage>
-                        {(errors as FieldErrors<Extract<AccountInputs, { type: 'taxableBrokerage' }>>).costBasis?.message}
-                      </ErrorMessage>
-                    )}
+                    {costBasisError && <ErrorMessage>{costBasisError.message}</ErrorMessage>}
                   </Field>
                 )}
                 {isRothAccount(type) && (
@@ -175,11 +170,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                       placeholder="–"
                       prefix="$"
                     />
-                    {(errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributionBasis?.message && (
-                      <ErrorMessage>
-                        {(errors as FieldErrors<Extract<AccountInputs, { type: RothAccountType }>>).contributionBasis?.message}
-                      </ErrorMessage>
-                    )}
+                    {contributionBasisError && <ErrorMessage>{contributionBasisError.message}</ErrorMessage>}
                   </Field>
                 )}
                 <Field className="col-span-2">
@@ -196,11 +187,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                     min={0}
                     max={100}
                   />
-                  {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message && (
-                    <ErrorMessage>
-                      {(errors as FieldErrors<Extract<AccountInputs, { type: InvestmentAccountType }>>).percentBonds?.message}
-                    </ErrorMessage>
-                  )}
+                  {percentBondsError && <ErrorMessage>{percentBondsError.message}</ErrorMessage>}
                 </Field>
               </div>
             </FieldGroup>
