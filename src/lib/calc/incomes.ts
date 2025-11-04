@@ -1,7 +1,6 @@
 import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
 import type { TimePoint } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
 
-import type { ReturnsData } from './returns';
 import type { SimulationState } from './simulation-engine';
 
 export class IncomesProcessor {
@@ -12,12 +11,10 @@ export class IncomesProcessor {
     private incomes: Incomes
   ) {}
 
-  process(returnsData: ReturnsData): IncomesData {
+  process(): IncomesData {
     const activeIncomes = this.incomes.getActiveIncomesByTimeFrame(this.simulationState);
 
-    const processedIncomes = activeIncomes.map((income) =>
-      income.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year)
-    );
+    const processedIncomes = activeIncomes.map((income) => income.processMonthlyAmount(this.simulationState.time.year));
 
     const totals = processedIncomes.reduce(
       (acc, curr) => {
@@ -120,7 +117,7 @@ export class Income {
     this.withholdingRate = data.taxes.withholding ?? 0;
   }
 
-  processMonthlyAmount(inflationRate: number, year: number): IncomeData {
+  processMonthlyAmount(year: number): IncomeData {
     const rawAmount = this.amount;
 
     const timesToApplyPerYear = this.getTimesToApplyPerYear();

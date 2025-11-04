@@ -87,9 +87,9 @@ export class FinancialSimulationEngine {
       if (simulationState.time.age >= 73 && simulationState.time.month % 12 === 1) portfolioProcessor.processRequiredMinimumDistributions();
 
       // Process one month of simulation
-      const returnsData = returnsProcessor.process();
-      const incomesData = incomesProcessor.process(returnsData);
-      const expensesData = expensesProcessor.process(returnsData);
+      returnsProcessor.process();
+      const incomesData = incomesProcessor.process();
+      const expensesData = expensesProcessor.process();
 
       const { discretionaryExpense: monthlyDiscretionaryExpense } = portfolioProcessor.processCashFlows(incomesData, expensesData);
       if (monthlyDiscretionaryExpense) expensesProcessor.processDiscretionaryExpense(monthlyDiscretionaryExpense);

@@ -1,7 +1,6 @@
 import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 import type { TimePoint } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
 
-import type { ReturnsData } from './returns';
 import type { SimulationState } from './simulation-engine';
 
 export class ExpensesProcessor {
@@ -12,12 +11,10 @@ export class ExpensesProcessor {
     private expenses: Expenses
   ) {}
 
-  process(returnsData: ReturnsData): ExpensesData {
+  process(): ExpensesData {
     const activeExpenses = this.expenses.getActiveExpensesByTimeFrame(this.simulationState);
 
-    const processedExpenses = activeExpenses.map((expense) =>
-      expense.processMonthlyAmount(returnsData.annualInflationRate, this.simulationState.time.year)
-    );
+    const processedExpenses = activeExpenses.map((expense) => expense.processMonthlyAmount(this.simulationState.time.year));
 
     const totalExpenses = processedExpenses.reduce((sum, expense) => {
       return sum + expense.amount;
@@ -128,7 +125,7 @@ export class Expense {
     this.frequency = data.frequency;
   }
 
-  processMonthlyAmount(inflationRate: number, year: number): ExpenseData {
+  processMonthlyAmount(year: number): ExpenseData {
     const rawAmount = this.amount;
 
     const timesToApplyPerYear = this.getTimesToApplyPerYear();
