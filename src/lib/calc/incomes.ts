@@ -95,8 +95,6 @@ export interface IncomeData {
 }
 
 export class Income {
-  static readonly WITHHOLDING_TAX_RATE = 0.2;
-
   private hasOneTimeIncomeOccurred: boolean;
   private id: string;
   private name: string;
@@ -107,6 +105,7 @@ export class Income {
   private timeFrameEnd: TimePoint | undefined;
   private frequency: 'yearly' | 'oneTime' | 'quarterly' | 'monthly' | 'biweekly' | 'weekly';
   private lastYear: number = 0;
+  private withholdingRate: number;
 
   constructor(data: IncomeInputs) {
     this.hasOneTimeIncomeOccurred = false;
@@ -118,6 +117,7 @@ export class Income {
     this.timeFrameStart = data.timeframe.start;
     this.timeFrameEnd = data.timeframe.end;
     this.frequency = data.frequency;
+    this.withholdingRate = data.taxes.withholding ?? 0;
   }
 
   processMonthlyAmount(inflationRate: number, year: number): IncomeData {
@@ -149,7 +149,7 @@ export class Income {
     if (timesToApplyPerYear === 0) return { id: this.id, name: this.name, grossIncome: 0, amountWithheld: 0, incomeAfterWithholding: 0 };
 
     const grossIncome = Math.max((annualAmount / timesToApplyPerYear) * timesToApplyPerMonth, 0);
-    const amountWithheld = grossIncome * Income.WITHHOLDING_TAX_RATE;
+    const amountWithheld = grossIncome * (this.withholdingRate / 100);
     const incomeAfterWithholding = grossIncome - amountWithheld;
 
     if (this.frequency === 'oneTime') this.hasOneTimeIncomeOccurred = true;
