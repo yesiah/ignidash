@@ -319,7 +319,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                 {matchRateError && <ErrorMessage>{matchRateError.message}</ErrorMessage>}
                               </Field>
                               <Field>
-                                <Label htmlFor="employerMatch.percentSalary">Up to Salary %</Label>
+                                <Label htmlFor="employerMatch.percentSalary">Up to % Salary</Label>
                                 <NumberInput
                                   name="employerMatch.percentSalary"
                                   control={control}
