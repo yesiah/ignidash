@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch, FieldErrors } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import {
@@ -62,6 +62,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     unregister,
     control,
     handleSubmit,
+    getFieldState,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(contributionFormSchema),
@@ -147,6 +148,15 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     [activeDisclosure]
   );
 
+  // Contribution type errors
+  const { error: dollarAmountError } = getFieldState('dollarAmount');
+  const { error: percentRemainingError } = getFieldState('percentRemaining');
+
+  // Employer match errors
+  const { error: percentMatchError } = getFieldState('employerMatch.percentMatch');
+  const { error: percentSalaryError } = getFieldState('employerMatch.percentSalary');
+  const { error: fixedDollarError } = getFieldState('employerMatch.fixedDollar');
+
   return (
     <>
       <DialogTitle onClose={onClose}>
@@ -216,11 +226,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       prefix="$"
                       autoFocus={selectedContributionRuleID !== null}
                     />
-                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).dollarAmount?.message && (
-                      <ErrorMessage>
-                        {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'dollarAmount' }>>).dollarAmount?.message}
-                      </ErrorMessage>
-                    )}
+                    {dollarAmountError && <ErrorMessage>{dollarAmountError.message}</ErrorMessage>}
                   </Field>
                 )}
                 {contributionType === 'percentRemaining' && (
@@ -235,15 +241,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       suffix="%"
                       autoFocus={selectedContributionRuleID !== null}
                     />
-                    {(errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).percentRemaining
-                      ?.message && (
-                      <ErrorMessage>
-                        {
-                          (errors as FieldErrors<Extract<ContributionInputs, { contributionType: 'percentRemaining' }>>).percentRemaining
-                            ?.message
-                        }
-                      </ErrorMessage>
-                    )}
+                    {percentRemainingError && <ErrorMessage>{percentRemainingError.message}</ErrorMessage>}
                   </Field>
                 )}
               </div>
@@ -309,21 +307,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                   placeholder="50%"
                                   suffix="%"
                                 />
-                                {(
-                                  errors.employerMatch as FieldErrors<
-                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
-                                  >
-                                )?.percentMatch?.message && (
-                                  <ErrorMessage>
-                                    {
-                                      (
-                                        errors.employerMatch as FieldErrors<
-                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
-                                        >
-                                      ).percentMatch?.message
-                                    }
-                                  </ErrorMessage>
-                                )}
+                                {percentMatchError && <ErrorMessage>{percentMatchError.message}</ErrorMessage>}
                               </Field>
                               <Field>
                                 <Label htmlFor="employerMatch.percentSalary">% of Salary</Label>
@@ -335,21 +319,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                   placeholder="6%"
                                   suffix="%"
                                 />
-                                {(
-                                  errors.employerMatch as FieldErrors<
-                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
-                                  >
-                                )?.percentSalary?.message && (
-                                  <ErrorMessage>
-                                    {
-                                      (
-                                        errors.employerMatch as FieldErrors<
-                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
-                                        >
-                                      ).percentSalary?.message
-                                    }
-                                  </ErrorMessage>
-                                )}
+                                {percentSalaryError && <ErrorMessage>{percentSalaryError.message}</ErrorMessage>}
                               </Field>
                             </>
                           )}
@@ -364,21 +334,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                 placeholder="$3,000"
                                 prefix="$"
                               />
-                              {(
-                                errors.employerMatch as FieldErrors<
-                                  Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'fixedDollar' }>
-                                >
-                              )?.fixedDollar?.message && (
-                                <ErrorMessage>
-                                  {
-                                    (
-                                      errors.employerMatch as FieldErrors<
-                                        Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'fixedDollar' }>
-                                      >
-                                    ).fixedDollar?.message
-                                  }
-                                </ErrorMessage>
-                              )}
+                              {fixedDollarError && <ErrorMessage>{fixedDollarError.message}</ErrorMessage>}
                             </Field>
                           )}
                         </div>
