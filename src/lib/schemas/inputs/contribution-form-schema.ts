@@ -10,17 +10,17 @@ export const baseContributionSchema = z.object({
 export type BaseContributionInputs = z.infer<typeof baseContributionSchema>;
 
 const employerMatchSchema = z
-  .discriminatedUnion('type', [
+  .discriminatedUnion('matchType', [
     z.object({
-      type: z.literal('none'),
+      matchType: z.literal('none'),
     }),
     z.object({
-      type: z.literal('percentSalary'),
+      matchType: z.literal('percentSalary'),
       percentMatch: percentageField(0, 100, '% Match'),
       percentSalary: percentageField(0, 25, '% of Salary'),
     }),
     z.object({
-      type: z.literal('fixedDollar'),
+      matchType: z.literal('fixedDollar'),
       fixedDollar: currencyFieldForbidsZero('Fixed dollar must be greater than zero'),
     }),
   ])

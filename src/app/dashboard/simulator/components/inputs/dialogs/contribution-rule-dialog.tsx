@@ -77,7 +77,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
 
   const contributionType = useWatch({ control, name: 'contributionType' });
   const accountId = useWatch({ control, name: 'accountId' });
-  const matchType = useWatch({ control, name: 'employerMatch.type' });
+  const matchType = useWatch({ control, name: 'employerMatch.matchType' });
 
   const getContributionTypeColSpan = () => {
     if (contributionType === 'dollarAmount' || contributionType === 'percentRemaining') return 'col-span-1';
@@ -290,8 +290,8 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       <DisclosurePanel className="pt-4">
                         <div className="grid grid-cols-2 gap-4">
                           <Field className="col-span-2">
-                            <Label htmlFor="employerMatch.type">Match Type</Label>
-                            <Select {...register('employerMatch.type')} id="employerMatch.type" name="employerMatch.type">
+                            <Label htmlFor="employerMatch.matchType">Match Type</Label>
+                            <Select {...register('employerMatch.matchType')} id="employerMatch.matchType" name="employerMatch.matchType">
                               <option value="none">None</option>
                               <option value="percentSalary">% of Salary</option>
                               <option value="fixedDollar">Fixed Dollar</option>
@@ -311,14 +311,14 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                 />
                                 {(
                                   errors.employerMatch as FieldErrors<
-                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'percentSalary' }>
+                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
                                   >
                                 )?.percentMatch?.message && (
                                   <ErrorMessage>
                                     {
                                       (
                                         errors.employerMatch as FieldErrors<
-                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'percentSalary' }>
+                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
                                         >
                                       ).percentMatch?.message
                                     }
@@ -337,14 +337,14 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                                 />
                                 {(
                                   errors.employerMatch as FieldErrors<
-                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'percentSalary' }>
+                                    Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
                                   >
                                 )?.percentSalary?.message && (
                                   <ErrorMessage>
                                     {
                                       (
                                         errors.employerMatch as FieldErrors<
-                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'percentSalary' }>
+                                          Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'percentSalary' }>
                                         >
                                       ).percentSalary?.message
                                     }
@@ -366,14 +366,14 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                               />
                               {(
                                 errors.employerMatch as FieldErrors<
-                                  Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'fixedDollar' }>
+                                  Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'fixedDollar' }>
                                 >
                               )?.fixedDollar?.message && (
                                 <ErrorMessage>
                                   {
                                     (
                                       errors.employerMatch as FieldErrors<
-                                        Extract<NonNullable<ContributionInputs['employerMatch']>, { type: 'fixedDollar' }>
+                                        Extract<NonNullable<ContributionInputs['employerMatch']>, { matchType: 'fixedDollar' }>
                                       >
                                     ).fixedDollar?.message
                                   }
