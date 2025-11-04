@@ -9,23 +9,6 @@ export const baseContributionSchema = z.object({
 
 export type BaseContributionInputs = z.infer<typeof baseContributionSchema>;
 
-const employerMatchSchema = z
-  .discriminatedUnion('matchType', [
-    z.object({
-      matchType: z.literal('none'),
-    }),
-    z.object({
-      matchType: z.literal('rate'),
-      matchRate: percentageField(0, 100, 'Match rate'),
-      percentSalary: percentageField(0, 25, 'Percentage of salary'),
-    }),
-    z.object({
-      matchType: z.literal('amount'),
-      matchAmount: currencyFieldForbidsZero('Match amount must be greater than zero'),
-    }),
-  ])
-  .optional();
-
 const sharedContributionSchema = z.object({
   id: z.string(),
   accountId: z.string(),
@@ -33,7 +16,6 @@ const sharedContributionSchema = z.object({
   maxBalance: currencyFieldForbidsZero('Max balance must be greater than zero').optional(),
   incomeIds: z.array(z.string()).optional(),
   disabled: z.boolean().optional(),
-  employerMatch: employerMatchSchema,
 });
 
 export const contributionFormSchema = z

@@ -1,14 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { HandCoinsIcon, GiftIcon } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { HandCoinsIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { DisclosureState } from '@/lib/types/disclosure-state';
 import {
   useUpdateContributionRules,
   useContributionRuleData,
@@ -23,7 +20,6 @@ import {
   type ContributionInputs,
   supportsMaxBalance,
   supportsIncomeAllocation,
-  supportsEmployerMatch,
   getAccountTypeLimitKey,
   getAnnualContributionLimit,
 } from '@/lib/schemas/inputs/contribution-form-schema';
@@ -78,7 +74,6 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
 
   const contributionType = useWatch({ control, name: 'contributionType' });
   const accountId = useWatch({ control, name: 'accountId' });
-  const matchType = useWatch({ control, name: 'employerMatch.matchType' });
 
   const getContributionTypeColSpan = () => {
     if (contributionType === 'dollarAmount' || contributionType === 'percentRemaining') return 'col-span-1';
@@ -114,57 +109,11 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     if (!(selectedAccount && supportsIncomeAllocation(selectedAccount.type))) {
       unregister('incomeIds');
     }
-
-    if (!(selectedAccount && supportsEmployerMatch(selectedAccount.type))) {
-      unregister('employerMatch');
-    }
-
-    if (!(matchType === 'rate')) {
-      unregister('employerMatch.matchRate');
-      unregister('employerMatch.percentSalary');
-    }
-
-    if (!(matchType === 'amount')) {
-      unregister('employerMatch.matchAmount');
-    }
-  }, [contributionType, unregister, selectedAccount, matchType]);
-
-  const stopContributionsButtonRef = useRef<HTMLButtonElement>(null);
-  const employerMatchButtonRef = useRef<HTMLButtonElement>(null);
-
-  const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
-  const toggleDisclosure = useCallback(
-    (newDisclosure: DisclosureState) => {
-      if (activeDisclosure?.open && activeDisclosure.key !== newDisclosure.key) {
-        let targetRef = undefined;
-        switch (newDisclosure.key) {
-          case 'stopContributions':
-            targetRef = stopContributionsButtonRef.current;
-            break;
-          case 'employerMatch':
-            targetRef = employerMatchButtonRef.current;
-            break;
-        }
-
-        activeDisclosure.close(targetRef || undefined);
-      }
-
-      setActiveDisclosure({
-        ...newDisclosure,
-        open: !newDisclosure.open,
-      });
-    },
-    [activeDisclosure]
-  );
+  }, [contributionType, unregister, selectedAccount]);
 
   // Contribution type errors
   const { error: dollarAmountError } = getFieldState('dollarAmount');
   const { error: percentRemainingError } = getFieldState('percentRemaining');
-
-  // Employer match errors
-  const { error: matchRateError } = getFieldState('employerMatch.matchRate');
-  const { error: percentSalaryError } = getFieldState('employerMatch.percentSalary');
-  const { error: matchAmountError } = getFieldState('employerMatch.matchAmount');
 
   return (
     <>
@@ -264,109 +213,6 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                   {errors.maxBalance && <ErrorMessage>{errors.maxBalance?.message}</ErrorMessage>}
                   <Description>Stop contributing to this account once it reaches this balance.</Description>
                 </Field>
-              )}
-              {selectedAccount && supportsEmployerMatch(selectedAccount.type) && (
-                <Disclosure as="div" className="border-border/50 border-t pt-4">
-                  {({ open, close }) => (
-                    <>
-                      <DisclosureButton
-                        ref={employerMatchButtonRef}
-                        onClick={() => {
-                          if (!open) close();
-                          toggleDisclosure({ open, close, key: 'employerMatch' });
-                        }}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            if (!open) close();
-                            toggleDisclosure({ open, close, key: 'employerMatch' });
-                          }
-                        }}
-                        className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
-                      >
-                        <div className="flex items-center gap-2">
-                          <GiftIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                          <span className="text-base/7 font-semibold">Employer Match</span>
-                          <span className="hidden sm:inline">|</span>
-                          <span className="text-muted-foreground hidden truncate sm:inline">...</span>
-                        </div>
-                        <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                          <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                          <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                        </span>
-                      </DisclosureButton>
-                      <DisclosurePanel className="pt-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <Field className="col-span-2">
-                            <Label htmlFor="employerMatch.matchType">Match Type</Label>
-                            <Select {...register('employerMatch.matchType')} id="employerMatch.matchType" name="employerMatch.matchType">
-                              <option value="none">No Match</option>
-                              <option value="rate">% Match</option>
-                              <option value="amount">Fixed Amount</option>
-                            </Select>
-                          </Field>
-                          {matchType === 'rate' && (
-                            <>
-                              <Field>
-                                <Label htmlFor="employerMatch.matchRate">Match Rate</Label>
-                                <NumberInput
-                                  name="employerMatch.matchRate"
-                                  control={control}
-                                  id="employerMatch.matchRate"
-                                  inputMode="decimal"
-                                  placeholder="50%"
-                                  suffix="%"
-                                />
-                                {matchRateError && <ErrorMessage>{matchRateError.message}</ErrorMessage>}
-                              </Field>
-                              <Field>
-                                <Label htmlFor="employerMatch.percentSalary">Up to % Salary</Label>
-                                <NumberInput
-                                  name="employerMatch.percentSalary"
-                                  control={control}
-                                  id="employerMatch.percentSalary"
-                                  inputMode="decimal"
-                                  placeholder="6%"
-                                  suffix="%"
-                                />
-                                {percentSalaryError && <ErrorMessage>{percentSalaryError.message}</ErrorMessage>}
-                              </Field>
-                              <p className="col-span-2 -mt-2 text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400">
-                                Employer matches a percentage of your contributions, up to a certain percentage of your salary.{' '}
-                                <a
-                                  href="https://www.investopedia.com/articles/personal-finance/112315/how-401k-matching-works.asp#toc-examples-of-401k-matching-schemes"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-primary hidden whitespace-nowrap hover:underline sm:inline"
-                                >
-                                  Learn more →
-                                </a>
-                              </p>
-                            </>
-                          )}
-                          {matchType === 'amount' && (
-                            <>
-                              <Field className="col-span-2">
-                                <Label htmlFor="employerMatch.matchAmount">Match Amount</Label>
-                                <NumberInput
-                                  name="employerMatch.matchAmount"
-                                  control={control}
-                                  id="employerMatch.matchAmount"
-                                  inputMode="decimal"
-                                  placeholder="$5,000"
-                                  prefix="$"
-                                />
-                                {matchAmountError && <ErrorMessage>{matchAmountError.message}</ErrorMessage>}
-                              </Field>
-                              <p className="col-span-2 -mt-2 text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400">
-                                Employer contributes a fixed dollar amount annually regardless of your contribution level.
-                              </p>
-                            </>
-                          )}
-                        </div>
-                      </DisclosurePanel>
-                    </>
-                  )}
-                </Disclosure>
               )}
             </FieldGroup>
           </DialogBody>
