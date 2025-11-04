@@ -118,7 +118,16 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     if (!(selectedAccount && supportsEmployerMatch(selectedAccount.type))) {
       unregister('employerMatch');
     }
-  }, [contributionType, unregister, selectedAccount]);
+
+    if (!(matchType === 'rate')) {
+      unregister('employerMatch.matchRate');
+      unregister('employerMatch.percentSalary');
+    }
+
+    if (!(matchType === 'amount')) {
+      unregister('employerMatch.matchAmount');
+    }
+  }, [contributionType, unregister, selectedAccount, matchType]);
 
   const stopContributionsButtonRef = useRef<HTMLButtonElement>(null);
   const employerMatchButtonRef = useRef<HTMLButtonElement>(null);
@@ -153,9 +162,9 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
   const { error: percentRemainingError } = getFieldState('percentRemaining');
 
   // Employer match errors
-  const { error: percentMatchError } = getFieldState('employerMatch.percentMatch');
+  const { error: matchRateError } = getFieldState('employerMatch.matchRate');
   const { error: percentSalaryError } = getFieldState('employerMatch.percentSalary');
-  const { error: fixedDollarError } = getFieldState('employerMatch.fixedDollar');
+  const { error: matchAmountError } = getFieldState('employerMatch.matchAmount');
 
   return (
     <>
@@ -291,26 +300,26 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                             <Label htmlFor="employerMatch.matchType">Match Type</Label>
                             <Select {...register('employerMatch.matchType')} id="employerMatch.matchType" name="employerMatch.matchType">
                               <option value="none">None</option>
-                              <option value="percentSalary">% of Salary</option>
-                              <option value="fixedDollar">Fixed Dollar</option>
+                              <option value="rate">Match by Rate</option>
+                              <option value="amount">Match by Amount</option>
                             </Select>
                           </Field>
-                          {matchType === 'percentSalary' && (
+                          {matchType === 'rate' && (
                             <>
                               <Field>
-                                <Label htmlFor="employerMatch.percentMatch">% Match</Label>
+                                <Label htmlFor="employerMatch.matchRate">Match Rate</Label>
                                 <NumberInput
-                                  name="employerMatch.percentMatch"
+                                  name="employerMatch.matchRate"
                                   control={control}
-                                  id="employerMatch.percentMatch"
+                                  id="employerMatch.matchRate"
                                   inputMode="decimal"
                                   placeholder="50%"
                                   suffix="%"
                                 />
-                                {percentMatchError && <ErrorMessage>{percentMatchError.message}</ErrorMessage>}
+                                {matchRateError && <ErrorMessage>{matchRateError.message}</ErrorMessage>}
                               </Field>
                               <Field>
-                                <Label htmlFor="employerMatch.percentSalary">% of Salary</Label>
+                                <Label htmlFor="employerMatch.percentSalary">Up to % of Salary</Label>
                                 <NumberInput
                                   name="employerMatch.percentSalary"
                                   control={control}
@@ -323,18 +332,18 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                               </Field>
                             </>
                           )}
-                          {matchType === 'fixedDollar' && (
+                          {matchType === 'amount' && (
                             <Field className="col-span-2">
-                              <Label htmlFor="employerMatch.fixedDollar">Fixed Dollar</Label>
+                              <Label htmlFor="employerMatch.matchAmount">Match Amount</Label>
                               <NumberInput
-                                name="employerMatch.fixedDollar"
+                                name="employerMatch.matchAmount"
                                 control={control}
-                                id="employerMatch.fixedDollar"
+                                id="employerMatch.matchAmount"
                                 inputMode="decimal"
                                 placeholder="$3,000"
                                 prefix="$"
                               />
-                              {fixedDollarError && <ErrorMessage>{fixedDollarError.message}</ErrorMessage>}
+                              {matchAmountError && <ErrorMessage>{matchAmountError.message}</ErrorMessage>}
                             </Field>
                           )}
                         </div>
