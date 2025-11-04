@@ -105,7 +105,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
     }
 
     if (!supportsWithholding(taxTreatmentType)) {
-      unregister('taxTreatment.withholding');
+      unregister('taxTreatment.withholding', { keepDefaultValue: true });
     }
   }, [frequency, startType, endType, unregister, taxTreatmentType]);
 
