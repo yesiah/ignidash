@@ -550,8 +550,10 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                           <Label htmlFor="taxes.incomeType">Income Type</Label>
                           <Select {...register('taxes.incomeType')} id="taxes.incomeType" name="taxes.incomeType">
                             <option value="wage">Wages & Salary (W-2)</option>
-                            <option value="selfEmployment">Self-Employment (1099)</option>
                             <option value="exempt">Tax-Exempt (gifts, inheritances, etc.)</option>
+                            <option value="selfEmployment" disabled>
+                              Self-Employment (1099) (coming soon!)
+                            </option>
                           </Select>
                         </Field>
                         {supportsWithholding(incomeType) && (
