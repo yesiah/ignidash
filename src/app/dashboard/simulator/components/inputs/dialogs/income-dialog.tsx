@@ -554,6 +554,12 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
                             <option value="selfEmployment" disabled>
                               Self-Employment (1099) (coming soon!)
                             </option>
+                            <option value="socialSecurity" disabled>
+                              Social Security (coming soon!)
+                            </option>
+                            <option value="pension" disabled>
+                              Pension (coming soon!)
+                            </option>
                           </Select>
                         </Field>
                         {supportsWithholding(incomeType) && (
