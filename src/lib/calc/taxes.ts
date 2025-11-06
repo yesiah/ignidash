@@ -2,6 +2,7 @@ import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 
 import type { SimulationState } from './simulation-engine';
 import type { IncomesData } from './incomes';
+import type { ExpensesData } from './expenses';
 import type { PortfolioData } from './portfolio';
 import type { ReturnsData } from './returns';
 
@@ -63,10 +64,16 @@ export class TaxProcessor {
 
   constructor(private simulationState: SimulationState) {}
 
-  process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData, annualReturnsData: ReturnsData): TaxesData {
+  process(
+    annualPortfolioDataBeforeTaxes: PortfolioData,
+    annualIncomesData: IncomesData,
+    annualExpensesData: ExpensesData,
+    annualReturnsData: ReturnsData
+  ): TaxesData {
     const { grossOrdinaryIncome, taxDeferredContributions } = this.getGrossOrdinaryIncome(
       annualPortfolioDataBeforeTaxes,
       annualIncomesData,
+      annualExpensesData,
       annualReturnsData
     );
 
@@ -187,8 +194,9 @@ export class TaxProcessor {
   private getGrossOrdinaryIncome(
     annualPortfolioDataBeforeTaxes: PortfolioData,
     annualIncomesData: IncomesData,
+    annualExpensesData: ExpensesData,
     annualReturnsData: ReturnsData
-  ): { grossOrdinaryIncome: number; taxDeferredContributions: number } {
+  ): { grossOrdinaryIncome: number; taxDeferredContributions: number; taxExemptIncome: number; taxDeductibleExpenses: number } {
     const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
     const grossIncomeFromInterest =
       annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
@@ -203,15 +211,21 @@ export class TaxProcessor {
 
     const taxDeferredContributions = this.getPersonalContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
     const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
+    const taxDeductibleExpenses = annualExpensesData.totalTaxDeductibleExpenses;
 
     return {
-      grossOrdinaryIncome:
+      grossOrdinaryIncome: Math.max(
+        0,
         grossIncomeFromIncomes +
-        grossIncomeFromTaxDeferredWithdrawals +
-        grossIncomeFromInterest -
-        taxDeferredContributions -
-        taxExemptIncome,
+          grossIncomeFromTaxDeferredWithdrawals +
+          grossIncomeFromInterest -
+          taxDeferredContributions -
+          taxExemptIncome -
+          taxDeductibleExpenses
+      ),
       taxDeferredContributions,
+      taxExemptIncome,
+      taxDeductibleExpenses,
     };
   }
 
