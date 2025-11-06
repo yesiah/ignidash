@@ -206,7 +206,9 @@ export class SimulationDataExtractor {
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
     const earnedIncome = (incomesData?.totalGrossIncome ?? 0) - taxExemptIncome;
     const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
+
     const totalExpenses = expensesData?.totalExpenses ?? 0;
+
     const operatingCashFlow = earnedIncomeAfterTax + taxExemptIncome - totalExpenses;
 
     return { earnedIncome, earnedIncomeAfterTax, taxExemptIncome, totalExpenses, operatingCashFlow };
@@ -420,7 +422,9 @@ export class SimulationDataExtractor {
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
     const { earnedIncomeAfterTax, taxExemptIncome, operatingCashFlow } = this.getOperatingCashFlowData(dp);
+
     const incomeForSavingsRate = earnedIncomeAfterTax + taxExemptIncome;
+
     return incomeForSavingsRate > 0 ? operatingCashFlow / incomeForSavingsRate : null;
   }
 
