@@ -57,7 +57,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const { totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
-  const { earnedIncome, totalExpenses, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
+  const { earnedIncome, taxExemptIncome, totalExpenses, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
@@ -70,6 +70,13 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionList>
           <DescriptionTerm>Earned Income</DescriptionTerm>
           <DescriptionDetails>{formatNumber(earnedIncome, 2, '$')}</DescriptionDetails>
+
+          {taxExemptIncome !== 0 && (
+            <>
+              <DescriptionTerm>Tax-Exempt Income</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(taxExemptIncome, 2, '$')}</DescriptionDetails>
+            </>
+          )}
 
           <DescriptionTerm>Taxes & Penalties</DescriptionTerm>
           <DescriptionDetails>{formatNumber(totalTaxesAndPenalties, 2, '$')}</DescriptionDetails>

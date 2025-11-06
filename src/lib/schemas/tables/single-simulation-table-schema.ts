@@ -59,6 +59,7 @@ export const singleSimulationCashFlowTableRowSchema = z.object({
   phaseName: z.string().nullable(),
   earnedIncome: z.number().nullable(),
   earnedIncomeAfterTax: z.number().nullable(),
+  taxExemptIncome: z.number().nullable(),
   incomeTax: z.number().nullable(),
   ficaTax: z.number().nullable(),
   capGainsTax: z.number().nullable(),
@@ -78,6 +79,7 @@ const SINGLE_SIMULATION_CASHFLOW_COLUMNS = {
   phaseName: { title: 'Phase Name', format: 'string' },
   earnedIncome: { title: 'Earned Income', format: 'currency' },
   earnedIncomeAfterTax: { title: 'Earned Income After Tax', format: 'currency' },
+  taxExemptIncome: { title: 'Tax-Exempt Income', format: 'currency' },
   incomeTax: { title: 'Income Tax', format: 'currency' },
   ficaTax: { title: 'FICA Tax', format: 'currency' },
   capGainsTax: { title: 'Capital Gains Tax', format: 'currency' },
@@ -155,6 +157,7 @@ export const singleSimulationTaxesTableRowSchema = z.object({
 
   /* Ordinary Income */
   earnedIncome: z.number().nullable(),
+  taxExemptIncome: z.number().nullable(),
   taxDeferredWithdrawals: z.number().nullable(),
   earlyRothEarningsWithdrawals: z.number().nullable(),
   totalRetirementDistributions: z.number().nullable(),
@@ -201,6 +204,7 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   adjustedGrossIncome: { title: 'Adjusted Gross Income (AGI)', format: 'currency' },
   totalTaxableIncome: { title: 'Total Taxable Income', format: 'currency' },
   earnedIncome: { title: 'Earned Income', format: 'currency' },
+  taxExemptIncome: { title: 'Tax-Exempt Income', format: 'currency' },
   taxDeferredWithdrawals: { title: 'Tax-Deferred Withdrawals', format: 'currency' },
   earlyRothEarningsWithdrawals: { title: 'Early Roth Earnings Withdrawals', format: 'currency' },
   totalRetirementDistributions: { title: 'Total Retirement Distributions', format: 'currency' },

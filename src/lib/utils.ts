@@ -26,6 +26,7 @@ export function formatChartString(input: string): string {
   if (withCapitalized.startsWith('Tax Free')) return 'Tax-Free' + withCapitalized.slice(8);
   if (withCapitalized.startsWith('Tax Deferred')) return 'Tax-Deferred' + withCapitalized.slice(12);
   if (withCapitalized.startsWith('Fica Tax')) return 'FICA Tax' + withCapitalized.slice(8);
+  if (withCapitalized.startsWith('Tax Exempt')) return 'Tax-Exempt' + withCapitalized.slice(10);
 
   return withCapitalized;
 }

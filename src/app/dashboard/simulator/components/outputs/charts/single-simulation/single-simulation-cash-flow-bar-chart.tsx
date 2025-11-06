@@ -59,29 +59,52 @@ export default function SingleSimulationCashFlowBarChart({
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
+  const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    net: {
+      mobile: ['Earned Income', 'Exempt Income', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Tax-Exempt Income', 'Taxes & Penalties', 'Expenses'],
+    },
+    expenses: {
+      mobile: ['Taxes'],
+      desktop: ['Taxes & Penalties'],
+    },
+  };
+
+  const getLabelsForScreenSize = (dataView: keyof typeof labelConfig, isSmallScreen: boolean) => {
+    return labelConfig[dataView][isSmallScreen ? 'mobile' : 'desktop'];
+  };
+
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let transformedChartData: { name: string; amount: number; type: string }[] = [];
   switch (dataView) {
-    case 'net':
-      transformedChartData = chartData.flatMap(({ earnedIncome, expenses, totalTaxesAndPenalties }) => [
-        { name: 'Earned Income', amount: earnedIncome, type: 'income' },
-        { name: 'Taxes & Penalties', amount: -totalTaxesAndPenalties, type: 'expense' },
-        { name: 'Expenses', amount: -expenses, type: 'expense' },
+    case 'net': {
+      const [earnedIncomeLabel, taxExemptIncomeLabel, expensesLabel, taxesAndPenaltiesLabel] = getLabelsForScreenSize(
+        dataView,
+        isSmallScreen
+      );
+      transformedChartData = chartData.flatMap(({ earnedIncome, taxExemptIncome, expenses, totalTaxesAndPenalties }) => [
+        { name: earnedIncomeLabel, amount: earnedIncome, type: 'income' },
+        ...(taxExemptIncome > 0 ? [{ name: taxExemptIncomeLabel, amount: taxExemptIncome, type: 'income' }] : []),
+        { name: taxesAndPenaltiesLabel, amount: -totalTaxesAndPenalties, type: 'expense' },
+        { name: expensesLabel, amount: -expenses, type: 'expense' },
       ]);
       break;
+    }
     case 'incomes':
       transformedChartData = chartData.flatMap(({ perIncomeData }) =>
         perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' }))
       );
       break;
-    case 'expenses':
+    case 'expenses': {
+      const [taxesAndPenaltiesLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap(({ perExpenseData, totalTaxesAndPenalties }) =>
         perExpenseData
           .map(({ name, amount }) => ({ name, amount, type: 'expense' }))
-          .concat({ name: 'Taxes & Penalties', amount: totalTaxesAndPenalties, type: 'expense' })
+          .concat({ name: taxesAndPenaltiesLabel, amount: totalTaxesAndPenalties, type: 'expense' })
       );
       break;
+    }
     case 'custom':
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');

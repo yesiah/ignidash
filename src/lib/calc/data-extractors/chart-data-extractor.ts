@@ -60,7 +60,12 @@ export abstract class ChartDataExtractor {
 
       const { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
         SimulationDataExtractor.getTaxAmountsByType(data);
-      const { earnedIncome, totalExpenses: expenses, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const {
+        earnedIncome,
+        taxExemptIncome,
+        totalExpenses: expenses,
+        operatingCashFlow,
+      } = SimulationDataExtractor.getOperatingCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
@@ -68,6 +73,7 @@ export abstract class ChartDataExtractor {
         perIncomeData: Object.values(data.incomes!.perIncomeData),
         perExpenseData: Object.values(data.expenses!.perExpenseData),
         earnedIncome,
+        taxExemptIncome,
         incomeTax,
         ficaTax,
         capGainsTax,
@@ -114,6 +120,7 @@ export abstract class ChartDataExtractor {
         dividendIncome,
         interestIncome,
         earnedIncome,
+        taxExemptIncome,
         grossIncome,
         grossOrdinaryIncome,
         grossCapGains,
@@ -126,6 +133,7 @@ export abstract class ChartDataExtractor {
         grossIncome,
         adjustedGrossIncome: taxesData.adjustedGrossIncome,
         earnedIncome,
+        taxExemptIncome,
         taxDeferredWithdrawals,
         earlyRothEarningsWithdrawals,
         retirementDistributions,

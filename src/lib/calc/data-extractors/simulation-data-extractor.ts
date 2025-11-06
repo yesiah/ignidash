@@ -20,6 +20,7 @@ export interface ReturnsStatsData {
 export interface OperatingCashFlowData {
   earnedIncome: number;
   earnedIncomeAfterTax: number;
+  taxExemptIncome: number;
   totalExpenses: number;
   operatingCashFlow: number;
 }
@@ -69,6 +70,7 @@ export interface TaxableIncomeSources {
   dividendIncome: number;
   interestIncome: number;
   earnedIncome: number;
+  taxExemptIncome: number;
   grossIncome: number;
   grossOrdinaryIncome: number;
   grossCapGains: number;
@@ -201,12 +203,13 @@ export class SimulationDataExtractor {
 
     const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
 
-    const earnedIncome = incomesData?.totalGrossIncome ?? 0;
+    const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
+    const earnedIncome = (incomesData?.totalGrossIncome ?? 0) - taxExemptIncome;
     const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
     const totalExpenses = expensesData?.totalExpenses ?? 0;
     const operatingCashFlow = earnedIncomeAfterTax - totalExpenses;
 
-    return { earnedIncome, earnedIncomeAfterTax, totalExpenses, operatingCashFlow };
+    return { earnedIncome, earnedIncomeAfterTax, taxExemptIncome, totalExpenses, operatingCashFlow };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
@@ -371,7 +374,8 @@ export class SimulationDataExtractor {
       (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.cashSavings.cash ?? 0);
 
     const incomesData = dp.incomes;
-    const earnedIncome = incomesData?.totalGrossIncome ?? 0;
+    const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
+    const earnedIncome = (incomesData?.totalGrossIncome ?? 0) - taxExemptIncome;
 
     const grossOrdinaryIncome = earnedIncome + retirementDistributions + interestIncome;
     const grossCapGains = realizedGains + dividendIncome;
@@ -386,6 +390,7 @@ export class SimulationDataExtractor {
       dividendIncome,
       interestIncome,
       earnedIncome,
+      taxExemptIncome,
       grossIncome,
       grossOrdinaryIncome,
       grossCapGains,

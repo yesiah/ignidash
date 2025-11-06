@@ -20,6 +20,7 @@ export interface SingleSimulationCashFlowChartDataPoint {
   perIncomeData: IncomeData[];
   perExpenseData: ExpenseData[];
   earnedIncome: number;
+  taxExemptIncome: number;
   incomeTax: number;
   ficaTax: number;
   capGainsTax: number;
@@ -53,6 +54,7 @@ export interface SingleSimulationTaxesChartDataPoint {
 
   /* Ordinary Income */
   earnedIncome: number;
+  taxExemptIncome: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
   retirementDistributions: number;

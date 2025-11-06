@@ -87,6 +87,7 @@ export abstract class TableDataExtractor {
       const {
         earnedIncome,
         earnedIncomeAfterTax,
+        taxExemptIncome,
         totalExpenses: expenses,
         operatingCashFlow,
       } = SimulationDataExtractor.getOperatingCashFlowData(data);
@@ -98,6 +99,7 @@ export abstract class TableDataExtractor {
         phaseName: formattedPhaseName,
         earnedIncome,
         earnedIncomeAfterTax,
+        taxExemptIncome,
         incomeTax,
         ficaTax,
         capGainsTax,
@@ -149,6 +151,7 @@ export abstract class TableDataExtractor {
         dividendIncome,
         interestIncome,
         earnedIncome,
+        taxExemptIncome,
         grossIncome,
         grossOrdinaryIncome,
         grossCapGains,
@@ -164,6 +167,7 @@ export abstract class TableDataExtractor {
         adjustedGrossIncome: taxesData?.adjustedGrossIncome ?? 0,
         totalTaxableIncome: taxesData?.totalTaxableIncome ?? 0,
         earnedIncome,
+        taxExemptIncome,
         taxDeferredWithdrawals,
         earlyRothEarningsWithdrawals,
         totalRetirementDistributions,
