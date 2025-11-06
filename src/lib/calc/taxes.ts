@@ -202,10 +202,15 @@ export class TaxProcessor {
     }
 
     const taxDeferredContributions = this.getPersonalContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
+    const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
 
     return {
       grossOrdinaryIncome:
-        grossIncomeFromIncomes + grossIncomeFromTaxDeferredWithdrawals + grossIncomeFromInterest - taxDeferredContributions,
+        grossIncomeFromIncomes +
+        grossIncomeFromTaxDeferredWithdrawals +
+        grossIncomeFromInterest -
+        taxDeferredContributions -
+        taxExemptIncome,
       taxDeferredContributions,
     };
   }
