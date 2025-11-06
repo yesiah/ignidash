@@ -164,6 +164,8 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   taxableOrdinaryIncome: z.number().nullable(),
   annualIncomeTax: z.number().nullable(),
   cumulativeIncomeTax: z.number().nullable(),
+  annualFicaTax: z.number().nullable(),
+  cumulativeFicaTax: z.number().nullable(),
   effectiveIncomeTaxRate: z.number().nullable(),
   topMarginalIncomeTaxRate: z.number().nullable(),
 
@@ -211,6 +213,8 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   taxableOrdinaryIncome: { title: 'Taxable Ordinary Income', format: 'currency' },
   annualIncomeTax: { title: 'Annual Income Tax', format: 'currency' },
   cumulativeIncomeTax: { title: 'Cumulative Income Tax', format: 'currency' },
+  annualFicaTax: { title: 'Annual FICA Tax', format: 'currency' },
+  cumulativeFicaTax: { title: 'Cumulative FICA Tax', format: 'currency' },
   effectiveIncomeTaxRate: { title: 'Effective Income Tax Rate', format: 'percentage' },
   topMarginalIncomeTaxRate: { title: 'Top Marginal Income Tax Rate', format: 'percentage' },
   realizedGains: { title: 'Realized Capital Gains', format: 'currency' },

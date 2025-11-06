@@ -117,6 +117,7 @@ export abstract class TableDataExtractor {
     const startDateYear = new Date().getFullYear();
 
     let cumulativeIncomeTax = 0;
+    let cumulativeFicaTax = 0;
     let cumulativeCapGainsTax = 0;
     let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeTotalTaxesAndPenalties = 0;
@@ -131,12 +132,14 @@ export abstract class TableDataExtractor {
 
       const {
         incomeTax: annualIncomeTax,
+        ficaTax: annualFicaTax,
         capGainsTax: annualCapGainsTax,
         earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties,
         totalTaxesAndPenalties: annualTotalTaxesAndPenalties,
       } = SimulationDataExtractor.getTaxAmountsByType(data);
 
       cumulativeIncomeTax += annualIncomeTax;
+      cumulativeFicaTax += annualFicaTax;
       cumulativeCapGainsTax += annualCapGainsTax;
       cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
       cumulativeTotalTaxesAndPenalties += annualTotalTaxesAndPenalties;
@@ -174,6 +177,8 @@ export abstract class TableDataExtractor {
         taxableOrdinaryIncome: taxesData?.incomeTaxes.taxableOrdinaryIncome ?? 0,
         annualIncomeTax,
         cumulativeIncomeTax,
+        annualFicaTax,
+        cumulativeFicaTax,
         effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? 0,
         topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalTaxRate ?? 0,
         realizedGains,
@@ -371,7 +376,7 @@ export abstract class TableDataExtractor {
       const finalPhaseName = lastDp.phase?.name ?? null;
       const formattedFinalPhaseName = finalPhaseName !== null ? finalPhaseName.charAt(0).toUpperCase() + finalPhaseName.slice(1) : null;
 
-      const { lifetimeIncomeTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties, lifetimeTaxesAndPenalties } =
+      const { lifetimeIncomeTaxes, lifetimeFicaTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties, lifetimeTaxesAndPenalties } =
         SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
 
       return {
@@ -389,6 +394,7 @@ export abstract class TableDataExtractor {
         meanCashReturn,
         meanInflationRate,
         lifetimeIncomeTaxes,
+        lifetimeFicaTaxes,
         lifetimeCapGainsTaxes,
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,

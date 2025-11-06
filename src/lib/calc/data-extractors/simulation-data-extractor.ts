@@ -19,8 +19,8 @@ export interface ReturnsStatsData {
 
 export interface OperatingCashFlowData {
   earnedIncome: number;
-  earnedIncomeAfterTax: number;
   taxExemptIncome: number;
+  allEnteredIncomesMinusTax: number;
   totalExpenses: number;
   operatingCashFlow: number;
 }
@@ -78,6 +78,7 @@ export interface TaxableIncomeSources {
 
 export interface LifetimeTaxAmounts {
   lifetimeIncomeTaxes: number;
+  lifetimeFicaTaxes: number;
   lifetimeCapGainsTaxes: number;
   lifetimeEarlyWithdrawalPenalties: number;
   lifetimeTaxesAndPenalties: number;
@@ -203,15 +204,17 @@ export class SimulationDataExtractor {
 
     const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
 
+    const totalGrossIncome = incomesData?.totalGrossIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = (incomesData?.totalGrossIncome ?? 0) - taxExemptIncome;
-    const earnedIncomeAfterTax = earnedIncome - totalTaxesAndPenalties;
+
+    const earnedIncome = totalGrossIncome - taxExemptIncome;
+    const allEnteredIncomesMinusTax = totalGrossIncome - totalTaxesAndPenalties;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
 
-    const operatingCashFlow = earnedIncomeAfterTax + taxExemptIncome - totalExpenses;
+    const operatingCashFlow = allEnteredIncomesMinusTax - totalExpenses;
 
-    return { earnedIncome, earnedIncomeAfterTax, taxExemptIncome, totalExpenses, operatingCashFlow };
+    return { earnedIncome, taxExemptIncome, allEnteredIncomesMinusTax, totalExpenses, operatingCashFlow };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
@@ -400,32 +403,32 @@ export class SimulationDataExtractor {
   }
 
   static getLifetimeTaxesAndPenalties(data: SimulationDataPoint[]): LifetimeTaxAmounts {
-    const { lifetimeIncomeTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties } = data.reduce(
+    const { lifetimeIncomeTaxes, lifetimeFicaTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties } = data.reduce(
       (acc, dp) => {
         const incomeTax = dp.taxes?.incomeTaxes.incomeTaxAmount ?? 0;
+        const ficaTax = dp.incomes?.totalFicaTax ?? 0;
         const capGainsTax = dp.taxes?.capitalGainsTaxes.capitalGainsTaxAmount ?? 0;
         const earlyWithdrawalPenalty = dp.taxes?.earlyWithdrawalPenalties.totalPenaltyAmount ?? 0;
 
         return {
           lifetimeIncomeTaxes: acc.lifetimeIncomeTaxes + incomeTax,
+          lifetimeFicaTaxes: acc.lifetimeFicaTaxes + ficaTax,
           lifetimeCapGainsTaxes: acc.lifetimeCapGainsTaxes + capGainsTax,
           lifetimeEarlyWithdrawalPenalties: acc.lifetimeEarlyWithdrawalPenalties + earlyWithdrawalPenalty,
         };
       },
-      { lifetimeIncomeTaxes: 0, lifetimeCapGainsTaxes: 0, lifetimeEarlyWithdrawalPenalties: 0 }
+      { lifetimeIncomeTaxes: 0, lifetimeFicaTaxes: 0, lifetimeCapGainsTaxes: 0, lifetimeEarlyWithdrawalPenalties: 0 }
     );
 
-    const lifetimeTaxesAndPenalties = lifetimeIncomeTaxes + lifetimeCapGainsTaxes + lifetimeEarlyWithdrawalPenalties;
+    const lifetimeTaxesAndPenalties = lifetimeIncomeTaxes + lifetimeFicaTaxes + lifetimeCapGainsTaxes + lifetimeEarlyWithdrawalPenalties;
 
-    return { lifetimeIncomeTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties, lifetimeTaxesAndPenalties };
+    return { lifetimeIncomeTaxes, lifetimeFicaTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties, lifetimeTaxesAndPenalties };
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { earnedIncomeAfterTax, taxExemptIncome, operatingCashFlow } = this.getOperatingCashFlowData(dp);
+    const { allEnteredIncomesMinusTax, operatingCashFlow } = this.getOperatingCashFlowData(dp);
 
-    const incomeForSavingsRate = earnedIncomeAfterTax + taxExemptIncome;
-
-    return incomeForSavingsRate > 0 ? operatingCashFlow / incomeForSavingsRate : null;
+    return allEnteredIncomesMinusTax > 0 ? operatingCashFlow / allEnteredIncomesMinusTax : null;
   }
 
   static getWithdrawalRate(dp: SimulationDataPoint): number | null {
