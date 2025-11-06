@@ -419,8 +419,9 @@ export class SimulationDataExtractor {
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { earnedIncomeAfterTax, operatingCashFlow } = this.getOperatingCashFlowData(dp);
-    return earnedIncomeAfterTax > 0 ? operatingCashFlow / earnedIncomeAfterTax : null;
+    const { earnedIncomeAfterTax, taxExemptIncome, operatingCashFlow } = this.getOperatingCashFlowData(dp);
+    const incomeForSavingsRate = earnedIncomeAfterTax + taxExemptIncome;
+    return incomeForSavingsRate > 0 ? operatingCashFlow / incomeForSavingsRate : null;
   }
 
   static getWithdrawalRate(dp: SimulationDataPoint): number | null {
