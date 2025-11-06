@@ -98,16 +98,10 @@ export class FinancialSimulationEngine {
         // Get annual data from processors
         const annualPortfolioDataBeforeTaxes = portfolioProcessor.getAnnualData();
         const annualIncomesData = incomesProcessor.getAnnualData();
-        const annualExpensesDataBeforeTaxes = expensesProcessor.getAnnualData();
         const annualReturnsData = returnsProcessor.getAnnualData();
 
         // Process taxes
-        let annualTaxesData = taxProcessor.process(
-          annualPortfolioDataBeforeTaxes,
-          annualIncomesData,
-          annualExpensesDataBeforeTaxes,
-          annualReturnsData
-        );
+        let annualTaxesData = taxProcessor.process(annualPortfolioDataBeforeTaxes, annualIncomesData, annualReturnsData);
         const { totalTaxesDue, totalTaxesRefund } = annualTaxesData;
 
         // Process portfolio updates after calculating taxes
@@ -118,12 +112,7 @@ export class FinancialSimulationEngine {
         // Iteratively reconcile taxes until convergence
         let totalTaxesPaid = totalTaxesDue;
         for (let i = 0; i < 10 && totalTaxesDue > 0; i++) {
-          annualTaxesData = taxProcessor.process(
-            annualPortfolioDataAfterTaxes,
-            annualIncomesData,
-            annualExpensesDataBeforeTaxes,
-            annualReturnsData
-          );
+          annualTaxesData = taxProcessor.process(annualPortfolioDataAfterTaxes, annualIncomesData, annualReturnsData);
           const totalTaxesDue = annualTaxesData.totalTaxesDue;
 
           const remainingTaxesDue = totalTaxesDue - totalTaxesPaid;

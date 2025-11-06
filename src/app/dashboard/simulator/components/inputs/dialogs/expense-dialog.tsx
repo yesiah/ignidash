@@ -4,19 +4,18 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { CalendarIcon, BanknoteArrowDownIcon, TrendingUpIcon, BanknoteXIcon } from 'lucide-react';
+import { CalendarIcon, BanknoteArrowDownIcon, TrendingUpIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { useUpdateExpenses, useExpenseData, useExpensesData, useTimelineData } from '@/lib/stores/simulator-store';
 import { expenseFormSchema, type ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
-import { timeFrameForDisplay, growthForDisplay, expenseTaxTreatmentForDisplay } from '@/lib/utils/data-display-formatters';
+import { timeFrameForDisplay, growthForDisplay } from '@/lib/utils/data-display-formatters';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
-import { Field, Fieldset, FieldGroup, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
+import { Field, Fieldset, FieldGroup, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox';
-import { Checkbox, CheckboxField } from '@/components/catalyst/checkbox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
@@ -38,7 +37,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
         frequency: 'yearly',
         timeframe: { start: { type: 'now' }, end: { type: 'atLifeExpectancy' } },
         growth: { growthRate: 0 },
-        taxes: { taxDeductible: false },
       }) as const satisfies Partial<ExpenseInputs>,
     [numExpenses]
   );
@@ -73,8 +71,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
 
   const growthRate = useWatch({ control, name: 'growth.growthRate' }) as number | undefined;
   const growthLimit = useWatch({ control, name: 'growth.growthLimit' }) as number | undefined;
-
-  const taxDeductible = useWatch({ control, name: 'taxes.taxDeductible' }) as boolean;
 
   useEffect(() => {
     if (frequency === 'oneTime') {
@@ -149,7 +145,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
 
   const timeFrameButtonRef = useRef<HTMLButtonElement>(null);
   const rateOfChangeButtonRef = useRef<HTMLButtonElement>(null);
-  const taxTreatmentButtonRef = useRef<HTMLButtonElement>(null);
 
   const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
   const toggleDisclosure = useCallback(
@@ -162,9 +157,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
             break;
           case 'rateOfChange':
             targetRef = rateOfChangeButtonRef.current;
-            break;
-          case 'taxTreatment':
-            targetRef = taxTreatmentButtonRef.current;
             break;
         }
 
@@ -504,53 +496,6 @@ export default function ExpenseDialog({ onClose, selectedExpenseID }: ExpenseDia
                   )}
                 </Disclosure>
               )}
-              <Disclosure as="div" className="border-border/50 border-t pt-4">
-                {({ open, close }) => (
-                  <>
-                    <DisclosureButton
-                      ref={taxTreatmentButtonRef}
-                      onClick={() => {
-                        if (!open) close();
-                        toggleDisclosure({ open, close, key: 'taxTreatment' });
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          if (!open) close();
-                          toggleDisclosure({ open, close, key: 'taxTreatment' });
-                        }
-                      }}
-                      className="group data-open:border-border/25 focus-outline flex w-full items-start justify-between text-left transition-opacity duration-150 hover:opacity-75 data-open:border-b data-open:pb-4"
-                    >
-                      <div className="flex items-center gap-2">
-                        <BanknoteXIcon className="text-primary size-5 shrink-0" aria-hidden="true" />
-                        <span className="text-base/7 font-semibold">Taxes</span>
-                        <span className="hidden sm:inline">|</span>
-                        <span className="text-muted-foreground hidden truncate sm:inline">
-                          {expenseTaxTreatmentForDisplay(taxDeductible)}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground ml-6 flex h-7 items-center">
-                        <PlusIcon aria-hidden="true" className="size-6 group-data-open:hidden" />
-                        <MinusIcon aria-hidden="true" className="size-6 group-not-data-open:hidden" />
-                      </span>
-                    </DisclosureButton>
-                    <DisclosurePanel className="pt-4">
-                      <CheckboxField>
-                        <Controller
-                          name="taxes.taxDeductible"
-                          defaultValue={false}
-                          control={control}
-                          render={({ field: { onChange, value, name } }) => (
-                            <Checkbox name={name} checked={value} onChange={(checked) => onChange(checked)} />
-                          )}
-                        />
-                        <Label>Tax-Deductible</Label>
-                        <Description>If marked as tax-deductible, this expense will reduce your taxable income.</Description>
-                      </CheckboxField>
-                    </DisclosurePanel>
-                  </>
-                )}
-              </Disclosure>
             </FieldGroup>
           </DialogBody>
         </Fieldset>

@@ -19,10 +19,9 @@ export class ExpensesProcessor {
     const totals = processedExpenses.reduce(
       (acc, curr) => {
         acc.totalExpenses += curr.amount;
-        if (curr.taxDeductible) acc.totalTaxDeductibleExpenses += curr.amount;
         return acc;
       },
-      { totalExpenses: 0, totalTaxDeductibleExpenses: 0 }
+      { totalExpenses: 0 }
     );
     const perExpenseData = Object.fromEntries(processedExpenses.map((expense) => [expense.id, expense]));
 
@@ -37,7 +36,6 @@ export class ExpensesProcessor {
       id: '4ad31cac-7e17-47c4-af4e-784e080c05dd',
       name: '[System] Extra Spending',
       amount,
-      taxDeductible: false,
     };
 
     const currentMonthlyData = this.monthlyData[this.monthlyData.length - 1];
@@ -46,7 +44,6 @@ export class ExpensesProcessor {
 
       const result = {
         totalExpenses: amount,
-        totalTaxDeductibleExpenses: 0,
         perExpenseData: { [discretionaryExpense.id]: discretionaryExpense },
       };
       this.monthlyData.push(result);
@@ -73,7 +70,6 @@ export class ExpensesProcessor {
     return this.monthlyData.reduce(
       (acc, curr) => {
         acc.totalExpenses += curr.totalExpenses;
-        acc.totalTaxDeductibleExpenses += curr.totalTaxDeductibleExpenses;
 
         Object.entries(curr.perExpenseData).forEach(([expenseID, expenseData]) => {
           acc.perExpenseData[expenseID] = {
@@ -84,14 +80,13 @@ export class ExpensesProcessor {
 
         return acc;
       },
-      { totalExpenses: 0, totalTaxDeductibleExpenses: 0, perExpenseData: {} }
+      { totalExpenses: 0, perExpenseData: {} }
     );
   }
 }
 
 export interface ExpensesData {
   totalExpenses: number;
-  totalTaxDeductibleExpenses: number;
   perExpenseData: Record<string, ExpenseData>;
 }
 
@@ -111,7 +106,6 @@ export interface ExpenseData {
   id: string;
   name: string;
   amount: number;
-  taxDeductible: boolean;
 }
 
 export class Expense {
@@ -125,7 +119,6 @@ export class Expense {
   private timeFrameEnd: TimePoint | undefined;
   private frequency: 'yearly' | 'oneTime' | 'quarterly' | 'monthly' | 'biweekly' | 'weekly';
   private lastYear: number = 0;
-  private taxDeductible: boolean;
 
   constructor(data: ExpenseInputs) {
     this.hasOneTimeExpenseOccurred = false;
@@ -137,7 +130,6 @@ export class Expense {
     this.timeFrameStart = data.timeframe.start;
     this.timeFrameEnd = data.timeframe.end;
     this.frequency = data.frequency;
-    this.taxDeductible = data.taxes.taxDeductible;
   }
 
   processMonthlyAmount(year: number): ExpenseData {
@@ -166,12 +158,12 @@ export class Expense {
       this.lastYear = Math.floor(year);
     }
 
-    if (timesToApplyPerYear === 0) return { id: this.id, name: this.name, amount: 0, taxDeductible: this.taxDeductible };
+    if (timesToApplyPerYear === 0) return { id: this.id, name: this.name, amount: 0 };
 
     const monthlyAmount = Math.max((annualAmount / timesToApplyPerYear) * timesToApplyPerMonth, 0);
 
     if (this.frequency === 'oneTime') this.hasOneTimeExpenseOccurred = true;
-    return { id: this.id, name: this.name, amount: monthlyAmount, taxDeductible: this.taxDeductible };
+    return { id: this.id, name: this.name, amount: monthlyAmount };
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {
