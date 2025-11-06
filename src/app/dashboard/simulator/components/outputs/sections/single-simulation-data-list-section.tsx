@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, memo } from 'react';
-import { CircleQuestionMarkIcon } from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 
 import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/simulation-engine';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
@@ -17,7 +17,7 @@ function OperatingCashFlowTooltip({ taxExemptIncome }: { taxExemptIncome: number
   return (
     <Tooltip>
       <TooltipTrigger>
-        <CircleQuestionMarkIcon className="size-4 fill-white dark:fill-zinc-950" />
+        <InfoIcon className="size-4 fill-white dark:fill-zinc-950" />
       </TooltipTrigger>
       <TooltipContent>
         <p>{`${taxExemptIncome !== 0 ? 'Earned and tax-exempt income' : 'Earned income'} minus all taxes and expenses.`}</p>
