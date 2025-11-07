@@ -6,7 +6,6 @@ export default defineSchema({
     userId: v.string(),
     name: v.string(),
 
-    // Timeline
     timeline: v.union(
       v.object({
         currentAge: v.number(),
@@ -19,7 +18,6 @@ export default defineSchema({
       v.null()
     ),
 
-    // Incomes - array of income objects
     incomes: v.array(
       v.object({
         id: v.string(),
@@ -81,7 +79,6 @@ export default defineSchema({
       })
     ),
 
-    // Expenses - array of expense objects
     expenses: v.array(
       v.object({
         id: v.string(),
