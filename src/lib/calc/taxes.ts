@@ -182,7 +182,7 @@ export class TaxProcessor {
     annualIncomesData: IncomesData,
     annualReturnsData: ReturnsData
   ): { totalIncome: number; grossOrdinaryIncome: number; adjustedOrdinaryIncome: number; taxDeferredContributions: number } {
-    const grossIncomeFromIncomes = annualIncomesData.totalGrossIncome;
+    const grossIncomeFromIncomes = annualIncomesData.totalIncome;
     const grossIncomeFromInterest =
       annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
 

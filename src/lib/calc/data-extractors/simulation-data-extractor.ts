@@ -18,10 +18,11 @@ export interface ReturnsStatsData {
 }
 
 export interface OperatingCashFlowData {
+  totalIncome: number;
   earnedIncome: number;
   taxExemptIncome: number;
-  allEnteredIncomesMinusTax: number;
   totalExpenses: number;
+  totalTaxesAndPenalties: number;
   operatingCashFlow: number;
 }
 
@@ -204,16 +205,15 @@ export class SimulationDataExtractor {
 
     const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
 
-    const totalGrossIncome = incomesData?.totalGrossIncome ?? 0;
+    const totalIncome = incomesData?.totalIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = totalGrossIncome - taxExemptIncome;
-    const allEnteredIncomesMinusTax = totalGrossIncome - totalTaxesAndPenalties;
+    const earnedIncome = totalIncome - taxExemptIncome;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
 
-    const operatingCashFlow = allEnteredIncomesMinusTax - totalExpenses;
+    const operatingCashFlow = totalIncome - totalExpenses - totalTaxesAndPenalties;
 
-    return { earnedIncome, taxExemptIncome, allEnteredIncomesMinusTax, totalExpenses, operatingCashFlow };
+    return { totalIncome, earnedIncome, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, operatingCashFlow };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
@@ -379,7 +379,7 @@ export class SimulationDataExtractor {
 
     const incomesData = dp.incomes;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = (incomesData?.totalGrossIncome ?? 0) - taxExemptIncome;
+    const earnedIncome = (incomesData?.totalIncome ?? 0) - taxExemptIncome;
 
     const grossOrdinaryIncome = earnedIncome + retirementDistributions + interestIncome;
     const grossCapGains = realizedGains + dividendIncome;
@@ -425,8 +425,9 @@ export class SimulationDataExtractor {
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { allEnteredIncomesMinusTax, operatingCashFlow } = this.getOperatingCashFlowData(dp);
-    return allEnteredIncomesMinusTax > 0 ? operatingCashFlow / allEnteredIncomesMinusTax : null;
+    const { totalIncome, totalTaxesAndPenalties, operatingCashFlow } = this.getOperatingCashFlowData(dp);
+    const totalIncomeMinusTaxes = totalIncome - totalTaxesAndPenalties;
+    return totalIncomeMinusTaxes > 0 ? operatingCashFlow / totalIncomeMinusTaxes : null;
   }
 
   static getWithdrawalRate(dp: SimulationDataPoint): number | null {

@@ -18,7 +18,7 @@ export class IncomesProcessor {
 
     const totals = processedIncomes.reduce(
       (acc, curr) => {
-        acc.totalGrossIncome += curr.grossIncome;
+        acc.totalIncome += curr.grossIncome;
         acc.totalAmountWithheld += curr.amountWithheld;
         acc.totalFicaTax += curr.ficaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.incomeAfterPayrollDeductions;
@@ -26,7 +26,7 @@ export class IncomesProcessor {
         return acc;
       },
       {
-        totalGrossIncome: 0,
+        totalIncome: 0,
         totalAmountWithheld: 0,
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
@@ -48,7 +48,7 @@ export class IncomesProcessor {
   getAnnualData(): IncomesData {
     return this.monthlyData.reduce(
       (acc, curr) => {
-        acc.totalGrossIncome += curr.totalGrossIncome;
+        acc.totalIncome += curr.totalIncome;
         acc.totalAmountWithheld += curr.totalAmountWithheld;
         acc.totalFicaTax += curr.totalFicaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.totalIncomeAfterPayrollDeductions;
@@ -69,7 +69,7 @@ export class IncomesProcessor {
         return acc;
       },
       {
-        totalGrossIncome: 0,
+        totalIncome: 0,
         totalAmountWithheld: 0,
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
@@ -81,7 +81,7 @@ export class IncomesProcessor {
 }
 
 export interface IncomesData {
-  totalGrossIncome: number;
+  totalIncome: number;
   totalAmountWithheld: number;
   totalFicaTax: number;
   totalIncomeAfterPayrollDeductions: number;
