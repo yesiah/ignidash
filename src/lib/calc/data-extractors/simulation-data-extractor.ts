@@ -210,7 +210,7 @@ export class SimulationDataExtractor {
     const totalIncome = incomesData?.totalIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
     const earnedIncome = totalIncome - taxExemptIncome;
-    const w2Income = earnedIncome; // Note: earnedIncome is currently all W-2 income
+    const w2Income = earnedIncome;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
 
@@ -383,7 +383,7 @@ export class SimulationDataExtractor {
     const incomesData = dp.incomes;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
     const earnedIncome = (incomesData?.totalIncome ?? 0) - taxExemptIncome;
-    const w2Income = earnedIncome; // Note: earnedIncome is currently all W-2 income
+    const w2Income = earnedIncome;
 
     const grossOrdinaryIncome = earnedIncome + retirementDistributions + interestIncome;
     const grossCapGains = realizedGains + dividendIncome;

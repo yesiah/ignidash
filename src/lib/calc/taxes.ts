@@ -197,7 +197,7 @@ export class TaxProcessor {
     const taxDeferredContributions = this.getEmployeeContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, ['401k', 'ira', 'hsa']);
     const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
 
-    const totalIncome = grossIncomeFromIncomes + grossIncomeFromInterest + grossIncomeFromTaxDeferredWithdrawals + taxExemptIncome;
+    const totalIncome = grossIncomeFromIncomes + grossIncomeFromInterest + grossIncomeFromTaxDeferredWithdrawals;
     const grossOrdinaryIncome = Math.max(0, totalIncome - taxExemptIncome);
     const adjustedOrdinaryIncome = Math.max(0, grossOrdinaryIncome - taxDeferredContributions);
 
