@@ -18,7 +18,7 @@ export class ExpensesProcessor {
 
     const totals = processedExpenses.reduce(
       (acc, curr) => {
-        acc.totalExpenses += curr.amount;
+        acc.totalExpenses += curr.expense;
         return acc;
       },
       { totalExpenses: 0 }
@@ -31,11 +31,11 @@ export class ExpensesProcessor {
     return result;
   }
 
-  processDiscretionaryExpense(amount: number): ExpensesData {
+  processDiscretionaryExpense(expense: number): ExpensesData {
     const discretionaryExpense: ExpenseData = {
       id: '4ad31cac-7e17-47c4-af4e-784e080c05dd',
       name: '[System] Extra Spending',
-      amount,
+      expense,
     };
 
     const currentMonthlyData = this.monthlyData[this.monthlyData.length - 1];
@@ -43,7 +43,7 @@ export class ExpensesProcessor {
       console.error('No current monthly data found when processing discretionary expense. This should not happen!');
 
       const result = {
-        totalExpenses: amount,
+        totalExpenses: expense,
         perExpenseData: { [discretionaryExpense.id]: discretionaryExpense },
       };
       this.monthlyData.push(result);
@@ -51,12 +51,12 @@ export class ExpensesProcessor {
       return result;
     }
 
-    currentMonthlyData.totalExpenses += amount;
+    currentMonthlyData.totalExpenses += expense;
 
     const currentDiscretionaryExpenses = currentMonthlyData.perExpenseData[discretionaryExpense.id];
     currentMonthlyData.perExpenseData[discretionaryExpense.id] = {
       ...discretionaryExpense,
-      amount: (currentDiscretionaryExpenses?.amount ?? 0) + amount,
+      expense: (currentDiscretionaryExpenses?.expense ?? 0) + expense,
     };
 
     return currentMonthlyData;
@@ -74,7 +74,7 @@ export class ExpensesProcessor {
         Object.entries(curr.perExpenseData).forEach(([expenseID, expenseData]) => {
           acc.perExpenseData[expenseID] = {
             ...expenseData,
-            amount: (acc.perExpenseData[expenseID]?.amount ?? 0) + expenseData.amount,
+            expense: (acc.perExpenseData[expenseID]?.expense ?? 0) + expenseData.expense,
           };
         });
 
@@ -105,7 +105,7 @@ export class Expenses {
 export interface ExpenseData {
   id: string;
   name: string;
-  amount: number;
+  expense: number;
 }
 
 export class Expense {
@@ -158,12 +158,12 @@ export class Expense {
       this.lastYear = Math.floor(year);
     }
 
-    if (timesToApplyPerYear === 0) return { id: this.id, name: this.name, amount: 0 };
+    if (timesToApplyPerYear === 0) return { id: this.id, name: this.name, expense: 0 };
 
     const monthlyAmount = Math.max((annualAmount / timesToApplyPerYear) * timesToApplyPerMonth, 0);
 
     if (this.frequency === 'oneTime') this.hasOneTimeExpenseOccurred = true;
-    return { id: this.id, name: this.name, amount: monthlyAmount };
+    return { id: this.id, name: this.name, expense: monthlyAmount };
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {

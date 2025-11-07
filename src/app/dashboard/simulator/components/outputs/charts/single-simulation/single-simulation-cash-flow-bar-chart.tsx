@@ -93,14 +93,14 @@ export default function SingleSimulationCashFlowBarChart({
     }
     case 'incomes':
       transformedChartData = chartData.flatMap(({ perIncomeData }) =>
-        perIncomeData.map(({ name, grossIncome }) => ({ name, amount: grossIncome, type: 'income' }))
+        perIncomeData.map(({ name, income }) => ({ name, amount: income, type: 'income' }))
       );
       break;
     case 'expenses': {
       const [taxesAndPenaltiesLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap(({ perExpenseData, totalTaxesAndPenalties }) =>
         perExpenseData
-          .map(({ name, amount }) => ({ name, amount, type: 'expense' }))
+          .map(({ name, expense }) => ({ name, amount: expense, type: 'expense' }))
           .concat({ name: taxesAndPenaltiesLabel, amount: totalTaxesAndPenalties, type: 'expense' })
       );
       break;
@@ -114,12 +114,10 @@ export default function SingleSimulationCashFlowBarChart({
 
       transformedChartData = [
         ...chartData
-          .flatMap(({ perIncomeData }) =>
-            perIncomeData.map(({ id, name, grossIncome }) => ({ id, name, amount: grossIncome, type: 'income' }))
-          )
+          .flatMap(({ perIncomeData }) => perIncomeData.map(({ id, name, income }) => ({ id, name, amount: income, type: 'income' })))
           .filter(({ id }) => id === customDataID),
         ...chartData
-          .flatMap(({ perExpenseData }) => perExpenseData.map(({ id, name, amount }) => ({ id, name, amount, type: 'expense' })))
+          .flatMap(({ perExpenseData }) => perExpenseData.map(({ id, name, expense }) => ({ id, name, amount: expense, type: 'expense' })))
           .filter(({ id }) => id === customDataID),
       ];
       break;

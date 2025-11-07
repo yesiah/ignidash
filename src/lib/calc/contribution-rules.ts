@@ -49,9 +49,9 @@ export class ContributionRule {
     const eligibleIncomeIds = new Set(this.contributionInput?.incomeIds);
     if (eligibleIncomeIds.size > 0) {
       const eligibleIncomes = Object.values(incomesData?.perIncomeData || {}).filter((income) => eligibleIncomeIds.has(income.id));
-      const totalEligibleGrossIncome = eligibleIncomes.reduce((sum, income) => sum + income.grossIncome, 0);
+      const totalEligibleIncome = eligibleIncomes.reduce((sum, income) => sum + income.income, 0);
 
-      maxContribution = Math.min(maxContribution, totalEligibleGrossIncome);
+      maxContribution = Math.min(maxContribution, totalEligibleIncome);
     }
 
     const contributionsSoFar = this.getEmployeeContributionsSoFarByAccountID(monthlyPortfolioData, account.getAccountID());
