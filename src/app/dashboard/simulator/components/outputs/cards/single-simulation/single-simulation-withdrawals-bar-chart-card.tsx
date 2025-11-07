@@ -3,6 +3,8 @@
 import Card from '@/components/ui/card';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
+import { useAccountData } from '@/lib/stores/simulator-store';
+import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
 
 import SingleSimulationWithdrawalsBarChart from '../../charts/single-simulation/single-simulation-withdrawals-bar-chart';
 
@@ -28,6 +30,8 @@ export default function SingleSimulationWithdrawalsBarChartCard({
   dataView,
   customDataID,
 }: SingleSimulationWithdrawalsBarChartCardProps) {
+  const accountData = useAccountData(customDataID !== '' ? customDataID : null);
+
   let title;
   switch (dataView) {
     case 'annualAmounts':
@@ -55,7 +59,7 @@ export default function SingleSimulationWithdrawalsBarChartCard({
       title = 'Withdrawal Rate';
       break;
     case 'custom':
-      title = 'Custom Account';
+      title = accountData ? `${accountData.name} — ${taxCategoryFromAccountTypeForDisplay(accountData.type)}` : 'Custom Account';
       break;
   }
 

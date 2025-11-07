@@ -3,6 +3,8 @@
 import Card from '@/components/ui/card';
 import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
+import { useAccountData } from '@/lib/stores/simulator-store';
+import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
 
 import SingleSimulationReturnsBarChart from '../../charts/single-simulation/single-simulation-returns-bar-chart';
 
@@ -19,6 +21,8 @@ export default function SingleSimulationReturnsBarChartCard({
   dataView,
   customDataID,
 }: SingleSimulationReturnsBarChartCardProps) {
+  const accountData = useAccountData(customDataID !== '' ? customDataID : null);
+
   let title;
   switch (dataView) {
     case 'rates':
@@ -31,7 +35,7 @@ export default function SingleSimulationReturnsBarChartCard({
       title = 'Cumulative Growth';
       break;
     case 'custom':
-      title = 'Custom Account';
+      title = accountData ? `${accountData.name} — ${taxCategoryFromAccountTypeForDisplay(accountData.type)}` : 'Custom Account';
       break;
   }
 
