@@ -2,9 +2,6 @@ import { v } from 'convex/values';
 import { query } from './_generated/server';
 import { authComponent } from './auth';
 
-/**
- * Get all plans for the current user
- */
 export const listPlans = query({
   args: {},
   handler: async (ctx) => {
@@ -22,9 +19,6 @@ export const listPlans = query({
   },
 });
 
-/**
- * Get a specific plan by ID
- */
 export const getPlanById = query({
   args: { planId: v.id('plans') },
   handler: async (ctx, { planId }) => {
