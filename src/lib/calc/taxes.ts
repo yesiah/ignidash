@@ -10,7 +10,6 @@ export interface CapitalGainsTaxesData {
   capitalGainsTaxAmount: number;
   effectiveCapitalGainsTaxRate: number;
   topMarginalCapitalGainsTaxRate: number;
-  netCapitalGains: number;
 }
 
 export interface IncomeTaxesData {
@@ -18,7 +17,6 @@ export interface IncomeTaxesData {
   incomeTaxAmount: number;
   effectiveIncomeTaxRate: number;
   topMarginalTaxRate: number;
-  netIncome: number;
   capitalLossDeduction?: number;
 }
 
@@ -64,7 +62,7 @@ export class TaxProcessor {
   constructor(private simulationState: SimulationState) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData, annualReturnsData: ReturnsData): TaxesData {
-    const { adjustedOrdinaryIncome, taxDeferredContributions } = this.getIncomeData(
+    const { totalIncome, adjustedOrdinaryIncome, taxDeferredContributions } = this.getIncomeData(
       annualPortfolioDataBeforeTaxes,
       annualIncomesData,
       annualReturnsData
@@ -84,9 +82,8 @@ export class TaxProcessor {
     const incomeTaxes: IncomeTaxesData = {
       taxableOrdinaryIncome,
       incomeTaxAmount,
-      effectiveIncomeTaxRate: adjustedOrdinaryIncome > 0 ? incomeTaxAmount / adjustedOrdinaryIncome : 0,
+      effectiveIncomeTaxRate: totalIncome > 0 ? incomeTaxAmount / totalIncome : 0,
       topMarginalTaxRate,
-      netIncome: adjustedOrdinaryIncome - incomeTaxAmount,
       capitalLossDeduction: capitalLossDeduction !== 0 ? capitalLossDeduction : undefined,
     };
 
@@ -99,7 +96,6 @@ export class TaxProcessor {
       capitalGainsTaxAmount,
       effectiveCapitalGainsTaxRate: adjustedIncomeTaxedAsCapGains > 0 ? capitalGainsTaxAmount / adjustedIncomeTaxedAsCapGains : 0,
       topMarginalCapitalGainsTaxRate,
-      netCapitalGains: adjustedIncomeTaxedAsCapGains - capitalGainsTaxAmount,
     };
 
     const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes);
