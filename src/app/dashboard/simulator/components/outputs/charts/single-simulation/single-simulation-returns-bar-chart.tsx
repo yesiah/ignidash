@@ -141,17 +141,14 @@ export default function SingleSimulationReturnsBarChart({
       }
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
-      transformedChartData = [
-        ...chartData
-          .flatMap(({ perAccountData }) =>
-            perAccountData.flatMap(({ id, returnAmountsForPeriod }) => [
-              { id, name: stockLabel, amount: returnAmountsForPeriod.stocks },
-              { id, name: bondLabel, amount: returnAmountsForPeriod.bonds },
-              { id, name: cashLabel, amount: returnAmountsForPeriod.cash },
-            ])
-          )
-          .filter(({ id }) => id === customDataID),
-      ];
+      transformedChartData = chartData
+        .flatMap(({ perAccountData }) => perAccountData)
+        .filter(({ id }) => id === customDataID)
+        .flatMap(({ id, returnAmountsForPeriod }) => [
+          { id, name: stockLabel, amount: returnAmountsForPeriod.stocks },
+          { id, name: bondLabel, amount: returnAmountsForPeriod.bonds },
+          { id, name: cashLabel, amount: returnAmountsForPeriod.cash },
+        ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
