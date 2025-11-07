@@ -17,7 +17,7 @@ type IncomeCalculationsTooltipPayload = {
   taxableCapGains: number;
   grossIncome: number;
   adjustedGrossIncome: number;
-  totalTaxableIncome: number;
+  taxableIncome: number;
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
 };
@@ -108,8 +108,8 @@ const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, d
               style={{ backgroundColor: 'var(--chart-3)' }}
               className={`border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm`}
             >
-              <span className="mr-2">{`${formatChartString('totalTaxableIncome')}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.totalTaxableIncome, 1, '$')}</span>
+              <span className="mr-2">{`${formatChartString('taxableIncome')}:`}</span>
+              <span className="ml-1 font-semibold">{formatNumber(entry.taxableIncome, 1, '$')}</span>
             </p>
           </div>
         </div>
@@ -368,7 +368,7 @@ export default function SingleSimulationTaxesBarChart({
           taxableCapGains: item.taxableCapGains,
           grossIncome: item.grossIncome,
           adjustedGrossIncome: item.adjustedGrossIncome,
-          totalTaxableIncome: item.totalTaxableIncome,
+          taxableIncome: item.taxableIncome,
           adjustments: item.adjustments,
           deductions: item.deductions,
         };
@@ -395,7 +395,7 @@ export default function SingleSimulationTaxesBarChart({
         taxableCapGains: item.taxableCapGains,
         grossIncome: item.grossIncome,
         adjustedGrossIncome: item.adjustedGrossIncome,
-        totalTaxableIncome: item.totalTaxableIncome,
+        taxableIncome: item.taxableIncome,
         adjustments: item.adjustments,
         deductions: item.deductions,
       }));

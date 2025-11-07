@@ -249,7 +249,7 @@ export default function SingleSimulationTaxesLineChart({
       break;
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'totalTaxableIncome');
+      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'taxableIncome');
       break;
     case 'adjustedGrossIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
