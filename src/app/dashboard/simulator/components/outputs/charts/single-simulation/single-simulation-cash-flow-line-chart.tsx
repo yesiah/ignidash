@@ -57,7 +57,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       const taxExemptIncome = entry.taxExemptIncome;
       const taxesAndPenalties = entry.totalTaxesAndPenalties;
       const expenses = entry.expenses;
-      const operatingCashFlow = entry.operatingCashFlow;
+      const cashFlow = entry.cashFlow;
 
       tooltipBodyComponent = (
         <div className="flex flex-col gap-2">
@@ -95,8 +95,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       );
       tooltipFooterComponent = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-          <span className="mr-2">Operating Cash Flow:</span>
-          <span className="ml-1 font-semibold">{formatNumber(operatingCashFlow, 3, '$')}</span>
+          <span className="mr-2">Cash Flow:</span>
+          <span className="ml-1 font-semibold">{formatNumber(cashFlow, 3, '$')}</span>
         </p>
       );
       break;
@@ -203,7 +203,7 @@ export default function SingleSimulationCashFlowLineChart({
   let formatter = undefined;
   switch (dataView) {
     case 'net':
-      dataKeys.push('operatingCashFlow');
+      dataKeys.push('cashFlow');
       strokeColors.push('url(#colorGradient)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
@@ -258,7 +258,7 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     default:
-      dataKeys.push('operatingCashFlow');
+      dataKeys.push('cashFlow');
       strokeColors.push('url(#colorGradient)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;

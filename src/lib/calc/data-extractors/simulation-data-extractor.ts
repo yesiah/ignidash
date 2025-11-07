@@ -17,14 +17,14 @@ export interface ReturnsStatsData {
   earlyRetirementStockReturn: number | null;
 }
 
-export interface OperatingCashFlowData {
+export interface CashFlowData {
   totalIncome: number;
   earnedIncome: number;
   w2Income: number;
   taxExemptIncome: number;
   totalExpenses: number;
   totalTaxesAndPenalties: number;
-  operatingCashFlow: number;
+  cashFlow: number;
 }
 
 export interface TaxAmountsByType {
@@ -202,7 +202,7 @@ export class SimulationDataExtractor {
     return { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties };
   }
 
-  static getOperatingCashFlowData(dp: SimulationDataPoint): OperatingCashFlowData {
+  static getCashFlowData(dp: SimulationDataPoint): CashFlowData {
     const incomesData = dp.incomes;
     const expensesData = dp.expenses;
 
@@ -215,9 +215,9 @@ export class SimulationDataExtractor {
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
 
-    const operatingCashFlow = totalIncome - totalExpenses - totalTaxesAndPenalties;
+    const cashFlow = totalIncome - totalExpenses - totalTaxesAndPenalties;
 
-    return { totalIncome, earnedIncome, w2Income, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, operatingCashFlow };
+    return { totalIncome, earnedIncome, w2Income, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, cashFlow };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
@@ -433,9 +433,9 @@ export class SimulationDataExtractor {
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { totalIncome, totalTaxesAndPenalties, operatingCashFlow } = this.getOperatingCashFlowData(dp);
+    const { totalIncome, totalTaxesAndPenalties, cashFlow } = this.getCashFlowData(dp);
     const totalIncomeMinusTaxes = totalIncome - totalTaxesAndPenalties;
-    return totalIncomeMinusTaxes > 0 ? operatingCashFlow / totalIncomeMinusTaxes : null;
+    return totalIncomeMinusTaxes > 0 ? cashFlow / totalIncomeMinusTaxes : null;
   }
 
   static getWithdrawalRate(dp: SimulationDataPoint): number | null {

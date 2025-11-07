@@ -60,12 +60,7 @@ export abstract class ChartDataExtractor {
 
       const { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
         SimulationDataExtractor.getTaxAmountsByType(data);
-      const {
-        earnedIncome,
-        taxExemptIncome,
-        totalExpenses: expenses,
-        operatingCashFlow,
-      } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const { earnedIncome, taxExemptIncome, totalExpenses: expenses, cashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
@@ -81,7 +76,7 @@ export abstract class ChartDataExtractor {
         otherTaxes: ficaTax + earlyWithdrawalPenalties,
         totalTaxesAndPenalties,
         expenses,
-        operatingCashFlow,
+        cashFlow,
         savingsRate,
       };
     });

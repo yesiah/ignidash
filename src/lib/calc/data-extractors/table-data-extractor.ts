@@ -83,12 +83,7 @@ export abstract class TableDataExtractor {
 
       const { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
         SimulationDataExtractor.getTaxAmountsByType(data);
-      const {
-        earnedIncome,
-        taxExemptIncome,
-        totalExpenses: expenses,
-        operatingCashFlow,
-      } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const { earnedIncome, taxExemptIncome, totalExpenses: expenses, cashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
@@ -103,7 +98,7 @@ export abstract class TableDataExtractor {
         earlyWithdrawalPenalties,
         totalTaxesAndPenalties,
         expenses,
-        operatingCashFlow,
+        cashFlow,
         savingsRate,
         historicalYear,
       };
@@ -253,7 +248,7 @@ export abstract class TableDataExtractor {
         taxFreeContributions: taxFree,
         cashSavingsContributions: cashSavings,
       } = SimulationDataExtractor.getContributionsByTaxCategory(data);
-      const { operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const { cashFlow } = SimulationDataExtractor.getCashFlowData(data);
 
       return {
         year: idx,
@@ -268,7 +263,7 @@ export abstract class TableDataExtractor {
         annualEmployerMatch,
         cumulativeEmployerMatch: portfolioData.totalEmployerMatch,
         totalPortfolioValue,
-        operatingCashFlow,
+        cashFlow,
         historicalYear,
       };
     });
@@ -306,7 +301,7 @@ export abstract class TableDataExtractor {
       const { earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties } = SimulationDataExtractor.getTaxAmountsByType(data);
       cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
 
-      const { operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(data);
+      const { cashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(data);
 
       return {
@@ -330,7 +325,7 @@ export abstract class TableDataExtractor {
         annualRothEarningsWithdrawals: portfolioData.earningsWithdrawnForPeriod,
         cumulativeRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
         totalPortfolioValue,
-        operatingCashFlow,
+        cashFlow,
         withdrawalRate,
         historicalYear,
       };

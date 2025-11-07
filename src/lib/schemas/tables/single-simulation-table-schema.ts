@@ -65,7 +65,7 @@ export const singleSimulationCashFlowTableRowSchema = z.object({
   earlyWithdrawalPenalties: z.number().nullable(),
   totalTaxesAndPenalties: z.number().nullable(),
   expenses: z.number().nullable(),
-  operatingCashFlow: z.number().nullable(),
+  cashFlow: z.number().nullable(),
   savingsRate: z.number().nullable(),
   historicalYear: z.number().nullable(),
 });
@@ -84,7 +84,7 @@ const SINGLE_SIMULATION_CASHFLOW_COLUMNS = {
   earlyWithdrawalPenalties: { title: 'Early Withdrawal Penalties', format: 'currency' },
   totalTaxesAndPenalties: { title: 'Total Taxes & Penalties', format: 'currency' },
   expenses: { title: 'Expenses', format: 'currency' },
-  operatingCashFlow: { title: 'Operating Cash Flow', format: 'currency' },
+  cashFlow: { title: 'Cash Flow', format: 'currency' },
   savingsRate: { title: 'Savings Rate', format: 'percentage' },
   historicalYear: { title: 'Historical Year', format: 'number' },
 } as const;
@@ -245,7 +245,7 @@ export const singleSimulationContributionsTableRowSchema = z.object({
   annualEmployerMatch: z.number().nullable(),
   cumulativeEmployerMatch: z.number().nullable(),
   totalPortfolioValue: z.number().nullable(),
-  operatingCashFlow: z.number().nullable(),
+  cashFlow: z.number().nullable(),
   historicalYear: z.number().nullable(),
 });
 
@@ -264,7 +264,7 @@ const SINGLE_SIMULATION_CONTRIBUTIONS_COLUMNS = {
   annualEmployerMatch: { title: 'Annual Employer Match', format: 'currency' },
   cumulativeEmployerMatch: { title: 'Cumulative Employer Match', format: 'currency' },
   totalPortfolioValue: { title: 'Total Portfolio Value', format: 'currency' },
-  operatingCashFlow: { title: 'Operating Cash Flow', format: 'currency' },
+  cashFlow: { title: 'Cash Flow', format: 'currency' },
   historicalYear: { title: 'Historical Year', format: 'number' },
 } as const;
 
@@ -298,7 +298,7 @@ export const singleSimulationWithdrawalsTableRowSchema = z.object({
   annualRothEarningsWithdrawals: z.number().nullable(),
   cumulativeRothEarningsWithdrawals: z.number().nullable(),
   totalPortfolioValue: z.number().nullable(),
-  operatingCashFlow: z.number().nullable(),
+  cashFlow: z.number().nullable(),
   withdrawalRate: z.number().nullable(),
   historicalYear: z.number().nullable(),
 });
@@ -326,7 +326,7 @@ const SINGLE_SIMULATION_WITHDRAWALS_COLUMNS = {
   annualRothEarningsWithdrawals: { title: 'Annual Roth Earnings Withdrawals', format: 'currency' },
   cumulativeRothEarningsWithdrawals: { title: 'Cumulative Roth Earnings Withdrawals', format: 'currency' },
   totalPortfolioValue: { title: 'Total Portfolio Value', format: 'currency' },
-  operatingCashFlow: { title: 'Operating Cash Flow', format: 'currency' },
+  cashFlow: { title: 'Cash Flow', format: 'currency' },
   withdrawalRate: { title: 'Withdrawal Rate', format: 'percentage' },
   historicalYear: { title: 'Historical Year', format: 'number' },
 } as const;

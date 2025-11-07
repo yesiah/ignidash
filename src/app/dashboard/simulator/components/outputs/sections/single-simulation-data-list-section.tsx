@@ -13,7 +13,7 @@ import { Subheading } from '@/components/catalyst/heading';
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { useResultsCategory } from '@/lib/stores/simulator-store';
 
-function OperatingCashFlowTooltip({ taxExemptIncome }: { taxExemptIncome: number }) {
+function CashFlowTooltip({ taxExemptIncome }: { taxExemptIncome: number }) {
   return (
     <Tooltip>
       <TooltipTrigger>
@@ -87,7 +87,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const { totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
-  const { earnedIncome, taxExemptIncome, totalExpenses, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
+  const { earnedIncome, taxExemptIncome, totalExpenses, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
@@ -115,10 +115,10 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails>{formatNumber(totalExpenses, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
-            Operating Cash Flow
-            <OperatingCashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            Cash Flow
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
           </DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(operatingCashFlow, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-bold">{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Savings Rate
@@ -197,7 +197,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const annualContributions = portfolioData.contributionsForPeriod;
   const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
-  const { taxExemptIncome, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
+  const { taxExemptIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
 
   return (
     <div>
@@ -211,10 +211,10 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails>{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3">
-            Operating Cash Flow
-            <OperatingCashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            Cash Flow
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
           </DescriptionTerm>
-          <DescriptionDetails>{formatNumber(operatingCashFlow, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm>Annual Employer Match</DescriptionTerm>
           <DescriptionDetails>{formatNumber(annualEmployerMatch, 2, '$')}</DescriptionDetails>
@@ -232,7 +232,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-  const { taxExemptIncome, operatingCashFlow } = SimulationDataExtractor.getOperatingCashFlowData(dp);
+  const { taxExemptIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);
 
   return (
@@ -247,10 +247,10 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails>{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3">
-            Operating Cash Flow
-            <OperatingCashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            Cash Flow
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
           </DescriptionTerm>
-          <DescriptionDetails>{formatNumber(operatingCashFlow, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="font-bold">Annual Withdrawals</DescriptionTerm>
           <DescriptionDetails className="font-bold">{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>

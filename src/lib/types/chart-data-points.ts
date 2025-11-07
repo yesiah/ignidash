@@ -28,7 +28,7 @@ export interface SingleSimulationCashFlowChartDataPoint {
   otherTaxes: number;
   totalTaxesAndPenalties: number;
   expenses: number;
-  operatingCashFlow: number;
+  cashFlow: number;
   savingsRate: number | null;
 }
 
