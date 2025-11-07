@@ -230,14 +230,9 @@ export default function SingleSimulationTaxesLineChart({
   const chartData: SingleSimulationTaxesChartDataPoint[] = rawChartData;
 
   const dataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
-  let yAxisDomain: [number, number] | undefined = undefined;
   let formatter = undefined;
   switch (dataView) {
     case 'marginalRates':
-      yAxisDomain = [
-        Math.min(0, ...chartData.flatMap((d) => [d.topMarginalIncomeTaxRate * 1.25, d.topMarginalCapGainsTaxRate * 1.25])),
-        Math.max(0, ...chartData.flatMap((d) => [d.topMarginalIncomeTaxRate * 1.25, d.topMarginalCapGainsTaxRate * 1.25])),
-      ];
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       dataKeys.push('topMarginalIncomeTaxRate', 'topMarginalCapGainsTaxRate');
       break;
@@ -326,14 +321,7 @@ export default function SingleSimulationTaxesLineChart({
           >
             <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
             <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
-            <YAxis
-              tick={{ fill: foregroundMutedColor }}
-              axisLine={false}
-              tickLine={false}
-              hide={isSmallScreen}
-              tickFormatter={formatter}
-              domain={yAxisDomain}
-            />
+            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
             {dataKeys.map((dataKey, index) => (
               <Line
                 key={dataKey}
