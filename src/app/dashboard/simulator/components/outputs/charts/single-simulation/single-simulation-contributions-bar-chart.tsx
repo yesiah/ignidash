@@ -64,7 +64,7 @@ export default function SingleSimulationContributionsBarChart({
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     taxCategory: {
       mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
-      desktop: ['Taxable Contributions', 'Tax-Deferred Contributions', 'Tax-Free Contributions', 'Cash Contributions'],
+      desktop: ['Taxable Contrib.', 'Tax-Deferred Contrib.', 'Tax-Free Contrib.', 'Cash Contrib.'],
     },
     employerMatch: {
       mobile: ['Annual Match', 'Cumul. Match'],
