@@ -100,9 +100,9 @@ export class TaxProcessor {
 
     const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes);
 
-    const totalTaxLiability =
+    const totalTaxLiabilityExcludingFICA =
       incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount + earlyWithdrawalPenalties.totalPenaltyAmount;
-    const difference = totalTaxLiability - annualIncomesData.totalAmountWithheld;
+    const difference = totalTaxLiabilityExcludingFICA - annualIncomesData.totalAmountWithheld;
 
     return {
       adjustedGrossIncome: adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains,
