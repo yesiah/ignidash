@@ -21,15 +21,19 @@ export function formatNumberAsNumber(num: number): number {
 
 export function formatChartString(input: string): string {
   const withSpaces = input.replace(/(?<!^)([A-Z])/g, ' $1');
-  const withCapitalized = withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
+  let result = withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
 
-  if (withCapitalized.startsWith('Tax Free')) return 'Tax-Free' + withCapitalized.slice(8);
-  if (withCapitalized.startsWith('Tax Deferred')) return 'Tax-Deferred' + withCapitalized.slice(12);
-  if (withCapitalized.startsWith('Annual Fica')) return 'Annual FICA' + withCapitalized.slice(11);
-  if (withCapitalized.startsWith('Cumulative Fica')) return 'Cumul. FICA' + withCapitalized.slice(15);
-  if (withCapitalized.startsWith('Fica Tax')) return 'FICA Tax' + withCapitalized.slice(8);
-  if (withCapitalized.startsWith('Tax Exempt')) return 'Tax-Exempt' + withCapitalized.slice(10);
-  if (withCapitalized.startsWith('Cumulative')) return 'Cumul.' + withCapitalized.slice(10);
+  const replacements: Array<[string, string]> = [
+    ['Tax Free', 'Tax-Free'],
+    ['Tax Deferred', 'Tax-Deferred'],
+    ['Tax Exempt', 'Tax-Exempt'],
+    ['Fica', 'FICA'],
+    ['Cumulative', 'Cumul.'],
+  ];
 
-  return withCapitalized;
+  for (const [search, replace] of replacements) {
+    result = result.replace(new RegExp(search, 'g'), replace);
+  }
+
+  return result;
 }
