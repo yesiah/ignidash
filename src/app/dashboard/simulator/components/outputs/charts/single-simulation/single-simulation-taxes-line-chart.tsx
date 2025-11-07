@@ -35,6 +35,7 @@ interface CustomTooltipProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
+    | 'taxExemptIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -60,6 +61,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'adjustedGrossIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
+      | 'taxExemptIncome'
       | 'ordinaryIncome'
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
@@ -75,6 +77,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       case 'adjustedGrossIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
+      case 'taxExemptIncome':
       case 'ordinaryIncome':
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
@@ -150,6 +153,8 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
         </div>
       );
       break;
+    case 'taxExemptIncome':
+      break;
   }
 
   return (
@@ -195,6 +200,7 @@ interface SingleSimulationTaxesLineChartProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
+    | 'taxExemptIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -262,6 +268,10 @@ export default function SingleSimulationTaxesLineChart({
     case 'retirementDistributions':
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+      break;
+    case 'taxExemptIncome':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('taxExemptIncome');
       break;
     case 'ordinaryIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');

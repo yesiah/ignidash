@@ -108,6 +108,7 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
+    | 'taxExemptIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'

@@ -166,6 +166,7 @@ const CustomLabelListContent = (props: any) => {
       | 'adjustedGrossIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
+      | 'taxExemptIncome'
       | 'ordinaryIncome'
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
@@ -181,6 +182,7 @@ const CustomLabelListContent = (props: any) => {
       case 'adjustedGrossIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
+      case 'taxExemptIncome':
       case 'ordinaryIncome':
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
@@ -233,6 +235,7 @@ interface SingleSimulationTaxesBarChartProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
+    | 'taxExemptIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -419,6 +422,10 @@ export default function SingleSimulationTaxesBarChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
+    case 'taxExemptIncome':
+      transformedChartData = chartData.flatMap((item) => [{ name: 'Tax-Exempt Income', amount: item.taxExemptIncome }]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
     case 'ordinaryIncome': {
       const [earnedIncomeLabel, interestIncomeLabel, retirementDistributionsLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [

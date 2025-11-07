@@ -22,6 +22,7 @@ interface SingleSimulationTaxesLineChartCardProps {
       | 'adjustedGrossIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
+      | 'taxExemptIncome'
       | 'ordinaryIncome'
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
@@ -36,6 +37,7 @@ interface SingleSimulationTaxesLineChartCardProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
+    | 'taxExemptIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -79,6 +81,7 @@ export default function SingleSimulationTaxesLineChartCard({
                 | 'adjustedGrossIncome'
                 | 'investmentIncome'
                 | 'retirementDistributions'
+                | 'taxExemptIncome'
                 | 'ordinaryIncome'
                 | 'capGainsAndDividends'
                 | 'earlyWithdrawalPenalties'
@@ -104,6 +107,7 @@ export default function SingleSimulationTaxesLineChartCard({
             <option value="capGainsAndDividends">Capital Gains &amp; Dividends</option>
             <option value="investmentIncome">Investment Income</option>
             <option value="retirementDistributions">Retirement Distributions</option>
+            <option value="taxExemptIncome">Tax-Exempt Income</option>
           </optgroup>
           <optgroup label="Issues & Penalties">
             <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
