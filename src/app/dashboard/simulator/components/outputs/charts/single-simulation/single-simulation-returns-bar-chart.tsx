@@ -107,9 +107,9 @@ export default function SingleSimulationReturnsBarChart({
     }
     case 'annualAmounts':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Stock Growth', amount: item.stockGrowth },
-        { name: 'Bond Growth', amount: item.bondGrowth },
-        { name: 'Cash Growth', amount: item.cashGrowth },
+        { name: 'Annual Stock Growth', amount: item.annualStockGrowth },
+        { name: 'Annual Bond Growth', amount: item.annualBondGrowth },
+        { name: 'Annual Cash Growth', amount: item.annualCashGrowth },
       ]);
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
@@ -134,9 +134,9 @@ export default function SingleSimulationReturnsBarChart({
         ...chartData
           .flatMap(({ perAccountData }) =>
             perAccountData.flatMap(({ id, returnAmountsForPeriod }) => [
-              { id, name: 'Stock Growth', amount: returnAmountsForPeriod.stocks },
-              { id, name: 'Bond Growth', amount: returnAmountsForPeriod.bonds },
-              { id, name: 'Cash Growth', amount: returnAmountsForPeriod.cash },
+              { id, name: 'Annual Stock Growth', amount: returnAmountsForPeriod.stocks },
+              { id, name: 'Annual Bond Growth', amount: returnAmountsForPeriod.bonds },
+              { id, name: 'Annual Cash Growth', amount: returnAmountsForPeriod.cash },
             ])
           )
           .filter(({ id }) => id === customDataID),
