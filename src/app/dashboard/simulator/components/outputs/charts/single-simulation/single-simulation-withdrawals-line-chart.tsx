@@ -212,9 +212,12 @@ export default function SingleSimulationWithdrawalsLineChart({
       const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
           .filter((account) => account.id === customDataID)
-          .map((account) => {
-            return { age, ...account, annualWithdrawals: account.withdrawalsForPeriod, cumulativeWithdrawals: account.totalWithdrawals };
-          })
+          .map((account) => ({
+            age,
+            ...account,
+            annualWithdrawals: account.withdrawalsForPeriod,
+            cumulativeWithdrawals: account.totalWithdrawals,
+          }))
       );
 
       chartData = perAccountData;

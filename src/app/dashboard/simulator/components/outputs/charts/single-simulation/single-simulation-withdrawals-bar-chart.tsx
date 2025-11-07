@@ -152,13 +152,14 @@ export default function SingleSimulationWithdrawalsBarChart({
         break;
       }
 
-      transformedChartData = [
-        ...chartData
-          .flatMap(({ perAccountData }) =>
-            perAccountData.map(({ id, name, withdrawalsForPeriod }) => ({ id, name, amount: withdrawalsForPeriod }))
-          )
-          .filter(({ id }) => id === customDataID),
-      ];
+      transformedChartData = chartData
+        .flatMap(({ perAccountData }) => perAccountData)
+        .filter(({ id }) => id === customDataID)
+        .map(({ id, name, withdrawalsForPeriod }) => ({
+          id,
+          name,
+          amount: withdrawalsForPeriod,
+        }));
       break;
   }
 

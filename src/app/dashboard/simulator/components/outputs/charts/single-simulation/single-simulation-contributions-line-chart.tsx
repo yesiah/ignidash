@@ -141,14 +141,12 @@ export default function SingleSimulationContributionsLineChart({
       const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
           .filter((account) => account.id === customDataID)
-          .map((account) => {
-            return {
-              age,
-              ...account,
-              annualContributions: account.contributionsForPeriod,
-              cumulativeContributions: account.totalContributions,
-            };
-          })
+          .map((account) => ({
+            age,
+            ...account,
+            annualContributions: account.contributionsForPeriod,
+            cumulativeContributions: account.totalContributions,
+          }))
       );
 
       chartData = perAccountData;

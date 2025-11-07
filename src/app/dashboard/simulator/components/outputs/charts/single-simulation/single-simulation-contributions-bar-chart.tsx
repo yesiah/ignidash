@@ -111,13 +111,14 @@ export default function SingleSimulationContributionsBarChart({
         break;
       }
 
-      transformedChartData = [
-        ...chartData
-          .flatMap(({ perAccountData }) =>
-            perAccountData.map(({ id, name, contributionsForPeriod }) => ({ id, name, amount: contributionsForPeriod }))
-          )
-          .filter(({ id }) => id === customDataID),
-      ];
+      transformedChartData = chartData
+        .flatMap(({ perAccountData }) => perAccountData)
+        .filter(({ id }) => id === customDataID)
+        .map(({ id, name, contributionsForPeriod }) => ({
+          id,
+          name,
+          amount: contributionsForPeriod,
+        }));
       break;
   }
 
