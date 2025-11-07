@@ -20,6 +20,7 @@ export interface ReturnsStatsData {
 export interface OperatingCashFlowData {
   totalIncome: number;
   earnedIncome: number;
+  w2Income: number;
   taxExemptIncome: number;
   totalExpenses: number;
   totalTaxesAndPenalties: number;
@@ -209,12 +210,13 @@ export class SimulationDataExtractor {
     const totalIncome = incomesData?.totalIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
     const earnedIncome = totalIncome - taxExemptIncome;
+    const w2Income = earnedIncome; // Note: earnedIncome is currently all W-2 income
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
 
     const operatingCashFlow = totalIncome - totalExpenses - totalTaxesAndPenalties;
 
-    return { totalIncome, earnedIncome, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, operatingCashFlow };
+    return { totalIncome, earnedIncome, w2Income, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, operatingCashFlow };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
