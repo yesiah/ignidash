@@ -30,7 +30,7 @@ const CustomLabelListContent = (props: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
-  const truncateText = (text: string, maxLength = 22) => {
+  const truncateText = (text: string, maxLength = 24) => {
     return text.length > maxLength ? text.substring(0, maxLength - 3) + '…' : text;
   };
 
@@ -71,7 +71,7 @@ export default function MultiSimulationPhasesBarChart({ age, rawChartData }: Mul
 
   const shouldUseCustomTick = chartData.length > 3 || (isSmallScreen && chartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
-  const bottomMargin = shouldUseCustomTick ? 80 : 25;
+  const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
   return (
     <div>
