@@ -214,14 +214,14 @@ export class TaxProcessor {
     capitalLossDeduction: number;
   } {
     const adjustedRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + this.capitalLossCarryover;
-    if (adjustedRealizedGains < 0) {
-      const capitalLossDeduction = Math.max(-3000, adjustedRealizedGains);
-      this.capitalLossCarryover = adjustedRealizedGains - capitalLossDeduction;
-      return { adjustedRealizedGains: 0, capitalLossDeduction };
-    } else {
+    if (adjustedRealizedGains >= 0) {
       this.capitalLossCarryover = 0;
       return { adjustedRealizedGains, capitalLossDeduction: 0 };
     }
+
+    const capitalLossDeduction = Math.max(-3000, adjustedRealizedGains);
+    this.capitalLossCarryover = adjustedRealizedGains - capitalLossDeduction;
+    return { adjustedRealizedGains: 0, capitalLossDeduction };
   }
 
   private getEmployeeContributionsForAccountTypes(
