@@ -79,7 +79,7 @@ export default function SingleSimulationCashFlowBarChart({
   let transformedChartData: { name: string; amount: number; type: string }[] = [];
   switch (dataView) {
     case 'net': {
-      const [earnedIncomeLabel, taxExemptIncomeLabel, expensesLabel, taxesAndPenaltiesLabel] = getLabelsForScreenSize(
+      const [earnedIncomeLabel, taxExemptIncomeLabel, taxesAndPenaltiesLabel, expensesLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
