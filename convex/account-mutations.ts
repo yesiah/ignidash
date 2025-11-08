@@ -26,12 +26,11 @@ export const upsertAccount = mutation({
 
     const accountExists = plan.accounts.find((acc) => acc.id === account.id);
     if (!accountExists) {
-      const contributionRulesCount = plan.contributionRules.length;
-
+      // Add a default contribution rule for the new account
       updatedContributionRules.push({
         id: uuidv4(),
         accountId: account.id,
-        rank: contributionRulesCount + 1,
+        rank: plan.contributionRules.length + 1,
         amount: { type: 'unlimited' as const },
         disabled: false,
       });
