@@ -3,6 +3,8 @@ import { mutation } from './_generated/server';
 import { authComponent } from './auth';
 
 import { timelineValidator } from './validators/timeline-validator';
+import { baseContributionRuleValidator } from './validators/contribution-rules-validator';
+import { marketAssumptionsValidator } from './validators/market-assumptions-validator';
 
 export const createBlankPlan = mutation({
   args: { newPlanName: v.string() },
@@ -105,5 +107,45 @@ export const updatePlanTimeline = mutation({
     if (plan.userId !== userId) throw new Error('Not authorized to update this plan');
 
     await ctx.db.patch(planId, { timeline });
+  },
+});
+
+export const updateBaseContributionRule = mutation({
+  args: {
+    planId: v.id('plans'),
+    baseContributionRule: baseContributionRuleValidator,
+  },
+  handler: async (ctx, { planId, baseContributionRule }) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const userId = user?._id;
+
+    if (!userId) throw new Error('User not authenticated');
+
+    const plan = await ctx.db.get(planId);
+
+    if (!plan) throw new Error('Plan not found');
+    if (plan.userId !== userId) throw new Error('Not authorized to update this plan');
+
+    await ctx.db.patch(planId, { baseContributionRule });
+  },
+});
+
+export const updateMarketAssumptions = mutation({
+  args: {
+    planId: v.id('plans'),
+    marketAssumptions: marketAssumptionsValidator,
+  },
+  handler: async (ctx, { planId, marketAssumptions }) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const userId = user?._id;
+
+    if (!userId) throw new Error('User not authenticated');
+
+    const plan = await ctx.db.get(planId);
+
+    if (!plan) throw new Error('Plan not found');
+    if (plan.userId !== userId) throw new Error('Not authorized to update this plan');
+
+    await ctx.db.patch(planId, { marketAssumptions });
   },
 });
