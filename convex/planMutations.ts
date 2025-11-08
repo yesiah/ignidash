@@ -2,6 +2,8 @@ import { v } from 'convex/values';
 import { mutation } from './_generated/server';
 import { authComponent } from './auth';
 
+import { timelineValidator } from './validators/timeline-validator';
+
 export const createBlankPlan = mutation({
   args: { newPlanName: v.string() },
   handler: async (ctx, { newPlanName }) => {
@@ -52,23 +54,6 @@ export const cloneExistingPlan = mutation({
   },
 });
 
-export const updatePlanName = mutation({
-  args: { planId: v.id('plans'), name: v.string() },
-  handler: async (ctx, { planId, name }) => {
-    const user = await authComponent.safeGetAuthUser(ctx);
-    const userId = user?._id;
-
-    if (!userId) throw new Error('User not authenticated');
-
-    const plan = await ctx.db.get(planId);
-
-    if (!plan) throw new Error('Plan not found');
-    if (plan.userId !== userId) throw new Error('Not authorized to update this plan');
-
-    await ctx.db.patch(planId, { name });
-  },
-});
-
 export const deletePlan = mutation({
   args: { planId: v.id('plans') },
   handler: async (ctx, { planId }) => {
@@ -86,17 +71,27 @@ export const deletePlan = mutation({
   },
 });
 
+export const updatePlanName = mutation({
+  args: { planId: v.id('plans'), name: v.string() },
+  handler: async (ctx, { planId, name }) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const userId = user?._id;
+
+    if (!userId) throw new Error('User not authenticated');
+
+    const plan = await ctx.db.get(planId);
+
+    if (!plan) throw new Error('Plan not found');
+    if (plan.userId !== userId) throw new Error('Not authorized to update this plan');
+
+    await ctx.db.patch(planId, { name });
+  },
+});
+
 export const updatePlanTimeline = mutation({
   args: {
     planId: v.id('plans'),
-    timeline: v.object({
-      currentAge: v.number(),
-      lifeExpectancy: v.number(),
-      retirementStrategy: v.union(
-        v.object({ type: v.literal('fixedAge'), retirementAge: v.number() }),
-        v.object({ type: v.literal('swrTarget'), safeWithdrawalRate: v.number() })
-      ),
-    }),
+    timeline: timelineValidator,
   },
   handler: async (ctx, { planId, timeline }) => {
     const user = await authComponent.safeGetAuthUser(ctx);
