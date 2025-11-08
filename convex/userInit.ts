@@ -5,7 +5,7 @@ import { authComponent } from './auth';
  * Create a default plan for a new user
  * This should be called when a user first signs up or first accesses the app
  */
-export const initDefaultPlan = mutation({
+export const getOrCreateDefaultPlan = mutation({
   args: {},
   handler: async (ctx) => {
     const user = await authComponent.safeGetAuthUser(ctx);
@@ -19,9 +19,9 @@ export const initDefaultPlan = mutation({
       .query('plans')
       .withIndex('by_userId', (q) => q.eq('userId', userId))
       .first();
-    if (existingPlan) return;
+    if (existingPlan) return existingPlan;
 
-    await ctx.db.insert('plans', {
+    const newPlanId = await ctx.db.insert('plans', {
       userId,
       name: `${userName}'s Plan`,
       timeline: null,
@@ -32,5 +32,7 @@ export const initDefaultPlan = mutation({
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
     });
+
+    return ctx.db.get(newPlanId);
   },
 });
