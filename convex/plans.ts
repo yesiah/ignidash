@@ -155,3 +155,30 @@ export const updatePlanName = mutation({
     await ctx.db.patch(planId, { name });
   },
 });
+
+export const updatePlan = mutation({
+  args: {
+    planId: v.id('plans'),
+    timeline: v.union(timelineValidator, v.null()),
+    incomes: v.array(incomeValidator),
+    expenses: v.array(expenseValidator),
+    accounts: v.array(accountValidator),
+    contributionRules: v.array(contributionRulesValidator),
+    baseContributionRule: baseContributionRuleValidator,
+    marketAssumptions: marketAssumptionsValidator,
+  },
+  handler: async (ctx, { planId, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions }) => {
+    const { userId } = await getUserIdOrThrow(ctx);
+    await getPlanForUserIdOrThrow(ctx, planId, userId);
+
+    await ctx.db.patch(planId, {
+      timeline,
+      incomes,
+      expenses,
+      accounts,
+      contributionRules,
+      baseContributionRule,
+      marketAssumptions,
+    });
+  },
+});
