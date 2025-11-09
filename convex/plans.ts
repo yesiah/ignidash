@@ -3,6 +3,12 @@ import { query, mutation } from './_generated/server';
 
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { getPlanForUserIdOrThrow } from './utils/plan_utils';
+import { timelineValidator } from './validators/timeline_validator';
+import { incomeValidator } from './validators/incomes_validator';
+import { expenseValidator } from './validators/expenses_validator';
+import { accountValidator } from './validators/accounts_validator';
+import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
+import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
 
 export const listPlans = query({
   args: {},
@@ -59,7 +65,7 @@ export const getOrCreateDefaultPlan = mutation({
   },
 });
 
-export const createPlan = mutation({
+export const createBlankPlan = mutation({
   args: { newPlanName: v.string() },
   handler: async (ctx, { newPlanName }) => {
     const { userId } = await getUserIdOrThrow(ctx);
@@ -74,6 +80,37 @@ export const createPlan = mutation({
       contributionRules: [],
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
+    });
+  },
+});
+
+export const createPlanWithData = mutation({
+  args: {
+    newPlanName: v.string(),
+    timeline: v.union(timelineValidator, v.null()),
+    incomes: v.array(incomeValidator),
+    expenses: v.array(expenseValidator),
+    accounts: v.array(accountValidator),
+    contributionRules: v.array(contributionRulesValidator),
+    baseContributionRule: baseContributionRuleValidator,
+    marketAssumptions: marketAssumptionsValidator,
+  },
+  handler: async (
+    ctx,
+    { newPlanName, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions }
+  ) => {
+    const { userId } = await getUserIdOrThrow(ctx);
+
+    return await ctx.db.insert('plans', {
+      userId,
+      name: newPlanName,
+      timeline,
+      incomes,
+      expenses,
+      accounts,
+      contributionRules,
+      baseContributionRule,
+      marketAssumptions,
     });
   },
 });

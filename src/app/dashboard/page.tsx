@@ -7,7 +7,7 @@ import MainArea from '@/components/layout/main-area';
 import { Button } from '@/components/catalyst/button';
 
 export default function DashboardPage() {
-  const m = useMutation(api.plans.createPlan);
+  const m = useMutation(api.plans.createBlankPlan);
 
   return (
     <MainArea hasSecondaryColumn={false}>
