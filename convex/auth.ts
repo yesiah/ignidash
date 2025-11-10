@@ -4,9 +4,11 @@ import { convex } from '@convex-dev/better-auth/plugins';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
 import { Resend } from '@convex-dev/resend';
 import { betterAuth } from 'better-auth';
-import { APIError } from 'better-auth/api';
+import { APIError, createAuthMiddleware } from 'better-auth/api';
+import { getJwtToken } from 'better-auth/plugins';
+import { fetchMutation } from 'convex/nextjs';
 
-import { components } from './_generated/api';
+import { components, api } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
 import { query } from './_generated/server';
 
@@ -144,6 +146,21 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
         });
       },
       sendOnSignUp: true,
+    },
+    hooks: {
+      after: createAuthMiddleware(async (ctx) => {
+        const newSession = ctx.context.newSession;
+        if (!newSession) return;
+
+        ctx.context.session = newSession;
+
+        try {
+          const token = await getJwtToken(ctx, { jwt: { issuer: process.env.CONVEX_SITE_URL!, audience: 'convex' } });
+          await fetchMutation(api.plans.getOrCreateDefaultPlan, {}, { token });
+        } catch (error) {
+          console.error('Error creating default plan for new user:', error);
+        }
+      }),
     },
   });
 };

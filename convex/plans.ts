@@ -47,9 +47,9 @@ export const getOrCreateDefaultPlan = mutation({
       .query('plans')
       .withIndex('by_userId', (q) => q.eq('userId', userId))
       .first();
-    if (existingPlan) return existingPlan;
+    if (existingPlan) return existingPlan._id;
 
-    const newPlanId = await ctx.db.insert('plans', {
+    return await ctx.db.insert('plans', {
       userId,
       name: `${userName}'s Plan`,
       timeline: null,
@@ -60,8 +60,6 @@ export const getOrCreateDefaultPlan = mutation({
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
     });
-
-    return ctx.db.get(newPlanId);
   },
 });
 
