@@ -8,6 +8,11 @@ export default async function SimulatorIndexPage() {
   const token = await getToken();
   if (!token) redirect('/signin');
 
-  const planId = await fetchMutation(api.plans.getOrCreateDefaultPlan, {}, { token });
-  redirect(`/dashboard/simulator/${planId}`);
+  try {
+    const planId = await fetchMutation(api.plans.getOrCreateDefaultPlan, {}, { token });
+    redirect(`/dashboard/simulator/${planId}`);
+  } catch (error) {
+    console.error('Error fetching or creating default plan:', error);
+    redirect('/dashboard');
+  }
 }
