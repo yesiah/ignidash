@@ -32,7 +32,7 @@ import { Field, Label, Description } from '@/components/catalyst/fieldset';
 import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
 import { accountTypeForDisplay, type AccountInputs, taxCategoryFromAccountType } from '@/lib/schemas/inputs/account-form-schema';
 import type { TaxCategory } from '@/lib/calc/asset';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';

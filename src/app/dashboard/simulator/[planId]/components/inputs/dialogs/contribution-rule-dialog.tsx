@@ -32,7 +32,7 @@ import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface ContributionRuleDialogProps {
   onClose: () => void;

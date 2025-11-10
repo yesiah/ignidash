@@ -17,7 +17,7 @@ import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
 import { DialogActions } from '@/components/catalyst/dialog';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 function calculateRealReturn(nominalReturn: number, inflationRate: number): number {
   const realReturn = (1 + nominalReturn / 100) / (1 + inflationRate / 100) - 1;

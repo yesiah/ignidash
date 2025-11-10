@@ -15,7 +15,7 @@ import { formatNumber } from '@/lib/utils';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
 import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
 import DisclosureSectionDataItem from '../disclosure-section-data-item';

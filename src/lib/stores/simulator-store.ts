@@ -1,6 +1,5 @@
 'use client';
 
-import type { Id } from '@/convex/_generated/dataModel';
 import * as Comlink from 'comlink';
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { create } from 'zustand';
@@ -67,8 +66,6 @@ export type QuickSelectPercentile = 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null
 export type SimulationStatus = 'none' | 'loading';
 
 interface SimulatorState {
-  selectedPlanId: Id<'plans'> | null;
-
   results: {
     quickSelectPercentile: QuickSelectPercentile;
     selectedSeedFromTable: number | null;
@@ -86,9 +83,6 @@ interface SimulatorState {
   };
 
   actions: {
-    /* Plan */
-    updateSelectedPlanId: (id: Id<'plans'>) => void;
-
     /* Results */
     updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
     updateSelectedSeedFromTable: (seed: number | null) => void;
@@ -106,7 +100,6 @@ interface SimulatorState {
 }
 
 export const defaultState: Omit<SimulatorState, 'actions'> = {
-  selectedPlanId: 'jd7aqt0x9h0jsf453dc0kn1r197v47gv' as Id<'plans'>, // Demo Plan
   results: {
     quickSelectPercentile: 'p50',
     selectedSeedFromTable: null,
@@ -133,10 +126,6 @@ export const useSimulatorStore = create<SimulatorState>()(
       immer((set, get) => ({
         ...defaultState,
         actions: {
-          updateSelectedPlanId: (id) =>
-            set((state) => {
-              state.selectedPlanId = id;
-            }),
           updateQuickSelectPercentile: (percentile) =>
             set((state) => {
               state.results.quickSelectPercentile = percentile;
@@ -205,7 +194,6 @@ export const useSimulatorStore = create<SimulatorState>()(
  * Data selectors (stable references)
  * These hooks provide direct access to specific sections of the form data
  */
-export const useSelectedPlanId = () => useSimulatorStore((state) => state.selectedPlanId)!;
 export const useQuickSelectPercentile = () => useSimulatorStore((state) => state.results.quickSelectPercentile);
 export const useSelectedSeedFromTable = () => useSimulatorStore((state) => state.results.selectedSeedFromTable);
 export const useSelectedSeedFromQuickPercentile = () => useSimulatorStore((state) => state.results.selectedSeedFromQuickPercentile);
@@ -220,7 +208,6 @@ export const useMonteCarloSortMode = () => useSimulatorStore((state) => state.re
  * Action selectors
  * These hooks provide access to update functions with built-in validation
  */
-export const useUpdateSelectedPlanId = () => useSimulatorStore((state) => state.actions.updateSelectedPlanId);
 export const useUpdateQuickSelectPercentile = () => useSimulatorStore((state) => state.actions.updateQuickSelectPercentile);
 export const useUpdateSelectedSeedFromTable = () => useSimulatorStore((state) => state.actions.updateSelectedSeedFromTable);
 export const useUpdateSelectedSeedFromQuickPercentile = () =>

@@ -12,7 +12,7 @@ import {
   contributionFromConvex,
   baseContributionFromConvex,
 } from '@/lib/utils/convex-to-zod-transformers';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 // Simulator Plan
 export const usePlanData = () => {

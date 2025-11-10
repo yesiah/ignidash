@@ -22,7 +22,7 @@ import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/c
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
-import { useSelectedPlanId } from '@/lib/stores/simulator-store';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface IncomeDialogProps {
   onClose: () => void;
