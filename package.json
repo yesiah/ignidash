@@ -56,7 +56,8 @@
     ],
     "*.{json,md,css}": [
       "prettier --write"
-    ]
+    ],
+    "!convex/_generated/**": "echo 'Ignoring generated files'"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
