@@ -1,17 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useConvexAuth } from 'convex/react';
 
 import { DesktopSidebar } from '@/components/layout/sidebar/desktop-sidebar';
 import MobileHeader from '@/components/layout/sidebar/mobile-header';
 import MobileSidebar from '@/components/layout/sidebar/mobile-sidebar';
 import { useSidebarCollapsed } from '@/lib/stores/simulator-store';
-import PageLoading from '@/components/ui/page-loading';
+import UnauthenticatedWrapper from '@/components/layout/unauthenticated-wrapper';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useConvexAuth();
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleSidebarClose = () => setSidebarOpen(false);
 
@@ -23,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <DesktopSidebar />
       <div className="flex h-full flex-col">
         <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
-        {!isAuthenticated && !isLoading ? <PageLoading message="Redirecting to sign-in" /> : children}
+        <UnauthenticatedWrapper>{children}</UnauthenticatedWrapper>
       </div>
     </div>
   );

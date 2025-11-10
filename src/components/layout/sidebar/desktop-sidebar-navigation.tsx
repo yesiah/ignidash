@@ -1,3 +1,5 @@
+'use client';
+
 import { useNavigationItems, useSecondaryNavigationItems } from '@/hooks/use-sidebar-navigation';
 import { cn } from '@/lib/utils';
 
