@@ -16,7 +16,8 @@ export async function middleware(request: NextRequest) {
   if (session && isAuthPage) return NextResponse.redirect(new URL('/dashboard', request.url));
 
   const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard');
-  if (!session && isDashboardPage) return NextResponse.redirect(new URL('/signin', request.url));
+  if (!session && isDashboardPage)
+    return NextResponse.redirect(new URL(`/signin?redirect=${encodeURIComponent(request.nextUrl.pathname)}`, request.url));
 
   return NextResponse.next();
 }
