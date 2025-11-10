@@ -9,11 +9,12 @@ import { cn } from '@/lib/utils';
 interface SidebarLinkProps {
   href: string;
   current: boolean;
+  disabled?: boolean;
   children: React.ReactNode;
   tooltipLabel?: string;
 }
 
-export default function SidebarLink({ href, current, children, tooltipLabel }: SidebarLinkProps) {
+export default function SidebarLink({ href, current, disabled = false, children, tooltipLabel }: SidebarLinkProps) {
   const linkComponent = (
     <Link
       href={href}

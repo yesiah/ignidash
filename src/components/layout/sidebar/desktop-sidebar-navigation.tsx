@@ -10,13 +10,13 @@ export default function DesktopSidebarNavigation() {
 
   return (
     <ul role="list" className="space-y-1.5">
-      {navigation.map((item) => (
-        <li key={item.name}>
-          <SidebarLink href={item.href} current={item.current} tooltipLabel={item.name}>
+      {navigation.map(({ name, href, icon: Icon, current, ...other }) => (
+        <li key={name}>
+          <SidebarLink href={href} current={current} tooltipLabel={name} {...other}>
             <div className="p-2">
-              <item.icon aria-hidden="true" className="size-6 shrink-0" />
+              <Icon aria-hidden="true" className="size-6 shrink-0" />
             </div>
-            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{item.name}</span>
+            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{name}</span>
           </SidebarLink>
         </li>
       ))}
@@ -29,13 +29,13 @@ export function DesktopSidebarSecondaryNavigation() {
 
   return (
     <>
-      {secondaryNavigation.map((item) => (
-        <li key={item.name}>
-          <SidebarLink href={item.href} current={item.current} tooltipLabel={item.name}>
+      {secondaryNavigation.map(({ name, href, icon: Icon, current }) => (
+        <li key={name}>
+          <SidebarLink href={href} current={current} tooltipLabel={name}>
             <div className="p-2">
-              <item.icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': item.href === '/pricing' })} />
+              <Icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': href === '/pricing' })} />
             </div>
-            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{item.name}</span>
+            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{name}</span>
           </SidebarLink>
         </li>
       ))}
