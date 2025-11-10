@@ -39,7 +39,7 @@ export default function MobileHeader({ onMenuClick }: MobileHeaderProps) {
       <Dropdown>
         <Headless.MenuButton aria-label="Account options" className="focus-outline shrink-0">
           {image ? (
-            <Image alt="" src={image} className="size-8 shrink-0 rounded-full" width={32} height={32} />
+            <Image alt="Profile pic" src={image} className="size-8 shrink-0 rounded-full" width={32} height={32} />
           ) : (
             <CircleUserRoundIcon className="size-8 shrink-0 rounded-full" />
           )}
