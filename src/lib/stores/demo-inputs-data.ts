@@ -51,7 +51,7 @@ export const demoInputs1: SimulatorInputs = {
         growthLimit: 25000,
       },
       taxes: {
-        incomeType: 'selfEmployment',
+        incomeType: 'wage',
         withholding: 20,
       },
     },
@@ -243,7 +243,7 @@ export const demoInputs2: SimulatorInputs = {
         growthRate: 3,
       },
       taxes: {
-        incomeType: 'selfEmployment',
+        incomeType: 'wage',
         withholding: 25,
       },
     },
