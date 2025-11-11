@@ -1,7 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
-
 import { cn } from '@/lib/utils';
 
 interface SectionContainerProps {
@@ -27,13 +23,8 @@ export default function SectionContainer({ children, showBottomBorder, location 
   }
 
   return (
-    <motion.div
-      className={cn('py-5', { 'border-border/50 border-b': showBottomBorder }, outerXMarginClass, className)}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div className={cn('py-5', { 'border-border/50 border-b': showBottomBorder }, outerXMarginClass, className)}>
       <div className={innerXMarginClass}>{children}</div>
-    </motion.div>
+    </div>
   );
 }
