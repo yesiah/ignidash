@@ -78,7 +78,7 @@ function DisclosureSectionContent({
           className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         >
           {children}
         </motion.div>
