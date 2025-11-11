@@ -2,7 +2,7 @@ import { GlobeLockIcon } from 'lucide-react';
 
 export default function PrivacyPage() {
   return (
-    <main className="border-border/50 lg:bg-emphasized-background mx-auto min-h-dvh max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:border-x lg:px-8">
+    <main className="border-border/50 lg:bg-emphasized-background mx-auto min-h-dvh max-w-prose px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:border-x lg:px-4">
       <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
         <div className="my-8">
           <div className="flex items-center gap-4">

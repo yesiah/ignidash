@@ -39,7 +39,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   if (isAccountsDataLoading || isAuthLoading || (isAuthenticated && !authData)) {
     return (
-      <main className="mx-auto flex min-h-dvh max-w-prose items-center justify-center px-4 pt-[4.25rem]">
+      <main className="mx-auto flex min-h-dvh max-w-prose items-center justify-center px-2 pt-[4.25rem]">
         <PageLoading ariaLabel="Loading settings" message="Loading settings" />
       </main>
     );
@@ -51,7 +51,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   return (
     <>
-      <main className="mx-auto min-h-dvh max-w-prose px-4 pt-[4.25rem] pb-[2.125rem] sm:px-6 lg:px-8">
+      <main className="mx-auto min-h-dvh max-w-prose px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:px-4">
         {isAuthenticated && (
           <ProfileInfoForm
             userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
