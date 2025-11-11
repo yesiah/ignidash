@@ -20,7 +20,7 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
       <Heading level={3} className="mx-2 my-4">
         Simulations
       </Heading>
-      <div className="grid w-full grid-cols-1 gap-2 lg:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
         {plans.map((plan) => (
           <Card key={plan._id} className="my-0 w-full">
             <Subheading level={4}>
