@@ -4,36 +4,36 @@ import { useMemo, useCallback } from 'react';
 
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
-import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
+import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-data-points';
 import { useShowReferenceLines } from '@/lib/stores/simulator-store';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Subheading } from '@/components/catalyst/heading';
 
-import SingleSimulationContributionsLineChart from '../../charts/single-simulation/single-simulation-contributions-line-chart';
+import SingleSimulationReturnsLineChart from '../charts/single-simulation-returns-line-chart';
 
-interface SingleSimulationContributionsLineChartCardProps {
+interface SingleSimulationReturnsLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
-  setDataView: (view: 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom' | 'employerMatch') => void;
-  dataView: 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom' | 'employerMatch';
-  setCustomDataID: (name: string) => void;
-  customDataID: string;
-  rawChartData: SingleSimulationContributionsChartDataPoint[];
+  setDataView: (view: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'custom') => void;
+  dataView: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'custom';
+  rawChartData: SingleSimulationReturnsChartDataPoint[];
   keyMetrics: KeyMetrics;
   startAge: number;
+  setCustomDataID: (name: string) => void;
+  customDataID: string;
 }
 
-export default function SingleSimulationContributionsLineChartCard({
+export default function SingleSimulationReturnsLineChartCard({
   onAgeSelect,
   selectedAge,
   setDataView,
   dataView,
-  setCustomDataID,
-  customDataID,
   rawChartData,
   keyMetrics,
   startAge,
-}: SingleSimulationContributionsLineChartCardProps) {
+  setCustomDataID,
+  customDataID,
+}: SingleSimulationReturnsLineChartCardProps) {
   const showReferenceLines = useShowReferenceLines();
 
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
@@ -49,33 +49,33 @@ export default function SingleSimulationContributionsLineChartCard({
     <Card className="my-0">
       <div className="mb-4 flex items-center justify-between">
         <Subheading level={4}>
-          <span className="mr-2">Contributions</span>
+          <span className="mr-2">Returns</span>
           <span className="text-muted-foreground hidden sm:inline">Time Series</span>
         </Subheading>
         <Select
           className="max-w-48 sm:max-w-64"
-          id="contributions-data-view"
-          name="contributions-data-view"
+          id="returns-data-view"
+          name="returns-data-view"
           value={dataView === 'custom' ? customDataID : dataView}
           onChange={(e) => {
             const isCustomSelection =
-              e.target.value !== 'annualAmounts' &&
-              e.target.value !== 'cumulativeAmounts' &&
-              e.target.value !== 'taxCategory' &&
-              e.target.value !== 'employerMatch';
+              e.target.value !== 'rates' && e.target.value !== 'annualAmounts' && e.target.value !== 'cumulativeAmounts';
             if (isCustomSelection) {
               setDataView('custom');
               setCustomDataID(e.target.value);
             } else {
-              setDataView(e.target.value as 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'employerMatch');
+              setDataView(e.target.value as 'rates' | 'annualAmounts' | 'cumulativeAmounts');
               setCustomDataID('');
             }
           }}
         >
-          <option value="taxCategory">Tax Category</option>
-          <option value="annualAmounts">Annual Contributions</option>
-          <option value="cumulativeAmounts">Cumulative Contributions</option>
-          <option value="employerMatch">Employer Match</option>
+          <optgroup label="Return Rates">
+            <option value="rates">Real Annual Returns</option>
+          </optgroup>
+          <optgroup label="Growth Amounts">
+            <option value="annualAmounts">Annual Growth</option>
+            <option value="cumulativeAmounts">Cumulative Growth</option>
+          </optgroup>
           <optgroup label="By Account">
             {uniqueAccounts.map((account) => (
               <option key={account.id} value={account.id}>
@@ -85,7 +85,7 @@ export default function SingleSimulationContributionsLineChartCard({
           </optgroup>
         </Select>
       </div>
-      <SingleSimulationContributionsLineChart
+      <SingleSimulationReturnsLineChart
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         rawChartData={rawChartData}
