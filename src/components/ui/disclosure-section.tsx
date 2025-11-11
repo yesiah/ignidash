@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { RefObject, useEffect, useRef } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
@@ -73,7 +74,14 @@ function DisclosureSectionContent({
         </DisclosureButton>
       </div>
       <DisclosurePanel className="border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4">
-        <div className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}>{children}</div>
+        <motion.div
+          className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {children}
+        </motion.div>
       </DisclosurePanel>
     </div>
   );
