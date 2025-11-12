@@ -203,7 +203,7 @@ export default function Example() {
     <>
       <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-          <h1 className="text-base/7 font-semibold text-zinc-900 dark:text-white">Simulations</h1>
+          <h1 className="text-base/7 font-semibold text-zinc-900 dark:text-white">Your Plans</h1>
           <Menu as="div" className="relative">
             <MenuButton className="flex items-center gap-x-1 text-sm/6 font-medium text-zinc-900 dark:text-white">
               Sort by
