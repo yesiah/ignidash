@@ -151,7 +151,7 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
           <Heading level={3}>Simulations</Heading>
           <Button color="rose" onClick={() => setPlanDialogOpen(true)}>
             <PlusIcon />
-            Create Plan
+            Create
           </Button>
         </div>
         <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
