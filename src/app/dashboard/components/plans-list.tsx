@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { PencilSquareIcon } from '@heroicons/react/20/solid';
-import { Doc } from '@/convex/_generated/dataModel';
+import { Doc, Id } from '@/convex/_generated/dataModel';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 import type { SimulationResult } from '@/lib/calc/simulation-engine';
@@ -13,6 +14,8 @@ import SectionContainer from '@/components/ui/section-container';
 import { Heading, Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { Button } from '@/components/catalyst/button';
+import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 import { Select } from '@/components/catalyst/select';
 import {
   useResultsCategory,
@@ -41,9 +44,10 @@ function PlanChart({ simulation, keyMetrics }: PlanChartProps) {
 
 interface PlanCardProps {
   plan: Doc<'plans'>;
+  deletePlan: () => void;
 }
 
-function PlanCard({ plan }: PlanCardProps) {
+function PlanCard({ plan, deletePlan }: PlanCardProps) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const simulation = useSimulationResult(inputs, 'fixedReturns');
@@ -63,7 +67,7 @@ function PlanCard({ plan }: PlanCardProps) {
             </DropdownButton>
             <DropdownMenu portal={false}>
               <DropdownItem onClick={() => {}}>Edit</DropdownItem>
-              <DropdownItem onClick={() => {}}>Delete</DropdownItem>
+              <DropdownItem onClick={deletePlan}>Delete</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -97,30 +101,65 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
   const resultsCategory = useResultsCategory();
   const updateResultsCategory = useUpdateResultsCategory();
 
+  const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+
+  const deleteMutation = useMutation(api.plans.deletePlan);
+  const deletePlan = useCallback(
+    async (planId: Id<'plans'>) => {
+      await deleteMutation({ planId });
+    },
+    [deleteMutation]
+  );
+
   return (
-    <SectionContainer showBottomBorder={false}>
-      <div className="mx-2 mb-4 flex items-center justify-between">
-        <Heading level={3}>Simulations</Heading>
-        <Select
-          className="max-w-48 sm:max-w-64"
-          id="results-category-select"
-          name="results-category-select"
-          value={resultsCategory}
-          onChange={(e) => updateResultsCategory(e.target.value as SimulationCategory)}
-        >
-          <option value={SimulationCategory.Portfolio}>{SimulationCategory.Portfolio}</option>
-          <option value={SimulationCategory.CashFlow}>{SimulationCategory.CashFlow}</option>
-          <option value={SimulationCategory.Taxes}>{SimulationCategory.Taxes}</option>
-          <option value={SimulationCategory.Returns}>{SimulationCategory.Returns}</option>
-          <option value={SimulationCategory.Contributions}>{SimulationCategory.Contributions}</option>
-          <option value={SimulationCategory.Withdrawals}>{SimulationCategory.Withdrawals}</option>
-        </Select>
-      </div>
-      <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
-        {plans.map((plan) => (
-          <PlanCard key={plan._id} plan={plan} />
-        ))}
-      </div>
-    </SectionContainer>
+    <>
+      <SectionContainer showBottomBorder={false}>
+        <div className="mx-2 mb-4 flex items-center justify-between">
+          <Heading level={3}>Simulations</Heading>
+          <Select
+            className="max-w-48 sm:max-w-64"
+            id="results-category-select"
+            name="results-category-select"
+            value={resultsCategory}
+            onChange={(e) => updateResultsCategory(e.target.value as SimulationCategory)}
+          >
+            <option value={SimulationCategory.Portfolio}>{SimulationCategory.Portfolio}</option>
+            <option value={SimulationCategory.CashFlow}>{SimulationCategory.CashFlow}</option>
+            <option value={SimulationCategory.Taxes}>{SimulationCategory.Taxes}</option>
+            <option value={SimulationCategory.Returns}>{SimulationCategory.Returns}</option>
+            <option value={SimulationCategory.Contributions}>{SimulationCategory.Contributions}</option>
+            <option value={SimulationCategory.Withdrawals}>{SimulationCategory.Withdrawals}</option>
+          </Select>
+        </div>
+        <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
+          {plans.map((plan) => (
+            <PlanCard key={plan._id} plan={plan} deletePlan={() => setPlanToDelete({ id: plan._id, name: plan.name })} />
+          ))}
+        </div>
+      </SectionContainer>
+      <Alert
+        open={!!planToDelete}
+        onClose={() => {
+          setPlanToDelete(null);
+        }}
+      >
+        <AlertTitle>Are you sure you want to delete {planToDelete ? `"${planToDelete.name}"` : 'this'}?</AlertTitle>
+        <AlertDescription>This action cannot be undone.</AlertDescription>
+        <AlertActions>
+          <Button plain onClick={() => setPlanToDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            color="red"
+            onClick={async () => {
+              await deletePlan(planToDelete!.id);
+              setPlanToDelete(null);
+            }}
+          >
+            Delete
+          </Button>
+        </AlertActions>
+      </Alert>
+    </>
   );
 }

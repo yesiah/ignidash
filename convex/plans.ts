@@ -9,6 +9,7 @@ import { expenseValidator } from './validators/expenses_validator';
 import { accountValidator } from './validators/accounts_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
+import { api } from './_generated/api';
 
 export const listPlans = query({
   args: {},
@@ -21,6 +22,20 @@ export const listPlans = query({
       .collect();
 
     return plans;
+  },
+});
+
+export const getCountOfPlans = query({
+  args: {},
+  handler: async (ctx) => {
+    const { userId } = await getUserIdOrThrow(ctx);
+
+    const plans = await ctx.db
+      .query('plans')
+      .withIndex('by_userId', (q) => q.eq('userId', userId))
+      .collect();
+
+    return plans.length;
   },
 });
 
@@ -139,6 +154,9 @@ export const deletePlan = mutation({
   handler: async (ctx, { planId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
     await getPlanForUserIdOrThrow(ctx, planId, userId);
+
+    const plansCount = await ctx.runQuery(api.plans.getCountOfPlans, {});
+    if (plansCount <= 1) throw new Error('You cannot delete your only plan.');
 
     await ctx.db.delete(planId);
   },
