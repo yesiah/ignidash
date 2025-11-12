@@ -16,6 +16,7 @@ import type * as http from "../http.js";
 import type * as income from "../income.js";
 import type * as market_assumptions from "../market_assumptions.js";
 import type * as plans from "../plans.js";
+import type * as templates_basic from "../templates/basic.js";
 import type * as timeline from "../timeline.js";
 import type * as utils_auth_utils from "../utils/auth_utils.js";
 import type * as utils_plan_utils from "../utils/plan_utils.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   income: typeof income;
   market_assumptions: typeof market_assumptions;
   plans: typeof plans;
+  "templates/basic": typeof templates_basic;
   timeline: typeof timeline;
   "utils/auth_utils": typeof utils_auth_utils;
   "utils/plan_utils": typeof utils_plan_utils;
