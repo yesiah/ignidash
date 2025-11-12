@@ -19,7 +19,7 @@ interface PlanDialogProps {
   numPlans: number;
   selectedPlan: { id: Id<'plans'>; name: string } | null;
   allPlans: { id: Id<'plans'>; name: string }[];
-  planToClone?: { id: Id<'plans'>; name: string } | null;
+  planToClone?: { id: Id<'plans'>; name: string };
 }
 
 export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, planToClone }: PlanDialogProps) {
@@ -31,7 +31,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, 
 
   const defaultValues: PlanMetadata = {
     name: getDefaultName(),
-    clonedPlanId: selectedPlan !== null ? undefined : (planToClone?.id ?? undefined),
+    clonedPlanId: selectedPlan !== null ? undefined : planToClone?.id,
   };
 
   const {
