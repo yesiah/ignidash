@@ -42,13 +42,16 @@ interface PlanCardProps {
   onDropdownClickEdit: () => void;
   onDropdownClickClone: () => void;
   onDropdownClickDelete: () => void;
+  disableActions: { disableEdit?: boolean; disableClone?: boolean; disableDelete?: boolean };
 }
 
-function PlanCard({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete }: PlanCardProps) {
+function PlanCard({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete, disableActions }: PlanCardProps) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const simulation = useSimulationResult(inputs, 'fixedReturns');
   const keyMetrics = useKeyMetrics(simulation);
+
+  const { disableEdit, disableClone, disableDelete } = disableActions;
 
   return (
     <Card key={plan._id} className="my-0 w-full">
@@ -63,9 +66,15 @@ function PlanCard({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownC
               <EllipsisVerticalIcon />
             </DropdownButton>
             <DropdownMenu portal={false}>
-              <DropdownItem onClick={onDropdownClickEdit}>Edit</DropdownItem>
-              <DropdownItem onClick={onDropdownClickClone}>Clone</DropdownItem>
-              <DropdownItem onClick={onDropdownClickDelete}>Delete</DropdownItem>
+              <DropdownItem disabled={disableEdit} onClick={onDropdownClickEdit}>
+                Edit
+              </DropdownItem>
+              <DropdownItem disabled={disableClone} onClick={onDropdownClickClone}>
+                Clone
+              </DropdownItem>
+              <DropdownItem disabled={disableDelete} onClick={onDropdownClickDelete}>
+                Delete
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -140,11 +149,11 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
         <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
           {plans.map((plan) => {
             const planMetadata = { id: plan._id, name: plan.name };
-
             return (
               <PlanCard
                 key={plan._id}
                 plan={plan}
+                disableActions={{ disableDelete: plans.length <= 1 }}
                 onDropdownClickEdit={() => handleEdit(planMetadata)}
                 onDropdownClickClone={() => handleClone(planMetadata)}
                 onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
