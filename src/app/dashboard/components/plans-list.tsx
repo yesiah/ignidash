@@ -147,27 +147,29 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
   return (
     <>
       <SectionContainer showBottomBorder={false}>
-        <div className="mx-2 mb-4 flex items-center justify-between">
-          <Heading level={3}>Simulations</Heading>
-          <Button color="rose" onClick={() => setPlanDialogOpen(true)}>
-            <PlusIcon />
-            Create
-          </Button>
-        </div>
-        <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
-          {plans.map((plan) => {
-            const planMetadata = { id: plan._id, name: plan.name };
-            return (
-              <PlanCard
-                key={plan._id}
-                plan={plan}
-                disableActions={{ disableDelete: plans.length <= 1 }}
-                onDropdownClickEdit={() => handleEdit(planMetadata)}
-                onDropdownClickClone={() => handleClone(planMetadata)}
-                onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
-              />
-            );
-          })}
+        <div className="mx-auto max-w-3xl lg:max-w-5xl xl:max-w-7xl">
+          <div className="mx-2 mb-4 flex items-center justify-between">
+            <Heading level={3}>Simulations</Heading>
+            <Button color="rose" onClick={() => setPlanDialogOpen(true)}>
+              <PlusIcon />
+              Create
+            </Button>
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
+            {plans.map((plan) => {
+              const planMetadata = { id: plan._id, name: plan.name };
+              return (
+                <PlanCard
+                  key={plan._id}
+                  plan={plan}
+                  disableActions={{ disableDelete: plans.length <= 1 }}
+                  onDropdownClickEdit={() => handleEdit(planMetadata)}
+                  onDropdownClickClone={() => handleClone(planMetadata)}
+                  onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
+                />
+              );
+            })}
+          </div>
         </div>
       </SectionContainer>
       <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
