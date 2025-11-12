@@ -8,7 +8,7 @@ import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ChevronRightIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { EllipsisVerticalIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
@@ -18,15 +18,6 @@ import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
 
 import PlanDialog from './dialogs/plan-dialog';
 
-const statuses = {
-  offline: 'text-zinc-400 bg-zinc-100 dark:text-zinc-500 dark:bg-zinc-100/10',
-  online: 'text-green-500 bg-green-500/10 dark:text-green-400 dark:bg-green-400/10',
-  error: 'text-rose-500 bg-rose-500/10 dark:text-rose-400 dark:bg-rose-400/10',
-};
-const environments = {
-  Preview: 'text-zinc-500 bg-zinc-50 ring-zinc-200 dark:text-zinc-400 dark:bg-zinc-400/10 dark:ring-zinc-400/20',
-  Production: 'text-rose-500 bg-rose-50 ring-rose-200 dark:text-rose-400 dark:bg-rose-400/10 dark:ring-rose-400/30',
-};
 const activityItems = [
   {
     user: {
@@ -126,10 +117,6 @@ const activityItems = [
   },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 interface PlanListItems {
   plan: Doc<'plans'>;
   onDropdownClickEdit: () => void;
@@ -145,8 +132,7 @@ function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropd
   const simulation = useSimulationResult(inputs, 'fixedReturns');
   const keyMetrics = useKeyMetrics(simulation);
 
-  const status = isCalculationReady ? 'offline' : keyMetrics?.success ? 'online' : 'error';
-  const environment = isCalculationReady ? 'Production' : 'Preview';
+  const status = !isCalculationReady ? 'In progress' : keyMetrics?.success ? 'Success' : 'Failed';
 
   //   const { disableEdit, disableClone, disableDelete } = disableActions;
 
@@ -154,30 +140,70 @@ function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropd
     <li key={plan._id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8">
       <div className="min-w-0 flex-auto">
         <div className="flex items-center gap-x-3">
-          <div className={classNames(statuses[status], 'flex-none rounded-full p-1')}>
-            <div className="size-2 rounded-full bg-current" />
-          </div>
-          <h2 className="min-w-0 text-sm/6 font-semibold text-zinc-900 dark:text-white">
-            <Link href={`/dashboard/simulator/${plan._id}`} className="flex gap-x-2">
-              <span className="truncate">Team Name</span>
-              <span className="text-zinc-400">/</span>
-              <span className="whitespace-nowrap">{plan.name}</span>
-              <span className="absolute inset-0" />
-            </Link>
-          </h2>
+          <p className="text-sm/6 font-semibold text-zinc-900 dark:text-white">{plan.name}</p>
+          {status === 'In progress' ? (
+            <p className="mt-0.5 rounded-md bg-zinc-50 px-1.5 py-0.5 text-xs font-medium text-zinc-600 inset-ring inset-ring-zinc-500/10 dark:bg-zinc-400/10 dark:text-zinc-400 dark:inset-ring-zinc-400/20">
+              {status}
+            </p>
+          ) : null}
+          {status === 'Success' ? (
+            <p className="mt-0.5 rounded-md bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/20">
+              {status}
+            </p>
+          ) : null}
         </div>
-        <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-zinc-500 dark:text-zinc-400">
-          <p className="truncate">Description</p>
-          <svg viewBox="0 0 2 2" className="size-0.5 flex-none fill-zinc-300 dark:fill-zinc-500">
+        <div className="mt-1 flex items-center gap-x-2 text-xs/5 text-zinc-500 dark:text-zinc-400">
+          <p className="whitespace-nowrap">Created {new Date(plan._creationTime).toLocaleDateString()}</p>
+          <svg viewBox="0 0 2 2" className="size-0.5 fill-current">
             <circle r={1} cx={1} cy={1} />
           </svg>
-          <p className="whitespace-nowrap">Created {new Date(plan._creationTime).toLocaleDateString()}</p>
+          <p className="truncate">Created by Joe</p>
         </div>
       </div>
-      <div className={classNames(environments[environment], 'flex-none rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset')}>
-        {environment}
+      <div className="flex flex-none items-center gap-x-4">
+        <Link
+          href={`/dashboard/simulator/${plan._id}`}
+          className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-zinc-900 shadow-xs inset-ring inset-ring-zinc-300 hover:bg-zinc-50 sm:block dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20"
+        >
+          View plan<span className="sr-only">, {plan.name}</span>
+        </Link>
+        <Menu as="div" className="relative flex-none">
+          <MenuButton className="relative block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
+            <span className="absolute -inset-2.5" />
+            <span className="sr-only">Open options</span>
+            <EllipsisVerticalIcon aria-hidden="true" className="size-5" />
+          </MenuButton>
+          <MenuItems
+            transition
+            className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-zinc-900/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+          >
+            <MenuItem>
+              <a
+                href="#"
+                className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
+              >
+                Edit<span className="sr-only">, {plan.name}</span>
+              </a>
+            </MenuItem>
+            <MenuItem>
+              <a
+                href="#"
+                className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
+              >
+                Move<span className="sr-only">, {plan.name}</span>
+              </a>
+            </MenuItem>
+            <MenuItem>
+              <a
+                href="#"
+                className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
+              >
+                Delete<span className="sr-only">, {plan.name}</span>
+              </a>
+            </MenuItem>
+          </MenuItems>
+        </Menu>
       </div>
-      <ChevronRightIcon aria-hidden="true" className="size-5 flex-none text-zinc-400" />
     </li>
   );
 }
