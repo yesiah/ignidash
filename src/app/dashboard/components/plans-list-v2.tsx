@@ -6,11 +6,12 @@ import { Preloaded, usePreloadedQuery } from 'convex/react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { EllipsisVerticalIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+import { PlusIcon, PencilSquareIcon } from '@heroicons/react/16/solid';
 
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
+import { Heading } from '@/components/catalyst/heading';
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { useSimulationResult, useKeyMetrics, useIsCalculationReady } from '@/lib/stores/simulator-store';
@@ -236,42 +237,11 @@ export default function PlanListV2({ preloadedPlans }: PlanListV2Props) {
     <>
       <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-          <h1 className="text-base/7 font-semibold text-zinc-900 dark:text-white">Your Plans</h1>
-          <Menu as="div" className="relative">
-            <MenuButton className="flex items-center gap-x-1 text-sm/6 font-medium text-zinc-900 dark:text-white">
-              Sort by
-              <ChevronUpDownIcon aria-hidden="true" className="size-5 text-zinc-500" />
-            </MenuButton>
-            <MenuItems
-              transition
-              className="absolute right-0 z-10 mt-2.5 w-40 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-zinc-900/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-            >
-              <MenuItem>
-                <a
-                  href="#"
-                  className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
-                >
-                  Name
-                </a>
-              </MenuItem>
-              <MenuItem>
-                <a
-                  href="#"
-                  className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
-                >
-                  Date updated
-                </a>
-              </MenuItem>
-              <MenuItem>
-                <a
-                  href="#"
-                  className="block px-3 py-1 text-sm/6 text-zinc-900 data-focus:bg-zinc-50 data-focus:outline-hidden dark:text-white dark:data-focus:bg-white/5"
-                >
-                  Environment
-                </a>
-              </MenuItem>
-            </MenuItems>
-          </Menu>
+          <Heading level={3}>Your Plans</Heading>
+          <Button color="rose" onClick={() => setPlanDialogOpen(true)}>
+            <PlusIcon />
+            Create
+          </Button>
         </header>
         <ul role="list" className="divide-border/25 divide-y">
           {plans.map((plan) => {
@@ -291,10 +261,11 @@ export default function PlanListV2({ preloadedPlans }: PlanListV2Props) {
       </div>
       <aside className="border-border/50 -mx-2 border-t bg-zinc-50 sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l dark:bg-black/10">
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-          <h2 className="text-base/7 font-semibold text-zinc-900 dark:text-white">Your Finances</h2>
-          <a href="#" className="text-sm/6 font-semibold text-rose-600 dark:text-rose-400">
-            View all
-          </a>
+          <Heading level={4}>Your Finances</Heading>
+          <Button outline onClick={() => {}}>
+            <PencilSquareIcon />
+            Edit
+          </Button>
         </header>
         <ul role="list" className="divide-border/25 divide-y">
           {activityItems.map((item) => (
