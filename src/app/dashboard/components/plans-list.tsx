@@ -100,6 +100,7 @@ interface PlansListProps {
 
 export default function PlansList({ preloadedPlans }: PlansListProps) {
   const plans = usePreloadedQuery(preloadedPlans);
+  const allPlans = useMemo(() => plans.map((plan) => ({ id: plan._id, name: plan.name })), [plans]);
 
   const resultsCategory = useResultsCategory();
   const updateResultsCategory = useUpdateResultsCategory();
@@ -163,7 +164,7 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
         </div>
       </SectionContainer>
       <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
-        <PlanDialog numPlans={plans.length} selectedPlan={selectedPlan} onClose={handleClose} />
+        <PlanDialog numPlans={plans.length} selectedPlan={selectedPlan} allPlans={allPlans} onClose={handleClose} />
       </Dialog>
       <Alert
         open={!!planToDelete}

@@ -129,8 +129,8 @@ export const createPlanWithData = mutation({
 });
 
 export const clonePlan = mutation({
-  args: { planId: v.id('plans') },
-  handler: async (ctx, { planId }) => {
+  args: { newPlanName: v.string(), planId: v.id('plans') },
+  handler: async (ctx, { newPlanName, planId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
     const plan = await getPlanForUserIdOrThrow(ctx, planId, userId);
 
@@ -145,7 +145,7 @@ export const clonePlan = mutation({
       marketAssumptions: structuredClone(marketAssumptions),
     };
 
-    return await ctx.db.insert('plans', { userId, name: `${plan.name} (Copy)`, ...clonedData });
+    return await ctx.db.insert('plans', { userId, name: newPlanName, ...clonedData });
   },
 });
 

@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { planMetadataSchema, type PlanMetadata } from '@/lib/schemas/plan-metadata-schema';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
+import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 
@@ -17,10 +18,15 @@ interface PlanDialogProps {
   onClose: () => void;
   numPlans: number;
   selectedPlan: { id: Id<'plans'>; name: string } | null;
+  allPlans: { id: Id<'plans'>; name: string }[];
+  planToClone?: { id: Id<'plans'>; name: string } | null;
 }
 
-export default function PlanDialog({ onClose, numPlans, selectedPlan }: PlanDialogProps) {
-  const defaultValues = selectedPlan || { name: 'Plan ' + (numPlans + 1) };
+export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, planToClone }: PlanDialogProps) {
+  const defaultValues =
+    selectedPlan !== null
+      ? { ...selectedPlan, clonedPlanId: undefined }
+      : ({ name: 'Plan ' + (numPlans + 1), clonedPlanId: planToClone?.id ?? undefined } as const satisfies PlanMetadata);
 
   const {
     register,
@@ -32,8 +38,18 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan }: PlanDial
   });
 
   const updateNameMutation = useMutation(api.plans.updatePlanName);
+  const clonePlanMutation = useMutation(api.plans.clonePlan);
+  const createPlanMutation = useMutation(api.plans.createBlankPlan);
+
   const onSubmit = async (data: PlanMetadata) => {
-    await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
+    if (selectedPlan) {
+      await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
+    } else if (data.clonedPlanId) {
+      await clonePlanMutation({ planId: data.clonedPlanId as Id<'plans'>, newPlanName: data.name });
+    } else {
+      await createPlanMutation({ newPlanName: data.name });
+    }
+
     onClose();
   };
 
@@ -63,6 +79,19 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan }: PlanDial
                 />
                 {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
               </Field>
+              {!selectedPlan && (
+                <Field>
+                  <Label htmlFor="clonedPlanId">With Template</Label>
+                  <Select {...register('clonedPlanId')} id="clonedPlanId" name="clonedPlanId">
+                    <option value="">Blank plan</option>
+                    {allPlans.map((plan) => (
+                      <option key={plan.id} value={plan.id}>
+                        Copy of {plan.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+              )}
             </FieldGroup>
           </DialogBody>
         </Fieldset>
