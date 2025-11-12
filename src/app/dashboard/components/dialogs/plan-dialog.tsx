@@ -6,6 +6,7 @@ import { Id } from '@/convex/_generated/dataModel';
 import { FileTextIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { planMetadataSchema, type PlanMetadata } from '@/lib/schemas/plan-metadata-schema';
@@ -22,16 +23,18 @@ interface PlanDialogProps {
   planToClone?: { id: Id<'plans'>; name: string };
 }
 
-export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, planToClone }: PlanDialogProps) {
+export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedPlan, allPlans, planToClone }: PlanDialogProps) {
+  const [initialSelectedPlan] = useState(_selectedPlan);
+
   const getDefaultName = () => {
-    if (selectedPlan !== null) return selectedPlan.name;
+    if (initialSelectedPlan !== null) return initialSelectedPlan.name;
     if (planToClone) return `Copy of ${planToClone.name}`;
     return `Plan ${numPlans + 1}`;
   };
 
   const defaultValues: PlanMetadata = {
     name: getDefaultName(),
-    clonedPlanId: selectedPlan !== null ? undefined : planToClone?.id,
+    clonedPlanId: initialSelectedPlan !== null ? undefined : planToClone?.id,
   };
 
   const {
@@ -48,8 +51,8 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, 
   const createPlanMutation = useMutation(api.plans.createBlankPlan);
 
   const onSubmit = async (data: PlanMetadata) => {
-    if (selectedPlan) {
-      await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
+    if (initialSelectedPlan) {
+      await updateNameMutation({ planId: initialSelectedPlan!.id, name: data.name });
     } else if (data.clonedPlanId) {
       await clonePlanMutation({ planId: data.clonedPlanId as Id<'plans'>, newPlanName: data.name });
     } else {
@@ -64,7 +67,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, 
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <FileTextIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{selectedPlan ? 'Edit Plan' : 'New Plan'}</span>
+          <span>{initialSelectedPlan ? 'Edit Plan' : 'New Plan'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,7 +88,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan, allPlans, 
                 />
                 {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
               </Field>
-              {!selectedPlan && (
+              {!initialSelectedPlan && (
                 <Field>
                   <Label htmlFor="clonedPlanId">With Template</Label>
                   <Select {...register('clonedPlanId')} id="clonedPlanId" name="clonedPlanId">
