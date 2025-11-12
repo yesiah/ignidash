@@ -155,8 +155,8 @@ export const deletePlan = mutation({
     const { userId } = await getUserIdOrThrow(ctx);
     await getPlanForUserIdOrThrow(ctx, planId, userId);
 
-    const plansCount = await ctx.runQuery(api.plans.getCountOfPlans, {});
-    if (plansCount <= 1) throw new Error('You cannot delete your only plan.');
+    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
+    if (numPlans <= 1) throw new Error('You cannot delete your only plan.');
 
     await ctx.db.delete(planId);
   },

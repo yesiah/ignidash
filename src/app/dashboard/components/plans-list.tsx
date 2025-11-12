@@ -14,6 +14,7 @@ import SectionContainer from '@/components/ui/section-container';
 import { Heading, Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 import { Select } from '@/components/catalyst/select';
@@ -28,7 +29,8 @@ import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { formatNumber } from '@/lib/utils';
 import { SimulationCategory } from '@/lib/types/simulation-category';
 
-import PortfolioPreviewChart from './charts.tsx/portfolio-preview-chart';
+import PortfolioPreviewChart from './charts/portfolio-preview-chart';
+import PlanDialog from './dialogs/plan-dialog';
 
 interface PlanChartProps {
   simulation: SimulationResult;
@@ -44,10 +46,11 @@ function PlanChart({ simulation, keyMetrics }: PlanChartProps) {
 
 interface PlanCardProps {
   plan: Doc<'plans'>;
-  deletePlan: () => void;
+  onDropdownClickEdit: () => void;
+  onDropdownClickDelete: () => void;
 }
 
-function PlanCard({ plan, deletePlan }: PlanCardProps) {
+function PlanCard({ plan, onDropdownClickEdit, onDropdownClickDelete }: PlanCardProps) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const simulation = useSimulationResult(inputs, 'fixedReturns');
@@ -66,8 +69,8 @@ function PlanCard({ plan, deletePlan }: PlanCardProps) {
               <PencilSquareIcon />
             </DropdownButton>
             <DropdownMenu portal={false}>
-              <DropdownItem onClick={() => {}}>Edit</DropdownItem>
-              <DropdownItem onClick={deletePlan}>Delete</DropdownItem>
+              <DropdownItem onClick={onDropdownClickEdit}>Edit</DropdownItem>
+              <DropdownItem onClick={onDropdownClickDelete}>Delete</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -101,6 +104,19 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
   const resultsCategory = useResultsCategory();
   const updateResultsCategory = useUpdateResultsCategory();
 
+  const [planDialogOpen, setPlanDialogOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+
+  const handleClose = () => {
+    setSelectedPlan(null);
+    setPlanDialogOpen(false);
+  };
+
+  const handleEdit = (plan: { id: Id<'plans'>; name: string }) => {
+    setSelectedPlan(plan);
+    setPlanDialogOpen(true);
+  };
+
   const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
 
   const deleteMutation = useMutation(api.plans.deletePlan);
@@ -132,11 +148,23 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
           </Select>
         </div>
         <div className="grid w-full grid-cols-1 gap-2 xl:grid-cols-2">
-          {plans.map((plan) => (
-            <PlanCard key={plan._id} plan={plan} deletePlan={() => setPlanToDelete({ id: plan._id, name: plan.name })} />
-          ))}
+          {plans.map((plan) => {
+            const planMetadata = { id: plan._id, name: plan.name };
+
+            return (
+              <PlanCard
+                key={plan._id}
+                plan={plan}
+                onDropdownClickEdit={() => handleEdit(planMetadata)}
+                onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
+              />
+            );
+          })}
         </div>
       </SectionContainer>
+      <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
+        <PlanDialog numPlans={plans.length} existingPlan={selectedPlan} onClose={handleClose} />
+      </Dialog>
       <Alert
         open={!!planToDelete}
         onClose={() => {
