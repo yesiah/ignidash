@@ -1,8 +1,22 @@
 'use client';
 
+import { useMemo, useState, useCallback } from 'react';
+import { Doc, Id } from '@/convex/_generated/dataModel';
+import { Preloaded, usePreloadedQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronRightIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+
+import { Dialog } from '@/components/catalyst/dialog';
+import { Button } from '@/components/catalyst/button';
+import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
+import { useSimulationResult, useKeyMetrics, useIsCalculationReady } from '@/lib/stores/simulator-store';
+import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
+
+import PlanDialog from './dialogs/plan-dialog';
 
 const statuses = {
   offline: 'text-zinc-400 bg-zinc-100 dark:text-zinc-500 dark:bg-zinc-100/10',
@@ -13,88 +27,6 @@ const environments = {
   Preview: 'text-zinc-500 bg-zinc-50 ring-zinc-200 dark:text-zinc-400 dark:bg-zinc-400/10 dark:ring-zinc-400/20',
   Production: 'text-rose-500 bg-rose-50 ring-rose-200 dark:text-rose-400 dark:bg-rose-400/10 dark:ring-rose-400/30',
 };
-const deployments = [
-  {
-    id: 1,
-    href: '#',
-    projectName: 'ios-app',
-    teamName: 'Planetaria',
-    status: 'offline',
-    statusText: 'Initiated 1m 32s ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-  {
-    id: 2,
-    href: '#',
-    projectName: 'mobile-api',
-    teamName: 'Planetaria',
-    status: 'online',
-    statusText: 'Deployed 3m ago',
-    description: 'Deploys from GitHub',
-    environment: 'Production',
-  },
-  {
-    id: 3,
-    href: '#',
-    projectName: 'tailwindcss.com',
-    teamName: 'Tailwind Labs',
-    status: 'offline',
-    statusText: 'Deployed 3h ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-  {
-    id: 4,
-    href: '#',
-    projectName: 'company-website',
-    teamName: 'Tailwind Labs',
-    status: 'online',
-    statusText: 'Deployed 1d ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-  {
-    id: 5,
-    href: '#',
-    projectName: 'relay-service',
-    teamName: 'Protocol',
-    status: 'online',
-    statusText: 'Deployed 1d ago',
-    description: 'Deploys from GitHub',
-    environment: 'Production',
-  },
-  {
-    id: 6,
-    href: '#',
-    projectName: 'android-app',
-    teamName: 'Planetaria',
-    status: 'online',
-    statusText: 'Deployed 5d ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-  {
-    id: 7,
-    href: '#',
-    projectName: 'api.protocol.chat',
-    teamName: 'Protocol',
-    status: 'error',
-    statusText: 'Failed to deploy 6d ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-  {
-    id: 8,
-    href: '#',
-    projectName: 'planetaria.tech',
-    teamName: 'Planetaria',
-    status: 'online',
-    statusText: 'Deployed 6d ago',
-    description: 'Deploys from GitHub',
-    environment: 'Preview',
-  },
-];
 const activityItems = [
   {
     user: {
@@ -198,7 +130,96 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Example() {
+interface PlanListItems {
+  plan: Doc<'plans'>;
+  onDropdownClickEdit: () => void;
+  onDropdownClickClone: () => void;
+  onDropdownClickDelete: () => void;
+  disableActions: { disableEdit?: boolean; disableClone?: boolean; disableDelete?: boolean };
+}
+
+function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete, disableActions }: PlanListItems) {
+  const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
+
+  const isCalculationReady = useIsCalculationReady(inputs);
+  const simulation = useSimulationResult(inputs, 'fixedReturns');
+  const keyMetrics = useKeyMetrics(simulation);
+
+  const status = isCalculationReady ? 'offline' : keyMetrics?.success ? 'online' : 'error';
+  const environment = isCalculationReady ? 'Production' : 'Preview';
+
+  //   const { disableEdit, disableClone, disableDelete } = disableActions;
+
+  return (
+    <li key={plan._id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="min-w-0 flex-auto">
+        <div className="flex items-center gap-x-3">
+          <div className={classNames(statuses[status], 'flex-none rounded-full p-1')}>
+            <div className="size-2 rounded-full bg-current" />
+          </div>
+          <h2 className="min-w-0 text-sm/6 font-semibold text-zinc-900 dark:text-white">
+            <Link href={`/dashboard/simulator/${plan._id}`} className="flex gap-x-2">
+              <span className="truncate">Team Name</span>
+              <span className="text-zinc-400">/</span>
+              <span className="whitespace-nowrap">{plan.name}</span>
+              <span className="absolute inset-0" />
+            </Link>
+          </h2>
+        </div>
+        <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-zinc-500 dark:text-zinc-400">
+          <p className="truncate">Description</p>
+          <svg viewBox="0 0 2 2" className="size-0.5 flex-none fill-zinc-300 dark:fill-zinc-500">
+            <circle r={1} cx={1} cy={1} />
+          </svg>
+          <p className="whitespace-nowrap">Created {new Date(plan._creationTime).toLocaleDateString()}</p>
+        </div>
+      </div>
+      <div className={classNames(environments[environment], 'flex-none rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset')}>
+        {environment}
+      </div>
+      <ChevronRightIcon aria-hidden="true" className="size-5 flex-none text-zinc-400" />
+    </li>
+  );
+}
+
+interface PlanListV2Props {
+  preloadedPlans: Preloaded<typeof api.plans.listPlans>;
+}
+
+export default function PlanListV2({ preloadedPlans }: PlanListV2Props) {
+  const plans = usePreloadedQuery(preloadedPlans);
+  const allPlans = useMemo(() => plans.map((plan) => ({ id: plan._id, name: plan.name })), [plans]);
+
+  const [planDialogOpen, setPlanDialogOpen] = useState(false);
+
+  const [selectedPlan, setSelectedPlan] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+  const [planToClone, setPlanToClone] = useState<{ id: Id<'plans'>; name: string } | undefined>(undefined);
+
+  const handleClose = () => {
+    setSelectedPlan(null);
+    setPlanToClone(undefined);
+    setPlanDialogOpen(false);
+  };
+
+  const handleEdit = (plan: { id: Id<'plans'>; name: string }) => {
+    setSelectedPlan(plan);
+    setPlanDialogOpen(true);
+  };
+
+  const handleClone = (plan: { id: Id<'plans'>; name: string }) => {
+    setPlanToClone(plan);
+    setPlanDialogOpen(true);
+  };
+
+  const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+  const deleteMutation = useMutation(api.plans.deletePlan);
+  const deletePlan = useCallback(
+    async (planId: Id<'plans'>) => {
+      await deleteMutation({ planId });
+    },
+    [deleteMutation]
+  );
+
   return (
     <>
       <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
@@ -241,41 +262,19 @@ export default function Example() {
           </Menu>
         </header>
         <ul role="list" className="divide-border/25 divide-y">
-          {deployments.map((deployment) => (
-            <li key={deployment.id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8">
-              <div className="min-w-0 flex-auto">
-                <div className="flex items-center gap-x-3">
-                  <div className={classNames(statuses[deployment.status as keyof typeof statuses], 'flex-none rounded-full p-1')}>
-                    <div className="size-2 rounded-full bg-current" />
-                  </div>
-                  <h2 className="min-w-0 text-sm/6 font-semibold text-zinc-900 dark:text-white">
-                    <a href={deployment.href} className="flex gap-x-2">
-                      <span className="truncate">{deployment.teamName}</span>
-                      <span className="text-zinc-400">/</span>
-                      <span className="whitespace-nowrap">{deployment.projectName}</span>
-                      <span className="absolute inset-0" />
-                    </a>
-                  </h2>
-                </div>
-                <div className="mt-3 flex items-center gap-x-2.5 text-xs/5 text-zinc-500 dark:text-zinc-400">
-                  <p className="truncate">{deployment.description}</p>
-                  <svg viewBox="0 0 2 2" className="size-0.5 flex-none fill-zinc-300 dark:fill-zinc-500">
-                    <circle r={1} cx={1} cy={1} />
-                  </svg>
-                  <p className="whitespace-nowrap">{deployment.statusText}</p>
-                </div>
-              </div>
-              <div
-                className={classNames(
-                  environments[deployment.environment as keyof typeof environments],
-                  'flex-none rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset'
-                )}
-              >
-                {deployment.environment}
-              </div>
-              <ChevronRightIcon aria-hidden="true" className="size-5 flex-none text-zinc-400" />
-            </li>
-          ))}
+          {plans.map((plan) => {
+            const planMetadata = { id: plan._id, name: plan.name };
+            return (
+              <PlanListItem
+                key={plan._id}
+                plan={plan}
+                disableActions={{ disableDelete: plans.length <= 1 }}
+                onDropdownClickEdit={() => handleEdit(planMetadata)}
+                onDropdownClickClone={() => handleClone(planMetadata)}
+                onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
+              />
+            );
+          })}
         </ul>
       </div>
       <aside className="border-border/50 -mx-2 border-t bg-zinc-50 sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l dark:bg-black/10">
@@ -310,6 +309,38 @@ export default function Example() {
           ))}
         </ul>
       </aside>
+      <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
+        <PlanDialog
+          numPlans={plans.length}
+          selectedPlan={selectedPlan}
+          allPlans={allPlans}
+          planToClone={planToClone}
+          onClose={handleClose}
+        />
+      </Dialog>
+      <Alert
+        open={!!planToDelete}
+        onClose={() => {
+          setPlanToDelete(null);
+        }}
+      >
+        <AlertTitle>Are you sure you want to delete {planToDelete ? `"${planToDelete.name}"` : 'this'}?</AlertTitle>
+        <AlertDescription>This action cannot be undone.</AlertDescription>
+        <AlertActions>
+          <Button plain onClick={() => setPlanToDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            color="red"
+            onClick={async () => {
+              await deletePlan(planToDelete!.id);
+              setPlanToDelete(null);
+            }}
+          >
+            Delete
+          </Button>
+        </AlertActions>
+      </Alert>
     </>
   );
 }

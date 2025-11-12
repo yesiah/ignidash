@@ -12,5 +12,5 @@ export default async function DashboardContent() {
 
   const preloadedPlans = await preloadQuery(api.plans.listPlans, {}, { token });
   if (false) return <PlansList preloadedPlans={preloadedPlans} />;
-  return <PlansListV2 />;
+  return <PlansListV2 preloadedPlans={preloadedPlans} />;
 }
