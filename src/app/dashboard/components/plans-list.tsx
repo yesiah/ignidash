@@ -40,10 +40,11 @@ function PlanChart({ simulation, keyMetrics }: PlanChartProps) {
 interface PlanCardProps {
   plan: Doc<'plans'>;
   onDropdownClickEdit: () => void;
+  onDropdownClickClone: () => void;
   onDropdownClickDelete: () => void;
 }
 
-function PlanCard({ plan, onDropdownClickEdit, onDropdownClickDelete }: PlanCardProps) {
+function PlanCard({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete }: PlanCardProps) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const simulation = useSimulationResult(inputs, 'fixedReturns');
@@ -63,6 +64,7 @@ function PlanCard({ plan, onDropdownClickEdit, onDropdownClickDelete }: PlanCard
             </DropdownButton>
             <DropdownMenu portal={false}>
               <DropdownItem onClick={onDropdownClickEdit}>Edit</DropdownItem>
+              <DropdownItem onClick={onDropdownClickClone}>Clone</DropdownItem>
               <DropdownItem onClick={onDropdownClickDelete}>Delete</DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -96,10 +98,13 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
   const allPlans = useMemo(() => plans.map((plan) => ({ id: plan._id, name: plan.name })), [plans]);
 
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
+
   const [selectedPlan, setSelectedPlan] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+  const [planToClone, setPlanToClone] = useState<{ id: Id<'plans'>; name: string } | undefined>(undefined);
 
   const handleClose = () => {
     setSelectedPlan(null);
+    setPlanToClone(undefined);
     setPlanDialogOpen(false);
   };
 
@@ -108,8 +113,12 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
     setPlanDialogOpen(true);
   };
 
-  const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
+  const handleClone = (plan: { id: Id<'plans'>; name: string }) => {
+    setPlanToClone(plan);
+    setPlanDialogOpen(true);
+  };
 
+  const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
   const deleteMutation = useMutation(api.plans.deletePlan);
   const deletePlan = useCallback(
     async (planId: Id<'plans'>) => {
@@ -137,6 +146,7 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
                 key={plan._id}
                 plan={plan}
                 onDropdownClickEdit={() => handleEdit(planMetadata)}
+                onDropdownClickClone={() => handleClone(planMetadata)}
                 onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
               />
             );
@@ -144,7 +154,13 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
         </div>
       </SectionContainer>
       <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
-        <PlanDialog numPlans={plans.length} selectedPlan={selectedPlan} allPlans={allPlans} onClose={handleClose} />
+        <PlanDialog
+          numPlans={plans.length}
+          selectedPlan={selectedPlan}
+          allPlans={allPlans}
+          planToClone={planToClone}
+          onClose={handleClose}
+        />
       </Dialog>
       <Alert
         open={!!planToDelete}
