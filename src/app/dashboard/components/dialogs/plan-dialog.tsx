@@ -3,7 +3,6 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
-import { useMemo } from 'react';
 import { FileTextIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -17,13 +16,11 @@ import { Input } from '@/components/catalyst/input';
 interface PlanDialogProps {
   onClose: () => void;
   numPlans: number;
-  existingPlan: { id: Id<'plans'>; name: string } | null;
+  selectedPlan: { id: Id<'plans'>; name: string } | null;
 }
 
-export default function PlanDialog({ onClose, numPlans, existingPlan }: PlanDialogProps) {
-  const newPlanDefaultValues = useMemo(() => ({ name: 'Plan ' + (numPlans + 1) }) as const satisfies PlanMetadata, [numPlans]);
-
-  const defaultValues = existingPlan || newPlanDefaultValues;
+export default function PlanDialog({ onClose, numPlans, selectedPlan }: PlanDialogProps) {
+  const defaultValues = selectedPlan || { name: 'Plan ' + (numPlans + 1) };
 
   const {
     register,
@@ -34,9 +31,9 @@ export default function PlanDialog({ onClose, numPlans, existingPlan }: PlanDial
     defaultValues,
   });
 
-  const m = useMutation(api.plans.updatePlanName);
+  const updateNameMutation = useMutation(api.plans.updatePlanName);
   const onSubmit = async (data: PlanMetadata) => {
-    await m({ planId: existingPlan!.id, name: data.name });
+    await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
     onClose();
   };
 
@@ -45,7 +42,7 @@ export default function PlanDialog({ onClose, numPlans, existingPlan }: PlanDial
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <FileTextIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{existingPlan ? 'Edit Plan' : 'New Plan'}</span>
+          <span>{selectedPlan ? 'Edit Plan' : 'New Plan'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>

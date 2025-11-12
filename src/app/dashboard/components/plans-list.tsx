@@ -163,7 +163,7 @@ export default function PlansList({ preloadedPlans }: PlansListProps) {
         </div>
       </SectionContainer>
       <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
-        <PlanDialog numPlans={plans.length} existingPlan={selectedPlan} onClose={handleClose} />
+        <PlanDialog numPlans={plans.length} selectedPlan={selectedPlan} onClose={handleClose} />
       </Dialog>
       <Alert
         open={!!planToDelete}
