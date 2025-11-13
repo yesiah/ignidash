@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { planMetadataSchema, type PlanMetadata } from '@/lib/schemas/plan-metadata-schema';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
@@ -40,7 +41,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(planMetadataSchema),
     defaultValues,
@@ -50,16 +51,24 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
   const clonePlanMutation = useMutation(api.plans.clonePlan);
   const createPlanMutation = useMutation(api.plans.createBlankPlan);
 
-  const onSubmit = async (data: PlanMetadata) => {
-    if (selectedPlan) {
-      await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
-    } else if (data.clonedPlanId) {
-      await clonePlanMutation({ planId: data.clonedPlanId as Id<'plans'> | 'template1' | 'template2', newPlanName: data.name });
-    } else {
-      await createPlanMutation({ newPlanName: data.name });
-    }
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-    onClose();
+  const onSubmit = async (data: PlanMetadata) => {
+    try {
+      setSaveError(null);
+      if (selectedPlan) {
+        await updateNameMutation({ planId: selectedPlan!.id, name: data.name });
+      } else if (data.clonedPlanId) {
+        await clonePlanMutation({ planId: data.clonedPlanId as Id<'plans'> | 'template1' | 'template2', newPlanName: data.name });
+      } else {
+        await createPlanMutation({ newPlanName: data.name });
+      }
+
+      onClose();
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save plan.');
+      console.error('Error saving plan: ', error);
+    }
   };
 
   return (
@@ -74,6 +83,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
         <Fieldset aria-label="Plan metadata">
           <DialogBody>
             <FieldGroup>
+              {saveError && <ErrorMessageCard errorMessage={saveError} />}
               <Field>
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -105,6 +115,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
                       <option value="template2">Early Retirement Plan</option>
                     </optgroup>
                   </Select>
+                  {errors.clonedPlanId && <ErrorMessage>{errors.clonedPlanId?.message}</ErrorMessage>}
                 </Field>
               )}
             </FieldGroup>
@@ -114,8 +125,8 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
           <Button plain onClick={onClose} className="hidden sm:inline-flex">
             Cancel
           </Button>
-          <Button color="rose" type="submit">
-            Save
+          <Button color="rose" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save'}
           </Button>
         </DialogActions>
       </form>
