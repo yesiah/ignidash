@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useState, useCallback } from 'react';
 
 import { usePlanData } from '@/hooks/use-convex-data';
@@ -120,27 +119,13 @@ export default function ResultsSections() {
     );
   }
 
-  const AnimatedResults = ({ children }: { children: React.ReactNode }) => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25, ease: 'easeOut' }}>
-      {children}
-    </motion.div>
-  );
-
   switch (simulationMode) {
     case 'fixedReturns':
     case 'historicalReturns':
     case 'stochasticReturns':
-      return (
-        <AnimatedResults>
-          <SingleSimulationResults inputs={inputs!} simulationMode={simulationMode} />
-        </AnimatedResults>
-      );
+      return <SingleSimulationResults inputs={inputs!} simulationMode={simulationMode} />;
     case 'monteCarloStochasticReturns':
     case 'monteCarloHistoricalReturns':
-      return (
-        <AnimatedResults>
-          <MultiSimulationResults inputs={inputs!} simulationMode={simulationMode} />
-        </AnimatedResults>
-      );
+      return <MultiSimulationResults inputs={inputs!} simulationMode={simulationMode} />;
   }
 }
