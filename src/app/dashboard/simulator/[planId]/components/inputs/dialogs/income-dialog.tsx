@@ -200,11 +200,11 @@ export default function IncomeDialog({ onClose, selectedIncome, numIncomes }: In
           <span>{selectedIncome ? 'Edit Income' : 'New Income'}</span>
         </div>
       </DialogTitle>
-      {errors.root?.message && <ErrorMessageCard errorMessage={errors.root?.message} />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Income details">
           <DialogBody>
             <FieldGroup>
+              {errors.root?.message && <ErrorMessageCard errorMessage={errors.root?.message} />}
               <div className="grid grid-cols-2 gap-4">
                 <Field className="col-span-2">
                   <Label htmlFor="name">Name</Label>
