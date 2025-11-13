@@ -1,4 +1,5 @@
 import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
+import type { FilingStatus } from '@/lib/schemas/inputs/tax-settings-schema';
 
 import type { SimulationState } from './simulation-engine';
 import type { IncomesData } from './incomes';
@@ -38,8 +39,12 @@ export interface EarlyWithdrawalPenaltyData {
   totalPenaltyAmount: number;
 }
 
+// Standard Deductions (2025 tax year)
 const STANDARD_DEDUCTION_SINGLE = 15000;
+const STANDARD_DEDUCTION_MARRIED_FILING_JOINTLY = 30000;
+const STANDARD_DEDUCTION_HEAD_OF_HOUSEHOLD = 22500;
 
+// Income Tax Brackets (2025 tax year)
 export const INCOME_TAX_BRACKETS_SINGLE = [
   { min: 0, max: 11925, rate: 0.1 },
   { min: 11925, max: 48475, rate: 0.12 },
@@ -50,16 +55,52 @@ export const INCOME_TAX_BRACKETS_SINGLE = [
   { min: 626350, max: Infinity, rate: 0.37 },
 ];
 
+export const INCOME_TAX_BRACKETS_MARRIED_FILING_JOINTLY = [
+  { min: 0, max: 23850, rate: 0.1 },
+  { min: 23850, max: 96950, rate: 0.12 },
+  { min: 96950, max: 206700, rate: 0.22 },
+  { min: 206700, max: 394600, rate: 0.24 },
+  { min: 394600, max: 501050, rate: 0.32 },
+  { min: 501050, max: 751600, rate: 0.35 },
+  { min: 751600, max: Infinity, rate: 0.37 },
+];
+
+export const INCOME_TAX_BRACKETS_HEAD_OF_HOUSEHOLD = [
+  { min: 0, max: 16550, rate: 0.1 },
+  { min: 16550, max: 63100, rate: 0.12 },
+  { min: 63100, max: 100500, rate: 0.22 },
+  { min: 100500, max: 191950, rate: 0.24 },
+  { min: 191950, max: 243700, rate: 0.32 },
+  { min: 243700, max: 609350, rate: 0.35 },
+  { min: 609350, max: Infinity, rate: 0.37 },
+];
+
+// Capital Gains Tax Brackets (2024 tax year - based on IRS data provided)
 export const CAPITAL_GAINS_TAX_BRACKETS_SINGLE = [
   { min: 0, max: 47025, rate: 0.0 },
   { min: 47025, max: 518900, rate: 0.15 },
   { min: 518900, max: Infinity, rate: 0.2 },
 ];
 
+export const CAPITAL_GAINS_TAX_BRACKETS_MARRIED_FILING_JOINTLY = [
+  { min: 0, max: 94050, rate: 0.0 },
+  { min: 94050, max: 583750, rate: 0.15 },
+  { min: 583750, max: Infinity, rate: 0.2 },
+];
+
+export const CAPITAL_GAINS_TAX_BRACKETS_HEAD_OF_HOUSEHOLD = [
+  { min: 0, max: 63000, rate: 0.0 },
+  { min: 63000, max: 551350, rate: 0.15 },
+  { min: 551350, max: Infinity, rate: 0.2 },
+];
+
 export class TaxProcessor {
   private capitalLossCarryover = 0;
 
-  constructor(private simulationState: SimulationState) {}
+  constructor(
+    private simulationState: SimulationState,
+    private filingStatus: FilingStatus
+  ) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData, annualReturnsData: ReturnsData): TaxesData {
     const { totalIncome, adjustedOrdinaryIncome, taxDeferredContributions } = this.getIncomeData(
@@ -72,8 +113,9 @@ export class TaxProcessor {
     const adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome + capitalLossDeduction);
     const adjustedIncomeTaxedAsCapGains = adjustedRealizedGains + annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
 
-    const deductionUsedForOrdinary = Math.min(STANDARD_DEDUCTION_SINGLE, adjustedIncomeTaxedAsIncome);
-    const deductionUsedForGains = STANDARD_DEDUCTION_SINGLE - deductionUsedForOrdinary;
+    const standardDeduction = this.getStandardDeduction();
+    const deductionUsedForOrdinary = Math.min(standardDeduction, adjustedIncomeTaxedAsIncome);
+    const deductionUsedForGains = standardDeduction - deductionUsedForOrdinary;
 
     const taxableOrdinaryIncome = Math.max(0, adjustedIncomeTaxedAsIncome - deductionUsedForOrdinary);
     const taxableCapitalGains = Math.max(0, adjustedIncomeTaxedAsCapGains - deductionUsedForGains);
@@ -113,14 +155,16 @@ export class TaxProcessor {
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
       totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
       adjustments: { taxDeferredContributions, capitalLossDeduction },
-      deductions: { standardDeduction: STANDARD_DEDUCTION_SINGLE },
+      deductions: { standardDeduction },
     };
   }
 
   private processIncomeTaxes(taxableOrdinaryIncome: number): { incomeTaxAmount: number; topMarginalIncomeTaxRate: number } {
     let incomeTaxAmount = 0;
     let topMarginalIncomeTaxRate = 0;
-    for (const bracket of INCOME_TAX_BRACKETS_SINGLE) {
+
+    const incomeTaxBrackets = this.getIncomeTaxBrackets();
+    for (const bracket of incomeTaxBrackets) {
       if (taxableOrdinaryIncome <= bracket.min) break;
 
       const taxableInBracket = Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min;
@@ -139,7 +183,9 @@ export class TaxProcessor {
 
     let capitalGainsTaxAmount = 0;
     let topMarginalCapitalGainsTaxRate = 0;
-    for (const bracket of CAPITAL_GAINS_TAX_BRACKETS_SINGLE) {
+
+    const capitalGainsTaxBrackets = this.getCapitalGainsTaxBrackets();
+    for (const bracket of capitalGainsTaxBrackets) {
       if (totalTaxableIncome <= bracket.min) break;
 
       const incomeInBracket = Math.min(totalTaxableIncome, bracket.max) - bracket.min;
@@ -245,5 +291,38 @@ export class TaxProcessor {
     return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
       .filter((account) => rothAccountTypes.includes(account.type))
       .reduce((sum, account) => sum + account.earningsWithdrawnForPeriod, 0);
+  }
+
+  private getStandardDeduction(): number {
+    switch (this.filingStatus) {
+      case 'single':
+        return STANDARD_DEDUCTION_SINGLE;
+      case 'marriedFilingJointly':
+        return STANDARD_DEDUCTION_MARRIED_FILING_JOINTLY;
+      case 'headOfHousehold':
+        return STANDARD_DEDUCTION_HEAD_OF_HOUSEHOLD;
+    }
+  }
+
+  private getIncomeTaxBrackets(): { min: number; max: number; rate: number }[] {
+    switch (this.filingStatus) {
+      case 'single':
+        return INCOME_TAX_BRACKETS_SINGLE;
+      case 'marriedFilingJointly':
+        return INCOME_TAX_BRACKETS_MARRIED_FILING_JOINTLY;
+      case 'headOfHousehold':
+        return INCOME_TAX_BRACKETS_HEAD_OF_HOUSEHOLD;
+    }
+  }
+
+  private getCapitalGainsTaxBrackets(): { min: number; max: number; rate: number }[] {
+    switch (this.filingStatus) {
+      case 'single':
+        return CAPITAL_GAINS_TAX_BRACKETS_SINGLE;
+      case 'marriedFilingJointly':
+        return CAPITAL_GAINS_TAX_BRACKETS_MARRIED_FILING_JOINTLY;
+      case 'headOfHousehold':
+        return CAPITAL_GAINS_TAX_BRACKETS_HEAD_OF_HOUSEHOLD;
+    }
   }
 }

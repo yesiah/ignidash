@@ -74,7 +74,7 @@ export class FinancialSimulationEngine {
     const incomesProcessor = new IncomesProcessor(simulationState, incomes);
     const expensesProcessor = new ExpensesProcessor(simulationState, expenses);
     const portfolioProcessor = new PortfolioProcessor(simulationState, contributionRules);
-    const taxProcessor = new TaxProcessor(simulationState);
+    const taxProcessor = new TaxProcessor(simulationState, this.inputs.taxSettings.filingStatus);
 
     // Init phase identifier
     const phaseIdentifier = new PhaseIdentifier(simulationState, timeline);
