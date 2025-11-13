@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { v, ConvexError } from 'convex/values';
 import { query, mutation } from './_generated/server';
 
 import { expenseValidator } from './validators/expenses_validator';
@@ -46,6 +46,8 @@ export const upsertExpense = mutation({
     const plan = await getPlanForUserIdOrThrow(ctx, planId, userId);
 
     const existingIndex = plan.expenses.findIndex((exp) => exp.id === expense.id);
+    if (existingIndex === -1 && plan.expenses.length >= 10) throw new ConvexError('Maximum of 10 expenses reached.');
+
     const updatedExpenses =
       existingIndex !== -1 ? plan.expenses.map((exp, index) => (index === existingIndex ? expense : exp)) : [...plan.expenses, expense];
 
