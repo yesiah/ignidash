@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 
-import { usePlanData } from '@/hooks/use-convex-data';
+import { usePlanData, useCountOfIncomes } from '@/hooks/use-convex-data';
 import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/simulator-store';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
@@ -59,6 +59,8 @@ export default function ResultsSections() {
   const handleExpenseDialogClose = useCallback(() => setExpenseDialogOpen(false), []);
   const handleSavingsDialogClose = useCallback(() => setSavingsDialogOpen(false), []);
 
+  const numIncomes = useCountOfIncomes();
+
   if (!(timelineIsReady && accountsAreReady && incomesAreReady && expensesAreReady)) {
     const timelineTitleComponent = (
       <div className="flex items-center gap-2">
@@ -107,7 +109,7 @@ export default function ResultsSections() {
           <TimelineDrawer setOpen={setTimelineOpen} />
         </Drawer>
         <Dialog size="xl" open={incomeDialogOpen} onClose={handleIncomeDialogClose}>
-          <IncomeDialog selectedIncomeID={null} onClose={handleIncomeDialogClose} />
+          <IncomeDialog selectedIncome={null} numIncomes={numIncomes} onClose={handleIncomeDialogClose} />
         </Dialog>
         <Dialog size="xl" open={expenseDialogOpen} onClose={handleExpenseDialogClose}>
           <ExpenseDialog selectedExpenseID={null} onClose={handleExpenseDialogClose} />

@@ -41,12 +41,13 @@ export default function IncomesSection(props: IncomesSectionProps) {
   const planId = useSelectedPlanId();
 
   const [incomeDialogOpen, setIncomeDialogOpen] = useState(false);
-  const [selectedIncomeID, setSelectedIncomeID] = useState<string | null>(null);
+  const [selectedIncome, setSelectedIncome] = useState<IncomeInputs | null>(null);
 
   const [incomeToDelete, setIncomeToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const incomes = useIncomesData();
-  const hasIncomes = Object.keys(incomes).length > 0;
+  const numIncomes = Object.keys(incomes).length;
+  const hasIncomes = numIncomes > 0;
 
   const updateMutation = useMutation(api.income.upsertIncome);
   const updateIncomes = useCallback(
@@ -76,13 +77,13 @@ export default function IncomesSection(props: IncomesSectionProps) {
   );
 
   const handleClose = () => {
-    setSelectedIncomeID(null);
+    setSelectedIncome(null);
     setIncomeDialogOpen(false);
   };
 
-  const handleDropdownClickEdit = (id: string) => {
+  const handleDropdownClickEdit = (income: IncomeInputs) => {
     setIncomeDialogOpen(true);
-    setSelectedIncomeID(id);
+    setSelectedIncome(income);
   };
 
   return (
@@ -101,7 +102,7 @@ export default function IncomesSection(props: IncomesSectionProps) {
                     desc={getIncomeDesc(income)}
                     leftAddOn={<BanknoteArrowUpIcon className="size-8" />}
                     disabled={income.disabled}
-                    onDropdownClickEdit={() => handleDropdownClickEdit(id)}
+                    onDropdownClickEdit={() => handleDropdownClickEdit(income)}
                     onDropdownClickDelete={() => setIncomeToDelete({ id, name: income.name })}
                     onDropdownClickDisable={async () => await disableIncome(id)}
                     colorClassName="bg-[var(--chart-3)] dark:bg-[var(--chart-2)]"
@@ -109,7 +110,7 @@ export default function IncomesSection(props: IncomesSectionProps) {
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setIncomeDialogOpen(true)} disabled={!!selectedIncomeID}>
+                <Button outline onClick={() => setIncomeDialogOpen(true)} disabled={!!selectedIncome}>
                   <PlusIcon />
                   Income
                 </Button>
@@ -126,7 +127,7 @@ export default function IncomesSection(props: IncomesSectionProps) {
         </div>
       </DisclosureSection>
       <Dialog size="xl" open={incomeDialogOpen} onClose={handleClose}>
-        <IncomeDialog selectedIncomeID={selectedIncomeID} onClose={handleClose} />
+        <IncomeDialog selectedIncome={selectedIncome} numIncomes={numIncomes} onClose={handleClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={incomeToDelete} setDataToDelete={setIncomeToDelete} deleteData={deleteIncome} />
     </>

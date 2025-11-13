@@ -10,7 +10,7 @@ import { CalendarIcon, BanknoteArrowUpIcon, TrendingUpIcon, BanknoteXIcon } from
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
-import { useIncomeData, useCountOfIncomes, useTimelineData } from '@/hooks/use-convex-data';
+import { useTimelineData } from '@/hooks/use-convex-data';
 import { incomeToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { incomeFormSchema, type IncomeInputs, supportsWithholding } from '@/lib/schemas/inputs/income-form-schema';
@@ -26,14 +26,13 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface IncomeDialogProps {
   onClose: () => void;
-  selectedIncomeID: string | null;
+  selectedIncome: IncomeInputs | null;
+  numIncomes: number;
 }
 
-export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialogProps) {
+export default function IncomeDialog({ onClose, selectedIncome, numIncomes }: IncomeDialogProps) {
   const planId = useSelectedPlanId();
-  const existingIncomeData = useIncomeData(selectedIncomeID);
 
-  const numIncomes = useCountOfIncomes();
   const newIncomeDefaultValues = useMemo(
     () =>
       ({
@@ -47,23 +46,18 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
     [numIncomes]
   );
 
-  const defaultValues = existingIncomeData || newIncomeDefaultValues;
+  const defaultValues = selectedIncome || newIncomeDefaultValues;
 
   const {
     register,
     unregister,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(incomeFormSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    if (existingIncomeData) reset(existingIncomeData);
-  }, [existingIncomeData, reset]);
 
   const m = useMutation(api.income.upsertIncome);
   const onSubmit = async (data: IncomeInputs) => {
@@ -89,14 +83,12 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
 
   useEffect(() => {
     if (frequency === 'oneTime') {
-      // Unregister end time point fields
       unregister('timeframe.end');
       unregister('timeframe.end.type');
       unregister('timeframe.end.age');
       unregister('timeframe.end.month');
       unregister('timeframe.end.year');
 
-      // Unregister growth fields
       unregister('growth');
       unregister('growth.growthRate');
       unregister('growth.growthLimit');
@@ -204,7 +196,7 @@ export default function IncomeDialog({ onClose, selectedIncomeID }: IncomeDialog
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <BanknoteArrowUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{selectedIncomeID ? 'Edit Income' : 'New Income'}</span>
+          <span>{selectedIncome ? 'Edit Income' : 'New Income'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
