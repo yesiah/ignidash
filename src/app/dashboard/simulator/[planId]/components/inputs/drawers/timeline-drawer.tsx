@@ -78,7 +78,7 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(timelineFormSchema),
     defaultValues,
@@ -168,8 +168,8 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
               <Button outline onClick={() => reset()}>
                 Reset
               </Button>
-              <Button color="rose" type="submit">
-                Save
+              <Button color="rose" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : 'Save'}
               </Button>
             </DialogActions>
           </form>

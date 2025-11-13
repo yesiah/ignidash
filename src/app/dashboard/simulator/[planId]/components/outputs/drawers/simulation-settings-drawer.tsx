@@ -31,7 +31,7 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
     unregister,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(simulationSettingsSchema),
     defaultValues: simulationSettings,
@@ -153,8 +153,8 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
               <Button outline onClick={() => reset()}>
                 Reset
               </Button>
-              <Button color="rose" type="submit">
-                Save
+              <Button color="rose" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : 'Save'}
               </Button>
             </DialogActions>
           </form>
