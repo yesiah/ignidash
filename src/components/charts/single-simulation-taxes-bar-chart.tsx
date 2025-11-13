@@ -7,8 +7,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelL
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
+import type { IncomeTaxBracket } from '@/lib/calc/tax-data/income-tax-brackets';
+import type { CapitalGainsTaxBracket } from '@/lib/calc/tax-data/capital-gains-tax-brackets';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
-import { INCOME_TAX_BRACKETS_SINGLE, CAPITAL_GAINS_TAX_BRACKETS_SINGLE } from '@/lib/calc/taxes';
 import { Divider } from '@/components/catalyst/divider';
 
 type IncomeCalculationsTooltipPayload = {
@@ -36,6 +37,16 @@ interface IncomeCalculationsTooltipProps {
   age: number;
   disabled: boolean;
   dataView: 'taxableIncome' | 'adjustedGrossIncome';
+}
+
+function getTaxBrackets(chartData: SingleSimulationTaxesChartDataPoint[]): {
+  incomeTaxBrackets: IncomeTaxBracket[] | null;
+  capitalGainsTaxBrackets: CapitalGainsTaxBracket[] | null;
+} {
+  return {
+    incomeTaxBrackets: chartData[0]?.incomeTaxBrackets ?? null,
+    capitalGainsTaxBrackets: chartData[0]?.capitalGainsTaxBrackets ?? null,
+  };
 }
 
 const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, dataView }: IncomeCalculationsTooltipProps) => {
@@ -302,6 +313,7 @@ export default function SingleSimulationTaxesBarChart({
   );
 
   const chartData = rawChartData.filter((item) => item.age === age);
+  const { incomeTaxBrackets, capitalGainsTaxBrackets } = getTaxBrackets(chartData);
 
   let formatter = undefined;
   let transformedChartData: { name: string; [key: string]: number | string | Record<string, number> }[] = [];
@@ -544,7 +556,8 @@ export default function SingleSimulationTaxesBarChart({
             />
           )}
           {referenceLineMode === 'marginalIncomeTaxRates' &&
-            INCOME_TAX_BRACKETS_SINGLE.map((bracket, index) => (
+            incomeTaxBrackets &&
+            incomeTaxBrackets.map((bracket, index) => (
               <ReferenceLine
                 key={index}
                 y={bracket.min}
@@ -558,7 +571,8 @@ export default function SingleSimulationTaxesBarChart({
               />
             ))}
           {referenceLineMode === 'marginalCapGainsTaxRates' &&
-            CAPITAL_GAINS_TAX_BRACKETS_SINGLE.map((bracket, index) => (
+            capitalGainsTaxBrackets &&
+            capitalGainsTaxBrackets.map((bracket, index) => (
               <ReferenceLine
                 key={index}
                 y={bracket.min}

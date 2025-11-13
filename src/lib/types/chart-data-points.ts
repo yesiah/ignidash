@@ -2,6 +2,8 @@ import type { ExpenseData } from '@/lib/calc/expenses';
 import type { IncomeData } from '@/lib/calc/incomes';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
 import type { AccountDataWithReturns } from '@/lib/calc/returns';
+import type { IncomeTaxBracket } from '@/lib/calc/tax-data/income-tax-brackets';
+import type { CapitalGainsTaxBracket } from '@/lib/calc/tax-data/capital-gains-tax-brackets';
 
 export interface SingleSimulationPortfolioChartDataPoint {
   age: number;
@@ -66,6 +68,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   cumulativeIncomeTax: number;
   effectiveIncomeTaxRate: number;
   topMarginalIncomeTaxRate: number;
+  incomeTaxBrackets: IncomeTaxBracket[];
 
   /* Cap Gains */
   realizedGains: number;
@@ -75,6 +78,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   cumulativeCapGainsTax: number;
   effectiveCapGainsTaxRate: number;
   topMarginalCapGainsTaxRate: number;
+  capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
 
   /* Early Withdrawal Penalties */
   annualEarlyWithdrawalPenalties: number;
