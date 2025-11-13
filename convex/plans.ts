@@ -88,6 +88,9 @@ export const createBlankPlan = mutation({
   handler: async (ctx, { newPlanName }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
+    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
+    if (numPlans >= 10) throw new Error('Maximum of 10 plans reached');
+
     return await ctx.db.insert('plans', {
       userId,
       name: newPlanName,
@@ -121,6 +124,9 @@ export const createPlanWithData = mutation({
   ) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
+    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
+    if (numPlans >= 10) throw new Error('Maximum of 10 plans reached');
+
     return await ctx.db.insert('plans', {
       userId,
       name: newPlanName,
@@ -140,6 +146,9 @@ export const clonePlan = mutation({
   args: { newPlanName: v.string(), planId: v.union(v.id('plans'), v.literal('template1'), v.literal('template2')) },
   handler: async (ctx, { newPlanName, planId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
+
+    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
+    if (numPlans >= 10) throw new Error('Maximum of 10 plans reached');
 
     let plan: Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name'>;
     if (planId === 'template1') {
