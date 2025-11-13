@@ -1,6 +1,6 @@
 import { XCircleIcon } from '@heroicons/react/20/solid';
 
-export default function ErrorMessage({ errorMessage }: { errorMessage: string | null }) {
+export default function ErrorMessageCard({ errorMessage }: { errorMessage: string | null }) {
   return (
     errorMessage && (
       <div role="alert" className="rounded-md bg-red-100 p-4 dark:bg-red-500/15 dark:outline dark:outline-red-500/25">

@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import EmailInput from '../components/email-input';
 import PasswordInput from '../components/password-input';
 import GoogleSignIn from '../components/google-sign-in';
-import ErrorMessage from '@/components/ui/error-message';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 
 export default function SignUpForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -60,7 +60,7 @@ export default function SignUpForm() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="border-border/25 from-emphasized-background to-background border-y bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:border sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
             <form onSubmit={handleEmailSignUp} method="POST" className="space-y-6">
-              <ErrorMessage errorMessage={errorMessage} />
+              <ErrorMessageCard errorMessage={errorMessage} />
               <EmailInput errorMessage={null} />
               <div>
                 <label htmlFor="full-name" className="block text-sm/6 font-medium text-zinc-900 dark:text-white">

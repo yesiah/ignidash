@@ -18,6 +18,7 @@ import { timeFrameForDisplay, growthForDisplay, incomeTaxTreatmentForDisplay } f
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import NumberInput from '@/components/ui/number-input';
 import { Field, Fieldset, FieldGroup, Label, ErrorMessage /* Description */ } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/catalyst/combobox';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
@@ -199,6 +200,7 @@ export default function IncomeDialog({ onClose, selectedIncome, numIncomes }: In
           <span>{selectedIncome ? 'Edit Income' : 'New Income'}</span>
         </div>
       </DialogTitle>
+      {errors.root?.message && <ErrorMessageCard errorMessage={errors.root?.message} />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Income details">
           <DialogBody>
