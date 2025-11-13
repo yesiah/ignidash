@@ -80,7 +80,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
   const planId = useSelectedPlanId();
 
   const [contributionRuleDialogOpen, setContributionRuleDialogOpen] = useState(false);
-  const [selectedContributionRuleID, setSelectedContributionRuleID] = useState<string | null>(null);
+  const [selectedContributionRule, setSelectedContributionRule] = useState<ContributionInputs | null>(null);
   const [contributionRuleToDelete, setContributionRuleToDelete] = useState<{ id: string; name: string } | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -91,7 +91,8 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
   const sortedRules = useMemo(() => contributionRulesValues.sort((a, b) => a.rank - b.rank), [contributionRulesValues]);
   const sortedRuleIds = useMemo(() => sortedRules.map((rule) => rule.id), [sortedRules]);
 
-  const hasContributionRules = sortedRuleIds.length > 0;
+  const numContributionRules = sortedRuleIds.length;
+  const hasContributionRules = numContributionRules > 0;
 
   const activeIndex = sortedRules.findIndex((rule) => rule.id === activeId);
   const activeContributionRule = activeIndex !== -1 ? sortedRules[activeIndex] : null;
@@ -163,7 +164,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
   );
 
   const handleClose = useCallback(() => {
-    setSelectedContributionRuleID(null);
+    setSelectedContributionRule(null);
     setContributionRuleDialogOpen(false);
   }, []);
 
@@ -186,9 +187,9 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
     setActiveId(null);
   };
 
-  const handleDropdownClickEdit = (id: string) => {
+  const handleDropdownClickEdit = (rule: ContributionInputs) => {
     setContributionRuleDialogOpen(true);
-    setSelectedContributionRuleID(id);
+    setSelectedContributionRule(rule);
   };
 
   return (
@@ -230,7 +231,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
                         desc={getContributionRuleDesc(accounts, { id, ...contributionRule })}
                         leftAddOn={String(index + 1)}
                         disabled={contributionRule.disabled}
-                        onDropdownClickEdit={() => handleDropdownClickEdit(id)}
+                        onDropdownClickEdit={() => handleDropdownClickEdit({ id, ...contributionRule })}
                         onDropdownClickDelete={() => setContributionRuleToDelete({ id, name: 'Contribution ' + (index + 1) })}
                         onDropdownClickDisable={async () => await disableContributionRule(id)}
                         colorClassName={COLOR_MAP[taxCategoryFromAccountType(accounts[contributionRule.accountId]?.type)]}
@@ -250,7 +251,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
                       desc={getContributionRuleDesc(accounts, activeContributionRule)}
                       leftAddOn={String(activeIndex + 1)}
                       disabled={activeContributionRule.disabled}
-                      onDropdownClickEdit={() => handleDropdownClickEdit(activeId)}
+                      onDropdownClickEdit={() => handleDropdownClickEdit(activeContributionRule)}
                       onDropdownClickDelete={() => setContributionRuleToDelete({ id: activeId, name: 'Contribution ' + (activeIndex + 1) })}
                       onDropdownClickDisable={async () => await disableContributionRule(activeId)}
                       colorClassName={COLOR_MAP[taxCategoryFromAccountType(accounts[activeContributionRule.accountId]?.type)]}
@@ -259,7 +260,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
                 </DragOverlay>
               </DndContext>
               <div className="mt-auto flex items-center justify-end">
-                <Button outline onClick={() => setContributionRuleDialogOpen(true)} disabled={!!selectedContributionRuleID}>
+                <Button outline onClick={() => setContributionRuleDialogOpen(true)} disabled={!!selectedContributionRule}>
                   <PlusIcon />
                   Contribution
                 </Button>
@@ -277,7 +278,11 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
       </DisclosureSection>
 
       <Dialog size="xl" open={contributionRuleDialogOpen} onClose={handleClose}>
-        <ContributionRuleDialog selectedContributionRuleID={selectedContributionRuleID} onClose={handleClose} />
+        <ContributionRuleDialog
+          selectedContributionRule={selectedContributionRule}
+          numContributionRules={numContributionRules}
+          onClose={handleClose}
+        />
       </Dialog>
       <DisclosureSectionDeleteDataAlert
         dataToDelete={contributionRuleToDelete}

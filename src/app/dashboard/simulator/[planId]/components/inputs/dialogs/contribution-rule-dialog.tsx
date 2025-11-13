@@ -8,13 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import {
-  useContributionRuleData,
-  useCountOfContributionRules,
-  useAccountsData,
-  useIncomesData,
-  useTimelineData,
-} from '@/hooks/use-convex-data';
+import { useAccountsData, useIncomesData, useTimelineData } from '@/hooks/use-convex-data';
 import { contributionToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import {
@@ -36,14 +30,13 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface ContributionRuleDialogProps {
   onClose: () => void;
-  selectedContributionRuleID: string | null;
+  selectedContributionRule: ContributionInputs | null;
+  numContributionRules: number;
 }
 
-export default function ContributionRuleDialog({ onClose, selectedContributionRuleID }: ContributionRuleDialogProps) {
+export default function ContributionRuleDialog({ onClose, selectedContributionRule, numContributionRules }: ContributionRuleDialogProps) {
   const planId = useSelectedPlanId();
-  const existingContributionRuleData = useContributionRuleData(selectedContributionRuleID);
 
-  const numContributionRules = useCountOfContributionRules();
   const defaultRank = numContributionRules + 1;
   const newContributionRuleDefaultValues = useMemo(
     () =>
@@ -55,24 +48,19 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     [defaultRank]
   );
 
-  const defaultValues = (existingContributionRuleData || newContributionRuleDefaultValues) as never;
+  const defaultValues = (selectedContributionRule || newContributionRuleDefaultValues) as never;
 
   const {
     register,
     unregister,
     control,
     handleSubmit,
-    reset,
     getFieldState,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(contributionFormSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    if (existingContributionRuleData) reset(existingContributionRuleData);
-  }, [existingContributionRuleData, reset]);
 
   const m = useMutation(api.contribution_rule.upsertContributionRule);
   const onSubmit = async (data: ContributionInputs) => {
@@ -132,7 +120,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <HandCoinsIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{selectedContributionRuleID ? 'Edit Contribution' : 'New Contribution'}</span>
+          <span>{selectedContributionRule ? 'Edit Contribution' : 'New Contribution'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -196,7 +184,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       inputMode="decimal"
                       placeholder="$2,500"
                       prefix="$"
-                      autoFocus={selectedContributionRuleID !== null}
+                      autoFocus={selectedContributionRule !== null}
                     />
                     {dollarAmountError && <ErrorMessage>{dollarAmountError.message}</ErrorMessage>}
                   </Field>
@@ -211,7 +199,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       inputMode="decimal"
                       placeholder="25%"
                       suffix="%"
-                      autoFocus={selectedContributionRuleID !== null}
+                      autoFocus={selectedContributionRule !== null}
                     />
                     {percentRemainingError && <ErrorMessage>{percentRemainingError.message}</ErrorMessage>}
                   </Field>
