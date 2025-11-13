@@ -64,7 +64,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
     handleSubmit,
     reset,
     getFieldState,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(contributionFormSchema),
     defaultValues,
@@ -168,6 +168,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                       </option>
                     ))}
                   </Select>
+                  {errors.incomeIds && <ErrorMessage>{errors.incomeIds?.message}</ErrorMessage>}
                 </Field>
               )}
               <div className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -183,6 +184,7 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
                     <option value="percentRemaining">% Remaining</option>
                     <option value="unlimited">Unlimited</option>
                   </Select>
+                  {errors.contributionType && <ErrorMessage>{errors.contributionType?.message}</ErrorMessage>}
                 </Field>
                 {contributionType === 'dollarAmount' && (
                   <Field>
@@ -251,8 +253,8 @@ export default function ContributionRuleDialog({ onClose, selectedContributionRu
           <Button plain onClick={onClose} className="hidden sm:inline-flex">
             Cancel
           </Button>
-          <Button color="rose" type="submit">
-            Save
+          <Button color="rose" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save'}
           </Button>
         </DialogActions>
       </form>

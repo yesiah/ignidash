@@ -46,7 +46,7 @@ export default function AccountDialog({ onClose, selectedAccount, numAccounts }:
     control,
     handleSubmit,
     getFieldState,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
@@ -201,8 +201,8 @@ export default function AccountDialog({ onClose, selectedAccount, numAccounts }:
           <Button plain onClick={onClose} className="hidden sm:inline-flex">
             Cancel
           </Button>
-          <Button color="rose" type="submit">
-            Save
+          <Button color="rose" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save'}
           </Button>
         </DialogActions>
       </form>
