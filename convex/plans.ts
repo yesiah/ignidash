@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
 import { query, mutation } from './_generated/server';
-import { Doc } from './_generated/dataModel';
+import type { Doc } from './_generated/dataModel';
 
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { getPlanForUserIdOrThrow } from './utils/plan_utils';

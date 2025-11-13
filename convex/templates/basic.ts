@@ -1,4 +1,4 @@
-import { Doc } from '../_generated/dataModel';
+import type { Doc } from '../_generated/dataModel';
 
 export const basicTemplate: Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name'> = {
   timeline: {

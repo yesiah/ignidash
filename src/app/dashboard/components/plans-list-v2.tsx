@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useCallback } from 'react';
-import { Doc, Id } from '@/convex/_generated/dataModel';
+import type { Doc, Id } from '@/convex/_generated/dataModel';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
