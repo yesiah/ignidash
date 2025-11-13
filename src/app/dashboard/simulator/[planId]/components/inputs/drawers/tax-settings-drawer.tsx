@@ -62,7 +62,7 @@ export default function TaxSettingsDrawer({ setOpen }: TaxSettingsDrawerProps) {
   return (
     <>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Tax Settings" desc="Set your filing status for accurate tax calculations." />
+        <SectionHeader title="Tax Settings" desc="Manage settings that affect your tax calculations." />
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Tax settings details">
