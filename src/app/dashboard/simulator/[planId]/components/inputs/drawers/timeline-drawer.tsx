@@ -2,7 +2,7 @@
 
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
@@ -14,6 +14,7 @@ import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import { Fieldset, FieldGroup, Field, Label, ErrorMessage, Description } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Select } from '@/components/catalyst/select';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
@@ -89,9 +90,17 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
   }, [timeline, reset]);
 
   const m = useMutation(api.timeline.update);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const onSubmit = async (data: TimelineInputs) => {
-    await m({ timeline: timelineToConvex(data)!, planId });
-    setOpen(false);
+    try {
+      setSaveError(null);
+      await m({ timeline: timelineToConvex(data)!, planId });
+      setOpen(false);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save timeline.');
+      console.error('Error saving timeline: ', error);
+    }
   };
 
   const retirementStrategyType = useWatch({ control, name: 'retirementStrategy.type' });
@@ -114,6 +123,7 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Timeline details">
               <FieldGroup>
+                {saveError && <ErrorMessageCard errorMessage={saveError} />}
                 <Field>
                   <Label htmlFor="currentAge">Your Age</Label>
                   <NumberInput name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />

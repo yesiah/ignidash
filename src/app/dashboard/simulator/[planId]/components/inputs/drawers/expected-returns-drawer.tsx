@@ -4,7 +4,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useMarketAssumptionsData } from '@/hooks/use-convex-data';
 import { marketAssumptionsToConvex } from '@/lib/utils/convex-to-zod-transformers';
@@ -14,6 +14,7 @@ import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import NumberInput from '@/components/ui/number-input';
 import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
 import { DialogActions } from '@/components/catalyst/dialog';
@@ -62,9 +63,17 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
   }, [marketAssumptions, reset]);
 
   const m = useMutation(api.market_assumptions.update);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const onSubmit = async (data: MarketAssumptionsInputs) => {
-    await m({ marketAssumptions: marketAssumptionsToConvex(data), planId });
-    setOpen(false);
+    try {
+      setSaveError(null);
+      await m({ marketAssumptions: marketAssumptionsToConvex(data), planId });
+      setOpen(false);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save market assumptions.');
+      console.error('Error saving market assumptions: ', error);
+    }
   };
 
   const stockReturn = useWatch({ control, name: 'stockReturn' }) as number;
@@ -84,6 +93,7 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
           <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Expected Returns">
               <FieldGroup>
+                {saveError && <ErrorMessageCard errorMessage={saveError} />}
                 <Field>
                   <Label htmlFor="stockReturn" className="flex w-full items-center justify-between">
                     <span>Stock Return</span>
