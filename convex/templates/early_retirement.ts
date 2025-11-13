@@ -214,4 +214,7 @@ export const earlyRetirementTemplate: Omit<Doc<'plans'>, '_id' | '_creationTime'
     cashReturn: 3,
     inflationRate: 3,
   },
+  taxSettings: {
+    filingStatus: 'single',
+  },
 };

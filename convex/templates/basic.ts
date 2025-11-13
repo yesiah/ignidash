@@ -184,4 +184,7 @@ export const basicTemplate: Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId
     cashReturn: 3,
     inflationRate: 3,
   },
+  taxSettings: {
+    filingStatus: 'single',
+  },
 };

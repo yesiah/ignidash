@@ -6,6 +6,7 @@ import { accountFormSchema } from './account-form-schema';
 import { expenseFormSchema } from './expense-form-schema';
 import { contributionFormSchema, baseContributionSchema } from './contribution-form-schema';
 import { marketAssumptionsSchema } from './market-assumptions-schema';
+import { taxSettingsSchema } from './tax-settings-schema';
 
 export const simulatorSchema = z.object({
   timeline: timelineFormSchema.nullable(),
@@ -15,6 +16,7 @@ export const simulatorSchema = z.object({
   contributionRules: z.record(z.string(), contributionFormSchema),
   baseContributionRule: baseContributionSchema,
   marketAssumptions: marketAssumptionsSchema,
+  taxSettings: taxSettingsSchema,
 });
 
 export type SimulatorInputs = z.infer<typeof simulatorSchema>;

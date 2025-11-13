@@ -126,7 +126,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
         <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} />
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <TaxSettingsDrawer />
+        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} />
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
         <TimelineDrawer setOpen={setTimelineOpen} />

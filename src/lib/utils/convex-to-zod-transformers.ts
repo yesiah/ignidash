@@ -6,6 +6,7 @@ import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
 import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 import type { MarketAssumptionsInputs } from '@/lib/schemas/inputs/market-assumptions-schema';
 import type { TimelineInputs } from '@/lib/schemas/inputs/timeline-form-schema';
+import type { TaxSettingsInputs } from '@/lib/schemas/inputs/tax-settings-schema';
 import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 
 // ============================================================================
@@ -62,6 +63,13 @@ export function contributionFromConvex(contribution: Doc<'plans'>['contributionR
  */
 export function baseContributionFromConvex(baseContribution: Doc<'plans'>['baseContributionRule']): BaseContributionInputs {
   return { type: baseContribution.type };
+}
+
+/**
+ * Transforms Convex tax settings to Zod TaxSettingsInputs format
+ */
+export function taxSettingsFromConvex(taxSettings: Doc<'plans'>['taxSettings']): TaxSettingsInputs {
+  return { filingStatus: taxSettings?.filingStatus ?? 'single' };
 }
 
 /**
@@ -133,6 +141,7 @@ export function simulatorFromConvex(plan: Doc<'plans'>): SimulatorInputs {
     contributionRules,
     baseContributionRule: baseContributionFromConvex(plan.baseContributionRule),
     marketAssumptions: marketAssumptionsFromConvex(plan.marketAssumptions),
+    taxSettings: taxSettingsFromConvex(plan.taxSettings),
   };
 }
 
@@ -190,6 +199,13 @@ export function contributionToConvex(contribution: ContributionInputs): Doc<'pla
  */
 export function baseContributionToConvex(baseContribution: BaseContributionInputs): Doc<'plans'>['baseContributionRule'] {
   return { type: baseContribution.type };
+}
+
+/**
+ * Transforms Zod TaxSettingsInputs to Convex tax settings format
+ */
+export function taxSettingsToConvex(taxSettings: TaxSettingsInputs): NonNullable<Doc<'plans'>['taxSettings']> {
+  return { filingStatus: taxSettings.filingStatus };
 }
 
 /**
@@ -261,6 +277,7 @@ export function simulatorToConvex(simulator: SimulatorInputs): Omit<Doc<'plans'>
     contributionRules,
     baseContributionRule: baseContributionToConvex(simulator.baseContributionRule),
     marketAssumptions: marketAssumptionsToConvex(simulator.marketAssumptions),
+    taxSettings: taxSettingsToConvex(simulator.taxSettings),
   };
 }
 

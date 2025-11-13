@@ -168,6 +168,9 @@ export const demoInputs1: SimulatorInputs = {
     cashReturn: 3,
     inflationRate: 3,
   },
+  taxSettings: {
+    filingStatus: 'single',
+  },
 };
 
 // Early Retirement Demo Inputs
@@ -374,5 +377,8 @@ export const demoInputs2: SimulatorInputs = {
     bondYield: 3.5,
     cashReturn: 3,
     inflationRate: 3,
+  },
+  taxSettings: {
+    filingStatus: 'single',
   },
 };

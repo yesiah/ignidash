@@ -132,3 +132,10 @@ export const useBaseContributionRuleData = () => {
   const q = useQuery(api.contribution_rule.getBaseRule, { planId });
   return useMemo(() => (q ? baseContributionFromConvex(q) : null), [q]);
 };
+
+// Tax Settings
+export const useTaxSettingsData = () => {
+  const planId = useSelectedPlanId();
+  const q = useQuery(api.tax_settings.get, { planId });
+  return useMemo(() => (q ? q : null), [q]);
+};

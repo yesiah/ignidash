@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { query, mutation } from './_generated/server';
 import type { Doc } from './_generated/dataModel';
+import { api } from './_generated/api';
 
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { getPlanForUserIdOrThrow } from './utils/plan_utils';
@@ -10,7 +11,7 @@ import { expenseValidator } from './validators/expenses_validator';
 import { accountValidator } from './validators/accounts_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
-import { api } from './_generated/api';
+import { taxSettingsValidator } from './validators/tax_settings_validator';
 import { basicTemplate } from './templates/basic';
 import { earlyRetirementTemplate } from './templates/early_retirement';
 
@@ -77,6 +78,7 @@ export const getOrCreateDefaultPlan = mutation({
       contributionRules: [],
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
+      taxSettings: { filingStatus: 'single' },
     });
   },
 });
@@ -96,6 +98,7 @@ export const createBlankPlan = mutation({
       contributionRules: [],
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
+      taxSettings: { filingStatus: 'single' },
     });
   },
 });
@@ -110,10 +113,11 @@ export const createPlanWithData = mutation({
     contributionRules: v.array(contributionRulesValidator),
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
+    taxSettings: taxSettingsValidator,
   },
   handler: async (
     ctx,
-    { newPlanName, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions }
+    { newPlanName, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings }
   ) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
@@ -127,6 +131,7 @@ export const createPlanWithData = mutation({
       contributionRules,
       baseContributionRule,
       marketAssumptions,
+      taxSettings,
     });
   },
 });
@@ -145,7 +150,7 @@ export const clonePlan = mutation({
       plan = await getPlanForUserIdOrThrow(ctx, planId, userId);
     }
 
-    const { timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions } = plan;
+    const { timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings } = plan;
     const clonedData = {
       timeline: structuredClone(timeline),
       incomes: structuredClone(incomes),
@@ -154,6 +159,7 @@ export const clonePlan = mutation({
       contributionRules: structuredClone(contributionRules),
       baseContributionRule: structuredClone(baseContributionRule),
       marketAssumptions: structuredClone(marketAssumptions),
+      taxSettings: structuredClone(taxSettings),
     };
 
     return await ctx.db.insert('plans', { userId, name: newPlanName, ...clonedData });
@@ -193,8 +199,12 @@ export const updatePlan = mutation({
     contributionRules: v.array(contributionRulesValidator),
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
+    taxSettings: taxSettingsValidator,
   },
-  handler: async (ctx, { planId, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions }) => {
+  handler: async (
+    ctx,
+    { planId, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings }
+  ) => {
     const { userId } = await getUserIdOrThrow(ctx);
     await getPlanForUserIdOrThrow(ctx, planId, userId);
 
@@ -206,6 +216,7 @@ export const updatePlan = mutation({
       contributionRules,
       baseContributionRule,
       marketAssumptions,
+      taxSettings,
     });
   },
 });

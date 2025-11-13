@@ -1,7 +1,96 @@
-export default function TaxSettingsDrawer() {
+'use client';
+
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+
+import { useTaxSettingsData } from '@/hooks/use-convex-data';
+import { taxSettingsToConvex } from '@/lib/utils/convex-to-zod-transformers';
+import { type TaxSettingsInputs, taxSettingsSchema } from '@/lib/schemas/inputs/tax-settings-schema';
+import SectionHeader from '@/components/ui/section-header';
+import SectionContainer from '@/components/ui/section-container';
+import Card from '@/components/ui/card';
+import { Field, FieldGroup, Fieldset, Label, /* Description, */ ErrorMessage } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
+import { Select } from '@/components/catalyst/select';
+import { Divider } from '@/components/catalyst/divider';
+import { Button } from '@/components/catalyst/button';
+import { DialogActions } from '@/components/catalyst/dialog';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
+
+interface TaxSettingsDrawerProps {
+  setOpen: (open: boolean) => void;
+}
+
+export default function TaxSettingsDrawer({ setOpen }: TaxSettingsDrawerProps) {
+  const planId = useSelectedPlanId();
+  const taxSettings = useTaxSettingsData();
+
+  const taxSettingsDefaultValues = useMemo(() => ({ filingStatus: 'single' }) as const satisfies TaxSettingsInputs, []);
+  const defaultValues = (taxSettings || taxSettingsDefaultValues) as never;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(taxSettingsSchema),
+    defaultValues: defaultValues,
+  });
+
+  useEffect(() => {
+    if (taxSettings) reset(taxSettings);
+  }, [taxSettings, reset]);
+
+  const m = useMutation(api.tax_settings.update);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const onSubmit = async (data: TaxSettingsInputs) => {
+    try {
+      setSaveError(null);
+      await m({ taxSettings: taxSettingsToConvex(data), planId });
+      setOpen(false);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save tax settings.');
+      console.error('Error saving tax settings: ', error);
+    }
+  };
+
   return (
-    <div className="text-muted-foreground flex h-full items-center justify-center font-semibold italic">
-      <p>Tax Settings coming soon...</p>
-    </div>
+    <>
+      <SectionContainer showBottomBorder={false} location="drawer">
+        <SectionHeader title="Tax Settings" desc="Set your filing status for accurate tax calculations." />
+        <Card>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Fieldset aria-label="Tax Settings">
+              <FieldGroup>
+                {saveError && <ErrorMessageCard errorMessage={saveError} />}
+                <Field>
+                  <Label htmlFor="filingStatus">Filing Status</Label>
+                  <Select {...register('filingStatus')} id="filingStatus" name="filingStatus">
+                    <option value="single">Single</option>
+                    <option value="marriedFilingJointly">Married Filing Jointly</option>
+                    <option value="headOfHousehold">Head of Household</option>
+                  </Select>
+                  {errors.filingStatus && <ErrorMessage>{errors.filingStatus?.message}</ErrorMessage>}
+                </Field>
+                <Divider />
+              </FieldGroup>
+            </Fieldset>
+            <DialogActions>
+              <Button outline onClick={() => reset()}>
+                Reset
+              </Button>
+              <Button color="rose" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : 'Save'}
+              </Button>
+            </DialogActions>
+          </form>
+        </Card>
+      </SectionContainer>
+    </>
   );
 }

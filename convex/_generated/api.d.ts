@@ -16,6 +16,7 @@ import type * as http from "../http.js";
 import type * as income from "../income.js";
 import type * as market_assumptions from "../market_assumptions.js";
 import type * as plans from "../plans.js";
+import type * as tax_settings from "../tax_settings.js";
 import type * as templates_basic from "../templates/basic.js";
 import type * as templates_early_retirement from "../templates/early_retirement.js";
 import type * as timeline from "../timeline.js";
@@ -26,6 +27,7 @@ import type * as validators_contribution_rules_validator from "../validators/con
 import type * as validators_expenses_validator from "../validators/expenses_validator.js";
 import type * as validators_incomes_validator from "../validators/incomes_validator.js";
 import type * as validators_market_assumptions_validator from "../validators/market_assumptions_validator.js";
+import type * as validators_tax_settings_validator from "../validators/tax_settings_validator.js";
 import type * as validators_timeline_validator from "../validators/timeline_validator.js";
 
 import type {
@@ -51,6 +53,7 @@ declare const fullApi: ApiFromModules<{
   income: typeof income;
   market_assumptions: typeof market_assumptions;
   plans: typeof plans;
+  tax_settings: typeof tax_settings;
   "templates/basic": typeof templates_basic;
   "templates/early_retirement": typeof templates_early_retirement;
   timeline: typeof timeline;
@@ -61,6 +64,7 @@ declare const fullApi: ApiFromModules<{
   "validators/expenses_validator": typeof validators_expenses_validator;
   "validators/incomes_validator": typeof validators_incomes_validator;
   "validators/market_assumptions_validator": typeof validators_market_assumptions_validator;
+  "validators/tax_settings_validator": typeof validators_tax_settings_validator;
   "validators/timeline_validator": typeof validators_timeline_validator;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
