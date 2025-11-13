@@ -9,7 +9,7 @@ export default function ErrorMessageCard({ errorMessage }: { errorMessage: strin
             <XCircleIcon aria-hidden="true" className="size-5 text-red-400" />
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800 dark:text-red-200">{errorMessage}</h3>
+            <h3 className="line-clamp-3 text-sm font-medium text-red-800 dark:text-red-200">{errorMessage}</h3>
           </div>
         </div>
       </div>
