@@ -2,13 +2,12 @@
 
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { PiggyBankIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { useSavingsData, useCountOfAccounts } from '@/hooks/use-convex-data';
 import { accountToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
@@ -20,14 +19,13 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface SavingsDialogProps {
   onClose: () => void;
-  selectedAccountID: string | null;
+  selectedAccount: AccountInputs | null;
+  numAccounts: number;
 }
 
-export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDialogProps) {
+export default function SavingsDialog({ onClose, selectedAccount, numAccounts }: SavingsDialogProps) {
   const planId = useSelectedPlanId();
-  const existingAccountData = useSavingsData(selectedAccountID);
 
-  const numAccounts = useCountOfAccounts();
   const newAccountDefaultValues = useMemo(
     () =>
       ({
@@ -38,22 +36,17 @@ export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDia
     [numAccounts]
   );
 
-  const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
+  const defaultValues = (selectedAccount || newAccountDefaultValues) as never;
 
   const {
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    if (existingAccountData) reset(existingAccountData);
-  }, [existingAccountData, reset]);
 
   const m = useMutation(api.account.upsertAccount);
   const onSubmit = async (data: AccountInputs) => {
@@ -67,7 +60,7 @@ export default function SavingsDialog({ onClose, selectedAccountID }: SavingsDia
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <PiggyBankIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{selectedAccountID ? 'Edit Savings' : 'New Savings'}</span>
+          <span>{selectedAccount ? 'Edit Savings' : 'New Savings'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>

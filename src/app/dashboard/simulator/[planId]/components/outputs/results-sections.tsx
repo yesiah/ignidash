@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 
-import { usePlanData, useCountOfIncomes, useCountOfExpenses } from '@/hooks/use-convex-data';
+import { usePlanData, useCountOfIncomes, useCountOfExpenses, useCountOfAccounts } from '@/hooks/use-convex-data';
 import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/simulator-store';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
@@ -61,6 +61,7 @@ export default function ResultsSections() {
 
   const numIncomes = useCountOfIncomes();
   const numExpenses = useCountOfExpenses();
+  const numAccounts = useCountOfAccounts();
 
   if (!(timelineIsReady && accountsAreReady && incomesAreReady && expensesAreReady)) {
     const timelineTitleComponent = (
@@ -116,7 +117,7 @@ export default function ResultsSections() {
           <ExpenseDialog selectedExpense={null} numExpenses={numExpenses} onClose={handleExpenseDialogClose} />
         </Dialog>
         <Dialog size="xl" open={savingsDialogOpen} onClose={handleSavingsDialogClose}>
-          <SavingsDialog selectedAccountID={null} onClose={handleSavingsDialogClose} />
+          <SavingsDialog selectedAccount={null} numAccounts={numAccounts} onClose={handleSavingsDialogClose} />
         </Dialog>
       </>
     );

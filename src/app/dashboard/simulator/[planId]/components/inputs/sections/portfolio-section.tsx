@@ -49,15 +49,16 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
   const planId = useSelectedPlanId();
 
   const [accountDialogOpen, setAccountDialogOpen] = useState(false);
-  const [selectedAccountID, setSelectedAccountID] = useState<string | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<AccountInputs | null>(null);
 
   const [savingsDialogOpen, setSavingsDialogOpen] = useState(false);
-  const [selectedSavingsID, setSelectedSavingsID] = useState<string | null>(null);
+  const [selectedSavings, setSelectedSavings] = useState<AccountInputs | null>(null);
 
   const [accountToDelete, setAccountToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const accounts = useAccountsData();
-  const hasAccounts = Object.keys(accounts).length > 0;
+  const numAccounts = Object.keys(accounts).length;
+  const hasAccounts = numAccounts > 0;
 
   const m = useMutation(api.account.deleteAccount);
   const deleteAccount = async (accountId: string) => {
@@ -65,22 +66,22 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
   };
 
   const handleAccountDialogClose = () => {
-    setSelectedAccountID(null);
+    setSelectedAccount(null);
     setAccountDialogOpen(false);
   };
 
   const handleSavingsDialogClose = () => {
-    setSelectedSavingsID(null);
+    setSelectedSavings(null);
     setSavingsDialogOpen(false);
   };
 
-  const handleDropdownClickEdit = (id: string, type: AccountInputs['type']) => {
-    if (type === 'savings') {
+  const handleDropdownClickEdit = (account: AccountInputs) => {
+    if (account.type === 'savings') {
       setSavingsDialogOpen(true);
-      setSelectedSavingsID(id);
+      setSelectedSavings(account);
     } else {
       setAccountDialogOpen(true);
-      setSelectedAccountID(id);
+      setSelectedAccount(account);
     }
   };
 
@@ -99,18 +100,18 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                     name={account.name}
                     desc={getAccountDesc(account)}
                     leftAddOn={account.type === 'savings' ? <PiggyBankIcon className="size-8" /> : <TrendingUpIcon className="size-8" />}
-                    onDropdownClickEdit={() => handleDropdownClickEdit(id, account.type)}
+                    onDropdownClickEdit={() => handleDropdownClickEdit(account)}
                     onDropdownClickDelete={() => setAccountToDelete({ id, name: account.name })}
                     colorClassName={COLOR_MAP[taxCategoryFromAccountType(account.type)]}
                   />
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end gap-x-2">
-                <Button outline onClick={() => setSavingsDialogOpen(true)} disabled={!!selectedSavingsID}>
+                <Button outline onClick={() => setSavingsDialogOpen(true)} disabled={!!selectedSavings}>
                   <PlusIcon />
                   Savings
                 </Button>
-                <Button outline onClick={() => setAccountDialogOpen(true)} disabled={!!selectedAccountID}>
+                <Button outline onClick={() => setAccountDialogOpen(true)} disabled={!!selectedAccount}>
                   <PlusIcon />
                   Investment
                 </Button>
@@ -130,10 +131,10 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
         </div>
       </DisclosureSection>
       <Dialog size="xl" open={accountDialogOpen} onClose={handleAccountDialogClose}>
-        <AccountDialog selectedAccountID={selectedAccountID} onClose={handleAccountDialogClose} />
+        <AccountDialog selectedAccount={selectedAccount} numAccounts={numAccounts} onClose={handleAccountDialogClose} />
       </Dialog>
       <Dialog size="xl" open={savingsDialogOpen} onClose={handleSavingsDialogClose}>
-        <SavingsDialog selectedAccountID={selectedSavingsID} onClose={handleSavingsDialogClose} />
+        <SavingsDialog selectedAccount={selectedSavings} numAccounts={numAccounts} onClose={handleSavingsDialogClose} />
       </Dialog>
       <DisclosureSectionDeleteDataAlert dataToDelete={accountToDelete} setDataToDelete={setAccountToDelete} deleteData={deleteAccount} />
     </>

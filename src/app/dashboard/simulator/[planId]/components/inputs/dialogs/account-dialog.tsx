@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useInvestmentData, useCountOfAccounts } from '@/hooks/use-convex-data';
 import { accountToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { accountFormSchema, type AccountInputs, isRothAccount, type RothAccountType } from '@/lib/schemas/inputs/account-form-schema';
@@ -21,14 +20,13 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface AccountDialogProps {
   onClose: () => void;
-  selectedAccountID: string | null;
+  selectedAccount: AccountInputs | null;
+  numAccounts: number;
 }
 
-export default function AccountDialog({ onClose, selectedAccountID }: AccountDialogProps) {
+export default function AccountDialog({ onClose, selectedAccount, numAccounts }: AccountDialogProps) {
   const planId = useSelectedPlanId();
-  const existingAccountData = useInvestmentData(selectedAccountID);
 
-  const numAccounts = useCountOfAccounts();
   const newAccountDefaultValues = useMemo(
     () =>
       ({
@@ -40,24 +38,19 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
     [numAccounts]
   );
 
-  const defaultValues = (existingAccountData || newAccountDefaultValues) as never;
+  const defaultValues = (selectedAccount || newAccountDefaultValues) as never;
 
   const {
     register,
     unregister,
     control,
     handleSubmit,
-    reset,
     getFieldState,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    if (existingAccountData) reset(existingAccountData);
-  }, [existingAccountData, reset]);
 
   const m = useMutation(api.account.upsertAccount);
   const onSubmit = async (data: AccountInputs) => {
@@ -104,7 +97,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
       <DialogTitle onClose={onClose}>
         <div className="flex items-center gap-4">
           <TrendingUpIcon className="text-primary size-8 shrink-0" aria-hidden="true" />
-          <span>{selectedAccountID ? 'Edit Investment' : 'New Investment'}</span>
+          <span>{selectedAccount ? 'Edit Investment' : 'New Investment'}</span>
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -142,6 +135,7 @@ export default function AccountDialog({ onClose, selectedAccountID }: AccountDia
                       <option value="rothIra">Roth IRA</option>
                     </optgroup>
                   </Select>
+                  {errors.type && <ErrorMessage>{errors.type?.message}</ErrorMessage>}
                 </Field>
                 <Field className={getBalanceColSpan()}>
                   <Label htmlFor="balance">Balance</Label>
