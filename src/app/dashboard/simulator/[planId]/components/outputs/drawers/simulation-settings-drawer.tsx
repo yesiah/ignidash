@@ -77,10 +77,10 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
   return (
     <>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Simulation Settings" desc="Select your preferred simulation methodology for projections." />
+        <SectionHeader title="Simulation Settings" desc="Choose your preferred simulation methodology for projections." />
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Fieldset aria-label="Simulation methodology">
+            <Fieldset aria-label="Simulation methodology details">
               <FieldGroup>
                 <Field>
                   <Label htmlFor="simulationMode">Simulation Mode</Label>
