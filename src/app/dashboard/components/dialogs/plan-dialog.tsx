@@ -80,7 +80,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
         </div>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Fieldset aria-label="Plan metadata">
+        <Fieldset aria-label="Simulator plan details">
           <DialogBody>
             <FieldGroup>
               {saveError && <ErrorMessageCard errorMessage={saveError} />}

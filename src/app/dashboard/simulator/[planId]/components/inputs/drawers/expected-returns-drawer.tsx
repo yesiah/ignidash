@@ -91,7 +91,7 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
         <SectionHeader title="Expected Returns" desc="Set expected inflation rate and annual returns for each asset class." />
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Fieldset aria-label="Expected Returns">
+            <Fieldset aria-label="Expected returns details">
               <FieldGroup>
                 {saveError && <ErrorMessageCard errorMessage={saveError} />}
                 <Field>

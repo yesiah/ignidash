@@ -12,7 +12,7 @@ import { type TaxSettingsInputs, taxSettingsSchema } from '@/lib/schemas/inputs/
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
-import { Field, FieldGroup, Fieldset, Label, /* Description, */ ErrorMessage } from '@/components/catalyst/fieldset';
+import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Select } from '@/components/catalyst/select';
 import { Divider } from '@/components/catalyst/divider';
@@ -65,7 +65,7 @@ export default function TaxSettingsDrawer({ setOpen }: TaxSettingsDrawerProps) {
         <SectionHeader title="Tax Settings" desc="Set your filing status for accurate tax calculations." />
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Fieldset aria-label="Tax Settings">
+            <Fieldset aria-label="Tax settings details">
               <FieldGroup>
                 {saveError && <ErrorMessageCard errorMessage={saveError} />}
                 <Field>
@@ -76,6 +76,7 @@ export default function TaxSettingsDrawer({ setOpen }: TaxSettingsDrawerProps) {
                     <option value="headOfHousehold">Head of Household</option>
                   </Select>
                   {errors.filingStatus && <ErrorMessage>{errors.filingStatus?.message}</ErrorMessage>}
+                  <Description>Your filing status determines your tax rates and standard deduction.</Description>
                 </Field>
                 <Divider />
               </FieldGroup>
