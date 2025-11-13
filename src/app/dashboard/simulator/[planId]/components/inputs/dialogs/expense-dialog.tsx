@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
@@ -70,7 +71,7 @@ export default function ExpenseDialog({ onClose, selectedExpense: _selectedExpen
       await m({ expense: expenseToConvex({ ...data, id: expenseId }), planId });
       onClose();
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save expense.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save expense.');
       console.error('Error saving expense: ', error);
     }
   };

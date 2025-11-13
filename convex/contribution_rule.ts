@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { v, ConvexError } from 'convex/values';
 import { query, mutation } from './_generated/server';
 
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
@@ -62,7 +62,7 @@ export const reorderContributionRules = mutation({
 
     const reorderedContributionRules = newOrder.map((id, index) => {
       const cr = plan.contributionRules.find((c) => c.id === id);
-      if (!cr) throw new Error(`Contribution rule ${id} not found`);
+      if (!cr) throw new ConvexError(`Contribution rule ${id} not found`);
       return { ...cr, rank: index + 1 };
     });
 

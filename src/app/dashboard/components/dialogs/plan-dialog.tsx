@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
@@ -66,7 +67,7 @@ export default function PlanDialog({ onClose, numPlans, selectedPlan: _selectedP
 
       onClose();
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save plan.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save plan.');
       console.error('Error saving plan: ', error);
     }
   };

@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useMemo, useState } from 'react';
@@ -60,7 +61,7 @@ export default function SavingsDialog({ onClose, selectedAccount: _selectedAccou
       await m({ account: accountToConvex({ ...data, id: accountId }), planId });
       onClose();
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save account.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save account.');
       console.error('Error saving account: ', error);
     }
   };

@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useEffect, useMemo, useState } from 'react';
@@ -98,7 +99,7 @@ export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
       await m({ timeline: timelineToConvex(data)!, planId });
       setOpen(false);
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save timeline.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save timeline.');
       console.error('Error saving timeline: ', error);
     }
   };

@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -71,7 +72,7 @@ export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawer
       await m({ marketAssumptions: marketAssumptionsToConvex(data), planId });
       setOpen(false);
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save market assumptions.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save market assumptions.');
       console.error('Error saving market assumptions: ', error);
     }
   };

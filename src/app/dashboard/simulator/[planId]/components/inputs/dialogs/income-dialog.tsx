@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
@@ -71,7 +72,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
       await m({ income: incomeToConvex({ ...data, id: incomeId }), planId });
       onClose();
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save income.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save income.');
       console.error('Error saving income: ', error);
     }
   };

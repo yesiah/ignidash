@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useEffect, useMemo, useState } from 'react';
@@ -78,7 +79,7 @@ export default function ContributionRuleDialog({
       await m({ contributionRule: contributionToConvex({ ...data, id: contributionRuleId }), planId });
       onClose();
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Failed to save contribution rule.');
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save contribution rule.');
       console.error('Error saving contribution rule: ', error);
     }
   };
