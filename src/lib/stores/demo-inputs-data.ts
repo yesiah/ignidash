@@ -171,6 +171,9 @@ export const demoInputs1: SimulatorInputs = {
   taxSettings: {
     filingStatus: 'single',
   },
+  privacySettings: {
+    isPrivate: true,
+  },
 };
 
 // Early Retirement Demo Inputs
@@ -380,5 +383,8 @@ export const demoInputs2: SimulatorInputs = {
   },
   taxSettings: {
     filingStatus: 'single',
+  },
+  privacySettings: {
+    isPrivate: true,
   },
 };

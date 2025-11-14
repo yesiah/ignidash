@@ -19,6 +19,7 @@ describe('StochasticReturnsProvider', () => {
     baseContributionRule: { type: 'save' },
     marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
     taxSettings: { filingStatus: 'single' },
+    privacySettings: { isPrivate: true },
   };
 
   describe('generateNormalReturn', () => {

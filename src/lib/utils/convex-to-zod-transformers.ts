@@ -7,6 +7,7 @@ import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 import type { MarketAssumptionsInputs } from '@/lib/schemas/inputs/market-assumptions-schema';
 import type { TimelineInputs } from '@/lib/schemas/inputs/timeline-form-schema';
 import type { TaxSettingsInputs } from '@/lib/schemas/inputs/tax-settings-schema';
+import type { PrivacySettingsInputs } from '@/lib/schemas/inputs/privacy-settings-schema';
 import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 
 // ============================================================================
@@ -70,6 +71,13 @@ export function baseContributionFromConvex(baseContribution: Doc<'plans'>['baseC
  */
 export function taxSettingsFromConvex(taxSettings: Doc<'plans'>['taxSettings']): TaxSettingsInputs {
   return { filingStatus: taxSettings.filingStatus };
+}
+
+/**
+ * Transforms Convex privacy settings to Zod PrivacySettingsInputs format
+ */
+export function privacySettingsFromConvex(privacySettings: Doc<'plans'>['privacySettings']): PrivacySettingsInputs {
+  return { isPrivate: privacySettings.isPrivate };
 }
 
 /**
@@ -142,6 +150,7 @@ export function simulatorFromConvex(plan: Doc<'plans'>): SimulatorInputs {
     baseContributionRule: baseContributionFromConvex(plan.baseContributionRule),
     marketAssumptions: marketAssumptionsFromConvex(plan.marketAssumptions),
     taxSettings: taxSettingsFromConvex(plan.taxSettings),
+    privacySettings: privacySettingsFromConvex(plan.privacySettings),
   };
 }
 
@@ -204,8 +213,15 @@ export function baseContributionToConvex(baseContribution: BaseContributionInput
 /**
  * Transforms Zod TaxSettingsInputs to Convex tax settings format
  */
-export function taxSettingsToConvex(taxSettings: TaxSettingsInputs): NonNullable<Doc<'plans'>['taxSettings']> {
+export function taxSettingsToConvex(taxSettings: TaxSettingsInputs): Doc<'plans'>['taxSettings'] {
   return { filingStatus: taxSettings.filingStatus };
+}
+
+/**
+ * Transforms Zod PrivacySettingsInputs to Convex privacy settings format
+ */
+export function privacySettingsToConvex(privacySettings: PrivacySettingsInputs): Doc<'plans'>['privacySettings'] {
+  return { isPrivate: privacySettings.isPrivate };
 }
 
 /**
@@ -265,7 +281,7 @@ export function timelineToConvex(timeline: TimelineInputs | null): Doc<'plans'>[
  */
 export function simulatorToConvex(
   simulator: SimulatorInputs
-): Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name' | 'isDefault' | 'privacySettings'> {
+): Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name' | 'isDefault'> {
   const incomes = Object.values(simulator.incomes).map(incomeToConvex);
   const accounts = Object.values(simulator.accounts).map(accountToConvex);
   const expenses = Object.values(simulator.expenses).map(expenseToConvex);
@@ -280,6 +296,7 @@ export function simulatorToConvex(
     baseContributionRule: baseContributionToConvex(simulator.baseContributionRule),
     marketAssumptions: marketAssumptionsToConvex(simulator.marketAssumptions),
     taxSettings: taxSettingsToConvex(simulator.taxSettings),
+    privacySettings: privacySettingsToConvex(simulator.privacySettings),
   };
 }
 
