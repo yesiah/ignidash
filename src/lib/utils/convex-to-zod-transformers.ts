@@ -263,7 +263,9 @@ export function timelineToConvex(timeline: TimelineInputs | null): Doc<'plans'>[
 /**
  * Transforms Zod SimulatorInputs to partial Convex plan format (without userId and name)
  */
-export function simulatorToConvex(simulator: SimulatorInputs): Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name'> {
+export function simulatorToConvex(
+  simulator: SimulatorInputs
+): Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name' | 'isDefault' | 'privacySettings'> {
   const incomes = Object.values(simulator.incomes).map(incomeToConvex);
   const accounts = Object.values(simulator.accounts).map(accountToConvex);
   const expenses = Object.values(simulator.expenses).map(expenseToConvex);

@@ -8,11 +8,13 @@ import { accountValidator } from './validators/accounts_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
 import { taxSettingsValidator } from './validators/tax_settings_validator';
+import { planPrivacySettingsValidator } from './validators/plan_privacy_settings_validator';
 
 export default defineSchema({
   plans: defineTable({
     userId: v.string(),
     name: v.string(),
+    isDefault: v.boolean(),
     timeline: v.union(timelineValidator, v.null()),
     incomes: v.array(incomeValidator),
     expenses: v.array(expenseValidator),
@@ -21,5 +23,6 @@ export default defineSchema({
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
     taxSettings: taxSettingsValidator,
+    privacySettings: planPrivacySettingsValidator,
   }).index('by_userId', ['userId']),
 });

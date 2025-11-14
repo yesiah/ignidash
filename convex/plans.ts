@@ -12,6 +12,7 @@ import { accountValidator } from './validators/accounts_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
 import { taxSettingsValidator } from './validators/tax_settings_validator';
+import { planPrivacySettingsValidator } from './validators/plan_privacy_settings_validator';
 import { basicTemplate } from './templates/basic';
 import { earlyRetirementTemplate } from './templates/early_retirement';
 
@@ -71,6 +72,7 @@ export const getOrCreateDefaultPlan = mutation({
     return await ctx.db.insert('plans', {
       userId,
       name: `${userName}'s Plan`,
+      isDefault: true,
       timeline: null,
       incomes: [],
       expenses: [],
@@ -79,6 +81,7 @@ export const getOrCreateDefaultPlan = mutation({
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
       taxSettings: { filingStatus: 'single' },
+      privacySettings: { isPrivate: true },
     });
   },
 });
@@ -94,6 +97,7 @@ export const createBlankPlan = mutation({
     return await ctx.db.insert('plans', {
       userId,
       name: newPlanName,
+      isDefault: false,
       timeline: null,
       incomes: [],
       expenses: [],
@@ -102,6 +106,7 @@ export const createBlankPlan = mutation({
       baseContributionRule: { type: 'save' },
       marketAssumptions: { stockReturn: 10, stockYield: 3.5, bondReturn: 5, bondYield: 4.5, cashReturn: 3, inflationRate: 3 },
       taxSettings: { filingStatus: 'single' },
+      privacySettings: { isPrivate: true },
     });
   },
 });
@@ -109,6 +114,7 @@ export const createBlankPlan = mutation({
 export const createPlanWithData = mutation({
   args: {
     newPlanName: v.string(),
+    isDefault: v.boolean(),
     timeline: v.union(timelineValidator, v.null()),
     incomes: v.array(incomeValidator),
     expenses: v.array(expenseValidator),
@@ -117,10 +123,23 @@ export const createPlanWithData = mutation({
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
     taxSettings: taxSettingsValidator,
+    privacySettings: planPrivacySettingsValidator,
   },
   handler: async (
     ctx,
-    { newPlanName, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings }
+    {
+      newPlanName,
+      isDefault,
+      timeline,
+      incomes,
+      expenses,
+      accounts,
+      contributionRules,
+      baseContributionRule,
+      marketAssumptions,
+      taxSettings,
+      privacySettings,
+    }
   ) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
@@ -130,6 +149,7 @@ export const createPlanWithData = mutation({
     return await ctx.db.insert('plans', {
       userId,
       name: newPlanName,
+      isDefault,
       timeline,
       incomes,
       expenses,
@@ -138,6 +158,7 @@ export const createPlanWithData = mutation({
       baseContributionRule,
       marketAssumptions,
       taxSettings,
+      privacySettings,
     });
   },
 });
@@ -159,7 +180,17 @@ export const clonePlan = mutation({
       plan = await getPlanForUserIdOrThrow(ctx, planId, userId);
     }
 
-    const { timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings } = plan;
+    const {
+      timeline,
+      incomes,
+      expenses,
+      accounts,
+      contributionRules,
+      baseContributionRule,
+      marketAssumptions,
+      taxSettings,
+      privacySettings,
+    } = plan;
     const clonedData = {
       timeline: structuredClone(timeline),
       incomes: structuredClone(incomes),
@@ -169,9 +200,10 @@ export const clonePlan = mutation({
       baseContributionRule: structuredClone(baseContributionRule),
       marketAssumptions: structuredClone(marketAssumptions),
       taxSettings: structuredClone(taxSettings),
+      privacySettings: structuredClone(privacySettings),
     };
 
-    return await ctx.db.insert('plans', { userId, name: newPlanName, ...clonedData });
+    return await ctx.db.insert('plans', { userId, name: newPlanName, isDefault: false, ...clonedData });
   },
 });
 
@@ -195,37 +227,5 @@ export const updatePlanName = mutation({
     await getPlanForUserIdOrThrow(ctx, planId, userId);
 
     await ctx.db.patch(planId, { name });
-  },
-});
-
-export const updatePlan = mutation({
-  args: {
-    planId: v.id('plans'),
-    timeline: v.union(timelineValidator, v.null()),
-    incomes: v.array(incomeValidator),
-    expenses: v.array(expenseValidator),
-    accounts: v.array(accountValidator),
-    contributionRules: v.array(contributionRulesValidator),
-    baseContributionRule: baseContributionRuleValidator,
-    marketAssumptions: marketAssumptionsValidator,
-    taxSettings: taxSettingsValidator,
-  },
-  handler: async (
-    ctx,
-    { planId, timeline, incomes, expenses, accounts, contributionRules, baseContributionRule, marketAssumptions, taxSettings }
-  ) => {
-    const { userId } = await getUserIdOrThrow(ctx);
-    await getPlanForUserIdOrThrow(ctx, planId, userId);
-
-    await ctx.db.patch(planId, {
-      timeline,
-      incomes,
-      expenses,
-      accounts,
-      contributionRules,
-      baseContributionRule,
-      marketAssumptions,
-      taxSettings,
-    });
   },
 });

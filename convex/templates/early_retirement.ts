@@ -1,6 +1,7 @@
 import type { Doc } from '../_generated/dataModel';
 
 export const earlyRetirementTemplate: Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name'> = {
+  isDefault: false,
   timeline: {
     lifeExpectancy: 87,
     currentAge: 28,
@@ -216,5 +217,8 @@ export const earlyRetirementTemplate: Omit<Doc<'plans'>, '_id' | '_creationTime'
   },
   taxSettings: {
     filingStatus: 'single',
+  },
+  privacySettings: {
+    isPrivate: true,
   },
 };

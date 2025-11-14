@@ -27,6 +27,7 @@ import type * as validators_contribution_rules_validator from "../validators/con
 import type * as validators_expenses_validator from "../validators/expenses_validator.js";
 import type * as validators_incomes_validator from "../validators/incomes_validator.js";
 import type * as validators_market_assumptions_validator from "../validators/market_assumptions_validator.js";
+import type * as validators_plan_privacy_settings_validator from "../validators/plan_privacy_settings_validator.js";
 import type * as validators_tax_settings_validator from "../validators/tax_settings_validator.js";
 import type * as validators_timeline_validator from "../validators/timeline_validator.js";
 
@@ -64,6 +65,7 @@ declare const fullApi: ApiFromModules<{
   "validators/expenses_validator": typeof validators_expenses_validator;
   "validators/incomes_validator": typeof validators_incomes_validator;
   "validators/market_assumptions_validator": typeof validators_market_assumptions_validator;
+  "validators/plan_privacy_settings_validator": typeof validators_plan_privacy_settings_validator;
   "validators/tax_settings_validator": typeof validators_tax_settings_validator;
   "validators/timeline_validator": typeof validators_timeline_validator;
 }>;
