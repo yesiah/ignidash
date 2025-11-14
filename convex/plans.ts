@@ -1,7 +1,6 @@
 import { v, ConvexError } from 'convex/values';
 import { query, mutation } from './_generated/server';
 import type { Doc } from './_generated/dataModel';
-import { api } from './_generated/api';
 
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { getPlanForUserIdOrThrow, getAllPlans } from './utils/plan_utils';
@@ -83,8 +82,8 @@ export const createBlankPlan = mutation({
   handler: async (ctx, { newPlanName }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
-    if (numPlans >= 10) throw new ConvexError('Maximum of 10 plans reached');
+    const plans = await getAllPlans(ctx, userId);
+    if (plans.length >= 10) throw new ConvexError('Maximum of 10 plans reached');
 
     return await ctx.db.insert('plans', {
       userId,
@@ -135,8 +134,8 @@ export const createPlanWithData = mutation({
   ) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
-    if (numPlans >= 10) throw new ConvexError('Maximum of 10 plans reached');
+    const plans = await getAllPlans(ctx, userId);
+    if (plans.length >= 10) throw new ConvexError('Maximum of 10 plans reached');
 
     return await ctx.db.insert('plans', {
       userId,
@@ -160,8 +159,8 @@ export const clonePlan = mutation({
   handler: async (ctx, { newPlanName, planId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
-    if (numPlans >= 10) throw new ConvexError('Maximum of 10 plans reached');
+    const plans = await getAllPlans(ctx, userId);
+    if (plans.length >= 10) throw new ConvexError('Maximum of 10 plans reached');
 
     let plan: Omit<Doc<'plans'>, '_id' | '_creationTime' | 'userId' | 'name'>;
     if (planId === 'template1') {
@@ -205,8 +204,8 @@ export const deletePlan = mutation({
     const { userId } = await getUserIdOrThrow(ctx);
     await getPlanForUserIdOrThrow(ctx, planId, userId);
 
-    const numPlans = await ctx.runQuery(api.plans.getCountOfPlans, {});
-    if (numPlans <= 1) throw new ConvexError('You cannot delete your only plan.');
+    const plans = await getAllPlans(ctx, userId);
+    if (plans.length <= 1) throw new ConvexError('You cannot delete your only plan.');
 
     await ctx.db.delete(planId);
   },
