@@ -12,7 +12,7 @@ import { accountValidator } from './validators/accounts_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
 import { taxSettingsValidator } from './validators/tax_settings_validator';
-import { planPrivacySettingsValidator } from './validators/plan_privacy_settings_validator';
+import { privacySettingsValidator } from './validators/privacy_settings_validator';
 import { basicTemplate } from './templates/basic';
 import { earlyRetirementTemplate } from './templates/early_retirement';
 
@@ -123,7 +123,7 @@ export const createPlanWithData = mutation({
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
     taxSettings: taxSettingsValidator,
-    privacySettings: planPrivacySettingsValidator,
+    privacySettings: privacySettingsValidator,
   },
   handler: async (
     ctx,
