@@ -210,7 +210,7 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
           </DialogBody>
         </Fieldset>
         <DialogActions>
-          <Button plain onClick={onClose} className="hidden sm:inline-flex">
+          <Button plain onClick={onClose} className="hidden sm:inline-flex" disabled={isSubmitting}>
             Cancel
           </Button>
           <Button color="rose" type="submit" disabled={isSubmitting}>

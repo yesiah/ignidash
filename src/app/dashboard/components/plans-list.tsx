@@ -192,7 +192,7 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
         <AlertTitle>Are you sure you want to delete {planToDelete ? `"${planToDelete.name}"` : 'this'}?</AlertTitle>
         <AlertDescription>This action cannot be undone.</AlertDescription>
         <AlertActions>
-          <Button plain onClick={() => setPlanToDelete(null)}>
+          <Button plain onClick={() => setPlanToDelete(null)} disabled={isDeleting}>
             Cancel
           </Button>
           <Button
