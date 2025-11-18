@@ -29,7 +29,9 @@ interface PlanListItems {
 function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete, disableActions }: PlanListItems) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
-  const isCalculationReady = useIsCalculationReady(inputs);
+  const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady(inputs);
+  const isCalculationReady = timelineIsReady && accountsAreReady && incomesAreReady && expensesAreReady;
+
   const simulation = useSimulationResult(inputs, 'fixedReturns');
   const keyMetrics = useKeyMetrics(simulation);
 
