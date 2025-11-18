@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import { Button } from '@/components/catalyst/button';
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
 
@@ -12,6 +16,8 @@ export default function DisclosureSectionDeleteDataAlert({
   setDataToDelete,
   deleteData,
 }: DisclosureSectionDeleteDataAlertProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <Alert
       open={!!dataToDelete}
@@ -22,17 +28,23 @@ export default function DisclosureSectionDeleteDataAlert({
       <AlertTitle>Are you sure you want to delete {dataToDelete ? `"${dataToDelete.name}"` : 'this'}?</AlertTitle>
       <AlertDescription>This action cannot be undone.</AlertDescription>
       <AlertActions>
-        <Button plain onClick={() => setDataToDelete(null)}>
+        <Button plain onClick={() => setDataToDelete(null)} disabled={isDeleting}>
           Cancel
         </Button>
         <Button
           color="red"
+          disabled={isDeleting}
           onClick={async () => {
-            await deleteData(dataToDelete!.id);
-            setDataToDelete(null);
+            setIsDeleting(true);
+            try {
+              await deleteData(dataToDelete!.id);
+              setDataToDelete(null);
+            } finally {
+              setIsDeleting(false);
+            }
           }}
         >
-          Delete
+          {isDeleting ? 'Deleting...' : 'Delete'}
         </Button>
       </AlertActions>
     </Alert>
