@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PresentationIcon, SlidersHorizontalIcon, SparklesIcon } from 'lucide-react';
+import { PresentationIcon, SlidersHorizontalIcon, WandSparklesIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
@@ -48,7 +48,7 @@ export default function ResultsColumnHeader() {
         icon={PresentationIcon}
         iconButton={
           <div className="flex items-center gap-x-1">
-            <IconButton icon={SparklesIcon} label="Ask AI (Coming soon!)" onClick={() => {}} surfaceColor="emphasized" />
+            <IconButton icon={WandSparklesIcon} label="Ask AI (Coming soon!)" onClick={() => {}} surfaceColor="emphasized" />
             <IconButton
               icon={SlidersHorizontalIcon}
               label="Simulation Settings"

@@ -7,7 +7,7 @@ import {
   TrendingUpIcon,
   BanknoteXIcon,
   HourglassIcon,
-  SparklesIcon,
+  WandSparklesIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -109,7 +109,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           )}
           {activeSection === 'results' && (
             <div className="flex items-center gap-x-1">
-              <IconButton icon={SparklesIcon} label="Ask AI (Coming soon!)" onClick={() => {}} surfaceColor="emphasized" />
+              <IconButton icon={WandSparklesIcon} label="Ask AI (Coming soon!)" onClick={() => {}} surfaceColor="emphasized" />
               <IconButton
                 icon={SlidersHorizontalIcon}
                 label="Simulation Settings"
