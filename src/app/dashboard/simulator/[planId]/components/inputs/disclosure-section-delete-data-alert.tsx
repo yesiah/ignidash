@@ -1,9 +1,11 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useState } from 'react';
 
 import { Button } from '@/components/catalyst/button';
-import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/catalyst/alert';
+import { Alert, AlertActions, AlertDescription, AlertTitle, AlertBody } from '@/components/catalyst/alert';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 
 interface DisclosureSectionDeleteDataAlertProps {
   dataToDelete: { id: string; name: string } | null;
@@ -17,6 +19,7 @@ export default function DisclosureSectionDeleteDataAlert({
   deleteData,
 }: DisclosureSectionDeleteDataAlertProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   return (
     <Alert
@@ -27,6 +30,7 @@ export default function DisclosureSectionDeleteDataAlert({
     >
       <AlertTitle>Are you sure you want to delete {dataToDelete ? `"${dataToDelete.name}"` : 'this'}?</AlertTitle>
       <AlertDescription>This action cannot be undone.</AlertDescription>
+      <AlertBody>{deleteError && <ErrorMessageCard errorMessage={deleteError} />}</AlertBody>
       <AlertActions>
         <Button plain onClick={() => setDataToDelete(null)} disabled={isDeleting}>
           Cancel
@@ -36,9 +40,13 @@ export default function DisclosureSectionDeleteDataAlert({
           disabled={isDeleting}
           onClick={async () => {
             setIsDeleting(true);
+            setDeleteError(null);
             try {
               await deleteData(dataToDelete!.id);
               setDataToDelete(null);
+            } catch (error) {
+              setDeleteError(error instanceof ConvexError ? error.message : 'Failed to delete.');
+              console.error('Error during deletion: ', error);
             } finally {
               setIsDeleting(false);
             }
