@@ -135,3 +135,10 @@ export const useTaxSettingsData = () => {
   const q = useQuery(api.tax_settings.get, { planId });
   return useMemo(() => (q ? q : null), [q]);
 };
+
+// Simulation Settings
+export const useSimulationSettingsData = () => {
+  const planId = useSelectedPlanId();
+  const q = useQuery(api.simulation_settings.get, { planId });
+  return useMemo(() => (q ? q : null), [q]);
+};

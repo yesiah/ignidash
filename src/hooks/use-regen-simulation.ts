@@ -1,16 +1,23 @@
 import { RefreshCwIcon } from 'lucide-react';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
-import { useUpdateSimulationSeed, useSimulationStatus, useSimulationMode } from '@/lib/stores/simulator-store';
+import { useSimulationStatus } from '@/lib/stores/simulator-store';
+
+import { useSelectedPlanId } from './use-selected-plan-id';
+import { useSimulationSettingsData } from './use-convex-data';
 
 export function useRegenSimulation() {
-  const updateSimulationSeed = useUpdateSimulationSeed();
+  const planId = useSelectedPlanId();
+
+  const simulationSettings = useSimulationSettingsData();
   const simulationStatus = useSimulationStatus();
-  const simulationMode = useSimulationMode();
 
-  const isDisabled = simulationStatus === 'loading' || simulationMode === 'fixedReturns';
+  const isDisabled = !simulationSettings || simulationStatus === 'loading' || simulationSettings.simulationMode === 'fixedReturns';
 
-  const handleClick = () => {
-    if (!isDisabled) updateSimulationSeed();
+  const m = useMutation(api.simulation_settings.update);
+  const handleClick = async () => {
+    if (!isDisabled) await m({ simulationSettings: { ...simulationSettings, simulationSeed: Math.floor(Math.random() * 1000) }, planId });
   };
 
   return {

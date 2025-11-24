@@ -7,7 +7,7 @@ import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
-import { useSimulationSeed, useSimulationMode } from '@/lib/stores/simulator-store';
+import { useSimulationSettingsData } from '@/hooks/use-convex-data';
 
 import SimulationSettingsDrawer from './drawers/simulation-settings-drawer';
 import DrillDownBreadcrumb from './drill-down-breadcrumb';
@@ -23,22 +23,25 @@ export default function ResultsColumnHeader() {
     </div>
   );
 
-  const seed = useSimulationSeed();
-  const simulationMode = useSimulationMode();
+  const simulationSettings = useSimulationSettingsData();
 
-  let title: string | React.ReactNode;
-  switch (simulationMode) {
-    case 'fixedReturns':
-      title = 'Results';
-      break;
-    case 'stochasticReturns':
-    case 'historicalReturns':
-      title = `Results | Seed #${seed}`;
-      break;
-    case 'monteCarloStochasticReturns':
-    case 'monteCarloHistoricalReturns':
-      title = <DrillDownBreadcrumb />;
-      break;
+  let title: string | React.ReactNode = 'Results';
+  if (simulationSettings) {
+    const { simulationSeed: seed, simulationMode } = simulationSettings;
+
+    switch (simulationMode) {
+      case 'fixedReturns':
+        title = 'Results';
+        break;
+      case 'stochasticReturns':
+      case 'historicalReturns':
+        title = `Results | Seed #${seed}`;
+        break;
+      case 'monteCarloStochasticReturns':
+      case 'monteCarloHistoricalReturns':
+        title = <DrillDownBreadcrumb />;
+        break;
+    }
   }
 
   return (
@@ -64,7 +67,7 @@ export default function ResultsColumnHeader() {
       />
 
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} />
+        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
       </Drawer>
     </>
   );

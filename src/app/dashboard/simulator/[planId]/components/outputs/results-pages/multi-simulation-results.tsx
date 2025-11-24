@@ -7,7 +7,6 @@ import {
   useMultiSimulationResult,
   useKeyMetrics,
   useSimulationResult,
-  useSimulationSeed,
   useUpdateQuickSelectPercentile,
   useUpdateSelectedSeedFromTable,
   useUpdateResultsCategory,
@@ -117,7 +116,7 @@ export default function MultiSimulationResults({ inputs, simulationMode }: Multi
 
   const { activeSeed, activeSeedType } = useActiveSeed();
 
-  const seed = useSimulationSeed();
+  const seed = inputs.simulationSettings.simulationSeed;
   useEffect(() => removeActiveSeed(), [seed, simulationMode, removeActiveSeed]);
 
   if (!analysis || !keyMetrics || !tableData || !yearlyTableData || !chartData || isLoadingOrValidating) {

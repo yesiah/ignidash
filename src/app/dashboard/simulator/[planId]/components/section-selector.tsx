@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
-import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData } from '@/hooks/use-convex-data';
+import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData, useSimulationSettingsData } from '@/hooks/use-convex-data';
 
 import ExpectedReturnsDrawer from './inputs/drawers/expected-returns-drawer';
 import TaxSettingsDrawer from './inputs/drawers/tax-settings-drawer';
@@ -51,6 +51,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const marketAssumptions = useMarketAssumptionsData();
   const taxSettings = useTaxSettingsData();
   const timeline = useTimelineData();
+  const simulationSettings = useSimulationSettingsData();
 
   const { icon, label, handleClick, isDisabled } = useRegenSimulation();
 
@@ -139,7 +140,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
         <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} />
+        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
       </Drawer>
     </>
   );

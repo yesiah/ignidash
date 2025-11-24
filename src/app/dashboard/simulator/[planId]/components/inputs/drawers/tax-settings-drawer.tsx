@@ -38,7 +38,7 @@ export default function TaxSettingsDrawer({ setOpen, taxSettings }: TaxSettingsD
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(taxSettingsSchema),
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   useEffect(() => {

@@ -1,29 +1,42 @@
 'use client';
 
-import { useEffect } from 'react';
+import { ConvexError } from 'convex/values';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useSimulationSettings, useUpdateSimulationSettings } from '@/lib/stores/simulator-store';
+import { simulationSettingsToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import NumberInput from '@/components/ui/number-input';
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
 import { Field, FieldGroup, Fieldset, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 import { type SimulationSettingsInputs, simulationSettingsSchema } from '@/lib/schemas/simulation-settings-schema';
 import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
 import { DialogActions } from '@/components/catalyst/dialog';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Subheading } from '@/components/catalyst/heading';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface SimulationSettingsDrawerProps {
   setOpen: (open: boolean) => void;
+  simulationSettings: SimulationSettingsInputs | null;
 }
 
-export default function SimulationSettingsDrawer({ setOpen }: SimulationSettingsDrawerProps) {
-  const simulationSettings = useSimulationSettings();
+export default function SimulationSettingsDrawer({ setOpen, simulationSettings }: SimulationSettingsDrawerProps) {
+  const planId = useSelectedPlanId();
+
+  const simulationSettingsDefaultValues = useMemo(
+    () => ({ simulationSeed: 9521, simulationMode: 'fixedReturns' }) as const satisfies SimulationSettingsInputs,
+    []
+  );
+
+  const defaultValues = (simulationSettings || simulationSettingsDefaultValues) as never;
 
   const {
     control,
@@ -34,13 +47,25 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(simulationSettingsSchema),
-    defaultValues: simulationSettings,
+    defaultValues,
   });
 
-  const updateSimulationSettings = useUpdateSimulationSettings();
-  const onSubmit = (data: SimulationSettingsInputs) => {
-    updateSimulationSettings({ ...data });
-    setOpen(false);
+  useEffect(() => {
+    if (simulationSettings) reset(simulationSettings);
+  }, [simulationSettings, reset]);
+
+  const m = useMutation(api.simulation_settings.update);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const onSubmit = async (data: SimulationSettingsInputs) => {
+    try {
+      setSaveError(null);
+      await m({ simulationSettings: simulationSettingsToConvex(data), planId });
+      setOpen(false);
+    } catch (error) {
+      setSaveError(error instanceof ConvexError ? error.message : 'Failed to save simulation settings.');
+      console.error('Error saving simulation settings: ', error);
+    }
   };
 
   const simulationMode = useWatch({ control, name: 'simulationMode' });
@@ -82,6 +107,25 @@ export default function SimulationSettingsDrawer({ setOpen }: SimulationSettings
           <form onSubmit={handleSubmit(onSubmit)}>
             <Fieldset aria-label="Simulation methodology details">
               <FieldGroup>
+                {saveError && <ErrorMessageCard errorMessage={saveError} />}
+                {simulationMode !== 'fixedReturns' && (
+                  <Field>
+                    <Label htmlFor="simulationSeed">Simulation Seed</Label>
+                    <NumberInput
+                      name="simulationSeed"
+                      control={control}
+                      id="simulationSeed"
+                      inputMode="numeric"
+                      placeholder="9521"
+                      decimalScale={0}
+                      step={1}
+                      min={1}
+                      max={9999}
+                      disableThousandsSeparator
+                    />
+                    {errors.simulationSeed && <ErrorMessage>{errors.simulationSeed?.message}</ErrorMessage>}
+                  </Field>
+                )}
                 <Field>
                   <Label htmlFor="simulationMode">Simulation Mode</Label>
                   <Select {...register('simulationMode')} id="simulationMode" name="simulationMode">

@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 
 import { usePlanData, useCountOfIncomes, useCountOfExpenses, useCountOfAccounts, useTimelineData } from '@/hooks/use-convex-data';
-import { useIsCalculationReady, useSimulationMode } from '@/lib/stores/simulator-store';
+import { useIsCalculationReady } from '@/lib/stores/simulator-store';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
 import { HourglassIcon, LandmarkIcon, BanknoteArrowUpIcon, BanknoteArrowDownIcon } from 'lucide-react';
@@ -21,7 +21,7 @@ export default function ResultsSections() {
   const inputs = usePlanData();
 
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady(inputs);
-  const simulationMode = useSimulationMode();
+  const simulationMode = inputs?.simulationSettings.simulationMode;
 
   const steps = [
     {

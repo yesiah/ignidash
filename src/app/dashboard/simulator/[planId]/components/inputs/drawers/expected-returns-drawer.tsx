@@ -55,7 +55,7 @@ export default function ExpectedReturnsDrawer({ setOpen, marketAssumptions }: Ex
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(marketAssumptionsSchema),
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   useEffect(() => {
