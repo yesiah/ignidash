@@ -136,6 +136,13 @@ export const useTaxSettingsData = () => {
   return useMemo(() => (q ? q : null), [q]);
 };
 
+// Privacy Settings
+export const usePrivacySettingsData = () => {
+  const planId = useSelectedPlanId();
+  const q = useQuery(api.privacy_settings.get, { planId });
+  return useMemo(() => (q ? q : null), [q]);
+};
+
 // Simulation Settings
 export const useSimulationSettingsData = () => {
   const planId = useSelectedPlanId();
