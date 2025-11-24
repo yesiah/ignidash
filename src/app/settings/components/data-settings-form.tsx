@@ -30,7 +30,7 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
 
   const { fieldState: deleteApplicationDataState } = useAccountSettingsFieldState();
   const deleteAppDataMutation = useMutation(api.app_data.deleteAppData);
-  const handleDeleteApplicationData = async () => deleteAppDataMutation();
+  const handleDeleteApplicationData = async () => deleteAppDataMutation({ shouldCreateBlankPlan: true });
 
   const { fieldState: deleteAccountState, createCallbacks: deleteAccountCallbacks } = useAccountSettingsFieldState();
   const handleDeleteAccount = async () => {
