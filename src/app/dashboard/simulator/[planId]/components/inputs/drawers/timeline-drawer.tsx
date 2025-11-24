@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form';
 
-import { useTimelineData } from '@/hooks/use-convex-data';
 import { timelineToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { timelineFormSchema, type TimelineInputs, type RetirementStrategyInputs } from '@/lib/schemas/inputs/timeline-form-schema';
 import NumberInput from '@/components/ui/number-input';
@@ -55,11 +54,11 @@ function getRetirementStrategyError(errors: FieldErrors, retirementStrategyType:
 
 interface TimelineDrawerProps {
   setOpen: (open: boolean) => void;
+  timeline: TimelineInputs | null;
 }
 
-export default function TimelineDrawer({ setOpen }: TimelineDrawerProps) {
+export default function TimelineDrawer({ setOpen, timeline }: TimelineDrawerProps) {
   const planId = useSelectedPlanId();
-  const timeline = useTimelineData();
 
   const timelineDefaultValues = useMemo(
     () =>

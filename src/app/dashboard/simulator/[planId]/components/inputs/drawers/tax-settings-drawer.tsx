@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useTaxSettingsData } from '@/hooks/use-convex-data';
 import { taxSettingsToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { type TaxSettingsInputs, taxSettingsSchema } from '@/lib/schemas/inputs/tax-settings-schema';
 import SectionHeader from '@/components/ui/section-header';
@@ -23,11 +22,11 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface TaxSettingsDrawerProps {
   setOpen: (open: boolean) => void;
+  taxSettings: TaxSettingsInputs | null;
 }
 
-export default function TaxSettingsDrawer({ setOpen }: TaxSettingsDrawerProps) {
+export default function TaxSettingsDrawer({ setOpen, taxSettings }: TaxSettingsDrawerProps) {
   const planId = useSelectedPlanId();
-  const taxSettings = useTaxSettingsData();
 
   const taxSettingsDefaultValues = useMemo(() => ({ filingStatus: 'single' }) as const satisfies TaxSettingsInputs, []);
   const defaultValues = (taxSettings || taxSettingsDefaultValues) as never;

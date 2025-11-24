@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
+import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData } from '@/hooks/use-convex-data';
 
 import ExpectedReturnsDrawer from './inputs/drawers/expected-returns-drawer';
 import TaxSettingsDrawer from './inputs/drawers/tax-settings-drawer';
@@ -46,6 +47,10 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
   const [simulationSettingsOpen, setSimulationSettingsOpen] = useState(false);
+
+  const marketAssumptions = useMarketAssumptionsData();
+  const taxSettings = useTaxSettingsData();
+  const timeline = useTimelineData();
 
   const { icon, label, handleClick, isDisabled } = useRegenSimulation();
 
@@ -125,13 +130,13 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
       </div>
 
       <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
-        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} />
+        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} />
+        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-        <TimelineDrawer setOpen={setTimelineOpen} />
+        <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
         <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} />

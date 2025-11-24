@@ -6,6 +6,7 @@ import { CalculatorIcon, TrendingUpIcon, BanknoteXIcon, HourglassIcon } from 'lu
 import IconButton from '@/components/ui/icon-button';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
+import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData } from '@/hooks/use-convex-data';
 
 import ExpectedReturnsDrawer from './drawers/expected-returns-drawer';
 import TaxSettingsDrawer from './drawers/tax-settings-drawer';
@@ -15,6 +16,10 @@ export default function NumbersColumnHeader() {
   const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
   const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
+
+  const marketAssumptions = useMarketAssumptionsData();
+  const taxSettings = useTaxSettingsData();
+  const timeline = useTimelineData();
 
   const expectedReturnsTitleComponent = (
     <div className="flex items-center gap-2">
@@ -56,13 +61,13 @@ export default function NumbersColumnHeader() {
       />
 
       <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
-        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} />
+        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} />
+        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-        <TimelineDrawer setOpen={setTimelineOpen} />
+        <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
       </Drawer>
     </>
   );

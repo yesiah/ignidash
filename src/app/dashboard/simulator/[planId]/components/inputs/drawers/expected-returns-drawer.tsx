@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useMarketAssumptionsData } from '@/hooks/use-convex-data';
 import { marketAssumptionsToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { type MarketAssumptionsInputs, marketAssumptionsSchema } from '@/lib/schemas/inputs/market-assumptions-schema';
 import SectionHeader from '@/components/ui/section-header';
@@ -28,11 +27,11 @@ function calculateRealReturn(nominalReturn: number, inflationRate: number): numb
 
 interface ExpectedReturnsDrawerProps {
   setOpen: (open: boolean) => void;
+  marketAssumptions: MarketAssumptionsInputs | null;
 }
 
-export default function ExpectedReturnsDrawer({ setOpen }: ExpectedReturnsDrawerProps) {
+export default function ExpectedReturnsDrawer({ setOpen, marketAssumptions }: ExpectedReturnsDrawerProps) {
   const planId = useSelectedPlanId();
-  const marketAssumptions = useMarketAssumptionsData();
 
   const marketAssumptionsDefaultValues = useMemo(
     () =>
