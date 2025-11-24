@@ -29,7 +29,7 @@ export default function TaxSettingsDrawer({ setOpen, taxSettings }: TaxSettingsD
   const planId = useSelectedPlanId();
 
   const taxSettingsDefaultValues = useMemo(() => ({ filingStatus: 'single' }) as const satisfies TaxSettingsInputs, []);
-  const defaultValues = (taxSettings || taxSettingsDefaultValues) as never;
+  const defaultValues = taxSettings || taxSettingsDefaultValues;
 
   const {
     register,

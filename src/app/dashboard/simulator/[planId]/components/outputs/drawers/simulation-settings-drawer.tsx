@@ -36,7 +36,7 @@ export default function SimulationSettingsDrawer({ setOpen, simulationSettings }
     []
   );
 
-  const defaultValues = (simulationSettings || simulationSettingsDefaultValues) as never;
+  const defaultValues = simulationSettings || simulationSettingsDefaultValues;
 
   const {
     control,

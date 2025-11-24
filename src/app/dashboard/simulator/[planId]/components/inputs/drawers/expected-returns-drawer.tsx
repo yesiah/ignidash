@@ -46,7 +46,7 @@ export default function ExpectedReturnsDrawer({ setOpen, marketAssumptions }: Ex
     []
   );
 
-  const defaultValues = (marketAssumptions || marketAssumptionsDefaultValues) as never;
+  const defaultValues = marketAssumptions || marketAssumptionsDefaultValues;
 
   const {
     control,

@@ -71,7 +71,7 @@ export default function TimelineDrawer({ setOpen, timeline }: TimelineDrawerProp
     []
   );
 
-  const defaultValues = (timeline || timelineDefaultValues) as never;
+  const defaultValues = timeline || timelineDefaultValues;
 
   const {
     register,
