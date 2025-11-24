@@ -124,6 +124,9 @@ export default function SimulationSettingsDrawer({ setOpen, simulationSettings }
                       disableThousandsSeparator
                     />
                     {errors.simulationSeed && <ErrorMessage>{errors.simulationSeed?.message}</ErrorMessage>}
+                    <Description>
+                      A fixed seed number to ensure reproducible results when using Stochastic or Historical simulations.
+                    </Description>
                   </Field>
                 )}
                 <Field>
