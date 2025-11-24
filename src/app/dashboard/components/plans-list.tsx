@@ -25,10 +25,18 @@ interface PlanListItems {
   onDropdownClickEdit: () => void;
   onDropdownClickClone: () => void;
   onDropdownClickDelete: () => void;
+  onDropdownClickSetAsDefault: () => void;
   disableActions: { disableEdit?: boolean; disableClone?: boolean; disableDelete?: boolean };
 }
 
-function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropdownClickDelete, disableActions }: PlanListItems) {
+function PlanListItem({
+  plan,
+  onDropdownClickEdit,
+  onDropdownClickClone,
+  onDropdownClickDelete,
+  onDropdownClickSetAsDefault,
+  disableActions,
+}: PlanListItems) {
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady(inputs);
@@ -98,6 +106,7 @@ function PlanListItem({ plan, onDropdownClickEdit, onDropdownClickClone, onDropd
               <DropdownItem disabled={disableDelete} onClick={onDropdownClickDelete}>
                 Delete
               </DropdownItem>
+              {!plan.isDefault && <DropdownItem onClick={onDropdownClickSetAsDefault}>Set as default</DropdownItem>}
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -146,6 +155,14 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
     [deleteMutation]
   );
 
+  const setAsDefaultMutation = useMutation(api.plans.setPlanAsDefault);
+  const handleSetAsDefault = useCallback(
+    async (planId: Id<'plans'>) => {
+      await setAsDefaultMutation({ planId });
+    },
+    [setAsDefaultMutation]
+  );
+
   return (
     <>
       <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
@@ -163,10 +180,11 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
               <PlanListItem
                 key={plan._id}
                 plan={plan}
-                disableActions={{ disableDelete: plans.length <= 1 }}
+                disableActions={{ disableDelete: plans.length <= 1 || plan.isDefault }}
                 onDropdownClickEdit={() => handleEdit(plan)}
                 onDropdownClickClone={() => handleClone(planMetadata)}
                 onDropdownClickDelete={() => setPlanToDelete(planMetadata)}
+                onDropdownClickSetAsDefault={() => handleSetAsDefault(plan._id)}
               />
             );
           })}

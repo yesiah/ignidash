@@ -207,6 +207,9 @@ export const deletePlan = mutation({
     const plans = await getAllPlansForUser(ctx, userId);
     if (plans.length <= 1) throw new ConvexError('You cannot delete your only plan.');
 
+    const planToDelete = plans.find((plan) => plan._id === planId);
+    if (planToDelete?.isDefault) throw new ConvexError('You cannot delete your default plan.');
+
     await ctx.db.delete(planId);
   },
 });
