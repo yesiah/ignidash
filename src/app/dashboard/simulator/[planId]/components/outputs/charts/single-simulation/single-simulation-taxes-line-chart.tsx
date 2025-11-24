@@ -11,7 +11,6 @@ import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Divider } from '@/components/catalyst/divider';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-
 import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
