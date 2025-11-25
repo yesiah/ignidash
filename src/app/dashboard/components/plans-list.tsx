@@ -6,9 +6,9 @@ import type { Doc, Id } from '@/convex/_generated/dataModel';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { WalletIcon, CreditCardIcon } from 'lucide-react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { PlusIcon, PencilSquareIcon } from '@heroicons/react/16/solid';
+import { WalletIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
