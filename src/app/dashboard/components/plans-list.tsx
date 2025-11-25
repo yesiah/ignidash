@@ -1,6 +1,5 @@
 'use client';
 
-import { ConvexError } from 'convex/values';
 import { useMemo, useState, useCallback } from 'react';
 import type { Doc, Id } from '@/convex/_generated/dataModel';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
@@ -12,11 +11,10 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { Heading } from '@/components/catalyst/heading';
-import { Alert, AlertActions, AlertDescription, AlertTitle, AlertBody } from '@/components/catalyst/alert';
-import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { useSimulationResult, useKeyMetrics, useIsCalculationReady } from '@/lib/stores/simulator-store';
 import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
+import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 
 import PlanDialog from './dialogs/plan-dialog';
 import Finances from './finances';
@@ -146,13 +144,11 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
     setPlanDialogOpen(true);
   };
 
-  const [planToDelete, setPlanToDelete] = useState<{ id: Id<'plans'>; name: string } | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [planToDelete, setPlanToDelete] = useState<{ id: string; name: string } | null>(null);
   const deleteMutation = useMutation(api.plans.deletePlan);
   const deletePlan = useCallback(
-    async (planId: Id<'plans'>) => {
-      await deleteMutation({ planId });
+    async (planId: string) => {
+      await deleteMutation({ planId: planId as Id<'plans'> });
     },
     [deleteMutation]
   );
@@ -202,40 +198,7 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
           onClose={handlePlanDialogClose}
         />
       </Dialog>
-      <Alert
-        open={!!planToDelete}
-        onClose={() => {
-          setPlanToDelete(null);
-        }}
-      >
-        <AlertTitle>Are you sure you want to delete {planToDelete ? `"${planToDelete.name}"` : 'this'}?</AlertTitle>
-        <AlertDescription>This action cannot be undone.</AlertDescription>
-        <AlertBody>{deleteError && <ErrorMessageCard errorMessage={deleteError} />}</AlertBody>
-        <AlertActions>
-          <Button plain onClick={() => setPlanToDelete(null)} disabled={isDeleting}>
-            Cancel
-          </Button>
-          <Button
-            color="red"
-            disabled={isDeleting}
-            onClick={async () => {
-              setIsDeleting(true);
-              setDeleteError(null);
-              try {
-                await deletePlan(planToDelete!.id);
-                setPlanToDelete(null);
-              } catch (error) {
-                setDeleteError(error instanceof ConvexError ? error.message : 'Failed to delete.');
-                console.error('Error during deletion: ', error);
-              } finally {
-                setIsDeleting(false);
-              }
-            }}
-          >
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </Button>
-        </AlertActions>
-      </Alert>
+      <DeleteDataItemAlert dataToDelete={planToDelete} setDataToDelete={setPlanToDelete} deleteData={deletePlan} />
     </>
   );
 }
