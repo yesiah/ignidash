@@ -20,6 +20,7 @@ import { useSimulationResult, useKeyMetrics, useIsCalculationReady } from '@/lib
 import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
 import Drawer from '@/components/ui/drawer';
 import { useAssetData, useLiabilityData } from '@/hooks/use-convex-data';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 import PlanDialog from './dialogs/plan-dialog';
 import AssetDrawer from './drawers/asset-drawer';
@@ -217,12 +218,22 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           <Heading level={4}>Finances</Heading>
           <div className="flex items-center gap-2">
-            <Button outline onClick={() => setAssetDrawerOpen(true)}>
-              <MicroWalletIcon />
-            </Button>
-            <Button outline onClick={() => setLiabilityDrawerOpen(true)}>
-              <MicroCreditCardIcon />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button outline onClick={() => setAssetDrawerOpen(true)}>
+                  <MicroWalletIcon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Assets</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button outline onClick={() => setLiabilityDrawerOpen(true)}>
+                  <MicroCreditCardIcon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Liabilities</TooltipContent>
+            </Tooltip>
           </div>
         </header>
         <div className="flex h-full gap-2 px-4 py-5 sm:flex-col sm:py-6 lg:h-[calc(100%-5.3125rem)]">
