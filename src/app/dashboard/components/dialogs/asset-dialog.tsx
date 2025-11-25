@@ -84,7 +84,7 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
                   {...register('name')}
                   id="name"
                   name="name"
-                  placeholder="My Savings"
+                  placeholder="My Asset"
                   autoComplete="off"
                   inputMode="text"
                   invalid={!!errors.name}
@@ -100,7 +100,10 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
               <Field>
                 <Label htmlFor="type">Asset Type</Label>
                 <Select {...register('type')} id="type" name="type">
-                  <option value="savings">Savings</option>
+                  <optgroup label="Bank Accounts">
+                    <option value="savings">Savings</option>
+                    <option value="checking">Checking</option>
+                  </optgroup>
                   <optgroup label="Taxable Accounts">
                     <option value="taxableBrokerage">Taxable Brokerage</option>
                   </optgroup>
@@ -118,7 +121,9 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
                     <option value="vehicle">Vehicle</option>
                     <option value="preciousMetals">Precious Metals</option>
                   </optgroup>
-                  <option value="other">Other</option>
+                  <optgroup label="Miscellaneous">
+                    <option value="other">Other</option>
+                  </optgroup>
                 </Select>
                 {errors.type && <ErrorMessage>{errors.type?.message}</ErrorMessage>}
               </Field>

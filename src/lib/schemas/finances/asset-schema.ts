@@ -8,6 +8,7 @@ export const assetFormSchema = z.object({
   value: currencyFieldAllowsZero('Value cannot be negative'),
   type: z.enum([
     'savings',
+    'checking',
     'taxableBrokerage',
     'roth401k',
     'rothIra',

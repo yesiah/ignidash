@@ -85,7 +85,7 @@ export default function LiabilityDialog({ onClose, selectedLiability: _selectedL
                     {...register('name')}
                     id="name"
                     name="name"
-                    placeholder="My Savings"
+                    placeholder="My Liability"
                     autoComplete="off"
                     inputMode="text"
                     invalid={!!errors.name}
@@ -100,7 +100,7 @@ export default function LiabilityDialog({ onClose, selectedLiability: _selectedL
                     control={control}
                     id="balance"
                     inputMode="decimal"
-                    placeholder="$15,000"
+                    placeholder="$20,000"
                     prefix="$"
                     autoFocus
                   />

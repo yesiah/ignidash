@@ -6,6 +6,7 @@ export const assetValidator = v.object({
   value: v.number(),
   type: v.union(
     v.literal('savings'),
+    v.literal('checking'),
     v.literal('taxableBrokerage'),
     v.literal('roth401k'),
     v.literal('rothIra'),
