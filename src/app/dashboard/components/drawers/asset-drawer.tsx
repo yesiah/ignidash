@@ -14,7 +14,7 @@ export default function AssetDrawer({ setOpen, assets }: AssetDrawerProps) {
   return (
     <>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Assets" desc="Add new or update existing assets to track them from Dashboard." />
+        <SectionHeader title="Assets" desc="Manage the assets displayed on your dashboard." />
         <Card>Asset Form</Card>
       </SectionContainer>
     </>

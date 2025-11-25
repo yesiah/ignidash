@@ -14,7 +14,7 @@ export default function LiabilityDrawer({ setOpen, liabilities }: LiabilityDrawe
   return (
     <>
       <SectionContainer showBottomBorder={false} location="drawer">
-        <SectionHeader title="Liabilities" desc="Add new or update existing liabilities to track them from Dashboard." />
+        <SectionHeader title="Liabilities" desc="Manage the liabilities displayed on your dashboard." />
         <Card>Liability Form</Card>
       </SectionContainer>
     </>
