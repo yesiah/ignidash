@@ -25,7 +25,9 @@ import ExpenseDialog from '../dialogs/expense-dialog';
 function getExpenseDesc(expense: ExpenseInputs) {
   return (
     <>
-      <p>{`${formatNumber(expense.amount, 2, '$')} ${frequencyForDisplay(expense.frequency)}`}</p>
+      <p>
+        {formatNumber(expense.amount, 2, '$')} {frequencyForDisplay(expense.frequency)}
+      </p>
       <p>{timeFrameForDisplay(expense.timeframe.start, expense.timeframe.end)}</p>
     </>
   );

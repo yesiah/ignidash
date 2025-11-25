@@ -25,7 +25,9 @@ import IncomeDialog from '../dialogs/income-dialog';
 function getIncomeDesc(income: IncomeInputs) {
   return (
     <>
-      <p>{`${formatNumber(income.amount, 2, '$')} ${frequencyForDisplay(income.frequency)}`}</p>
+      <p>
+        {formatNumber(income.amount, 2, '$')} {frequencyForDisplay(income.frequency)}
+      </p>
       <p>{timeFrameForDisplay(income.timeframe.start, income.timeframe.end)}</p>
     </>
   );
