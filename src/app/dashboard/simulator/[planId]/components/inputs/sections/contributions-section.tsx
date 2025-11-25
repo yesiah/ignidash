@@ -35,7 +35,7 @@ import type { TaxCategory } from '@/lib/calc/asset';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
-import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 import SortableContributionItem from '../sortable-contribution-item';
 import ContributionItem from '../contribution-item';
@@ -284,7 +284,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
           onClose={handleClose}
         />
       </Dialog>
-      <DisclosureSectionDeleteDataAlert
+      <DeleteDataItemAlert
         dataToDelete={contributionRuleToDelete}
         setDataToDelete={setContributionRuleToDelete}
         deleteData={deleteContributionRule}

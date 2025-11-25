@@ -19,7 +19,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
 
 import IncomeDialog from '../dialogs/income-dialog';
-import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getIncomeDesc(income: IncomeInputs) {
@@ -129,7 +129,7 @@ export default function IncomesSection(props: IncomesSectionProps) {
       <Dialog size="xl" open={incomeDialogOpen} onClose={handleClose}>
         <IncomeDialog selectedIncome={selectedIncome} numIncomes={numIncomes} onClose={handleClose} />
       </Dialog>
-      <DisclosureSectionDeleteDataAlert dataToDelete={incomeToDelete} setDataToDelete={setIncomeToDelete} deleteData={deleteIncome} />
+      <DeleteDataItemAlert dataToDelete={incomeToDelete} setDataToDelete={setIncomeToDelete} deleteData={deleteIncome} />
     </>
   );
 }

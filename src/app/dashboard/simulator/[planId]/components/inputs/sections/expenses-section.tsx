@@ -19,7 +19,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
-import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getExpenseDesc(expense: ExpenseInputs) {
@@ -129,7 +129,7 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
       <Dialog size="xl" open={expenseDialogOpen} onClose={handleClose}>
         <ExpenseDialog selectedExpense={selectedExpense} numExpenses={numExpenses} onClose={handleClose} />
       </Dialog>
-      <DisclosureSectionDeleteDataAlert dataToDelete={expenseToDelete} setDataToDelete={setExpenseToDelete} deleteData={deleteExpense} />
+      <DeleteDataItemAlert dataToDelete={expenseToDelete} setDataToDelete={setExpenseToDelete} deleteData={deleteExpense} />
     </>
   );
 }

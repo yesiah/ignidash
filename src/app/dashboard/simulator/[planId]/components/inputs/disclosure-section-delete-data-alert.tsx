@@ -7,17 +7,13 @@ import { Button } from '@/components/catalyst/button';
 import { Alert, AlertActions, AlertDescription, AlertTitle, AlertBody } from '@/components/catalyst/alert';
 import ErrorMessageCard from '@/components/ui/error-message-card';
 
-interface DisclosureSectionDeleteDataAlertProps {
+interface DeleteDataItemAlertProps {
   dataToDelete: { id: string; name: string } | null;
   setDataToDelete: (data: { id: string; name: string } | null) => void;
   deleteData: (id: string) => Promise<void>;
 }
 
-export default function DisclosureSectionDeleteDataAlert({
-  dataToDelete,
-  setDataToDelete,
-  deleteData,
-}: DisclosureSectionDeleteDataAlertProps) {
+export default function DeleteDataItemAlert({ dataToDelete, setDataToDelete, deleteData }: DeleteDataItemAlertProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 

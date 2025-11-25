@@ -20,7 +20,7 @@ import DataItem from '@/components/ui/data-item';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
-import DisclosureSectionDeleteDataAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getAccountDesc(account: AccountInputs) {
@@ -136,7 +136,7 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
       <Dialog size="xl" open={savingsDialogOpen} onClose={handleSavingsDialogClose}>
         <SavingsDialog selectedAccount={selectedSavings} numAccounts={numAccounts} onClose={handleSavingsDialogClose} />
       </Dialog>
-      <DisclosureSectionDeleteDataAlert dataToDelete={accountToDelete} setDataToDelete={setAccountToDelete} deleteData={deleteAccount} />
+      <DeleteDataItemAlert dataToDelete={accountToDelete} setDataToDelete={setAccountToDelete} deleteData={deleteAccount} />
     </>
   );
 }
