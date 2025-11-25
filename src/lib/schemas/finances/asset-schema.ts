@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PiggyBankIcon, TrendingUpIcon, HouseIcon, CarIcon, CoinsIcon, FileQuestionMarkIcon } from 'lucide-react';
 
 import { currencyFieldAllowsZero } from '@/lib/utils/zod-schema-utils';
 
@@ -51,5 +52,32 @@ export const assetTypeForDisplay = (type: AssetInputs['type']): string => {
       return 'Precious Metals';
     case 'other':
       return 'Other Asset';
+  }
+};
+
+export const assetIconForDisplay = (
+  type: AssetInputs['type']
+): React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
+> => {
+  switch (type) {
+    case 'savings':
+    case 'checking':
+      return PiggyBankIcon;
+    case 'taxableBrokerage':
+    case 'roth401k':
+    case 'rothIra':
+    case '401k':
+    case 'ira':
+    case 'hsa':
+      return TrendingUpIcon;
+    case 'realEstate':
+      return HouseIcon;
+    case 'vehicle':
+      return CarIcon;
+    case 'preciousMetals':
+      return CoinsIcon;
+    case 'other':
+      return FileQuestionMarkIcon;
   }
 };

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { WalletIcon as MicroWalletIcon, CreditCardIcon as MicroCreditCardIcon } from '@heroicons/react/16/solid';
 import { WalletIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 
-import { type AssetInputs, assetTypeForDisplay } from '@/lib/schemas/finances/asset-schema';
+import { type AssetInputs, assetTypeForDisplay, assetIconForDisplay } from '@/lib/schemas/finances/asset-schema';
 import { type LiabilityInputs, liabilityTypeForDisplay, liabilityIconForDisplay } from '@/lib/schemas/finances/liability-schema';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
@@ -144,19 +144,22 @@ export default function Finances() {
                 </span>
               </div>
               <ul role="list" className="grid grid-cols-1 gap-3">
-                {assets!.map((asset, index) => (
-                  <DataItem
-                    key={asset.id}
-                    id={asset.id}
-                    index={index}
-                    name={asset.name}
-                    desc={getAssetDesc(asset)}
-                    leftAddOn={<WalletIcon className="size-8" />}
-                    onDropdownClickEdit={() => handleEditAsset(asset)}
-                    onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
-                    colorClassName="bg-[var(--chart-3)]"
-                  />
-                ))}
+                {assets!.map((asset, index) => {
+                  const Icon = assetIconForDisplay(asset.type);
+                  return (
+                    <DataItem
+                      key={asset.id}
+                      id={asset.id}
+                      index={index}
+                      name={asset.name}
+                      desc={getAssetDesc(asset)}
+                      leftAddOn={<Icon className="size-8" />}
+                      onDropdownClickEdit={() => handleEditAsset(asset)}
+                      onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
+                      colorClassName="bg-[var(--chart-3)]"
+                    />
+                  );
+                })}
               </ul>
             </>
           )}
