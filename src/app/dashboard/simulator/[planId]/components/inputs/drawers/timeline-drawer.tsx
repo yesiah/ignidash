@@ -128,7 +128,7 @@ export default function TimelineDrawer({ setOpen, timeline }: TimelineDrawerProp
               <FieldGroup>
                 {saveError && <ErrorMessageCard errorMessage={saveError} />}
                 <Field>
-                  <Label htmlFor="currentAge">Your Age</Label>
+                  <Label htmlFor="currentAge">Current Age</Label>
                   <NumberInput name="currentAge" control={control} id="currentAge" inputMode="numeric" placeholder="35" />
                   {errors.currentAge && <ErrorMessage>{errors.currentAge?.message}</ErrorMessage>}
                 </Field>

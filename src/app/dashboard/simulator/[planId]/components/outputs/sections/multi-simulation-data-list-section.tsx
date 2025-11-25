@@ -22,7 +22,7 @@ function PortfolioDataListCardV2({ chartData, selectedAge }: DataListCardProps) 
   return (
     <Card className="my-0">
       <Subheading level={4}>
-        <span className="mr-2">Details</span>
+        <span className="mr-2">Context</span>
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
@@ -59,7 +59,7 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
   return (
     <Card className="my-0">
       <Subheading level={4}>
-        <span className="mr-2">Details</span>
+        <span className="mr-2">Context</span>
         <span className="text-muted-foreground hidden sm:inline">Summary</span>
       </Subheading>
       <DescriptionList>

@@ -105,7 +105,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   return (
     <Card className="my-0">
       <Subheading level={4}>
-        <span className="mr-2">Details</span>
+        <span className="mr-2">Context</span>
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
@@ -136,7 +136,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
     <div>
       <Card className="my-0">
         <Subheading level={4}>
-          <span className="mr-2">Details</span>
+          <span className="mr-2">Context</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
         <DescriptionList>
@@ -188,7 +188,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   return (
     <Card className="my-0">
       <Subheading level={4}>
-        <span className="mr-2">Details</span>
+        <span className="mr-2">Context</span>
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
@@ -231,7 +231,7 @@ function ReturnsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   return (
     <Card className="my-0">
       <Subheading level={4}>
-        <span className="mr-2">Details</span>
+        <span className="mr-2">Context</span>
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
@@ -263,7 +263,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
     <div>
       <Card className="my-0">
         <Subheading level={4}>
-          <span className="mr-2">Details</span>
+          <span className="mr-2">Context</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
         <DescriptionList>
@@ -299,7 +299,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
     <div>
       <Card className="my-0">
         <Subheading level={4}>
-          <span className="mr-2">Details</span>
+          <span className="mr-2">Context</span>
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
         <DescriptionList>
