@@ -19,7 +19,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
-import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../delete-data-item-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getExpenseDesc(expense: ExpenseInputs) {

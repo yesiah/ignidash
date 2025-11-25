@@ -20,7 +20,7 @@ import DataItem from '@/components/ui/data-item';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
-import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../delete-data-item-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getAccountDesc(account: AccountInputs) {

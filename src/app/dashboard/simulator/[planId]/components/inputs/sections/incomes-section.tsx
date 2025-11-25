@@ -19,7 +19,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
 
 import IncomeDialog from '../dialogs/income-dialog';
-import DeleteDataItemAlert from '../disclosure-section-delete-data-alert';
+import DeleteDataItemAlert from '../delete-data-item-alert';
 import DisclosureSectionEmptyStateButton from '../disclosure-section-empty-state-button';
 
 function getIncomeDesc(income: IncomeInputs) {
