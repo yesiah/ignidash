@@ -12,3 +12,22 @@ export const liabilityFormSchema = z.object({
 });
 
 export type LiabilityInputs = z.infer<typeof liabilityFormSchema>;
+
+export const liabilityTypeForDisplay = (type: LiabilityInputs['type']): string => {
+  switch (type) {
+    case 'mortgage':
+      return 'Mortgage';
+    case 'autoLoan':
+      return 'Auto Loan';
+    case 'studentLoan':
+      return 'Student Loan';
+    case 'personalLoan':
+      return 'Personal Loan';
+    case 'creditCard':
+      return 'Credit Card';
+    case 'medicalDebt':
+      return 'Medical Debt';
+    case 'other':
+      return 'Other Liability';
+  }
+};

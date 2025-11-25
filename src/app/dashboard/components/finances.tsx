@@ -6,10 +6,11 @@ import { useState } from 'react';
 import { WalletIcon as MicroWalletIcon, CreditCardIcon as MicroCreditCardIcon } from '@heroicons/react/16/solid';
 import { WalletIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 
-import type { AssetInputs } from '@/lib/schemas/finances/asset-schema';
-import type { LiabilityInputs } from '@/lib/schemas/finances/liability-schema';
+import { type AssetInputs, assetTypeForDisplay } from '@/lib/schemas/finances/asset-schema';
+import { type LiabilityInputs, liabilityTypeForDisplay } from '@/lib/schemas/finances/liability-schema';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
+import { formatNumber } from '@/lib/utils';
 import { Heading } from '@/components/catalyst/heading';
 import { useAssetData, useLiabilityData } from '@/hooks/use-convex-data';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
@@ -20,6 +21,25 @@ import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 
 import AssetDialog from './dialogs/asset-dialog';
 import LiabilityDialog from './dialogs/liability-dialog';
+
+function getAssetDesc(asset: AssetInputs) {
+  return (
+    <p>
+      {formatNumber(asset.value, 0, '$')} | {assetTypeForDisplay(asset.type)}
+    </p>
+  );
+}
+
+function getLiabilityDesc(liability: LiabilityInputs) {
+  return (
+    <>
+      <p>
+        {formatNumber(liability.balance, 0, '$')} | {liabilityTypeForDisplay(liability.type)}
+      </p>
+      <p>{`${formatNumber(liability.interestRate, 2)}% | ${formatNumber(liability.monthlyPayment, 0, '$')} monthly`}</p>
+    </>
+  );
+}
 
 export default function Finances() {
   const [assetDialogOpen, setAssetDialogOpen] = useState(false);
@@ -104,7 +124,7 @@ export default function Finances() {
                   id={asset.id}
                   index={index}
                   name={asset.name}
-                  desc={'Placeholder description'}
+                  desc={getAssetDesc(asset)}
                   leftAddOn={<WalletIcon className="size-8" />}
                   onDropdownClickEdit={() => handleEditAsset(asset)}
                   onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
@@ -124,7 +144,7 @@ export default function Finances() {
                   id={liability.id}
                   index={index}
                   name={liability.name}
-                  desc={'Placeholder description'}
+                  desc={getLiabilityDesc(liability)}
                   leftAddOn={<CreditCardIcon className="size-8" />}
                   onDropdownClickEdit={() => handleEditLiability(liability)}
                   onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
