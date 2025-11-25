@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { HouseIcon, CarIcon, SchoolIcon, FileUserIcon, CreditCardIcon, StethoscopeIcon, FileQuestionMarkIcon } from 'lucide-react';
 
 import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema-utils';
 
@@ -30,5 +31,28 @@ export const liabilityTypeForDisplay = (type: LiabilityInputs['type']): string =
       return 'Medical Debt';
     case 'other':
       return 'Other Liability';
+  }
+};
+
+export const liabilityIconForDisplay = (
+  type: LiabilityInputs['type']
+): React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
+> => {
+  switch (type) {
+    case 'mortgage':
+      return HouseIcon;
+    case 'autoLoan':
+      return CarIcon;
+    case 'studentLoan':
+      return SchoolIcon;
+    case 'personalLoan':
+      return FileUserIcon;
+    case 'creditCard':
+      return CreditCardIcon;
+    case 'medicalDebt':
+      return StethoscopeIcon;
+    case 'other':
+      return FileQuestionMarkIcon;
   }
 };

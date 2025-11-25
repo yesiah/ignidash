@@ -7,7 +7,7 @@ import { WalletIcon as MicroWalletIcon, CreditCardIcon as MicroCreditCardIcon } 
 import { WalletIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 
 import { type AssetInputs, assetTypeForDisplay } from '@/lib/schemas/finances/asset-schema';
-import { type LiabilityInputs, liabilityTypeForDisplay } from '@/lib/schemas/finances/liability-schema';
+import { type LiabilityInputs, liabilityTypeForDisplay, liabilityIconForDisplay } from '@/lib/schemas/finances/liability-schema';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
@@ -174,19 +174,22 @@ export default function Finances() {
                 </span>
               </div>
               <ul role="list" className="grid grid-cols-1 gap-3">
-                {liabilities!.map((liability, index) => (
-                  <DataItem
-                    key={liability.id}
-                    id={liability.id}
-                    index={index}
-                    name={liability.name}
-                    desc={getLiabilityDesc(liability)}
-                    leftAddOn={<CreditCardIcon className="size-8" />}
-                    onDropdownClickEdit={() => handleEditLiability(liability)}
-                    onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
-                    colorClassName="bg-[var(--chart-4)]"
-                  />
-                ))}
+                {liabilities!.map((liability, index) => {
+                  const Icon = liabilityIconForDisplay(liability.type);
+                  return (
+                    <DataItem
+                      key={liability.id}
+                      id={liability.id}
+                      index={index}
+                      name={liability.name}
+                      desc={getLiabilityDesc(liability)}
+                      leftAddOn={<Icon className="size-8" />}
+                      onDropdownClickEdit={() => handleEditLiability(liability)}
+                      onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
+                      colorClassName="bg-[var(--chart-4)]"
+                    />
+                  );
+                })}
               </ul>
             </>
           )}
