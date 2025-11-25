@@ -168,7 +168,7 @@ export default function Table<T extends Record<string, unknown>>({
                       })}
                     </tr>
                   </thead>
-                  <tbody className="divide-border/50 border-border/50 divide-y border-b">
+                  <tbody className="divide-border/25 border-border/50 divide-y border-b">
                     {paginatedData.map((row) => (
                       <tr
                         key={String(row[keyField])}
@@ -221,7 +221,7 @@ export default function Table<T extends Record<string, unknown>>({
                             <td
                               key={String(col.key)}
                               className={cn(
-                                'text-muted-foreground border-border/50 border-l px-3 py-4 text-sm whitespace-nowrap',
+                                'text-muted-foreground border-border/25 border-l px-3 py-4 text-sm whitespace-nowrap',
                                 hoveredColumn === col.key && 'bg-emphasized-background/50'
                               )}
                             >
