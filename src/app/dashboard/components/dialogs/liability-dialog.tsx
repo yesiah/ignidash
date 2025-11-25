@@ -121,12 +121,18 @@ export default function LiabilityDialog({ onClose, selectedLiability: _selectedL
                   {errors.type && <ErrorMessage>{errors.type?.message}</ErrorMessage>}
                 </Field>
                 <Field>
-                  <Label htmlFor="interestRate">Interest Rate</Label>
+                  <Label htmlFor="interestRate" className="flex w-full items-center justify-between">
+                    <span className="whitespace-nowrap">Interest Rate</span>
+                    <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                  </Label>
                   <NumberInput name="interestRate" control={control} id="interestRate" inputMode="decimal" placeholder="6%" suffix="%" />
                   {errors.interestRate && <ErrorMessage>{errors.interestRate?.message}</ErrorMessage>}
                 </Field>
                 <Field>
-                  <Label htmlFor="monthlyPayment">Monthly Payment</Label>
+                  <Label htmlFor="monthlyPayment" className="flex w-full items-center justify-between">
+                    <span className="whitespace-nowrap">Monthly Payment</span>
+                    <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                  </Label>
                   <NumberInput
                     name="monthlyPayment"
                     control={control}
