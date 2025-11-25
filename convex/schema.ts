@@ -27,4 +27,9 @@ export default defineSchema({
     privacySettings: privacySettingsValidator,
     simulationSettings: simulationSettingsValidator,
   }).index('by_userId', ['userId']),
+  finances: defineTable({
+    userId: v.string(),
+    assets: v.array(v.string()),
+    liabilities: v.array(v.string()),
+  }).index('by_userId', ['userId']),
 });
