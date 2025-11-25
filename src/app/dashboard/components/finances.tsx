@@ -11,7 +11,7 @@ import { type LiabilityInputs, liabilityTypeForDisplay } from '@/lib/schemas/fin
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
-import { Heading } from '@/components/catalyst/heading';
+import { Heading, Subheading } from '@/components/catalyst/heading';
 import { useAssetData, useLiabilityData } from '@/hooks/use-convex-data';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Divider } from '@/components/catalyst/divider';
@@ -127,41 +127,65 @@ export default function Finances() {
           {!hasAssets ? (
             <DataListEmptyStateButton onClick={() => setAssetDialogOpen(true)} icon={WalletIcon} buttonText="Add asset" />
           ) : (
-            <ul role="list" className="grid grid-cols-1 gap-3">
-              {assets!.map((asset, index) => (
-                <DataItem
-                  key={asset.id}
-                  id={asset.id}
-                  index={index}
-                  name={asset.name}
-                  desc={getAssetDesc(asset)}
-                  leftAddOn={<WalletIcon className="size-8" />}
-                  onDropdownClickEdit={() => handleEditAsset(asset)}
-                  onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
-                  colorClassName="bg-[var(--chart-3)]"
-                />
-              ))}
-            </ul>
+            <>
+              <div className="flex w-full items-center justify-between">
+                <Subheading level={5}>Total Assets:</Subheading>
+                <span className="text-base/7 font-bold text-zinc-950 sm:text-sm/6 dark:text-white">
+                  {formatNumber(
+                    assets!.reduce((acc, asset) => acc + asset.value, 0),
+                    0,
+                    '$'
+                  )}
+                </span>
+              </div>
+              <ul role="list" className="grid grid-cols-1 gap-3">
+                {assets!.map((asset, index) => (
+                  <DataItem
+                    key={asset.id}
+                    id={asset.id}
+                    index={index}
+                    name={asset.name}
+                    desc={getAssetDesc(asset)}
+                    leftAddOn={<WalletIcon className="size-8" />}
+                    onDropdownClickEdit={() => handleEditAsset(asset)}
+                    onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
+                    colorClassName="bg-[var(--chart-3)]"
+                  />
+                ))}
+              </ul>
+            </>
           )}
           <Divider className="my-2" />
           {!hasLiabilities ? (
             <DataListEmptyStateButton onClick={() => setLiabilityDialogOpen(true)} icon={CreditCardIcon} buttonText="Add liability" />
           ) : (
-            <ul role="list" className="grid grid-cols-1 gap-3">
-              {liabilities!.map((liability, index) => (
-                <DataItem
-                  key={liability.id}
-                  id={liability.id}
-                  index={index}
-                  name={liability.name}
-                  desc={getLiabilityDesc(liability)}
-                  leftAddOn={<CreditCardIcon className="size-8" />}
-                  onDropdownClickEdit={() => handleEditLiability(liability)}
-                  onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
-                  colorClassName="bg-[var(--chart-4)]"
-                />
-              ))}
-            </ul>
+            <>
+              <div className="flex w-full items-center justify-between">
+                <Subheading level={5}>Total Liabilities:</Subheading>
+                <span className="text-base/7 font-bold text-zinc-950 sm:text-sm/6 dark:text-white">
+                  {formatNumber(
+                    liabilities!.reduce((acc, liability) => acc + liability.balance, 0),
+                    0,
+                    '$'
+                  )}
+                </span>
+              </div>
+              <ul role="list" className="grid grid-cols-1 gap-3">
+                {liabilities!.map((liability, index) => (
+                  <DataItem
+                    key={liability.id}
+                    id={liability.id}
+                    index={index}
+                    name={liability.name}
+                    desc={getLiabilityDesc(liability)}
+                    leftAddOn={<CreditCardIcon className="size-8" />}
+                    onDropdownClickEdit={() => handleEditLiability(liability)}
+                    onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
+                    colorClassName="bg-[var(--chart-4)]"
+                  />
+                ))}
+              </ul>
+            </>
           )}
         </div>
       </aside>
