@@ -36,7 +36,9 @@ function getLiabilityDesc(liability: LiabilityInputs) {
       <p>
         {formatNumber(liability.balance, 0, '$')} | {liabilityTypeForDisplay(liability.type)}
       </p>
-      <p>{`${formatNumber(liability.interestRate, 2)}% | ${formatNumber(liability.monthlyPayment, 0, '$')} monthly`}</p>
+      <p>
+        {formatNumber(liability.interestRate, 2)}% | {formatNumber(liability.monthlyPayment, 0, '$')} monthly
+      </p>
     </>
   );
 }
