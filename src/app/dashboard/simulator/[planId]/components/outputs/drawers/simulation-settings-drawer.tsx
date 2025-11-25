@@ -108,6 +108,21 @@ export default function SimulationSettingsDrawer({ setOpen, simulationSettings }
             <Fieldset aria-label="Simulation methodology details">
               <FieldGroup>
                 {saveError && <ErrorMessageCard errorMessage={saveError} />}
+                <Field>
+                  <Label htmlFor="simulationMode">Simulation Mode</Label>
+                  <Select {...register('simulationMode')} id="simulationMode" name="simulationMode">
+                    <optgroup label="Single Simulation">
+                      <option value="fixedReturns">Fixed Returns</option>
+                      <option value="stochasticReturns">Stochastic Returns</option>
+                      <option value="historicalReturns">Historical Returns</option>
+                    </optgroup>
+                    <optgroup label="Monte Carlo (500 Simulations)">
+                      <option value="monteCarloStochasticReturns">Stochastic Returns</option>
+                      <option value="monteCarloHistoricalReturns">Historical Returns</option>
+                    </optgroup>
+                  </Select>
+                  <Description>{simulationModeDesc}</Description>
+                </Field>
                 {simulationMode !== 'fixedReturns' && (
                   <Field>
                     <Label htmlFor="simulationSeed">Simulation Seed</Label>
@@ -130,21 +145,6 @@ export default function SimulationSettingsDrawer({ setOpen, simulationSettings }
                     </Description>
                   </Field>
                 )}
-                <Field>
-                  <Label htmlFor="simulationMode">Simulation Mode</Label>
-                  <Select {...register('simulationMode')} id="simulationMode" name="simulationMode">
-                    <optgroup label="Single Simulation">
-                      <option value="fixedReturns">Fixed Returns</option>
-                      <option value="stochasticReturns">Stochastic Returns</option>
-                      <option value="historicalReturns">Historical Returns</option>
-                    </optgroup>
-                    <optgroup label="Monte Carlo (500 Simulations)">
-                      <option value="monteCarloStochasticReturns">Stochastic Returns</option>
-                      <option value="monteCarloHistoricalReturns">Historical Returns</option>
-                    </optgroup>
-                  </Select>
-                  <Description>{simulationModeDesc}</Description>
-                </Field>
                 <Divider />
                 {simulationMode === 'historicalReturns' && (
                   <>
@@ -165,11 +165,6 @@ export default function SimulationSettingsDrawer({ setOpen, simulationSettings }
                       {errors.historicalStartYearOverride && <ErrorMessage>{errors.historicalStartYearOverride?.message}</ErrorMessage>}
                       <Description>Start your simulation from a specific historical year or leave blank to use a random year.</Description>
                     </Field>
-                    <Divider />
-                  </>
-                )}
-                {simulationMode === 'historicalReturns' && (
-                  <>
                     <Field>
                       <Label htmlFor="historicalRetirementStartYearOverride" className="flex w-full items-center justify-between">
                         <span className="whitespace-nowrap">Historical Retirement Start Year</span>
