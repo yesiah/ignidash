@@ -90,7 +90,7 @@ export default function Finances() {
             </Tooltip>
           </div>
         </header>
-        <div className="flex h-full gap-2 px-4 py-5 sm:flex-col sm:py-6 lg:h-[calc(100%-5.3125rem)]">
+        <div className="flex h-full flex-col gap-2 px-4 py-5 sm:py-6 lg:h-[calc(100%-5.3125rem)]">
           {!hasAssets ? (
             <DataListEmptyStateButton onClick={() => setAssetDialogOpen(true)} icon={WalletIcon} buttonText="Add asset" />
           ) : (
