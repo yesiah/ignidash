@@ -10,6 +10,8 @@ import { marketAssumptionsValidator } from './validators/market_assumptions_vali
 import { taxSettingsValidator } from './validators/tax_settings_validator';
 import { privacySettingsValidator } from './validators/privacy_settings_validator';
 import { simulationSettingsValidator } from './validators/simulation_settings_validator';
+import { assetValidator } from './validators/asset_validator';
+import { liabilityValidator } from './validators/liability_validator';
 
 export default defineSchema({
   plans: defineTable({
@@ -29,7 +31,7 @@ export default defineSchema({
   }).index('by_userId', ['userId']),
   finances: defineTable({
     userId: v.string(),
-    assets: v.array(v.string()),
-    liabilities: v.array(v.string()),
+    assets: v.array(assetValidator),
+    liabilities: v.array(liabilityValidator),
   }).index('by_userId', ['userId']),
 });
