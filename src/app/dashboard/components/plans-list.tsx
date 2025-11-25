@@ -190,7 +190,7 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
           })}
         </ul>
       </div>
-      <aside className="border-border/50 -mx-2 border-t bg-zinc-50 sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l dark:bg-black/10">
+      <aside className="border-border/50 -mx-2 border-t sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:bg-zinc-50 dark:lg:bg-black/10">
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           <Heading level={4}>Finances</Heading>
           <Button outline onClick={() => {}}>
@@ -198,6 +198,16 @@ export default function PlanList({ preloadedPlans }: PlanListProps) {
             Edit
           </Button>
         </header>
+        <div className="flex h-full flex-col px-4 py-5 sm:py-6">
+          <button
+            type="button"
+            className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-zinc-300 p-4 text-center hover:border-zinc-400 dark:border-white/15 dark:hover:border-white/25"
+            onClick={() => {}}
+          >
+            <PencilSquareIcon aria-hidden="true" className="text-primary mx-auto size-12" />
+            <span className="mt-2 block text-sm font-semibold text-zinc-900 dark:text-white">Add Finances</span>
+          </button>
+        </div>
       </aside>
       <Dialog size="xl" open={planDialogOpen} onClose={handleClose}>
         <PlanDialog
