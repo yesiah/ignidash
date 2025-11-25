@@ -79,71 +79,38 @@ export default function LiabilityDialog({ onClose, selectedLiability: _selectedL
           <DialogBody>
             <FieldGroup>
               {saveError && <ErrorMessageCard errorMessage={saveError} />}
-              <div className="grid grid-cols-2 gap-4">
-                <Field className="col-span-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    {...register('name')}
-                    id="name"
-                    name="name"
-                    placeholder="My Liability"
-                    autoComplete="off"
-                    inputMode="text"
-                    invalid={!!errors.name}
-                    aria-invalid={!!errors.name}
-                  />
-                  {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
-                </Field>
-                <Field className="col-span-2">
-                  <Label htmlFor="balance">Balance</Label>
-                  <NumberInput
-                    name="balance"
-                    control={control}
-                    id="balance"
-                    inputMode="decimal"
-                    placeholder="$20,000"
-                    prefix="$"
-                    autoFocus
-                  />
-                  {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
-                </Field>
-                <Field className="col-span-2">
-                  <Label htmlFor="type">Liability Type</Label>
-                  <Select {...register('type')} id="type" name="type">
-                    <option value="mortgage">Mortgage</option>
-                    <option value="autoLoan">Auto Loan</option>
-                    <option value="studentLoan">Student Loan</option>
-                    <option value="personalLoan">Personal Loan</option>
-                    <option value="creditCard">Credit Card</option>
-                    <option value="medicalDebt">Medical Debt</option>
-                    <option value="other">Other</option>
-                  </Select>
-                  {errors.type && <ErrorMessage>{errors.type?.message}</ErrorMessage>}
-                </Field>
-                <Field>
-                  <Label htmlFor="interestRate" className="flex w-full items-center justify-between">
-                    <span className="whitespace-nowrap">Interest Rate</span>
-                    <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                  </Label>
-                  <NumberInput name="interestRate" control={control} id="interestRate" inputMode="decimal" placeholder="6%" suffix="%" />
-                  {errors.interestRate && <ErrorMessage>{errors.interestRate?.message}</ErrorMessage>}
-                </Field>
-                <Field>
-                  <Label htmlFor="monthlyPayment" className="flex w-full items-center justify-between">
-                    <span className="whitespace-nowrap">Monthly Payment</span>
-                    <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
-                  </Label>
-                  <NumberInput
-                    name="monthlyPayment"
-                    control={control}
-                    id="monthlyPayment"
-                    inputMode="decimal"
-                    placeholder="$700"
-                    prefix="$"
-                  />
-                  {errors.monthlyPayment && <ErrorMessage>{errors.monthlyPayment?.message}</ErrorMessage>}
-                </Field>
-              </div>
+              <Field>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  {...register('name')}
+                  id="name"
+                  name="name"
+                  placeholder="My Liability"
+                  autoComplete="off"
+                  inputMode="text"
+                  invalid={!!errors.name}
+                  aria-invalid={!!errors.name}
+                />
+                {errors.name && <ErrorMessage>{errors.name?.message}</ErrorMessage>}
+              </Field>
+              <Field>
+                <Label htmlFor="balance">Balance</Label>
+                <NumberInput name="balance" control={control} id="balance" inputMode="decimal" placeholder="$20,000" prefix="$" autoFocus />
+                {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
+              </Field>
+              <Field>
+                <Label htmlFor="type">Liability Type</Label>
+                <Select {...register('type')} id="type" name="type">
+                  <option value="mortgage">Mortgage</option>
+                  <option value="autoLoan">Auto Loan</option>
+                  <option value="studentLoan">Student Loan</option>
+                  <option value="personalLoan">Personal Loan</option>
+                  <option value="creditCard">Credit Card</option>
+                  <option value="medicalDebt">Medical Debt</option>
+                  <option value="other">Other</option>
+                </Select>
+                {errors.type && <ErrorMessage>{errors.type?.message}</ErrorMessage>}
+              </Field>
             </FieldGroup>
           </DialogBody>
         </Fieldset>

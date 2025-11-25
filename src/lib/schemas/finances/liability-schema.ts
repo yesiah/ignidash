@@ -1,14 +1,12 @@
 import { z } from 'zod';
 import { HouseIcon, CarIcon, SchoolIcon, FileUserIcon, CreditCardIcon, StethoscopeIcon, FileQuestionMarkIcon } from 'lucide-react';
 
-import { currencyFieldAllowsZero, percentageField } from '@/lib/utils/zod-schema-utils';
+import { currencyFieldAllowsZero } from '@/lib/utils/zod-schema-utils';
 
 export const liabilityFormSchema = z.object({
   id: z.string(),
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
   balance: currencyFieldAllowsZero('Balance cannot be negative'),
-  interestRate: percentageField(0, 999, 'Interest rate').optional(),
-  monthlyPayment: currencyFieldAllowsZero('Monthly payment cannot be negative').optional(),
   updatedAt: z.number(),
   type: z.enum(['mortgage', 'autoLoan', 'studentLoan', 'personalLoan', 'creditCard', 'medicalDebt', 'other']),
 });

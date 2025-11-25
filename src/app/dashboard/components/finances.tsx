@@ -44,9 +44,6 @@ function getLiabilityDesc(liability: LiabilityInputs) {
       <p>
         Updated <time dateTime={new Date(liability.updatedAt).toISOString()}>{new Date(liability.updatedAt).toLocaleDateString()}</time>
       </p>
-      {/* <p>
-        {formatNumber(liability.interestRate, 2)}% | {formatNumber(liability.monthlyPayment, 0, '$')} monthly
-      </p> */}
     </>
   );
 }
