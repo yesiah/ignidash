@@ -16,6 +16,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { Divider } from '@/components/catalyst/divider';
 import DataItem from '@/components/ui/data-item';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
+import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 
 import AssetDialog from './dialogs/asset-dialog';
 import LiabilityDialog from './dialogs/liability-dialog';
@@ -46,11 +47,13 @@ export default function Finances() {
   const hasAssets = numAssets > 0;
   const hasLiabilities = numLiabilities > 0;
 
+  const [assetToDelete, setAssetToDelete] = useState<{ id: string; name: string } | null>(null);
   const deleteAssetMutation = useMutation(api.finances.deleteAsset);
   const deleteAsset = async (assetId: string) => {
     await deleteAssetMutation({ assetId });
   };
 
+  const [liabilityToDelete, setLiabilityToDelete] = useState<{ id: string; name: string } | null>(null);
   const deleteLiabilityMutation = useMutation(api.finances.deleteLiability);
   const deleteLiability = async (liabilityId: string) => {
     await deleteLiabilityMutation({ liabilityId });
@@ -104,7 +107,7 @@ export default function Finances() {
                   desc={'Placeholder description'}
                   leftAddOn={<WalletIcon className="size-8" />}
                   onDropdownClickEdit={() => handleEditAsset(asset)}
-                  onDropdownClickDelete={() => deleteAsset(asset.id)}
+                  onDropdownClickDelete={() => setAssetToDelete({ id: asset.id, name: asset.name })}
                   colorClassName="bg-[var(--chart-3)]"
                 />
               ))}
@@ -124,7 +127,7 @@ export default function Finances() {
                   desc={'Placeholder description'}
                   leftAddOn={<CreditCardIcon className="size-8" />}
                   onDropdownClickEdit={() => handleEditLiability(liability)}
-                  onDropdownClickDelete={() => deleteLiability(liability.id)}
+                  onDropdownClickDelete={() => setLiabilityToDelete({ id: liability.id, name: liability.name })}
                   colorClassName="bg-[var(--chart-4)]"
                 />
               ))}
@@ -138,6 +141,8 @@ export default function Finances() {
       <Dialog size="xl" open={liabilityDialogOpen} onClose={handleLiabilityDialogClose}>
         <LiabilityDialog onClose={handleLiabilityDialogClose} selectedLiability={selectedLiability} numLiabilities={numLiabilities} />
       </Dialog>
+      <DeleteDataItemAlert dataToDelete={assetToDelete} setDataToDelete={setAssetToDelete} deleteData={deleteAsset} />
+      <DeleteDataItemAlert dataToDelete={liabilityToDelete} setDataToDelete={setLiabilityToDelete} deleteData={deleteLiability} />
     </>
   );
 }
