@@ -53,7 +53,7 @@ export default function HeroSection() {
               width={2362}
               height={1328}
               className="ring-border/50 rounded-md bg-zinc-50 shadow-xl ring-1 dark:hidden"
-              quality={95}
+              unoptimized
               priority
             />
             <Image
@@ -62,7 +62,7 @@ export default function HeroSection() {
               width={2362}
               height={1328}
               className="ring-border/50 rounded-md bg-white/5 shadow-2xl ring-1 not-dark:hidden"
-              quality={95}
+              unoptimized
               priority
             />
           </div>
