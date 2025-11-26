@@ -54,7 +54,7 @@ export default function FeaturesSection() {
           {features.map((feature) => (
             <div key={feature.name} className="relative pl-9">
               <dt className="inline font-semibold text-zinc-900 dark:text-white">
-                <feature.icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-rose-600 dark:text-rose-500" />
+                <feature.icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-rose-600 dark:text-rose-400" />
                 {feature.name}
               </dt>{' '}
               <dd className="inline">{feature.description}</dd>
