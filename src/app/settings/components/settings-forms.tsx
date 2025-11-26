@@ -1,9 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Preloaded, usePreloadedQuery } from 'convex/react';
+import { Preloaded, usePreloadedQuery, useConvexAuth, Authenticated } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { useConvexAuth } from 'convex/react';
 
 import SuccessNotification from '@/components/ui/success-notification';
 import { useSuccessNotification } from '@/hooks/use-success-notification';
@@ -52,13 +51,13 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
   return (
     <>
       <main className="mx-auto min-h-dvh max-w-prose px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:px-4">
-        {isAuthenticated && (
+        <Authenticated>
           <ProfileInfoForm
             userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
             showSuccessNotification={showSuccessNotification}
           />
-        )}
-        <DataSettingsForm showSuccessNotification={showSuccessNotification} isAuthenticated={isAuthenticated} />
+          <DataSettingsForm showSuccessNotification={showSuccessNotification} />
+        </Authenticated>
       </main>
       <SuccessNotification {...notificationState} setShow={setShow} />
     </>

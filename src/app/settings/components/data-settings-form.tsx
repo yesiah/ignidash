@@ -17,10 +17,9 @@ import { useAccountSettingsFieldState } from '@/hooks/use-account-settings-field
 
 interface DataSettingsFormProps {
   showSuccessNotification: (title: string, desc?: string) => void;
-  isAuthenticated: boolean;
 }
 
-export default function DataSettingsForm({ showSuccessNotification, isAuthenticated }: DataSettingsFormProps) {
+export default function DataSettingsForm({ showSuccessNotification }: DataSettingsFormProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [appDataAlertOpen, setAppDataAlertOpen] = useState(false);
@@ -67,28 +66,24 @@ export default function DataSettingsForm({ showSuccessNotification, isAuthentica
                   including Simulator plans, but will not delete your account. This cannot be undone.
                 </Description>
               </Field>
-              {isAuthenticated && (
-                <>
-                  <Divider />
-                  <Field>
-                    <Button
-                      color="rose"
-                      type="button"
-                      className="w-full"
-                      data-slot="control"
-                      onClick={() => setAccountDeletionAlertOpen(true)}
-                      disabled={deleteAccountState.isLoading}
-                    >
-                      {deleteAccountState.isLoading ? 'Sending deletion email...' : 'Delete my account'}
-                    </Button>
-                    {deleteAccountState.errorMessage && <ErrorMessage>{deleteAccountState.errorMessage}</ErrorMessage>}
-                    <Description>
-                      <strong className="text-red-500 dark:text-red-400">Warning:</strong> This action will initiate the deletion of your
-                      account. You will receive an email with instructions to confirm the deletion.
-                    </Description>
-                  </Field>
-                </>
-              )}
+              <Divider />
+              <Field>
+                <Button
+                  color="rose"
+                  type="button"
+                  className="w-full"
+                  data-slot="control"
+                  onClick={() => setAccountDeletionAlertOpen(true)}
+                  disabled={deleteAccountState.isLoading}
+                >
+                  {deleteAccountState.isLoading ? 'Sending deletion email...' : 'Delete my account'}
+                </Button>
+                {deleteAccountState.errorMessage && <ErrorMessage>{deleteAccountState.errorMessage}</ErrorMessage>}
+                <Description>
+                  <strong className="text-red-500 dark:text-red-400">Warning:</strong> This action will initiate the deletion of your
+                  account. You will receive an email with instructions to confirm the deletion.
+                </Description>
+              </Field>
             </FieldGroup>
           </Fieldset>
         </form>
