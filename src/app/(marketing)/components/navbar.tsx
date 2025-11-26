@@ -50,11 +50,11 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
 
-  const { isAuthenticated } = useConvexAuth();
+  const { isLoading, isAuthenticated } = useConvexAuth();
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
-      {showBanner && !isAuthenticated && <Banner setShowBanner={setShowBanner} />}
+      {showBanner && !isAuthenticated && !isLoading && <Banner setShowBanner={setShowBanner} />}
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
