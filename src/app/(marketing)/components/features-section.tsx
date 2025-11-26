@@ -3,7 +3,8 @@ import { SparklesIcon, ArrowPathIcon, ChartBarIcon, AcademicCapIcon, BanknotesIc
 const sectionHeader = {
   eyebrow: 'Everything you need',
   headline: 'Not an expert? No problem.',
-  subhead: 'With intuitive tools and AI assistance, creating a comprehensive plan to FIRE and beyond has never been easier.',
+  subhead:
+    'With intuitive tools and AI assistance, creating a comprehensive retirement plan you can feel confident about has never been easier.',
 };
 
 const features = [
