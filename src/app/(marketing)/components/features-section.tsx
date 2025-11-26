@@ -1,36 +1,36 @@
-import { ArrowPathIcon, ChartBarIcon, BeakerIcon, BanknotesIcon, AcademicCapIcon, ShieldCheckIcon } from '@heroicons/react/20/solid';
+import { SparklesIcon, ArrowPathIcon, ChartBarIcon, AcademicCapIcon, BanknotesIcon, ShieldCheckIcon } from '@heroicons/react/20/solid';
 
 const sectionHeader = {
-  eyebrow: 'Plan with confidence',
-  headline: 'Tools to plan. AI to understand.',
-  subhead: 'Model your path to FIRE (and beyond), stress-test your assumptions, and learn about concepts that matter—all in one place.',
+  eyebrow: 'Everything you need',
+  headline: 'Not an expert? No problem.',
+  subhead: 'With intuitive tools and AI assistance, creating a comprehensive plan to FIRE and beyond has never been easier.',
 };
 
 const features = [
   {
+    name: 'Chat with AI.',
+    description: 'Use AI to ask questions, clarify results, and learn about retirement planning concepts and strategies.',
+    icon: SparklesIcon,
+  },
+  {
     name: 'Compare paths.',
-    description: 'Create multiple plans and view key outcomes side-by-side to see how different choices affect your future.',
+    description: 'Create up to 10 plans and view key outcomes side-by-side to see how different choices affect your future.',
     icon: ChartBarIcon,
   },
   {
-    name: 'Project your taxes.',
-    description: 'See year-by-year tax estimates so you can time contributions and withdrawals wisely.',
+    name: 'Understand tax implications.',
+    description: 'Model how different investment strategies and income changes impact your estimated taxes.',
     icon: BanknotesIcon,
   },
   {
     name: 'Stress-test with Monte Carlo.',
-    description: 'Run hundreds of simulations to understand your probability of success across a wide variety of market outcomes.',
+    description: 'Run hundreds of simulations to understand your probability of success across market conditions.',
     icon: ArrowPathIcon,
   },
   {
     name: 'Learn from history.',
-    description: "Test your plan against real data from history's worst market conditions to see how it would have held up.",
+    description: "Test your plan against real data from history's worst market conditions to see how it holds up.",
     icon: AcademicCapIcon,
-  },
-  {
-    name: 'Refine your strategy.',
-    description: 'Experiment with account types, contribution order, and withdrawal sequences to find what works.',
-    icon: BeakerIcon,
   },
   {
     name: 'Stay in control of your data.',
