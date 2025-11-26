@@ -194,7 +194,7 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
 
   return (
     <>
-      <DisclosureSection title="Contributions" icon={HandCoinsIcon} centerPanelContent {...props}>
+      <DisclosureSection title="Contributions" icon={HandCoinsIcon} centerPanelContent hideBottomBorders {...props}>
         <div className="flex h-full flex-col">
           <Field>
             <Label className="sr-only">Base Rule</Label>
