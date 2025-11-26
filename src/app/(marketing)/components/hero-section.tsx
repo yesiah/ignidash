@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HeroSection() {
@@ -12,7 +13,7 @@ export default function HeroSection() {
           className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#e11d48] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"
         />
       </div>
-      <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+      <div className="mx-auto max-w-2xl pt-32 sm:pt-48 lg:pt-56">
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="relative rounded-full px-3 py-1 text-sm/6 text-zinc-600 ring-1 ring-zinc-900/10 hover:ring-zinc-900/20 dark:text-zinc-300 dark:ring-white/10 dark:hover:ring-white/20">
             New: AI insights are coming soon.{' '}
@@ -42,6 +43,41 @@ export default function HeroSection() {
             </a>
           </div>
         </div>
+      </div>
+      <div className="mx-auto max-w-7xl px-6 pb-32 sm:pb-48 lg:px-8 lg:pb-56">
+        <Image
+          alt="App screenshot"
+          src="/most-zoomed-sim-light.webp"
+          width={2362}
+          height={1328}
+          className="mt-16 rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
+          quality={95}
+          priority
+        />
+        <Image
+          alt="App screenshot"
+          src="/most-zoomed-sim-dark.webp"
+          width={2362}
+          height={1328}
+          className="mt-16 rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10 not-dark:hidden sm:mt-24"
+          quality={95}
+          priority
+        />
+
+        {/* <img
+          alt="App screenshot"
+          src="https://tailwindcss.com/plus-assets/img/component-images/project-app-screenshot.png"
+          width={2432}
+          height={1442}
+          className="mt-16 rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
+        />
+        <img
+          alt="App screenshot"
+          src="https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
+          width={2432}
+          height={1442}
+          className="mt-16 rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10 not-dark:hidden sm:mt-24"
+        /> */}
       </div>
       <div
         aria-hidden="true"
