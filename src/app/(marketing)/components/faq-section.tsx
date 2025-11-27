@@ -12,7 +12,7 @@ const faqs = [
   {
     question: 'Is my financial data secure?',
     answer:
-      'Yes. Your data is encrypted and stored securely using Convex, a modern database platform with enterprise-grade security. We never sell your personal information.',
+      'Yes. Your data is encrypted and stored securely using Convex, a modern database platform with enterprise-grade security. We never sell your personal information. When you use AI features, your financial numbers are sent to AI providers without any personally identifying information.',
   },
 ];
 
