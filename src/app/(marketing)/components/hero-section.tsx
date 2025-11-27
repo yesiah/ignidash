@@ -24,7 +24,7 @@ export default function HeroSection() {
           </div>
         </div>
         <div className="text-center">
-          <h1 className="text-5xl font-semibold tracking-tight text-balance text-zinc-900 sm:text-7xl dark:text-white">
+          <h1 className="text-5xl font-semibold tracking-tight text-balance text-zinc-900 antialiased sm:text-7xl dark:text-white">
             <span className="bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">FIRE</span> Planning Made{' '}
             <span className="bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">Smarter.</span>
           </h1>
