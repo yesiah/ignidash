@@ -23,6 +23,7 @@ export class IncomesProcessor {
         acc.totalFicaTax += curr.ficaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.incomeAfterPayrollDeductions;
         acc.totalTaxExemptIncome += curr.taxExemptIncome;
+        acc.totalSocialSecurityIncome += curr.socialSecurityIncome;
         return acc;
       },
       {
@@ -31,6 +32,7 @@ export class IncomesProcessor {
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
         totalTaxExemptIncome: 0,
+        totalSocialSecurityIncome: 0,
       }
     );
     const perIncomeData = Object.fromEntries(processedIncomes.map((income) => [income.id, income]));
@@ -53,6 +55,7 @@ export class IncomesProcessor {
         acc.totalFicaTax += curr.totalFicaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.totalIncomeAfterPayrollDeductions;
         acc.totalTaxExemptIncome += curr.totalTaxExemptIncome;
+        acc.totalSocialSecurityIncome += curr.totalSocialSecurityIncome;
 
         Object.entries(curr.perIncomeData).forEach(([incomeID, incomeData]) => {
           acc.perIncomeData[incomeID] = {
@@ -63,6 +66,7 @@ export class IncomesProcessor {
             incomeAfterPayrollDeductions:
               (acc.perIncomeData[incomeID]?.incomeAfterPayrollDeductions ?? 0) + incomeData.incomeAfterPayrollDeductions,
             taxExemptIncome: (acc.perIncomeData[incomeID]?.taxExemptIncome ?? 0) + incomeData.taxExemptIncome,
+            socialSecurityIncome: (acc.perIncomeData[incomeID]?.socialSecurityIncome ?? 0) + incomeData.socialSecurityIncome,
           };
         });
 
@@ -74,6 +78,7 @@ export class IncomesProcessor {
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
         totalTaxExemptIncome: 0,
+        totalSocialSecurityIncome: 0,
         perIncomeData: {},
       }
     );
@@ -86,6 +91,7 @@ export interface IncomesData {
   totalFicaTax: number;
   totalIncomeAfterPayrollDeductions: number;
   totalTaxExemptIncome: number;
+  totalSocialSecurityIncome: number;
   perIncomeData: Record<string, IncomeData>;
 }
 
@@ -109,6 +115,7 @@ export interface IncomeData {
   ficaTax: number;
   incomeAfterPayrollDeductions: number;
   taxExemptIncome: number;
+  socialSecurityIncome: number;
 }
 
 export class Income {
@@ -174,6 +181,7 @@ export class Income {
         ficaTax: 0,
         incomeAfterPayrollDeductions: 0,
         taxExemptIncome: 0,
+        socialSecurityIncome: 0,
       };
     }
 
@@ -182,6 +190,7 @@ export class Income {
     let amountWithheld: number = 0;
     let ficaTax: number = 0;
     let taxExemptIncome: number = 0;
+    let socialSecurityIncome: number = 0;
     switch (this.incomeType) {
       case 'wage':
         amountWithheld = income * (this.withholdingRate / 100);
@@ -189,6 +198,11 @@ export class Income {
         break;
       case 'exempt':
         taxExemptIncome = income;
+        break;
+      case 'socialSecurity':
+        amountWithheld = income * (this.withholdingRate / 100);
+        socialSecurityIncome = income;
+        break;
       default:
         break;
     }
@@ -196,7 +210,16 @@ export class Income {
     const incomeAfterPayrollDeductions = income - amountWithheld - ficaTax;
 
     if (this.frequency === 'oneTime') this.hasOneTimeIncomeOccurred = true;
-    return { id: this.id, name: this.name, income, amountWithheld, ficaTax, incomeAfterPayrollDeductions, taxExemptIncome };
+    return {
+      id: this.id,
+      name: this.name,
+      income,
+      amountWithheld,
+      ficaTax,
+      incomeAfterPayrollDeductions,
+      taxExemptIncome,
+      socialSecurityIncome,
+    };
   }
 
   getIsActiveByTimeFrame(simulationState: SimulationState): boolean {

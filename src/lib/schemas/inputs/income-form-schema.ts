@@ -25,7 +25,7 @@ export const incomeTaxSchema = z
   )
   .refine(
     (data) => {
-      return !['selfEmployment', 'socialSecurity', 'pension'].includes(data.incomeType);
+      return !['selfEmployment', 'pension'].includes(data.incomeType);
     },
     {
       message: 'This income type is not yet supported',
@@ -75,10 +75,10 @@ export type IncomeInputs = z.infer<typeof incomeFormSchema>;
 export const supportsWithholding = (incomeType: IncomeType): boolean => {
   switch (incomeType) {
     case 'wage':
+    case 'socialSecurity':
       return true;
     case 'exempt':
     case 'selfEmployment':
-    case 'socialSecurity':
     case 'pension':
       return false;
   }

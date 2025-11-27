@@ -569,9 +569,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                             <option value="selfEmployment" disabled>
                               Self-Employment (1099) (coming soon!)
                             </option>
-                            <option value="socialSecurity" disabled>
-                              Social Security (coming soon!)
-                            </option>
+                            <option value="socialSecurity">Social Security</option>
                             <option value="pension" disabled>
                               Pension (coming soon!)
                             </option>
