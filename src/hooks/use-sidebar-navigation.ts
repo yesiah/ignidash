@@ -1,6 +1,6 @@
 import { LayoutDashboardIcon, ChartNoAxesCombinedIcon, Layers2Icon, ZapIcon, CircleQuestionMarkIcon, GemIcon } from 'lucide-react';
 import { api } from '@/convex/_generated/api';
-import { useQuery, useMutation } from 'convex/react';
+import { useQuery, useMutation, useConvexAuth } from 'convex/react';
 import { useEffect, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -15,22 +15,25 @@ export interface NavigationItem {
 }
 
 export const useNavigationItems = () => {
+  const { isAuthenticated } = useConvexAuth();
   const m = useMutation(api.plans.getOrCreateDefaultPlan);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     async function createDefaultPlan() {
       await m({});
     }
 
     createDefaultPlan();
-  }, [m]);
-  const defaultPlanId = useQuery(api.plans.getDefaultPlanId);
+  }, [m, isAuthenticated]);
+  const defaultPlanId = useQuery(api.plans.getDefaultPlanId, isAuthenticated ? {} : 'skip');
 
   const pathname = usePathname();
 
   const simulatorItem = useMemo(() => {
-    const href = defaultPlanId !== null ? `/dashboard/simulator/${defaultPlanId}` : '/dashboard/simulator';
-    const disabled = defaultPlanId === null;
+    const href = defaultPlanId !== undefined && defaultPlanId !== null ? `/dashboard/simulator/${defaultPlanId}` : '/dashboard/simulator';
+    const disabled = defaultPlanId === undefined || defaultPlanId === null;
     return { name: 'Simulator', href, icon: ChartNoAxesCombinedIcon, current: isCurrentPath(pathname, `/dashboard/simulator`), disabled };
   }, [pathname, defaultPlanId]);
 
