@@ -19,6 +19,11 @@ const faqs = [
     answer:
       "No. Ignidash works entirely with data you manually input. You're never required to link external accounts, giving you full control over what you share.",
   },
+  {
+    question: 'Is Ignidash free to use?',
+    answer:
+      "Ignidash is currently free while in beta. At launch, we'll offer a 7-day free trial, then plans starting at $11/month for Pro and $15/month for Pro + AI with advanced features.",
+  },
 ];
 
 export default function FAQSection() {
