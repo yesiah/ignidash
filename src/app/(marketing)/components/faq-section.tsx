@@ -1,10 +1,19 @@
 const faqs = [
   {
-    question: "What's the best thing about Switzerland?",
+    question: 'Can Ignidash give me advice about what to invest in?',
     answer:
-      "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+      'No. Ignidash is a financial planning tool that helps you model and simulate your financial future. We do not provide personalized investment advice or recommendations. For investment advice tailored to your specific situation, please consult with a licensed financial advisor.',
   },
-  // More questions...
+  {
+    question: 'Does Ignidash support multiple currencies?',
+    answer:
+      'Currently, Ignidash only supports USD ($) and is tailored for US-based financial planning, including US tax rules and retirement accounts. International support is on our roadmap.',
+  },
+  {
+    question: 'Is my financial data secure?',
+    answer:
+      'Yes. Your data is encrypted and stored securely using Convex, a modern database platform with enterprise-grade security. We never sell your personal information.',
+  },
 ];
 
 export default function FAQSection() {
@@ -17,11 +26,14 @@ export default function FAQSection() {
               Frequently asked questions
             </h2>
             <p className="mt-4 text-base/7 text-pretty text-zinc-600 dark:text-zinc-400">
-              Can’t find the answer you’re looking for? Reach out to our{' '}
-              <a href="#" className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300">
+              Can&apos;t find the answer you&apos;re looking for? Reach out to our{' '}
+              <a
+                href="mailto:joe@schelske.dev"
+                className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300"
+              >
                 customer support
               </a>{' '}
-              team.
+              team (which is just me).
             </p>
           </div>
           <div className="mt-10 lg:col-span-7 lg:mt-0">
