@@ -80,10 +80,16 @@ export class TaxProcessor {
     );
     const { adjustedRealizedGains, capitalLossDeduction } = this.getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes);
 
-    const adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome + capitalLossDeduction);
+    let adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome + capitalLossDeduction);
     const adjustedIncomeTaxedAsCapGains = adjustedRealizedGains + annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
+
+    const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
+    const combinedIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains + socialSecurityIncome * 0.5;
+
+    const taxableSocialSecurity = this.getTaxablePortionOfSocialSecurityIncome(combinedIncome, socialSecurityIncome);
+    adjustedIncomeTaxedAsIncome += taxableSocialSecurity;
+
     const adjustedGrossIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains;
-    const _combinedIncome = adjustedGrossIncome + annualIncomesData.totalSocialSecurityIncome * 0.5;
 
     const standardDeduction = this.getStandardDeduction();
     const deductionUsedForOrdinary = Math.min(standardDeduction, adjustedIncomeTaxedAsIncome);
