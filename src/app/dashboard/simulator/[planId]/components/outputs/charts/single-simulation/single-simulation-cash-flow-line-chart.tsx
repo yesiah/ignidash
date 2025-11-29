@@ -53,6 +53,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       const entry: SingleSimulationCashFlowChartDataPoint = payload[0].payload as SingleSimulationCashFlowChartDataPoint;
 
       const earnedIncome = entry.earnedIncome;
+      const socialSecurityIncome = entry.socialSecurityIncome;
       const taxExemptIncome = entry.taxExemptIncome;
       const taxesAndPenalties = entry.totalTaxesAndPenalties;
       const expenses = entry.expenses;
@@ -67,6 +68,15 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
             <span className="mr-2">{`${formatChartString('earnedIncome')}:`}</span>
             <span className="ml-1 font-semibold">{formatNumber(earnedIncome, 1, '$')}</span>
           </p>
+          {socialSecurityIncome !== 0 && (
+            <p
+              style={{ backgroundColor: 'var(--chart-2)' }}
+              className="border-foreground/50 text-foreground flex justify-between rounded-lg border px-2 text-sm"
+            >
+              <span className="mr-2">{`${formatChartString('socialSecurityIncome')}:`}</span>
+              <span className="ml-1 font-semibold">{formatNumber(socialSecurityIncome, 1, '$')}</span>
+            </p>
+          )}
           {taxExemptIncome !== 0 && (
             <p
               style={{ backgroundColor: 'var(--chart-2)' }}
@@ -207,8 +217,8 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'incomes':
-      dataKeys.push('earnedIncome', 'taxExemptIncome');
-      strokeColors.push('var(--chart-2)', 'var(--chart-1)');
+      dataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
+      strokeColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'expenses':
