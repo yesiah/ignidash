@@ -87,7 +87,7 @@ export class TaxProcessor {
     );
     const { adjustedRealizedGains, capitalLossDeduction } = this.getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes);
 
-    let adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome + capitalLossDeduction);
+    let adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome - capitalLossDeduction);
     const adjustedIncomeTaxedAsCapGains = adjustedRealizedGains + annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
 
     const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
@@ -269,8 +269,8 @@ export class TaxProcessor {
       return { adjustedRealizedGains, capitalLossDeduction: 0 };
     }
 
-    const capitalLossDeduction = Math.max(-3000, adjustedRealizedGains);
-    this.capitalLossCarryover = adjustedRealizedGains - capitalLossDeduction;
+    const capitalLossDeduction = -Math.max(-3000, adjustedRealizedGains);
+    this.capitalLossCarryover = adjustedRealizedGains + capitalLossDeduction;
     return { adjustedRealizedGains: 0, capitalLossDeduction };
   }
 
