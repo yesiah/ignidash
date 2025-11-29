@@ -129,7 +129,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const { totalTaxesAndPenalties } = SimulationDataExtractor.getTaxAmountsByType(dp);
-  const { earnedIncome, taxExemptIncome, totalExpenses, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { earnedIncome, socialSecurityIncome, taxExemptIncome, totalExpenses, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
@@ -142,6 +142,13 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionList>
           <DescriptionTerm>Earned Income</DescriptionTerm>
           <DescriptionDetails>{formatNumber(earnedIncome, 2, '$')}</DescriptionDetails>
+
+          {socialSecurityIncome !== 0 && (
+            <>
+              <DescriptionTerm>Social Security Income</DescriptionTerm>
+              <DescriptionDetails>{formatNumber(socialSecurityIncome, 2, '$')}</DescriptionDetails>
+            </>
+          )}
 
           {taxExemptIncome !== 0 && (
             <>
@@ -178,6 +185,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const {
     earnedIncome,
+    socialSecurityIncome,
     totalRetirementDistributions: retirementDistributions,
     interestIncome,
     grossCapGains,
@@ -194,6 +202,13 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
       <DescriptionList>
         <DescriptionTerm>Earned Income</DescriptionTerm>
         <DescriptionDetails>{formatNumber(earnedIncome, 2, '$')}</DescriptionDetails>
+
+        {socialSecurityIncome !== 0 && (
+          <>
+            <DescriptionTerm>Social Security Income</DescriptionTerm>
+            <DescriptionDetails>{formatNumber(socialSecurityIncome, 2, '$')}</DescriptionDetails>
+          </>
+        )}
 
         <DescriptionTerm>Retirement Distributions</DescriptionTerm>
         <DescriptionDetails>{formatNumber(retirementDistributions, 2, '$')}</DescriptionDetails>
