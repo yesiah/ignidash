@@ -207,10 +207,13 @@ const CustomLabelListContent = (props: any) => {
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
       | 'adjustmentsAndDeductions'
+      | 'socialSecurityIncome'
+      | 'socialSecurityTaxablePercentage'
   ) => {
     switch (mode) {
       case 'marginalRates':
       case 'effectiveRates':
+      case 'socialSecurityTaxablePercentage':
         return `${(value * 100).toFixed(1)}%`;
       case 'annualAmounts':
       case 'cumulativeAmounts':
@@ -223,6 +226,7 @@ const CustomLabelListContent = (props: any) => {
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
       case 'adjustmentsAndDeductions':
+      case 'socialSecurityIncome':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -275,7 +279,9 @@ interface SingleSimulationTaxesBarChartProps {
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+    | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
   startAge: number;
@@ -325,6 +331,10 @@ export default function SingleSimulationTaxesBarChart({
     adjustmentsAndDeductions: {
       mobile: ['Tax-Deferred', 'CL Deduction', 'Std. Deduction'],
       desktop: ['Tax-Deferred Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
+    },
+    socialSecurityIncome: {
+      mobile: ['Soc. Sec.', 'Taxable Soc. Sec.'],
+      desktop: ['Social Security', 'Taxable Social Security'],
     },
   };
 
@@ -507,6 +517,22 @@ export default function SingleSimulationTaxesBarChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
+    case 'socialSecurityIncome': {
+      const [socialSecurityLabel, taxableSocialSecurityLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      transformedChartData = chartData.flatMap((item) => [
+        { name: socialSecurityLabel, amount: item.socialSecurityIncome },
+        { name: taxableSocialSecurityLabel, amount: item.taxableSocialSecurityIncome },
+      ]);
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    }
+    case 'socialSecurityTaxablePercentage':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Max Taxable %', amount: item.maxTaxablePercentage },
+        { name: 'Actual Taxable %', amount: item.actualTaxablePercentage },
+      ]);
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+      break;
   }
 
   if (transformedChartData.length === 0 || dataKeys.length === 0) {

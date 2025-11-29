@@ -31,6 +31,7 @@ export function formatChartString(input: string): string {
     ['Cumulative', 'Cumul.'],
     ['Required Minimum Distributions', 'RMDs'],
     ['Early Withdrawal Penalties', 'EW Penalties'],
+    ['Percentage', '%'],
   ];
 
   for (const [search, replace] of replacements) {

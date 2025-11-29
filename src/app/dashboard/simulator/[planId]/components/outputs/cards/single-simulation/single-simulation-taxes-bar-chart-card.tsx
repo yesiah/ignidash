@@ -26,7 +26,9 @@ interface SingleSimulationTaxesBarChartCardProps {
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+    | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage';
   setReferenceLineMode: (mode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates') => void;
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates';
   referenceLineModes: readonly ('hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates')[];
@@ -82,6 +84,12 @@ export default function SingleSimulationTaxesBarChartCard({
       break;
     case 'adjustmentsAndDeductions':
       title = 'Adjustments & Deductions';
+      break;
+    case 'socialSecurityIncome':
+      title = 'Social Security Income';
+      break;
+    case 'socialSecurityTaxablePercentage':
+      title = 'Taxable % of Social Security';
       break;
   }
 

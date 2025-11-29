@@ -111,6 +111,8 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
     | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage'
   >('annualAmounts');
 
   const referenceLineModes = ['marginalIncomeTaxRates', 'marginalCapGainsTaxRates', 'hideReferenceLines'] as const;

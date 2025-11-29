@@ -68,7 +68,7 @@ export interface EarlyWithdrawalPenaltyData {
 export interface SocialSecurityTaxesData {
   taxableSocialSecurity: number;
   maxTaxablePercentage: number;
-  taxablePercentage: number;
+  actualTaxablePercentage: number;
   provisionalIncome: number;
 }
 
@@ -102,7 +102,7 @@ export class TaxProcessor {
     const socialSecurityTaxes: SocialSecurityTaxesData = {
       taxableSocialSecurity,
       maxTaxablePercentage,
-      taxablePercentage: socialSecurityIncome > 0 ? taxableSocialSecurity / socialSecurityIncome : 0,
+      actualTaxablePercentage: socialSecurityIncome > 0 ? taxableSocialSecurity / socialSecurityIncome : 0,
       provisionalIncome,
     };
 

@@ -38,7 +38,9 @@ interface CustomTooltipProps {
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+    | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage';
 }
 
 const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
@@ -65,10 +67,13 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
       | 'adjustmentsAndDeductions'
+      | 'socialSecurityIncome'
+      | 'socialSecurityTaxablePercentage'
   ) => {
     switch (mode) {
       case 'marginalRates':
       case 'effectiveRates':
+      case 'socialSecurityTaxablePercentage':
         return `${(value * 100).toFixed(1)}%`;
       case 'annualAmounts':
       case 'cumulativeAmounts':
@@ -81,6 +86,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
       case 'adjustmentsAndDeductions':
+      case 'socialSecurityIncome':
         return formatNumber(value, 1, '$');
       default:
         return value;
@@ -92,6 +98,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   switch (dataView) {
     case 'marginalRates':
     case 'effectiveRates':
+    case 'socialSecurityTaxablePercentage':
       break;
     case 'annualAmounts':
     case 'cumulativeAmounts':
@@ -153,6 +160,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       );
       break;
     case 'taxExemptIncome':
+    case 'socialSecurityIncome':
       break;
   }
 
@@ -203,7 +211,9 @@ interface SingleSimulationTaxesLineChartProps {
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+    | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage';
   startAge: number;
 }
 
@@ -282,6 +292,14 @@ export default function SingleSimulationTaxesLineChart({
     case 'adjustmentsAndDeductions':
       formatter = (value: number) => formatNumber(value, 1, '$');
       dataKeys.push('taxDeferredContributions', 'capitalLossDeduction', 'standardDeduction');
+      break;
+    case 'socialSecurityIncome':
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      dataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');
+      break;
+    case 'socialSecurityTaxablePercentage':
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+      dataKeys.push('maxTaxablePercentage', 'actualTaxablePercentage');
       break;
   }
 

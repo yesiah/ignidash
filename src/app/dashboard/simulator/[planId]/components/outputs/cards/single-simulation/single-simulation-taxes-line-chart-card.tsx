@@ -27,6 +27,8 @@ interface SingleSimulationTaxesLineChartCardProps {
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
       | 'adjustmentsAndDeductions'
+      | 'socialSecurityIncome'
+      | 'socialSecurityTaxablePercentage'
   ) => void;
   dataView:
     | 'marginalRates'
@@ -41,7 +43,9 @@ interface SingleSimulationTaxesLineChartCardProps {
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
-    | 'adjustmentsAndDeductions';
+    | 'adjustmentsAndDeductions'
+    | 'socialSecurityIncome'
+    | 'socialSecurityTaxablePercentage';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   keyMetrics: KeyMetrics;
   startAge: number;
@@ -86,6 +90,8 @@ export default function SingleSimulationTaxesLineChartCard({
                 | 'capGainsAndDividends'
                 | 'earlyWithdrawalPenalties'
                 | 'adjustmentsAndDeductions'
+                | 'socialSecurityIncome'
+                | 'socialSecurityTaxablePercentage'
             )
           }
         >
@@ -111,6 +117,10 @@ export default function SingleSimulationTaxesLineChartCard({
           </optgroup>
           <optgroup label="Issues & Penalties">
             <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
+          </optgroup>
+          <optgroup label="Social Security">
+            <option value="socialSecurityIncome">Social Security Income</option>
+            <option value="socialSecurityTaxablePercentage">Taxable % of Social Security</option>
           </optgroup>
         </Select>
       </div>

@@ -74,8 +74,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   /* Social Security */
   socialSecurityIncome: number;
   taxableSocialSecurityIncome: number;
-  maxTaxableSocialSecurityPercentage: number;
-  taxableSocialSecurityPercentage: number;
+  maxTaxablePercentage: number;
+  actualTaxablePercentage: number;
 
   /* Cap Gains */
   realizedGains: number;
