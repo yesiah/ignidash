@@ -151,6 +151,7 @@ export abstract class TableDataExtractor {
         dividendIncome,
         interestIncome,
         earnedIncome,
+        socialSecurityIncome,
         taxExemptIncome,
         grossIncome,
       } = SimulationDataExtractor.getTaxableIncomeSources(data, age);
@@ -173,6 +174,10 @@ export abstract class TableDataExtractor {
         cumulativeFicaTax,
         effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? 0,
         topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalIncomeTaxRate ?? 0,
+        socialSecurityIncome,
+        taxableSocialSecurityIncome: taxesData?.socialSecurityTaxes.taxableSocialSecurity ?? 0,
+        maxTaxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.maxTaxablePercentage ?? 0,
+        taxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.taxablePercentage ?? 0,
         realizedGains,
         dividendIncome,
         annualCapGainsTax,

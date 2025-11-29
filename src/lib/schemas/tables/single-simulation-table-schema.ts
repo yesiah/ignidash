@@ -166,6 +166,12 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   effectiveIncomeTaxRate: z.number().nullable(),
   topMarginalIncomeTaxRate: z.number().nullable(),
 
+  /* Social Security */
+  socialSecurityIncome: z.number().nullable(),
+  taxableSocialSecurityIncome: z.number().nullable(),
+  maxTaxableSocialSecurityPercentage: z.number().nullable(),
+  taxableSocialSecurityPercentage: z.number().nullable(),
+
   /* Cap Gains */
   realizedGains: z.number().nullable(),
   dividendIncome: z.number().nullable(),
@@ -210,6 +216,10 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   cumulativeIncomeTax: { title: 'Cumulative Income Tax', format: 'currency' },
   effectiveIncomeTaxRate: { title: 'Effective Income Tax Rate', format: 'percentage' },
   topMarginalIncomeTaxRate: { title: 'Top Marginal Income Tax Rate', format: 'percentage' },
+  socialSecurityIncome: { title: 'Social Security Income', format: 'currency' },
+  taxableSocialSecurityIncome: { title: 'Taxable Social Security Income', format: 'currency' },
+  maxTaxableSocialSecurityPercentage: { title: 'Max Taxable Social Security Percentage', format: 'percentage' },
+  taxableSocialSecurityPercentage: { title: 'Taxable Social Security Percentage', format: 'percentage' },
   realizedGains: { title: 'Realized Capital Gains', format: 'currency' },
   dividendIncome: { title: 'Dividend Income', format: 'currency' },
   annualCapGainsTax: { title: 'Annual Capital Gains Tax', format: 'currency' },
