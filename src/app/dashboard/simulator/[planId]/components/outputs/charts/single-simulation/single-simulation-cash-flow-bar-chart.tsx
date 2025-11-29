@@ -61,8 +61,8 @@ export default function SingleSimulationCashFlowBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     net: {
-      mobile: ['Earned Income', 'Exempt Income', 'Taxes', 'Expenses'],
-      desktop: ['Earned Income', 'Tax-Exempt Income', 'Taxes & Penalties', 'Expenses'],
+      mobile: ['Earned Income', 'Soc. Sec.', 'Exempt Income', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Taxes & Penalties', 'Expenses'],
     },
     expenses: {
       mobile: ['Taxes'],
@@ -80,16 +80,17 @@ export default function SingleSimulationCashFlowBarChart({
   const formatter = (value: number) => formatNumber(value, 1, '$');
   switch (dataView) {
     case 'net': {
-      const [earnedIncomeLabel, taxExemptIncomeLabel, taxesAndPenaltiesLabel, expensesLabel] = getLabelsForScreenSize(
-        dataView,
-        isSmallScreen
+      const [earnedIncomeLabel, socialSecurityIncomeLabel, taxExemptIncomeLabel, taxesAndPenaltiesLabel, expensesLabel] =
+        getLabelsForScreenSize(dataView, isSmallScreen);
+      transformedChartData = chartData.flatMap(
+        ({ earnedIncome, socialSecurityIncome, taxExemptIncome, totalTaxesAndPenalties, expenses }) => [
+          { name: earnedIncomeLabel, amount: earnedIncome, type: 'income' },
+          ...(socialSecurityIncome > 0 ? [{ name: socialSecurityIncomeLabel, amount: socialSecurityIncome, type: 'income' }] : []),
+          ...(taxExemptIncome > 0 ? [{ name: taxExemptIncomeLabel, amount: taxExemptIncome, type: 'income' }] : []),
+          { name: taxesAndPenaltiesLabel, amount: -totalTaxesAndPenalties, type: 'expense' },
+          { name: expensesLabel, amount: -expenses, type: 'expense' },
+        ]
       );
-      transformedChartData = chartData.flatMap(({ earnedIncome, taxExemptIncome, expenses, totalTaxesAndPenalties }) => [
-        { name: earnedIncomeLabel, amount: earnedIncome, type: 'income' },
-        ...(taxExemptIncome > 0 ? [{ name: taxExemptIncomeLabel, amount: taxExemptIncome, type: 'income' }] : []),
-        { name: taxesAndPenaltiesLabel, amount: -totalTaxesAndPenalties, type: 'expense' },
-        { name: expensesLabel, amount: -expenses, type: 'expense' },
-      ]);
       break;
     }
     case 'incomes':
