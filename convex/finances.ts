@@ -4,13 +4,13 @@ import { query, mutation } from './_generated/server';
 import { assetValidator } from './validators/asset_validator';
 import { liabilityValidator } from './validators/liability_validator';
 import { getUserIdOrThrow } from './utils/auth_utils';
-import { getFinancesForUserId } from './utils/finances_utils';
+import { getFinancesForUser } from './utils/finances_utils';
 
 export const getAssets = query({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
     if (!finances) return null;
 
     return finances.assets;
@@ -21,7 +21,7 @@ export const getLiabilities = query({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
     if (!finances) return null;
 
     return finances.liabilities;
@@ -35,7 +35,7 @@ export const upsertAsset = mutation({
   handler: async (ctx, { asset }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
 
     if (!finances) {
       await ctx.db.insert('finances', { userId, assets: [asset], liabilities: [] });
@@ -59,7 +59,7 @@ export const upsertLiability = mutation({
   handler: async (ctx, { liability }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
 
     if (!finances) {
       await ctx.db.insert('finances', { userId, assets: [], liabilities: [liability] });
@@ -82,7 +82,7 @@ export const deleteAllFinances = mutation({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
 
     if (finances) await ctx.db.delete(finances._id);
   },
@@ -92,7 +92,7 @@ export const deleteAllAssets = mutation({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
 
     if (finances) await ctx.db.patch(finances._id, { assets: [] });
   },
@@ -102,7 +102,7 @@ export const deleteAllLiabilities = mutation({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
 
     if (finances) await ctx.db.patch(finances._id, { liabilities: [] });
   },
@@ -115,7 +115,7 @@ export const deleteAsset = mutation({
   handler: async (ctx, { assetId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
     if (!finances) return;
 
     const updatedAssets = finances.assets.filter((a) => a.id !== assetId);
@@ -131,7 +131,7 @@ export const deleteLiability = mutation({
   handler: async (ctx, { liabilityId }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
-    const finances = await getFinancesForUserId(ctx, userId);
+    const finances = await getFinancesForUser(ctx, userId);
     if (!finances) return;
 
     const updatedLiabilities = finances.liabilities.filter((l) => l.id !== liabilityId);
