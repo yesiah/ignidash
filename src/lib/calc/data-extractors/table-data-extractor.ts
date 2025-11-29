@@ -176,6 +176,7 @@ export abstract class TableDataExtractor {
         topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalIncomeTaxRate ?? 0,
         socialSecurityIncome,
         taxableSocialSecurityIncome: taxesData?.socialSecurityTaxes.taxableSocialSecurity ?? 0,
+        provisionalIncome: taxesData?.socialSecurityTaxes.provisionalIncome ?? 0,
         maxTaxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.maxTaxablePercentage ?? 0,
         actualTaxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.actualTaxablePercentage ?? 0,
         realizedGains,
