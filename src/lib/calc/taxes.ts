@@ -51,6 +51,7 @@ export interface TaxesData {
   incomeTaxes: IncomeTaxesData;
   capitalGainsTaxes: CapitalGainsTaxesData;
   earlyWithdrawalPenalties: EarlyWithdrawalPenaltyData;
+  socialSecurityTaxes: SocialSecurityTaxesData;
   totalTaxesDue: number;
   totalTaxesRefund: number;
   totalTaxableIncome: number;
@@ -64,9 +65,10 @@ export interface EarlyWithdrawalPenaltyData {
   totalPenaltyAmount: number;
 }
 
-export interface SocialSecurityTaxData {
-  taxableSocialSecurityIncome: number;
+export interface SocialSecurityTaxesData {
+  taxableSocialSecurity: number;
   maxTaxablePercentage: number;
+  actualTaxablePercentage: number;
 }
 
 export class TaxProcessor {
@@ -91,8 +93,16 @@ export class TaxProcessor {
     const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
     const combinedIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains + socialSecurityIncome * 0.5;
 
-    const taxableSocialSecurity = this.getTaxablePortionOfSocialSecurityIncome(combinedIncome, socialSecurityIncome);
+    const { taxableSocialSecurity, maxTaxablePercentage } = this.getTaxablePortionOfSocialSecurityIncome(
+      combinedIncome,
+      socialSecurityIncome
+    );
     adjustedIncomeTaxedAsIncome += taxableSocialSecurity;
+    const socialSecurityTaxes: SocialSecurityTaxesData = {
+      taxableSocialSecurity,
+      maxTaxablePercentage,
+      actualTaxablePercentage: socialSecurityIncome > 0 ? taxableSocialSecurity / socialSecurityIncome : 0,
+    };
 
     const adjustedGrossIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains;
 
@@ -136,6 +146,7 @@ export class TaxProcessor {
       incomeTaxes,
       capitalGainsTaxes,
       earlyWithdrawalPenalties,
+      socialSecurityTaxes,
       totalTaxesDue: difference > 0 ? difference : 0,
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
       totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
@@ -263,16 +274,19 @@ export class TaxProcessor {
     return { adjustedRealizedGains: 0, capitalLossDeduction };
   }
 
-  private getTaxablePortionOfSocialSecurityIncome(combinedIncome: number, totalSocialSecurityIncome: number): number {
+  private getTaxablePortionOfSocialSecurityIncome(
+    combinedIncome: number,
+    totalSocialSecurityIncome: number
+  ): { taxableSocialSecurity: number; maxTaxablePercentage: number } {
     const thresholds = this.getSocialSecurityTaxThresholds();
 
     // 0% taxable
-    if (combinedIncome <= thresholds[0].max) return 0;
+    if (combinedIncome <= thresholds[0].max) return { taxableSocialSecurity: 0, maxTaxablePercentage: 0 };
 
     // Up to 50% taxable ($25,000 to $34,000 for single)
     if (combinedIncome > thresholds[1].min && combinedIncome <= thresholds[1].max) {
       const excessIncome = combinedIncome - thresholds[1].min;
-      return Math.min(excessIncome * 0.5, totalSocialSecurityIncome * 0.5);
+      return { taxableSocialSecurity: Math.min(excessIncome * 0.5, totalSocialSecurityIncome * 0.5), maxTaxablePercentage: 0.5 };
     }
 
     // Up to 85% taxable (over $34,000 for single)
@@ -282,7 +296,7 @@ export class TaxProcessor {
     const tier2Excess = combinedIncome - thresholds[2].min;
     const tier2Amount = tier2Excess * 0.85;
 
-    return Math.min(tier1Amount + tier2Amount, totalSocialSecurityIncome * 0.85);
+    return { taxableSocialSecurity: Math.min(tier1Amount + tier2Amount, totalSocialSecurityIncome * 0.85), maxTaxablePercentage: 0.85 };
   }
 
   private getEmployeeContributionsForAccountTypes(
