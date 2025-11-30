@@ -40,7 +40,7 @@ const faqs = [
 export default function HelpPage() {
   return (
     <main className="mx-auto min-h-dvh max-w-7xl px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:px-4">
-      <div className="mx-auto max-w-4xl space-y-12">
+      <div className="mx-auto max-w-4xl space-y-8">
         <div className="mt-8 space-y-8">
           <div className="flex items-center gap-4">
             <CircleQuestionMarkIcon className="text-primary h-12 w-12" />
