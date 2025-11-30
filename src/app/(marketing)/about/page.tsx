@@ -37,7 +37,8 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                 >
                   Joe Schelske
-                </a>{' '}
+                </a>
+                {', '}
                 and I&apos;m the founder of{' '}
                 <Link href="/" className="text-primary hover:underline">
                   Ignidash.com
@@ -57,10 +58,9 @@ export default function AboutPage() {
             </div>
             <div>
               <p>
-                So I built Ignidash. Unlike traditional financial calculators that spit out numbers without context, or AI assistants that
-                can&apos;t handle the math, Ignidash brings both together. You get comprehensive, accurate long-term financial simulations
-                powered by sophisticated modeling, plus AI assistance that helps you interpret results, explore trade-offs, and adjust your
-                plan based on what matters most to you.
+                So I built Ignidash. With Ignidash, you get comprehensive, accurate long-term financial simulations powered by sophisticated
+                modeling, plus AI assistance that helps you interpret results, explore trade-offs, and adjust your plan based on what
+                matters most to you.
               </p>
               <p className="mt-8">
                 Whether you&apos;re planning for early retirement, a career pivot, starting a business, or just want confidence in your
