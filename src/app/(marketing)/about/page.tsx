@@ -64,7 +64,7 @@ export default function AboutPage() {
               </p>
               <p className="mt-8">
                 Whether you&apos;re planning for early retirement, a career pivot, starting a business, or just want confidence in your
-                financial future, Ignidash helps you see the path forward clearly. Ready to take control of your financial future?{' '}
+                financial future, Ignidash helps you see the path forward clearly. Ready to take control?{' '}
                 <Link href="/signup" className="text-primary font-semibold hover:underline">
                   Create your free account
                 </Link>{' '}
