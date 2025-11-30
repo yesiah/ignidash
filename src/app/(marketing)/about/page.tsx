@@ -43,8 +43,8 @@ export default function AboutPage() {
                   Ignidash.com
                 </Link>
                 . After quitting my engineering job at Meta to pursue &quot;something else&quot; (not yet knowing what that something else
-                would be), I would talk to ChatGPT about my finances to explore different life, career, and financial plans that seemed
-                appealing.
+                would be), I would talk to ChatGPT about my interests and finances to explore different life, career, and financial plans
+                that seemed appealing.
               </p>
               <p className="mt-8">
                 While these AI conversations were great for explaining retirement planning concepts and brainstorming career path ideas, I
@@ -55,11 +55,11 @@ export default function AboutPage() {
             <div>
               <p>
                 Then, I wanted a tool that could run accurate, comprehensive long-term financial simulations to make up for the
-                computational shortcomings of AI, with an integration that could bring AI&apos;s qualitative strengths to the table as well.
+                computational shortcomings of AI, but also had AI-powered assistance features to help me understand and interpret the
+                results, as well as explore ways to fine-tune the plan according to my interests and values.
               </p>
               <p className="mt-8">
                 Enter Ignidash: an AI-powered retirement planning tool that combines robust financial modeling with AI assistance features.
-                My goal with it is to make retirement planning more accessible, intuitive, and personalized for everyone.
               </p>
             </div>
           </div>
