@@ -8,31 +8,48 @@ import { Divider } from '@/components/catalyst/divider';
 
 const faqs = [
   {
-    question: 'How can I work around the lack of debt modeling?',
-    answer: 'Enter your monthly debt payment as a regular expense.',
+    question: 'How should I get started with Ignidash?',
+    answer: (
+      <>
+        If you would like to see a demo plan for Simulator to quickly explore the tool, create a new plan with the{' '}
+        <strong className="underline">Demo Plan</strong> template of your choosing. This can be done with the Create button in Dashboard.
+        <br />
+        <br />
+        Once you&apos;re ready to work on your own plan, create a new one or use the blank plan that was created automatically when you
+        opened your account. I recommend customizing your Numbers with a{' '}
+        <strong className="underline">Fixed Returns Simulation Mode</strong> until the Results are to your liking. After that, you can
+        explore the other Simulation Modes to see how your plan performs under different market conditions and assumptions.
+        <br />
+        <br />
+        The <strong className="underline">Monte Carlo modes</strong> are particularly useful for understanding the range of possible
+        outcomes. You can drill down into full individual simulations by clicking on rows in the table at the bottom of Results.{' '}
+        <strong>Tip:</strong> You can find relevant simulations to explore by sorting the table by metrics you care about!
+      </>
+    ),
   },
   {
     question: 'How can I check my vulnerability to sequence of returns risk?',
-    answer:
-      'You have two good options. First, you can use the Historical Returns Simulation Mode (in Simulation Settings) with Historical Retirement Start Year set to a historical year with a market crash, like 1929 for the Great Depression. This will make the market crash in your simulation at the same time as your retirement, which is the classic sequence of returns risk scenario. Second, you can use one of the two Monte Carlo Simulation Modes and check your Success %. You can drill down into failed simulations from the table at the bottom of Simulator Results by sorting by Success.',
+    answer: (
+      <>
+        You have two good options.
+        <br />
+        <br />
+        First, you can use the <strong className="underline">Historical Returns Simulation Mode</strong> (in Simulation Settings) with{' '}
+        <strong className="underline">Historical Retirement Start Year</strong> set to a historical year with a market crash, like 1929 for
+        the Great Depression. This will make the market crash in your simulation at the same time as your retirement, which is the classic
+        sequence of returns risk scenario.
+        <br />
+        <br />
+        Second, you can use one of the two <strong className="underline">Monte Carlo Simulation Modes</strong> to check your Success %
+        across 500 simulations. You can then drill down into failed simulations from the table at the bottom of Results by sorting by the
+        Success column and clicking on one of the rows for a failed simulation. Chances are high that many of the failed simulations will
+        involve market crashes early in retirement, which you can see from the Returns tab.
+      </>
+    ),
   },
   {
-    question: 'What is the recommended workflow for Ignidash?',
-    answer: '...',
-  },
-  {
-    question: 'Why do you never see elephants hiding in trees?',
-    answer: "Because they're so good at it. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-  },
-  {
-    question: "Why can't you hear a pterodactyl go to the bathroom?",
-    answer:
-      'Because the pee is silent. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam, quas voluptatibus ex culpa ipsum, aspernatur blanditiis fugiat ullam magnam suscipit deserunt illum natus facilis atque vero consequatur! Quisquam, debitis error.',
-  },
-  {
-    question: 'Why did the invisible man turn down the job offer?',
-    answer:
-      "He couldn't see himself doing it. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet perspiciatis officiis corrupti tenetur. Temporibus ut voluptatibus, perferendis sed unde rerum deserunt eius.",
+    question: 'How can I work around the lack of debt modeling?',
+    answer: 'Enter your monthly debt payment as a regular expense. You can make it a monthly expense using the Frequency input.',
   },
 ];
 
@@ -54,7 +71,7 @@ export default function HelpPage() {
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">Frequently asked questions</h2>
             <Text className="mt-2">
-              For any questions not covered by Help Center, please email me directly at{' '}
+              For any questions not answered by Help Center, please email me directly at{' '}
               <TextLink href="mailto:joe@schelske.dev">joe@schelske.dev</TextLink> or join the{' '}
               <TextLink href="https://discord.gg/AVNg9JCNUr">Discord server</TextLink>—I&apos;ll be there, and hopefully by the time
               you&apos;re reading this, other users will be too!
