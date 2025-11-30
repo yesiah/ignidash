@@ -37,8 +37,8 @@ export default function AboutPage() {
                   rel="noopener noreferrer"
                 >
                   Joe Schelske
-                </a>
-                , I&apos;m 26 years old and the founder of{' '}
+                </a>{' '}
+                and I&apos;m the founder of{' '}
                 <Link href="/" className="text-primary hover:underline">
                   Ignidash.com
                 </Link>
@@ -59,8 +59,8 @@ export default function AboutPage() {
                 ways to fine-tune the plan according to my interests and values.
               </p>
               <p className="mt-8">
-                Enter Ignidash: the personal finance app that gets the math right and helps you make sense of it all so you can plan your
-                future with confidence. Ready to get started?{' '}
+                Enter Ignidash: the personal finance app that gets the math right and helps you make sense of it all so you can plan a
+                future you&apos;re excited about with confidence. Ready to get started?{' '}
                 <Link href="/signup" className="text-primary hover:underline">
                   Create your free account
                 </Link>{' '}
