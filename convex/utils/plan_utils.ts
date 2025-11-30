@@ -1,5 +1,5 @@
 import { ConvexError } from 'convex/values';
-import { QueryCtx, MutationCtx } from '../_generated/server';
+import type { QueryCtx, MutationCtx } from '../_generated/server';
 import type { Id, Doc } from '../_generated/dataModel';
 
 export async function getPlanForUserIdOrThrow(ctx: QueryCtx, planId: Id<'plans'>, userId: string): Promise<Doc<'plans'>> {

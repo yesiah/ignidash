@@ -1,5 +1,5 @@
 import { ConvexError } from 'convex/values';
-import { QueryCtx } from '../_generated/server';
+import type { QueryCtx } from '../_generated/server';
 import { authComponent } from '../auth';
 
 export async function getUserIdOrThrow(ctx: QueryCtx): Promise<{ userId: string; userName: string }> {

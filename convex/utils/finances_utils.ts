@@ -1,4 +1,4 @@
-import { QueryCtx, MutationCtx } from '../_generated/server';
+import type { QueryCtx, MutationCtx } from '../_generated/server';
 import type { Doc } from '../_generated/dataModel';
 
 export async function getFinancesForUser(ctx: QueryCtx, userId: string): Promise<Doc<'finances'> | null> {
