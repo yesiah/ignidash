@@ -49,16 +49,18 @@ export default function HelpPage() {
               <p className="text-muted-foreground text-sm">Last updated: November 29, 2025</p>
             </div>
           </div>
-          <Text>
-            For any questions not covered by Help Center, please email me directly at{' '}
-            <TextLink href="mailto:joe@schelske.dev">joe@schelske.dev</TextLink> or join the{' '}
-            <TextLink href="https://discord.gg/AVNg9JCNUr">Discord server</TextLink>—I&apos;ll be there, and hopefully by the time
-            you&apos;re reading this, other users will be too!
-          </Text>
         </div>
         <Divider soft />
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">Frequently asked questions</h2>
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">Frequently asked questions</h2>
+            <Text className="mt-2">
+              For any questions not covered by Help Center, please email me directly at{' '}
+              <TextLink href="mailto:joe@schelske.dev">joe@schelske.dev</TextLink> or join the{' '}
+              <TextLink href="https://discord.gg/AVNg9JCNUr">Discord server</TextLink>—I&apos;ll be there, and hopefully by the time
+              you&apos;re reading this, other users will be too!
+            </Text>
+          </div>
           <dl className="divide-y divide-zinc-900/10 dark:divide-white/10">
             {faqs.map((faq) => (
               <Disclosure key={faq.question} as="div" className="py-6 first:pt-0 last:pb-0">
