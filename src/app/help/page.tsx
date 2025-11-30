@@ -62,14 +62,34 @@ const faqs = [
       "No. For now, Ignidash always assumes that dividends and interest are automatically reinvested, which is a common practice. There are currently no plans to change this in the future, but let me know if it's something you'd like.",
   },
   {
-    question: "Why doesn't investment income, such as dividends and interest, show up in the Cash Flow tab as income?",
-    answer:
-      'The Cash Flow tab focuses on money available for spending or saving. Since investment income is automatically reinvested, it represents portfolio growth rather than available cash flow. This growth is reflected in your account balances and Returns tab. For tax purposes, you can see all investment income in the Taxes tab.',
+    question: "Why doesn't investment income, such as dividends and interest, show up in the Cash Flow tab?",
+    answer: (
+      <>
+        The Cash Flow tab is designed to show money flowing in and out that affects your spending and saving decisions—things like salary,
+        business income, and living expenses. Since Ignidash automatically reinvests dividends and interest, this investment income never
+        becomes available as cash to spend; instead, it immediately contributes to portfolio growth. You can see this growth reflected in
+        your account balances in the Portfolio tab and in the Returns tab.
+        <br />
+        <br />
+        If you need to see investment income for tax purposes, check out the Taxes tab. And if you feel strongly about seeing investment
+        income in Cash Flow, feel free to reach out through the contact info at the top of the page!
+      </>
+    ),
   },
   {
-    question: "Why don't retirement distributions, such as 401(k) withdrawals, show up in the Cash Flow tab as income?",
-    answer:
-      'The Cash Flow tab shows income flows from external sources like salary and business income. Retirement distributions are drawdowns from your accumulated savings, not new money coming in. You can see all income sources for tax purposes in the Taxes tab, and track retirement withdrawals in the Withdrawals tab.',
+    question: "Why don't retirement distributions, such as 401(k) withdrawals, show up in the Cash Flow tab?",
+    answer: (
+      <>
+        The Cash Flow tab focuses on money coming from external sources (like salary and business income) and going to expenses. Retirement
+        distributions are different—they&apos;re drawdowns from savings you&apos;ve already accumulated, not new money coming in from
+        outside. To keep Cash Flow focused on these external flows, retirement withdrawals have their own dedicated Withdrawals tab where
+        you can track them in detail.
+        <br />
+        <br />
+        For tax reporting purposes, you can see all income sources including retirement distributions in the Taxes tab. If you&apos;d prefer
+        to see retirement distributions in Cash Flow as well, let me know through the contact info at the top of the page!
+      </>
+    ),
   },
 ];
 
