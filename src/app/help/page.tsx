@@ -65,10 +65,9 @@ const faqs = [
     question: "Why doesn't investment income, such as dividends and interest, show up in the Cash Flow tab?",
     answer: (
       <>
-        The Cash Flow tab is designed to show money flowing in and out that affects your spending and saving decisions—things like salary,
-        business income, and living expenses. Since Ignidash automatically reinvests dividends and interest, this investment income never
-        becomes available as cash to spend; instead, it immediately contributes to portfolio growth. You can see this growth reflected in
-        your account balances in the Portfolio tab and in the Returns tab.
+        Since Ignidash automatically reinvests dividends and interest, this investment income never becomes available as cash to spend;
+        instead, it immediately contributes to portfolio growth. You can see this growth reflected in your account balances in the Portfolio
+        tab and in the Returns tab.
         <br />
         <br />
         If you need to see investment income for tax purposes, check out the Taxes tab. And if you feel strongly about seeing investment
