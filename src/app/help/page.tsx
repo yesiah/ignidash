@@ -79,10 +79,9 @@ const faqs = [
     question: "Why don't retirement distributions, such as 401(k) withdrawals, show up in the Cash Flow tab?",
     answer: (
       <>
-        The Cash Flow tab focuses on money coming from external sources (like salary and business income) and going to expenses. Retirement
-        distributions are different—they&apos;re drawdowns from savings you&apos;ve already accumulated, not new money coming in from
-        outside. To keep Cash Flow focused on these external flows, retirement withdrawals have their own dedicated Withdrawals tab where
-        you can track them in detail.
+        The Cash Flow tab is designed to show external money flows like salary, business income, and expenses. Since retirement
+        distributions are withdrawals from your accumulated savings rather than new money earned, they&apos;re tracked separately in the
+        Withdrawals tab. This keeps Cash Flow focused on actual income and spending flows.
         <br />
         <br />
         For tax reporting purposes, you can see all income sources including retirement distributions in the Taxes tab. If you&apos;d prefer
