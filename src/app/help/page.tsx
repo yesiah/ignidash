@@ -3,18 +3,18 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
 
 import { Text, TextLink } from '@/components/catalyst/text';
+import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Divider } from '@/components/catalyst/divider';
 
 const faqs = [
   {
-    question: "What's the best thing about Switzerland?",
+    question: 'Can I model debts like a mortgage or student loans?',
     answer:
-      "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+      "Not yet, but I'm planning to add support for this in the next couple months. For now, enter your monthly debt payment as a regular expense.",
   },
   {
-    question: 'How do you make holy water?',
-    answer:
-      'You boil the hell out of it. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam aut tempora vitae odio inventore fuga aliquam nostrum quod porro. Delectus quia facere id sequi expedita natus.',
+    question: 'Can I model physical assets like a house or car?',
+    answer: 'Not yet, but this is on my roadmap and coming in the next couple months.',
   },
   {
     question: 'What do you call someone with no body and no nose?',
@@ -76,6 +76,35 @@ export default function HelpPage() {
             </Disclosure>
           ))}
         </dl>
+        <Divider soft />
+        <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">Known limitations</h2>
+        <Text>
+          Ignidash is in early beta and actively under development. While the core simulation engine is reliable, there are some features
+          and scenarios not yet supported. I&apos;m working to add these over the coming months. If something critical is missing for your
+          planning needs, please let me know!
+        </Text>
+        <DescriptionList>
+          <DescriptionTerm>Configurable drawdown order</DescriptionTerm>
+          <DescriptionDetails>Q1 2026</DescriptionDetails>
+
+          <DescriptionTerm>Configurable rebalancing rules</DescriptionTerm>
+          <DescriptionDetails>Q1 2026</DescriptionDetails>
+
+          <DescriptionTerm>Modeling debt in Simulator</DescriptionTerm>
+          <DescriptionDetails>Q1 2026</DescriptionDetails>
+
+          <DescriptionTerm>Modeling physical assets in Simulator</DescriptionTerm>
+          <DescriptionDetails>Q1 2026</DescriptionDetails>
+
+          <DescriptionTerm>State & local taxes</DescriptionTerm>
+          <DescriptionDetails>Q1 2026</DescriptionDetails>
+
+          <DescriptionTerm>Roth conversions & SEPP</DescriptionTerm>
+          <DescriptionDetails>Q2 2026</DescriptionDetails>
+
+          <DescriptionTerm>Custom financial goals & milestones</DescriptionTerm>
+          <DescriptionDetails>Q2 2026</DescriptionDetails>
+        </DescriptionList>
       </div>
     </main>
   );
