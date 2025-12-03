@@ -45,8 +45,8 @@ export const useNavigationItems = () => {
   return [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboardIcon, current: isCurrentPath(pathname, '/dashboard') },
     simulatorItem,
-    { name: 'Compare', href: '/dashboard/compare', icon: Layers2Icon, current: isCurrentPath(pathname, '/dashboard/compare') },
     { name: 'Insights', href: '/dashboard/insights', icon: ZapIcon, current: isCurrentPath(pathname, '/dashboard/insights') },
+    { name: 'Compare', href: '/dashboard/compare', icon: Layers2Icon, current: isCurrentPath(pathname, '/dashboard/compare') },
   ];
 };
 
