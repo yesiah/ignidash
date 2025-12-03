@@ -10,6 +10,7 @@ import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-
 import { Subheading } from '@/components/catalyst/heading';
 
 import SingleSimulationPortfolioAreaChart from '../../charts/single-simulation/single-simulation-portfolio-area-chart';
+import ChartTimeFrameDropdown from '../../chart-time-frame-dropdown';
 
 interface SingleSimulationPortfolioAreaChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
@@ -52,32 +53,35 @@ export default function SingleSimulationPortfolioAreaChartCard({
           <span className="mr-2">Portfolio</span>
           <span className="text-muted-foreground hidden sm:inline">Time Series</span>
         </Subheading>
-        <Select
-          className="max-w-48 sm:max-w-64"
-          id="portfolio-data-view"
-          name="portfolio-data-view"
-          value={dataView === 'custom' ? customDataID : dataView}
-          onChange={(e) => {
-            const isCustomSelection = e.target.value !== 'assetClass' && e.target.value !== 'taxCategory';
-            if (isCustomSelection) {
-              setDataView('custom');
-              setCustomDataID(e.target.value);
-            } else {
-              setDataView(e.target.value as 'assetClass' | 'taxCategory');
-              setCustomDataID('');
-            }
-          }}
-        >
-          <option value="assetClass">Asset Class</option>
-          <option value="taxCategory">Tax Category</option>
-          <optgroup label="By Account">
-            {uniqueAccounts.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.name}
-              </option>
-            ))}
-          </optgroup>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select
+            className="max-w-48 sm:max-w-64"
+            id="portfolio-data-view"
+            name="portfolio-data-view"
+            value={dataView === 'custom' ? customDataID : dataView}
+            onChange={(e) => {
+              const isCustomSelection = e.target.value !== 'assetClass' && e.target.value !== 'taxCategory';
+              if (isCustomSelection) {
+                setDataView('custom');
+                setCustomDataID(e.target.value);
+              } else {
+                setDataView(e.target.value as 'assetClass' | 'taxCategory');
+                setCustomDataID('');
+              }
+            }}
+          >
+            <option value="assetClass">Asset Class</option>
+            <option value="taxCategory">Tax Category</option>
+            <optgroup label="By Account">
+              {uniqueAccounts.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+              ))}
+            </optgroup>
+          </Select>
+          <ChartTimeFrameDropdown />
+        </div>
       </div>
       <SingleSimulationPortfolioAreaChart
         rawChartData={rawChartData}

@@ -63,6 +63,7 @@ export type MonteCarloSortMode =
 
 export type QuickSelectPercentile = 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null;
 export type SimulationStatus = 'none' | 'loading';
+export type ChartTimeFrame = 'tenYears' | 'twentyYears' | 'fullPlan';
 
 interface SimulatorState {
   results: {
@@ -72,6 +73,7 @@ interface SimulatorState {
     simulationStatus: SimulationStatus;
     category: SimulationCategory;
     monteCarloSortMode: MonteCarloSortMode;
+    chartTimeFrameToShow: ChartTimeFrame;
   };
 
   preferences: {
@@ -86,7 +88,8 @@ interface SimulatorState {
     updateSelectedSeedFromQuickPercentile: (seed: number | null) => void;
     updateSimulationStatus: (status: SimulationStatus) => void;
     updateCategory: (category: SimulationCategory) => void;
-    updateMonteCarloSortMode: (value: SimulatorState['results']['monteCarloSortMode']) => void;
+    updateMonteCarloSortMode: (value: MonteCarloSortMode) => void;
+    updateChartTimeFrameToShow: (value: ChartTimeFrame) => void;
 
     /* Preferences */
     updateShowReferenceLines: (value: boolean) => void;
@@ -102,6 +105,7 @@ export const defaultState: Omit<SimulatorState, 'actions'> = {
     simulationStatus: 'none',
     category: SimulationCategory.Portfolio,
     monteCarloSortMode: 'finalPortfolioValue',
+    chartTimeFrameToShow: 'twentyYears',
   },
   preferences: {
     showReferenceLines: true,
@@ -142,6 +146,10 @@ export const useSimulatorStore = create<SimulatorState>()(
           updateMonteCarloSortMode: (value) =>
             set((state) => {
               state.results.monteCarloSortMode = value;
+            }),
+          updateChartTimeFrameToShow: (value) =>
+            set((state) => {
+              state.results.chartTimeFrameToShow = value;
             }),
           updateShowReferenceLines: (value) =>
             set((state) => {
@@ -185,6 +193,7 @@ export const useSelectedSeedFromQuickPercentile = () => useSimulatorStore((state
 export const useSimulationStatus = () => useSimulatorStore((state) => state.results.simulationStatus);
 export const useResultsCategory = () => useSimulatorStore((state) => state.results.category);
 export const useMonteCarloSortMode = () => useSimulatorStore((state) => state.results.monteCarloSortMode);
+export const useChartTimeFrameToShow = () => useSimulatorStore((state) => state.results.chartTimeFrameToShow);
 
 /**
  * Action selectors
@@ -199,6 +208,7 @@ export const useUpdateResultsCategory = () => useSimulatorStore((state) => state
 export const useUpdateShowReferenceLines = () => useSimulatorStore((state) => state.actions.updateShowReferenceLines);
 export const useUpdateSidebarCollapsed = () => useSimulatorStore((state) => state.actions.updateSidebarCollapsed);
 export const useUpdateMonteCarloSortMode = () => useSimulatorStore((state) => state.actions.updateMonteCarloSortMode);
+export const useUpdateChartTimeFrameToShow = () => useSimulatorStore((state) => state.actions.updateChartTimeFrameToShow);
 
 /**
  * Preferences selectors
