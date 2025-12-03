@@ -1,13 +1,13 @@
 const faqs = [
   {
-    question: 'Can Ignidash give me advice about what to invest in?',
+    question: 'Can Ignidash give me advice about what stocks to invest in?',
     answer:
-      "No. Ignidash is a financial planning tool for modeling and simulating your financial future—we don't provide personalized investment advice. For that, consult with a licensed financial advisor.",
+      "No. Ignidash is a tool for simulating your financial future and planning your retirement—we don't provide any personalized investment advice. For that, please consult with a licensed financial advisor.",
   },
   {
-    question: 'Does Ignidash support multiple currencies?',
+    question: 'What countries and currencies does Ignidash support?',
     answer:
-      'Currently, Ignidash only supports USD ($) and is designed for US-based financial planning, including US tax rules and retirement accounts. International support is on our roadmap.',
+      'Right now, Ignidash only supports planning in USD ($), with US tax rules and retirement account types, and is made for US-based customers. International support is on our roadmap.',
   },
   {
     question: 'Is my financial data secure?',
