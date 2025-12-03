@@ -10,7 +10,7 @@ export default function ChartTimeFrameDropdown() {
   const chartTimeFrameToShow = useChartTimeFrameToShow();
   const updateChartTimeFrameToShow = useUpdateChartTimeFrameToShow();
 
-  const chartTimeFrameOptions = ['tenYears', 'twentyYears', 'fullPlan'] as const;
+  const chartTimeFrameOptions = ['tenYears', 'twentyYears', 'thirtyYears', 'fullPlan'] as const;
 
   return (
     <Dropdown>

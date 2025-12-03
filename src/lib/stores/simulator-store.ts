@@ -63,7 +63,7 @@ export type MonteCarloSortMode =
 
 export type QuickSelectPercentile = 'p10' | 'p25' | 'p50' | 'p75' | 'p90' | null;
 export type SimulationStatus = 'none' | 'loading';
-export type ChartTimeFrame = 'tenYears' | 'twentyYears' | 'fullPlan';
+export type ChartTimeFrame = 'tenYears' | 'twentyYears' | 'thirtyYears' | 'fullPlan';
 
 interface SimulatorState {
   results: {

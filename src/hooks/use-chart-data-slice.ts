@@ -10,6 +10,8 @@ export function useChartDataSlice<T>(data: T[]): T[] {
         return data.slice(0, 10);
       case 'twentyYears':
         return data.slice(0, 20);
+      case 'thirtyYears':
+        return data.slice(0, 30);
       case 'fullPlan':
         return data;
       default:
