@@ -10,6 +10,7 @@ import type { AccountDataWithTransactions } from '@/lib/calc/account';
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
+import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
@@ -105,7 +106,7 @@ export default function SingleSimulationPortfolioAreaChart({
   let chartData:
     | SingleSimulationPortfolioChartDataPoint[]
     | Array<{ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithTransactions> =
-    rawChartData;
+    useChartDataSlice(rawChartData);
 
   const dataKeys: (keyof SingleSimulationPortfolioChartDataPoint | keyof AccountDataWithTransactions)[] = [];
   const formatter = (value: number) => formatNumber(value, 1, '$');
