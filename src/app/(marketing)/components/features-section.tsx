@@ -19,13 +19,13 @@ const features = [
   {
     name: 'Automatic insights.',
     description:
-      'Generate an extensive AI assessment of your plan in important areas like tax efficiency, spending sustainability, and more.',
+      'Generate an extensive AI assessment of your plan in areas you care about: tax efficiency, spending sustainability, and more.',
     icon: LightBulbIcon,
     status: 'coming-soon',
   },
   {
     name: 'Test your resilience.',
-    description: 'Run Monte Carlo simulations and historical backtests to calculate your probability of success.',
+    description: 'Run Monte Carlo simulations and historical backtests to identify risks and calculate your probability of success.',
     icon: ArrowPathIcon,
     status: 'ready',
   },
@@ -37,7 +37,7 @@ const features = [
   },
   {
     name: 'Understand tax implications.',
-    description: 'Model how different investment strategies and income changes impact your estimated taxes.',
+    description: 'Model how withdrawals, investment strategies, and income changes impact your estimated tax liability.',
     icon: BanknotesIcon,
     status: 'ready',
   },
