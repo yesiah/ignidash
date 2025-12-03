@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils';
 
 const tiers = [
   {
-    name: 'Pro',
-    id: 'tier-pro',
-    href: '#',
-    priceMonthly: '$11',
-    description: 'Everything you need to plan your path to financial independence.',
+    name: 'Starter',
+    id: 'tier-starter',
+    href: '/signup',
+    priceMonthly: '$0',
+    description: 'All the basics to plan your path to financial independence.',
     features: [
       'Create and compare unlimited scenarios',
       'Estimate taxes and explore withdrawal strategies',
@@ -18,14 +18,14 @@ const tiers = [
     featured: false,
   },
   {
-    name: 'Pro + AI',
+    name: 'Pro',
     id: 'tier-pro-ai',
     href: '#',
-    priceMonthly: '$15',
+    priceMonthly: '$14',
     description: 'Use advanced AI-powered planning tools to refine and accelerate your plan.',
     features: [
       'Everything in Pro',
-      'Ask questions about your scenarios with AI chat',
+      'Ask questions about your plans with AI chat',
       'Get AI analysis of trade-offs and strategies',
       'Learn planning concepts and strategies with AI help',
       'Track progress with real-time investment data',
