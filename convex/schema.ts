@@ -34,4 +34,26 @@ export default defineSchema({
     assets: v.array(assetValidator),
     liabilities: v.array(liabilityValidator),
   }).index('by_userId', ['userId']),
+  conversations: defineTable({
+    userId: v.string(),
+    planId: v.id('plans'),
+    title: v.string(),
+    updatedAt: v.number(),
+    systemPrompt: v.optional(v.string()),
+  }).index('by_planId_updatedAt', ['planId', 'updatedAt']),
+  messages: defineTable({
+    userId: v.string(),
+    conversationId: v.id('conversations'),
+    author: v.union(v.literal('user'), v.literal('assistant'), v.literal('system')),
+    body: v.optional(v.string()),
+    usage: v.optional(
+      v.object({
+        inputTokens: v.number(),
+        outputTokens: v.number(),
+        totalTokens: v.number(),
+      })
+    ),
+    updatedAt: v.optional(v.number()),
+    ms: v.optional(v.number()),
+  }).index('by_conversationId_updatedAt', ['conversationId', 'updatedAt']),
 });
