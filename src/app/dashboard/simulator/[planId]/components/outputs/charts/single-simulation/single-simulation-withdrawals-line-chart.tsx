@@ -238,7 +238,7 @@ export default function SingleSimulationWithdrawalsLineChart({
   const interval = calculateInterval(chartData.length);
 
   const onClick = useCallback(
-    (data: { activeLabel: string | undefined }) => {
+    (data: { activeLabel: string | number | undefined }) => {
       if (data.activeLabel !== undefined && onAgeSelect) {
         onAgeSelect(Number(data.activeLabel));
       }

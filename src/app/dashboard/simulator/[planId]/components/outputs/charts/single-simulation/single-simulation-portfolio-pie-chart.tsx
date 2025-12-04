@@ -3,7 +3,6 @@
 import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'recharts';
 
 import { formatNumber, formatChartString } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 type Coordinate = {
   x: number;
@@ -33,60 +32,37 @@ type PieSectorDataItem = React.SVGProps<SVGPathElement> & Partial<SectorProps> &
 
 const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
-const createRenderActiveShape = (isSmallScreen: boolean) => {
-  const RenderActiveShape = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    payload,
-    percent,
-    value,
-  }: PieSectorDataItem) => {
-    return (
-      <g>
-        <text
-          x={cx}
-          y={cy}
-          dy={-20}
-          textAnchor="middle"
-          fill="currentColor"
-          fontSize="14"
-        >{`${value !== undefined ? formatNumber(value, 2, '$') : 'N/A'}`}</text>
-        <text x={cx} y={cy} dy={0} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="600">
-          {formatChartString(payload?.name ?? 'N/A')}
-        </text>
-        <text x={cx} y={cy} dy={20} textAnchor="middle" fill="var(--muted-foreground)" fontSize="14">
-          {`${((percent ?? 1) * 100).toFixed(1)}%`}
-        </text>
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-        <Sector
-          cx={cx}
-          cy={cy}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          innerRadius={(outerRadius ?? 0) + 6}
-          outerRadius={(outerRadius ?? 0) + 10}
-          fill={fill}
-        />
-      </g>
-    );
-  };
+const renderActiveShape = (props: unknown) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props as PieSectorDataItem;
 
-  RenderActiveShape.displayName = 'RenderActiveShape';
-  return RenderActiveShape;
+  return (
+    <g>
+      <text
+        x={cx}
+        y={cy}
+        dy={-20}
+        textAnchor="middle"
+        fill="currentColor"
+        fontSize="14"
+      >{`${value !== undefined ? formatNumber(value, 2, '$') : 'N/A'}`}</text>
+      <text x={cx} y={cy} dy={0} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="600">
+        {formatChartString(payload?.name ?? 'N/A')}
+      </text>
+      <text x={cx} y={cy} dy={20} textAnchor="middle" fill="var(--muted-foreground)" fontSize="14">
+        {`${((percent ?? 1) * 100).toFixed(1)}%`}
+      </text>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={(outerRadius ?? 0) + 6}
+        outerRadius={(outerRadius ?? 0) + 10}
+        fill={fill}
+      />
+    </g>
+  );
 };
 
 interface SingleSimulationPortfolioPieChartProps {
@@ -94,8 +70,6 @@ interface SingleSimulationPortfolioPieChartProps {
 }
 
 export default function SingleSimulationPortfolioPieChart({ chartData }: SingleSimulationPortfolioPieChartProps) {
-  const isSmallScreen = useIsMobile();
-
   if (chartData.reduce((sum, item) => sum + item.value, 0) === 0) {
     return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
   }
@@ -105,15 +79,7 @@ export default function SingleSimulationPortfolioPieChart({ chartData }: SingleS
       <div className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart className="text-xs">
-            <Pie
-              activeShape={createRenderActiveShape(isSmallScreen)}
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={80}
-              outerRadius={100}
-              dataKey="value"
-            >
+            <Pie activeShape={renderActiveShape} data={chartData} cx="50%" cy="50%" innerRadius={80} outerRadius={100} dataKey="value">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} stroke="currentColor" />
               ))}
