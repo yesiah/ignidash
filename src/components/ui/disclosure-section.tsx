@@ -47,7 +47,7 @@ function DisclosureSectionContent({
 
   return (
     <div className="contents">
-      <div className={cn('border-border/50 -mx-2 border-b sm:-mx-3 lg:-mx-4', { 'border-b-0': hideBottomBorders && !open })}>
+      <div className={cn('border-border/25 -mx-2 border-b sm:-mx-3 lg:-mx-4', { 'border-b-0': hideBottomBorders && !open })}>
         <DisclosureButton
           ref={disclosureButtonRef}
           onClick={() => {
@@ -75,7 +75,7 @@ function DisclosureSectionContent({
         </DisclosureButton>
       </div>
       <DisclosurePanel
-        className={cn('border-border/50 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4', {
+        className={cn('border-border/25 -mx-2 flex flex-1 flex-col justify-center border-b sm:-mx-3 lg:-mx-4', {
           'border-b-0': hideBottomBorders,
         })}
       >
