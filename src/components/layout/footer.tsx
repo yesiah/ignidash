@@ -67,6 +67,13 @@ export default function Footer() {
         <p className="mt-10 text-center text-sm/6 text-zinc-600 dark:text-zinc-400">
           &copy; 2025 Schelske Dev Co. LLC. All rights reserved.
         </p>
+        <p className="text-muted-foreground border-border/50 mx-auto mt-6 max-w-4xl rounded-md border p-2 text-xs/6">
+          <strong>Disclaimer:</strong> Ignidash is an educational financial planning tool and does not provide financial, investment, or tax
+          advice. All projections and calculations are hypothetical and should not be relied upon as predictions of actual performance. You
+          are solely responsible for your financial decisions and should consult with qualified financial, tax, and legal professionals
+          before making any investments. The accuracy of projections depends entirely on the information you provide. Market conditions, tax
+          laws, and personal circumstances can significantly impact actual outcomes.
+        </p>
       </div>
     </footer>
   );
