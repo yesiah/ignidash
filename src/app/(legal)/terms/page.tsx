@@ -30,8 +30,8 @@ export default function TermsPage() {
           </p>
           <p className="mb-4">
             The app is a financial planning tool designed to help users model and visualize their long-term financial future through
-            projections and scenario planning. This Service is provided for informational purposes only and does not constitute professional
-            financial advice.
+            projections and scenario planning. This Service is provided for informational and educational purposes only and does not
+            constitute professional financial advice.
           </p>
           <p className="mb-4">
             You can contact us by phone at 952-242-5109, email at{' '}
