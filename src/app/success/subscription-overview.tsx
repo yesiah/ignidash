@@ -59,7 +59,7 @@ export default function SubscriptionOverview({ customer, subscription }: Subscri
           </div>
           <Link
             href="/dashboard"
-            className="mt-4 block w-full rounded-md bg-rose-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 dark:bg-rose-500 dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
+            className="mx-auto mt-4 block w-9/10 rounded-md bg-rose-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 sm:w-full dark:bg-rose-500 dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
           >
             Go to dashboard <span aria-hidden="true">→</span>
           </Link>
