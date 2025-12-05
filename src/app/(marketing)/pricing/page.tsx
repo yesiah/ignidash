@@ -25,7 +25,7 @@ const tiers = [
     features: [
       'Everything in Starter',
       'Ask any question about your plan with AI chat',
-      "AI review of your plan's gaps and opportunities",
+      "AI educational overview of your plan's areas",
       'Understand key financial concepts and strategies',
     ],
     featured: true,

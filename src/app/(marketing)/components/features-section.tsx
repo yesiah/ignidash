@@ -18,8 +18,7 @@ const features = [
   },
   {
     name: 'Automatic insights.',
-    description:
-      'Generate an AI assessment to identify critical opportunities and vulnerabilities in your plan so nothing gets overlooked.',
+    description: 'Generate an AI educational overview of your plan to understand the financial topics that matter most to you.',
     icon: LightBulbIcon,
     status: 'coming-soon',
   },
