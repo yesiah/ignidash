@@ -3,6 +3,17 @@ import Link from 'next/link';
 import type { CustomerPortalCustomer } from '@polar-sh/sdk/models/components/customerportalcustomer.js';
 import type { CustomerSubscription } from '@polar-sh/sdk/models/components/customersubscription.js';
 
+import { Badge } from '@/components/catalyst/badge';
+import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
+import { Subheading } from '@/components/catalyst/heading';
+
+function formatCurrency(amount: number, currency: string, locale = 'en-US') {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
+}
+
 interface SubscriptionOverviewProps {
   customer: CustomerPortalCustomer;
   subscription: CustomerSubscription;
@@ -18,15 +29,47 @@ export default function SubscriptionOverview({ customer, subscription }: Subscri
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="border-border/25 from-emphasized-background to-background border-y bg-gradient-to-bl px-6 py-12 shadow-sm sm:rounded-lg sm:border sm:px-12 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10">
-            <div className="space-y-6">
-              <Link
-                href="/dashboard"
-                className="rounded-md bg-rose-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 dark:bg-rose-500 dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
-              >
-                Visit Dashboard
-              </Link>
-            </div>
+            <Subheading>Subscription Details</Subheading>
+            <DescriptionList>
+              <DescriptionTerm>Your Plan</DescriptionTerm>
+              <DescriptionDetails>
+                {subscription.product.name}
+                {subscription.status === 'active' && (
+                  <Badge color="green" className="ml-2">
+                    Active
+                  </Badge>
+                )}
+              </DescriptionDetails>
+
+              <DescriptionTerm>Amount</DescriptionTerm>
+              <DescriptionDetails>
+                {formatCurrency(subscription.amount, subscription.currency)} / {subscription.recurringInterval}
+              </DescriptionDetails>
+
+              <DescriptionTerm>Billing Start Date</DescriptionTerm>
+              <DescriptionDetails>{new Date(subscription.currentPeriodStart).toLocaleDateString()}</DescriptionDetails>
+
+              {subscription.currentPeriodEnd && (
+                <>
+                  <DescriptionTerm>Next Billing Date</DescriptionTerm>
+                  <DescriptionDetails>{new Date(subscription.currentPeriodEnd).toLocaleDateString()}</DescriptionDetails>
+                </>
+              )}
+            </DescriptionList>
+            <Link
+              href="/dashboard"
+              className="mt-4 block w-full rounded-md bg-rose-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 dark:bg-rose-500 dark:hover:bg-rose-400 dark:focus-visible:outline-rose-500"
+            >
+              Go to dashboard<span aria-hidden="true">→</span>
+            </Link>
           </div>
+          <p className="mt-10 text-center text-sm/6 text-zinc-500 dark:text-zinc-400">
+            Manage your subscription from{' '}
+            <Link href="/settings" className="font-semibold text-rose-600 hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300">
+              Settings
+            </Link>{' '}
+            at any time.
+          </p>
         </div>
       </div>
       <p className="pb-6 text-center text-xs/6 text-zinc-500 dark:text-zinc-400">
