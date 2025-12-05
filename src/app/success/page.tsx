@@ -10,13 +10,14 @@ const polar = new Polar({ accessToken: process.env.POLAR_ACCESS_TOKEN!, server: 
 export default async function SuccessPage({ searchParams }: { searchParams: { checkout_id?: string; customer_session_token?: string } }) {
   const { customer_session_token } = await searchParams;
 
-  const customer = await polar.customerPortal.customers.get({
-    customerSession: customer_session_token ?? '',
-  });
+  const customer = await polar.customerPortal.customers.get({ customerSession: customer_session_token ?? '' });
+
+  const subscriptions = await polar.customerPortal.subscriptions.list({ customerSession: customer_session_token ?? '' }, { limit: 1 });
+  const subscription = subscriptions.result.items[0];
 
   return (
     <Suspense fallback={<PageLoading ariaLabel="Loading subscription overview page" message="Loading" />}>
-      <SubscriptionOverview customer={customer} />
+      <SubscriptionOverview customer={customer} subscription={subscription} />
     </Suspense>
   );
 }
