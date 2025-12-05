@@ -25,7 +25,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
 
   const authData = usePreloadedQuery(preloadedUser);
   const { accounts: accountsData, isLoading: isAccountsDataLoading } = useAccountsList();
-  const { customerState: customerStateData, subscription: subscriptionData, isLoading: isCustomerDataLoading } = useCustomerState();
+  const { customerState: customerStateData, isLoading: isCustomerDataLoading } = useCustomerState();
 
   const settingsCapabilities = useMemo(() => {
     const isSignedInWithSocialProvider = accountsData?.some((account) => account.providerId !== 'credential') ?? false;
@@ -59,7 +59,7 @@ export default function SettingsForms({ preloadedUser }: SettingsFormsProps) {
             userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
             showSuccessNotification={showSuccessNotification}
           />
-          <BillingForm customerState={customerStateData} subscription={subscriptionData} />
+          {customerStateData && <BillingForm customerState={customerStateData} />}
           <DataSettingsForm showSuccessNotification={showSuccessNotification} />
         </Authenticated>
       </main>
