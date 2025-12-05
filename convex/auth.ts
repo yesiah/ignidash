@@ -14,7 +14,7 @@ import { components, api } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
 import { query } from './_generated/server';
 
-const siteUrl = process.env.SITE_URL!;
+const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
 export const resend = new Resend(components.resend, { testMode: false });
@@ -217,6 +217,8 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
     },
   });
 };
+
+export const auth = createAuth({} as GenericCtx<DataModel>, { optionsOnly: true });
 
 export const getCurrentUserSafe = query({
   args: {},
