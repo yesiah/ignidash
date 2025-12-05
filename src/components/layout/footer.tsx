@@ -67,7 +67,7 @@ export default function Footer() {
         <p className="mt-10 text-center text-sm/6 text-zinc-600 dark:text-zinc-400">
           &copy; 2025 Schelske Dev Co. LLC. All rights reserved.
         </p>
-        <p className="text-muted-foreground border-border/50 mx-auto mt-6 max-w-4xl rounded-md border p-2 text-xs/6">
+        <p className="text-muted-foreground border-border/50 mx-auto mt-10 max-w-4xl rounded-md border p-2 text-xs/6">
           <strong>Disclaimer:</strong> Ignidash is an educational financial planning tool with AI-powered features and does not provide
           financial, investment, tax, or legal advice. All projections, calculations, and AI-generated content are for informational
           purposes only and should not be relied upon as predictions of actual performance. You are solely responsible for your financial
