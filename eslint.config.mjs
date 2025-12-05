@@ -10,7 +10,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  { ignores: ['convex/_generated/**'] },
+  { ignores: ['convex/_generated/**', 'convex/betterAuth/_generated/**'] },
   ...compat.extends('next/core-web-vitals', 'next/typescript', 'prettier'),
   {
     rules: {
