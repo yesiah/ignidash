@@ -64,7 +64,7 @@ export default function SignUpForm() {
               <EmailInput errorMessage={null} />
               <div>
                 <label htmlFor="full-name" className="block text-sm/6 font-medium text-zinc-900 dark:text-white">
-                  Full name
+                  Name
                 </label>
                 <div className="mt-2">
                   <input

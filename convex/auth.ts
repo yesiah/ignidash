@@ -7,7 +7,7 @@ import { betterAuth } from 'better-auth';
 import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { getJwtToken } from 'better-auth/plugins';
 import { fetchMutation } from 'convex/nextjs';
-import { polar, checkout, portal, usage, webhooks } from '@polar-sh/better-auth';
+import { polar, checkout, portal, usage } from '@polar-sh/better-auth';
 import { Polar } from '@polar-sh/sdk';
 
 import { components, api } from './_generated/api';
@@ -171,12 +171,6 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
             returnUrl: `${siteUrl}/settings`,
           }),
           usage(),
-          webhooks({
-            secret: process.env.POLAR_WEBHOOK_SECRET!,
-            onCustomerStateChanged: async (payload) => {},
-            onOrderPaid: async (payload) => {},
-            onPayload: async (payload) => {},
-          }),
         ],
       }),
     ],
