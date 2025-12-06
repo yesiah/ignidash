@@ -1,8 +1,8 @@
 const faqs = [
   {
-    question: 'Can Ignidash give me advice about what stocks to invest in?',
+    question: 'Can Ignidash give me advice about what to invest in?',
     answer:
-      "No. Ignidash is a tool for simulating your financial future and planning your retirement—we don't provide any personalized investment advice. For that, please consult with a licensed financial advisor.",
+      "No. Ignidash is a tool for simulating your financial future and planning your retirement—we don't provide personalized financial, investment, tax, or legal advice. For that, consult with a licensed financial advisor.",
   },
   {
     question: 'Can I use Ignidash outside the US?',
