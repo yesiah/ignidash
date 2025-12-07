@@ -5,8 +5,8 @@ const faqs = [
       "No. Ignidash is a tool for simulating your financial future and planning your retirement—we don't provide personalized financial, investment, tax, or legal advice. For that, consult with a qualified financial professional.",
   },
   {
-    question: 'Can I use Ignidash outside the US?',
-    answer: 'Not yet. Right now, Ignidash only supports planning in USD ($) using US tax laws and retirement accounts.',
+    question: 'Is Ignidash available outside the United States?',
+    answer: 'Not yet. Right now, Ignidash only supports planning in USD with US tax laws and retirement accounts.',
   },
   {
     question: 'Is Ignidash free to use?',
