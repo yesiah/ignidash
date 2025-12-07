@@ -6,7 +6,7 @@ const faqs = [
   },
   {
     question: 'Is Ignidash available outside the United States?',
-    answer: 'Not yet. Right now, Ignidash only supports planning in USD with US tax laws and retirement accounts.',
+    answer: 'Not yet. Right now, Ignidash only supports planning in US dollars (USD) with US tax laws and retirement accounts.',
   },
   {
     question: 'Is Ignidash free to use?',
