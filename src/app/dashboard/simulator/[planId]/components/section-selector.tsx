@@ -9,19 +9,20 @@ import {
   HourglassIcon,
   WandSparklesIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 
 import { cn } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
+import PageLoading from '@/components/ui/page-loading';
 import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData, useSimulationSettingsData } from '@/hooks/use-convex-data';
 
-import ExpectedReturnsDrawer from './inputs/drawers/expected-returns-drawer';
-import TaxSettingsDrawer from './inputs/drawers/tax-settings-drawer';
-import TimelineDrawer from './inputs/drawers/timeline-drawer';
-import SimulationSettingsDrawer from './outputs/drawers/simulation-settings-drawer';
-import AIChatDrawer from './outputs/drawers/ai-chat-drawer';
+const ExpectedReturnsDrawer = lazy(() => import('./inputs/drawers/expected-returns-drawer'));
+const TaxSettingsDrawer = lazy(() => import('./inputs/drawers/tax-settings-drawer'));
+const TimelineDrawer = lazy(() => import('./inputs/drawers/timeline-drawer'));
+const SimulationSettingsDrawer = lazy(() => import('./outputs/drawers/simulation-settings-drawer'));
+const AIChatDrawer = lazy(() => import('./outputs/drawers/ai-chat-drawer'));
 
 type ActiveSection = 'results' | 'your-numbers';
 
@@ -145,19 +146,29 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
       </div>
 
       <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
-        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
+        <Suspense fallback={<PageLoading message="Loading Expected Returns..." />}>
+          <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
+        </Suspense>
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
+        <Suspense fallback={<PageLoading message="Loading Tax Settings..." />}>
+          <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
+        </Suspense>
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-        <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+        <Suspense fallback={<PageLoading message="Loading Timeline..." />}>
+          <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+        </Suspense>
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
+        <Suspense fallback={<PageLoading message="Loading Simulation Settings..." />}>
+          <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
+        </Suspense>
       </Drawer>
       <Drawer open={aiChatOpen} setOpen={setAiChatOpen} title={aiChatTitleComponent} size="large">
-        <AIChatDrawer setOpen={setAiChatOpen} />
+        <Suspense fallback={<PageLoading message="Loading AI Chat..." />}>
+          <AIChatDrawer setOpen={setAiChatOpen} />
+        </Suspense>
       </Drawer>
     </>
   );
