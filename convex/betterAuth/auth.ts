@@ -2,10 +2,10 @@ import { getStaticAuth } from '@convex-dev/better-auth';
 import { doc } from 'convex-helpers/validators';
 import { v } from 'convex/values';
 
-import { createAuth } from '../auth';
 import schema from './schema';
 import { query } from './_generated/server';
 import type { Id } from './_generated/dataModel';
+import { createAuth } from '../auth';
 
 export const auth = getStaticAuth(createAuth);
 
