@@ -146,27 +146,27 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
       </div>
 
       <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading Expected Returns..." />}>
+        <Suspense fallback={<PageLoading message="Loading Expected Returns" />}>
           <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
         </Suspense>
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading Tax Settings..." />}>
+        <Suspense fallback={<PageLoading message="Loading Tax Settings" />}>
           <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
         </Suspense>
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading Timeline..." />}>
+        <Suspense fallback={<PageLoading message="Loading Timeline" />}>
           <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
         </Suspense>
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading Simulation Settings..." />}>
+        <Suspense fallback={<PageLoading message="Loading Simulation Settings" />}>
           <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
         </Suspense>
       </Drawer>
       <Drawer open={aiChatOpen} setOpen={setAiChatOpen} title={aiChatTitleComponent} size="large">
-        <Suspense fallback={<PageLoading message="Loading AI Chat..." />}>
+        <Suspense fallback={<PageLoading message="Loading AI Chat" />}>
           <AIChatDrawer setOpen={setAiChatOpen} />
         </Suspense>
       </Drawer>

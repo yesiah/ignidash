@@ -83,12 +83,12 @@ export default function ResultsColumnHeader() {
       />
 
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading Simulation Settings..." />}>
+        <Suspense fallback={<PageLoading message="Loading Simulation Settings" />}>
           <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
         </Suspense>
       </Drawer>
       <Drawer open={aiChatOpen} setOpen={setAiChatOpen} title={aiChatTitleComponent} size="large">
-        <Suspense fallback={<PageLoading message="Loading AI Chat..." />}>
+        <Suspense fallback={<PageLoading message="Loading AI Chat" />}>
           <AIChatDrawer setOpen={setAiChatOpen} />
         </Suspense>
       </Drawer>
