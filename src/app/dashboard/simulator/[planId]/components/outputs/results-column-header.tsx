@@ -1,17 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { PresentationIcon, SlidersHorizontalIcon, WandSparklesIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
+import PageLoading from '@/components/ui/page-loading';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 import { useSimulationSettingsData } from '@/hooks/use-convex-data';
 
-import SimulationSettingsDrawer from './drawers/simulation-settings-drawer';
-import AIChatDrawer from './drawers/ai-chat-drawer';
 import DrillDownBreadcrumb from './drill-down-breadcrumb';
+
+const SimulationSettingsDrawer = lazy(() => import('./drawers/simulation-settings-drawer'));
+const AIChatDrawer = lazy(() => import('./drawers/ai-chat-drawer'));
 
 export default function ResultsColumnHeader() {
   const { icon, label, handleClick, isDisabled } = useRegenSimulation();
@@ -81,10 +83,14 @@ export default function ResultsColumnHeader() {
       />
 
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
-        <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
+        <Suspense fallback={<PageLoading message="Loading Simulation Settings..." />}>
+          <SimulationSettingsDrawer setOpen={setSimulationSettingsOpen} simulationSettings={simulationSettings} />
+        </Suspense>
       </Drawer>
       <Drawer open={aiChatOpen} setOpen={setAiChatOpen} title={aiChatTitleComponent} size="large">
-        <AIChatDrawer setOpen={setAiChatOpen} />
+        <Suspense fallback={<PageLoading message="Loading AI Chat..." />}>
+          <AIChatDrawer setOpen={setAiChatOpen} />
+        </Suspense>
       </Drawer>
     </>
   );

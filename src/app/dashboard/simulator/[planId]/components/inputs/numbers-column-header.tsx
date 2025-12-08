@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { CalculatorIcon, TrendingUpIcon, BanknoteXIcon, HourglassIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
+import PageLoading from '@/components/ui/page-loading';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData } from '@/hooks/use-convex-data';
 
-import ExpectedReturnsDrawer from './drawers/expected-returns-drawer';
-import TaxSettingsDrawer from './drawers/tax-settings-drawer';
-import TimelineDrawer from './drawers/timeline-drawer';
+const ExpectedReturnsDrawer = lazy(() => import('./drawers/expected-returns-drawer'));
+const TaxSettingsDrawer = lazy(() => import('./drawers/tax-settings-drawer'));
+const TimelineDrawer = lazy(() => import('./drawers/timeline-drawer'));
 
 export default function NumbersColumnHeader() {
   const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
@@ -61,13 +62,19 @@ export default function NumbersColumnHeader() {
       />
 
       <Drawer open={expectedReturnsOpen} setOpen={setExpectedReturnsOpen} title={expectedReturnsTitleComponent}>
-        <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
+        <Suspense fallback={<PageLoading message="Loading Expected Returns..." />}>
+          <ExpectedReturnsDrawer setOpen={setExpectedReturnsOpen} marketAssumptions={marketAssumptions} />
+        </Suspense>
       </Drawer>
       <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
-        <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
+        <Suspense fallback={<PageLoading message="Loading Tax Settings..." />}>
+          <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
+        </Suspense>
       </Drawer>
       <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-        <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+        <Suspense fallback={<PageLoading message="Loading Timeline..." />}>
+          <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+        </Suspense>
       </Drawer>
     </>
   );
