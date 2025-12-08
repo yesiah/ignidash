@@ -1182,6 +1182,24 @@ export declare const components: {
         any
       >;
     };
+    auth: {
+      getCurrentUserSafe: FunctionReference<
+        "query",
+        "internal",
+        {},
+        null | {
+          _creationTime: number;
+          _id: string;
+          createdAt: number;
+          email: string;
+          emailVerified: boolean;
+          image?: null | string;
+          name: string;
+          updatedAt: number;
+          userId?: null | string;
+        }
+      >;
+    };
   };
   rateLimiter: {
     lib: {

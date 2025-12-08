@@ -13,9 +13,9 @@ import AccountDropdownMenu from './account-dropdown-menu';
 export default function SidebarAuth() {
   const user = useQuery(api.auth.getCurrentUserSafe);
 
-  const image = user?.image;
   const name = user?.name ?? 'Anonymous';
   const email = user?.email;
+  const image = user?.image;
 
   return (
     <Dropdown>

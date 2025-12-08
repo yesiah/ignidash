@@ -975,4 +975,23 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         Name
       >;
     };
+    auth: {
+      getCurrentUserSafe: FunctionReference<
+        "query",
+        "internal",
+        {},
+        null | {
+          _creationTime: number;
+          _id: string;
+          createdAt: number;
+          email: string;
+          emailVerified: boolean;
+          image?: null | string;
+          name: string;
+          updatedAt: number;
+          userId?: null | string;
+        },
+        Name
+      >;
+    };
   };

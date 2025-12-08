@@ -42,9 +42,9 @@ export default function Navbar() {
 
   const signInUrlWithRedirect = `/signin?redirect=${encodeURIComponent(pathname)}`;
 
-  const image = user?.image;
   const name = user?.name ?? 'Anonymous';
   const email = user?.email;
+  const image = user?.image;
 
   const signOut = async () => {
     await authClient.signOut({

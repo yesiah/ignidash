@@ -228,7 +228,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
 export const getCurrentUserSafe = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.safeGetAuthUser(ctx);
+    return await ctx.runQuery(components.betterAuth.auth.getCurrentUserSafe, {});
   },
 });
 
