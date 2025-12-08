@@ -30,7 +30,7 @@ const tiers = [
       'Everything in Starter',
       'Ask any question about your plan with AI chat',
       "AI educational overview of your plan's areas",
-      'Learn key financial concepts and strategies',
+      'Learn key financial concepts and principles',
     ],
     featured: true,
   },
