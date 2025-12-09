@@ -25,16 +25,18 @@ export const send = mutation({
     planId: v.id('plans'),
     content: v.string(),
   },
-  handler: async (ctx, { conversationId: convId, planId, content }) => {
-    const [{ userId }] = await Promise.all([getUserIdOrThrow(ctx), getPlanForCurrentUserOrThrow(ctx, planId)]);
+  handler: async (ctx, { conversationId: currConvId, planId, content }) => {
+    const { userId } = await getUserIdOrThrow(ctx);
 
-    let newConversationId: Id<'conversations'> | null = null;
-    if (!convId) {
+    let newConvId: Id<'conversations'> | null = null;
+    if (!currConvId) {
+      await getPlanForCurrentUserOrThrow(ctx, planId);
+
       const title = content.length > 25 ? content.slice(0, 25) + '...' : content;
-      newConversationId = await ctx.db.insert('conversations', { userId, planId, title, updatedAt: Date.now(), systemPrompt: undefined });
+      newConvId = await ctx.db.insert('conversations', { userId, planId, title, updatedAt: Date.now(), systemPrompt: undefined });
     }
 
-    const conversationId = (convId ?? newConversationId)!;
+    const conversationId = (currConvId ?? newConvId)!;
     const [userMessageId, assistantMessageId] = await Promise.all([
       ctx.db.insert('messages', { userId, conversationId, author: 'user', body: content, updatedAt: Date.now() }),
       ctx.db.insert('messages', { userId, conversationId, author: 'assistant', updatedAt: Date.now() }),
