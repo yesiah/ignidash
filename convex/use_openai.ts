@@ -3,6 +3,7 @@
 import { AzureOpenAI } from 'openai';
 import { action } from './_generated/server';
 import type { Id, Doc } from './_generated/dataModel';
+import { internal } from './_generated/api';
 
 const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) throw new Error('OPENAI_API_KEY environment variable is not set.');
@@ -27,7 +28,7 @@ export const streamChat = action({
     const hasBody = (msg: Doc<'messages'>): msg is Doc<'messages'> & { body: string } => msg.body !== undefined;
 
     try {
-      const completion = await openai.chat.completions.create({
+      const stream = await openai.chat.completions.create({
         model: 'gpt-5-mini',
         messages: [
           { role: 'system', content: "You are a terse bot in a group chat responding to q's." },
@@ -36,10 +37,24 @@ export const streamChat = action({
         stream: true,
       });
 
-      return completion;
+      let body = '';
+      for await (const part of stream) {
+        if (part.choices[0].delta?.content) {
+          body += part.choices[0].delta.content;
+          await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body });
+        }
+      }
     } catch (error) {
-      console.error('OpenAI API error:', error);
-      throw new Error(`Failed to get a streaming response from OpenAI: ${error}`);
+      if (error instanceof AzureOpenAI.APIError) {
+        console.error(error.status);
+        console.error(error.message);
+
+        await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body: 'OpenAI call failed: ' + error.message });
+
+        console.error(error);
+      } else {
+        throw error;
+      }
     }
   },
 });
