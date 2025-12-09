@@ -39,8 +39,9 @@ export const send = mutation({
     }
 
     const conversationId = (currConvId ?? newConvId)!;
-    const [userMessageId, assistantMessageId] = await Promise.all([
-      ctx.db.insert('messages', { userId, conversationId, author: 'user', body: content, updatedAt: Date.now() }),
+
+    const userMessageId = await ctx.db.insert('messages', { userId, conversationId, author: 'user', body: content, updatedAt: Date.now() });
+    const [assistantMessageId] = await Promise.all([
       ctx.db.insert('messages', { userId, conversationId, author: 'assistant', updatedAt: Date.now() }),
       ctx.db.patch(conversationId, { updatedAt: Date.now() }),
     ]);
