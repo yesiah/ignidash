@@ -4,6 +4,7 @@ import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 
 import { Button } from '@/components/catalyst/button';
+import { Textarea } from '@/components/catalyst/textarea';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 interface AIChatDrawerProps {
@@ -24,6 +25,12 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
           </Button>
         </div>
       </aside>
+      <main tabIndex={-1} className="flex h-full min-w-80 flex-col focus:outline-none md:pl-64">
+        <div className="flex-1 overflow-y-auto"></div>
+        <div className="border-border/25 flex-shrink-0 border-t p-4">
+          <Textarea resizable={false} rows={3}></Textarea>
+        </div>
+      </main>
     </>
   );
 }
