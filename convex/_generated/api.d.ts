@@ -28,6 +28,7 @@ import type * as templates_early_retirement from "../templates/early_retirement.
 import type * as timeline from "../timeline.js";
 import type * as use_openai from "../use_openai.js";
 import type * as utils_auth_utils from "../utils/auth_utils.js";
+import type * as utils_conversation_utils from "../utils/conversation_utils.js";
 import type * as utils_finances_utils from "../utils/finances_utils.js";
 import type * as utils_plan_utils from "../utils/plan_utils.js";
 import type * as validators_accounts_validator from "../validators/accounts_validator.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   timeline: typeof timeline;
   use_openai: typeof use_openai;
   "utils/auth_utils": typeof utils_auth_utils;
+  "utils/conversation_utils": typeof utils_conversation_utils;
   "utils/finances_utils": typeof utils_finances_utils;
   "utils/plan_utils": typeof utils_plan_utils;
   "validators/accounts_validator": typeof validators_accounts_validator;
