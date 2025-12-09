@@ -1,8 +1,8 @@
 'use node';
 
 import { AzureOpenAI } from 'openai';
-import { v } from 'convex/values';
 import { action } from './_generated/server';
+import type { Id, Doc } from './_generated/dataModel';
 
 const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) throw new Error('OPENAI_API_KEY environment variable is not set.');
@@ -17,20 +17,22 @@ const openai = new AzureOpenAI({
   apiVersion: '2024-04-01-preview',
 });
 
+type StreamChatParams = {
+  messages: Doc<'messages'>[];
+  assistantMessageId: Id<'messages'>;
+};
+
 export const streamChat = action({
-  args: {
-    messages: v.array(
-      v.object({
-        content: v.string(),
-        role: v.union(v.literal('system'), v.literal('user'), v.literal('assistant')),
-      })
-    ),
-  },
-  handler: async (ctx, { messages }) => {
+  handler: async (ctx, { messages, assistantMessageId }: StreamChatParams) => {
+    const hasBody = (msg: Doc<'messages'>): msg is Doc<'messages'> & { body: string } => msg.body !== undefined;
+
     try {
       const completion = await openai.chat.completions.create({
         model: 'gpt-5-mini',
-        messages: messages.map((msg) => ({ role: msg.role, content: msg.content })),
+        messages: [
+          { role: 'system', content: "You are a terse bot in a group chat responding to q's." },
+          ...messages.filter(hasBody).map((msg) => ({ role: msg.author, content: msg.body })),
+        ],
         stream: true,
       });
 
