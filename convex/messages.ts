@@ -34,6 +34,8 @@ export const send = mutation({
 
       const title = content.length > 25 ? content.slice(0, 25) + '...' : content;
       newConvId = await ctx.db.insert('conversations', { userId, planId, title, updatedAt: Date.now(), systemPrompt: undefined });
+    } else {
+      await getConversationForCurrentUserOrThrow(ctx, currConvId);
     }
 
     const conversationId = (currConvId ?? newConvId)!;
