@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
@@ -16,6 +18,9 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
   const m = useMutation(api.messages.send);
 
+  const [chatMessage, setChatMessage] = useState<string>('');
+  const disabled = chatMessage.trim().length === 0;
+
   return (
     <>
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
@@ -27,8 +32,22 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
       </aside>
       <main tabIndex={-1} className="flex h-full min-w-80 flex-col focus:outline-none md:pl-64">
         <div className="flex-1 overflow-y-auto"></div>
-        <div className="border-border/25 flex-shrink-0 border-t p-4">
-          <Textarea resizable={false} rows={3}></Textarea>
+        <div className="border-border/25 flex-shrink-0 border-t py-4">
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (disabled) return;
+
+              await m({ conversationId: undefined, planId, content: chatMessage });
+              setChatMessage('');
+            }}
+            className="relative"
+          >
+            <Textarea resizable={false} rows={4} name="ai-chat" value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} />
+            <Button disabled={disabled} type="submit" className="absolute right-2 bottom-2 disabled:cursor-not-allowed" color="rose">
+              <PaperAirplaneIcon className="h-5 w-5 -rotate-90" />
+            </Button>
+          </form>
         </div>
       </main>
     </>
