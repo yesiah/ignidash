@@ -34,6 +34,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         <div className="flex-1 overflow-y-auto"></div>
         <div className="border-border/25 flex-shrink-0 border-t py-4">
           <form
+            className="relative"
             onSubmit={async (e) => {
               e.preventDefault();
               if (disabled) return;
@@ -41,7 +42,6 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               await m({ conversationId: undefined, planId, content: chatMessage });
               setChatMessage('');
             }}
-            className="relative"
           >
             <Textarea
               resizable={false}
