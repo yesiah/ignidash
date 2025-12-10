@@ -36,6 +36,7 @@ export const streamChat = internalAction({
           ...messages.filter(hasBody).map((msg) => ({ role: msg.author, content: msg.body })),
         ],
         stream: true,
+        stream_options: { include_usage: true },
       });
 
       let body = '';
@@ -43,6 +44,16 @@ export const streamChat = internalAction({
         if (part.choices.length > 0 && part.choices[0].delta?.content) {
           body += part.choices[0].delta.content;
           await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body });
+        }
+
+        if (part.usage) {
+          console.log('Usage so far:', part.usage);
+          await ctx.runMutation(internal.messages.setUsage, {
+            messageId: assistantMessageId,
+            inputTokens: part.usage.prompt_tokens,
+            outputTokens: part.usage.completion_tokens,
+            totalTokens: part.usage.total_tokens,
+          });
         }
       }
     } catch (error) {

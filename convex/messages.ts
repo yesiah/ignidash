@@ -72,3 +72,19 @@ export const update = internalMutation({
     await ctx.db.patch(messageId, { body, updatedAt: Date.now() });
   },
 });
+
+export const setUsage = internalMutation({
+  args: {
+    messageId: v.id('messages'),
+    inputTokens: v.number(),
+    outputTokens: v.number(),
+    totalTokens: v.number(),
+  },
+  handler: async (ctx, { messageId, inputTokens, outputTokens, totalTokens }) => {
+    if (inputTokens + outputTokens !== totalTokens) {
+      console.warn(`Token mismatch for message ${messageId}: ${inputTokens} + ${outputTokens} !== ${totalTokens}`);
+    }
+
+    await ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens } });
+  },
+});
