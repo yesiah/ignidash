@@ -54,8 +54,10 @@ export const send = mutation({
     const messages = await ctx.db
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
-      .order('asc')
+      .order('desc')
+      .filter((q) => q.neq(q.field('body'), undefined))
       .take(21);
+    messages.reverse();
 
     await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, { messages, assistantMessageId, systemPrompt: SYSTEM_PROMPT });
 
