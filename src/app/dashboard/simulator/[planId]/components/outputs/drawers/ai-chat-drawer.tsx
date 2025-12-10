@@ -104,6 +104,7 @@ interface AIChatDrawerProps {
 
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevIsLoadingRef = useRef<boolean>(false);
 
@@ -190,7 +191,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             </div>
           </ScrollArea>
         </div>
-        <div className="flex-shrink-0 py-4">
+        <div className="flex-shrink-0 pb-4">
           <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               resizable={false}
