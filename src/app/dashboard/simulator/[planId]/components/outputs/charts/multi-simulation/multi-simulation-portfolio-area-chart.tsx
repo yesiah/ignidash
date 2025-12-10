@@ -111,7 +111,7 @@ export default function MultiSimulationPortfolioAreaChart({
 
   return (
     <div>
-      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_svg:focus]:outline-none">
+      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
