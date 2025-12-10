@@ -105,6 +105,7 @@ interface AIChatDrawerProps {
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const prevIsLoadingRef = useRef<boolean>(false);
 
   const [chatMessage, setChatMessage] = useState<string>('');
   const [selectedConversationId, setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
@@ -122,6 +123,14 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const showMessageLoadingDots =
     isLoading && messages[messages.length - 1].author === 'assistant' && messages[messages.length - 1].body === undefined;
   const disabled = chatMessage.trim().length === 0 || isLoading;
+
+  useEffect(() => {
+    if (prevIsLoadingRef.current && scrollRef.current && !isLoading) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    prevIsLoadingRef.current = isLoading;
+  }, [isLoading]);
 
   const m = useMutation(api.messages.send);
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
