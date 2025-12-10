@@ -37,12 +37,15 @@ function ChatMessage({ message }: ChatMessageProps) {
 
 interface ConversationListItemProps {
   conversation: Doc<'conversations'>;
+  setSelectedConversationId: (id: Id<'conversations'>) => void;
 }
 
-function ConversationListItem({ conversation }: ConversationListItemProps) {
+function ConversationListItem({ conversation, setSelectedConversationId }: ConversationListItemProps) {
+  const deleteConversation = useMutation(api.conversations.deleteConversation);
+
   return (
-    <li key={conversation._id} className="relative flex items-center space-x-4 px-2 py-4 hover:bg-zinc-50 dark:hover:dark:bg-black/10">
-      <div className="min-w-0 flex-auto">
+    <li key={conversation._id} className="hover:bg-emphasized-background relative flex items-center space-x-4 px-2 py-4">
+      <button className="focus-outline min-w-0 flex-auto" onClick={() => setSelectedConversationId(conversation._id)}>
         <div className="flex items-center gap-x-3">
           <p className="truncate text-sm font-semibold text-zinc-900 dark:text-white">{conversation.title}</p>
         </div>
@@ -54,7 +57,7 @@ function ConversationListItem({ conversation }: ConversationListItemProps) {
             </time>
           </p>
         </div>
-      </div>
+      </button>
       <div className="flex flex-none items-center gap-x-4">
         <div className="relative flex-none">
           <Dropdown>
@@ -62,7 +65,7 @@ function ConversationListItem({ conversation }: ConversationListItemProps) {
               <EllipsisVerticalIcon />
             </DropdownButton>
             <DropdownMenu portal={false}>
-              <DropdownItem disabled={false} onClick={() => {}}>
+              <DropdownItem disabled={false} onClick={async () => await deleteConversation({ conversationId: conversation._id })}>
                 Delete
               </DropdownItem>
             </DropdownMenu>
@@ -96,7 +99,11 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10">
           <ul className="divide-border/25 flex-1 divide-y overflow-y-auto">
             {conversations.map((conversation) => (
-              <ConversationListItem key={conversation._id} conversation={conversation} />
+              <ConversationListItem
+                key={conversation._id}
+                conversation={conversation}
+                setSelectedConversationId={setSelectedConversationId}
+              />
             ))}
           </ul>
           <div className="border-border/50 border-t p-4">
@@ -142,6 +149,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             />
             <Button disabled={disabled} type="submit" className="absolute right-2 bottom-2 disabled:cursor-not-allowed" color="rose">
               <PaperAirplaneIcon className="h-5 w-5 -rotate-90" />
+              Send
             </Button>
           </form>
         </div>

@@ -40,7 +40,7 @@ export const streamChat = internalAction({
 
       let body = '';
       for await (const part of stream) {
-        if (part.choices[0].delta?.content) {
+        if (part.choices.length > 0 && part.choices[0].delta?.content) {
           body += part.choices[0].delta.content;
           await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body });
         }

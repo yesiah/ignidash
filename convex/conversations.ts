@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { query } from './_generated/server';
+import { mutation, query } from './_generated/server';
 
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getConversationForCurrentUserOrThrow } from './utils/conversation_utils';
@@ -21,5 +21,23 @@ export const get = query({
   args: { conversationId: v.id('conversations') },
   handler: async (ctx, { conversationId }) => {
     return getConversationForCurrentUserOrThrow(ctx, conversationId);
+  },
+});
+
+export const deleteConversation = mutation({
+  args: { conversationId: v.id('conversations') },
+  handler: async (ctx, { conversationId }) => {
+    await getConversationForCurrentUserOrThrow(ctx, conversationId);
+
+    await ctx.db.delete(conversationId);
+
+    const messagesToDelete = await ctx.db
+      .query('messages')
+      .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
+      .collect();
+
+    for (const message of messagesToDelete) {
+      await ctx.db.delete(message._id);
+    }
   },
 });
