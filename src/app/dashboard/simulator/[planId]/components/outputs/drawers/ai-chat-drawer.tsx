@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { api } from '@/convex/_generated/api';
-import { useMutation } from 'convex/react';
+import { useQuery, useMutation } from 'convex/react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '@/components/catalyst/button';
@@ -16,6 +16,7 @@ interface AIChatDrawerProps {
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
 
+  const _conversations = useQuery(api.conversations.list, { planId });
   const m = useMutation(api.messages.send);
 
   const [chatMessage, setChatMessage] = useState<string>('');
@@ -26,8 +27,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
         <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10">
           <div className="flex-1 overflow-y-auto"></div>
-
-          <div className="border-border/25 border-t p-4">
+          <div className="border-border/50 border-t p-4">
             <Button className="w-full">New chat</Button>
           </div>
         </div>
