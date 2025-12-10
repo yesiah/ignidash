@@ -11,6 +11,25 @@ import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { cn } from '@/lib/utils';
+
+interface ChatMessageProps {
+  message: Doc<'messages'>;
+}
+
+function ChatMessage({ message }: ChatMessageProps) {
+  if (message.author === 'system') return null;
+
+  const isUser = message.author === 'user';
+
+  return (
+    <div className={cn('flex px-4 py-2', { 'justify-end': isUser })}>
+      <div className={cn('max-w-4/5 rounded-lg px-4 py-2', { 'bg-emphasized-background': isUser })}>
+        <p className="text-sm whitespace-pre-wrap">{message.body}</p>
+      </div>
+    </div>
+  );
+}
 
 interface ConversationListItemProps {
   conversation: Doc<'conversations'>;
@@ -61,7 +80,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const [selectedConversationId, setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
 
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
-  const _messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
+  const messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
 
   const m = useMutation(api.messages.send);
 
@@ -84,7 +103,13 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         </div>
       </aside>
       <main tabIndex={-1} className="flex h-full min-w-80 flex-col focus:outline-none md:pl-64">
-        <div className="flex-1 overflow-y-auto">{/* AI Chat */}</div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="flex flex-col space-y-2 py-4">
+            {messages.map((message) => (
+              <ChatMessage key={message._id} message={message} />
+            ))}
+          </div>
+        </div>
         <div className="flex-shrink-0 py-4">
           <form
             className="relative"
