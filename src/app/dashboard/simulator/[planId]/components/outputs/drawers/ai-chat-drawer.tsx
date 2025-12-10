@@ -116,7 +116,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+      scrollRef.current.scrollIntoView({ behavior: 'instant' });
     }
   }, [messages.length]);
 
