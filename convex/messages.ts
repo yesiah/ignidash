@@ -55,7 +55,7 @@ export const send = mutation({
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
       .order('asc')
-      .collect();
+      .take(21);
 
     await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, { messages, assistantMessageId, systemPrompt: SYSTEM_PROMPT });
 
