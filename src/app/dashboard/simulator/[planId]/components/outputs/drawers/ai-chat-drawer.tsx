@@ -24,11 +24,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   return (
     <>
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
-        <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10">
-          <Button onClick={async () => await m({ conversationId: undefined, planId, content: 'What is a taxable brokerage account?' })}>
-            Send Demo Message
-          </Button>
-        </div>
+        <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10"></div>
       </aside>
       <main tabIndex={-1} className="flex h-full min-w-80 flex-col focus:outline-none md:pl-64">
         <div className="flex-1 overflow-y-auto"></div>
