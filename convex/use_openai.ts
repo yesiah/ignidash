@@ -60,7 +60,11 @@ export const streamChat = internalAction({
         console.error(error.status);
         console.error(error.message);
 
-        await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body: 'OpenAI call failed: ' + error.message });
+        await ctx.runMutation(internal.messages.update, {
+          messageId: assistantMessageId,
+          body: 'OpenAI call failed: ' + error.message,
+          isLoading: false,
+        });
 
         console.error(error);
       } else {

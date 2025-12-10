@@ -55,5 +55,6 @@ export default defineSchema({
     ),
     updatedAt: v.optional(v.number()),
     ms: v.optional(v.number()),
+    isLoading: v.optional(v.boolean()),
   }).index('by_conversationId_updatedAt', ['conversationId', 'updatedAt']),
 });

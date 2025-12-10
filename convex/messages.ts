@@ -47,7 +47,7 @@ export const send = mutation({
 
     const userMessageId = await ctx.db.insert('messages', { userId, conversationId, author: 'user', body: content, updatedAt: Date.now() });
     const [assistantMessageId] = await Promise.all([
-      ctx.db.insert('messages', { userId, conversationId, author: 'assistant', updatedAt: Date.now() }),
+      ctx.db.insert('messages', { userId, conversationId, author: 'assistant', updatedAt: Date.now(), isLoading: true }),
       ctx.db.patch(conversationId, { updatedAt: Date.now() }),
     ]);
 
@@ -55,7 +55,7 @@ export const send = mutation({
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
       .order('desc')
-      .take(21);
+      .take(3);
     messages.reverse();
 
     await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, { messages, assistantMessageId, systemPrompt: SYSTEM_PROMPT });
@@ -68,9 +68,10 @@ export const update = internalMutation({
   args: {
     messageId: v.id('messages'),
     body: v.string(),
+    isLoading: v.optional(v.boolean()),
   },
-  handler: async (ctx, { messageId, body }) => {
-    await ctx.db.patch(messageId, { body, updatedAt: Date.now() });
+  handler: async (ctx, { messageId, body, isLoading }) => {
+    await ctx.db.patch(messageId, { body, updatedAt: Date.now(), isLoading });
   },
 });
 
@@ -86,6 +87,7 @@ export const setUsage = internalMutation({
       console.warn(`Token mismatch for message ${messageId}: ${inputTokens} + ${outputTokens} !== ${totalTokens}`);
     }
 
-    await ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens } });
+    // setUsage is called at the end of the streaming process, so also set isLoading to false
+    await ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens }, isLoading: false });
   },
 });
