@@ -10,8 +10,10 @@ import { getUserIdOrThrow } from './utils/auth_utils';
 const SYSTEM_PROMPT = ``;
 
 export const list = query({
-  args: { conversationId: v.id('conversations') },
+  args: { conversationId: v.optional(v.id('conversations')) },
   handler: async (ctx, { conversationId }) => {
+    if (!conversationId) return [];
+
     await getConversationForCurrentUserOrThrow(ctx, conversationId);
 
     return await ctx.db

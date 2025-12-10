@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { api } from '@/convex/_generated/api';
 import { useQuery, useMutation } from 'convex/react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import type { Doc } from '@/convex/_generated/dataModel';
+import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 
 import { Button } from '@/components/catalyst/button';
@@ -57,10 +57,14 @@ interface AIChatDrawerProps {
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
 
+  const [chatMessage, setChatMessage] = useState<string>('');
+  const [selectedConversationId, _setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
+
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
+  const _messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
+
   const m = useMutation(api.messages.send);
 
-  const [chatMessage, setChatMessage] = useState<string>('');
   const disabled = chatMessage.trim().length === 0;
 
   return (
@@ -78,7 +82,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         </div>
       </aside>
       <main tabIndex={-1} className="flex h-full min-w-80 flex-col focus:outline-none md:pl-64">
-        <div className="flex-1 overflow-y-auto"></div>
+        <div className="flex-1 overflow-y-auto">{/* AI Chat */}</div>
         <div className="flex-shrink-0 py-4">
           <form
             className="relative"
