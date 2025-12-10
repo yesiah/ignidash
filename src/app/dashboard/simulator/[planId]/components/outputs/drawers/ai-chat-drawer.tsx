@@ -44,7 +44,7 @@ function ConversationListItem({ conversation, setSelectedConversationId }: Conve
   const deleteConversation = useMutation(api.conversations.deleteConversation);
 
   return (
-    <li key={conversation._id} className="hover:bg-emphasized-background relative flex items-center space-x-4 px-2 py-4">
+    <li key={conversation._id} className="relative flex items-center space-x-4 px-2 py-4 hover:bg-zinc-100 dark:hover:bg-black/15">
       <button className="focus-outline min-w-0 flex-auto" onClick={() => setSelectedConversationId(conversation._id)}>
         <div className="flex items-center gap-x-3">
           <p className="truncate text-sm font-semibold text-zinc-900 dark:text-white">{conversation.title}</p>
@@ -107,7 +107,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             ))}
           </ul>
           <div className="border-border/50 border-t p-4">
-            <Button className="w-full" onClick={() => setSelectedConversationId(undefined)}>
+            <Button color="dark/white" className="w-full" onClick={() => setSelectedConversationId(undefined)}>
               New chat
             </Button>
           </div>
