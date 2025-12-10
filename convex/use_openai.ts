@@ -41,9 +41,17 @@ export const streamChat = internalAction({
 
       let body = '';
       for await (const part of stream) {
-        if (part.choices.length > 0 && part.choices[0].delta?.content) {
-          body += part.choices[0].delta.content;
-          await ctx.runMutation(internal.messages.update, { messageId: assistantMessageId, body });
+        if (part.choices.length > 0) {
+          const choice = part.choices[0];
+          if (choice.finish_reason !== null) break;
+
+          if (choice.delta.content) {
+            body += choice.delta.content;
+            await ctx.runMutation(internal.messages.update, {
+              messageId: assistantMessageId,
+              body,
+            });
+          }
         }
 
         if (part.usage) {
@@ -61,7 +69,7 @@ export const streamChat = internalAction({
 
         await ctx.runMutation(internal.messages.update, {
           messageId: assistantMessageId,
-          body: `OpenAI API call failed with status ${error.status}: ${error.message}.`,
+          body: `An unexpected error occurred: ${error.message}.`,
           isLoading: false,
         });
       } else {
