@@ -57,17 +57,20 @@ export const streamChat = internalAction({
       }
     } catch (error) {
       if (error instanceof AzureOpenAI.APIError) {
-        console.error(error.status);
-        console.error(error.message);
+        console.error(error);
 
         await ctx.runMutation(internal.messages.update, {
           messageId: assistantMessageId,
           body: 'OpenAI call failed: ' + error.message,
           isLoading: false,
         });
-
-        console.error(error);
       } else {
+        await ctx.runMutation(internal.messages.update, {
+          messageId: assistantMessageId,
+          body: 'An unexpected error occurred.',
+          isLoading: false,
+        });
+
         throw error;
       }
     }
