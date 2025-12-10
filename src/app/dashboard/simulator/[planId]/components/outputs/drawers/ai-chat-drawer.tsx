@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { api } from '@/convex/_generated/api';
 import { useQuery, useMutation } from 'convex/react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
@@ -82,16 +82,34 @@ interface AIChatDrawerProps {
 
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [chatMessage, setChatMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedConversationId, setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
 
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
   const messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
 
-  const m = useMutation(api.messages.send);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length]);
 
-  const disabled = chatMessage.trim().length === 0;
+  const disabled = chatMessage.trim().length === 0 || isLoading;
+
+  const m = useMutation(api.messages.send);
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (disabled) return;
+
+    setIsLoading(true);
+    const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage });
+    setSelectedConversationId(conversationId);
+
+    setChatMessage('');
+  };
 
   return (
     <>
@@ -119,21 +137,11 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             {messages.map((message) => (
               <ChatMessage key={message._id} message={message} />
             ))}
+            <div ref={scrollRef} />
           </div>
         </div>
         <div className="flex-shrink-0 py-4">
-          <form
-            className="relative"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              if (disabled) return;
-
-              const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage });
-              setSelectedConversationId(conversationId);
-
-              setChatMessage('');
-            }}
-          >
+          <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               resizable={false}
               rows={4}
