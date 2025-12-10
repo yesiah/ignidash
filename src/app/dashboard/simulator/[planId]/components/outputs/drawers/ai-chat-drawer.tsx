@@ -58,7 +58,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
 
   const [chatMessage, setChatMessage] = useState<string>('');
-  const [selectedConversationId, _setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
+  const [selectedConversationId, setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
 
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
   const _messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
@@ -77,7 +77,9 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             ))}
           </ul>
           <div className="border-border/50 border-t p-4">
-            <Button className="w-full">New chat</Button>
+            <Button className="w-full" onClick={() => setSelectedConversationId(undefined)}>
+              New chat
+            </Button>
           </div>
         </div>
       </aside>
