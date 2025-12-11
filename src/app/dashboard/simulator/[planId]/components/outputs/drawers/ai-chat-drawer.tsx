@@ -6,6 +6,8 @@ import { useQuery, useMutation } from 'convex/react';
 import { PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+import { CircleUserRoundIcon } from 'lucide-react';
+import Image from 'next/image';
 
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
@@ -16,9 +18,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatMessageProps {
   message: Doc<'messages'>;
+  image?: string | null;
 }
 
-function ChatMessage({ message }: ChatMessageProps) {
+function ChatMessage({ message, image }: ChatMessageProps) {
   if (message.author === 'system') return null;
 
   const isUser = message.author === 'user';
@@ -49,8 +52,12 @@ function ChatMessage({ message }: ChatMessageProps) {
         </div>
       </div>
       {message.author === 'user' && (
-        <div className="bg-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-          <span className="text-background text-sm font-medium">You</span>
+        <div className="bg-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+          {image ? (
+            <Image src={image} alt="Profile image" width={32} height={32} className="object-cover" />
+          ) : (
+            <CircleUserRoundIcon className="text-background text-sm font-medium" />
+          )}
         </div>
       )}
     </div>
@@ -113,6 +120,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
   const messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
+  const user = useQuery(api.auth.getCurrentUserSafe);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -171,7 +179,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               {messages
                 .filter((message) => message.body !== undefined)
                 .map((message) => (
-                  <ChatMessage key={message._id} message={message} />
+                  <ChatMessage key={message._id} message={message} image={user?.image} />
                 ))}
               {showMessageLoadingDots && (
                 <div className="flex gap-4">
