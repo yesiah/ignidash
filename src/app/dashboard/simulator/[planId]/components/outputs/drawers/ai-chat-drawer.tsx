@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel, DropdownDescription } from '@/components/catalyst/dropdown';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
@@ -142,7 +142,8 @@ function ConversationListItem({ conversation, selectedConversationId, setSelecte
             </DropdownButton>
             <DropdownMenu portal={false}>
               <DropdownItem disabled={false} onClick={handleDelete}>
-                Delete
+                <DropdownLabel>Delete now</DropdownLabel>
+                <DropdownDescription>This cannot be undone.</DropdownDescription>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
