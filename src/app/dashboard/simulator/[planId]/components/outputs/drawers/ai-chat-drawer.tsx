@@ -6,7 +6,7 @@ import { useQuery, useMutation } from 'convex/react';
 import { PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { CircleUserRoundIcon } from 'lucide-react';
+import { CircleUserRoundIcon, CopyIcon, CheckIcon } from 'lucide-react';
 import Image from 'next/image';
 
 import { Button } from '@/components/catalyst/button';
@@ -22,7 +22,18 @@ interface ChatMessageProps {
 }
 
 function ChatMessage({ message, image }: ChatMessageProps) {
+  const [copied, setCopied] = useState<boolean>(false);
+
   if (message.author === 'system') return null;
+
+  const handleCopy = () => {
+    const messageToCopy = message.body;
+    if (messageToCopy) {
+      navigator.clipboard.writeText(messageToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const isUser = message.author === 'user';
 
@@ -41,14 +52,27 @@ function ChatMessage({ message, image }: ChatMessageProps) {
       >
         <div className="space-y-2">
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.body}</p>
-          <p className={cn('text-xs', { 'text-background/60': isUser }, { 'text-foreground/60': !isUser })}>
-            <time dateTime={new Date(message._creationTime).toISOString()}>
-              {new Date(message._creationTime).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </time>
-          </p>
+          <div className="flex items-center gap-2">
+            <p className={cn('text-xs', { 'text-background/60': isUser }, { 'text-foreground/60': !isUser })}>
+              <time dateTime={new Date(message._creationTime).toISOString()}>
+                {new Date(message._creationTime).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </time>
+            </p>
+            <button
+              onClick={handleCopy}
+              aria-label="Copy chat message"
+              className={cn(
+                'text-xs opacity-60 transition-opacity hover:opacity-100',
+                { 'text-background': isUser },
+                { 'text-foreground': !isUser }
+              )}
+            >
+              {copied ? <CheckIcon className="h-3 w-3" /> : <CopyIcon className="h-3 w-3" />}
+            </button>
+          </div>
         </div>
       </div>
       {message.author === 'user' && (
