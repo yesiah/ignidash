@@ -269,6 +269,13 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
           </ScrollArea>
         </div>
         <div className="flex-shrink-0 pb-4">
+          <div className="mb-2 grid grid-cols-2 place-items-center gap-2">
+            <div>
+              <button className="border-border/25 text-muted-foreground overflow-hidden rounded-full border px-3 py-2 text-xs/6 shadow-md">
+                How can I access retirement funds early?
+              </button>
+            </div>
+          </div>
           <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               placeholder={!selectedConversationId ? 'Ask me something about your plan...' : 'Reply...'}
