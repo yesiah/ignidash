@@ -7,6 +7,7 @@ import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getConversationForCurrentUserOrThrow } from './utils/conversation_utils';
 import { getUserIdOrThrow } from './utils/auth_utils';
 
+const NUM_MESSAGES_AS_CONTEXT = 21;
 const SYSTEM_PROMPT = `Send short, succinct messages. Right now, I am just testing your capabilities and want to minimize the number of input and output tokens that I use. Never respond with more than a few sentences.`;
 
 export const list = query({
@@ -55,7 +56,7 @@ export const send = mutation({
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
       .order('desc')
-      .take(3);
+      .take(NUM_MESSAGES_AS_CONTEXT);
     messages.reverse();
 
     await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, { messages, assistantMessageId, systemPrompt: SYSTEM_PROMPT });

@@ -9,6 +9,7 @@ import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CircleUserRoundIcon, CopyIcon, CheckIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
@@ -16,6 +17,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Subheading } from '@/components/catalyst/heading';
 
 interface ChatMessageProps {
   message: Doc<'messages'>;
@@ -182,6 +184,9 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
         <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10">
           <ul className="divide-border/25 flex-1 divide-y overflow-y-auto">
+            <Subheading level={3} className="px-4 py-3">
+              Recent Chats
+            </Subheading>
             {conversations.map((conversation) => (
               <ConversationListItem
                 key={conversation._id}
@@ -205,6 +210,17 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                   <FireIcon className="text-primary mx-auto h-10 w-auto" />
                   <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-zinc-900 dark:text-white">Your AI Assistant</h2>
+                  <p className="text-muted-foreground mt-2 text-sm/6">
+                    By using the AI assistant, you agree to our{' '}
+                    <Link href="/terms" className="text-primary hover:underline">
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/privacy" className="text-primary hover:underline">
+                      Privacy Policy
+                    </Link>
+                    . The AI is for educational purposes only and does not constitute professional financial advice.
+                  </p>
                 </div>
               </div>
             ) : (
@@ -221,9 +237,9 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
                     </div>
                     <div className="bg-emphasized-background border-border/50 text-foreground max-w-[85%] rounded-2xl border p-4 shadow-md">
                       <div className="flex gap-1">
-                        <div className="bg-foreground/60 h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
-                        <div className="bg-foreground/60 h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
-                        <div className="bg-foreground/60 h-2 w-2 animate-bounce rounded-full" />
+                        <div className="bg-primary h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
+                        <div className="bg-primary h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
+                        <div className="bg-primary h-2 w-2 animate-bounce rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -254,6 +270,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               Send
             </Button>
           </form>
+          <p className="text-muted-foreground mt-2 text-center text-xs">AI can make mistakes. Verify important info.</p>
         </div>
       </main>
     </>
