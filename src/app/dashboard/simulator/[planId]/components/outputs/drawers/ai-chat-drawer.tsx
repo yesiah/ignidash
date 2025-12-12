@@ -19,6 +19,28 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
 
+const DEMO_QUESTIONS = [{ label: 'Accessing retirement funds early', question: 'How can I access retirement funds early?' }];
+
+interface DemoQuestionButtonProps {
+  label: string;
+  question: string;
+  setChatMessage: (message: string) => void;
+}
+
+function DemoQuestionButton({ label, question, setChatMessage }: DemoQuestionButtonProps) {
+  return (
+    <button
+      onClick={() => setChatMessage(question)}
+      type="button"
+      className={cn(
+        'text-muted-foreground bg-background hover:bg-emphasized-background focus-outline border-border/25 relative inline-flex items-center rounded-full border px-3 py-2 text-sm shadow-md focus:z-10'
+      )}
+    >
+      <span className="whitespace-nowrap">{label}</span>
+    </button>
+  );
+}
+
 interface ChatMessageProps {
   message: Doc<'messages'>;
   image?: string | null;
@@ -270,15 +292,9 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         </div>
         <div className="flex-shrink-0 pb-4">
           <div className="isolate -ml-1 flex gap-x-2 overflow-x-auto px-1 py-2">
-            <button
-              onClick={() => setChatMessage('How can I access retirement funds early?')}
-              type="button"
-              className={cn(
-                'text-muted-foreground bg-background hover:bg-emphasized-background focus-outline border-border/25 relative inline-flex items-center rounded-full border px-3 py-2 text-sm focus:z-10'
-              )}
-            >
-              <span className="whitespace-nowrap">Accessing retirement funds early</span>
-            </button>
+            {DEMO_QUESTIONS.map(({ label, question }) => (
+              <DemoQuestionButton key={label} label={label} question={question} setChatMessage={setChatMessage} />
+            ))}
           </div>
           <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
