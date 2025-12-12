@@ -10,6 +10,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CircleUserRoundIcon, CopyIcon, CheckIcon, WandSparklesIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
@@ -18,6 +19,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel, Dr
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
+import { useTheme } from 'next-themes';
 
 const DEMO_QUESTIONS = [
   {
@@ -83,6 +85,7 @@ interface ChatMessageProps {
 
 function ChatMessage({ message, image }: ChatMessageProps) {
   const [copied, setCopied] = useState<boolean>(false);
+  const { resolvedTheme } = useTheme();
 
   if (message.author === 'system') return null;
 
@@ -111,7 +114,13 @@ function ChatMessage({ message, image }: ChatMessageProps) {
         })}
       >
         <div className="space-y-2">
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.body}</p>
+          <div
+            className={cn('prose prose-sm prose-zinc max-w-none', {
+              'prose-invert': (resolvedTheme === 'dark' && !isUser) || (resolvedTheme === 'light' && isUser),
+            })}
+          >
+            <ReactMarkdown>{message.body}</ReactMarkdown>
+          </div>
           <div className="flex items-center gap-2">
             <p className={cn('text-xs', { 'text-background/60': isUser }, { 'text-foreground/60': !isUser })}>
               <time dateTime={new Date(message._creationTime).toISOString()}>
