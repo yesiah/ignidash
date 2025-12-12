@@ -14,7 +14,7 @@ if (!endpoint) throw new Error('OPENAI_ENDPOINT environment variable is not set.
 const openai = new AzureOpenAI({
   endpoint,
   apiKey,
-  deployment: 'gpt-5-mini',
+  deployment: 'gpt-5.1-chat',
   apiVersion: '2024-04-01-preview',
 });
 
@@ -30,7 +30,7 @@ export const streamChat = internalAction({
 
     try {
       const stream = await openai.chat.completions.create({
-        model: 'gpt-5-mini',
+        model: 'gpt-5.1-chat',
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages.filter(hasBody).map((msg) => ({ role: msg.author, content: msg.body })),
