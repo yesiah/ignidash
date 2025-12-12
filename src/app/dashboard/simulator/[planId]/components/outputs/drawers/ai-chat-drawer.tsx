@@ -19,7 +19,42 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
 
-const DEMO_QUESTIONS = [{ label: 'Accessing retirement funds early', question: 'How can I access retirement funds early?' }];
+const DEMO_QUESTIONS = [
+  {
+    label: 'Early retirement access strategies',
+    question:
+      'What are the different strategies for accessing retirement funds before age 59½ without penalties? Include methods like Roth conversion ladders, 72(t) SEPP, and rule of 55.',
+  },
+  {
+    label: 'Safe withdrawal rates',
+    question:
+      'What is the safe withdrawal rate and what does it mean for my retirement plan? Explain where the 4% rule comes from, what it represents, and how it helps determine how much I need to save to retire.',
+  },
+  {
+    label: 'Traditional vs. Roth accounts',
+    question:
+      'How should I think about the tradeoffs between traditional and Roth accounts for FIRE? What are the tax implications during accumulation and withdrawal phases?',
+  },
+  {
+    label: 'Roth conversion ladders',
+    question: 'How does a Roth conversion ladder work for early retirement? Walk me through the mechanics, timing, and tax considerations.',
+  },
+  {
+    label: 'Healthcare before Medicare',
+    question:
+      'What are my options for healthcare coverage between early retirement and Medicare eligibility at 65? How do ACA subsidies, HSAs, and COBRA work?',
+  },
+  {
+    label: 'Optimizing contribution order',
+    question:
+      'What is the optimal order for contributing to different retirement accounts (401k, IRA, HSA, taxable brokerage) when pursuing FIRE?',
+  },
+  {
+    label: 'Social Security timing',
+    question:
+      'How does retiring early affect Social Security benefits? What are the tradeoffs between claiming at 62, full retirement age, or 70 for someone pursuing FIRE?',
+  },
+];
 
 interface DemoQuestionButtonProps {
   label: string;
@@ -291,11 +326,13 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
           </ScrollArea>
         </div>
         <div className="flex-shrink-0 pb-4">
-          <div className="isolate -ml-1 flex gap-x-2 overflow-x-auto px-1 py-2">
-            {DEMO_QUESTIONS.map(({ label, question }) => (
-              <DemoQuestionButton key={label} label={label} question={question} setChatMessage={setChatMessage} />
-            ))}
-          </div>
+          {!selectedConversationId && (
+            <div className="isolate -ml-1 flex gap-x-2 overflow-x-auto px-1 py-2">
+              {DEMO_QUESTIONS.map(({ label, question }) => (
+                <DemoQuestionButton key={label} label={label} question={question} setChatMessage={setChatMessage} />
+              ))}
+            </div>
+          )}
           <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               placeholder={!selectedConversationId ? 'Ask me something about your plan...' : 'Reply...'}
