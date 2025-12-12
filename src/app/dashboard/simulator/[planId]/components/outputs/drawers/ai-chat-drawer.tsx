@@ -1,5 +1,6 @@
 'use client';
 
+import { ConvexError } from 'convex/values';
 import { useState, useRef, useEffect } from 'react';
 import { api } from '@/convex/_generated/api';
 import { useQuery, useMutation } from 'convex/react';
@@ -231,6 +232,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
   const [chatMessage, setChatMessage] = useState<string>('');
   const [selectedConversationId, setSelectedConversationId] = useState<Id<'conversations'> | undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
   const messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
@@ -260,10 +262,14 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
     e.preventDefault();
     if (disabled) return;
 
-    const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage });
-    setSelectedConversationId(conversationId);
-
-    setChatMessage('');
+    try {
+      setErrorMessage('');
+      const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage });
+      setSelectedConversationId(conversationId);
+      setChatMessage('');
+    } catch (error) {
+      setErrorMessage(error instanceof ConvexError ? error.message : 'Failed to send message.');
+    }
   };
 
   return (
@@ -362,6 +368,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               Send
             </Button>
           </form>
+          {errorMessage && <p className="mt-2 text-center text-sm text-red-600 dark:text-red-400">{errorMessage}</p>}
           <p className="text-muted-foreground mt-2 text-center text-xs">AI can make mistakes. Verify important info.</p>
         </div>
       </main>
