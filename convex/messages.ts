@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { v, ConvexError } from 'convex/values';
 import { query, mutation, internalMutation } from './_generated/server';
 import type { Id } from './_generated/dataModel';
 import { internal } from './_generated/api';
@@ -6,6 +6,7 @@ import { internal } from './_generated/api';
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getConversationForCurrentUserOrThrow } from './utils/conversation_utils';
 import { getUserIdOrThrow } from './utils/auth_utils';
+import { checkUsageLimits, recordUsage } from './utils/ai_utils';
 
 const NUM_MESSAGES_AS_CONTEXT = 5;
 const SYSTEM_PROMPT = `
@@ -58,6 +59,9 @@ export const send = mutation({
   handler: async (ctx, { conversationId: currConvId, planId, content }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
+    const { ok, retryAfter } = await checkUsageLimits(ctx, userId);
+    if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(retryAfter).toLocaleString()}.`);
+
     let newConvId: Id<'conversations'> | null = null;
     if (!currConvId) {
       await getPlanForCurrentUserOrThrow(ctx, planId);
@@ -108,11 +112,15 @@ export const setUsage = internalMutation({
     totalTokens: v.number(),
   },
   handler: async (ctx, { messageId, inputTokens, outputTokens, totalTokens }) => {
+    const { userId } = await getUserIdOrThrow(ctx);
+
     if (inputTokens + outputTokens !== totalTokens) {
       console.warn(`Token mismatch for message ${messageId}: ${inputTokens} + ${outputTokens} !== ${totalTokens}`);
     }
 
-    // setUsage is called at the end of the streaming process, so also set isLoading to false
-    await ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens }, isLoading: false });
+    await Promise.all([
+      ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens }, isLoading: false }),
+      recordUsage(ctx, userId, inputTokens, outputTokens),
+    ]);
   },
 });

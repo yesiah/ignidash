@@ -27,6 +27,7 @@ import type * as templates_basic from "../templates/basic.js";
 import type * as templates_early_retirement from "../templates/early_retirement.js";
 import type * as timeline from "../timeline.js";
 import type * as use_openai from "../use_openai.js";
+import type * as utils_ai_utils from "../utils/ai_utils.js";
 import type * as utils_auth_utils from "../utils/auth_utils.js";
 import type * as utils_conversation_utils from "../utils/conversation_utils.js";
 import type * as utils_finances_utils from "../utils/finances_utils.js";
@@ -69,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   "templates/early_retirement": typeof templates_early_retirement;
   timeline: typeof timeline;
   use_openai: typeof use_openai;
+  "utils/ai_utils": typeof utils_ai_utils;
   "utils/auth_utils": typeof utils_auth_utils;
   "utils/conversation_utils": typeof utils_conversation_utils;
   "utils/finances_utils": typeof utils_finances_utils;

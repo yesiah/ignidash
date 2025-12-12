@@ -37,6 +37,7 @@ export const streamChat = internalAction({
         ],
         stream: true,
         stream_options: { include_usage: true },
+        max_completion_tokens: 1024,
       });
 
       let body = '';
