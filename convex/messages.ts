@@ -27,6 +27,7 @@ const SYSTEM_PROMPT = `
 
   Outputs: portfolio projections, cash flow, taxes, returns, contributions, withdrawals. Two modes: single simulation (one projection) or Monte Carlo (500 randomized runs, results shown as P10-P90 percentiles representing pessimistic/median/optimistic outcomes).
   ## User's Current Plan
+  
   {{USER_PLAN_DATA}}
 
   Reference this data to explain concepts or illustrate trade-offs. Frame all insights as educational, not advice.
