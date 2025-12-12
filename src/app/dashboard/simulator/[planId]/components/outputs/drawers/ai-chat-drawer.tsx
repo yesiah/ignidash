@@ -21,6 +21,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel, Dr
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
+import ErrorMessageCard from '@/components/ui/error-message-card';
 
 const DEMO_QUESTIONS = [
   {
@@ -348,6 +349,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               ))}
             </div>
           )}
+          {selectedConversationId && errorMessage && <ErrorMessageCard errorMessage={errorMessage} className="mb-2" />}
           <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               placeholder={!selectedConversationId ? 'Ask me something about your plan...' : 'Reply...'}
@@ -368,7 +370,6 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               Send
             </Button>
           </form>
-          {errorMessage && <p className="mt-2 text-center text-sm text-red-600 dark:text-red-400">{errorMessage}</p>}
           <p className="text-muted-foreground mt-2 text-center text-xs">AI can make mistakes. Verify important info.</p>
         </div>
       </main>
