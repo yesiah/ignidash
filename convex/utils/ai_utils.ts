@@ -6,7 +6,7 @@ import { components } from '../_generated/api';
 const DAY = 24 * HOUR;
 const MONTH = 30 * DAY;
 
-export const TOKEN_COSTS = {
+const TOKEN_COSTS = {
   input: 1.25,
   output: 10.0,
 } as const;
@@ -16,7 +16,7 @@ const rateLimiter = new RateLimiter(components.rateLimiter, {
   monthlyLimit: { kind: 'fixed window', rate: 500, period: MONTH },
 });
 
-export function calculateTokenCost(inputTokens: number, outputTokens: number): number {
+function calculateTokenCost(inputTokens: number, outputTokens: number): number {
   const inputCost = (inputTokens * TOKEN_COSTS.input) / 1_000_000;
   const outputCost = (outputTokens * TOKEN_COSTS.output) / 1_000_000;
   return inputCost + outputCost;
