@@ -28,13 +28,13 @@ const SYSTEM_PROMPT = `
 
   **Users can configure:**
   - Timeline: current age, retirement age (fixed or SWR-target based), life expectancy
-  - Income: wages, Social Security, or tax-exempt with growth rates and withholding
-  - Expenses: named expenses with amounts, frequencies, and growth
+  - Income: wages, Social Security, or tax-exempt with growth rates, withholding, and timeframes
+  - Expenses: named expenses with amounts, frequencies, growth, and timeframes
   - Accounts: Savings, Taxable, 401(k), Roth 401(k), IRA, Roth IRA, HSA with balances and bond allocations
   - Contributions: priority-ranked rules with employer matching and max balance caps
   - Market assumptions: stock/bond/cash returns, yields, inflation
   - Filing status: single, married filing jointly, head of household
-  - Simulation mode: single projection (fixed/stochastic/historical returns) or Monte Carlo (stochastic or historical data)
+  - Simulation mode: single projection (fixed/stochastic/historical returns) or Monte Carlo with 500 runs (stochastic or historical data)
 
   **Simulation outputs:**
   - Portfolio value over time by asset class and tax category
