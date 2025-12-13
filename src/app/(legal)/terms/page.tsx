@@ -3,17 +3,16 @@ import { HandshakeIcon } from 'lucide-react';
 export default function TermsPage() {
   return (
     <main className="border-border/50 lg:bg-emphasized-background mx-auto min-h-dvh max-w-prose px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:border-x lg:px-4">
-      <article className="prose prose-slate prose-sm sm:prose-base max-w-none">
-        <div className="my-8">
-          <div className="flex items-center gap-4">
-            <HandshakeIcon className="text-primary h-12 w-12" />
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">Terms of Service</h1>
-              <p className="text-muted-foreground text-sm">Last updated: December 5, 2025</p>
-            </div>
+      <header className="my-8">
+        <div className="flex items-center gap-4">
+          <HandshakeIcon className="text-primary h-12 w-12" />
+          <div>
+            <h1 className="mb-2 text-3xl font-bold">Terms of Service</h1>
+            <p className="text-muted-foreground text-sm">Last updated: December 5, 2025</p>
           </div>
         </div>
-
+      </header>
+      <article className="prose prose-slate prose-sm sm:prose-base dark:prose-invert max-w-none">
         <section className="mb-8">
           <h2 className="mb-4 text-2xl font-semibold uppercase">Agreement to Our Legal Terms</h2>
           <p className="mb-4">
