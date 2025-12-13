@@ -378,9 +378,14 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
                 }
               }}
             />
-            <Button disabled={disabled} type="submit" className="absolute right-2 bottom-2 disabled:cursor-not-allowed" color="rose">
+            <Button
+              disabled={disabled}
+              type="submit"
+              className="absolute right-2 bottom-2 disabled:cursor-not-allowed"
+              color="rose"
+              aria-label="Send"
+            >
               <PaperAirplaneIcon className="-rotate-90" />
-              Send
             </Button>
           </form>
           <p className="text-muted-foreground mt-2 text-center text-xs">AI can make mistakes. Verify important info.</p>
