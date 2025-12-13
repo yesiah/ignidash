@@ -26,13 +26,13 @@ const SYSTEM_PROMPT = `
 
   ## App Capabilities
 
-  **Users can configure:**
+  Users can configure:
   Timeline (current age, retirement age, life expectancy), income sources (wages, Social Security, tax-exempt) with growth rates and withholding, named expenses with frequencies and growth, accounts (Savings, Taxable, 401k, Roth 401k, IRA, Roth IRA, HSA) with balances and bond allocations, contribution rules with priorities and employer matching, market assumptions (returns, yields, inflation), filing status, and simulation mode (single projection, Monte Carlo, or historical).
 
-  **Simulation outputs:**
+  Simulation outputs:
   Portfolio value over time, cash flow breakdown, detailed taxes (income, capital gains, FICA, penalties), returns, contributions, withdrawals including RMDs, and key metrics (retirement age, success rate, final portfolio).
 
-  **Not supported:**
+  Not supported:
   State/local taxes, itemized deductions, pensions, self-employment income, Roth conversion ladders, backdoor Roth, Social Security optimization/spousal benefits, real estate, rental income, business assets, or specific fund recommendations. If asked about these, let the user know rather than suggesting workarounds.
 
   ## User's Current Plan
