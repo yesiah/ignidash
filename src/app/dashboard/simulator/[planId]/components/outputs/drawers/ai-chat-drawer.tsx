@@ -229,6 +229,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sendButtonRef = useRef<HTMLButtonElement>(null);
   const prevIsLoadingRef = useRef<boolean>(false);
 
   const [chatMessage, setChatMessage] = useState<string>('');
@@ -358,7 +359,15 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
           {!selectedConversationId && (
             <div className="isolate -ml-1 flex gap-x-2 overflow-x-auto px-1 py-2">
               {DEMO_QUESTIONS.map(({ label, question }) => (
-                <DemoQuestionButton key={label} label={label} question={question} setChatMessage={setChatMessage} />
+                <DemoQuestionButton
+                  key={label}
+                  label={label}
+                  question={question}
+                  setChatMessage={(message) => {
+                    setChatMessage(message);
+                    if (sendButtonRef.current) sendButtonRef.current.focus();
+                  }}
+                />
               ))}
             </div>
           )}
@@ -384,6 +393,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               className="absolute right-2 bottom-2 disabled:cursor-not-allowed"
               color="rose"
               aria-label="Send"
+              ref={sendButtonRef}
             >
               <PaperAirplaneIcon className="-rotate-90" />
             </Button>
