@@ -12,7 +12,7 @@ const tiers = [
     id: 'tier-starter',
     href: '/signup',
     priceMonthly: '$0',
-    description: 'All the basics to see your path to financial independence.',
+    description: 'Create simulations, model different scenarios, and visualize your path to financial independence.',
     features: [
       'Create and save up to 10 different plans',
       'Estimate taxes and visualize your cash flow',
@@ -25,11 +25,11 @@ const tiers = [
     id: 'tier-pro',
     href: '#',
     priceMonthly: '$12',
-    description: 'Use AI-powered features to refine and understand your path.',
+    description: 'Use AI to ask questions, surface insights, and better understand your financial plan.',
     features: [
       'Everything in Starter',
-      'Ask any question about your plan with AI chat',
-      "AI educational overview of your plan's areas",
+      'Ask questions about your plan with AI chat',
+      'Get an AI educational overview of your plan',
       'Learn key financial concepts and principles',
     ],
     featured: true,
@@ -55,7 +55,7 @@ export default function PricingPage() {
         </p>
       </div>
       <p className="mx-auto mt-6 max-w-2xl text-center text-lg font-medium text-pretty text-zinc-600 sm:text-xl/8 dark:text-zinc-400">
-        The tools to confidently plan your retirement. <br className="hidden sm:block" /> No credit card required.
+        Model your financial future with confidence. <br className="hidden sm:block" /> No credit card required.
       </p>
       <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl lg:grid-cols-2">
         {tiers.map((tier, tierIdx) => (
