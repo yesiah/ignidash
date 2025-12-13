@@ -33,6 +33,7 @@ import type * as utils_auth_utils from "../utils/auth_utils.js";
 import type * as utils_conversation_utils from "../utils/conversation_utils.js";
 import type * as utils_finances_utils from "../utils/finances_utils.js";
 import type * as utils_plan_utils from "../utils/plan_utils.js";
+import type * as utils_sys_prompt_utils from "../utils/sys_prompt_utils.js";
 import type * as validators_accounts_validator from "../validators/accounts_validator.js";
 import type * as validators_asset_validator from "../validators/asset_validator.js";
 import type * as validators_contribution_rules_validator from "../validators/contribution_rules_validator.js";
@@ -77,6 +78,7 @@ declare const fullApi: ApiFromModules<{
   "utils/conversation_utils": typeof utils_conversation_utils;
   "utils/finances_utils": typeof utils_finances_utils;
   "utils/plan_utils": typeof utils_plan_utils;
+  "utils/sys_prompt_utils": typeof utils_sys_prompt_utils;
   "validators/accounts_validator": typeof validators_accounts_validator;
   "validators/asset_validator": typeof validators_asset_validator;
   "validators/contribution_rules_validator": typeof validators_contribution_rules_validator;
