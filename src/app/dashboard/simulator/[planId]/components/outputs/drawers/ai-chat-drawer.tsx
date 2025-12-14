@@ -17,6 +17,7 @@ import { useTheme } from 'next-themes';
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
+import { useCachedKeyMetrics } from '@/lib/stores/simulator-store';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu, DropdownLabel, DropdownDescription } from '@/components/catalyst/dropdown';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -227,6 +228,7 @@ interface AIChatDrawerProps {
 
 export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const planId = useSelectedPlanId();
+  const keyMetrics = useCachedKeyMetrics();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const sendButtonRef = useRef<HTMLButtonElement>(null);
@@ -268,7 +270,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
     try {
       setErrorMessage('');
-      const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage });
+      const { conversationId } = await m({ conversationId: selectedConversationId, planId, content: chatMessage, keyMetrics });
       setSelectedConversationId(conversationId);
       setChatMessage('');
     } catch (error) {

@@ -74,6 +74,7 @@ interface SimulatorState {
     category: SimulationCategory;
     monteCarloSortMode: MonteCarloSortMode;
     chartTimeFrameToShow: ChartTimeFrame;
+    cachedKeyMetrics: KeyMetrics | null;
   };
 
   preferences: {
@@ -90,6 +91,7 @@ interface SimulatorState {
     updateCategory: (category: SimulationCategory) => void;
     updateMonteCarloSortMode: (value: MonteCarloSortMode) => void;
     updateChartTimeFrameToShow: (value: ChartTimeFrame) => void;
+    updateCachedKeyMetrics: (metrics: KeyMetrics | null) => void;
 
     /* Preferences */
     updateShowReferenceLines: (value: boolean) => void;
@@ -106,6 +108,7 @@ export const defaultState: Omit<SimulatorState, 'actions'> = {
     category: SimulationCategory.Portfolio,
     monteCarloSortMode: 'finalPortfolioValue',
     chartTimeFrameToShow: 'twentyYears',
+    cachedKeyMetrics: null,
   },
   preferences: {
     showReferenceLines: true,
@@ -151,6 +154,10 @@ export const useSimulatorStore = create<SimulatorState>()(
             set((state) => {
               state.results.chartTimeFrameToShow = value;
             }),
+          updateCachedKeyMetrics: (metrics) =>
+            set((state) => {
+              state.results.cachedKeyMetrics = metrics;
+            }),
           updateShowReferenceLines: (value) =>
             set((state) => {
               state.preferences.showReferenceLines = value;
@@ -194,6 +201,7 @@ export const useSimulationStatus = () => useSimulatorStore((state) => state.resu
 export const useResultsCategory = () => useSimulatorStore((state) => state.results.category);
 export const useMonteCarloSortMode = () => useSimulatorStore((state) => state.results.monteCarloSortMode);
 export const useChartTimeFrameToShow = () => useSimulatorStore((state) => state.results.chartTimeFrameToShow);
+export const useCachedKeyMetrics = () => useSimulatorStore((state) => state.results.cachedKeyMetrics);
 
 /**
  * Action selectors
@@ -209,6 +217,7 @@ export const useUpdateShowReferenceLines = () => useSimulatorStore((state) => st
 export const useUpdateSidebarCollapsed = () => useSimulatorStore((state) => state.actions.updateSidebarCollapsed);
 export const useUpdateMonteCarloSortMode = () => useSimulatorStore((state) => state.actions.updateMonteCarloSortMode);
 export const useUpdateChartTimeFrameToShow = () => useSimulatorStore((state) => state.actions.updateChartTimeFrameToShow);
+export const useUpdateCachedKeyMetrics = () => useSimulatorStore((state) => state.actions.updateCachedKeyMetrics);
 
 /**
  * Preferences selectors

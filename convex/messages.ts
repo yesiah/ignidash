@@ -8,6 +8,7 @@ import { getConversationForCurrentUserOrThrow } from './utils/conversation_utils
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { checkUsageLimits, recordUsage } from './utils/ai_utils';
 import { getSystemPrompt } from './utils/sys_prompt_utils';
+import { keyMetricsValidator } from './validators/key_metrics_validator';
 
 const MESSAGE_TIMEOUT_MS = 5 * 60 * 1000;
 const NUM_MESSAGES_AS_CONTEXT = 5;
@@ -32,8 +33,9 @@ export const send = mutation({
     conversationId: v.optional(v.id('conversations')),
     planId: v.id('plans'),
     content: v.string(),
+    keyMetrics: v.union(keyMetricsValidator, v.null()),
   },
-  handler: async (ctx, { conversationId: currConvId, planId, content }) => {
+  handler: async (ctx, { conversationId: currConvId, planId, content, keyMetrics }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
     const { ok, retryAfter } = await checkUsageLimits(ctx, userId);

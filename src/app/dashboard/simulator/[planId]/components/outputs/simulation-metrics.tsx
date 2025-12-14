@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import { PartyPopperIcon, UmbrellaIcon, TriangleAlertIcon, BanknoteXIcon, LandmarkIcon, SunsetIcon } from 'lucide-react';
 
 import { cn, formatNumber } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import { useUpdateCachedKeyMetrics } from '@/lib/stores/simulator-store';
 
 import MetricsCard from './metrics-card';
 
@@ -64,6 +66,13 @@ const getSuccessColor = (success: number): string => {
 };
 
 export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
+  const updateCachedKeyMetrics = useUpdateCachedKeyMetrics();
+
+  useEffect(() => {
+    updateCachedKeyMetrics(keyMetrics);
+    return () => updateCachedKeyMetrics(null);
+  }, [keyMetrics, updateCachedKeyMetrics]);
+
   const {
     successForDisplay,
     retirementAgeForDisplay,
