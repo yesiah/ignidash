@@ -50,7 +50,6 @@ export const incomeValidator = v.object({
 
 export type IncomeTimePoint = Infer<typeof incomeTimePointValidator>;
 
-// copied from src/lib/utils/data-display-formatters.ts
 export const incomeTimeFrameForDisplay = (startTimePoint: IncomeTimePoint, endTimePoint?: IncomeTimePoint) => {
   function labelFromType(tp: IncomeTimePoint) {
     switch (tp.type) {

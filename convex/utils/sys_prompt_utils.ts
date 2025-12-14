@@ -6,7 +6,6 @@ import type { KeyMetrics } from '../validators/key_metrics_validator';
 
 const USE_CONDENSED_SYSTEM_PROMPT = true;
 
-// copied from src/lib/utils.ts
 const formatNumber = (num: number, fractionDigits: number = 2, prefix: string = ''): string => {
   const absNum = Math.abs(num);
   const sign = num < 0 ? '-' : '';
@@ -17,7 +16,6 @@ const formatNumber = (num: number, fractionDigits: number = 2, prefix: string = 
   return sign + prefix + absNum.toFixed(fractionDigits);
 };
 
-// copied from src/lib/utils/data-display-formatters.ts
 const keyMetricsForDisplay = (keyMetrics: KeyMetrics) => {
   const {
     success,

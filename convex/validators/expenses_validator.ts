@@ -40,7 +40,6 @@ export const expenseValidator = v.object({
 
 export type ExpenseTimePoint = Infer<typeof expenseTimePointValidator>;
 
-// copied from src/lib/utils/data-display-formatters.ts
 export const expenseTimeFrameForDisplay = (startTimePoint: ExpenseTimePoint, endTimePoint?: ExpenseTimePoint) => {
   function labelFromType(tp: ExpenseTimePoint) {
     switch (tp.type) {
