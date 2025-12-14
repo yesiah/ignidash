@@ -1,6 +1,7 @@
 import { formatNumber } from '@/lib/utils';
 import type { TimePoint, Growth, Frequency } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
 import type { IncomeType } from '@/lib/schemas/inputs/income-form-schema';
+import type { KeyMetrics } from '@/lib/types/key-metrics';
 
 export const timeFrameForDisplay = (startTimePoint: TimePoint, endTimePoint?: TimePoint) => {
   function labelFromType(tp: TimePoint) {
@@ -80,4 +81,44 @@ export const incomeTaxTreatmentForDisplay = (type: IncomeType, withholding: numb
   }
 
   return `${typeLabel}, ${formatNumber(withholding, 0)}% Withheld`;
+};
+
+export const keyMetricsForDisplay = (keyMetrics: KeyMetrics) => {
+  const {
+    success,
+    retirementAge,
+    yearsToRetirement,
+    bankruptcyAge,
+    yearsToBankruptcy,
+    portfolioAtRetirement,
+    lifetimeTaxesAndPenalties,
+    finalPortfolio,
+    progressToRetirement,
+    areValuesMeans,
+  } = keyMetrics;
+
+  const formatters = {
+    success: (v: number) =>
+      areValuesMeans ? `${formatNumber(v * 100, 1)}%` : v >= 0.99 ? 'Yes!' : v <= 0.01 ? 'No' : `${formatNumber(v * 100, 1)}%`,
+    retirementAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    yearsToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    bankruptcyAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    yearsToBankruptcy: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    portfolioAtRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 2, '$')}` : 'N/A'),
+    lifetimeTaxesAndPenalties: (v: number) => `${formatNumber(v, 2, '$')}`,
+    finalPortfolio: (v: number) => `${formatNumber(v, 2, '$')}`,
+    progressToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v * 100, 1)}%` : 'N/A'),
+  };
+
+  return {
+    successForDisplay: formatters.success(success),
+    retirementAgeForDisplay: formatters.retirementAge(retirementAge),
+    yearsToRetirementForDisplay: formatters.yearsToRetirement(yearsToRetirement),
+    bankruptcyAgeForDisplay: formatters.bankruptcyAge(bankruptcyAge),
+    yearsToBankruptcyForDisplay: formatters.yearsToBankruptcy(yearsToBankruptcy),
+    portfolioAtRetirementForDisplay: formatters.portfolioAtRetirement(portfolioAtRetirement),
+    lifetimeTaxesAndPenaltiesForDisplay: formatters.lifetimeTaxesAndPenalties(lifetimeTaxesAndPenalties),
+    finalPortfolioForDisplay: formatters.finalPortfolio(finalPortfolio),
+    progressToRetirementForDisplay: formatters.progressToRetirement(progressToRetirement),
+  };
 };

@@ -2,9 +2,11 @@ import type { Doc } from '../_generated/dataModel';
 
 import type { KeyMetrics } from '../validators/key_metrics_validator';
 
+import { keyMetricsForDisplay } from '../../src/lib/utils/data-display-formatters';
+
 const USE_CONDENSED_SYSTEM_PROMPT = true;
 
-const SYSTEM_PROMPT = `
+const systemPrompt = (planData: string, keyMetrics: string): string => `
   You are an educational assistant for Ignidash, a retirement planning simulator. Help users understand retirement and financial planning concepts, interpret their simulation results, and explore FIRE, career, and life planning options.
 
   ## Guidelines
@@ -53,12 +55,15 @@ const SYSTEM_PROMPT = `
   Do not assume features exist beyond what is explicitly listed in "Users can configure" and "Simulation outputs" above. Do not suggest complex workarounds or approximations for unsupported features—simply inform users these features are not currently supported. You may discuss unsupported topics conceptually (e.g., explaining how pensions work, discussing mortgage strategies), but never provide specific investment, fund, or security recommendations.
 
   ## User's Current Plan
-  {{USER_PLAN_DATA}}
+  ${planData}
+
+  ## User's Key Results
+  ${keyMetrics}
 
   Use the user's plan data to provide context and illustrate concepts, not to give personalized advice. When explaining general principles, reference their specific numbers as examples (e.g., "With your $75,000 salary, a 15% savings rate would mean..."). When discussing trade-offs, use their inputs to show how different choices work (e.g., "Your 80/20 allocation will behave differently than 60/40 in these ways..."). This helps make abstract concepts concrete. However, never tell them what they should do with their specific situation—explain how things work and let them decide.
 `;
 
-const CONDENSED_SYSTEM_PROMPT = `
+const condensedSystemPrompt = (planData: string, keyMetrics: string): string => `
   You are an educational assistant for Ignidash, a retirement planning simulator. Explain concepts and trade-offs—never give advice or tell users what to do.
 
   ## Core Rules
@@ -95,15 +100,49 @@ const CONDENSED_SYSTEM_PROMPT = `
   Don't assume unlisted features exist. Don't suggest workarounds for unsupported features—just note they're unavailable. You may discuss unsupported topics conceptually, but never recommend specific investments or securities.
 
   ## User's Current Plan
-  {{USER_PLAN_DATA}}
+  ${planData}
+
+  ## User's Key Results
+  ${keyMetrics}
 
   Use their data to illustrate concepts (e.g., "With your $75,000 salary, 15% savings would mean..."), not to advise. Reference their numbers to make abstractions concrete, but let them decide what to do.
 `;
 
+const formatPlanData = (plan: Doc<'plans'>): string => {
+  const formattedData: string[] = [];
+  return formattedData.join('\n');
+};
+
+const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
+  if (!keyMetrics) return 'N/A';
+
+  const formattedData: string[] = [];
+
+  const {
+    successForDisplay,
+    retirementAgeForDisplay,
+    bankruptcyAgeForDisplay,
+    portfolioAtRetirementForDisplay,
+    lifetimeTaxesAndPenaltiesForDisplay,
+    finalPortfolioForDisplay,
+    progressToRetirementForDisplay,
+  } = keyMetricsForDisplay(keyMetrics);
+
+  formattedData.push(`**Success:** ${successForDisplay}`);
+  formattedData.push(`**Retirement Age:** ${retirementAgeForDisplay}`);
+  formattedData.push(`**Bankruptcy Age:** ${bankruptcyAgeForDisplay}`);
+  formattedData.push(`**Portfolio at Retirement:** ${portfolioAtRetirementForDisplay}`);
+  formattedData.push(`**Lifetime Taxes and Penalties:** ${lifetimeTaxesAndPenaltiesForDisplay}`);
+  formattedData.push(`**Final Portfolio:** ${finalPortfolioForDisplay}`);
+  formattedData.push(`**Progress to Retirement:** ${progressToRetirementForDisplay}`);
+
+  return formattedData.join('\n');
+};
+
 export const getSystemPrompt = (plan: Doc<'plans'>, keyMetrics: KeyMetrics | null): string => {
   if (USE_CONDENSED_SYSTEM_PROMPT) {
-    return CONDENSED_SYSTEM_PROMPT;
+    return condensedSystemPrompt(formatPlanData(plan), formatKeyMetrics(keyMetrics));
   }
 
-  return SYSTEM_PROMPT;
+  return systemPrompt(formatPlanData(plan), formatKeyMetrics(keyMetrics));
 };
