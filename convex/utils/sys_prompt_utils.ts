@@ -107,10 +107,10 @@ const systemPrompt = (planData: string, keyMetrics: string): string => `
   ## User Data
 
   **User's Current Plan**
-  ${planData}
+${planData}
 
   **User's Key Results**
-  ${keyMetrics}
+${keyMetrics}
 
   Use the user's plan data to provide context and illustrate concepts, not to give personalized advice. When explaining general principles, reference their specific numbers as examples (e.g., "With your $75,000 salary, a 15% savings rate would mean..."). When discussing trade-offs, use their inputs to show how different choices work (e.g., "Your 80/20 allocation will behave differently than 60/40 in these ways..."). This helps make abstract concepts concrete. However, never tell them what they should do with their specific situation—explain how things work and let them decide.
 `;
@@ -154,10 +154,10 @@ const condensedSystemPrompt = (planData: string, keyMetrics: string): string => 
   ## User Data
 
   **User's Current Plan**
-  ${planData}
+${planData}
 
   **User's Key Results**
-  ${keyMetrics}
+${keyMetrics}
 
   Use their data to illustrate concepts (e.g., "With your $75,000 salary, 15% savings would mean..."), not to advise. Reference their numbers to make abstractions concrete, but let them decide what to do.
 `;
@@ -173,7 +173,7 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
         ? `Retirement Age: ${retirementStrategy.retirementAge}`
         : `SWR Target: ${retirementStrategy.safeWithdrawalRate}%`;
 
-    lines.push(`- Timeline: Age: ${currentAge}, Life Expectancy: ${lifeExpectancy}, ${retirementInfo}`);
+    lines.push(`  - Timeline: Age: ${currentAge}, Life Expectancy: ${lifeExpectancy}, ${retirementInfo}`);
   }
 
   if (plan.incomes.length > 0) {
@@ -271,7 +271,7 @@ const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
   } = keyMetricsForDisplay(keyMetrics);
 
   return [
-    `- Success: ${successForDisplay}`,
+    `  - Success: ${successForDisplay}`,
     `  - Retirement Age: ${retirementAgeForDisplay}`,
     `  - Bankruptcy Age: ${bankruptcyAgeForDisplay}`,
     `  - Portfolio at Retirement: ${portfolioAtRetirementForDisplay}`,
