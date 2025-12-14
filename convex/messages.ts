@@ -41,20 +41,21 @@ export const send = mutation({
     const { ok, retryAfter } = await checkUsageLimits(ctx, userId);
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(retryAfter).toLocaleString()}.`);
 
-    const loadingMessage = await ctx.db
-      .query('messages')
-      .withIndex('by_userId_updatedAt', (q) => q.eq('userId', userId))
-      .filter((q) => q.eq(q.field('isLoading'), true))
-      .first();
+    const [loadingMessage, plan] = await Promise.all([
+      ctx.db
+        .query('messages')
+        .withIndex('by_userId_updatedAt', (q) => q.eq('userId', userId))
+        .filter((q) => q.eq(q.field('isLoading'), true))
+        .first(),
+      getPlanForCurrentUserOrThrow(ctx, planId),
+    ]);
     if (loadingMessage) throw new ConvexError('An AI chat is already in progress. Please wait for it to complete.');
 
     const updatedAt = Date.now();
-    const systemPrompt = getSystemPrompt(keyMetrics);
+    const systemPrompt = getSystemPrompt(plan, keyMetrics);
 
     let newConvId: Id<'conversations'> | null = null;
     if (!currConvId) {
-      await getPlanForCurrentUserOrThrow(ctx, planId);
-
       const title = content.length > 25 ? content.slice(0, 25) + '...' : content;
       newConvId = await ctx.db.insert('conversations', { userId, planId, title, updatedAt, systemPrompt });
     } else {
