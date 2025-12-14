@@ -208,6 +208,37 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
     lines.push('Accounts: None');
   }
 
+  const enabledRules = plan.contributionRules.filter((r) => !r.disabled).sort((a, b) => a.rank - b.rank);
+
+  if (enabledRules.length > 0) {
+    const accountNameById = Object.fromEntries(plan.accounts.map((a) => [a.id, a.name]));
+
+    const formatAmount = (amount: (typeof enabledRules)[0]['amount']): string => {
+      switch (amount.type) {
+        case 'dollarAmount':
+          return formatNumber(amount.dollarAmount, 0, '$');
+        case 'percentRemaining':
+          return `${amount.percentRemaining}% of remaining`;
+        case 'unlimited':
+          return 'unlimited';
+      }
+    };
+
+    lines.push(
+      `Contributions (in priority order): ${enabledRules
+        .map((r) => {
+          const account = accountNameById[r.accountId] ?? r.accountId;
+          const amount = formatAmount(r.amount);
+          const match = r.employerMatch ? ` +employer match up to ${formatNumber(r.employerMatch, 0, '$')}` : '';
+          const cap = r.maxBalance ? ` up to ${formatNumber(r.maxBalance, 0, '$')} balance` : '';
+          return `${account} (${amount}${match}${cap})`;
+        })
+        .join(' → ')}; then ${plan.baseContributionRule.type} remainder`
+    );
+  } else {
+    lines.push('Contributions: None');
+  }
+
   const m = plan.marketAssumptions;
   lines.push(
     `Expected Returns: Stock ${m.stockReturn}%/${m.stockYield}% yield, Bond ${m.bondReturn}%/${m.bondYield}% yield, Cash ${m.cashReturn}%, Inflation ${m.inflationRate}%`
