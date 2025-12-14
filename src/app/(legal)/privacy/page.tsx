@@ -8,7 +8,7 @@ export default function PrivacyPage() {
           <GlobeLockIcon className="text-primary h-12 w-12" />
           <div>
             <h1 className="mb-2 text-3xl font-bold">Privacy Policy</h1>
-            <p className="text-muted-foreground text-sm">Last updated: November 14, 2025</p>
+            <p className="text-muted-foreground text-sm">Last updated: December 14, 2025</p>
           </div>
         </div>
       </header>
@@ -29,8 +29,8 @@ export default function PrivacyPage() {
             </li>
             <li>
               Use Ignidash. The app is a financial planning tool designed to help users model and visualize their long-term financial future
-              through projections and scenario planning. This Service is provided for informational purposes only and does not constitute
-              professional financial advice.
+              through projections and scenario planning. This Service is provided for informational and educational purposes only and does
+              not constitute financial, investment, tax, legal, or other professional advice.
             </li>
             <li>Engage with us in other related ways, including any sales, marketing, or events</li>
           </ul>
