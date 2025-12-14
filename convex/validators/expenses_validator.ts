@@ -1,4 +1,17 @@
-import { v } from 'convex/values';
+import { v, type Infer } from 'convex/values';
+
+const expenseTimePointValidator = v.object({
+  type: v.union(
+    v.literal('now'),
+    v.literal('atRetirement'),
+    v.literal('atLifeExpectancy'),
+    v.literal('customDate'),
+    v.literal('customAge')
+  ),
+  month: v.optional(v.number()),
+  year: v.optional(v.number()),
+  age: v.optional(v.number()),
+});
 
 export const expenseValidator = v.object({
   id: v.string(),
@@ -13,32 +26,8 @@ export const expenseValidator = v.object({
     v.literal('weekly')
   ),
   timeframe: v.object({
-    start: v.object({
-      type: v.union(
-        v.literal('now'),
-        v.literal('atRetirement'),
-        v.literal('atLifeExpectancy'),
-        v.literal('customDate'),
-        v.literal('customAge')
-      ),
-      month: v.optional(v.number()),
-      year: v.optional(v.number()),
-      age: v.optional(v.number()),
-    }),
-    end: v.optional(
-      v.object({
-        type: v.union(
-          v.literal('now'),
-          v.literal('atRetirement'),
-          v.literal('atLifeExpectancy'),
-          v.literal('customDate'),
-          v.literal('customAge')
-        ),
-        month: v.optional(v.number()),
-        year: v.optional(v.number()),
-        age: v.optional(v.number()),
-      })
-    ),
+    start: expenseTimePointValidator,
+    end: v.optional(expenseTimePointValidator),
   }),
   growth: v.optional(
     v.object({
@@ -48,3 +37,37 @@ export const expenseValidator = v.object({
   ),
   disabled: v.boolean(),
 });
+
+export type ExpenseTimePoint = Infer<typeof expenseTimePointValidator>;
+
+// copied from src/lib/utils/data-display-formatters.ts
+export const expenseTimeFrameForDisplay = (startTimePoint: ExpenseTimePoint, endTimePoint?: ExpenseTimePoint) => {
+  function labelFromType(tp: ExpenseTimePoint) {
+    switch (tp.type) {
+      case 'now':
+        return 'Now';
+      case 'atRetirement':
+        return 'Retirement';
+      case 'atLifeExpectancy':
+        return 'Life Expectancy';
+      case 'customDate': {
+        const month = tp.month;
+        const year = tp.year;
+        if (month !== undefined && year !== undefined) {
+          const formatter = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' });
+          return formatter.format(new Date(year, month - 1));
+        }
+        return 'Custom Date';
+      }
+      case 'customAge': {
+        if (tp.age !== undefined) return `Age ${tp.age}`;
+        return 'Custom Age';
+      }
+    }
+  }
+
+  const startLabel = labelFromType(startTimePoint);
+  const endLabel = endTimePoint ? labelFromType(endTimePoint) : undefined;
+
+  return endLabel ? `${startLabel} → ${endLabel}` : startLabel;
+};

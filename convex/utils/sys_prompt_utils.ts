@@ -1,10 +1,62 @@
 import type { Doc } from '../_generated/dataModel';
 
+import { incomeTimeFrameForDisplay } from '../validators/incomes_validator';
+import { expenseTimeFrameForDisplay } from '../validators/expenses_validator';
 import type { KeyMetrics } from '../validators/key_metrics_validator';
 
-import { keyMetricsForDisplay } from '../../src/lib/utils/data-display-formatters';
-
 const USE_CONDENSED_SYSTEM_PROMPT = true;
+
+// copied from src/lib/utils.ts
+const formatNumber = (num: number, fractionDigits: number = 2, prefix: string = ''): string => {
+  const absNum = Math.abs(num);
+  const sign = num < 0 ? '-' : '';
+
+  if (absNum >= 1000000000) return sign + prefix + (absNum / 1000000000).toFixed(2) + 'B';
+  if (absNum >= 1000000) return sign + prefix + (absNum / 1000000).toFixed(2) + 'M';
+  if (absNum >= 1000) return sign + prefix + (absNum / 1000).toFixed(1) + 'k';
+  return sign + prefix + absNum.toFixed(fractionDigits);
+};
+
+// copied from src/lib/utils/data-display-formatters.ts
+const keyMetricsForDisplay = (keyMetrics: KeyMetrics) => {
+  const {
+    success,
+    retirementAge,
+    yearsToRetirement,
+    bankruptcyAge,
+    yearsToBankruptcy,
+    portfolioAtRetirement,
+    lifetimeTaxesAndPenalties,
+    finalPortfolio,
+    progressToRetirement,
+    areValuesMeans,
+  } = keyMetrics;
+
+  const formatters = {
+    success: (v: number) =>
+      areValuesMeans ? `${formatNumber(v * 100, 1)}%` : v >= 0.99 ? 'Yes!' : v <= 0.01 ? 'No' : `${formatNumber(v * 100, 1)}%`,
+    retirementAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    yearsToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    bankruptcyAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    yearsToBankruptcy: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
+    portfolioAtRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 2, '$')}` : 'N/A'),
+    lifetimeTaxesAndPenalties: (v: number) => `${formatNumber(v, 2, '$')}`,
+    finalPortfolio: (v: number) => `${formatNumber(v, 2, '$')}`,
+    progressToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v * 100, 1)}%` : 'N/A'),
+  };
+
+  return {
+    successForDisplay: formatters.success(success),
+    retirementAgeForDisplay: formatters.retirementAge(retirementAge),
+    yearsToRetirementForDisplay: formatters.yearsToRetirement(yearsToRetirement),
+    bankruptcyAgeForDisplay: formatters.bankruptcyAge(bankruptcyAge),
+    yearsToBankruptcyForDisplay: formatters.yearsToBankruptcy(yearsToBankruptcy),
+    portfolioAtRetirementForDisplay: formatters.portfolioAtRetirement(portfolioAtRetirement),
+    lifetimeTaxesAndPenaltiesForDisplay: formatters.lifetimeTaxesAndPenalties(lifetimeTaxesAndPenalties),
+    finalPortfolioForDisplay: formatters.finalPortfolio(finalPortfolio),
+    progressToRetirementForDisplay: formatters.progressToRetirement(progressToRetirement),
+  };
+};
 
 const systemPrompt = (planData: string, keyMetrics: string): string => `
   You are an educational assistant for Ignidash, a retirement planning simulator. Help users understand retirement and financial planning concepts, interpret their simulation results, and explore FIRE, career, and life planning options.
@@ -109,14 +161,59 @@ const condensedSystemPrompt = (planData: string, keyMetrics: string): string => 
 `;
 
 const formatPlanData = (plan: Doc<'plans'>): string => {
-  const formattedData: string[] = [];
-  return formattedData.join('\n');
+  const lines: string[] = [];
+
+  if (plan.timeline) {
+    const { currentAge, lifeExpectancy, retirementStrategy } = plan.timeline;
+    const retirementInfo =
+      retirementStrategy.type === 'fixedAge'
+        ? `Retirement Age: ${retirementStrategy.retirementAge}`
+        : `SWR Target: ${retirementStrategy.safeWithdrawalRate}%`;
+    lines.push(`Current Age: ${currentAge} | Life Expectancy: ${lifeExpectancy} | ${retirementInfo}`);
+  }
+
+  if (plan.incomes.length > 0) {
+    lines.push(
+      `Incomes: ${plan.incomes
+        .map(
+          (i) =>
+            `${i.name} (${formatNumber(i.amount, 0, '$')} ${i.frequency}, ${incomeTimeFrameForDisplay(i.timeframe.start, i.timeframe.end)})`
+        )
+        .join('; ')}`
+    );
+  }
+
+  if (plan.expenses.length > 0) {
+    lines.push(
+      `Expenses: ${plan.expenses
+        .map(
+          (e) =>
+            `${e.name} (${formatNumber(e.amount, 0, '$')} ${e.frequency}, ${expenseTimeFrameForDisplay(e.timeframe.start, e.timeframe.end)})`
+        )
+        .join('; ')}`
+    );
+  }
+
+  if (plan.accounts.length > 0) {
+    lines.push(
+      `Accounts: ${plan.accounts
+        .map((a) => `${a.name}: ${formatNumber(a.balance, 0, '$')} ${a.type}${a.percentBonds ? `, ${a.percentBonds}% bonds` : ''}`)
+        .join('; ')}`
+    );
+  }
+
+  const m = plan.marketAssumptions;
+  lines.push(
+    `Market: Stock ${m.stockReturn}%/${m.stockYield}% yield, Bond ${m.bondReturn}%/${m.bondYield}% yield, Cash ${m.cashReturn}%, Inflation ${m.inflationRate}%`
+  );
+
+  lines.push(`Settings: ${plan.taxSettings.filingStatus}, ${plan.simulationSettings.simulationMode}`);
+
+  return lines.join('\n');
 };
 
 const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
-  if (!keyMetrics) return 'N/A';
-
-  const formattedData: string[] = [];
+  if (!keyMetrics) return 'No results available';
 
   const {
     successForDisplay,
@@ -128,15 +225,15 @@ const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
     progressToRetirementForDisplay,
   } = keyMetricsForDisplay(keyMetrics);
 
-  formattedData.push(`**Success:** ${successForDisplay}`);
-  formattedData.push(`**Retirement Age:** ${retirementAgeForDisplay}`);
-  formattedData.push(`**Bankruptcy Age:** ${bankruptcyAgeForDisplay}`);
-  formattedData.push(`**Portfolio at Retirement:** ${portfolioAtRetirementForDisplay}`);
-  formattedData.push(`**Lifetime Taxes and Penalties:** ${lifetimeTaxesAndPenaltiesForDisplay}`);
-  formattedData.push(`**Final Portfolio:** ${finalPortfolioForDisplay}`);
-  formattedData.push(`**Progress to Retirement:** ${progressToRetirementForDisplay}`);
-
-  return formattedData.join('\n');
+  return [
+    `Success: ${successForDisplay}`,
+    `Retirement Age: ${retirementAgeForDisplay}`,
+    `Bankruptcy Age: ${bankruptcyAgeForDisplay}`,
+    `Portfolio at Retirement: ${portfolioAtRetirementForDisplay}`,
+    `Lifetime Taxes/Penalties: ${lifetimeTaxesAndPenaltiesForDisplay}`,
+    `Final Portfolio: ${finalPortfolioForDisplay}`,
+    `Progress to Retirement: ${progressToRetirementForDisplay}`,
+  ].join(' | ');
 };
 
 export const getSystemPrompt = (plan: Doc<'plans'>, keyMetrics: KeyMetrics | null): string => {
