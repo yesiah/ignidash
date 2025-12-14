@@ -167,12 +167,12 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
       retirementStrategy.type === 'fixedAge'
         ? `Retirement Age: ${retirementStrategy.retirementAge}`
         : `SWR Target: ${retirementStrategy.safeWithdrawalRate}%`;
-    lines.push(`Current Age: ${currentAge} | Life Expectancy: ${lifeExpectancy} | ${retirementInfo}`);
+    lines.push(`**Timeline:** Age: ${currentAge}, Life Expectancy: ${lifeExpectancy}, ${retirementInfo}`);
   }
 
   if (plan.incomes.length > 0) {
     lines.push(
-      `Incomes: ${plan.incomes
+      `**Incomes:** ${plan.incomes
         .map(
           (i) =>
             `${i.name} (${formatNumber(i.amount, 0, '$')} ${i.frequency}, ${incomeTimeFrameForDisplay(i.timeframe.start, i.timeframe.end)})`
@@ -180,12 +180,12 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
         .join('; ')}`
     );
   } else {
-    lines.push('Incomes: None');
+    lines.push('**Incomes:** None');
   }
 
   if (plan.expenses.length > 0) {
     lines.push(
-      `Expenses: ${plan.expenses
+      `**Expenses:** ${plan.expenses
         .map(
           (e) =>
             `${e.name} (${formatNumber(e.amount, 0, '$')} ${e.frequency}, ${expenseTimeFrameForDisplay(e.timeframe.start, e.timeframe.end)})`
@@ -193,17 +193,30 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
         .join('; ')}`
     );
   } else {
-    lines.push('Expenses: None');
+    lines.push('**Expenses:** None');
   }
 
   if (plan.accounts.length > 0) {
+    const formatAccountType: Record<string, string> = {
+      '401k': '401(k)',
+      roth401k: 'Roth 401(k)',
+      ira: 'IRA',
+      rothIra: 'Roth IRA',
+      hsa: 'HSA',
+      taxableBrokerage: 'Taxable',
+      savings: 'Savings',
+    };
+
     lines.push(
-      `Accounts: ${plan.accounts
-        .map((a) => `${a.name}: ${formatNumber(a.balance, 0, '$')} ${a.type}${a.percentBonds ? `, ${a.percentBonds}% bonds` : ''}`)
+      `**Accounts:** ${plan.accounts
+        .map(
+          (a) =>
+            `${a.name}: ${formatAccountType[a.type]} with ${formatNumber(a.balance, 0, '$')}${a.percentBonds ? `, ${a.percentBonds}% bonds` : ''}`
+        )
         .join('; ')}`
     );
   } else {
-    lines.push('Accounts: None');
+    lines.push('**Accounts:** None');
   }
 
   const enabledRules = plan.contributionRules.filter((r) => !r.disabled).sort((a, b) => a.rank - b.rank);
@@ -211,40 +224,29 @@ const formatPlanData = (plan: Doc<'plans'>): string => {
   if (enabledRules.length > 0) {
     const accountNameById = Object.fromEntries(plan.accounts.map((a) => [a.id, a.name]));
 
-    const formatAmount = (amount: (typeof enabledRules)[0]['amount']): string => {
-      switch (amount.type) {
-        case 'dollarAmount':
-          return formatNumber(amount.dollarAmount, 0, '$');
-        case 'percentRemaining':
-          return `${amount.percentRemaining}% of remaining`;
-        case 'unlimited':
-          return 'unlimited';
-      }
-    };
-
     lines.push(
-      `Contributions (in priority order): ${enabledRules
+      `**Contributions (in priority order):** ${enabledRules
         .map((r) => {
           const account = accountNameById[r.accountId] ?? r.accountId;
-          const amount = formatAmount(r.amount);
-          const match = r.employerMatch ? ` +employer match up to ${formatNumber(r.employerMatch, 0, '$')}` : '';
-          const cap = r.maxBalance ? ` up to ${formatNumber(r.maxBalance, 0, '$')} balance` : '';
-          return `${account} (${amount}${match}${cap})`;
+          const match = r.employerMatch ? ' (has employer match)' : '';
+          const cap = r.maxBalance ? ` (up to ${formatNumber(r.maxBalance, 0, '$')} balance)` : '';
+          return `${account}${match}${cap}`;
         })
         .join(' → ')}; then ${plan.baseContributionRule.type} remainder`
     );
   } else {
-    lines.push('Contributions: None');
+    lines.push('**Contributions:** None');
   }
 
   const m = plan.marketAssumptions;
   lines.push(
-    `Expected Returns: Stock ${m.stockReturn}%/${m.stockYield}% yield, Bond ${m.bondReturn}%/${m.bondYield}% yield, Cash ${m.cashReturn}%, Inflation ${m.inflationRate}%`
+    `**Expected Returns:** Stock ${m.stockReturn}%/${m.stockYield}% yield, Bond ${m.bondReturn}%/${m.bondYield}% yield, Cash ${m.cashReturn}%, Inflation ${m.inflationRate}%`
   );
 
-  lines.push(`Settings: ${plan.taxSettings.filingStatus}, ${plan.simulationSettings.simulationMode}`);
+  lines.push(`**Filing Status:** ${plan.taxSettings.filingStatus}`);
+  lines.push(`**Simulation Mode:** ${plan.simulationSettings.simulationMode}`);
 
-  return lines.join('\n');
+  return lines.join('\n\n');
 };
 
 const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
