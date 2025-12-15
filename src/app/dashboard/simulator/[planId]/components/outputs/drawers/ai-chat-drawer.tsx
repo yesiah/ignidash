@@ -381,7 +381,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             </div>
           )}
           {selectedConversationId && errorMessage && <ErrorMessageCard errorMessage={errorMessage} className="mb-2" />}
-          <form className="bg-emphasized-background relative rounded-xl" onSubmit={handleSendMessage}>
+          <form className={cn('relative', { 'bg-emphasized-background rounded-xl': !canUseChat })} onSubmit={handleSendMessage}>
             {!canUseChat && (
               <p className="text-muted-foreground px-4 py-0.5 text-sm/6 font-medium">
                 <span>Upgrade to start chatting.</span>{' '}
