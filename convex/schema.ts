@@ -12,6 +12,7 @@ import { privacySettingsValidator } from './validators/privacy_settings_validato
 import { simulationSettingsValidator } from './validators/simulation_settings_validator';
 import { assetValidator } from './validators/asset_validator';
 import { liabilityValidator } from './validators/liability_validator';
+import { userFeedbackValidator } from './validators/user_feedback_validator';
 
 export default defineSchema({
   plans: defineTable({
@@ -59,4 +60,5 @@ export default defineSchema({
   })
     .index('by_conversationId_updatedAt', ['conversationId', 'updatedAt'])
     .index('by_userId_updatedAt', ['userId', 'updatedAt']),
+  userFeedback: defineTable({ userId: v.string(), feedback: userFeedbackValidator }).index('by_userId', ['userId']),
 });

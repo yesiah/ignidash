@@ -28,6 +28,7 @@ import type * as templates_basic from "../templates/basic.js";
 import type * as templates_early_retirement from "../templates/early_retirement.js";
 import type * as timeline from "../timeline.js";
 import type * as use_openai from "../use_openai.js";
+import type * as user_feedback from "../user_feedback.js";
 import type * as utils_ai_utils from "../utils/ai_utils.js";
 import type * as utils_auth_utils from "../utils/auth_utils.js";
 import type * as utils_conversation_utils from "../utils/conversation_utils.js";
@@ -46,6 +47,7 @@ import type * as validators_privacy_settings_validator from "../validators/priva
 import type * as validators_simulation_settings_validator from "../validators/simulation_settings_validator.js";
 import type * as validators_tax_settings_validator from "../validators/tax_settings_validator.js";
 import type * as validators_timeline_validator from "../validators/timeline_validator.js";
+import type * as validators_user_feedback_validator from "../validators/user_feedback_validator.js";
 
 import type {
   ApiFromModules,
@@ -74,6 +76,7 @@ declare const fullApi: ApiFromModules<{
   "templates/early_retirement": typeof templates_early_retirement;
   timeline: typeof timeline;
   use_openai: typeof use_openai;
+  user_feedback: typeof user_feedback;
   "utils/ai_utils": typeof utils_ai_utils;
   "utils/auth_utils": typeof utils_auth_utils;
   "utils/conversation_utils": typeof utils_conversation_utils;
@@ -92,6 +95,7 @@ declare const fullApi: ApiFromModules<{
   "validators/simulation_settings_validator": typeof validators_simulation_settings_validator;
   "validators/tax_settings_validator": typeof validators_tax_settings_validator;
   "validators/timeline_validator": typeof validators_timeline_validator;
+  "validators/user_feedback_validator": typeof validators_user_feedback_validator;
 }>;
 
 /**
