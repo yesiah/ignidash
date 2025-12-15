@@ -249,6 +249,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
 
   const messages = useQuery(api.messages.list, { conversationId: selectedConversationId }) ?? [];
   const user = useQuery(api.auth.getCurrentUserSafe);
+  const canUseChat = useQuery(api.messages.canUseChat);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -259,7 +260,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const isLoading = messages.length > 0 && messages[messages.length - 1].isLoading === true;
   const showMessageLoadingDots =
     isLoading && messages[messages.length - 1].author === 'assistant' && messages[messages.length - 1].body === undefined;
-  const disabled = chatMessage.trim().length === 0 || isLoading;
+  const disabled = chatMessage.trim().length === 0 || isLoading || !canUseChat;
 
   useEffect(() => {
     if (prevIsLoadingRef.current && scrollRef.current && !isLoading) {
@@ -380,7 +381,15 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             </div>
           )}
           {selectedConversationId && errorMessage && <ErrorMessageCard errorMessage={errorMessage} className="mb-2" />}
-          <form className="relative" onSubmit={handleSendMessage}>
+          <form className="bg-emphasized-background relative rounded-xl" onSubmit={handleSendMessage}>
+            {!canUseChat && (
+              <p className="text-muted-foreground px-4 py-0.5 text-sm/6 font-medium">
+                <span>Upgrade to start chatting.</span>{' '}
+                <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                  View pricing →
+                </Link>
+              </p>
+            )}
             <Textarea
               placeholder={!selectedConversationId ? 'Ask me something about your plan...' : 'Reply...'}
               resizable={false}
