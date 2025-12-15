@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { Figtree, Geist_Mono, Geist } from 'next/font/google';
 
 import { ThemeProvider } from '@/components/providers/theme-provider';
@@ -36,7 +37,10 @@ export default function RootLayout({
     <html lang="en" className="h-full scheme-light dark:scheme-dark" suppressHydrationWarning>
       <body className={`${figtree.variable} ${geistMono.variable} ${geist.variable} h-full antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ConvexClientProvider>
+            {children}
+            <Analytics />
+          </ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>
