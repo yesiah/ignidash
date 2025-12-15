@@ -381,15 +381,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             </div>
           )}
           {selectedConversationId && errorMessage && <ErrorMessageCard errorMessage={errorMessage} className="mb-2" />}
-          <form className={cn('relative', { 'bg-emphasized-background rounded-xl': !canUseChat })} onSubmit={handleSendMessage}>
-            {!canUseChat && (
-              <p className="text-muted-foreground px-4 py-0.5 text-sm/6 font-medium">
-                <span>Upgrade to start chatting.</span>{' '}
-                <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
-                  View pricing →
-                </Link>
-              </p>
-            )}
+          <form className="relative" onSubmit={handleSendMessage}>
             <Textarea
               placeholder={!selectedConversationId ? 'Ask me something about your plan...' : 'Reply...'}
               resizable={false}
@@ -415,7 +407,18 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
               <PaperAirplaneIcon className="-rotate-90" />
             </Button>
           </form>
-          <p className="text-muted-foreground mt-2 text-center text-xs">AI can make mistakes. Verify important info.</p>
+          <p className="text-muted-foreground mt-2 text-center text-xs">
+            {canUseChat ? (
+              'AI can make mistakes. Verify important info.'
+            ) : (
+              <>
+                Upgrade to start chatting.{' '}
+                <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                  View pricing →
+                </Link>
+              </>
+            )}
+          </p>
         </div>
       </main>
     </>
