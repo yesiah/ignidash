@@ -49,10 +49,7 @@ function PlanListItem({
   const { disableEdit, disableClone, disableDelete } = disableActions;
 
   return (
-    <li
-      key={plan._id}
-      className="relative flex items-center space-x-4 px-4 py-4 hover:bg-zinc-50 sm:px-6 lg:px-8 dark:hover:dark:bg-black/10"
-    >
+    <li key={plan._id} className="relative flex items-center space-x-4 px-4 py-4 hover:bg-zinc-50 sm:px-6 lg:px-8 dark:hover:bg-black/10">
       <div className="min-w-0 flex-auto">
         <div className="flex items-center gap-x-3">
           <p className="truncate text-sm/6 font-semibold text-zinc-900 dark:text-white">{plan.name}</p>

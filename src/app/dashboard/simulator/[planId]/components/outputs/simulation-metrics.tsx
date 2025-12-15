@@ -1,55 +1,18 @@
 'use client';
 
+import { useEffect } from 'react';
 import { PartyPopperIcon, UmbrellaIcon, TriangleAlertIcon, BanknoteXIcon, LandmarkIcon, SunsetIcon } from 'lucide-react';
 
-import { cn, formatNumber } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import { keyMetricsForDisplay } from '@/lib/utils/data-display-formatters';
+import { useUpdateCachedKeyMetrics } from '@/lib/stores/simulator-store';
 
 import MetricsCard from './metrics-card';
 
 interface SimulationMetricsProps {
   keyMetrics: KeyMetrics;
 }
-
-const formatMetrics = (keyMetrics: KeyMetrics) => {
-  const {
-    success,
-    retirementAge,
-    yearsToRetirement,
-    bankruptcyAge,
-    yearsToBankruptcy,
-    portfolioAtRetirement,
-    lifetimeTaxesAndPenalties,
-    finalPortfolio,
-    progressToRetirement,
-    areValuesMeans,
-  } = keyMetrics;
-
-  const formatters = {
-    success: (v: number) =>
-      areValuesMeans ? `${formatNumber(v * 100, 1)}%` : v >= 0.99 ? 'Yes!' : v <= 0.01 ? 'No' : `${formatNumber(v * 100, 1)}%`,
-    retirementAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
-    yearsToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
-    bankruptcyAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
-    yearsToBankruptcy: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
-    portfolioAtRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 2, '$')}` : 'N/A'),
-    lifetimeTaxesAndPenalties: (v: number) => `${formatNumber(v, 2, '$')}`,
-    finalPortfolio: (v: number) => `${formatNumber(v, 2, '$')}`,
-    progressToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v * 100, 1)}%` : 'N/A'),
-  };
-
-  return {
-    successForDisplay: formatters.success(success),
-    retirementAgeForDisplay: formatters.retirementAge(retirementAge),
-    yearsToRetirementForDisplay: formatters.yearsToRetirement(yearsToRetirement),
-    bankruptcyAgeForDisplay: formatters.bankruptcyAge(bankruptcyAge),
-    yearsToBankruptcyForDisplay: formatters.yearsToBankruptcy(yearsToBankruptcy),
-    portfolioAtRetirementForDisplay: formatters.portfolioAtRetirement(portfolioAtRetirement),
-    lifetimeTaxesAndPenaltiesForDisplay: formatters.lifetimeTaxesAndPenalties(lifetimeTaxesAndPenalties),
-    finalPortfolioForDisplay: formatters.finalPortfolio(finalPortfolio),
-    progressToRetirementForDisplay: formatters.progressToRetirement(progressToRetirement),
-  };
-};
 
 const getSuccessColor = (success: number): string => {
   if (success >= 0.8)
@@ -64,6 +27,13 @@ const getSuccessColor = (success: number): string => {
 };
 
 export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps) {
+  const updateCachedKeyMetrics = useUpdateCachedKeyMetrics();
+
+  useEffect(() => {
+    updateCachedKeyMetrics(keyMetrics);
+    return () => updateCachedKeyMetrics(null);
+  }, [keyMetrics, updateCachedKeyMetrics]);
+
   const {
     successForDisplay,
     retirementAgeForDisplay,
@@ -72,7 +42,7 @@ export default function SimulationMetrics({ keyMetrics }: SimulationMetricsProps
     lifetimeTaxesAndPenaltiesForDisplay,
     finalPortfolioForDisplay,
     progressToRetirementForDisplay,
-  } = formatMetrics(keyMetrics);
+  } = keyMetricsForDisplay(keyMetrics);
 
   const successColor = getSuccessColor(keyMetrics.success);
 

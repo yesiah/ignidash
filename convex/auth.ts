@@ -1,3 +1,4 @@
+import { v } from 'convex/values';
 import { RateLimiter, HOUR } from '@convex-dev/rate-limiter';
 import { createClient, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
@@ -38,12 +39,13 @@ const polarClient = new Polar({
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
   return betterAuth({
     session: {
-      expiresIn: 60 * 60 * 24 * 7, // 7 days
-      updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
+      expiresIn: 60 * 60 * 24 * 7,
+      updateAge: 60 * 60 * 24,
       cookieCache: {
         enabled: true,
-        maxAge: 5 * 60,
+        maxAge: 60 * 60 * 24 * 7,
         strategy: 'jwt',
+        refreshCache: true,
       },
     },
     logger: {
@@ -87,6 +89,14 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
       },
     },
     user: {
+      additionalFields: {
+        role: {
+          type: 'string',
+          required: false,
+          defaultValue: 'user',
+          input: false,
+        },
+      },
       changeEmail: {
         enabled: true,
         sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
@@ -229,6 +239,14 @@ export const getCurrentUserSafe = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.runQuery(components.betterAuth.auth.getCurrentUserSafe, {});
+  },
+});
+
+export const getIsAdmin = query({
+  args: {},
+  returns: v.boolean(),
+  handler: async (ctx): Promise<boolean> => {
+    return await ctx.runQuery(components.betterAuth.auth.getIsAdmin, {});
   },
 });
 

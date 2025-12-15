@@ -12,11 +12,14 @@ import type * as account from "../account.js";
 import type * as app_data from "../app_data.js";
 import type * as auth from "../auth.js";
 import type * as contribution_rule from "../contribution_rule.js";
+import type * as conversations from "../conversations.js";
+import type * as crons from "../crons.js";
 import type * as expense from "../expense.js";
 import type * as finances from "../finances.js";
 import type * as http from "../http.js";
 import type * as income from "../income.js";
 import type * as market_assumptions from "../market_assumptions.js";
+import type * as messages from "../messages.js";
 import type * as plans from "../plans.js";
 import type * as privacy_settings from "../privacy_settings.js";
 import type * as simulation_settings from "../simulation_settings.js";
@@ -25,14 +28,18 @@ import type * as templates_basic from "../templates/basic.js";
 import type * as templates_early_retirement from "../templates/early_retirement.js";
 import type * as timeline from "../timeline.js";
 import type * as use_openai from "../use_openai.js";
+import type * as utils_ai_utils from "../utils/ai_utils.js";
 import type * as utils_auth_utils from "../utils/auth_utils.js";
+import type * as utils_conversation_utils from "../utils/conversation_utils.js";
 import type * as utils_finances_utils from "../utils/finances_utils.js";
 import type * as utils_plan_utils from "../utils/plan_utils.js";
+import type * as utils_sys_prompt_utils from "../utils/sys_prompt_utils.js";
 import type * as validators_accounts_validator from "../validators/accounts_validator.js";
 import type * as validators_asset_validator from "../validators/asset_validator.js";
 import type * as validators_contribution_rules_validator from "../validators/contribution_rules_validator.js";
 import type * as validators_expenses_validator from "../validators/expenses_validator.js";
 import type * as validators_incomes_validator from "../validators/incomes_validator.js";
+import type * as validators_key_metrics_validator from "../validators/key_metrics_validator.js";
 import type * as validators_liability_validator from "../validators/liability_validator.js";
 import type * as validators_market_assumptions_validator from "../validators/market_assumptions_validator.js";
 import type * as validators_privacy_settings_validator from "../validators/privacy_settings_validator.js";
@@ -51,11 +58,14 @@ declare const fullApi: ApiFromModules<{
   app_data: typeof app_data;
   auth: typeof auth;
   contribution_rule: typeof contribution_rule;
+  conversations: typeof conversations;
+  crons: typeof crons;
   expense: typeof expense;
   finances: typeof finances;
   http: typeof http;
   income: typeof income;
   market_assumptions: typeof market_assumptions;
+  messages: typeof messages;
   plans: typeof plans;
   privacy_settings: typeof privacy_settings;
   simulation_settings: typeof simulation_settings;
@@ -64,14 +74,18 @@ declare const fullApi: ApiFromModules<{
   "templates/early_retirement": typeof templates_early_retirement;
   timeline: typeof timeline;
   use_openai: typeof use_openai;
+  "utils/ai_utils": typeof utils_ai_utils;
   "utils/auth_utils": typeof utils_auth_utils;
+  "utils/conversation_utils": typeof utils_conversation_utils;
   "utils/finances_utils": typeof utils_finances_utils;
   "utils/plan_utils": typeof utils_plan_utils;
+  "utils/sys_prompt_utils": typeof utils_sys_prompt_utils;
   "validators/accounts_validator": typeof validators_accounts_validator;
   "validators/asset_validator": typeof validators_asset_validator;
   "validators/contribution_rules_validator": typeof validators_contribution_rules_validator;
   "validators/expenses_validator": typeof validators_expenses_validator;
   "validators/incomes_validator": typeof validators_incomes_validator;
+  "validators/key_metrics_validator": typeof validators_key_metrics_validator;
   "validators/liability_validator": typeof validators_liability_validator;
   "validators/market_assumptions_validator": typeof validators_market_assumptions_validator;
   "validators/privacy_settings_validator": typeof validators_privacy_settings_validator;
@@ -250,6 +264,7 @@ export declare const components: {
                   emailVerified: boolean;
                   image?: null | string;
                   name: string;
+                  role?: null | string;
                   updatedAt: number;
                   userId?: null | string;
                 };
@@ -324,6 +339,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "role"
                     | "_id";
                   operator?:
                     | "lt"
@@ -506,6 +522,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "role"
                     | "_id";
                   operator?:
                     | "lt"
@@ -750,6 +767,7 @@ export declare const components: {
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -763,6 +781,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "role"
                     | "_id";
                   operator?:
                     | "lt"
@@ -976,6 +995,7 @@ export declare const components: {
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -989,6 +1009,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "role"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1195,10 +1216,12 @@ export declare const components: {
           emailVerified: boolean;
           image?: null | string;
           name: string;
+          role?: null | string;
           updatedAt: number;
           userId?: null | string;
         }
       >;
+      getIsAdmin: FunctionReference<"query", "internal", {}, boolean>;
     };
   };
   rateLimiter: {
