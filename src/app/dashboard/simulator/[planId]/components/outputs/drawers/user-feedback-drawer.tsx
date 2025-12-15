@@ -13,6 +13,7 @@ import Card from '@/components/ui/card';
 import { Field, FieldGroup, Fieldset, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import ErrorMessageCard from '@/components/ui/error-message-card';
 import { type UserFeedbackInputs, userFeedbackSchema } from '@/lib/schemas/user-feedback-schema';
+import { Divider } from '@/components/catalyst/divider';
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
 import { DialogActions } from '@/components/catalyst/dialog';
@@ -61,8 +62,9 @@ export default function UserFeedbackDrawer({ setOpen }: UserFeedbackDrawerProps)
                 <Field>
                   <Textarea {...register('feedback')} id="feedback" name="feedback" aria-label="User feedback" resizable={false} rows={6} />
                   {errors.feedback && <ErrorMessage>{errors.feedback?.message}</ErrorMessage>}
-                  <Description>We may contact you by email to follow up.</Description>
+                  <Description>Your feedback helps us prioritize improvements. We&apos;ll follow up by email if needed.</Description>
                 </Field>
+                <Divider />
               </FieldGroup>
             </Fieldset>
             <DialogActions>
