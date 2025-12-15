@@ -14,7 +14,7 @@ interface DrawerProps {
 }
 
 export default function Drawer({ open, setOpen, title, children, size = 'regular' }: DrawerProps) {
-  const sizeClasses = size === 'large' ? 'sm:max-w-xl md:max-w-3xl lg:max-w-5xl' : 'sm:max-w-md';
+  const sizeClasses = size === 'large' ? 'sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl' : 'sm:max-w-md';
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-50">
