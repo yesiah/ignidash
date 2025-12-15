@@ -46,7 +46,7 @@ export const send = mutation({
   handler: async (ctx, { conversationId: currConvId, planId, content, keyMetrics }) => {
     const [{ userId }, canUseChat] = await Promise.all([getUserIdOrThrow(ctx), getCanUseChat(ctx)]);
 
-    if (!canUseChat) throw new ConvexError('AI chat is not available. Please try again later.');
+    if (!canUseChat) throw new ConvexError('AI chat is not available. Upgrade to start chatting.');
 
     const { ok, retryAfter } = await checkUsageLimits(ctx, userId);
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(retryAfter).toLocaleString()}.`);
