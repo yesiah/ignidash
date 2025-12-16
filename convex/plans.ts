@@ -242,9 +242,8 @@ export const setPlanAsDefault = mutation({
     if (planToSetAsDefault.isDefault) return;
 
     const plans = await getAllPlansForUser(ctx, userId);
-    for (const plan of plans) {
-      if (plan.isDefault) await ctx.db.patch(plan._id, { isDefault: false });
-    }
+
+    await Promise.all(plans.filter((plan) => plan.isDefault).map((plan) => ctx.db.patch(plan._id, { isDefault: false })));
 
     await ctx.db.patch(planId, { isDefault: true });
   },

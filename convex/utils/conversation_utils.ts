@@ -27,7 +27,6 @@ export async function getAllConversationsForPlan(ctx: QueryCtx, planId: Id<'plan
 
 export async function deleteAllConversationsForPlan(ctx: MutationCtx, planId: Id<'plans'>): Promise<void> {
   const conversations = await getAllConversationsForPlan(ctx, planId);
-  if (conversations.length === 0) return;
 
   const messagesByConversation = await Promise.all(
     conversations.map((conv) =>
