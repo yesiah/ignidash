@@ -406,24 +406,19 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'taxableIncome':
-      let hasOrdinaryIncome = false;
-      let hasCapGains = false;
+      const hasOrdinaryIncome = chartData.some((item) => item.taxableOrdinaryIncome > 0);
+      const hasCapGains = chartData.some((item) => item.taxableCapGains > 0);
 
-      transformedChartData = chartData.map((item) => {
-        hasOrdinaryIncome = item.taxableOrdinaryIncome > 0 || hasOrdinaryIncome;
-        hasCapGains = item.taxableCapGains > 0 || hasCapGains;
-
-        return {
-          name: 'Taxable Income',
-          taxableOrdinaryIncome: item.taxableOrdinaryIncome,
-          taxableCapGains: item.taxableCapGains,
-          grossIncome: item.grossIncome,
-          adjustedGrossIncome: item.adjustedGrossIncome,
-          taxableIncome: item.taxableIncome,
-          adjustments: item.adjustments,
-          deductions: item.deductions,
-        };
-      });
+      transformedChartData = chartData.map((item) => ({
+        name: 'Taxable Income',
+        taxableOrdinaryIncome: item.taxableOrdinaryIncome,
+        taxableCapGains: item.taxableCapGains,
+        grossIncome: item.grossIncome,
+        adjustedGrossIncome: item.adjustedGrossIncome,
+        taxableIncome: item.taxableIncome,
+        adjustments: item.adjustments,
+        deductions: item.deductions,
+      }));
 
       dataKeys = [];
       if (hasOrdinaryIncome) {
