@@ -346,7 +346,7 @@ export const useMultiSimulationResult = (
   const { data: { analysis, tableData, yearlyTableData, chartData, keyMetrics } = {} } = useSWR(
     handle ? ['derived', handle, sortMode, category] : null,
     () => mergeWorker.getDerivedMultiSimulationData(handle!, sortMode, category),
-    { ...swrOptions, keepPreviousData: prevHandle === handle }
+    { ...swrOptions, keepPreviousData: prevHandle.current === handle }
   );
 
   const quickSelectPercentile = useQuickSelectPercentile();
