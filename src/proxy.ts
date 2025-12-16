@@ -1,16 +1,15 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-import { getSessionCookie } from 'better-auth/cookies';
+import { getToken } from '@/lib/auth-server';
 
 export async function proxy(request: NextRequest) {
-  const sessionCookie = getSessionCookie(request);
+  const token = await getToken();
 
   const isAuthPage = ['/signin', '/signup', '/forgot-password'].some((path) => request.nextUrl.pathname.startsWith(path));
-  if (sessionCookie && isAuthPage) return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (token && isAuthPage) return NextResponse.redirect(new URL('/dashboard', request.url));
 
   const isProtectedPage = request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname.startsWith('/settings');
-  if (!sessionCookie && isProtectedPage)
+  if (!token && isProtectedPage)
     return NextResponse.redirect(new URL(`/signin?redirect=${encodeURIComponent(request.nextUrl.pathname)}`, request.url));
 
   return NextResponse.next();
