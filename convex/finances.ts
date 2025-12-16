@@ -32,11 +32,12 @@ export const upsertAsset = mutation({
   args: {
     asset: assetValidator,
   },
-  handler: async (ctx, { asset }) => {
+  handler: async (ctx, { asset: _asset }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
     const finances = await getFinancesForUser(ctx, userId);
 
+    const asset = { ..._asset, updatedAt: Date.now() };
     if (!finances) {
       await ctx.db.insert('finances', { userId, assets: [asset], liabilities: [] });
       return;
@@ -56,11 +57,12 @@ export const upsertLiability = mutation({
   args: {
     liability: liabilityValidator,
   },
-  handler: async (ctx, { liability }) => {
+  handler: async (ctx, { liability: _liability }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
     const finances = await getFinancesForUser(ctx, userId);
 
+    const liability = { ..._liability, updatedAt: Date.now() };
     if (!finances) {
       await ctx.db.insert('finances', { userId, assets: [], liabilities: [liability] });
       return;

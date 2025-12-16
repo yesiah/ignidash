@@ -33,7 +33,7 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
       ({
         name: 'Asset ' + (numAssets + 1),
         id: '',
-        updatedAt: Date.now(),
+        updatedAt: undefined,
         type: 'savings' as AssetInputs['type'],
       }) as const satisfies Partial<AssetInputs>,
     [numAssets]
@@ -58,7 +58,7 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
     const assetId = data.id === '' ? uuidv4() : data.id;
     try {
       setSaveError(null);
-      await m({ asset: assetToConvex({ ...data, id: assetId, updatedAt: Date.now() }) });
+      await m({ asset: assetToConvex({ ...data, id: assetId }) });
       onClose();
     } catch (error) {
       setSaveError(error instanceof ConvexError ? error.message : 'Failed to save asset.');
