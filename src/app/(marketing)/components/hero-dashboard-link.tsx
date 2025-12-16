@@ -6,7 +6,7 @@ import { useConvexAuth } from 'convex/react';
 
 import { cn } from '@/lib/utils';
 
-export default function DashboardLink() {
+export default function HeroDashboardLink() {
   const { isAuthenticated } = useConvexAuth();
   const [isLoading, setIsLoading] = useState(false);
 

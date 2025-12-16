@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import DashboardLink from './dashboard-link';
+import HeroDashboardLink from './hero-dashboard-link';
 
 export default function HeroSection() {
   return (
@@ -34,7 +34,7 @@ export default function HeroSection() {
             Explore your financial future with AI-powered simulations.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <DashboardLink />
+            <HeroDashboardLink />
             <a href="#features" className="text-sm/6 font-semibold">
               See features <span aria-hidden="true">→</span>
             </a>
