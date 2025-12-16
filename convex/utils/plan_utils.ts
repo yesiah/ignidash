@@ -22,7 +22,5 @@ export async function getAllPlansForUser(ctx: QueryCtx, userId: string): Promise
 
 export async function deleteAllPlansForUser(ctx: MutationCtx, userId: string): Promise<void> {
   const plans = await getAllPlansForUser(ctx, userId);
-  for (const plan of plans) {
-    await ctx.db.delete(plan._id);
-  }
+  await Promise.all(plans.map((plan) => ctx.db.delete(plan._id)));
 }
