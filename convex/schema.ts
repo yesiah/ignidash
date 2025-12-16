@@ -61,4 +61,20 @@ export default defineSchema({
     .index('by_conversationId_updatedAt', ['conversationId', 'updatedAt'])
     .index('by_userId_updatedAt', ['userId', 'updatedAt']),
   userFeedback: defineTable({ userId: v.string(), feedback: userFeedbackValidator }).index('by_userId', ['userId']),
+  insights: defineTable({
+    userId: v.string(),
+    planId: v.id('plans'),
+    systemPrompt: v.optional(v.string()),
+    content: v.string(),
+    usage: v.optional(
+      v.object({
+        inputTokens: v.number(),
+        outputTokens: v.number(),
+        totalTokens: v.number(),
+      })
+    ),
+    updatedAt: v.optional(v.number()),
+    ms: v.optional(v.number()),
+    isLoading: v.optional(v.boolean()),
+  }).index('by_planId_updatedAt', ['planId', 'updatedAt']),
 });

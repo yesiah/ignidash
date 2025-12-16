@@ -9,7 +9,7 @@ export default function AIOutput() {
   const selectedPlan = useInsightsSelectedPlan();
 
   return (
-    <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
+    <div className="-mx-2 h-full sm:-mx-3 lg:-mx-4 lg:pr-96">
       <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         <Heading level={3}>
           Insights for{' '}
@@ -23,6 +23,7 @@ export default function AIOutput() {
           </Link>
         </Heading>
       </header>
+      <div className="flex h-full flex-col items-center justify-center">AI Output</div>
     </div>
   );
 }
