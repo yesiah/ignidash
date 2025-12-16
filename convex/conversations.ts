@@ -29,15 +29,11 @@ export const deleteConversation = mutation({
   handler: async (ctx, { conversationId }) => {
     await getConversationForCurrentUserOrThrow(ctx, conversationId);
 
-    await ctx.db.delete(conversationId);
-
     const messagesToDelete = await ctx.db
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
       .collect();
 
-    for (const message of messagesToDelete) {
-      await ctx.db.delete(message._id);
-    }
+    await Promise.all([...messagesToDelete.map((msg) => ctx.db.delete(msg._id)), ctx.db.delete(conversationId)]);
   },
 });
