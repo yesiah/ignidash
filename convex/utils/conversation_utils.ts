@@ -46,7 +46,5 @@ export async function deleteAllConversationsForPlan(ctx: MutationCtx, planId: Id
 
 export async function deleteAllConversationsForUser(ctx: MutationCtx, userId: string): Promise<void> {
   const plans = await getAllPlansForUser(ctx, userId);
-  for (const plan of plans) {
-    await deleteAllConversationsForPlan(ctx, plan._id);
-  }
+  await Promise.all(plans.map((plan) => deleteAllConversationsForPlan(ctx, plan._id)));
 }
