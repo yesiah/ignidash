@@ -14,7 +14,6 @@ const features = [
     name: 'Chat with AI.',
     description: 'Use AI to ask questions, clarify results, and learn about retirement planning concepts and principles.',
     icon: SparklesIcon,
-    status: 'coming-soon',
   },
   {
     name: 'Automatic insights.',

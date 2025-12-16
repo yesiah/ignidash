@@ -118,6 +118,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
               <TooltipTrigger asChild>
                 <Button outline onClick={() => setAssetDialogOpen(true)}>
                   <MicroWalletIcon />
+                  <span className="sr-only">Add asset</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Add asset</TooltipContent>
@@ -126,6 +127,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
               <TooltipTrigger asChild>
                 <Button outline onClick={() => setLiabilityDialogOpen(true)}>
                   <MicroCreditCardIcon />
+                  <span className="sr-only">Add liability</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Add liability</TooltipContent>
