@@ -7,71 +7,61 @@ import { motion } from 'framer-motion';
 import { Heading } from '@/components/catalyst/heading';
 import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
 
-function PulseButton({
-  n = 4,
-  duration = 3.4,
-  delay = 0.8,
-  gap = 30,
-  onClick,
-}: {
-  n?: number;
-  duration?: number;
-  delay?: number;
-  gap?: number;
+interface PulseButtonProps {
   onClick?: () => void;
-}) {
+  disabled?: boolean;
+}
+
+function PulseButton({ onClick, disabled = false }: PulseButtonProps) {
+  const rings = 4;
   const buttonSize = 120;
+  const gap = 30;
 
   return (
-    <motion.div style={{ display: 'grid', placeItems: 'center', position: 'relative' }}>
-      {Array.from({ length: n }, (_, i) => {
-        const pulseDelay = delay * i;
-        const pulseRepeatDelay = pulseDelay;
-        const pulseDuration = duration + delay * (n - i);
+    <div className="relative grid place-items-center">
+      {Array.from({ length: rings }, (_, i) => {
+        const isButton = i === 0;
+        const ringSize = buttonSize + gap * i;
+
+        if (isButton) {
+          return (
+            <motion.button
+              key={i}
+              onClick={onClick}
+              disabled={disabled}
+              className="bg-emphasized-background hover:bg-background text-foreground z-10 col-start-1 row-start-1 flex h-30 w-30 flex-col items-center justify-center gap-2 rounded-full font-medium shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              whileHover={disabled ? undefined : { scale: 1.05 }}
+              whileTap={disabled ? undefined : { scale: 0.95 }}
+            >
+              <SparklesIcon className="text-primary h-10 w-10" />
+              <span className="text-sm">Generate</span>
+            </motion.button>
+          );
+        }
+
         return (
           <motion.div
             key={i}
-            className={i === 0 ? 'z-10' : ''}
+            className="col-start-1 row-start-1 aspect-square rounded-full"
             style={{
-              borderRadius: '9999px',
-              gridArea: '1 / 1 / 2 / 2',
-              ...(i === 0
-                ? {}
-                : {
-                    background: 'radial-gradient(50% 50% at 50% 50%, rgba(244, 63, 94, 0.25) 0%, rgba(251, 113, 133, 0.15) 100%)',
-                    border: '2px solid rgba(244, 63, 94, 0.5)',
-                    width: `${buttonSize + gap * i}px`,
-                    aspectRatio: '1/1',
-                    zIndex: n - i,
-                  }),
+              width: ringSize,
+              background: 'radial-gradient(50% 50% at 50% 50%, rgba(244, 63, 94, 0.25) 0%, rgba(251, 113, 133, 0.15) 100%)',
+              border: '2px solid rgba(244, 63, 94, 0.5)',
+              zIndex: rings - i,
             }}
-            {...(i !== 0 && {
-              initial: { opacity: 0 },
-              animate: { opacity: [0, 1, 0], scale: 1.1 },
-              transition: {
-                duration: pulseDuration,
-                delay: pulseDelay,
-                ease: [0.05, 0.6, 0.3, 0.3],
-                repeat: Infinity,
-                repeatDelay: pulseRepeatDelay,
-              },
-            })}
-          >
-            {i === 0 && (
-              <motion.button
-                onClick={onClick}
-                className="bg-emphasized-background hover:bg-background border-border text-foreground flex h-30 w-30 flex-col items-center justify-center gap-2 rounded-full border font-medium shadow-lg transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <SparklesIcon className="text-primary h-10 w-10" />
-                <span className="text-sm">Generate</span>
-              </motion.button>
-            )}
-          </motion.div>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0], scale: 1.1 }}
+            transition={{
+              duration: 3.4 + 0.8 * (rings - i),
+              delay: 0.8 * i,
+              ease: [0.05, 0.6, 0.3, 0.3],
+              repeat: Infinity,
+              repeatDelay: 0.8 * i,
+            }}
+          />
         );
       })}
-    </motion.div>
+    </div>
   );
 }
 
