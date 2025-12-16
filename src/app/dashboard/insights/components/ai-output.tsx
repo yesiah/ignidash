@@ -1,0 +1,28 @@
+'use client';
+
+import Link from 'next/link';
+
+import { Heading } from '@/components/catalyst/heading';
+import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
+
+export default function AIOutput() {
+  const selectedPlan = useInsightsSelectedPlan();
+
+  return (
+    <div className="-mx-2 sm:-mx-3 lg:-mx-4 lg:pr-96">
+      <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <Heading level={3}>
+          Insights for{' '}
+          <Link
+            href={`/dashboard/simulator/${selectedPlan?.id}`}
+            className="text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {selectedPlan?.name}
+          </Link>
+        </Heading>
+      </header>
+    </div>
+  );
+}

@@ -8,7 +8,7 @@ import type { Doc } from '@/convex/_generated/dataModel';
 import { Heading } from '@/components/catalyst/heading';
 import { Button } from '@/components/catalyst/button';
 import { simulatorFromConvex } from '@/lib/utils/convex-to-zod-transformers';
-import { useSimulationResult, useKeyMetrics, useIsCalculationReady } from '@/lib/stores/simulator-store';
+import { useSimulationResult, useKeyMetrics, useIsCalculationReady, useUpdateInsightsSelectedPlan } from '@/lib/stores/simulator-store';
 
 interface PlanListItemProps {
   plan: Doc<'plans'>;
@@ -24,6 +24,8 @@ function PlanListItem({ plan }: PlanListItemProps) {
   const keyMetrics = useKeyMetrics(simulation);
 
   const status = !isCalculationReady ? 'In progress' : keyMetrics?.success ? 'Success' : 'Failed';
+
+  const updateInsightsSelectedPlan = useUpdateInsightsSelectedPlan();
 
   return (
     <li key={plan._id} className="relative flex items-center space-x-4 px-4 py-4 hover:bg-zinc-50 sm:px-6 lg:px-8 dark:hover:bg-black/10">
@@ -61,8 +63,8 @@ function PlanListItem({ plan }: PlanListItemProps) {
         </div>
       </div>
       <div className="flex flex-none items-center gap-x-4">
-        <Button outline href={`/dashboard/simulator/${plan._id}`}>
-          View
+        <Button outline onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name })}>
+          Select
           <span className="sr-only">, {plan.name}</span>
         </Button>
       </div>
@@ -80,7 +82,7 @@ export default function PlanSelector({ preloadedPlans }: PlanSelectorProps) {
   return (
     <aside className="border-border/50 -mx-2 border-t sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:bg-zinc-50 dark:lg:bg-black/10">
       <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-        <Heading level={4}>Select a plan</Heading>
+        <Heading level={4}>Plans</Heading>
       </header>
       <ul role="list" className="divide-border/25 divide-y">
         {plans.map((plan) => (

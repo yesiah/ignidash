@@ -87,6 +87,10 @@ interface SimulatorState {
     selectedConversationId: Id<'conversations'> | undefined;
   };
 
+  insights: {
+    selectedPlan: { id: Id<'plans'>; name: string } | undefined;
+  };
+
   actions: {
     /* Results */
     updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
@@ -104,6 +108,9 @@ interface SimulatorState {
 
     /* Chat */
     updateSelectedConversationId: (id: Id<'conversations'> | undefined) => void;
+
+    /* Insights */
+    updateInsightsSelectedPlan: (plan: { id: Id<'plans'>; name: string } | undefined) => void;
   };
 }
 
@@ -124,6 +131,9 @@ export const defaultState: Omit<SimulatorState, 'actions'> = {
   },
   chat: {
     selectedConversationId: undefined,
+  },
+  insights: {
+    selectedPlan: undefined,
   },
 };
 
@@ -181,6 +191,10 @@ export const useSimulatorStore = create<SimulatorState>()(
             set((state) => {
               state.chat.selectedConversationId = id;
             }),
+          updateInsightsSelectedPlan: (plan) =>
+            set((state) => {
+              state.insights.selectedPlan = plan;
+            }),
         },
       })),
       {
@@ -218,6 +232,7 @@ export const useMonteCarloSortMode = () => useSimulatorStore((state) => state.re
 export const useChartTimeFrameToShow = () => useSimulatorStore((state) => state.results.chartTimeFrameToShow);
 export const useCachedKeyMetrics = () => useSimulatorStore((state) => state.results.cachedKeyMetrics);
 export const useSelectedConversationId = () => useSimulatorStore((state) => state.chat.selectedConversationId);
+export const useInsightsSelectedPlan = () => useSimulatorStore((state) => state.insights.selectedPlan);
 
 /**
  * Action selectors
@@ -235,6 +250,7 @@ export const useUpdateMonteCarloSortMode = () => useSimulatorStore((state) => st
 export const useUpdateChartTimeFrameToShow = () => useSimulatorStore((state) => state.actions.updateChartTimeFrameToShow);
 export const useUpdateCachedKeyMetrics = () => useSimulatorStore((state) => state.actions.updateCachedKeyMetrics);
 export const useUpdateSelectedConversationId = () => useSimulatorStore((state) => state.actions.updateSelectedConversationId);
+export const useUpdateInsightsSelectedPlan = () => useSimulatorStore((state) => state.actions.updateInsightsSelectedPlan);
 
 /**
  * Preferences selectors

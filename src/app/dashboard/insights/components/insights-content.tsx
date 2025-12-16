@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { getToken } from '@/lib/auth-server';
 
+import AIOutput from './ai-output';
 import PlanSelector from './plan-selector';
 
 export default async function InsightsContent() {
@@ -14,6 +15,7 @@ export default async function InsightsContent() {
 
   return (
     <>
+      <AIOutput />
       <PlanSelector preloadedPlans={preloadedPlans} />
     </>
   );
