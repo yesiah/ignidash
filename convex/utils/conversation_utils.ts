@@ -27,9 +27,21 @@ export async function getAllConversationsForPlan(ctx: QueryCtx, planId: Id<'plan
 
 export async function deleteAllConversationsForPlan(ctx: MutationCtx, planId: Id<'plans'>): Promise<void> {
   const conversations = await getAllConversationsForPlan(ctx, planId);
-  for (const conversation of conversations) {
-    await ctx.db.delete(conversation._id);
-  }
+  if (conversations.length === 0) return;
+
+  const messagesByConversation = await Promise.all(
+    conversations.map((conv) =>
+      ctx.db
+        .query('messages')
+        .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conv._id))
+        .collect()
+    )
+  );
+
+  await Promise.all([
+    ...messagesByConversation.flat().map((msg) => ctx.db.delete(msg._id)),
+    ...conversations.map((conv) => ctx.db.delete(conv._id)),
+  ]);
 }
 
 export async function deleteAllConversationsForUser(ctx: MutationCtx, userId: string): Promise<void> {
