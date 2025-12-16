@@ -22,6 +22,7 @@ export default function SidebarAuth() {
       <Headless.MenuButton
         aria-label="Account options"
         className="hover:bg-background border-border/50 focus-visible:ring-primary flex w-full items-center border-t py-3 pl-4 text-base/6 font-semibold focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+        suppressHydrationWarning
       >
         {image ? (
           <Image alt="Profile pic" src={image} className="size-8 shrink-0 rounded-full" width={32} height={32} />

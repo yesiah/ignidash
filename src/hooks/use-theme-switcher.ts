@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { SunMediumIcon, MoonIcon } from 'lucide-react';
 
+import { useMounted } from '@/hooks/use-mounted';
+
 export function useThemeSwitcher({ shortenLabel }: { shortenLabel: boolean } = { shortenLabel: false }) {
   const { setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) return null;
 

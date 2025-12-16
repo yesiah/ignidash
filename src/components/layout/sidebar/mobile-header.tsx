@@ -33,11 +33,12 @@ export default function MobileHeader({ onMenuClick }: MobileHeaderProps) {
         <MenuIcon aria-hidden="true" className="size-6" />
       </button>
       <div className="flex flex-1 items-center gap-2 text-base/6 font-semibold">
+        {/* eslint-disable-next-line react-hooks/static-components */}
         <CurrentPageIcon aria-hidden="true" className="text-primary size-5" />
         {currentPageTitle}
       </div>
       <Dropdown>
-        <Headless.MenuButton aria-label="Account options" className="focus-outline shrink-0">
+        <Headless.MenuButton aria-label="Account options" className="focus-outline shrink-0" suppressHydrationWarning>
           {image ? (
             <Image alt="Profile pic" src={image} className="size-8 shrink-0 rounded-full" width={32} height={32} />
           ) : (
