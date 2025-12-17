@@ -21,7 +21,9 @@ interface GenerateDialogProps {
   planId: Id<'plans'>;
 }
 
-export default function GenerateDialog({ onClose, planId }: GenerateDialogProps) {
+export default function GenerateDialog({ onClose, planId: _planId }: GenerateDialogProps) {
+  const [planId] = useState(_planId);
+
   const {
     register,
     handleSubmit,
@@ -75,7 +77,8 @@ export default function GenerateDialog({ onClose, planId }: GenerateDialogProps)
                 />
                 {errors.userPrompt && <ErrorMessage>{errors.userPrompt?.message}</ErrorMessage>}
                 <Description>
-                  Enter a supplemental prompt for generating insights. If left blank, the system will generate insights based on the plan.
+                  Enter a supplemental prompt for generating insights. If left blank, the system will generate standard insights based on
+                  the selected plan.
                 </Description>
               </Field>
             </FieldGroup>
