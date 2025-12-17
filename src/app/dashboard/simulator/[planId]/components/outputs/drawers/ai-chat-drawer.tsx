@@ -235,6 +235,8 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sendButtonRef = useRef<HTMLButtonElement>(null);
   const prevIsLoadingRef = useRef<boolean>(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const prevScrollHeightRef = useRef<number>(0);
 
   const selectedConversationId = useSelectedConversationId();
   const updateSelectedConversationId = useUpdateSelectedConversationId();
@@ -296,6 +298,19 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
     }
   };
 
+  const handleLoadMore = () => {
+    prevScrollHeightRef.current = scrollAreaRef.current?.scrollHeight ?? 0;
+    loadMore(PAGE_SIZE);
+  };
+
+  useEffect(() => {
+    const container = scrollAreaRef.current;
+    if (!container || !prevScrollHeightRef.current) return;
+
+    container.scrollTop += container.scrollHeight - prevScrollHeightRef.current;
+    prevScrollHeightRef.current = 0;
+  }, [messages.length]);
+
   return (
     <>
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
@@ -333,7 +348,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
           </div>
         )}
         <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full">
+          <ScrollArea className="h-full" ref={scrollAreaRef}>
             {!selectedConversationId ? (
               <div className="absolute inset-0 flex h-full flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                 <div className="mx-auto w-full max-w-md">
@@ -359,7 +374,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
                   )}
                   {status === 'CanLoadMore' && (
                     <div className="flex justify-center">
-                      <Button outline onClick={() => loadMore(PAGE_SIZE)}>
+                      <Button outline onClick={handleLoadMore}>
                         Load more
                       </Button>
                     </div>
