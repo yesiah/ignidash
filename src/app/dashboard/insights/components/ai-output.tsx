@@ -14,7 +14,7 @@ export default function AIOutput() {
     <div className="-mx-2 h-full sm:-mx-3 lg:-mx-4 lg:pr-96">
       <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         {selectedPlan ? (
-          <Heading level={3}>
+          <Heading level={3} className="truncate whitespace-nowrap">
             Insights for{' '}
             <Link
               href={`/dashboard/simulator/${selectedPlan?.id}`}
@@ -26,12 +26,12 @@ export default function AIOutput() {
             </Link>
           </Heading>
         ) : (
-          <Heading level={3}>
+          <Heading level={3} className="truncate whitespace-nowrap">
             Select a plan <span aria-hidden="true">&rarr;</span>
           </Heading>
         )}
       </header>
-      <div className="flex size-full flex-col items-center justify-center px-4 py-5 sm:py-6">
+      <div className="flex h-[calc(100%-4.05rem)] w-full flex-col items-center justify-center px-4 py-5 sm:h-[calc(100%-5.05rem)] sm:py-6 lg:size-full">
         <DataListEmptyStateButton
           onClick={() => {}}
           icon={SparklesIcon}
