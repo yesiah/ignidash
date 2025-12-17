@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { SparklesIcon } from 'lucide-react';
 
 import { Heading } from '@/components/catalyst/heading';
 import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
+import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 
 export default function AIOutput() {
   const selectedPlan = useInsightsSelectedPlan();
@@ -29,7 +31,9 @@ export default function AIOutput() {
           </Heading>
         )}
       </header>
-      <div className="flex h-full flex-col items-center justify-center">AI Output</div>
+      <div className="flex size-full flex-col items-center justify-center px-4 py-5 sm:py-6">
+        <DataListEmptyStateButton onClick={() => {}} icon={SparklesIcon} buttonText="Generate insights" />
+      </div>
     </div>
   );
 }
