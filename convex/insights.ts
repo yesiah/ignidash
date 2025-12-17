@@ -31,8 +31,9 @@ export const get = query({
 export const generate = mutation({
   args: {
     planId: v.id('plans'),
+    userPrompt: v.optional(v.string()),
   },
-  handler: async (ctx, { planId }) => {
+  handler: async (ctx, { planId, userPrompt }) => {
     const [{ userId }, canUseInsights] = await Promise.all([getUserIdOrThrow(ctx), getCanUseChat(ctx)]);
 
     if (!canUseInsights) throw new ConvexError('AI insights are not available. Upgrade to start generating insights.');
