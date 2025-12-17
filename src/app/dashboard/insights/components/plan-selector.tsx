@@ -63,10 +63,17 @@ function PlanListItem({ plan }: PlanListItemProps) {
         </div>
       </div>
       <div className="flex flex-none items-center gap-x-4">
-        <Button outline onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name, keyMetrics })}>
-          Select
-          <span className="sr-only">, {plan.name}</span>
-        </Button>
+        {keyMetrics ? (
+          <Button outline onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name, keyMetrics })}>
+            Select
+            <span className="sr-only">, {plan.name}</span>
+          </Button>
+        ) : (
+          <Button outline disabled>
+            Select
+            <span className="sr-only">, {plan.name}</span>
+          </Button>
+        )}
       </div>
     </li>
   );
