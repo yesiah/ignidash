@@ -32,7 +32,12 @@ export default function AIOutput() {
         )}
       </header>
       <div className="flex size-full flex-col items-center justify-center px-4 py-5 sm:py-6">
-        <DataListEmptyStateButton onClick={() => {}} icon={SparklesIcon} buttonText="Generate insights" />
+        <DataListEmptyStateButton
+          onClick={() => {}}
+          icon={SparklesIcon}
+          buttonText="Generate insights"
+          disabled={selectedPlan === undefined}
+        />
       </div>
     </div>
   );
