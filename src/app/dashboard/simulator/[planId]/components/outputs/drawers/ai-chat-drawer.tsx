@@ -8,7 +8,7 @@ import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/16/solid';
 import { FireIcon } from '@heroicons/react/24/solid';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import { CircleUserRoundIcon, CopyIcon, CheckIcon, WandSparklesIcon } from 'lucide-react';
+import { CircleUserRoundIcon, CopyIcon, CheckIcon, WandSparklesIcon, Loader2Icon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -23,6 +23,8 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
 import ErrorMessageCard from '@/components/ui/error-message-card';
+
+const PAGE_SIZE = 20;
 
 const DEMO_QUESTIONS = [
   {
@@ -249,19 +251,22 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const conversations = useQuery(api.conversations.list, { planId }) ?? [];
   const selectedConversation = conversations.find((c) => c._id === selectedConversationId);
 
-  const { results: messages } = usePaginatedQuery(
-    api.messages.list,
-    selectedConversationId ? { conversationId: selectedConversationId } : 'skip',
-    { initialNumItems: 8 }
-  );
+  const {
+    results: messages,
+    status,
+    loadMore,
+  } = usePaginatedQuery(api.messages.list, selectedConversationId ? { conversationId: selectedConversationId } : 'skip', {
+    initialNumItems: PAGE_SIZE,
+  });
   const user = useQuery(api.auth.getCurrentUserSafe);
   const canUseChat = useQuery(api.messages.canUseChat);
 
+  const isLoadingFirstPage = status === 'LoadingFirstPage';
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'instant' });
     }
-  }, [messages.length]);
+  }, [selectedConversationId, isLoadingFirstPage]);
 
   const isLoading = messages.length > 0 && messages[messages.length - 1].isLoading === true;
   const showMessageLoadingDots =
@@ -269,7 +274,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const disabled = chatMessage.trim().length === 0 || isLoading || !canUseChat;
 
   useEffect(() => {
-    if (prevIsLoadingRef.current && scrollRef.current && !isLoading) {
+    if (!prevIsLoadingRef.current && scrollRef.current && isLoading) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -345,28 +350,42 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6 py-6">
-                {messages
-                  .filter((message) => message.body !== undefined)
-                  .map((message) => (
-                    <ChatMessage key={message._id} message={message} image={user?.image} />
-                  ))}
-                {showMessageLoadingDots && (
-                  <div className="flex gap-4">
-                    <div className="bg-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-                      <WandSparklesIcon className="text-background h-4 w-4" />
+              <>
+                <div className="space-y-6 pt-6 pb-32">
+                  {status === 'LoadingMore' && (
+                    <div className="flex justify-center">
+                      <Loader2Icon className="size-8 animate-spin" />
                     </div>
-                    <div className="bg-emphasized-background border-border/50 text-foreground max-w-[85%] rounded-2xl border p-4 shadow-md">
-                      <div className="flex gap-1">
-                        <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
-                        <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
-                        <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full" />
+                  )}
+                  {status === 'CanLoadMore' && (
+                    <div className="flex justify-center">
+                      <Button outline onClick={() => loadMore(PAGE_SIZE)}>
+                        Load more
+                      </Button>
+                    </div>
+                  )}
+                  {messages
+                    .filter((message) => message.body !== undefined)
+                    .map((message) => (
+                      <ChatMessage key={message._id} message={message} image={user?.image} />
+                    ))}
+                  {showMessageLoadingDots && (
+                    <div className="flex gap-4">
+                      <div className="bg-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+                        <WandSparklesIcon className="text-background h-4 w-4" />
+                      </div>
+                      <div className="bg-emphasized-background border-border/50 text-foreground max-w-[85%] rounded-2xl border p-4 shadow-md">
+                        <div className="flex gap-1">
+                          <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
+                          <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
+                          <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
                 <div ref={scrollRef} />
-              </div>
+              </>
             )}
           </ScrollArea>
         </div>

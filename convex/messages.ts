@@ -27,11 +27,16 @@ export const list = query({
   handler: async (ctx, { conversationId, paginationOpts }) => {
     await getConversationForCurrentUserOrThrow(ctx, conversationId);
 
-    return await ctx.db
+    const results = await ctx.db
       .query('messages')
       .withIndex('by_conversationId_updatedAt', (q) => q.eq('conversationId', conversationId))
-      .order('asc')
+      .order('desc')
       .paginate(paginationOpts);
+
+    return {
+      ...results,
+      page: results.page.reverse(),
+    };
   },
 });
 
