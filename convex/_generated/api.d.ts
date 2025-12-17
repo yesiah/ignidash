@@ -18,6 +18,7 @@ import type * as expense from "../expense.js";
 import type * as finances from "../finances.js";
 import type * as http from "../http.js";
 import type * as income from "../income.js";
+import type * as insights from "../insights.js";
 import type * as market_assumptions from "../market_assumptions.js";
 import type * as messages from "../messages.js";
 import type * as plans from "../plans.js";
@@ -66,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   finances: typeof finances;
   http: typeof http;
   income: typeof income;
+  insights: typeof insights;
   market_assumptions: typeof market_assumptions;
   messages: typeof messages;
   plans: typeof plans;

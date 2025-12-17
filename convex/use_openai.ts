@@ -79,3 +79,59 @@ export const streamChat = internalAction({
     }
   },
 });
+
+type StreamInsightsParams = {
+  userId: string;
+  insightId: Id<'insights'>;
+  systemPrompt: string;
+};
+
+export const streamInsights = internalAction({
+  handler: async (ctx, { userId, insightId, systemPrompt }: StreamInsightsParams) => {
+    try {
+      const stream = await openai.chat.completions.create({
+        model: 'gpt-5.1-chat',
+        messages: [{ role: 'system', content: systemPrompt }],
+        stream: true,
+        stream_options: { include_usage: true },
+        max_completion_tokens: 8192,
+      });
+
+      let content = '';
+      for await (const part of stream) {
+        if (part.choices.length > 0) {
+          const choice = part.choices[0];
+
+          if (choice.delta.content) {
+            content += choice.delta.content;
+            await ctx.runMutation(internal.insights.setContent, { insightId, content });
+          }
+        }
+
+        if (part.usage) {
+          await ctx.runMutation(internal.insights.setUsage, {
+            insightId,
+            userId,
+            inputTokens: part.usage.prompt_tokens,
+            outputTokens: part.usage.completion_tokens,
+            totalTokens: part.usage.total_tokens,
+          });
+        }
+      }
+
+      await ctx.runMutation(internal.insights.setIsLoading, { insightId, isLoading: false });
+    } catch (error) {
+      if (error instanceof AzureOpenAI.APIError) {
+        console.error(error);
+
+        const content = `An unexpected error occurred: ${error.message}.`;
+        await ctx.runMutation(internal.insights.setContent, { insightId, content, isLoading: false });
+      } else {
+        const content = 'An unexpected error occurred. Please try again later.';
+        await ctx.runMutation(internal.insights.setContent, { insightId, content, isLoading: false });
+
+        throw error;
+      }
+    }
+  },
+});
