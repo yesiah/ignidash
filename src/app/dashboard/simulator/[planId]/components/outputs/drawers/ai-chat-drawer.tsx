@@ -1,7 +1,7 @@
 'use client';
 
 import { ConvexError } from 'convex/values';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { api } from '@/convex/_generated/api';
 import { useQuery, useMutation, usePaginatedQuery } from 'convex/react';
 import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/16/solid';
@@ -256,7 +256,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
     selectedConversationId ? { conversationId: selectedConversationId } : 'skip',
     { initialNumItems: PAGE_SIZE }
   );
-  const messages = results.sort((a, b) => a.updatedAt - b.updatedAt);
+  const messages = useMemo(() => results.sort((a, b) => a.updatedAt - b.updatedAt), [results]);
 
   const user = useQuery(api.auth.getCurrentUserSafe);
   const canUseChat = useQuery(api.messages.canUseChat);
