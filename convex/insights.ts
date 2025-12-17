@@ -6,6 +6,14 @@ import { getUserIdOrThrow } from './utils/auth_utils';
 import { checkUsageLimits, recordUsage, getCanUseChat } from './utils/ai_utils';
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 
+export const canUseInsights = query({
+  args: {},
+  returns: v.boolean(),
+  handler: async (ctx): Promise<boolean> => {
+    return await getCanUseChat(ctx);
+  },
+});
+
 export const get = query({
   args: {
     planId: v.id('plans'),
