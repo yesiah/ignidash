@@ -7,6 +7,7 @@ import { checkUsageLimits, recordUsage, getCanUseChat } from './utils/ai_utils';
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getInsightsSystemPrompt } from './utils/sys_prompt_utils';
 import { keyMetricsValidator } from './validators/key_metrics_validator';
+import { simulationResultValidator } from './validators/simulation_result_validator';
 
 export const canUseInsights = query({
   args: {},
@@ -35,9 +36,10 @@ export const generate = mutation({
   args: {
     planId: v.id('plans'),
     keyMetrics: keyMetricsValidator,
+    simulationResult: simulationResultValidator,
     userPrompt: v.optional(v.string()),
   },
-  handler: async (ctx, { planId, keyMetrics, userPrompt }) => {
+  handler: async (ctx, { planId, keyMetrics, simulationResult, userPrompt }) => {
     const [{ userId }, canUseInsights] = await Promise.all([getUserIdOrThrow(ctx), getCanUseChat(ctx)]);
 
     if (!canUseInsights) throw new ConvexError('AI insights are not available. Upgrade to start generating insights.');
@@ -56,7 +58,7 @@ export const generate = mutation({
     if (loadingInsight) throw new ConvexError('An AI insight is already in progress. Please wait for it to complete.');
 
     const updatedAt = Date.now();
-    const systemPrompt = getInsightsSystemPrompt(plan, keyMetrics, userPrompt);
+    const systemPrompt = getInsightsSystemPrompt(plan, keyMetrics, simulationResult, userPrompt);
 
     const insightId = await ctx.db.insert('insights', { userId, planId, systemPrompt, content: '', updatedAt, isLoading: true });
     await ctx.scheduler.runAfter(0, internal.use_openai.streamInsights, { userId, insightId, systemPrompt });

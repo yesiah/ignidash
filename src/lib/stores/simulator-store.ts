@@ -88,7 +88,7 @@ interface SimulatorState {
   };
 
   insights: {
-    selectedPlan: { id: Id<'plans'>; name: string; keyMetrics: KeyMetrics } | undefined;
+    selectedPlan: { id: Id<'plans'>; name: string; keyMetrics: KeyMetrics; simulationResult: SimulationResult } | undefined;
   };
 
   actions: {
@@ -110,7 +110,9 @@ interface SimulatorState {
     updateSelectedConversationId: (id: Id<'conversations'> | undefined) => void;
 
     /* Insights */
-    updateInsightsSelectedPlan: (plan: { id: Id<'plans'>; name: string; keyMetrics: KeyMetrics } | undefined) => void;
+    updateInsightsSelectedPlan: (
+      plan: { id: Id<'plans'>; name: string; keyMetrics: KeyMetrics; simulationResult: SimulationResult } | undefined
+    ) => void;
   };
 }
 

@@ -10,22 +10,31 @@ import { useForm } from 'react-hook-form';
 import type { Id } from '@/convex/_generated/dataModel';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
+import { simulationResultToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import { generateInsightsSchema, type GenerateInsightsInputs } from '@/lib/schemas/generate-insights-schema';
 import { Fieldset, FieldGroup, Field, Label, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 
 interface GenerateDialogProps {
   onClose: () => void;
   planId: Id<'plans'>;
   keyMetrics: KeyMetrics;
+  simulationResult: SimulationResult;
 }
 
-export default function GenerateDialog({ onClose, planId: _planId, keyMetrics: _keyMetrics }: GenerateDialogProps) {
+export default function GenerateDialog({
+  onClose,
+  planId: _planId,
+  keyMetrics: _keyMetrics,
+  simulationResult: _simulationResult,
+}: GenerateDialogProps) {
   const [planId] = useState(_planId);
   const [keyMetrics] = useState(_keyMetrics);
+  const [simulationResult] = useState(_simulationResult);
 
   const {
     register,
@@ -42,7 +51,7 @@ export default function GenerateDialog({ onClose, planId: _planId, keyMetrics: _
   const onSubmit = async (data: GenerateInsightsInputs) => {
     try {
       setSaveError(null);
-      await m({ planId, keyMetrics, userPrompt: data.userPrompt });
+      await m({ planId, keyMetrics, simulationResult: simulationResultToConvex(simulationResult), userPrompt: data.userPrompt });
       onClose();
     } catch (error) {
       setSaveError(error instanceof ConvexError ? error.message : 'Failed to generate insights.');

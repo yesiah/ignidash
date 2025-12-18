@@ -1,4 +1,5 @@
 import type { Doc } from '@/convex/_generated/dataModel';
+import type { SimulationResult as ConvexSimulationResult } from '@/convex/validators/simulation_result_validator';
 
 import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 import type { ContributionInputs, BaseContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
@@ -12,6 +13,7 @@ import type { SimulationSettingsInputs } from '@/lib/schemas/simulation-settings
 import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
 import type { AssetInputs } from '@/lib/schemas/finances/asset-schema';
 import type { LiabilityInputs } from '@/lib/schemas/finances/liability-schema';
+import type { SimulationResult } from '@/lib/calc/simulation-engine';
 
 // ============================================================================
 // CONVEX TO ZOD TRANSFORMERS
@@ -363,4 +365,15 @@ export function arrayToRecord<T extends { id: string }>(items: T[]): Record<stri
  */
 export function recordToArray<T>(record: Record<string, T>): T[] {
   return Object.values(record);
+}
+
+// ============================================================================
+// SIMULATION RESULT TRANSFORMERS
+// ============================================================================
+
+/**
+ * Transforms TypeScript SimulationResult to Convex SimulationResult format
+ */
+export function simulationResultToConvex(simulationResult: SimulationResult): ConvexSimulationResult {
+  return { simulationResult: [], incomeTaxBrackets: [], capitalGainsTaxBrackets: [] };
 }

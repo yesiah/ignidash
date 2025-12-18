@@ -61,7 +61,7 @@ export default function AIOutput() {
       </div>
       {selectedPlan && (
         <Dialog size="xl" open={generateDialogOpen} onClose={handleGenerateDialogClose}>
-          <GenerateDialog onClose={handleGenerateDialogClose} planId={selectedPlan.id} keyMetrics={selectedPlan.keyMetrics} />
+          <GenerateDialog onClose={handleGenerateDialogClose} planId={selectedPlan.id} {...selectedPlan} />
         </Dialog>
       )}
     </>

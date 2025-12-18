@@ -63,8 +63,11 @@ function PlanListItem({ plan }: PlanListItemProps) {
         </div>
       </div>
       <div className="flex flex-none items-center gap-x-4">
-        {keyMetrics ? (
-          <Button outline onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name, keyMetrics })}>
+        {keyMetrics && simulation ? (
+          <Button
+            outline
+            onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name, keyMetrics, simulationResult: simulation })}
+          >
             Select
             <span className="sr-only">, {plan.name}</span>
           </Button>

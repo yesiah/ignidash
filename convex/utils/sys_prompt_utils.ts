@@ -388,11 +388,11 @@ export const getSystemPrompt = (plan: Doc<'plans'>, keyMetrics: KeyMetrics | nul
   return systemPrompt(formatPlanData(plan), formatKeyMetrics(keyMetrics));
 };
 
-export const getInsightsSystemPrompt = (plan: Doc<'plans'>, keyMetrics: KeyMetrics, userPrompt: string | undefined): string => {
-  return insightsSystemPrompt(
-    formatPlanData(plan),
-    formatKeyMetrics(keyMetrics),
-    formatSimulationResult({ simulationResult: [], incomeTaxBrackets: [], capitalGainsTaxBrackets: [] }),
-    userPrompt
-  );
+export const getInsightsSystemPrompt = (
+  plan: Doc<'plans'>,
+  keyMetrics: KeyMetrics,
+  simulationResult: SimulationResult,
+  userPrompt: string | undefined
+): string => {
+  return insightsSystemPrompt(formatPlanData(plan), formatKeyMetrics(keyMetrics), formatSimulationResult(simulationResult), userPrompt);
 };
