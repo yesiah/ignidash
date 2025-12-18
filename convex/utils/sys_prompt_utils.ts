@@ -465,7 +465,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
     if (taxableIncomeItems.length) yearLines.push(`taxable-income: ${taxableIncomeItems.join(', ')}`);
 
     const deductionItems = [
-      d.taxDeferredContributionsDeduction && `401k:${formatNumber(d.taxDeferredContributionsDeduction, 0, '$')}`,
+      d.taxDeferredContributionsDeduction && `tax-deferred:${formatNumber(d.taxDeferredContributionsDeduction, 0, '$')}`,
       d.capitalLossDeduction && `cap-loss:${formatNumber(d.capitalLossDeduction, 0, '$')}`,
     ].filter(Boolean);
     if (deductionItems.length) yearLines.push(`deductions: ${deductionItems.join(', ')}`);
