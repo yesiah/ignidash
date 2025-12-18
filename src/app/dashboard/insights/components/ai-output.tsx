@@ -46,8 +46,10 @@ export default function AIOutput() {
         </header>
         <div className="flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center px-4 py-5 sm:h-[calc(100%-5.0625rem)] sm:py-6 lg:size-full">
           {insights ? (
-            <div className="prose prose-sm prose-zinc max-w-none">
-              <ReactMarkdown>{insights.content}</ReactMarkdown>
+            <div className="w-full flex-1 overflow-y-auto">
+              <div className="prose prose-sm prose-zinc mx-auto">
+                <ReactMarkdown>{insights.content}</ReactMarkdown>
+              </div>
             </div>
           ) : (
             <DataListEmptyStateButton
