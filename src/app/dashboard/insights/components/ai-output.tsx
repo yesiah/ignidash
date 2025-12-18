@@ -11,6 +11,7 @@ import { Heading } from '@/components/catalyst/heading';
 import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 import { Dialog } from '@/components/catalyst/dialog';
+import { cn } from '@/lib/utils';
 
 import GenerateDialog from './dialogs/generate-dialog';
 
@@ -44,7 +45,12 @@ export default function AIOutput() {
             </Heading>
           )}
         </header>
-        <div className="flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center sm:h-[calc(100%-5.0625rem)] lg:size-full">
+        <div
+          className={cn(
+            'flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center sm:h-[calc(100%-5.0625rem)] lg:size-full',
+            { 'px-4 py-5 sm:py-6': !insights }
+          )}
+        >
           {insights ? (
             <div className="w-full flex-1 overflow-y-auto">
               <div className="prose prose-sm prose-zinc dark:prose-invert mx-auto px-4 py-5 sm:py-6">
