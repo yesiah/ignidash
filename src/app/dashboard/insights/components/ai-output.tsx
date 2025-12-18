@@ -4,7 +4,7 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState } from 'react';
 import Link from 'next/link';
-import { SparklesIcon, CopyIcon, CheckIcon, RefreshCwIcon } from 'lucide-react';
+import { SparklesIcon, CopyIcon, CheckIcon, RefreshCwIcon, Loader2Icon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 import { Heading } from '@/components/catalyst/heading';
@@ -64,7 +64,15 @@ export default function AIOutput() {
           {insights ? (
             <div className="w-full flex-1 overflow-y-auto">
               <div className="prose prose-sm prose-zinc dark:prose-invert mx-auto px-4 py-5 sm:py-6">
-                <ReactMarkdown>{insights.content}</ReactMarkdown>
+                {insights.content ? (
+                  <ReactMarkdown>{insights.content}</ReactMarkdown>
+                ) : (
+                  <div className="flex gap-1 pt-4 pb-8">
+                    <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]" />
+                    <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]" />
+                    <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full" />
+                  </div>
+                )}
                 <div className="border-border/50 flex items-center gap-3 border-t pt-4">
                   <p className="text-foreground/60 text-sm">
                     <time
@@ -93,11 +101,12 @@ export default function AIOutput() {
                     {copied ? <CheckIcon className="h-4 w-4" /> : <CopyIcon className="h-4 w-4" />}
                   </button>
                   <button
+                    disabled={insights.isLoading}
                     onClick={() => setGenerateDialogOpen(true)}
                     aria-label="Regenerate insights"
-                    className="text-sm opacity-60 transition-all duration-300 hover:rotate-180 hover:opacity-100"
+                    className="text-sm opacity-60 transition-all duration-300 hover:rotate-180 hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <RefreshCwIcon className="h-4 w-4" />
+                    {insights.isLoading ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <RefreshCwIcon className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
