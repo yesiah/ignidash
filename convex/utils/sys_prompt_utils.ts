@@ -180,19 +180,19 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   ## Response Sections
 
   **1. Plan Overview & Key Findings**
-  Summarize the plan and key results.
+  Summarize the user's plan and key results.
 
   **2. User's Question** (skip if not provided)
   Address the user's specific question directly.
 
   **3. How Your Income Is Taxed**
-  Explain how the user's different income types (earned, capital gains, tax-deferred withdrawals, dividends, etc.) are taxed and relevant bracket thresholds.
+  Explain how the user's different income sources (earned, soc sec, tax-exempt, retirement distributions, interest, realized gains, dividends) are taxed and relevant bracket thresholds.
 
   **4. Tax Bracket Transitions**
-  How and why marginal/effective rates change over time. Separate analysis for accumulation phase and retirement phase.
+  How and why marginal/effective rates change over time. Separate the analysis into accumulation phase and retirement phase.
 
   **5. Required Minimum Distributions**
-  What RMDs are, when they start and for what accounts, how they're calculated, tax impact, common management strategies.
+  What RMDs are, when they start and for what accounts, common strategies to reduce tax impact.
 
   **6. Roth Conversions**
   What Roth conversions are, when they're typically advantageous (pros/cons), whether this plan has favorable windows for them.
