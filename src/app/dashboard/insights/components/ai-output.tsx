@@ -4,9 +4,8 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState } from 'react';
 import Link from 'next/link';
-import { SparklesIcon } from 'lucide-react';
+import { SparklesIcon, CopyIcon, CheckIcon, RefreshCwIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { CopyIcon, CheckIcon } from 'lucide-react';
 
 import { Heading } from '@/components/catalyst/heading';
 import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
@@ -66,8 +65,8 @@ export default function AIOutput() {
             <div className="w-full flex-1 overflow-y-auto">
               <div className="prose prose-sm prose-zinc dark:prose-invert mx-auto px-4 py-5 sm:py-6">
                 <ReactMarkdown>{insights.content}</ReactMarkdown>
-                <div className="border-border/50 flex items-center gap-2 border-t pt-4">
-                  <p className="text-foreground/60 text-xs">
+                <div className="border-border/50 flex items-center gap-3 border-t pt-4">
+                  <p className="text-foreground/60 text-sm">
                     <time
                       dateTime={new Date(insights._creationTime).toLocaleString([], {
                         month: 'numeric',
@@ -89,9 +88,16 @@ export default function AIOutput() {
                   <button
                     onClick={handleCopy}
                     aria-label="Copy insights"
-                    className="text-xs opacity-60 transition-opacity hover:opacity-100"
+                    className="text-sm opacity-60 transition-opacity hover:opacity-100"
                   >
-                    {copied ? <CheckIcon className="h-3 w-3" /> : <CopyIcon className="h-3 w-3" />}
+                    {copied ? <CheckIcon className="h-4 w-4" /> : <CopyIcon className="h-4 w-4" />}
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    aria-label="Regenerate insights"
+                    className="text-sm opacity-60 transition-all duration-300 hover:rotate-180 hover:opacity-100"
+                  >
+                    <RefreshCwIcon className="h-4 w-4" />
                   </button>
                 </div>
               </div>
