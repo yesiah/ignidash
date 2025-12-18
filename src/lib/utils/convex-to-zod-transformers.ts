@@ -400,8 +400,6 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       federalIncomeTax: taxesData[i].annualIncomeTax,
       capitalGainsTax: taxesData[i].annualCapGainsTax,
       earlyWithdrawalPenalties: taxesData[i].annualEarlyWithdrawalPenalties,
-      taxableOrdinaryIncome: taxesData[i].taxableOrdinaryIncome,
-      taxableCapitalGains: taxesData[i].taxableCapGains,
       effectiveIncomeTaxRate: taxesData[i].effectiveIncomeTaxRate,
       topMarginalIncomeTaxRate: taxesData[i].topMarginalIncomeTaxRate,
       effectiveCapitalGainsTaxRate: taxesData[i].effectiveCapGainsTaxRate,
@@ -427,9 +425,6 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       earlyWithdrawals: withdrawalsData[i].annualEarlyWithdrawals,
       rothEarningsWithdrawals: withdrawalsData[i].annualRothEarningsWithdrawals,
       withdrawalRate: withdrawalsData[i].withdrawalRate,
-
-      // Monte Carlo
-      monteCarlo: null,
     });
   }
 

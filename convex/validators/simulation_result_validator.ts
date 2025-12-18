@@ -42,9 +42,6 @@ export const simulationDataPointValidator = v.object({
   capitalGainsTax: v.number(),
   earlyWithdrawalPenalties: v.number(),
 
-  taxableOrdinaryIncome: v.number(),
-  taxableCapitalGains: v.number(),
-
   effectiveIncomeTaxRate: v.number(),
   topMarginalIncomeTaxRate: v.number(),
   effectiveCapitalGainsTaxRate: v.number(),
@@ -71,17 +68,6 @@ export const simulationDataPointValidator = v.object({
   earlyWithdrawals: v.number(),
   rothEarningsWithdrawals: v.number(),
   withdrawalRate: v.nullable(v.number()),
-
-  // Monte Carlo
-  monteCarlo: v.nullable(
-    v.object({
-      p10PortfolioValue: v.number(),
-      p50PortfolioValue: v.number(),
-      p90PortfolioValue: v.number(),
-      percentRetirement: v.number(),
-      percentBankrupt: v.number(),
-    })
-  ),
 });
 
 export const simulationResultValidator = v.object({

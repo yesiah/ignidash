@@ -191,19 +191,26 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   ## Response Sections
 
   **1. Plan Summary**
-  Summarize the plan and key results in 2-3 sentences. No evaluation.
+  Summarize the plan and key results in 2-3 sentences.
 
-  **2. User's Question** (skip if not provided)
+  **2. User's Question** (skip entirely if not provided)
   Address the user's specific question directly.
 
   **3. How Your Income Is Taxed**
-  Explain how the user's different income sources are taxed and relevant bracket thresholds.
+  Explain how the user's different income sources are taxed ("stacking" capital gains on top of ordinary income), relevant bracket thresholds:
+  - Earned Income (ordinary)
+  - Social Security (ordinary)
+  - Tax-Exempt Income (tax-free)
+  - Retirement Distributions (ordinary)
+  - Interest Income (ordinary)
+  - Realized Gains (capital gains)
+  - Dividend Income (capital gains)
 
   **4. Tax Bracket Transitions**
-  How and why marginal/effective rates change over time. Separate into accumulation and retirement phases.
+  How and why marginal/effective rates change for the user over time based on their income sources and bracket thresholds. Separate into accumulation and retirement phases.
 
   **5. Required Minimum Distributions**
-  What RMDs are, when they start, how they affect this plan, and common approaches to manage their tax impact.
+  What RMDs are, when they start, how they affect this plan (e.g. whether they spike tax liability), and common approaches to manage their tax impact.
 
   **6. Roth Conversions**
   What Roth conversions are, when they're typically advantageous, and whether this plan has windows worth considering.
@@ -222,9 +229,6 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   **11. Portfolio Allocation & Asset Location**
   Asset allocation trajectory and distribution across account types, with implications and trade-offs.
-
-  **12. Monte Carlo Results** (only for Monte Carlo simulations)
-  Success rate, outcome ranges, and what the distribution implies.
 
 
   ## Ignidash's App Features for Financial Modeling
@@ -463,12 +467,6 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
       d.topMarginalCapitalGainsTaxRate && `marg-capgains:${(d.topMarginalCapitalGainsTaxRate * 100).toFixed(0)}%`,
     ].filter(Boolean);
     if (rateItems.length) yearLines.push(`rates: ${rateItems.join(', ')}`);
-
-    const taxableIncomeItems = [
-      d.taxableOrdinaryIncome && `ordinary:${formatNumber(d.taxableOrdinaryIncome, 0, '$')}`,
-      d.taxableCapitalGains && `capgains:${formatNumber(d.taxableCapitalGains, 0, '$')}`,
-    ].filter(Boolean);
-    if (taxableIncomeItems.length) yearLines.push(`taxable-income: ${taxableIncomeItems.join(', ')}`);
 
     const deductionItems = [
       d.taxDeferredContributionsDeduction && `tax-deferred:${formatNumber(d.taxDeferredContributionsDeduction, 0, '$')}`,
