@@ -49,18 +49,18 @@ export const simulationDataPointValidator = v.object({
   adjustedGrossIncome: v.number(),
   taxableIncome: v.number(),
 
-  /* Tax Amounts */
+  // --- Tax Amounts ---
   ficaTax: v.number(),
   federalIncomeTax: v.number(),
   capitalGainsTax: v.number(),
   earlyWithdrawalPenalties: v.number(),
 
-  /* Taxable Income */
+  // --- Taxable Income ---
   taxableOrdinaryIncome: v.number(),
   taxableCapitalGains: v.number(),
   taxableSocialSecurityIncome: v.number(),
 
-  /* Tax Rates */
+  // --- Tax Rates ---
   effectiveIncomeTaxRate: v.number(),
   topMarginalIncomeTaxRate: v.number(),
   incomeTaxBrackets: v.array(taxBracketValidator),
@@ -68,11 +68,11 @@ export const simulationDataPointValidator = v.object({
   topMarginalCapitalGainsTaxRate: v.number(),
   capitalGainsTaxBrackets: v.array(taxBracketValidator),
 
-  /* Social Security */
+  // --- Social Security ---
   maxTaxablePercentage: v.number(),
   actualTaxablePercentage: v.number(),
 
-  /* Adjustments & Deductions */
+  // --- Adjustments & Deductions ---
   taxDeferredContributionsDeduction: v.number(),
   standardDeduction: v.number(),
   capitalLossDeduction: v.number(),
