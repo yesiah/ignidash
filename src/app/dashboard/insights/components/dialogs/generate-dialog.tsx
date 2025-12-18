@@ -98,13 +98,13 @@ export default function GenerateDialog({
                 </Description>
               </Field>
               {hasExistingInsight && (
-                <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4 dark:border-yellow-500 dark:bg-yellow-500/10">
+                <div role="alert" className="rounded-md bg-yellow-50 p-4 dark:bg-yellow-500/10 dark:outline dark:outline-yellow-500/25">
                   <div className="flex">
                     <div className="shrink-0">
                       <ExclamationTriangleIcon aria-hidden="true" className="size-5 text-yellow-400 dark:text-yellow-500" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                      <p className="line-clamp-3 text-sm text-yellow-700 dark:text-yellow-300">
                         An existing <span className="font-semibold">Insights</span> already exists for this plan. Regenerating will make it
                         no longer available.
                       </p>
