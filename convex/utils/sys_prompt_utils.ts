@@ -227,7 +227,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   **11. Asset Allocation & Location**
   Review asset allocation over time and placement across account types. Educate on principles:
-  - Tax placement: bonds in tax-deferred (defer income tax on interest); stocks in taxable (already tax-efficient)
+  - Tax placement: bonds in tax-deferred (to defer income tax on interest); stocks in taxable (already tax-efficient)
   - Sequence risk: high stock % at retirement increases vulnerability to early market crashes
   - Return drag: excessive cash or bonds early in accumulation reduces long-term growth
   - Roth priority: highest-growth assets maximize tax-free compounding
