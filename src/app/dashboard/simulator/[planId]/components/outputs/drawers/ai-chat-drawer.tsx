@@ -261,7 +261,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   const messages = useMemo(() => results.sort((a, b) => a.updatedAt - b.updatedAt), [results]);
 
   const user = useQuery(api.auth.getCurrentUserSafe);
-  const canUseChat = useQuery(api.messages.canUseChat);
+  const canUseChat = useQuery(api.messages.canUseChat) ?? false;
 
   const isLoadingFirstPage = status === 'LoadingFirstPage';
   useEffect(() => {

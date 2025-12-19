@@ -1,13 +1,14 @@
 'use client';
 
 import { ConvexError } from 'convex/values';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState } from 'react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type { Id } from '@/convex/_generated/dataModel';
+import Link from 'next/link';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { simulationResultToConvex } from '@/lib/utils/convex-to-zod-transformers';
@@ -34,6 +35,8 @@ export default function GenerateDialog({
   keyMetrics: _keyMetrics,
   simulationResult: _simulationResult,
 }: GenerateDialogProps) {
+  const canUseInsights = useQuery(api.insights.canUseInsights) ?? false;
+
   const [planId] = useState(_planId);
   const [keyMetrics] = useState(_keyMetrics);
   const [simulationResult] = useState(_simulationResult);
@@ -96,6 +99,16 @@ export default function GenerateDialog({
                   the selected plan.
                 </Description>
               </Field>
+              {!canUseInsights && (
+                <p className="text-muted-foreground border-border/50 mt-2 rounded-md border p-2 text-center text-xs">
+                  <strong>
+                    Upgrade to start generating insights.{' '}
+                    <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                      View pricing →
+                    </Link>
+                  </strong>
+                </p>
+              )}
             </FieldGroup>
           </DialogBody>
         </Fieldset>
@@ -103,7 +116,7 @@ export default function GenerateDialog({
           <Button plain onClick={onClose} className="hidden sm:inline-flex" disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button color="rose" type="submit" disabled={isSubmitting}>
+          <Button color="rose" type="submit" disabled={isSubmitting || !canUseInsights}>
             {isSubmitting ? 'Generating...' : 'Generate'}
           </Button>
         </DialogActions>
