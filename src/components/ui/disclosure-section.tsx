@@ -81,7 +81,13 @@ function DisclosureSectionContent({
         })}
         suppressHydrationWarning
       >
-        <div className={cn('flex h-full flex-col px-4 py-5 sm:py-6', { 'justify-center': centerPanelContent })}>{children}</div>
+        <div
+          className={cn('flex h-full min-h-[60vh] flex-col px-4 py-5 sm:min-h-auto sm:py-6', {
+            'justify-center': centerPanelContent,
+          })}
+        >
+          {children}
+        </div>
       </DisclosurePanel>
     </div>
   );
