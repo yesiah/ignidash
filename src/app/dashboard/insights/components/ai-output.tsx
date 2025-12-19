@@ -172,12 +172,15 @@ export default function AIOutput() {
               </div>
             </div>
           ) : (
-            <DataListEmptyStateButton
-              onClick={() => setGenerateDialogOpen(true)}
-              icon={SparklesIcon}
-              buttonText="Generate insights"
-              disabled={selectedPlan === undefined}
-            />
+            <div className="flex h-full w-full flex-col">
+              <DataListEmptyStateButton
+                onClick={() => setGenerateDialogOpen(true)}
+                icon={SparklesIcon}
+                buttonText="Generate insights"
+                className="flex-1"
+                disabled={selectedPlan === undefined}
+              />
+            </div>
           )}
         </div>
       </div>

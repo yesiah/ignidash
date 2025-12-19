@@ -1,17 +1,29 @@
+import { cn } from '@/lib/utils';
+
 interface DataListEmptyStateButtonProps {
   onClick: () => void;
   icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string; titleId?: string } & React.RefAttributes<SVGSVGElement>
   >;
   buttonText: string;
+  className?: string;
   disabled?: boolean;
 }
 
-export default function DataListEmptyStateButton({ onClick, icon: Icon, buttonText, disabled = false }: DataListEmptyStateButtonProps) {
+export default function DataListEmptyStateButton({
+  onClick,
+  icon: Icon,
+  buttonText,
+  className,
+  disabled = false,
+}: DataListEmptyStateButtonProps) {
   return (
     <button
       type="button"
-      className="focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-zinc-300 p-4 text-center hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:hover:border-white/25"
+      className={cn(
+        'focus-outline relative block w-full grow rounded-lg border-2 border-dashed border-zinc-300 p-4 text-center hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:hover:border-white/25',
+        className
+      )}
       onClick={onClick}
       disabled={disabled}
     >
