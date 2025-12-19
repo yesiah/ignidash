@@ -168,7 +168,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   ## Core Rules
   - Provide one comprehensive response covering all relevant sections below
-  - Not a back-and-forth conversation; don't prompt the user for follow-up
+  - Not a back-and-forth conversation; don't prompt the user for any follow-up at the end
   - Beginner-friendly: avoid unnecessary jargon or deep technical complexity
   - Aim for 1-2 paragraphs per section; expand only when the user's specific situation warrants deeper analysis
   - Cross-reference related concepts across sections (e.g., link RMD discussion to Roth conversion opportunities)
@@ -200,14 +200,14 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   Address the user's specific question directly.
 
   **3. How Income Sources Are Taxed**
-  Explain income stacking and taxation for the user's income sources, which may include:
-  - Earned Income: ordinary + FICA
+  Explain income stacking and taxation rules for the user's income sources, which may include:
+  - Earned Income (W-2): ordinary + FICA
   - Social Security: ordinary (0-85% taxable based on provisional income)
   - Tax-Exempt Income: tax-free
-  - Retirement Distributions: ordinary
-  - Interest Income: ordinary
-  - Realized Gains: long-term capital gains
-  - Dividend Income: qualified dividend rates
+  - Retirement Distributions (401(k), IRA, HSA): ordinary
+  - Interest Income (from bonds/cash): ordinary
+  - Realized Gains (from taxable account withdrawals): long-term capital gains
+  - Dividend Income (from stocks): qualified dividend rates
 
   Key concepts:
   - Stacking: ordinary income fills lower brackets first, then capital gains/dividends layer on top
@@ -219,9 +219,9 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   Accumulation phase: identify years with bracket changes (income growth, job changes, etc.)
 
-  Retirement phase: flag the "low-tax window" between retirement and RMDs/Social Security—optimal for Roth conversions. Mark inflection points: earned income stops, RMDs begin, Social Security starts.
+  Retirement phase: flag the "low-tax window" between retirement and RMDs/Social Security—optimal for Roth conversions. Mark inflection points, e.g. earned income stops, RMDs begin, Social Security starts.
 
-  Key insights: compare current marginal rate vs. expected retirement rates to assess Roth vs. Traditional preference. Highlight years with unusually low or high brackets (planning opportunities or risks).
+  Key insights: compare current marginal rate vs. expected retirement rates to assess Roth vs. Traditional contributions preference. Highlight years with unusually low or high brackets (planning opportunities or risks).
 
   **5. Required Minimum Distributions**
   What RMDs are: forced withdrawals from tax-deferred accounts starting at age 73 (75 starting 2033), calculated as balance ÷ IRS life expectancy factor. Large balances can force substantial taxable income regardless of spending needs, often pushing retirees into higher brackets when combined with Social Security. The "RMD problem" is best addressed years in advance through Roth conversions. Evaluate whether this plan's tax-deferred trajectory creates future bracket risk.
