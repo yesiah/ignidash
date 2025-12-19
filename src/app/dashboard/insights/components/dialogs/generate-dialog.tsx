@@ -99,16 +99,25 @@ export default function GenerateDialog({
                   the selected plan.
                 </Description>
               </Field>
-              {!canUseInsights && (
-                <p className="text-muted-foreground border-border/50 bg-emphasized-background mt-2 rounded-md border p-2 text-center text-xs">
+              <p className="text-muted-foreground border-border/50 bg-emphasized-background mt-2 rounded-md border p-2 text-center text-base/6 sm:text-sm/6">
+                {canUseInsights ? (
+                  <>
+                    AI insights are for educational purposes only and do not provide professional financial advice. For more information,
+                    read our{' '}
+                    <Link href="/terms" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                      Terms of Service
+                    </Link>
+                    .
+                  </>
+                ) : (
                   <strong>
                     Upgrade to start generating insights.{' '}
                     <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                       View pricing →
                     </Link>
                   </strong>
-                </p>
-              )}
+                )}
+              </p>
             </FieldGroup>
           </DialogBody>
         </Fieldset>
