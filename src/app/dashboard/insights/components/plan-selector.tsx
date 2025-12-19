@@ -63,7 +63,7 @@ function PlanListItem({ plan }: PlanListItemProps) {
         </div>
       </div>
       <div className="flex flex-none items-center gap-x-4">
-        {keyMetrics && simulation ? (
+        {keyMetrics !== null && simulation !== null && status !== 'In progress' ? (
           <Button
             outline
             onClick={() => updateInsightsSelectedPlan({ id: plan._id, name: plan.name, keyMetrics, simulationResult: simulation })}
