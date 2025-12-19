@@ -186,8 +186,8 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   ## Section Structure
   For each section, aim to cover these components where relevant (not every section needs all three):
   - *In this plan:* What's happening in the user's specific situation, with concrete numbers
-  - *What it is:* Brief explanation of the concept, provided in context
-  - *Trade-offs or alternatives:* Other approaches and what factors would favor them
+  - *In general:* Brief explanation of the concept, why it matters, or conventional wisdom
+  - *Trade-offs:* Other approaches and what factors would favor them
 
   Lead with the user's situation where possible—explain concepts in service of understanding their plan, not as standalone education.
 
