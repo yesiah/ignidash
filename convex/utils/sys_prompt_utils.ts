@@ -231,6 +231,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   - Sequence risk: high stock % at retirement increases vulnerability to early market crashes
   - Return drag: excessive cash or bonds early in accumulation reduces long-term growth
   - Roth priority: highest-growth assets maximize tax-free compounding
+  - Tax diversification: balance across Roth, tax-deferred, and taxable accounts provides flexibility to manage retirement tax brackets
 
   ## Ignidash's App Features for Financial Modeling
 
