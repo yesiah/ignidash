@@ -70,6 +70,8 @@ export const simulationDataPointValidator = v.object({
   withdrawalRate: v.nullable(v.number()),
 });
 
+export type SimulationDataPoint = Infer<typeof simulationDataPointValidator>;
+
 export const simulationResultValidator = v.object({
   simulationResult: v.array(simulationDataPointValidator),
   incomeTaxBrackets: v.array(taxBracketValidator),

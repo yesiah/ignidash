@@ -164,10 +164,10 @@ ${keyMetrics}
 `;
 
 const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationResult: string, userPrompt: string | undefined): string => `
-  You provide users with an educational overview of their financial plan for Ignidash, a retirement planning simulator. Explain concepts, provide insights, and evaluate trade-offs—never give personalized advice or tell users what to do.
+  You provide users with an educational overview of their financial plan for Ignidash, a retirement planning simulator. Explain concepts, provide insights, and evaluate trade-offs using their specific data—but let them decide what to do.
 
   ## Core Rules
-  - Provide one comprehensive response covering all relevant sections below
+  - Provide one comprehensive response covering all sections below
   - Not a back-and-forth conversation; don't prompt the user for any follow-up at the end
   - Beginner-friendly: avoid unnecessary jargon or deep technical complexity
   - Aim for 1-2 paragraphs per section; expand only when the user's specific situation warrants deeper analysis
@@ -196,8 +196,9 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   **1. Plan Summary**
   Summarize the plan and key results in 2-3 sentences.
 
-  **2. User's Question** (skip entirely if not provided)
-  Address the user's specific question directly.
+  **2. User's Supplemental Prompt** (skip entirely if not provided)
+  Address the user's supplemental prompt, if provided:
+  ${userPrompt ?? 'No supplemental prompt provided.'}
 
   **3. How Income Sources Are Taxed**
   Explain income stacking and taxation rules for the user's income sources, which may include:
@@ -224,7 +225,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   Key insights: compare current marginal rate vs. expected retirement rates to assess Roth vs. Traditional contributions preference. Highlight years with unusually low or high brackets (planning opportunities or risks).
 
   **5. Required Minimum Distributions**
-  What RMDs are: forced withdrawals from tax-deferred accounts starting at age 73 (75 starting 2033), calculated as balance ÷ IRS life expectancy factor. Large balances can force substantial taxable income regardless of spending needs, often pushing retirees into higher brackets when combined with Social Security. The "RMD problem" is best addressed years in advance through Roth conversions. Evaluate whether this plan's tax-deferred trajectory creates future bracket risk.
+  What RMDs are: forced withdrawals from tax-deferred accounts starting at age 73 (75 starting 2033), calculated as balance ÷ IRS life expectancy factor. Large balances can force substantial taxable income regardless of spending needs, often pushing retirees into higher brackets when combined with Social Security. The "RMD problem" is best addressed years in advance by drawing down balances early—through Roth conversions (tax now, tax-free later) or voluntary withdrawals that fill lower brackets before RMDs begin. Evaluate whether this plan's tax-deferred trajectory creates future bracket risk.
 
   **6. Roth Conversions**
   What conversions are: moving funds from tax-deferred to Roth, paying ordinary tax now for tax-free growth and withdrawals later. Typically advantageous during low-income years, when current marginal rate is lower than expected future rate, or to reduce future RMD burden. "Bracket filling" means converting up to the top of the current bracket without crossing into the next.
@@ -291,11 +292,6 @@ ${keyMetrics}
 
   **User's Simulation Result**
 ${simulationResult}
-
-  **User's Supplemental Prompt**
-  ${userPrompt ?? 'No supplemental prompt provided.'}
-
-  Use their data to illustrate concepts concretely. Reference their specific numbers, ages, and account balances—but let them decide what to do.
 `;
 
 const formatPlanData = (plan: Doc<'plans'>): string => {
@@ -424,107 +420,110 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
 
   const lines: string[] = [];
 
-  const formatBracket = (b: { min: number; max: number | null; rate: number }) =>
-    `${b.rate * 100}%: ${formatNumber(b.min, 0, '$')}${b.max !== null ? `-${formatNumber(b.max, 0, '$')}` : '+'}`;
+  const fmt = (n: number) => formatNumber(n, 0, '$');
+  const pct = (n: number) => `${(n * 100).toFixed(n && Math.abs(n) < 0.1 ? 1 : 0)}%`;
 
-  lines.push(`  Tax Brackets:`);
-  lines.push(`    Income: ${incomeTaxBrackets.map(formatBracket).join(', ')}`);
-  lines.push(`    Cap Gains: ${capitalGainsTaxBrackets.map(formatBracket).join(', ')}`);
-  lines.push(`    Standard Deduction: ${formatNumber(standardDeduction, 0, '$')}`);
+  const fmtBracket = (b: { min: number; max: number | null; rate: number }) =>
+    `${pct(b.rate)}:${fmt(b.min)}${b.max !== null ? `-${fmt(b.max)}` : '+'}`;
 
-  lines.push(`\n  Year-by-Year Data:`);
+  lines.push(`Tax Brackets:`);
+  lines.push(`  Income: ${incomeTaxBrackets.map(fmtBracket).join(', ')}`);
+  lines.push(`  CapGains: ${capitalGainsTaxBrackets.map(fmtBracket).join(', ')}`);
+  lines.push(`  StdDeduction: ${fmt(standardDeduction)}`);
+
+  lines.push(`\nYear-by-Year:`);
 
   for (const d of data) {
-    const yearLines: string[] = [];
+    const sections: string[] = [];
 
-    const portfolioItems = [
-      d.stockHoldings && `stocks:${formatNumber(d.stockHoldings, 0, '$')}`,
-      d.bondHoldings && `bonds:${formatNumber(d.bondHoldings, 0, '$')}`,
-      d.cashHoldings && `cash:${formatNumber(d.cashHoldings, 0, '$')}`,
+    const portfolio = [
+      d.stockHoldings && `stk:${fmt(d.stockHoldings)}`,
+      d.bondHoldings && `bnd:${fmt(d.bondHoldings)}`,
+      d.cashHoldings && `cash:${fmt(d.cashHoldings)}`,
     ].filter(Boolean);
-    if (portfolioItems.length) yearLines.push(`portfolio: ${portfolioItems.join(', ')} = ${formatNumber(d.totalValue, 0, '$')}`);
+    if (portfolio.length) sections.push(`portfolio: ${portfolio.join(', ')} = ${fmt(d.totalValue)}`);
 
-    const accountItems = [
-      d.taxableValue && `taxable:${formatNumber(d.taxableValue, 0, '$')}`,
-      d.taxDeferredValue && `tax-deferred:${formatNumber(d.taxDeferredValue, 0, '$')}`,
-      d.taxFreeValue && `tax-free:${formatNumber(d.taxFreeValue, 0, '$')}`,
-      d.cashSavings && `savings:${formatNumber(d.cashSavings, 0, '$')}`,
+    const accounts = [
+      d.taxableValue && `taxable:${fmt(d.taxableValue)}`,
+      d.taxDeferredValue && `trad:${fmt(d.taxDeferredValue)}`,
+      d.taxFreeValue && `roth:${fmt(d.taxFreeValue)}`,
+      d.cashSavings && `savings:${fmt(d.cashSavings)}`,
     ].filter(Boolean);
-    if (accountItems.length) yearLines.push(`accounts: ${accountItems.join(', ')}`);
+    if (accounts.length) sections.push(`accounts: ${accounts.join(', ')}`);
 
-    const incomeItems = [
-      d.earnedIncome && `earned:${formatNumber(d.earnedIncome, 0, '$')}`,
-      d.socialSecurityIncome && `SS:${formatNumber(d.socialSecurityIncome, 0, '$')}`,
-      d.taxExemptIncome && `tax-exempt:${formatNumber(d.taxExemptIncome, 0, '$')}`,
-      d.retirementDistributions && `distributions:${formatNumber(d.retirementDistributions, 0, '$')}`,
-      d.interestIncome && `interest:${formatNumber(d.interestIncome, 0, '$')}`,
-      d.dividendIncome && `dividends:${formatNumber(d.dividendIncome, 0, '$')}`,
-      d.realizedGains && `gains:${formatNumber(d.realizedGains, 0, '$')}`,
+    const income = [
+      d.earnedIncome && `earned:${fmt(d.earnedIncome)}`,
+      d.socialSecurityIncome && `SS:${fmt(d.socialSecurityIncome)}`,
+      d.taxExemptIncome && `taxExempt:${fmt(d.taxExemptIncome)}`,
+      d.retirementDistributions && `retireDist:${fmt(d.retirementDistributions)}`,
+      d.interestIncome && `interest:${fmt(d.interestIncome)}`,
+      d.dividendIncome && `dividends:${fmt(d.dividendIncome)}`,
+      d.realizedGains && `gains:${fmt(d.realizedGains)}`,
     ].filter(Boolean);
-    if (incomeItems.length) yearLines.push(`income: ${incomeItems.join(', ')}`);
+    if (income.length) sections.push(`income: ${income.join(', ')}`);
 
-    const cashFlowItems = [
-      d.expenses && `expenses:${formatNumber(d.expenses, 0, '$')}`,
-      d.totalTaxesAndPenalties && `taxes:${formatNumber(d.totalTaxesAndPenalties, 0, '$')}`,
-      d.netCashFlow && `net:${formatNumber(d.netCashFlow, 0, '$')}`,
-      d.savingsRate !== null && `savings-rate:${(d.savingsRate * 100).toFixed(0)}%`,
+    const cashFlow = [
+      d.expenses && `expenses:${fmt(d.expenses)}`,
+      d.totalTaxesAndPenalties && `taxes:${fmt(d.totalTaxesAndPenalties)}`,
+      d.netCashFlow && `net:${fmt(d.netCashFlow)}`,
+      d.savingsRate != null && `saveRate:${pct(d.savingsRate)}`,
     ].filter(Boolean);
-    if (cashFlowItems.length) yearLines.push(`cashflow: ${cashFlowItems.join(', ')}`);
+    if (cashFlow.length) sections.push(`cashflow: ${cashFlow.join(', ')}`);
 
-    const taxDetailItems = [
-      d.grossIncome && `gross:${formatNumber(d.grossIncome, 0, '$')}`,
-      d.adjustedGrossIncome && `AGI:${formatNumber(d.adjustedGrossIncome, 0, '$')}`,
-      d.taxableIncome && `taxable:${formatNumber(d.taxableIncome, 0, '$')}`,
+    const taxBasis = [
+      d.grossIncome && `gross:${fmt(d.grossIncome)}`,
+      d.adjustedGrossIncome && `AGI:${fmt(d.adjustedGrossIncome)}`,
+      d.taxableIncome && `taxable:${fmt(d.taxableIncome)}`,
     ].filter(Boolean);
-    if (taxDetailItems.length) yearLines.push(`tax-basis: ${taxDetailItems.join(', ')}`);
+    if (taxBasis.length) sections.push(`taxBasis: ${taxBasis.join(', ')}`);
 
-    const taxBreakdownItems = [
-      d.federalIncomeTax && `income:${formatNumber(d.federalIncomeTax, 0, '$')}`,
-      d.capitalGainsTax && `capgains:${formatNumber(d.capitalGainsTax, 0, '$')}`,
-      d.ficaTax && `FICA:${formatNumber(d.ficaTax, 0, '$')}`,
-      d.earlyWithdrawalPenalties && `penalties:${formatNumber(d.earlyWithdrawalPenalties, 0, '$')}`,
+    const taxes = [
+      d.federalIncomeTax && `income:${fmt(d.federalIncomeTax)}`,
+      d.capitalGainsTax && `capGains:${fmt(d.capitalGainsTax)}`,
+      d.ficaTax && `FICA:${fmt(d.ficaTax)}`,
+      d.earlyWithdrawalPenalties && `penalties:${fmt(d.earlyWithdrawalPenalties)}`,
     ].filter(Boolean);
-    if (taxBreakdownItems.length) yearLines.push(`taxes: ${taxBreakdownItems.join(', ')}`);
+    if (taxes.length) sections.push(`taxes: ${taxes.join(', ')}`);
 
-    const rateItems = [
-      d.effectiveIncomeTaxRate && `eff-income:${(d.effectiveIncomeTaxRate * 100).toFixed(1)}%`,
-      d.topMarginalIncomeTaxRate && `marg-income:${(d.topMarginalIncomeTaxRate * 100).toFixed(0)}%`,
-      d.effectiveCapitalGainsTaxRate && `eff-capgains:${(d.effectiveCapitalGainsTaxRate * 100).toFixed(1)}%`,
-      d.topMarginalCapitalGainsTaxRate && `marg-capgains:${(d.topMarginalCapitalGainsTaxRate * 100).toFixed(0)}%`,
+    const rates = [
+      d.effectiveIncomeTaxRate && `effInc:${pct(d.effectiveIncomeTaxRate)}`,
+      d.topMarginalIncomeTaxRate && `margInc:${pct(d.topMarginalIncomeTaxRate)}`,
+      d.effectiveCapitalGainsTaxRate && `effCG:${pct(d.effectiveCapitalGainsTaxRate)}`,
+      d.topMarginalCapitalGainsTaxRate && `margCG:${pct(d.topMarginalCapitalGainsTaxRate)}`,
     ].filter(Boolean);
-    if (rateItems.length) yearLines.push(`rates: ${rateItems.join(', ')}`);
+    if (rates.length) sections.push(`rates: ${rates.join(', ')}`);
 
-    const deductionItems = [
-      d.taxDeferredContributionsDeduction && `tax-deferred:${formatNumber(d.taxDeferredContributionsDeduction, 0, '$')}`,
-      d.capitalLossDeduction && `cap-loss:${formatNumber(d.capitalLossDeduction, 0, '$')}`,
+    const deductions = [
+      d.taxDeferredContributionsDeduction && `tradContrib:${fmt(d.taxDeferredContributionsDeduction)}`,
+      d.capitalLossDeduction && `capLoss:${fmt(d.capitalLossDeduction)}`,
     ].filter(Boolean);
-    if (deductionItems.length) yearLines.push(`deductions: ${deductionItems.join(', ')}`);
+    if (deductions.length) sections.push(`deductions: ${deductions.join(', ')}`);
 
-    const contribItems = [
-      d.totalContributions && `total:${formatNumber(d.totalContributions, 0, '$')}`,
-      d.taxableContributions && `taxable:${formatNumber(d.taxableContributions, 0, '$')}`,
-      d.taxDeferredContributions && `tax-deferred:${formatNumber(d.taxDeferredContributions, 0, '$')}`,
-      d.taxFreeContributions && `tax-free:${formatNumber(d.taxFreeContributions, 0, '$')}`,
-      d.cashContributions && `cash:${formatNumber(d.cashContributions, 0, '$')}`,
-      d.employerMatch && `match:${formatNumber(d.employerMatch, 0, '$')}`,
+    const contribs = [
+      d.totalContributions && `total:${fmt(d.totalContributions)}`,
+      d.taxableContributions && `taxable:${fmt(d.taxableContributions)}`,
+      d.taxDeferredContributions && `trad:${fmt(d.taxDeferredContributions)}`,
+      d.taxFreeContributions && `roth:${fmt(d.taxFreeContributions)}`,
+      d.cashContributions && `cash:${fmt(d.cashContributions)}`,
+      d.employerMatch && `match:${fmt(d.employerMatch)}`,
     ].filter(Boolean);
-    if (contribItems.length) yearLines.push(`contributions: ${contribItems.join(', ')}`);
+    if (contribs.length) sections.push(`contribs: ${contribs.join(', ')}`);
 
-    const withdrawalItems = [
-      d.totalWithdrawals && `total:${formatNumber(d.totalWithdrawals, 0, '$')}`,
-      d.taxableWithdrawals && `taxable:${formatNumber(d.taxableWithdrawals, 0, '$')}`,
-      d.taxDeferredWithdrawals && `tax-deferred:${formatNumber(d.taxDeferredWithdrawals, 0, '$')}`,
-      d.taxFreeWithdrawals && `tax-free:${formatNumber(d.taxFreeWithdrawals, 0, '$')}`,
-      d.cashWithdrawals && `cash:${formatNumber(d.cashWithdrawals, 0, '$')}`,
-      d.requiredMinimumDistributions && `RMDs:${formatNumber(d.requiredMinimumDistributions, 0, '$')}`,
-      d.earlyWithdrawals && `early:${formatNumber(d.earlyWithdrawals, 0, '$')}`,
-      d.rothEarningsWithdrawals && `roth-earnings:${formatNumber(d.rothEarningsWithdrawals, 0, '$')}`,
-      d.withdrawalRate !== null && d.withdrawalRate && `rate:${(d.withdrawalRate * 100).toFixed(1)}%`,
+    const withdrawals = [
+      d.totalWithdrawals && `total:${fmt(d.totalWithdrawals)}`,
+      d.taxableWithdrawals && `taxable:${fmt(d.taxableWithdrawals)}`,
+      d.taxDeferredWithdrawals && `trad:${fmt(d.taxDeferredWithdrawals)}`,
+      d.taxFreeWithdrawals && `roth:${fmt(d.taxFreeWithdrawals)}`,
+      d.cashWithdrawals && `cash:${fmt(d.cashWithdrawals)}`,
+      d.requiredMinimumDistributions && `RMD:${fmt(d.requiredMinimumDistributions)}`,
+      d.earlyWithdrawals && `early:${fmt(d.earlyWithdrawals)}`,
+      d.rothEarningsWithdrawals && `rothEarn:${fmt(d.rothEarningsWithdrawals)}`,
+      d.withdrawalRate != null && `rate:${pct(d.withdrawalRate)}`,
     ].filter(Boolean);
-    if (withdrawalItems.length) yearLines.push(`withdrawals: ${withdrawalItems.join(', ')}`);
+    if (withdrawals.length) sections.push(`withdrawals: ${withdrawals.join(', ')}`);
 
-    lines.push(`\n    Age ${d.age}:`);
-    yearLines.forEach((line) => lines.push(`      ${line}`));
+    lines.push(`\n  Age ${d.age}:`);
+    sections.forEach((section) => lines.push(`    ${section}`));
   }
 
   return lines.join('\n');
