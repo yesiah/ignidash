@@ -47,7 +47,7 @@ export const send = mutation({
 
     if (!canUseChat) throw new ConvexError('AI chat is not available. Upgrade to start chatting.');
 
-    const { ok, retryAfter } = await checkUsageLimits(ctx, userId);
+    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'chat');
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(retryAfter).toLocaleString()}.`);
 
     const [loadingMessage, plan] = await Promise.all([
@@ -121,7 +121,7 @@ export const setUsage = internalMutation({
 
     await Promise.all([
       ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens }, updatedAt: Date.now() }),
-      recordUsage(ctx, userId, inputTokens, outputTokens),
+      recordUsage(ctx, userId, inputTokens, outputTokens, 'chat'),
     ]);
   },
 });

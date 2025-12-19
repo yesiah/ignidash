@@ -44,7 +44,7 @@ export const generate = mutation({
 
     if (!canUseInsights) throw new ConvexError('AI insights are not available. Upgrade to start generating insights.');
 
-    const { ok, retryAfter } = await checkUsageLimits(ctx, userId);
+    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'insights');
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(retryAfter).toLocaleString()}.`);
 
     const [loadingInsight, plan] = await Promise.all([
@@ -96,7 +96,7 @@ export const setUsage = internalMutation({
 
     await Promise.all([
       ctx.db.patch(insightId, { usage: { inputTokens, outputTokens, totalTokens }, updatedAt: Date.now() }),
-      recordUsage(ctx, userId, inputTokens, outputTokens),
+      recordUsage(ctx, userId, inputTokens, outputTokens, 'insights'),
     ]);
   },
 });
