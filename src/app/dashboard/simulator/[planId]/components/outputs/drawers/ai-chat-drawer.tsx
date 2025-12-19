@@ -406,7 +406,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
         </div>
         <div className="flex-shrink-0 pb-4">
           {!selectedConversationId && (
-            <div className="isolate -ml-1 flex flex-wrap justify-center gap-2 px-1 py-2">
+            <div className="isolate -ml-1 hidden flex-wrap justify-center gap-2 px-1 py-2 lg:flex">
               {DEMO_QUESTIONS.map(({ label, question }) => (
                 <DemoQuestionButton
                   key={label}
