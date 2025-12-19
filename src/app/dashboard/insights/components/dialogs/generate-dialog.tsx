@@ -106,7 +106,7 @@ export default function GenerateDialog({
                     <div className="ml-3">
                       <p className="line-clamp-3 text-sm text-yellow-700 dark:text-yellow-300">
                         An existing <span className="font-semibold">Insights</span> already exists for this plan. Regenerating will make it
-                        no longer available.
+                        no longer visible to you.
                       </p>
                     </div>
                   </div>
