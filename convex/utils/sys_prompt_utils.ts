@@ -250,6 +250,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   - Return drag: excessive cash or bonds early in accumulation reduces long-term growth
   - Roth priority: highest-growth assets maximize tax-free compounding
   - Tax diversification: balance across Roth, tax-deferred, and taxable provides flexibility to manage retirement brackets
+
   ## Ignidash's App Features for Financial Modeling
 
   **Configurable:**
