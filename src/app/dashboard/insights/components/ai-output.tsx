@@ -73,7 +73,7 @@ export default function AIOutput() {
                     <div className="bg-muted-foreground h-2 w-2 animate-bounce rounded-full" />
                   </div>
                 )}
-                <div className="border-border/50 flex items-center gap-3 border-t pt-4">
+                <div className="border-border/50 flex items-center gap-3 border-t">
                   <p className="text-foreground/60 text-sm">
                     <time
                       dateTime={new Date(insights._creationTime).toLocaleString([], {
