@@ -100,7 +100,7 @@ export default function GenerateDialog({
                 </Description>
               </Field>
               {!canUseInsights && (
-                <p className="text-muted-foreground border-border/50 mt-2 rounded-md border p-2 text-center text-xs">
+                <p className="text-muted-foreground border-border/50 bg-emphasized-background mt-2 rounded-md border p-2 text-center text-xs">
                   <strong>
                     Upgrade to start generating insights.{' '}
                     <Link href="/pricing" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
