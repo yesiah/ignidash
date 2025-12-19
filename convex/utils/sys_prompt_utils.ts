@@ -226,24 +226,34 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   - Highlight years where user is in unusually low/high brackets (planning opportunities/risks)
 
   **5. Required Minimum Distributions**
-  What RMDs are: forced withdrawals from tax-deferred accounts starting at age 73 (75 starting 2033), calculated as account balance ÷ IRS life expectancy factor. Large tax-deferred balances can force substantial taxable income regardless of actual spending needs, often pushing retirees into higher brackets when combined with Social Security. The "RMD problem" is best addressed years before RMDs begin through Roth conversions. Evaluate whether this plan's tax-deferred trajectory creates future bracket risk.
+  What RMDs are: forced withdrawals from tax-deferred accounts starting at age 73 (75 starting 2033), calculated as account balance ÷ IRS life expectancy factor. 
+  Large tax-deferred balances can force substantial taxable income regardless of actual spending needs, often pushing retirees into higher brackets when combined with Social Security.
+  The "RMD problem" is best addressed years before RMDs begin through Roth conversions. Evaluate whether this plan's tax-deferred trajectory creates future bracket risk.
 
   **6. Roth Conversions**
-  What Roth conversions are: moving funds from tax-deferred to Roth, paying ordinary income tax now for tax-free growth and withdrawals later. Typically advantageous during low-income years (gap between retirement and RMDs/Social Security), when current marginal rate is lower than expected future rate, or to reduce future RMD burden. "Bracket filling" means converting up to the top of current bracket without pushing into the next.
+  What Roth conversions are: moving funds from tax-deferred to Roth, paying ordinary income tax now for tax-free growth and withdrawals later.
+  Typically advantageous during low-income years (gap between retirement and RMDs/Social Security), when current marginal rate is lower than expected future rate, or to reduce future RMD burden.
+  "Bracket filling" means converting up to the top of current bracket without pushing into the next.
 
-  Trade-offs: paying taxes now vs. later, losing funds to taxes that could otherwise compound, and large conversions can trigger Medicare IRMAA surcharges (not modeled). Converted amounts have a 5-year holding period before tax-free withdrawal. Evaluate whether this plan has a low-tax window worth highlighting.
+  Trade-offs: paying taxes now vs. later, losing funds to taxes that could otherwise compound, and large conversions can trigger Medicare IRMAA surcharges (not modeled).
+  Converted amounts have a 5-year holding period before tax-free withdrawal.
+  Evaluate whether this plan has a low-tax window worth highlighting.
 
   **7. Early Withdrawal Penalties & SEPP**
-  The 10% early withdrawal penalty applies to tax-deferred distributions (401k, IRA) before age 59½; 20% for HSA non-medical withdrawals. Roth contributions (not earnings) can be withdrawn penalty-free anytime.
+  The 10% early withdrawal penalty applies to tax-deferred distributions (401k, IRA) before age 59½; 20% for HSA non-medical withdrawals.
+  Roth contributions (not earnings) can be withdrawn penalty-free anytime.
 
-  Key exceptions: Rule of 55 allows penalty-free 401(k) access if separating from employer at 55+. SEPP/72(t) allows penalty-free IRA access at any age through substantially equal periodic payments, but requires commitment for 5 years or until 59½ (whichever is longer)—inflexible if circumstances change, worth exploring with a professional if early retirement creates penalty exposure (not modeled).
+  Key exceptions: Rule of 55 allows penalty-free 401(k) access if separating from employer at 55+.
+  SEPP/72(t) allows penalty-free IRA access at any age through substantially equal periodic payments, but requires commitment for 5 years or until 59½ (whichever is longer)—inflexible if circumstances change, worth exploring with a professional if early retirement creates penalty exposure (not modeled).
 
   For early retirees, evaluate whether withdrawal timing triggers penalties and whether Roth contributions or taxable accounts can bridge to 59½.
 
   **8. Withdrawal Sequence**
-  The order accounts are tapped affects lifetime tax liability. Conventional sequence: taxable first (uses cost basis, benefits from lower capital gains rates), tax-deferred second (defer taxes), Roth last (maximizes tax-free compounding).
+  The order accounts are tapped affects lifetime tax liability.
+  Conventional sequence: taxable first (uses cost basis, benefits from lower capital gains rates), tax-deferred second (defer taxes), Roth last (maximizes tax-free compounding).
 
-  Why conventional isn't always optimal: depleting taxable early may miss 0% capital gains opportunities, draining tax-deferred last builds RMD problems, and strategic tax-deferred withdrawals in low-income years can smooth brackets. Maintaining balance across account types preserves flexibility.
+  Why conventional isn't always optimal: depleting taxable early may miss 0% capital gains opportunities, draining tax-deferred last builds RMD problems, and strategic tax-deferred withdrawals in low-income years can smooth brackets.
+  Maintaining balance across account types preserves flexibility.
 
   Evaluate which accounts are tapped when, whether timing aligns with tax-efficient principles, and whether the sequence preserves optionality or depletes one bucket entirely.
 
