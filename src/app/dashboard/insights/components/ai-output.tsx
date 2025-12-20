@@ -117,7 +117,7 @@ export default function AIOutput() {
           )}
         </header>
         <div className="flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center sm:h-[calc(100%-5.0625rem)] lg:size-full">
-          {selectedInsight ? (
+          {selectedInsight && (
             <div className="w-full flex-1 overflow-y-auto">
               <div className="prose prose-sm prose-zinc dark:prose-invert mx-auto px-4 py-5 sm:py-6">
                 {selectedInsight.content ? (
@@ -167,7 +167,8 @@ export default function AIOutput() {
                 </div>
               </div>
             </div>
-          ) : (
+          )}
+          {!selectedInsight && (
             <div className="flex h-full w-full flex-col px-4 py-5 sm:py-6">
               <DataListEmptyStateButton
                 onClick={() => setGenerateDialogOpen(true)}
