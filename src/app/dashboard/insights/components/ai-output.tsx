@@ -171,7 +171,7 @@ export default function AIOutput() {
           )}
           {!selectedInsight && (
             <div className="flex size-full flex-col items-center px-4 py-5 sm:py-6">
-              {!isLoadingPage && numInsights === 0 ? (
+              {!isLoadingPage || numInsights === 0 ? (
                 <DataListEmptyStateButton
                   onClick={() => setGenerateDialogOpen(true)}
                   icon={SparklesIcon}
