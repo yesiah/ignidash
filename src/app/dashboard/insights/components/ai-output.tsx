@@ -13,7 +13,6 @@ import { Heading } from '@/components/catalyst/heading';
 import { useInsightsSelectedPlan } from '@/lib/stores/simulator-store';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 import { Dialog } from '@/components/catalyst/dialog';
-import { cn } from '@/lib/utils';
 
 import GenerateDialog from './dialogs/generate-dialog';
 
@@ -31,6 +30,7 @@ export default function AIOutput() {
     initialNumItems: 1,
   });
   const insights = useMemo(() => results.sort((a, b) => b.updatedAt - a.updatedAt), [results]);
+  const _isLoadingPage = status === 'LoadingFirstPage' || status === 'LoadingMore';
 
   const [selectedInsightIndex, setSelectedInsightIndex] = useState<number>(0);
   const selectedInsight = insights.length > 0 && selectedInsightIndex <= insights.length - 1 ? insights[selectedInsightIndex] : null;
@@ -75,7 +75,7 @@ export default function AIOutput() {
                 Insights for{' '}
                 <Link
                   href={`/dashboard/simulator/${selectedPlan?.id}`}
-                  className="text-primary hover:underline"
+                  className="text-primary focus-outline mr-1.5 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -87,7 +87,7 @@ export default function AIOutput() {
                   <button
                     onClick={handlePrevious}
                     disabled={disablePrevious}
-                    className="group inline-flex items-center text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group focus-outline inline-flex items-center text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <ArrowLongLeftIcon
                       aria-hidden="true"
@@ -100,7 +100,7 @@ export default function AIOutput() {
                   <button
                     onClick={handleNext}
                     disabled={disableNext}
-                    className="group inline-flex items-center text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group focus-outline inline-flex items-center text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <ArrowLongRightIcon
                       aria-hidden="true"
@@ -116,12 +116,7 @@ export default function AIOutput() {
             </Heading>
           )}
         </header>
-        <div
-          className={cn(
-            'flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center sm:h-[calc(100%-5.0625rem)] lg:size-full',
-            { 'px-4 py-5 sm:py-6': !selectedInsight }
-          )}
-        >
+        <div className="flex h-[calc(100%-4.0625rem)] w-full flex-col items-center justify-center sm:h-[calc(100%-5.0625rem)] lg:size-full">
           {selectedInsight ? (
             <div className="w-full flex-1 overflow-y-auto">
               <div className="prose prose-sm prose-zinc dark:prose-invert mx-auto px-4 py-5 sm:py-6">
@@ -157,7 +152,7 @@ export default function AIOutput() {
                   <button
                     onClick={handleCopy}
                     aria-label="Copy insights"
-                    className="text-sm opacity-60 transition-opacity hover:opacity-100"
+                    className="focus-outline text-sm opacity-60 transition-opacity hover:opacity-100"
                   >
                     {copied ? <CheckIcon className="h-4 w-4" /> : <CopyIcon className="h-4 w-4" />}
                   </button>
@@ -165,7 +160,7 @@ export default function AIOutput() {
                     disabled={selectedInsight.isLoading}
                     onClick={() => setGenerateDialogOpen(true)}
                     aria-label="Regenerate insights"
-                    className="text-sm opacity-60 transition-all duration-300 hover:rotate-180 hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="focus-outline text-sm opacity-60 transition-all duration-300 hover:rotate-180 hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {selectedInsight.isLoading ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <RefreshCwIcon className="h-4 w-4" />}
                   </button>
@@ -173,7 +168,7 @@ export default function AIOutput() {
               </div>
             </div>
           ) : (
-            <div className="flex h-full w-full flex-col">
+            <div className="flex h-full w-full flex-col px-4 py-5 sm:py-6">
               <DataListEmptyStateButton
                 onClick={() => setGenerateDialogOpen(true)}
                 icon={SparklesIcon}
