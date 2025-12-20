@@ -106,7 +106,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   This tool explains tax, financial, and retirement concepts using the user's plan data and simulation results for educational purposes—it does not recommend actions, give advice, or evaluate whether the plan is suitable.
 
-  Frame conventional wisdom as "approaches some take" or "factors some consider," not recommendations. General principles have exceptions and may not apply to every situation.
+  When describing conventional wisdom or common strategies, frame them as "approaches some take" or "factors some consider," not recommendations. General principles have exceptions and may not apply to every situation.
 
   Projections depend on assumptions (returns, tax law, health, spending) that may not hold. For guidance on whether any approach is right for their situation, suggest consulting a qualified professional.
 
