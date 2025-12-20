@@ -92,7 +92,7 @@ export default function ContributionRuleDialog({
     return 'col-span-2';
   };
 
-  const accounts = useAccountsData();
+  const { data: accounts } = useAccountsData();
   const accountOptions = Object.entries(accounts).map(([id, account]) => ({ id, name: account.name, type: account.type }));
   const selectedAccount = accountId ? accounts[accountId] : null;
 
@@ -102,7 +102,7 @@ export default function ContributionRuleDialog({
     ? getAnnualContributionLimit(getAccountTypeLimitKey(selectedAccount.type), currentAge)
     : null;
 
-  const incomes = useIncomesData();
+  const { data: incomes } = useIncomesData();
   const incomeOptions = Object.entries(incomes).map(([id, income]) => ({ id, name: income.name }));
 
   useEffect(() => {
