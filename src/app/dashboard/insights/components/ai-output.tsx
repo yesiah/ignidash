@@ -170,7 +170,7 @@ export default function AIOutput() {
             </div>
           )}
           {!selectedInsight && (
-            <div className="flex size-full flex-col px-4 py-5 sm:py-6">
+            <div className="flex size-full flex-col items-center px-4 py-5 sm:py-6">
               {!isLoadingPage && numInsights === 0 ? (
                 <DataListEmptyStateButton
                   onClick={() => setGenerateDialogOpen(true)}
@@ -180,7 +180,7 @@ export default function AIOutput() {
                   disabled={selectedPlan === undefined}
                 />
               ) : (
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full max-w-prose flex-col gap-4">
                   <Skeleton className="h-[200px] w-full rounded-xl" />
                   <Skeleton className="h-[75px] w-full rounded-xl" />
                   <Skeleton className="h-[350px] w-full rounded-xl" />
