@@ -43,6 +43,8 @@ export const send = mutation({
     keyMetrics: v.nullable(keyMetricsValidator),
   },
   handler: async (ctx, { conversationId: currConvId, planId, content, keyMetrics }) => {
+    if (content.length > 2000) throw new ConvexError('Message cannot be longer than 2,000 characters.');
+
     const [{ userId }, canUseChat] = await Promise.all([getUserIdOrThrow(ctx), getCanUseChat(ctx)]);
 
     if (!canUseChat) throw new ConvexError('AI chat is not available. Upgrade to start chatting.');

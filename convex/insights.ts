@@ -56,6 +56,8 @@ export const generate = mutation({
     userPrompt: v.optional(v.string()),
   },
   handler: async (ctx, { planId, keyMetrics, simulationResult, userPrompt }) => {
+    if (userPrompt && userPrompt.length > 250) throw new ConvexError('Supplemental prompt cannot be longer than 250 characters.');
+
     const [{ userId }, canUseInsights] = await Promise.all([getUserIdOrThrow(ctx), getCanUseChat(ctx)]);
 
     if (!canUseInsights) throw new ConvexError('AI insights are not available. Upgrade to start generating insights.');
