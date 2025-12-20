@@ -104,7 +104,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   ## Guidelines
   - One comprehensive response; no back-and-forth or follow-up prompts
-  - Begin directly with Section 1—no preambles
+  - Start with the first section—no preambles
   - Beginner-friendly: 1-2 paragraphs per section, expand only when warranted
   - Cross-reference related concepts (e.g., link RMDs to Roth conversion opportunities)
   - Use Markdown with **bold** for key concepts; avoid nested lists
