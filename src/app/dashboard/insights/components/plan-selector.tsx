@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Preloaded, usePreloadedQuery } from 'convex/react';
+import { Preloaded, usePreloadedQuery, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import type { Doc } from '@/convex/_generated/dataModel';
 
@@ -22,6 +22,7 @@ function PlanListItem({ plan }: PlanListItemProps) {
 
   const simulation = useSimulationResult(inputs, 'fixedReturns');
   const keyMetrics = useKeyMetrics(simulation);
+  const numInsights = useQuery(api.insights.getCountOfInsights, { planId: plan._id }) ?? 0;
 
   const status = !isCalculationReady ? 'In progress' : keyMetrics?.success ? 'Success' : 'Failed';
 
@@ -50,7 +51,7 @@ function PlanListItem({ plan }: PlanListItemProps) {
         </div>
         <div className="mt-1 flex items-center gap-x-2 text-xs/5 text-zinc-500 dark:text-zinc-400">
           <p className="whitespace-nowrap">
-            Created <time dateTime={new Date(plan._creationTime).toISOString()}>{new Date(plan._creationTime).toLocaleDateString()}</time>
+            <span className="font-bold">{numInsights}</span> {numInsights === 1 ? 'insight' : 'insights'} generated
           </p>
           {plan.isDefault && (
             <>
