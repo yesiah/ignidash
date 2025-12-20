@@ -61,7 +61,10 @@ export const useIncomeData = (incomeId: string | null) => {
 export const useExpensesData = () => {
   const planId = useSelectedPlanId();
   const q = useQuery(api.expense.getExpenses, { planId });
-  return useMemo(() => (q ? Object.fromEntries(q.map((expense) => [expense.id, expenseFromConvex(expense)])) : {}), [q]);
+  return {
+    data: useMemo(() => (q ? Object.fromEntries(q.map((expense) => [expense.id, expenseFromConvex(expense)])) : {}), [q]),
+    isLoading: q === undefined,
+  };
 };
 
 export const useCountOfExpenses = () => {
@@ -80,7 +83,10 @@ export const useExpenseData = (expenseId: string | null) => {
 export const useAccountsData = () => {
   const planId = useSelectedPlanId();
   const q = useQuery(api.account.getAccounts, { planId });
-  return useMemo(() => (q ? Object.fromEntries(q.map((account) => [account.id, accountFromConvex(account)])) : {}), [q]);
+  return {
+    data: useMemo(() => (q ? Object.fromEntries(q.map((account) => [account.id, accountFromConvex(account)])) : {}), [q]),
+    isLoading: q === undefined,
+  };
 };
 
 export const useCountOfAccounts = () => {
@@ -111,7 +117,10 @@ export const useInvestmentData = (accountId: string | null) => {
 export const useContributionRulesData = () => {
   const planId = useSelectedPlanId();
   const q = useQuery(api.contribution_rule.getContributionRules, { planId });
-  return useMemo(() => (q ? Object.fromEntries(q.map((rule) => [rule.id, contributionFromConvex(rule)])) : {}), [q]);
+  return {
+    data: useMemo(() => (q ? Object.fromEntries(q.map((rule) => [rule.id, contributionFromConvex(rule)])) : {}), [q]),
+    isLoading: q === undefined,
+  };
 };
 
 export const useCountOfContributionRules = () => {

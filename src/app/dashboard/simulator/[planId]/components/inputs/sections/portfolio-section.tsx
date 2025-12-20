@@ -17,6 +17,7 @@ import type { TaxCategory } from '@/lib/calc/asset';
 import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
+import { Skeleton } from '@/components/ui/skeleton';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 
@@ -56,7 +57,7 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
 
   const [accountToDelete, setAccountToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  const accounts = useAccountsData();
+  const { data: accounts, isLoading } = useAccountsData();
   const numAccounts = Object.keys(accounts).length;
   const hasAccounts = numAccounts > 0;
 
@@ -118,11 +119,24 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
               </div>
             </>
           )}
-          {!hasAccounts && (
+          {!hasAccounts && !isLoading && (
             <div className="flex h-full gap-2 sm:flex-col">
               <DataListEmptyStateButton onClick={() => setSavingsDialogOpen(true)} icon={PiggyBankIcon} buttonText="Add savings" />
               <DataListEmptyStateButton onClick={() => setAccountDialogOpen(true)} icon={TrendingUpIcon} buttonText="Add investment" />
             </div>
+          )}
+          {isLoading && (
+            <>
+              <div className="flex flex-1 flex-col gap-3">
+                <Skeleton className="h-[80px] w-full" />
+                <Skeleton className="h-[80px] w-full" />
+                <Skeleton className="h-[80px] w-full" />
+              </div>
+              <div className="mt-auto flex items-center justify-end gap-x-2">
+                <Skeleton className="h-[40px] w-[100px] rounded-full" />
+                <Skeleton className="h-[40px] w-[100px] rounded-full" />
+              </div>
+            </>
           )}
         </div>
       </DisclosureSection>

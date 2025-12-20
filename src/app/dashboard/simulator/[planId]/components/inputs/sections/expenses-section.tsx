@@ -17,6 +17,7 @@ import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-displ
 import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
+import { Skeleton } from '@/components/ui/skeleton';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 
@@ -47,7 +48,7 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
 
   const [expenseToDelete, setExpenseToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  const expenses = useExpensesData();
+  const { data: expenses, isLoading } = useExpensesData();
   const numExpenses = Object.keys(expenses).length;
   const hasExpenses = numExpenses > 0;
 
@@ -119,8 +120,19 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
               </div>
             </>
           )}
-          {!hasExpenses && (
+          {!hasExpenses && !isLoading && (
             <DataListEmptyStateButton onClick={() => setExpenseDialogOpen(true)} icon={BanknoteArrowDownIcon} buttonText="Add expense" />
+          )}
+          {isLoading && (
+            <>
+              <div className="flex flex-1 flex-col gap-3">
+                <Skeleton className="h-[80px] w-full" />
+                <Skeleton className="h-[80px] w-full" />
+              </div>
+              <div className="mt-auto flex items-center justify-end">
+                <Skeleton className="h-[40px] w-[100px] rounded-full" />
+              </div>
+            </>
           )}
         </div>
       </DisclosureSection>

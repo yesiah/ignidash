@@ -36,6 +36,7 @@ import type { TaxCategory } from '@/lib/calc/asset';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import ContributionRuleDialog from '../dialogs/contribution-rule-dialog';
 import SortableContributionItem from '../sortable-contribution-item';
@@ -85,8 +86,8 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
   const [contributionRuleToDelete, setContributionRuleToDelete] = useState<{ id: string; name: string } | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const accounts = useAccountsData();
-  const contributionRules = useContributionRulesData();
+  const { data: accounts, isLoading: isLoadingAccounts } = useAccountsData();
+  const { data: contributionRules, isLoading: isLoadingContributionRules } = useContributionRulesData();
   const contributionRulesValues = Object.values(contributionRules);
 
   const sortedRules = useMemo(() => contributionRulesValues.sort((a, b) => a.rank - b.rank), [contributionRulesValues]);
@@ -268,12 +269,23 @@ export default function ContributionsSection(props: ContributionsSectionProps) {
               </div>
             </>
           )}
-          {!hasContributionRules && (
+          {!hasContributionRules && !(isLoadingAccounts || isLoadingContributionRules) && (
             <DataListEmptyStateButton
               onClick={() => setContributionRuleDialogOpen(true)}
               icon={HandCoinsIcon}
               buttonText="Add contribution rule"
             />
+          )}
+          {(isLoadingAccounts || isLoadingContributionRules) && (
+            <>
+              <div className="flex flex-1 flex-col gap-3">
+                <Skeleton className="h-[80px] w-full" />
+                <Skeleton className="h-[80px] w-full" />
+              </div>
+              <div className="mt-auto flex items-center justify-end">
+                <Skeleton className="h-[40px] w-[100px] rounded-full" />
+              </div>
+            </>
           )}
         </div>
       </DisclosureSection>
