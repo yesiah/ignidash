@@ -97,6 +97,9 @@ export default function ResultsSections() {
               <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
                 <Skeleton className="h-[475px] w-full rounded-xl" />
                 <Skeleton className="h-[475px] w-full rounded-xl" />
+                <div className="@[96rem]:col-span-2">
+                  <Skeleton className="h-[275px] w-full rounded-xl" />
+                </div>
               </div>
             </div>
           ) : (
