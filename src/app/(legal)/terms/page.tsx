@@ -28,11 +28,11 @@ export default function TermsPage() {
             &quot;Legal Terms&quot;) (collectively, the &quot;Services&quot;).
           </p>
           <p className="mb-4">
-            This app is a financial planning tool that helps users model and visualize their long-term financial future through projections
-            and scenario planning. The Service is provided for informational and educational purposes only and does not constitute
-            financial, investment, tax, legal, or other professional advice. It is not a substitute for licensed professional services, and
-            Ignidash does not have a fiduciary duty to you. All decisions based on information from the Service are your sole
-            responsibility.
+            This app is a financial planning tool that helps users model, visualize, and understand their long-term financial future through
+            projections and scenario planning with AI assistance. The Service is provided for informational and educational purposes only
+            and does not constitute financial, investment, tax, legal, or other professional advice. It is not a substitute for licensed
+            professional services, and Ignidash does not have a fiduciary duty to you. All decisions based on information from the Service
+            are your sole responsibility.
           </p>
           <p className="mb-4">
             You can contact us by phone at 952-242-5109, email at{' '}

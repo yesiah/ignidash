@@ -28,11 +28,8 @@ export default function PrivacyPage() {
               or any website of ours that links to this Privacy Notice
             </li>
             <li>
-              Use Ignidash. This app is a financial planning tool that helps users model and visualize their long-term financial future
-              through projections and scenario planning. The Service is provided for informational and educational purposes only and does
-              not constitute financial, investment, tax, legal, or other professional advice. It is not a substitute for licensed
-              professional services, and Ignidash does not have a fiduciary duty to you. All decisions based on information from the Service
-              are your sole responsibility.
+              Use Ignidash. The app is a financial planning tool that helps users model, visualize, and understand their long-term financial
+              future through projections and scenario planning with AI assistance.
             </li>
             <li>Engage with us in other related ways, including any sales, marketing, or events</li>
           </ul>
