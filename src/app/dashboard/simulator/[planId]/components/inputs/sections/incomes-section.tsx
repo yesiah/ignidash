@@ -17,6 +17,7 @@ import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-displ
 import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import DataItem from '@/components/ui/data-item';
+import { Skeleton } from '@/components/ui/skeleton';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 
@@ -47,7 +48,7 @@ export default function IncomesSection(props: IncomesSectionProps) {
 
   const [incomeToDelete, setIncomeToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  const incomes = useIncomesData();
+  const { data: incomes, isLoading } = useIncomesData();
   const numIncomes = Object.keys(incomes).length;
   const hasIncomes = numIncomes > 0;
 
@@ -119,8 +120,19 @@ export default function IncomesSection(props: IncomesSectionProps) {
               </div>
             </>
           )}
-          {!hasIncomes && (
+          {!hasIncomes && !isLoading && (
             <DataListEmptyStateButton onClick={() => setIncomeDialogOpen(true)} icon={BanknoteArrowUpIcon} buttonText="Add income" />
+          )}
+          {isLoading && (
+            <>
+              <div className="flex flex-1 flex-col gap-3">
+                <Skeleton className="h-[80px] w-full" />
+                <Skeleton className="h-[80px] w-full" />
+              </div>
+              <div className="mt-auto flex items-center justify-end">
+                <Skeleton className="h-[40px] w-[100px] rounded-full" />
+              </div>
+            </>
           )}
         </div>
       </DisclosureSection>

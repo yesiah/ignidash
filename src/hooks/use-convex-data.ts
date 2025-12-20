@@ -39,7 +39,10 @@ export const useTimelineData = () => {
 export const useIncomesData = () => {
   const planId = useSelectedPlanId();
   const q = useQuery(api.income.getIncomes, { planId });
-  return useMemo(() => (q ? Object.fromEntries(q.map((income) => [income.id, incomeFromConvex(income)])) : {}), [q]);
+  return {
+    data: useMemo(() => (q ? Object.fromEntries(q.map((income) => [income.id, incomeFromConvex(income)])) : {}), [q]),
+    isLoading: q === undefined,
+  };
 };
 
 export const useCountOfIncomes = () => {
