@@ -19,7 +19,6 @@ const features = [
     name: 'Automatic insights.',
     description: 'Generate an AI educational overview of your plan to understand the financial topics that matter most to you.',
     icon: LightBulbIcon,
-    status: 'coming-soon',
   },
   {
     name: 'Test your resilience.',
