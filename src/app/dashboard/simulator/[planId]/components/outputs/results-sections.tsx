@@ -84,9 +84,20 @@ export default function ResultsSections() {
         >
           {isLoading ? (
             <div className="flex w-full flex-col gap-5 py-5">
-              <Skeleton className="h-[400px] w-full rounded-xl" />
-              <Skeleton className="h-[75px] w-full rounded-xl" />
-              <Skeleton className="h-[250px] w-full rounded-xl" />
+              <div className="grid grid-cols-2 gap-2 2xl:grid-cols-3">
+                <Skeleton className="col-span-2 h-[110px] w-full rounded-xl 2xl:col-span-1" />
+                <Skeleton className="col-span-2 h-[110px] w-full rounded-xl" />
+                <Skeleton className="h-[110px] w-full rounded-xl" />
+                <Skeleton className="h-[110px] w-full rounded-xl" />
+                <Skeleton className="hidden h-[110px] w-full rounded-xl 2xl:block" />
+                <Skeleton className="h-[110px] w-full rounded-xl 2xl:col-span-2" />
+                <Skeleton className="h-[110px] w-full rounded-xl" />
+              </div>
+              <Skeleton className="h-[55px] w-full rounded-xl" />
+              <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
+                <Skeleton className="h-[475px] w-full rounded-xl" />
+                <Skeleton className="h-[475px] w-full rounded-xl" />
+              </div>
             </div>
           ) : (
             <>
