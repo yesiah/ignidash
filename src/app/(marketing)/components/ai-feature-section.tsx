@@ -5,7 +5,8 @@ export default function AIFeatureSection() {
     <div className="overflow-hidden py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <p className="max-w-2xl text-5xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-6xl sm:text-balance dark:text-white">
-          Instant clarity. Powered by GPT-5.
+          Instant clarity. Powered by{' '}
+          <span className="bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">GPT-5</span>.
         </p>
         <div className="relative mt-16 aspect-2362/1328 h-144 sm:h-auto sm:w-[calc(var(--container-7xl)-calc(var(--spacing)*16))]">
           <div className="absolute -inset-2 rounded-[calc(var(--radius-xl)+calc(var(--spacing)*2))] shadow-xs ring-1 ring-black/5 dark:bg-white/2.5 dark:ring-white/10" />
