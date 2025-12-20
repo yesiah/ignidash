@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Subheading } from '@/components/catalyst/heading';
 import ErrorMessageCard from '@/components/ui/error-message-card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const PAGE_SIZE = 12;
 
@@ -250,8 +251,8 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
     setChatState((prev) => ({ ...prev, [stateKey]: { ...(prev[stateKey] ?? { chatMessage: '', errorMessage: '' }), ...updates } }));
   };
 
-  const conversations = useQuery(api.conversations.list, { planId }) ?? [];
-  const selectedConversation = conversations.find((c) => c._id === selectedConversationId);
+  const conversations = useQuery(api.conversations.list, { planId });
+  const selectedConversation = conversations?.find((c) => c._id === selectedConversationId) ?? undefined;
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.messages.list,
@@ -319,14 +320,22 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
             <Subheading level={3} className="px-4 py-3">
               Recent Chats
             </Subheading>
-            {conversations.map((conversation) => (
-              <ConversationListItem
-                key={conversation._id}
-                conversation={conversation}
-                selectedConversationId={selectedConversationId}
-                setSelectedConversationId={updateSelectedConversationId}
-              />
-            ))}
+            {conversations !== undefined ? (
+              conversations.map((conversation) => (
+                <ConversationListItem
+                  key={conversation._id}
+                  conversation={conversation}
+                  selectedConversationId={selectedConversationId}
+                  setSelectedConversationId={updateSelectedConversationId}
+                />
+              ))
+            ) : (
+              <div className="space-y-3 px-2 py-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            )}
           </ul>
           <div className="border-border/50 border-t p-4">
             <Button color="dark/white" className="w-full" onClick={() => updateSelectedConversationId(undefined)}>
