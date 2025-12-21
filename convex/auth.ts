@@ -5,6 +5,8 @@ import { convex } from '@convex-dev/better-auth/plugins';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
 import { Resend } from '@convex-dev/resend';
 import { betterAuth, type BetterAuthOptions } from 'better-auth/minimal';
+import { stripe } from '@better-auth/stripe';
+import Stripe from 'stripe';
 import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { getJwtToken } from 'better-auth/plugins';
 import { fetchMutation } from 'convex/nextjs';
@@ -29,6 +31,10 @@ const rateLimiter = new RateLimiter(components.rateLimiter, {
   emailChange: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   emailVerification: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   deleteAccount: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
+});
+
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-12-15.clover',
 });
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
@@ -158,7 +164,10 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         },
       },
     },
-    plugins: [convex({ authConfig, jwksRotateOnTokenGenerationError: true, jwt: { expirationSeconds: 60 * 60 * 24 } })],
+    plugins: [
+      convex({ authConfig, jwksRotateOnTokenGenerationError: true, jwt: { expirationSeconds: 60 * 60 * 24 } }),
+      stripe({ stripeClient, stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!, createCustomerOnSignUp: true }),
+    ],
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailVerification', { key: user.id });

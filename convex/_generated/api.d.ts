@@ -275,6 +275,7 @@ export declare const components: {
                   image?: null | string;
                   name: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt: number;
                   userId?: null | string;
                 };
@@ -350,6 +351,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -538,6 +540,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -789,6 +792,7 @@ export declare const components: {
                   image?: null | string;
                   name?: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -802,6 +806,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -1023,6 +1028,7 @@ export declare const components: {
                   image?: null | string;
                   name?: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -1036,6 +1042,7 @@ export declare const components: {
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -1250,6 +1257,7 @@ export declare const components: {
           image?: null | string;
           name: string;
           role?: null | string;
+          stripeCustomerId?: null | string;
           updatedAt: number;
           userId?: null | string;
         }

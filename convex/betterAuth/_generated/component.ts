@@ -37,6 +37,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   image?: null | string;
                   name: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt: number;
                   userId?: null | string;
                 };
@@ -113,6 +114,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -302,6 +304,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -556,6 +559,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   image?: null | string;
                   name?: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -569,6 +573,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -791,6 +796,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   image?: null | string;
                   name?: string;
                   role?: null | string;
+                  stripeCustomerId?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -804,6 +810,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "createdAt"
                     | "updatedAt"
                     | "userId"
+                    | "stripeCustomerId"
                     | "role"
                     | "_id";
                   operator?:
@@ -1019,6 +1026,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           image?: null | string;
           name: string;
           role?: null | string;
+          stripeCustomerId?: null | string;
           updatedAt: number;
           userId?: null | string;
         },
