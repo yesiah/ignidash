@@ -17,7 +17,7 @@ import { query } from './_generated/server';
 import authSchema from './betterAuth/schema';
 import authConfig from './auth.config';
 
-const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
+const baseURL = process.env.SITE_URL ?? 'http://localhost:3000';
 
 export const authComponent = createClient<DataModel, typeof authSchema>(components.betterAuth, {
   local: {
@@ -33,9 +33,11 @@ const rateLimiter = new RateLimiter(components.rateLimiter, {
   deleteAccount: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
 });
 
-const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
-});
+const stripeClient = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-12-15.clover',
+    })
+  : ({} as Stripe);
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
@@ -49,7 +51,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         refreshCache: true,
       },
     },
-    baseURL: siteUrl,
+    baseURL,
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
