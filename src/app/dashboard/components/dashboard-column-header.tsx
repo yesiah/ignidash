@@ -1,7 +1,7 @@
 'use client';
 
 import { LayoutDashboardIcon } from 'lucide-react';
-import { Preloaded } from 'convex/react';
+import type { Preloaded } from 'convex/react';
 import { usePreloadedAuthQuery } from '@convex-dev/better-auth/nextjs/client';
 import { api } from '@/convex/_generated/api';
 

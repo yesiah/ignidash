@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Preloaded, useConvexAuth, Authenticated } from 'convex/react';
+import { type Preloaded, useConvexAuth, Authenticated } from 'convex/react';
 import { usePreloadedAuthQuery } from '@convex-dev/better-auth/nextjs/client';
 import { api } from '@/convex/_generated/api';
 

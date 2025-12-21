@@ -2,7 +2,8 @@
 
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { Preloaded, usePreloadedQuery } from 'convex/react';
+import type { Preloaded } from 'convex/react';
+import { usePreloadedAuthQuery } from '@convex-dev/better-auth/nextjs/client';
 import { useState } from 'react';
 import { WalletIcon as MicroWalletIcon, CreditCardIcon as MicroCreditCardIcon } from '@heroicons/react/16/solid';
 import { WalletIcon, CreditCardIcon } from '@heroicons/react/24/outline';
@@ -57,7 +58,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
   const [assetDialogOpen, setAssetDialogOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<AssetInputs | null>(null);
 
-  const assets = usePreloadedQuery(preloadedAssets);
+  const assets = usePreloadedAuthQuery(preloadedAssets);
   const numAssets = assets?.length ?? 0;
 
   const handleAssetDialogClose = () => {
@@ -68,7 +69,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
   const [liabilityDialogOpen, setLiabilityDialogOpen] = useState(false);
   const [selectedLiability, setSelectedLiability] = useState<LiabilityInputs | null>(null);
 
-  const liabilities = usePreloadedQuery(preloadedLiabilities);
+  const liabilities = usePreloadedAuthQuery(preloadedLiabilities);
   const numLiabilities = liabilities?.length ?? 0;
 
   const handleLiabilityDialogClose = () => {

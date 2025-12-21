@@ -2,7 +2,8 @@
 
 import { useMemo, useState, useCallback } from 'react';
 import type { Doc, Id } from '@/convex/_generated/dataModel';
-import { Preloaded, usePreloadedQuery } from 'convex/react';
+import type { Preloaded } from 'convex/react';
+import { usePreloadedAuthQuery } from '@convex-dev/better-auth/nextjs/client';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
@@ -119,8 +120,8 @@ interface PlanListProps {
 }
 
 export default function PlanList({ preloadedPlans, preloadedAssets, preloadedLiabilities }: PlanListProps) {
-  const plans = usePreloadedQuery(preloadedPlans);
-  const allPlans = useMemo(() => plans.map((plan) => ({ id: plan._id, name: plan.name })), [plans]);
+  const plans = usePreloadedAuthQuery(preloadedPlans);
+  const allPlans = useMemo(() => plans?.map((plan) => ({ id: plan._id, name: plan.name })) ?? [], [plans]);
 
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
 
@@ -173,7 +174,7 @@ export default function PlanList({ preloadedPlans, preloadedAssets, preloadedLia
           </Button>
         </header>
         <ul role="list" className="divide-border/25 divide-y">
-          {plans.map((plan) => {
+          {plans?.map((plan) => {
             const planMetadata = { id: plan._id, name: plan.name };
             return (
               <PlanListItem
@@ -192,7 +193,7 @@ export default function PlanList({ preloadedPlans, preloadedAssets, preloadedLia
       <Finances preloadedAssets={preloadedAssets} preloadedLiabilities={preloadedLiabilities} />
       <Dialog size="xl" open={planDialogOpen} onClose={handlePlanDialogClose}>
         <PlanDialog
-          numPlans={plans.length}
+          numPlans={plans?.length ?? 0}
           selectedPlan={selectedPlan}
           allPlans={allPlans}
           planToClone={planToClone}
