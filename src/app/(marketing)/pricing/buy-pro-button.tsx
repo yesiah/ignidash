@@ -19,12 +19,13 @@ interface BuyProButtonProps {
 
 export default function BuyProButton({ tier, preloadedSubscriptions, isAuthenticated }: BuyProButtonProps) {
   const subscriptions = usePreloadedAuthQuery(preloadedSubscriptions);
+  const isProUser = subscriptions?.some((subscription) => subscription.plan === 'pro' && subscription.status === 'active');
 
   const className = cn(
     tier.featured
       ? 'bg-rose-500 text-white shadow-xs hover:bg-rose-400 focus-visible:outline-rose-500 dark:shadow-none'
       : 'text-rose-600 inset-ring inset-ring-rose-200 hover:inset-ring-rose-300 focus-visible:outline-rose-600 dark:bg-white/10 dark:text-white dark:inset-ring-white/5 dark:hover:bg-white/20 dark:hover:inset-ring-white/5 dark:focus-visible:outline-white/75',
-    'mt-8 block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed sm:mt-10'
+    'mt-8 block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-75 sm:mt-10'
   );
 
   const pathname = usePathname();
@@ -40,7 +41,7 @@ export default function BuyProButton({ tier, preloadedSubscriptions, isAuthentic
 
   return (
     <button
-      disabled={subscriptions?.some((subscription) => subscription.plan === 'pro' && subscription.status === 'active')}
+      disabled={isProUser}
       aria-describedby={tier.id}
       onClick={async () => {
         await authClient.subscription.upgrade({
@@ -52,7 +53,7 @@ export default function BuyProButton({ tier, preloadedSubscriptions, isAuthentic
       }}
       className={className}
     >
-      Upgrade to {tier.name}
+      {isProUser ? 'Your current plan' : `Upgrade to ${tier.name}`}
     </button>
   );
 }
