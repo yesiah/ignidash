@@ -178,7 +178,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         },
         onEvent: async (event) => {
           switch (event.type) {
-            case 'checkout.session.completed':
+            case 'checkout.session.completed': {
               const checkoutSession = event.data.object;
               const customerEmail = checkoutSession.customer_details?.email;
 
@@ -206,7 +206,46 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
                 `,
               });
               break;
-            case 'customer.subscription.deleted':
+            }
+            case 'customer.subscription.updated': {
+              const subscription = event.data.object;
+              const cancelAt = subscription.cancel_at;
+              if (!cancelAt) return;
+
+              const customerId = subscription.customer.toString();
+              const customer = await stripeClient.customers.retrieve(customerId);
+
+              if (customer.deleted || !customer.email) {
+                console.error('Customer deleted or email not found');
+                return;
+              }
+
+              const cancelDate = new Date(cancelAt * 1000).toLocaleDateString();
+
+              await resend.sendEmail(requireActionCtx(ctx), {
+                from: 'Ignidash <noreply@mail.ignidash.com>',
+                to: customer.email,
+                subject: 'Your subscription has been canceled',
+                html: `
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 10px;">
+                      Hi there,
+                    </p>
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                      Your Ignidash Pro subscription has been canceled. You'll continue to have access to Pro features until ${cancelDate}.
+                    </p>
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                      Changed your mind? You can resubscribe anytime from your account settings.
+                    </p>
+                    <p style="margin: 30px 0; text-align: center;">
+                      <a href="${baseURL}/settings" style="display: inline-block; padding: 14px 28px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Resubscribe</a>
+                    </p>
+                  </div>
+                `,
+              });
+              break;
+            }
+            case 'customer.subscription.deleted': {
               const subscription = event.data.object;
               const customerId = subscription.customer.toString();
               const customer = await stripeClient.customers.retrieve(customerId);
@@ -219,17 +258,17 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
               await resend.sendEmail(requireActionCtx(ctx), {
                 from: 'Ignidash <noreply@mail.ignidash.com>',
                 to: customer.email,
-                subject: 'Your subscription has been canceled',
+                subject: 'Your Pro access has ended',
                 html: `
-                   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 10px;">
                       Hi there,
                     </p>
                     <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
-                      Your Ignidash Pro subscription has been canceled. You'll continue to have access to Pro features until the end of your current billing period.
+                      Your Ignidash Pro subscription has ended. You've been moved to the free plan and no longer have access to AI chat and insights.
                     </p>
                     <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
-                      Changed your mind? You can resubscribe anytime from your account settings.
+                      We'd love to have you back! Resubscribe anytime to regain full access.
                     </p>
                     <p style="margin: 30px 0; text-align: center;">
                       <a href="${baseURL}/settings" style="display: inline-block; padding: 14px 28px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Resubscribe</a>
@@ -238,6 +277,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
                 `,
               });
               break;
+            }
           }
         },
       }),
