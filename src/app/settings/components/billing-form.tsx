@@ -1,18 +1,31 @@
 'use client';
 
+import { useState } from 'react';
 import { CreditCardIcon } from 'lucide-react';
 
-import { Fieldset, FieldGroup, Legend, Field, Description } from '@/components/catalyst/fieldset';
+import { Fieldset, FieldGroup, Legend, Field, Description, ErrorMessage } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
 import Card from '@/components/ui/card';
 import { Badge } from '@/components/catalyst/badge';
+import { authClient } from '@/lib/auth-client';
 
 interface BillingFormProps {
   subscriptions: { plan: string; status: string | null | undefined }[];
 }
 
 export default function BillingForm({ subscriptions }: BillingFormProps) {
-  const openBillingPortal = async () => {};
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const openBillingPortal = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const { error } = await authClient.subscription.billingPortal({ returnUrl: '/settings' });
+
+    if (error && error.message) setError(error.message);
+    setIsLoading(false);
+  };
 
   const activeSubscriptions = subscriptions.filter((subscription) => subscription.status === 'active');
 
@@ -27,9 +40,10 @@ export default function BillingForm({ subscriptions }: BillingFormProps) {
           </Legend>
           <FieldGroup>
             <Field>
-              <Button color="rose" type="button" className="w-full" data-slot="control" onClick={openBillingPortal}>
+              <Button color="rose" type="button" className="w-full" data-slot="control" onClick={openBillingPortal} disabled={isLoading}>
                 Open billing portal
               </Button>
+              {error && <ErrorMessage>{error}</ErrorMessage>}
               <Description>Visit the billing portal to manage your subscription, update payment methods, and view invoices.</Description>
             </Field>
           </FieldGroup>
