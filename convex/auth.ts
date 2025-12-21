@@ -17,7 +17,7 @@ import { query } from './_generated/server';
 import authSchema from './betterAuth/schema';
 import authConfig from './auth.config';
 
-const baseURL = process.env.SITE_URL ?? 'http://localhost:3000';
+const baseURL = process.env.SITE_URL ?? 'https://nonpreventively-unfoolable-deandre.ngrok-free.dev';
 
 export const authComponent = createClient<DataModel, typeof authSchema>(components.betterAuth, {
   local: {
@@ -175,6 +175,19 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         subscription: {
           enabled: true,
           plans: [{ name: 'pro', priceId: 'price_1Sgfcc7NMzXUg1QmxQlAasFe' }],
+        },
+        onEvent: async (event) => {
+          switch (event.type) {
+            case 'checkout.session.completed':
+              console.log('checkout.session.completed', event.data.object);
+              break;
+            case 'customer.subscription.updated':
+              console.log('customer.subscription.updated', event.data.object);
+              break;
+            case 'customer.subscription.deleted':
+              console.log('customer.subscription.deleted', event.data.object);
+              break;
+          }
         },
       }),
     ],
