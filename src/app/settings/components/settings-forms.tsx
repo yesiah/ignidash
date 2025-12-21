@@ -27,8 +27,8 @@ export default function SettingsForms({ preloadedUser, preloadedSubscriptions }:
   const authData = usePreloadedAuthQuery(preloadedUser);
   const { accounts: accountsData, isLoading: isAccountsDataLoading } = useAccountsList();
 
-  const subscriptionsData =
-    usePreloadedAuthQuery(preloadedSubscriptions)?.map((subscription) => ({ plan: subscription.plan, status: subscription.status })) ?? [];
+  const subscriptions = usePreloadedAuthQuery(preloadedSubscriptions) ?? [];
+  const subscriptionsData = subscriptions.map((subscription) => ({ plan: subscription.plan, status: subscription.status }));
   const isProUser = subscriptionsData.some((subscription) => subscription.plan === 'pro' && subscription.status === 'active');
 
   const settingsCapabilities = useMemo(() => {
