@@ -185,7 +185,36 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
               console.log('customer.subscription.updated', event.data.object);
               break;
             case 'customer.subscription.deleted':
-              console.log('customer.subscription.deleted', event.data.object);
+              const subscription = event.data.object;
+              const customerId = subscription.customer.toString();
+              const customer = await stripeClient.customers.retrieve(customerId);
+
+              if (customer.deleted || !customer.email) {
+                console.error('Customer deleted or email not found');
+                return;
+              }
+
+              await resend.sendEmail(requireActionCtx(ctx), {
+                from: 'Ignidash <noreply@mail.ignidash.com>',
+                to: customer.email,
+                subject: 'Your subscription has been canceled',
+                html: `
+                   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 10px;">
+                      Hi there,
+                    </p>
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                      Your Ignidash Pro subscription has been canceled. You'll continue to have access to Pro features until the end of your current billing period.
+                    </p>
+                    <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                      Changed your mind? You can resubscribe anytime from your account settings.
+                    </p>
+                    <p style="margin: 30px 0; text-align: center;">
+                      <a href="${baseURL}/settings" style="display: inline-block; padding: 14px 28px; background-color: #f43f5e; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Resubscribe</a>
+                    </p>
+                  </div>
+                `,
+              });
               break;
           }
         },
