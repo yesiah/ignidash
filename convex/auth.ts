@@ -8,8 +8,6 @@ import { betterAuth } from 'better-auth';
 import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { getJwtToken } from 'better-auth/plugins';
 import { fetchMutation } from 'convex/nextjs';
-import { polar, checkout, portal, usage } from '@polar-sh/better-auth';
-import { Polar } from '@polar-sh/sdk';
 
 import { components, api } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
@@ -30,10 +28,6 @@ const rateLimiter = new RateLimiter(components.rateLimiter, {
   emailChange: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   emailVerification: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
   deleteAccount: { kind: 'fixed window', rate: 3, period: 3 * HOUR },
-});
-
-const polarClient = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
 });
 
 export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optionsOnly: false }) => {
@@ -163,34 +157,10 @@ export const createAuth = (ctx: GenericCtx<DataModel>, { optionsOnly } = { optio
           } catch (error) {
             console.error('Error deleting user data from Convex:', error);
           }
-
-          try {
-            await polarClient.customers.deleteExternal({ externalId: user.id });
-          } catch (error) {
-            console.error('Error deleting Polar customer:', error);
-          }
         },
       },
     },
-    plugins: [
-      convex(),
-      polar({
-        client: polarClient,
-        createCustomerOnSignUp: true,
-        use: [
-          checkout({
-            products: [{ productId: process.env.POLAR_PRODUCT_ID!, slug: 'Ignidash-Pro' }],
-            successUrl: `${siteUrl}/success?checkout_id={CHECKOUT_ID}`,
-            authenticatedUsersOnly: true,
-            returnUrl: `${siteUrl}/pricing`,
-          }),
-          portal({
-            returnUrl: `${siteUrl}/settings`,
-          }),
-          usage(),
-        ],
-      }),
-    ],
+    plugins: [convex()],
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailVerification', { key: user.id });

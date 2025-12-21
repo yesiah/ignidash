@@ -1,18 +1,16 @@
 import { CreditCardIcon } from 'lucide-react';
 
-import type { CustomerStateData } from '@/hooks/use-customer-state';
 import { Fieldset, FieldGroup, Legend, Field, Description } from '@/components/catalyst/fieldset';
 import { Button } from '@/components/catalyst/button';
-import { authClient } from '@/lib/auth-client';
 import Card from '@/components/ui/card';
 import { Badge } from '@/components/catalyst/badge';
 
 interface BillingFormProps {
-  customerState: CustomerStateData;
+  customerState: { activeSubscriptions: string[] };
 }
 
 export default function BillingForm({ customerState }: BillingFormProps) {
-  const openBillingPortal = async () => await authClient.customer.portal();
+  const openBillingPortal = async () => {};
 
   return (
     <Card className="my-6">

@@ -1,6 +1,5 @@
 import { FireIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
-import type { CustomerSubscription } from '@polar-sh/sdk/models/components/customersubscription.js';
 
 import { Badge } from '@/components/catalyst/badge';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
@@ -12,6 +11,18 @@ function formatCurrency(amount: number, currency: string, locale = 'en-US') {
     currency: currency.toUpperCase(),
   }).format(amount / 100);
 }
+
+export type CustomerSubscription = {
+  product: {
+    name: string;
+  };
+  status: string;
+  amount: number;
+  currency: string;
+  recurringInterval: string;
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
+};
 
 interface SubscriptionOverviewProps {
   subscription: CustomerSubscription;

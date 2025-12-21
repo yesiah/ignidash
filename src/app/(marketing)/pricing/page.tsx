@@ -4,7 +4,6 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
-import { authClient } from '@/lib/auth-client';
 
 const tiers = [
   {
@@ -100,7 +99,7 @@ export default function PricingPage() {
               <button
                 disabled
                 aria-describedby={tier.id}
-                onClick={async () => await authClient.checkout({ slug: 'Ignidash-Pro' })}
+                onClick={async () => {}}
                 className={cn(
                   tier.featured
                     ? 'bg-rose-500 text-white shadow-xs hover:bg-rose-400 focus-visible:outline-rose-500 dark:shadow-none'
