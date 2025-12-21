@@ -158,7 +158,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         },
       },
     },
-    plugins: [convex({ authConfig, jwksRotateOnTokenGenerationError: true })],
+    plugins: [convex({ authConfig, jwksRotateOnTokenGenerationError: true, jwt: { expirationSeconds: 60 * 60 * 24 } })],
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         const { ok } = await rateLimiter.limit(requireActionCtx(ctx), 'emailVerification', { key: user.id });
