@@ -86,6 +86,7 @@ export default function SignInForm() {
                           name="remember-me"
                           type="checkbox"
                           className="col-start-1 row-start-1 appearance-none rounded-sm border border-zinc-300 bg-white checked:border-rose-600 checked:bg-rose-600 indeterminate:border-rose-600 indeterminate:bg-rose-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 disabled:border-zinc-300 disabled:bg-zinc-100 disabled:checked:bg-zinc-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-rose-500 dark:checked:bg-rose-500 dark:indeterminate:border-rose-500 dark:indeterminate:bg-rose-500 dark:focus-visible:outline-rose-500 forced-colors:appearance-auto"
+                          defaultChecked
                         />
                         <svg
                           fill="none"
