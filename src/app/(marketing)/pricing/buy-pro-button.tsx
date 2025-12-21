@@ -40,7 +40,7 @@ export default function BuyProButton({ tier, preloadedSubscriptions, isAuthentic
 
   return (
     <button
-      disabled={subscriptions?.some((subscription) => subscription.plan === 'pro')}
+      disabled={subscriptions?.some((subscription) => subscription.plan === 'pro' && subscription.status === 'active')}
       aria-describedby={tier.id}
       onClick={async () => {
         await authClient.subscription.upgrade({
