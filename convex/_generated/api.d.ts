@@ -1236,7 +1236,7 @@ export declare const components: {
         any
       >;
     };
-    auth: {
+    auth_data: {
       getCurrentUserSafe: FunctionReference<
         "query",
         "internal",

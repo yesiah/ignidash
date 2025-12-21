@@ -210,7 +210,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
 export const getCurrentUserSafe = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.runQuery(components.betterAuth.auth.getCurrentUserSafe, {});
+    return await ctx.runQuery(components.betterAuth.auth_data.getCurrentUserSafe, {});
   },
 });
 
@@ -218,7 +218,7 @@ export const getIsAdmin = query({
   args: {},
   returns: v.boolean(),
   handler: async (ctx): Promise<boolean> => {
-    return await ctx.runQuery(components.betterAuth.auth.getIsAdmin, {});
+    return await ctx.runQuery(components.betterAuth.auth_data.getIsAdmin, {});
   },
 });
 
