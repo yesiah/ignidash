@@ -328,6 +328,22 @@ export declare const components: {
                   publicKey: string;
                 };
                 model: "jwks";
+              }
+            | {
+                data: {
+                  cancelAtPeriodEnd?: null | boolean;
+                  periodEnd?: null | number;
+                  periodStart?: null | number;
+                  plan: string;
+                  referenceId: string;
+                  seats?: null | number;
+                  status?: null | string;
+                  stripeCustomerId?: null | string;
+                  stripeSubscriptionId?: null | string;
+                  trialEnd?: null | number;
+                  trialStart?: null | number;
+                };
+                model: "subscription";
               };
           onCreateHandle?: string;
           select?: Array<string>;
@@ -489,6 +505,44 @@ export declare const components: {
                     | "privateKey"
                     | "createdAt"
                     | "expiresAt"
+                    | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "subscription";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field:
+                    | "plan"
+                    | "referenceId"
+                    | "stripeCustomerId"
+                    | "stripeSubscriptionId"
+                    | "status"
+                    | "periodStart"
+                    | "periodEnd"
+                    | "trialStart"
+                    | "trialEnd"
+                    | "cancelAtPeriodEnd"
+                    | "seats"
                     | "_id";
                   operator?:
                     | "lt"
@@ -699,6 +753,44 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "subscription";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field:
+                    | "plan"
+                    | "referenceId"
+                    | "stripeCustomerId"
+                    | "stripeSubscriptionId"
+                    | "status"
+                    | "periodStart"
+                    | "periodEnd"
+                    | "trialStart"
+                    | "trialEnd"
+                    | "cancelAtPeriodEnd"
+                    | "seats"
+                    | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onDeleteHandle?: string;
         },
@@ -709,7 +801,13 @@ export declare const components: {
         "internal",
         {
           limit?: number;
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "subscription";
           offset?: number;
           paginationOpts: {
             cursor: string | null;
@@ -750,7 +848,13 @@ export declare const components: {
         "query",
         "internal",
         {
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "subscription";
           select?: Array<string>;
           where?: Array<{
             connector?: "AND" | "OR";
@@ -1001,6 +1105,57 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "subscription";
+                update: {
+                  cancelAtPeriodEnd?: null | boolean;
+                  periodEnd?: null | number;
+                  periodStart?: null | number;
+                  plan?: string;
+                  referenceId?: string;
+                  seats?: null | number;
+                  status?: null | string;
+                  stripeCustomerId?: null | string;
+                  stripeSubscriptionId?: null | string;
+                  trialEnd?: null | number;
+                  trialStart?: null | number;
+                };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field:
+                    | "plan"
+                    | "referenceId"
+                    | "stripeCustomerId"
+                    | "stripeSubscriptionId"
+                    | "status"
+                    | "periodStart"
+                    | "periodEnd"
+                    | "trialStart"
+                    | "trialEnd"
+                    | "cancelAtPeriodEnd"
+                    | "seats"
+                    | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onUpdateHandle?: string;
           paginationOpts: {
@@ -1216,6 +1371,57 @@ export declare const components: {
                     | "privateKey"
                     | "createdAt"
                     | "expiresAt"
+                    | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "subscription";
+                update: {
+                  cancelAtPeriodEnd?: null | boolean;
+                  periodEnd?: null | number;
+                  periodStart?: null | number;
+                  plan?: string;
+                  referenceId?: string;
+                  seats?: null | number;
+                  status?: null | string;
+                  stripeCustomerId?: null | string;
+                  stripeSubscriptionId?: null | string;
+                  trialEnd?: null | number;
+                  trialStart?: null | number;
+                };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field:
+                    | "plan"
+                    | "referenceId"
+                    | "stripeCustomerId"
+                    | "stripeSubscriptionId"
+                    | "status"
+                    | "periodStart"
+                    | "periodEnd"
+                    | "trialStart"
+                    | "trialEnd"
+                    | "cancelAtPeriodEnd"
+                    | "seats"
                     | "_id";
                   operator?:
                     | "lt"

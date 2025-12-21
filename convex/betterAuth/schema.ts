@@ -72,6 +72,19 @@ export const tables = {
     createdAt: v.number(),
     expiresAt: v.optional(v.union(v.null(), v.number())),
   }),
+  subscription: defineTable({
+    plan: v.string(),
+    referenceId: v.string(),
+    stripeCustomerId: v.optional(v.union(v.null(), v.string())),
+    stripeSubscriptionId: v.optional(v.union(v.null(), v.string())),
+    status: v.optional(v.union(v.null(), v.string())),
+    periodStart: v.optional(v.union(v.null(), v.number())),
+    periodEnd: v.optional(v.union(v.null(), v.number())),
+    trialStart: v.optional(v.union(v.null(), v.number())),
+    trialEnd: v.optional(v.union(v.null(), v.number())),
+    cancelAtPeriodEnd: v.optional(v.union(v.null(), v.boolean())),
+    seats: v.optional(v.union(v.null(), v.number())),
+  }),
 };
 
 const schema = defineSchema(tables);

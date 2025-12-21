@@ -166,7 +166,24 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
     },
     plugins: [
       convex({ authConfig, jwksRotateOnTokenGenerationError: true, jwt: { expirationSeconds: 60 * 60 * 24 } }),
-      stripe({ stripeClient, stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!, createCustomerOnSignUp: true }),
+      stripe({
+        stripeClient,
+        stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+        createCustomerOnSignUp: true,
+        subscription: {
+          enabled: true,
+          plans: [{ name: 'pro', priceId: 'price_1Sgfcc7NMzXUg1QmxQlAasFe' }],
+          getCheckoutSessionParams: async ({ user, session, plan, subscription }, ctx) => {
+            return {
+              params: {
+                automatic_tax: {
+                  enabled: true,
+                },
+              },
+            };
+          },
+        },
+      }),
     ],
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
