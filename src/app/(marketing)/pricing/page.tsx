@@ -1,9 +1,9 @@
-'use client';
-
 import { CheckIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
+
+import BuyProButton from './buy-pro-button';
 
 const tiers = [
   {
@@ -34,6 +34,8 @@ const tiers = [
     featured: true,
   },
 ];
+
+export type ProductTier = (typeof tiers)[number];
 
 export default function PricingPage() {
   return (
@@ -96,19 +98,7 @@ export default function PricingPage() {
               ))}
             </ul>
             {tier.id === 'tier-pro' ? (
-              <button
-                disabled
-                aria-describedby={tier.id}
-                onClick={async () => {}}
-                className={cn(
-                  tier.featured
-                    ? 'bg-rose-500 text-white shadow-xs hover:bg-rose-400 focus-visible:outline-rose-500 dark:shadow-none'
-                    : 'text-rose-600 inset-ring inset-ring-rose-200 hover:inset-ring-rose-300 focus-visible:outline-rose-600 dark:bg-white/10 dark:text-white dark:inset-ring-white/5 dark:hover:bg-white/20 dark:hover:inset-ring-white/5 dark:focus-visible:outline-white/75',
-                  'mt-8 block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed sm:mt-10'
-                )}
-              >
-                Coming soon
-              </button>
+              <BuyProButton tier={tier} />
             ) : (
               <Link
                 href={tier.href}
