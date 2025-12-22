@@ -11,11 +11,11 @@ import Card from '@/components/ui/card';
 import { Badge } from '@/components/catalyst/badge';
 import { authClient } from '@/lib/auth-client';
 
-interface BillingFormProps {
+interface BillingFormProProps {
   subscriptions: { plan: string; status: string | null | undefined; id: string | null | undefined }[];
 }
 
-export default function BillingForm({ subscriptions }: BillingFormProps) {
+export default function BillingFormPro({ subscriptions }: BillingFormProProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cancelAtTime, setCancelAtTime] = useState<number | null>(null);

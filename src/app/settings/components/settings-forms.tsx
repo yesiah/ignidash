@@ -12,7 +12,8 @@ import PageLoading from '@/components/ui/page-loading';
 
 import ProfileInfoForm from './profile-info-form';
 import DataSettingsForm from './data-settings-form';
-import BillingForm from './billing-form';
+import BillingFormStarter from './billing-form-starter';
+import BillingFormPro from './billing-form-pro';
 
 interface SettingsFormsProps {
   preloadedUser: Preloaded<typeof api.auth.getCurrentUserSafe>;
@@ -59,11 +60,12 @@ export default function SettingsForms({ preloadedUser, preloadedSubscriptions }:
     <>
       <main className="mx-auto min-h-dvh max-w-prose px-2 pt-[4.25rem] pb-[2.125rem] sm:px-3 lg:px-4">
         <Authenticated>
+          {!isProUser && <BillingFormStarter />}
           <ProfileInfoForm
             userData={{ fetchedName, fetchedEmail, isEmailVerified, ...settingsCapabilities }}
             showSuccessNotification={showSuccessNotification}
           />
-          {isProUser && <BillingForm subscriptions={subscriptionsData} />}
+          {isProUser && <BillingFormPro subscriptions={subscriptionsData} />}
           <DataSettingsForm showSuccessNotification={showSuccessNotification} />
         </Authenticated>
       </main>
