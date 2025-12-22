@@ -13,7 +13,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from 'next-themes';
-import { useSmoothText } from '@convex-dev/agent/react';
 
 import { Button } from '@/components/catalyst/button';
 import { Textarea } from '@/components/catalyst/textarea';
@@ -94,8 +93,6 @@ function ChatMessage({ message, image }: ChatMessageProps) {
   const [copied, setCopied] = useState<boolean>(false);
   const { resolvedTheme } = useTheme();
 
-  const [smoothText] = useSmoothText(message.body ?? '', { startStreaming: message.isLoading && message.body !== undefined });
-
   if (message.author === 'system') return null;
 
   const handleCopy = () => {
@@ -128,7 +125,7 @@ function ChatMessage({ message, image }: ChatMessageProps) {
               'prose-invert': (resolvedTheme === 'dark' && !isUser) || (resolvedTheme === 'light' && isUser),
             })}
           >
-            <ReactMarkdown>{smoothText}</ReactMarkdown>
+            <ReactMarkdown>{message.body}</ReactMarkdown>
           </div>
           <div className="flex items-center gap-2">
             <p className={cn('text-xs', { 'text-background/60': isUser }, { 'text-foreground/60': !isUser })}>
