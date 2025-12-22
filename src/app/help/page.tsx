@@ -111,8 +111,10 @@ export default function HelpPage() {
             <Text className="mt-2">
               For any questions not answered by Help Center, please email me directly at{' '}
               <TextLink href="mailto:joe@schelske.dev">joe@schelske.dev</TextLink> or join the{' '}
-              <TextLink href="https://discord.gg/AVNg9JCNUr">Discord server</TextLink>—I&apos;ll be there, and hopefully by the time
-              you&apos;re reading this, other users will be too!
+              <TextLink href="https://discord.gg/AVNg9JCNUr" target="_blank" rel="noopener noreferrer">
+                Discord server
+              </TextLink>
+              —I&apos;ll be there, and hopefully by the time you&apos;re reading this, other users will be too!
             </Text>
           </div>
           <dl className="divide-y divide-zinc-900/10 dark:divide-white/10">
