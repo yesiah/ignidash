@@ -12,6 +12,7 @@ export interface NavigationItem {
   >;
   current: boolean;
   disabled?: boolean;
+  hidden?: boolean;
 }
 
 export const useNavigationItems = () => {
@@ -51,9 +52,11 @@ export const useNavigationItems = () => {
 };
 
 export const useSecondaryNavigationItems = () => {
+  const hasActiveSubscription = useQuery(api.auth.getHasActiveSubscription) ?? false;
+
   return [
     { name: 'Help', href: '/help', icon: CircleQuestionMarkIcon, current: false },
-    { name: 'Buy Pro', href: '/pricing', icon: GemIcon, current: false },
+    { name: 'Buy Pro', href: '/pricing', icon: GemIcon, current: false, hidden: hasActiveSubscription },
   ];
 };
 

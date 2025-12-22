@@ -12,14 +12,16 @@ interface SidebarLinkProps {
   disabled?: boolean;
   children: React.ReactNode;
   tooltipLabel?: string;
+  hidden?: boolean;
 }
 
-export default function SidebarLink({ href, current, disabled = false, children, tooltipLabel }: SidebarLinkProps) {
+export default function SidebarLink({ href, current, disabled = false, children, tooltipLabel, hidden = false }: SidebarLinkProps) {
   const linkClasses = cn(
     'group focus-outline my-1 flex items-center text-base/6',
     { 'bg-background ring-primary text-primary ring': current },
     { 'hover:bg-background hover:ring-border hover:ring': !current },
-    { 'hover:opacity-50 cursor-not-allowed': disabled }
+    { 'hover:opacity-50 cursor-not-allowed': disabled },
+    { hidden: hidden }
   );
 
   const linkComponent = disabled ? (

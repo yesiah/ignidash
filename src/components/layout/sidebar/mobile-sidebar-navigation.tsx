@@ -31,9 +31,9 @@ export function MobileSidebarSecondaryNavigation() {
 
   return (
     <>
-      {secondaryNavigation.map(({ name, href, icon: Icon, current }) => (
+      {secondaryNavigation.map(({ name, href, icon: Icon, current, hidden }) => (
         <li key={name}>
-          <SidebarLink href={href} current={current}>
+          <SidebarLink href={href} current={current} hidden={hidden}>
             <div className="p-2">
               <Icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': href === '/pricing' })} />
             </div>
