@@ -621,7 +621,7 @@ export default function PrivacyPage() {
 
           <h3 className="my-6 text-xl font-semibold">Use of AI Technologies</h3>
           <p className="mb-4">
-            We provide the AI Products through third-party service providers (&quot;AI Service Providers&quot;), including Anthropic and
+            We provide the AI Products through third-party service providers (&quot;AI Service Providers&quot;), including Microsoft Azure
             OpenAI. As outlined in this Privacy Notice, your input, output, and personal information will be shared with and processed by
             these AI Service Providers to enable your use of our AI Products for purposes outlined in &quot;
             <a href="#legalbases" className="text-primary hover:underline">
@@ -629,25 +629,45 @@ export default function PrivacyPage() {
             </a>
             &quot; You must not use the AI Products in any way that violates the terms or policies of any AI Service Provider.
           </p>
+          <p className="mb-4">Your prompts, outputs, and any data processed by our AI Products:</p>
+          <ul className="mb-4 ml-4 list-outside list-disc">
+            <li>Are NOT available to other customers</li>
+            <li>Are NOT available to OpenAI or any third parties</li>
+            <li>Are NOT used to train, retrain, or improve any AI foundation models</li>
+            <li>Are NOT used to improve Microsoft or third-party products or services</li>
+          </ul>
+          <p className="mb-4">
+            For more information about how Microsoft Azure OpenAI handles data, please see{' '}
+            <a
+              href="https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/data-privacy"
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Microsoft&apos;s Data, Privacy, and Security documentation
+            </a>
+            .
+          </p>
 
           <h3 className="my-6 text-xl font-semibold">Our AI Products</h3>
           <p className="mb-4">Our AI Products are designed for the following functions:</p>
           <ul className="mb-4 ml-4 list-outside list-disc">
+            <li>AI chat</li>
             <li>AI insights</li>
           </ul>
 
           <h3 className="my-6 text-xl font-semibold">How We Process Your Data Using AI</h3>
           <p className="mb-4">
-            All personal information processed using our AI Products is handled in line with our Privacy Notice and our agreement with third
-            parties. This ensures high security and safeguards your personal information throughout the process, giving you peace of mind
-            about your data&apos;s safety.
+            All personal information processed using our AI Products is handled in line with our Privacy Notice and our agreement with
+            Microsoft Azure. Your data is processed within Microsoft&apos;s secure Azure environment with enterprise-grade encryption and
+            security controls. The AI models are stateless, meaning no prompts or outputs are stored in the model itself.
           </p>
 
-          <h3 className="my-6 text-xl font-semibold">How to Opt Out</h3>
-          <p className="mb-4">We believe in giving you the power to decide how your data is used. To opt out, you can:</p>
-          <ul className="mb-4 ml-4 list-outside list-disc">
-            <li>Log in to your account settings and update your user account</li>
-          </ul>
+          <h3 className="my-6 text-xl font-semibold">Your Choice to Use AI Features</h3>
+          <p className="mb-4">
+            AI features are entirely optional. Your data is not processed by AI unless you actively choose to use our AI Products, such as
+            AI chat or AI insights. If you prefer not to have your data processed by AI, simply do not use these features.
+          </p>
         </section>
 
         <section id="sociallogins" className="mb-8">
