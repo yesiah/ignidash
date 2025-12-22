@@ -1,6 +1,6 @@
 import { SparklesIcon, LightBulbIcon, ArrowPathIcon, ChartBarIcon, BanknotesIcon, ShieldCheckIcon } from '@heroicons/react/20/solid';
 
-import { Badge } from '@/components/catalyst/badge';
+import { Badge, BadgeButton } from '@/components/catalyst/badge';
 
 const sectionHeader = {
   eyebrow: 'Everything you need',
@@ -14,11 +14,13 @@ const features = [
     name: 'Chat with AI.',
     description: 'Use AI to ask questions, clarify results, and learn about retirement planning concepts and principles.',
     icon: SparklesIcon,
+    pro: true,
   },
   {
     name: 'Automatic insights.',
     description: 'Generate an AI educational overview of your plan to understand the financial topics that matter most to you.',
     icon: LightBulbIcon,
+    pro: true,
   },
   {
     name: 'Test your resilience.',
@@ -64,6 +66,11 @@ export default function FeaturesSection() {
                 <feature.icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-rose-600 dark:text-rose-400" />
                 {feature.name}
                 {feature.status === 'coming-soon' && <Badge className="ml-3">Coming Soon</Badge>}
+                {feature.pro && (
+                  <BadgeButton color="rose" href="/pricing" className="ml-3">
+                    Pro
+                  </BadgeButton>
+                )}
               </dt>{' '}
               <dd>{feature.description}</dd>
             </div>
