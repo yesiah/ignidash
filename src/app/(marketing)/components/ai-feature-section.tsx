@@ -4,7 +4,7 @@ export default function AIFeatureSection() {
   return (
     <div className="overflow-hidden py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <p className="max-w-2xl text-5xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-6xl sm:text-balance dark:text-white">
+        <p className="ml-auto max-w-2xl text-right text-5xl font-semibold tracking-tight text-pretty text-zinc-900 sm:text-6xl sm:text-balance dark:text-white">
           Instant clarity. Powered by{' '}
           <span className="bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">GPT-5</span>.
         </p>
