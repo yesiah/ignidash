@@ -7,7 +7,7 @@ import { internal } from './_generated/api';
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getConversationForCurrentUserOrThrow } from './utils/conversation_utils';
 import { getUserIdOrThrow } from './utils/auth_utils';
-import { checkUsageLimits, recordUsage, getCanUseAIFeatures } from './utils/ai_utils';
+import { checkUsageLimits, recordUsage, getCanUseAIFeatures, getSubscriptionStartTime } from './utils/ai_utils';
 import { getSystemPrompt } from './utils/sys_prompt_utils';
 import { keyMetricsValidator } from './validators/key_metrics_validator';
 
@@ -49,7 +49,9 @@ export const send = mutation({
 
     if (!canUseChat) throw new ConvexError('AI chat is not available. Upgrade to start chatting.');
 
-    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'chat');
+    const subscriptionStartTime = await getSubscriptionStartTime(ctx);
+
+    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'chat', subscriptionStartTime);
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(Date.now() + retryAfter).toLocaleString()}.`);
 
     const [loadingMessage, plan] = await Promise.all([
@@ -88,7 +90,13 @@ export const send = mutation({
       .take(NUM_MESSAGES_AS_CONTEXT);
     messages.reverse();
 
-    await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, { userId, messages, assistantMessageId, systemPrompt });
+    await ctx.scheduler.runAfter(0, internal.use_openai.streamChat, {
+      userId,
+      messages,
+      assistantMessageId,
+      systemPrompt,
+      subscriptionStartTime,
+    });
 
     return { messages, userMessageId, assistantMessageId, conversationId };
   },
@@ -115,15 +123,16 @@ export const setUsage = internalMutation({
     inputTokens: v.number(),
     outputTokens: v.number(),
     totalTokens: v.number(),
+    subscriptionStartTime: v.number(),
   },
-  handler: async (ctx, { messageId, userId, inputTokens, outputTokens, totalTokens }) => {
+  handler: async (ctx, { messageId, userId, inputTokens, outputTokens, totalTokens, subscriptionStartTime }) => {
     if (inputTokens + outputTokens !== totalTokens) {
       console.warn(`Token mismatch for message ${messageId}: ${inputTokens} + ${outputTokens} !== ${totalTokens}`);
     }
 
     await Promise.all([
       ctx.db.patch(messageId, { usage: { inputTokens, outputTokens, totalTokens }, updatedAt: Date.now() }),
-      recordUsage(ctx, userId, inputTokens, outputTokens, 'chat'),
+      recordUsage(ctx, userId, inputTokens, outputTokens, 'chat', subscriptionStartTime),
     ]);
   },
 });

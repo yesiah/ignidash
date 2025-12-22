@@ -4,7 +4,7 @@ import { query, mutation, internalMutation } from './_generated/server';
 import { internal } from './_generated/api';
 
 import { getUserIdOrThrow } from './utils/auth_utils';
-import { checkUsageLimits, recordUsage, getCanUseAIFeatures } from './utils/ai_utils';
+import { checkUsageLimits, recordUsage, getCanUseAIFeatures, getSubscriptionStartTime } from './utils/ai_utils';
 import { getPlanForCurrentUserOrThrow } from './utils/plan_utils';
 import { getInsightsSystemPrompt } from './utils/sys_prompt_utils';
 import { keyMetricsValidator } from './validators/key_metrics_validator';
@@ -62,7 +62,9 @@ export const generate = mutation({
 
     if (!canUseInsights) throw new ConvexError('AI insights are not available. Upgrade to start generating insights.');
 
-    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'insights');
+    const subscriptionStartTime = await getSubscriptionStartTime(ctx);
+
+    const { ok, retryAfter } = await checkUsageLimits(ctx, userId, 'insights', subscriptionStartTime);
     if (!ok) throw new ConvexError(`AI usage limit exceeded. Try again after ${new Date(Date.now() + retryAfter).toLocaleString()}.`);
 
     const [loadingInsight, plan] = await Promise.all([
@@ -79,7 +81,7 @@ export const generate = mutation({
     const systemPrompt = getInsightsSystemPrompt(plan, keyMetrics, simulationResult, userPrompt);
 
     const insightId = await ctx.db.insert('insights', { userId, planId, systemPrompt, content: '', updatedAt, isLoading: true });
-    await ctx.scheduler.runAfter(0, internal.use_openai.streamInsights, { userId, insightId, systemPrompt });
+    await ctx.scheduler.runAfter(0, internal.use_openai.streamInsights, { userId, insightId, systemPrompt, subscriptionStartTime });
 
     return { insightId };
   },
@@ -106,15 +108,16 @@ export const setUsage = internalMutation({
     inputTokens: v.number(),
     outputTokens: v.number(),
     totalTokens: v.number(),
+    subscriptionStartTime: v.number(),
   },
-  handler: async (ctx, { insightId, userId, inputTokens, outputTokens, totalTokens }) => {
+  handler: async (ctx, { insightId, userId, inputTokens, outputTokens, totalTokens, subscriptionStartTime }) => {
     if (inputTokens + outputTokens !== totalTokens) {
       console.warn(`Token mismatch for insight ${insightId}: ${inputTokens} + ${outputTokens} !== ${totalTokens}`);
     }
 
     await Promise.all([
       ctx.db.patch(insightId, { usage: { inputTokens, outputTokens, totalTokens }, updatedAt: Date.now() }),
-      recordUsage(ctx, userId, inputTokens, outputTokens, 'insights'),
+      recordUsage(ctx, userId, inputTokens, outputTokens, 'insights', subscriptionStartTime),
     ]);
   },
 });

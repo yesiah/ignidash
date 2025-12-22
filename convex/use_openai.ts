@@ -23,10 +23,11 @@ type StreamChatParams = {
   messages: Doc<'messages'>[];
   assistantMessageId: Id<'messages'>;
   systemPrompt: string;
+  subscriptionStartTime: number;
 };
 
 export const streamChat = internalAction({
-  handler: async (ctx, { userId, messages, assistantMessageId, systemPrompt }: StreamChatParams) => {
+  handler: async (ctx, { userId, messages, assistantMessageId, systemPrompt, subscriptionStartTime }: StreamChatParams) => {
     const hasBody = (msg: Doc<'messages'>): msg is Doc<'messages'> & { body: string } => msg.body !== undefined;
 
     try {
@@ -59,6 +60,7 @@ export const streamChat = internalAction({
             inputTokens: part.usage.prompt_tokens,
             outputTokens: part.usage.completion_tokens,
             totalTokens: part.usage.total_tokens,
+            subscriptionStartTime,
           });
         }
       }
@@ -84,10 +86,11 @@ type StreamInsightsParams = {
   userId: string;
   insightId: Id<'insights'>;
   systemPrompt: string;
+  subscriptionStartTime: number;
 };
 
 export const streamInsights = internalAction({
-  handler: async (ctx, { userId, insightId, systemPrompt }: StreamInsightsParams) => {
+  handler: async (ctx, { userId, insightId, systemPrompt, subscriptionStartTime }: StreamInsightsParams) => {
     try {
       const stream = await openai.chat.completions.create({
         model: 'gpt-5.1-chat',
@@ -115,6 +118,7 @@ export const streamInsights = internalAction({
             inputTokens: part.usage.prompt_tokens,
             outputTokens: part.usage.completion_tokens,
             totalTokens: part.usage.total_tokens,
+            subscriptionStartTime,
           });
         }
       }
