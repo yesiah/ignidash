@@ -61,5 +61,5 @@ export async function checkUsageLimits(ctx: MutationCtx, userId: string, mode: U
 }
 
 export async function getCanUseChat(ctx: QueryCtx): Promise<boolean> {
-  return await ctx.runQuery(api.auth.getIsAdmin, {});
+  return await ctx.runQuery(api.auth.getCanUseAIFeatures, {});
 }

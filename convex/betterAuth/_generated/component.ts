@@ -1219,6 +1219,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
       >;
     };
     auth_data: {
+      getCanUseAIFeatures: FunctionReference<
+        "query",
+        "internal",
+        {},
+        boolean,
+        Name
+      >;
       getCurrentUserSafe: FunctionReference<
         "query",
         "internal",
@@ -1238,7 +1245,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         },
         Name
       >;
-      getIsAdmin: FunctionReference<"query", "internal", {}, boolean, Name>;
       listSubscriptions: FunctionReference<
         "query",
         "internal",

@@ -337,18 +337,18 @@ export const getCurrentUserSafe = query({
   },
 });
 
-export const getIsAdmin = query({
-  args: {},
-  returns: v.boolean(),
-  handler: async (ctx): Promise<boolean> => {
-    return await ctx.runQuery(components.betterAuth.auth_data.getIsAdmin, {});
-  },
-});
-
 export const listSubscriptions = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.runQuery(components.betterAuth.auth_data.listSubscriptions, {});
+  },
+});
+
+export const getCanUseAIFeatures = query({
+  args: {},
+  returns: v.boolean(),
+  handler: async (ctx): Promise<boolean> => {
+    return await ctx.runQuery(components.betterAuth.auth_data.getCanUseAIFeatures, {});
   },
 });
 

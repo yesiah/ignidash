@@ -1450,6 +1450,7 @@ export declare const components: {
       >;
     };
     auth_data: {
+      getCanUseAIFeatures: FunctionReference<"query", "internal", {}, boolean>;
       getCurrentUserSafe: FunctionReference<
         "query",
         "internal",
@@ -1468,7 +1469,6 @@ export declare const components: {
           userId?: null | string;
         }
       >;
-      getIsAdmin: FunctionReference<"query", "internal", {}, boolean>;
       listSubscriptions: FunctionReference<
         "query",
         "internal",

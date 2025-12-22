@@ -17,18 +17,6 @@ export const getCurrentUserSafe = query({
   },
 });
 
-export const getIsAdmin = query({
-  args: {},
-  returns: v.boolean(),
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (identity === null) return false;
-
-    const user = await ctx.db.get(identity.subject as Id<'user'>);
-    return user?.role === 'admin';
-  },
-});
-
 export const listSubscriptions = query({
   args: {},
   returns: v.union(v.null(), v.array(doc(schema, 'subscription'))),
@@ -40,5 +28,24 @@ export const listSubscriptions = query({
       .query('subscription')
       .filter((q) => q.eq(q.field('referenceId'), identity.subject as Id<'user'>))
       .collect();
+  },
+});
+
+export const getCanUseAIFeatures = query({
+  args: {},
+  returns: v.boolean(),
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) return false;
+
+    const [user, subscriptions] = await Promise.all([
+      ctx.db.get(identity.subject as Id<'user'>),
+      ctx.db
+        .query('subscription')
+        .filter((q) => q.eq(q.field('referenceId'), identity.subject as Id<'user'>))
+        .collect(),
+    ]);
+
+    return user?.role === 'admin' || subscriptions?.some((subscription) => subscription.status === 'active');
   },
 });
