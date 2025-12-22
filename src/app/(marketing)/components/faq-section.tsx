@@ -22,6 +22,23 @@ const faqs = [
     answer:
       'No. Ignidash works entirely with data you manually input, and never requires connecting external accounts. This gives you full control over what you share.',
   },
+  {
+    question: 'What AI does Ignidash use, and is my data used to train it?',
+    answer: (
+      <>
+        Ignidash uses GPT-5.1 from{' '}
+        <a
+          href="https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/data-privacy"
+          className="text-primary hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Microsoft Azure OpenAI
+        </a>
+        , which has stricter privacy protections than consumer OpenAI. Your data is never used for training or shared with third parties.
+      </>
+    ),
+  },
 ];
 
 export default function FAQSection() {
