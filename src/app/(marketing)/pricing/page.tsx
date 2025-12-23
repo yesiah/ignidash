@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import { api } from '@/convex/_generated/api';
@@ -6,6 +7,17 @@ import { preloadAuthQuery, isAuthenticated as getIsAuthenticated } from '@/lib/a
 import { cn } from '@/lib/utils';
 
 import BuyProButton from './buy-pro-button';
+
+export const metadata: Metadata = {
+  title: 'Pricing',
+  description:
+    'Free retirement planning with tax estimation and Monte Carlo simulations. Upgrade to Pro for $12/month to unlock AI chat and educational insights.',
+  openGraph: {
+    title: 'Pricing - Ignidash',
+    description:
+      'Free retirement planning with tax estimation and Monte Carlo simulations. Upgrade to Pro for $12/month to unlock AI chat and educational insights.',
+  },
+};
 
 const tiers = [
   {
