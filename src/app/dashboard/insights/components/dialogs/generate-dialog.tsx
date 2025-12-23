@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type { Id } from '@/convex/_generated/dataModel';
 import Link from 'next/link';
+import { track } from '@vercel/analytics';
 
 import { DialogTitle, DialogBody, DialogActions } from '@/components/catalyst/dialog';
 import { simulationResultToConvex } from '@/lib/utils/convex-to-zod-transformers';
@@ -57,6 +58,7 @@ export default function GenerateDialog({
   const onSubmit = async (data: GenerateInsightsInputs) => {
     try {
       setSaveError(null);
+      track('Generate insights', { hasUserPrompt: !!data.userPrompt });
       await m({ planId, keyMetrics, simulationResult: simulationResultToConvex(simulationResult), userPrompt: data.userPrompt });
       onGenerate();
       onClose();
