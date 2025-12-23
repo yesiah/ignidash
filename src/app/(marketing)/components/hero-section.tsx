@@ -18,7 +18,7 @@ export default function HeroSection() {
       <div className="mx-auto max-w-2xl pt-32 sm:pt-48 lg:pt-56">
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="relative rounded-full px-3 py-1 text-sm/6 text-zinc-600 ring-1 ring-zinc-900/10 hover:ring-zinc-900/20 dark:text-zinc-300 dark:ring-white/10 dark:hover:ring-white/20">
-            New: AI insights are coming soon.{' '}
+            New: AI chat and insights are here.{' '}
             <Link href="/dashboard" className="text-primary font-semibold">
               <span aria-hidden="true" className="absolute inset-0" />
               Try free beta <span aria-hidden="true">&rarr;</span>
