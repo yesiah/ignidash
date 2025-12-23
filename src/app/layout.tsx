@@ -107,6 +107,35 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://www.ignidash.com/#organization',
+      name: 'Ignidash',
+      url: 'https://www.ignidash.com',
+      logo: 'https://www.ignidash.com/flame.svg',
+      founder: { '@type': 'Person', name: 'Joe Schelske', url: 'https://www.linkedin.com/in/scheljos/' },
+      sameAs: ['https://x.com/schelskedevco'],
+    },
+    {
+      '@type': 'WebApplication',
+      '@id': 'https://www.ignidash.com/#application',
+      name: 'Ignidash',
+      description: 'Plan your path to Financial Independence and Early Retirement with AI-powered insights and comprehensive simulations.',
+      url: 'https://www.ignidash.com',
+      applicationCategory: 'FinanceApplication',
+      operatingSystem: 'Web',
+      offers: [
+        { '@type': 'Offer', name: 'Starter', price: '0', priceCurrency: 'USD' },
+        { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'USD' },
+      ],
+      featureList: ['Monte Carlo simulations', 'Historical backtesting', 'Tax estimation', 'AI-powered insights', 'AI chat'],
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -115,6 +144,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scheme-light dark:scheme-dark" suppressHydrationWarning>
       <body className={`${figtree.variable} ${geistMono.variable} ${geist.variable} h-full antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ConvexClientProvider>
             {children}
