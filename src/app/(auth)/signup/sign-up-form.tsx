@@ -3,6 +3,7 @@
 import { FireIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import Link from 'next/link';
+import { track } from '@vercel/analytics';
 
 import { authClient } from '@/lib/auth-client';
 import { useRedirectUrl } from '@/hooks/use-redirect-url';
@@ -22,6 +23,8 @@ export default function SignUpForm() {
 
   const handleEmailSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    track('Sign up');
 
     const formData = new FormData(event.currentTarget);
 

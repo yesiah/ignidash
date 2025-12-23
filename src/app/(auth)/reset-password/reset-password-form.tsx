@@ -4,6 +4,7 @@ import { FireIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { track } from '@vercel/analytics';
 
 import ErrorMessageCard from '@/components/ui/error-message-card';
 import { authClient } from '@/lib/auth-client';
@@ -22,6 +23,8 @@ export default function ResetPasswordForm() {
 
   const handleResetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    track('Reset password');
 
     const token = searchParams.get('token');
     if (!token) {

@@ -4,6 +4,7 @@ import { FireIcon } from '@heroicons/react/24/solid';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { track } from '@vercel/analytics';
 
 import { authClient } from '@/lib/auth-client';
 import SuccessNotification from '@/components/ui/success-notification';
@@ -24,6 +25,8 @@ export default function SignInForm() {
 
   const handleEmailSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    track('Sign in');
 
     const formData = new FormData(event.currentTarget);
 

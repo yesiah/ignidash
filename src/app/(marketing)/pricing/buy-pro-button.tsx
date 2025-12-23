@@ -5,6 +5,7 @@ import { usePreloadedAuthQuery } from '@convex-dev/better-auth/nextjs/client';
 import { api } from '@/convex/_generated/api';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { track } from '@vercel/analytics';
 
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
@@ -44,6 +45,8 @@ export default function BuyProButton({ tier, preloadedSubscriptions, isAuthentic
       disabled={isProUser}
       aria-describedby={tier.id}
       onClick={async () => {
+        track('Upgrade to Pro');
+
         await authClient.subscription.upgrade({
           plan: 'pro',
           successUrl: `/success`,
