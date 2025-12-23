@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useConvexAuth } from 'convex/react';
+import { track } from '@vercel/analytics';
 
 import { cn } from '@/lib/utils';
 
@@ -22,7 +23,14 @@ export default function CTADashboardLink() {
   }
 
   return (
-    <Link onClick={() => setIsLoading(true)} href="/dashboard" className={className}>
+    <Link
+      onClick={() => {
+        track('Marketing CTA clicked', { location: 'footer', signedIn: isAuthenticated });
+        setIsLoading(true);
+      }}
+      href="/dashboard"
+      className={className}
+    >
       {isAuthenticated ? 'View dashboard' : 'Start your plan'}
     </Link>
   );
