@@ -81,16 +81,16 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
     </div>
   );
 
-  const userFeedbackTitleComponent = (
-    <div className="flex items-center gap-2">
-      <MessageCircleMoreIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
-      <span>Share Feedback</span>
-    </div>
-  );
   const aiChatTitleComponent = (
     <div className="flex items-center gap-2">
       <WandSparklesIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
       <span>Ask AI Anything</span>
+    </div>
+  );
+  const userFeedbackTitleComponent = (
+    <div className="flex items-center gap-2">
+      <MessageCircleMoreIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+      <span>Share Feedback</span>
     </div>
   );
   const simulationSettingsTitleComponent = (
@@ -135,13 +135,13 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           )}
           {activeSection === 'results' && (
             <div className="flex items-center gap-x-1">
+              <IconButton icon={WandSparklesIcon} label="Ask AI" onClick={() => setAiChatOpen(true)} surfaceColor="emphasized" />
               <IconButton
                 icon={MessageCircleMoreIcon}
                 label="Share Feedback"
                 onClick={() => setUserFeedbackOpen(true)}
                 surfaceColor="emphasized"
               />
-              <IconButton icon={WandSparklesIcon} label="Ask AI" onClick={() => setAiChatOpen(true)} surfaceColor="emphasized" />
               <IconButton
                 icon={SlidersHorizontalIcon}
                 label="Simulation Settings"
@@ -171,14 +171,14 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
           <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
         </Suspense>
       </Drawer>
-      <Drawer open={userFeedbackOpen} setOpen={setUserFeedbackOpen} title={userFeedbackTitleComponent}>
-        <Suspense fallback={<PageLoading message="Loading User Feedback" />}>
-          <UserFeedbackDrawer setOpen={setUserFeedbackOpen} />
-        </Suspense>
-      </Drawer>
       <Drawer open={aiChatOpen} setOpen={setAiChatOpen} title={aiChatTitleComponent} size="large">
         <Suspense fallback={<PageLoading message="Loading AI Chat" />}>
           <AIChatDrawer setOpen={setAiChatOpen} />
+        </Suspense>
+      </Drawer>
+      <Drawer open={userFeedbackOpen} setOpen={setUserFeedbackOpen} title={userFeedbackTitleComponent}>
+        <Suspense fallback={<PageLoading message="Loading User Feedback" />}>
+          <UserFeedbackDrawer setOpen={setUserFeedbackOpen} />
         </Suspense>
       </Drawer>
       <Drawer open={simulationSettingsOpen} setOpen={setSimulationSettingsOpen} title={simulationSettingsTitleComponent}>
