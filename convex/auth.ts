@@ -17,7 +17,7 @@ import { action, query } from './_generated/server';
 import authSchema from './betterAuth/schema';
 import authConfig from './auth.config';
 
-const baseURL = process.env.SITE_URL ?? 'https://nonpreventively-unfoolable-deandre.ngrok-free.dev';
+const baseURL = process.env.SITE_URL ?? 'http://localhost:3000';
 
 export const authComponent = createClient<DataModel, typeof authSchema>(components.betterAuth, {
   local: {
