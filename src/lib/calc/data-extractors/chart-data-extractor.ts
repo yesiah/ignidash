@@ -285,6 +285,8 @@ export abstract class ChartDataExtractor {
         taxFreeWithdrawals,
         cashWithdrawals,
         withdrawalRate,
+        annualShortfall: portfolioData.shortfallForPeriod,
+        outstandingShortfall: portfolioData.outstandingShortfall,
       };
     });
   }

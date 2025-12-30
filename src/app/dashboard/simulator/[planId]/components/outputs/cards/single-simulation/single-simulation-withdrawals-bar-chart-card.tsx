@@ -19,6 +19,7 @@ interface SingleSimulationWithdrawalsBarChartCardProps {
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
   customDataID: string;
@@ -54,6 +55,9 @@ export default function SingleSimulationWithdrawalsBarChartCard({
       break;
     case 'earlyWithdrawals':
       title = 'Early Withdrawals';
+      break;
+    case 'shortfall':
+      title = 'Shortfall';
       break;
     case 'withdrawalRate':
       title = 'Withdrawal Rate';

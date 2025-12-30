@@ -37,6 +37,7 @@ interface CustomTooltipProps {
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
 }
@@ -59,6 +60,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'requiredMinimumDistributions'
       | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
+      | 'shortfall'
       | 'withdrawalRate'
       | 'custom'
   ) => {
@@ -137,6 +139,7 @@ interface SingleSimulationWithdrawalsLineChartProps {
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
   customDataID: string;
@@ -197,6 +200,10 @@ export default function SingleSimulationWithdrawalsLineChart({
       break;
     case 'earlyWithdrawals':
       dataKeys.push('annualEarlyWithdrawals', 'cumulativeEarlyWithdrawals');
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      break;
+    case 'shortfall':
+      dataKeys.push('annualShortfall', 'outstandingShortfall');
       formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     case 'withdrawalRate':

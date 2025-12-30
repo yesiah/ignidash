@@ -213,6 +213,7 @@ function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, s
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom'
   >('taxCategory');

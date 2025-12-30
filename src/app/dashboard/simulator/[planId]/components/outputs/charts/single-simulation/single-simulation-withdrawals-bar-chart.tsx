@@ -55,6 +55,7 @@ interface SingleSimulationWithdrawalsBarChartProps {
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
@@ -144,6 +145,12 @@ export default function SingleSimulationWithdrawalsBarChart({
       ]);
       break;
     }
+    case 'shortfall':
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Annual Shortfall', amount: item.annualShortfall },
+        { name: 'Outstanding Shortfall', amount: item.outstandingShortfall },
+      ]);
+      break;
     case 'withdrawalRate':
       break;
     case 'custom':

@@ -139,6 +139,8 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   taxFreeWithdrawals: number;
   cashWithdrawals: number;
   withdrawalRate: number | null;
+  annualShortfall: number;
+  outstandingShortfall: number;
 }
 
 export interface MultiSimulationChartData {

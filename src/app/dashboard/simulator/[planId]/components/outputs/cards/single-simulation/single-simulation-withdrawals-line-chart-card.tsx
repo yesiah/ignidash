@@ -24,6 +24,7 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
       | 'requiredMinimumDistributions'
       | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
+      | 'shortfall'
       | 'withdrawalRate'
       | 'custom'
   ) => void;
@@ -35,6 +36,7 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
     | 'requiredMinimumDistributions'
     | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
+    | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
   setCustomDataID: (name: string) => void;
@@ -89,6 +91,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                 e.target.value !== 'requiredMinimumDistributions' &&
                 e.target.value !== 'earlyWithdrawalPenalties' &&
                 e.target.value !== 'earlyWithdrawals' &&
+                e.target.value !== 'shortfall' &&
                 e.target.value !== 'withdrawalRate';
               if (isCustomSelection) {
                 setDataView('custom');
@@ -103,6 +106,7 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                     | 'requiredMinimumDistributions'
                     | 'earlyWithdrawalPenalties'
                     | 'earlyWithdrawals'
+                    | 'shortfall'
                     | 'withdrawalRate'
                 );
                 setCustomDataID('');
@@ -118,8 +122,9 @@ export default function SingleSimulationWithdrawalsLineChartCard({
               <option value="realizedGains">Realized Gains</option>
             </optgroup>
             <optgroup label="Issues & Penalties">
-              <option value="earlyWithdrawals">Early Withdrawals</option>
               <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
+              <option value="earlyWithdrawals">Early Withdrawals</option>
+              <option value="shortfall">Shortfall</option>
             </optgroup>
             <optgroup label="By Account">
               {uniqueAccounts.map((account) => (
