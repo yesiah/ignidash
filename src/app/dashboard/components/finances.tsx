@@ -111,7 +111,15 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
       <aside className="border-border/50 -mx-2 border-t sm:-mx-3 lg:fixed lg:top-[4.3125rem] lg:right-0 lg:bottom-0 lg:mx-0 lg:w-96 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:bg-zinc-50 dark:lg:bg-black/10">
         <header className="from-emphasized-background to-background border-border/50 flex items-center justify-between border-b bg-gradient-to-l px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           <div className="flex w-full items-center gap-3">
-            <Heading level={4}>Net Worth</Heading>
+            <Tooltip>
+              <TooltipTrigger>
+                <Heading level={4}>Net Worth</Heading>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add assets and liabilities to track your net worth.</p>
+                <p>Note: entries are not connected to Simulator plans.</p>
+              </TooltipContent>
+            </Tooltip>
             <span className="text-muted-foreground text-2xl/8 font-normal sm:text-xl/8">{formatNumber(netWorth, 0, '$')}</span>
           </div>
           <div className="flex items-center gap-2">
