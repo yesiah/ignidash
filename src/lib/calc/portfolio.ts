@@ -76,6 +76,7 @@ export class PortfolioProcessor {
       discretionaryExpense,
       employerMatchForPeriod,
       employerMatchByAccount,
+      shortfallRepaidForPeriod,
     } = this.processContributions(grossCashFlow, incomesData);
 
     const {
@@ -115,6 +116,7 @@ export class PortfolioProcessor {
         earningsWithdrawnForPeriod,
         rmdsForPeriod: 0,
         shortfallForPeriod,
+        shortfallRepaidForPeriod,
       },
       perAccountData
     );
@@ -136,6 +138,7 @@ export class PortfolioProcessor {
     let earningsWithdrawnForPeriod = annualPortfolioDataBeforeTaxes.earningsWithdrawnForPeriod;
     const rmdsForPeriod = annualPortfolioDataBeforeTaxes.rmdsForPeriod;
     let shortfallForPeriod = annualPortfolioDataBeforeTaxes.shortfallForPeriod;
+    let shortfallRepaidForPeriod = annualPortfolioDataBeforeTaxes.shortfallRepaidForPeriod;
 
     let contributionsByAccount: Record<string, number> = {};
     let employerMatchByAccount: Record<string, number> = {};
@@ -143,17 +146,15 @@ export class PortfolioProcessor {
     let realizedGainsByAccount: Record<string, number> = {};
     let earningsWithdrawnByAccount: Record<string, number> = {};
 
-    // Account for annual shortfall before processing tax refund
-    const taxesRefundAfterShortfall = Math.max(0, taxesData.totalTaxesRefund - shortfallForPeriod);
-
     let discretionaryExpense = 0;
-    if (taxesRefundAfterShortfall > 0) {
-      const res = this.processContributions(taxesRefundAfterShortfall);
+    if (taxesData.totalTaxesRefund > 0) {
+      const res = this.processContributions(taxesData.totalTaxesRefund);
       contributionsForPeriod += res.totalForPeriod;
       contributionsByAccount = res.byAccount;
       discretionaryExpense += res.discretionaryExpense;
       employerMatchForPeriod += res.employerMatchForPeriod;
       employerMatchByAccount = res.employerMatchByAccount;
+      shortfallRepaidForPeriod += res.shortfallRepaidForPeriod;
     }
 
     if (taxesData.totalTaxesDue > 0) {
@@ -186,6 +187,7 @@ export class PortfolioProcessor {
         earningsWithdrawnForPeriod,
         rmdsForPeriod,
         shortfallForPeriod,
+        shortfallRepaidForPeriod,
       },
       perAccountData
     );
@@ -200,19 +202,30 @@ export class PortfolioProcessor {
     discretionaryExpense: number;
     employerMatchForPeriod: number;
     employerMatchByAccount: Record<string, number>;
+    shortfallRepaidForPeriod: number;
   } {
     const byAccount: Record<string, number> = {};
     const employerMatchByAccount: Record<string, number> = {};
     if (!(grossCashFlow > 0)) {
-      return { totalForPeriod: 0, byAccount, discretionaryExpense: 0, employerMatchForPeriod: 0, employerMatchByAccount };
+      return {
+        totalForPeriod: 0,
+        byAccount,
+        discretionaryExpense: 0,
+        employerMatchForPeriod: 0,
+        employerMatchByAccount,
+        shortfallRepaidForPeriod: 0,
+      };
     }
+
+    const shortfallRepaidForPeriod = Math.min(grossCashFlow, this.totalShortfall);
+    this.totalShortfall -= shortfallRepaidForPeriod;
 
     const age = this.simulationState.time.age;
     const contributionRules = this.contributionRules.getRules().sort((a, b) => a.getRank() - b.getRank());
 
     let employerMatchForPeriod = 0;
 
-    let remainingToContribute = grossCashFlow;
+    let remainingToContribute = grossCashFlow - shortfallRepaidForPeriod;
     let currentRuleIndex = 0;
     while (remainingToContribute > 0 && currentRuleIndex < contributionRules.length) {
       const rule = contributionRules[currentRuleIndex];
@@ -275,9 +288,9 @@ export class PortfolioProcessor {
       }
     }
 
-    const totalForPeriod = grossCashFlow - remainingToContribute + employerMatchForPeriod;
+    const totalForPeriod = grossCashFlow - shortfallRepaidForPeriod - remainingToContribute + employerMatchForPeriod;
 
-    return { totalForPeriod, byAccount, discretionaryExpense, employerMatchForPeriod, employerMatchByAccount };
+    return { totalForPeriod, byAccount, discretionaryExpense, employerMatchForPeriod, employerMatchByAccount, shortfallRepaidForPeriod };
   }
 
   private processWithdrawals(grossCashFlow: number): TransactionsBreakdown & {
@@ -419,6 +432,7 @@ export class PortfolioProcessor {
         earningsWithdrawnForPeriod,
         rmdsForPeriod: totalForPeriod,
         shortfallForPeriod: 0,
+        shortfallRepaidForPeriod: 0,
       },
       perAccountData
     );
@@ -470,6 +484,7 @@ export class PortfolioProcessor {
       earningsWithdrawnForPeriod: number;
       rmdsForPeriod: number;
       shortfallForPeriod: number;
+      shortfallRepaidForPeriod: number;
     },
     perAccountData: Record<string, AccountDataWithTransactions>
   ): PortfolioData {
@@ -540,6 +555,7 @@ export class PortfolioProcessor {
           acc.earningsWithdrawnForPeriod += curr.earningsWithdrawnForPeriod;
           acc.rmdsForPeriod += curr.rmdsForPeriod;
           acc.shortfallForPeriod += curr.shortfallForPeriod;
+          acc.shortfallRepaidForPeriod += curr.shortfallRepaidForPeriod;
 
           Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
             acc.perAccountData[accountID] = {
@@ -564,6 +580,7 @@ export class PortfolioProcessor {
           earningsWithdrawnForPeriod: 0,
           rmdsForPeriod: 0,
           shortfallForPeriod: 0,
+          shortfallRepaidForPeriod: 0,
           perAccountData: {} as Record<string, AccountDataWithTransactions>,
         }
       ),
@@ -739,6 +756,7 @@ export interface PortfolioData {
   earningsWithdrawnForPeriod: number;
   rmdsForPeriod: number;
   shortfallForPeriod: number;
+  shortfallRepaidForPeriod: number;
   perAccountData: Record<string, AccountDataWithTransactions>;
   assetAllocation: AssetAllocation | null;
 }

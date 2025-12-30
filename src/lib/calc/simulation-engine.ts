@@ -238,6 +238,7 @@ export class FinancialSimulationEngine {
         earningsWithdrawnForPeriod: 0,
         rmdsForPeriod: 0,
         shortfallForPeriod: 0,
+        shortfallRepaidForPeriod: 0,
         perAccountData,
         assetAllocation,
       },
