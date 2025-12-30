@@ -38,7 +38,9 @@ export default function GlidePathDialog({ onClose, glidePath: _glidePath, accoun
 
   const { bonds: currBondAllocation } = useMemo(() => {
     const investmentAccounts = accounts.filter((account) => account.type !== 'savings');
+
     const totalBalance = investmentAccounts.reduce((acc, account) => acc + account.balance, 0);
+    if (totalBalance === 0) return { stocks: 0, bonds: 0 };
 
     return investmentAccounts.reduce(
       (acc, account) => {
@@ -156,7 +158,8 @@ export default function GlidePathDialog({ onClose, glidePath: _glidePath, accoun
               <SwitchField>
                 <Label>Enable glide path</Label>
                 <Description>
-                  Automatically rebalances toward your target bond allocation, prioritizing tax-advantaged accounts when possible.
+                  Automatically rebalances toward your target bond allocation.{' '}
+                  <span className="hidden sm:inline">Prioritizes tax-advantaged accounts when possible.</span>
                 </Description>
                 <Controller
                   name="enabled"
