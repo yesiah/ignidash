@@ -8,7 +8,7 @@ export abstract class KeyMetricsExtractor {
   static extractSingleSimulationMetrics(simulation: SimulationResult): KeyMetrics {
     const { data, context } = simulation;
 
-    const startAge = context.startAge;
+    const startAge = context.startAge; // Not rounded to integer
     const retirementStrategy = context.retirementStrategy;
 
     const initialPortfolio = data[0].portfolio.totalValue;

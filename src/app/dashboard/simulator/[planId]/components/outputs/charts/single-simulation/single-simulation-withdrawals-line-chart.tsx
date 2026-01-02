@@ -288,7 +288,7 @@ export default function SingleSimulationWithdrawalsLineChart({
             {keyMetrics.retirementAge && showReferenceLines && (
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} ifOverflow="visible" />}
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
           </LineChart>
         </ResponsiveContainer>
       </div>

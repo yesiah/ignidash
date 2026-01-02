@@ -148,7 +148,7 @@ export default function MultiSimulationPhasesAreaChart({
             {keyMetrics.retirementAge && (
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} ifOverflow="visible" />}
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
           </AreaChart>
         </ResponsiveContainer>
       </div>
