@@ -13,7 +13,7 @@ import { useSimulationSettingsData } from '@/hooks/use-convex-data';
 
 import DrillDownBreadcrumb from './drill-down-breadcrumb';
 
-const UserFeedbackDrawer = lazy(() => import('./drawers/user-feedback-drawer'));
+const UserFeedbackDrawer = lazy(() => import('@/components/layout/user-feedback-drawer'));
 const AIChatDrawer = lazy(() => import('./drawers/ai-chat-drawer'));
 const SimulationSettingsDrawer = lazy(() => import('./drawers/simulation-settings-drawer'));
 

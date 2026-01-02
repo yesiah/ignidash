@@ -20,10 +20,10 @@ import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData, useSimulationSettingsData } from '@/hooks/use-convex-data';
 
+const UserFeedbackDrawer = lazy(() => import('@/components/layout/user-feedback-drawer'));
 const ExpectedReturnsDrawer = lazy(() => import('./inputs/drawers/expected-returns-drawer'));
 const TaxSettingsDrawer = lazy(() => import('./inputs/drawers/tax-settings-drawer'));
 const TimelineDrawer = lazy(() => import('./inputs/drawers/timeline-drawer'));
-const UserFeedbackDrawer = lazy(() => import('./outputs/drawers/user-feedback-drawer'));
 const AIChatDrawer = lazy(() => import('./outputs/drawers/ai-chat-drawer'));
 const SimulationSettingsDrawer = lazy(() => import('./outputs/drawers/simulation-settings-drawer'));
 
