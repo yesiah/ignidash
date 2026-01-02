@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
-  const yearForAge = currentYear + (label! - startAge);
+  const yearForAge = currentYear + (label! - Math.floor(startAge));
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
 
@@ -233,7 +233,7 @@ export default function SingleSimulationReturnsLineChart({
             {keyMetrics.retirementAge && showReferenceLines && (
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} />}
+            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1} ifOverflow="visible" />}
           </LineChart>
         </ResponsiveContainer>
       </div>

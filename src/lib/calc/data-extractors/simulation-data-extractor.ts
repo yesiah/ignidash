@@ -105,19 +105,14 @@ export class SimulationDataExtractor {
     let bankruptcyAge: number | null = null;
 
     for (const dp of data) {
-      const phase = dp.phase;
-      if (phase?.name === 'retirement' && retirementAge === null) {
-        const retirementDate = new Date(dp.date);
-
-        yearsToRetirement = retirementDate.getFullYear() - new Date().getFullYear();
-        retirementAge = startAge + yearsToRetirement;
+      if (dp.phase?.name === 'retirement' && retirementAge === null) {
+        retirementAge = Math.floor(dp.age);
+        yearsToRetirement = retirementAge - Math.floor(startAge);
       }
 
       if (dp.portfolio.totalValue <= 0.1 && bankruptcyAge === null) {
-        const bankruptcyDate = new Date(dp.date);
-
-        yearsToBankruptcy = bankruptcyDate.getFullYear() - new Date().getFullYear();
-        bankruptcyAge = startAge + yearsToBankruptcy;
+        bankruptcyAge = Math.floor(dp.age);
+        yearsToBankruptcy = bankruptcyAge - Math.floor(startAge);
       }
     }
 
@@ -125,24 +120,20 @@ export class SimulationDataExtractor {
   }
 
   static getMeanReturnsData(result: SimulationResult, retirementAge: number | null): ReturnsStatsData {
-    const { data, context } = result;
-
-    const startAge = context.startAge;
-    const startDateYear = new Date().getFullYear();
+    const { data } = result;
 
     const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn, earlyRetirementStocks, yearsOfEarlyRetirement } = data
       .slice(1)
       .reduce(
         (acc, dp) => {
-          const currDateYear = new Date(dp.date).getFullYear();
-          const currAge = currDateYear - startDateYear + startAge;
+          const age = Math.floor(dp.age);
 
           const returnsData = dp.returns!;
           const stockReturn = returnsData.annualReturnRates.stocks;
 
           let earlyRetirementStocks = acc.earlyRetirementStocks;
           let yearsOfEarlyRetirement = acc.yearsOfEarlyRetirement;
-          if (retirementAge !== null && currAge > retirementAge && currAge < retirementAge + 5) {
+          if (retirementAge !== null && age > retirementAge && age < retirementAge + 5) {
             earlyRetirementStocks += stockReturn;
             yearsOfEarlyRetirement += 1;
           }

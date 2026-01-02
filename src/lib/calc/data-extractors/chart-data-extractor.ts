@@ -19,13 +19,8 @@ export abstract class ChartDataExtractor {
   // ================================
 
   static extractSingleSimulationPortfolioChartData(simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     return simulation.data.map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
-
+      const age = Math.floor(data.age);
       const portfolioData = data.portfolio;
 
       const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
@@ -51,12 +46,8 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationCashFlowChartData(simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     return simulation.data.slice(1).map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
         SimulationDataExtractor.getTaxAmountsByType(data);
@@ -90,9 +81,6 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationTaxesChartData(simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     let cumulativeIncomeTax = 0;
     let cumulativeFicaTax = 0;
     let cumulativeCapGainsTax = 0;
@@ -100,8 +88,7 @@ export abstract class ChartDataExtractor {
     let cumulativeTotalTaxesAndPenalties = 0;
 
     return simulation.data.slice(1).map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const {
         incomeTax: annualIncomeTax,
@@ -177,12 +164,8 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationReturnsChartData(simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     return simulation.data.slice(1).map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const returnsData = data.returns!;
 
@@ -204,12 +187,8 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationContributionsChartData(simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     return simulation.data.slice(1).map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
       const annualContributions = portfolioData.contributionsForPeriod;
@@ -239,15 +218,11 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationWithdrawalsChartData(simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] {
-    const startAge = simulation.context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.slice(1).map((data) => {
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
@@ -302,22 +277,19 @@ export abstract class ChartDataExtractor {
 
     const simulationLength = simulations.simulations[0][1].data.length;
 
-    const startAge = simulations.simulations[0][1].context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     for (let i = 0; i < simulationLength; i++) {
       if (simulations.simulations[i][1].data.length !== simulationLength) {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
       }
 
-      const currDateYear = new Date(simulations.simulations[0][1].data[i].date).getFullYear();
+      const age = Math.floor(simulations.simulations[0][1].data[i].age);
 
       const totalPortfolioValues = simulations.simulations.map(([, sim]) => sim.data[i].portfolio.totalValue);
       const sortedValues = totalPortfolioValues.sort((a, b) => a - b);
       const percentiles: Percentiles<number> = StatsUtils.calculatePercentilesFromValues(sortedValues);
 
       res.push({
-        age: currDateYear - startDateYear + startAge,
+        age,
         meanPortfolioValue: StatsUtils.mean(totalPortfolioValues),
         minPortfolioValue: StatsUtils.minFromSorted(sortedValues),
         maxPortfolioValue: StatsUtils.maxFromSorted(sortedValues),
@@ -339,7 +311,6 @@ export abstract class ChartDataExtractor {
     const simulationLength = simulations.simulations[0][1].data.length;
 
     const startAge = simulations.simulations[0][1].context.startAge;
-    const startDateYear = new Date().getFullYear();
 
     const milestonesData = simulations.simulations.map(([, sim]) => SimulationDataExtractor.getMilestonesData(sim.data, startAge));
 
@@ -384,13 +355,13 @@ export abstract class ChartDataExtractor {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
       }
 
-      const currDateYear = new Date(simulations.simulations[0][1].data[i].date).getFullYear();
+      const age = Math.floor(simulations.simulations[0][1].data[i].age);
 
       const { percentAccumulation, numberAccumulation, percentRetirement, numberRetirement, percentBankrupt, numberBankrupt } =
         SimulationDataExtractor.getPercentInPhaseForYear(simulations, i);
 
       res.push({
-        age: currDateYear - startDateYear + startAge,
+        age,
         percentAccumulation,
         numberAccumulation,
         percentRetirement,

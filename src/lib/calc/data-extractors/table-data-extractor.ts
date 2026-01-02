@@ -18,14 +18,11 @@ export abstract class TableDataExtractor {
   // ================================
 
   static extractSingleSimulationPortfolioData(simulation: SimulationResult): SingleSimulationPortfolioTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -68,14 +65,11 @@ export abstract class TableDataExtractor {
   }
 
   static extractSingleSimulationCashFlowData(simulation: SimulationResult): SingleSimulationCashFlowTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -132,9 +126,7 @@ export abstract class TableDataExtractor {
   }
 
   static extractSingleSimulationTaxesData(simulation: SimulationResult): SingleSimulationTaxesTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     let cumulativeIncomeTax = 0;
     let cumulativeFicaTax = 0;
@@ -144,8 +136,7 @@ export abstract class TableDataExtractor {
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -258,14 +249,11 @@ export abstract class TableDataExtractor {
   }
 
   static extractSingleSimulationReturnsData(simulation: SimulationResult): SingleSimulationReturnsTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -319,14 +307,11 @@ export abstract class TableDataExtractor {
   }
 
   static extractSingleSimulationContributionsData(simulation: SimulationResult): SingleSimulationContributionsTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -387,17 +372,14 @@ export abstract class TableDataExtractor {
   }
 
   static extractSingleSimulationWithdrawalsData(simulation: SimulationResult): SingleSimulationWithdrawalsTableRow[] {
-    const startAge = simulation.context.startAge;
     const historicalRanges = simulation.context.historicalRanges ?? null;
-    const startDateYear = new Date().getFullYear();
 
     let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.map((data, idx) => {
       const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
-      const currDateYear = new Date(data.date).getFullYear();
-      const age = currDateYear - startDateYear + startAge;
+      const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
       const formattedPhaseName = phaseName !== null ? phaseName.charAt(0).toUpperCase() + phaseName.slice(1) : null;
@@ -545,15 +527,12 @@ export abstract class TableDataExtractor {
 
     const simulationLength = simulations.simulations[0][1].data.length;
 
-    const startAge = simulations.simulations[0][1].context.startAge;
-    const startDateYear = new Date().getFullYear();
-
     for (let i = 0; i < simulationLength; i++) {
       if (simulations.simulations[i][1].data.length !== simulationLength) {
         throw new Error('All simulations must have the same length for yearly aggregate data extraction.');
       }
 
-      const currDateYear = new Date(simulations.simulations[0][1].data[i].date).getFullYear();
+      const age = Math.floor(simulations.simulations[0][1].data[i].age);
 
       const totalPortfolioValues = simulations.simulations.map(([, sim]) => sim.data[i].portfolio.totalValue);
       const percentiles: Percentiles<number> = StatsUtils.calculatePercentilesFromValues(totalPortfolioValues.sort((a, b) => a - b));
@@ -562,7 +541,7 @@ export abstract class TableDataExtractor {
 
       res.push({
         year: i,
-        age: currDateYear - startDateYear + startAge,
+        age,
         percentAccumulation,
         percentRetirement,
         percentBankrupt,

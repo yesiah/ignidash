@@ -72,3 +72,14 @@ export function calculateAge(birthMonth: number, birthYear: number): number {
   }
   return age;
 }
+
+export function calculatePreciseAge(birthMonth: number, birthYear: number): number {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+
+  const yearDiff = currentYear - birthYear;
+  const monthDiff = currentMonth - birthMonth;
+
+  return yearDiff + monthDiff / 12;
+}

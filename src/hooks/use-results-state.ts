@@ -1,12 +1,14 @@
 import { useCallback, useState } from 'react';
 
 export function useResultsState(startAge: number) {
-  const [selectedAge, setSelectedAge] = useState<number>(startAge + 1);
+  const minSelectableAge = Math.floor(startAge) + 1;
+  const [selectedAge, setSelectedAge] = useState<number>(minSelectableAge);
+
   const onAgeSelect = useCallback(
     (age: number) => {
-      if (age >= startAge + 1) setSelectedAge(age);
+      if (age >= minSelectableAge) setSelectedAge(age);
     },
-    [startAge]
+    [minSelectableAge]
   );
 
   return { selectedAge, onAgeSelect };

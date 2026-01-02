@@ -1,4 +1,4 @@
-import { type TimelineInputs, calculateAge } from '@/lib/schemas/inputs/timeline-form-schema';
+import type { TimelineInputs } from '@/lib/schemas/inputs/timeline-form-schema';
 
 import type { SimulationState } from './simulation-engine';
 
@@ -17,9 +17,7 @@ export class PhaseIdentifier {
   getCurrentPhase(): PhaseData {
     switch (this.timeline.retirementStrategy.type) {
       case 'fixedAge':
-        const yearsFromNow = this.getYearsFromNow(this.simulationState.time.date);
-        const { birthMonth, birthYear } = this.timeline;
-        const age = calculateAge(birthMonth, birthYear) + yearsFromNow;
+        const age = this.simulationState.time.age;
 
         return { name: age < this.timeline.retirementStrategy.retirementAge ? 'accumulation' : 'retirement' };
       case 'swrTarget':
@@ -42,17 +40,7 @@ export class PhaseIdentifier {
             ? annualExpensesData.reduce((acc, curr) => acc + curr.totalExpenses, 0) / annualExpensesData.length
             : 0;
 
-        return meanAnnualExpenses < safeWithdrawalAmount ? { name: 'retirement' } : { name: 'accumulation' };
+        return { name: meanAnnualExpenses < safeWithdrawalAmount ? 'retirement' : 'accumulation' };
     }
-  }
-
-  private getYearsFromNow(date: Date): number {
-    const now = new Date();
-
-    const diffInMs = Math.abs(date.getTime() - now.getTime());
-    const msPerYear = 365.25 * 24 * 60 * 60 * 1000;
-    const years = diffInMs / msPerYear;
-
-    return Math.round(years * 1000) / 1000;
   }
 }

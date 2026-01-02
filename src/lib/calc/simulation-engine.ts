@@ -1,5 +1,5 @@
 import type { SimulatorInputs } from '@/lib/schemas/inputs/simulator-schema';
-import { type TimelineInputs, type RetirementStrategyInputs, calculateAge } from '@/lib/schemas/inputs/timeline-form-schema';
+import { type TimelineInputs, type RetirementStrategyInputs, calculatePreciseAge } from '@/lib/schemas/inputs/timeline-form-schema';
 
 import type { ReturnsProvider } from './returns-providers/returns-provider';
 import { StochasticReturnsProvider } from './returns-providers/stochastic-returns-provider';
@@ -18,6 +18,7 @@ type ISODateString = string;
 
 export interface SimulationDataPoint {
   date: ISODateString;
+  age: number;
   portfolio: PortfolioData;
   incomes: IncomesData | null;
   expenses: ExpensesData | null;
@@ -61,7 +62,7 @@ export class FinancialSimulationEngine {
   runSimulation(returnsProvider: ReturnsProvider, timeline: TimelineInputs): SimulationResult {
     // Init context and state
     const simulationContext: SimulationContext = this.initSimulationContext(timeline);
-    const simulationState: SimulationState = this.initSimulationState(timeline);
+    const simulationState: SimulationState = this.initSimulationState(simulationContext);
 
     const incomes = new Incomes(Object.values(this.inputs.incomes));
     const expenses = new Expenses(Object.values(this.inputs.expenses));
@@ -81,7 +82,7 @@ export class FinancialSimulationEngine {
     simulationState.phase = phaseIdentifier.getCurrentPhase();
 
     while (simulationState.time.date < simulationContext.endDate) {
-      this.incrementSimulationTime(simulationState);
+      this.incrementSimulationTime(simulationState, simulationContext);
 
       // Handle RMDs at start of year, before any other processing
       if (simulationState.time.age >= 73 && simulationState.time.month % 12 === 1) portfolioProcessor.processRequiredMinimumDistributions();
@@ -137,6 +138,7 @@ export class FinancialSimulationEngine {
         // Store annual data in results
         resultData.push({
           date: simulationState.time.date.toISOString().split('T')[0],
+          age: simulationState.time.age,
           portfolio: annualPortfolioDataAfterTaxes,
           incomes: annualIncomesData,
           expenses: annualExpensesData,
@@ -165,21 +167,23 @@ export class FinancialSimulationEngine {
     return { data: resultData, context };
   }
 
-  private incrementSimulationTime(simulationState: SimulationState): void {
-    simulationState.time.date = new Date(simulationState.time.date.getFullYear(), simulationState.time.date.getMonth() + 1, 1);
-
-    const newAge = simulationState.time.age + 1 / 12;
-    const newYear = simulationState.time.year + 1 / 12;
-
-    const epsilon = 1e-10;
-
-    simulationState.time.age = Math.abs(newAge - Math.round(newAge)) < epsilon ? Math.round(newAge) : newAge;
-    simulationState.time.year = Math.abs(newYear - Math.round(newYear)) < epsilon ? Math.round(newYear) : newYear;
+  private incrementSimulationTime(simulationState: SimulationState, simulationContext: SimulationContext): void {
     simulationState.time.month += 1;
+
+    const monthsElapsed = simulationState.time.month;
+
+    simulationState.time.date = new Date(
+      simulationContext.startDate.getFullYear(),
+      simulationContext.startDate.getMonth() + monthsElapsed,
+      1
+    );
+
+    simulationState.time.age = simulationContext.startAge + monthsElapsed / 12;
+    simulationState.time.year = monthsElapsed / 12;
   }
 
   private initSimulationContext(timeline: TimelineInputs): SimulationContext {
-    const startAge = calculateAge(timeline.birthMonth, timeline.birthYear);
+    const startAge = calculatePreciseAge(timeline.birthMonth, timeline.birthYear);
     const endAge = timeline.lifeExpectancy;
 
     const yearsToSimulate = Math.ceil(endAge - startAge);
@@ -192,9 +196,11 @@ export class FinancialSimulationEngine {
     return { startAge, endAge, yearsToSimulate, startDate, endDate, retirementStrategy };
   }
 
-  private initSimulationState(timeline: TimelineInputs): SimulationState {
+  private initSimulationState(simulationContext: SimulationContext): SimulationState {
+    const { startDate, startAge: age } = simulationContext;
+
     return {
-      time: { date: new Date(), age: calculateAge(timeline.birthMonth, timeline.birthYear), year: 0, month: 0 },
+      time: { date: new Date(startDate), age, year: 0, month: 0 },
       portfolio: new Portfolio(Object.values(this.inputs.accounts)),
       phase: null,
       annualData: { expenses: [] },
@@ -222,6 +228,7 @@ export class FinancialSimulationEngine {
 
     return {
       date: new Date().toISOString().split('T')[0],
+      age: initialSimulationState.time.age,
       portfolio: {
         totalValue: totalPortfolioValue,
         totalContributions: 0,

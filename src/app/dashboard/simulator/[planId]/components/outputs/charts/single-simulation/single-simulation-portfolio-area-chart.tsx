@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
-  const yearForAge = currentYear + (label! - startAge);
+  const yearForAge = currentYear + (label! - Math.floor(startAge));
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
 

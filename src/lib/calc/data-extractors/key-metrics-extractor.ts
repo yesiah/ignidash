@@ -43,7 +43,6 @@ export abstract class KeyMetricsExtractor {
           const phase = dp.phase;
           if (phase?.name === 'retirement') {
             ({ retirementAge, yearsToRetirement } = SimulationDataExtractor.getMilestonesData(data, startAge));
-
             portfolioAtRetirement = dp.portfolio.totalValue;
             break;
           }
@@ -52,6 +51,7 @@ export abstract class KeyMetricsExtractor {
         if (portfolioAtRetirement !== null) {
           progressToRetirement = Math.min(initialPortfolio / portfolioAtRetirement, 1);
         }
+
         break;
     }
 
