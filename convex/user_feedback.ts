@@ -7,8 +7,8 @@ export const send = mutation({
   args: {
     feedback: userFeedbackValidator,
   },
-  handler: async (ctx, { feedback: { planId, feedback } }) => {
+  handler: async (ctx, { feedback: { planId, pathname, feedback } }) => {
     const { userId } = await getUserIdOrThrow(ctx);
-    await ctx.db.insert('userFeedback', { userId, feedback: { planId, feedback } });
+    await ctx.db.insert('userFeedback', { userId, feedback: { planId, pathname, feedback } });
   },
 });

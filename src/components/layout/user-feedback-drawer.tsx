@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import posthog from 'posthog-js';
+import { usePathname } from 'next/navigation';
 
 import SectionHeader from '@/components/ui/section-header';
 import SectionContainer from '@/components/ui/section-container';
@@ -26,6 +27,7 @@ interface UserFeedbackDrawerProps {
 
 export default function UserFeedbackDrawer({ setOpen }: UserFeedbackDrawerProps) {
   const planId = useSelectedPlanId();
+  const pathname = usePathname();
 
   const {
     register,
@@ -44,7 +46,7 @@ export default function UserFeedbackDrawer({ setOpen }: UserFeedbackDrawerProps)
     try {
       setSaveError(null);
       posthog.capture('submit_user_feedback', { plan_id: planId, feedback_length: data.feedback.length });
-      await m({ feedback: { planId, feedback: data.feedback } });
+      await m({ feedback: { planId, pathname, feedback: data.feedback } });
       setOpen(false);
     } catch (error) {
       setSaveError(error instanceof ConvexError ? error.message : 'Failed to send user feedback.');
