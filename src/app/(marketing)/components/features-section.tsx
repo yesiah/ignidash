@@ -4,7 +4,11 @@ import { Badge, BadgeButton } from '@/components/catalyst/badge';
 
 const sectionHeader = {
   eyebrow: 'Everything you need',
-  headline: 'Not an expert? No problem.',
+  headline: (
+    <>
+      Not an expert? <span className="bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">No problem</span>.
+    </>
+  ),
   subhead:
     'With intuitive tools and AI assistance, creating a comprehensive retirement plan you can feel confident about has never been easier.',
 };
