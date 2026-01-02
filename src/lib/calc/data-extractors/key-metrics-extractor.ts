@@ -25,7 +25,7 @@ export abstract class KeyMetricsExtractor {
     switch (retirementStrategy.type) {
       case 'fixedAge':
         retirementAge = retirementStrategy.retirementAge;
-        yearsToRetirement = retirementAge - startAge;
+        yearsToRetirement = retirementAge - Math.floor(startAge);
 
         progressToRetirement = Math.min(startAge / retirementAge, 1);
 
