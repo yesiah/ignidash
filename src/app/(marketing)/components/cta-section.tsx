@@ -10,8 +10,8 @@ export default function CTASection() {
           <h2 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Plan with (artificial) intelligence</h2>
           <p className="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-zinc-300">
             Powerful projections with plain-English explanations, so you can{' '}
-            <span className="text-white underline decoration-zinc-500 underline-offset-4">actually understand your plan</span>. Free to get
-            started.
+            <span className="text-zinc-100 underline decoration-zinc-600 underline-offset-4">actually understand your plan</span>. Free to
+            get started.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <CTADashboardLink />

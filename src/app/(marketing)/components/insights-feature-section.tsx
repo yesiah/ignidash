@@ -8,7 +8,7 @@ export default function InsightsFeatureSection() {
           A <span className="bg-gradient-to-r from-rose-600 to-pink-500 bg-clip-text text-transparent">full breakdown</span> of what
           matters.
         </p>
-        <p className="mt-4 max-w-2xl text-lg font-medium text-pretty text-zinc-500 sm:text-xl/8 dark:text-zinc-300">
+        <p className="mt-6 max-w-xl text-lg/8 text-pretty text-zinc-700 dark:text-zinc-300">
           AI-generated insights explain how{' '}
           <span className="text-zinc-700 underline decoration-zinc-300 underline-offset-4 dark:text-zinc-100 dark:decoration-zinc-600">
             taxes
