@@ -350,15 +350,7 @@ interface SingleSimulationDataListSectionProps {
 function SingleSimulationDataListSection({ simulation, selectedAge }: SingleSimulationDataListSectionProps) {
   const resultsCategory = useSingleSimulationCategory();
 
-  const dp = useMemo(() => {
-    return simulation.data.find((dp) => {
-      const startAge = simulation.context.startAge;
-      const startDateYear = new Date().getFullYear();
-      const currDateYear = new Date(dp.date).getFullYear();
-
-      return currDateYear - startDateYear + startAge === selectedAge;
-    });
-  }, [simulation, selectedAge]);
+  const dp = useMemo(() => simulation.data.find((dp) => Math.floor(dp.age) === selectedAge), [simulation, selectedAge]);
 
   if (!dp) return null;
 
