@@ -331,10 +331,10 @@ export default function SingleSimulationCashFlowLineChart({
                   <Cell
                     key={`cell-${index}`}
                     fill={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
-                    fillOpacity={0.25}
+                    fillOpacity={0.5}
                     stroke={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
                     strokeWidth={1}
-                    strokeOpacity={0.5}
+                    strokeOpacity={0.75}
                   />
                 ))}
               </Bar>
