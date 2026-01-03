@@ -211,11 +211,26 @@ export default function SingleSimulationCashFlowLineChart({
   const dataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
   const strokeColors: string[] = [];
   let formatter = undefined;
+  let bar = null;
   switch (dataView) {
     case 'net':
       dataKeys.push('cashFlow');
       strokeColors.push('url(#colorGradient)');
       formatter = (value: number) => formatNumber(value, 1, '$');
+      bar = (
+        <Bar dataKey="cashFlow" maxBarSize={20}>
+          {chartData.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
+              fillOpacity={0.5}
+              stroke={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
+              strokeWidth={1}
+              strokeOpacity={0.75}
+            />
+          ))}
+        </Bar>
+      );
       break;
     case 'incomes':
       dataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
@@ -325,20 +340,7 @@ export default function SingleSimulationCashFlowLineChart({
                 strokeOpacity={getOpacity(dataKey)}
               />
             ))}
-            {dataView === 'net' && (
-              <Bar dataKey="cashFlow" maxBarSize={20}>
-                {(chartData as SingleSimulationCashFlowChartDataPoint[]).map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
-                    fillOpacity={0.5}
-                    stroke={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
-                    strokeWidth={1}
-                    strokeOpacity={0.75}
-                  />
-                ))}
-              </Bar>
-            )}
+            {bar}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
               cursor={{ stroke: foregroundColor }}
