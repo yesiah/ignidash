@@ -133,6 +133,7 @@ export abstract class TableDataExtractor {
     let cumulativeIncomeTax = 0;
     let cumulativeFicaTax = 0;
     let cumulativeCapGainsTax = 0;
+    let cumulativeNIITTax = 0;
     let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeTotalTaxesAndPenalties = 0;
 
@@ -171,6 +172,10 @@ export abstract class TableDataExtractor {
           cumulativeCapGainsTax: null,
           effectiveCapGainsTaxRate: null,
           topMarginalCapGainsTaxRate: null,
+          netInvestmentIncome: null,
+          incomeSubjectToNIIT: null,
+          annualNIITTax: null,
+          cumulativeNIITTax: null,
           annualEarlyWithdrawalPenalties: null,
           cumulativeEarlyWithdrawalPenalties: null,
           taxExemptIncome: null,
@@ -187,6 +192,7 @@ export abstract class TableDataExtractor {
         incomeTax: annualIncomeTax,
         ficaTax: annualFicaTax,
         capGainsTax: annualCapGainsTax,
+        niitTax: annualNIITTax,
         earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties,
         totalTaxesAndPenalties: annualTotalTaxesAndPenalties,
       } = SimulationDataExtractor.getTaxAmountsByType(data);
@@ -194,6 +200,7 @@ export abstract class TableDataExtractor {
       cumulativeIncomeTax += annualIncomeTax;
       cumulativeFicaTax += annualFicaTax;
       cumulativeCapGainsTax += annualCapGainsTax;
+      cumulativeNIITTax += annualNIITTax;
       cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
       cumulativeTotalTaxesAndPenalties += annualTotalTaxesAndPenalties;
 
@@ -237,6 +244,10 @@ export abstract class TableDataExtractor {
         cumulativeCapGainsTax,
         effectiveCapGainsTaxRate: taxesData?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? 0,
         topMarginalCapGainsTaxRate: taxesData?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? 0,
+        netInvestmentIncome: taxesData?.niitTaxes.netInvestmentIncome ?? 0,
+        incomeSubjectToNIIT: taxesData?.niitTaxes.incomeSubjectToNIIT ?? 0,
+        annualNIITTax,
+        cumulativeNIITTax,
         annualEarlyWithdrawalPenalties,
         cumulativeEarlyWithdrawalPenalties,
         taxExemptIncome,

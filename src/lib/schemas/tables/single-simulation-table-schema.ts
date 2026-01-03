@@ -183,6 +183,12 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   effectiveCapGainsTaxRate: z.number().nullable(),
   topMarginalCapGainsTaxRate: z.number().nullable(),
 
+  /* NIIT */
+  netInvestmentIncome: z.number().nullable(),
+  incomeSubjectToNIIT: z.number().nullable(),
+  annualNIITTax: z.number().nullable(),
+  cumulativeNIITTax: z.number().nullable(),
+
   /* Early Withdrawal Penalties */
   annualEarlyWithdrawalPenalties: z.number().nullable(),
   cumulativeEarlyWithdrawalPenalties: z.number().nullable(),
@@ -230,6 +236,10 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   cumulativeCapGainsTax: { title: 'Cumulative Capital Gains Tax', format: 'currency' },
   effectiveCapGainsTaxRate: { title: 'Effective Capital Gains Tax Rate', format: 'percentage' },
   topMarginalCapGainsTaxRate: { title: 'Top Marginal Capital Gains Tax Rate', format: 'percentage' },
+  netInvestmentIncome: { title: 'Net Investment Income', format: 'currency' },
+  incomeSubjectToNIIT: { title: 'Income Subject to NIIT', format: 'currency' },
+  annualNIITTax: { title: 'Annual NIIT Tax', format: 'currency' },
+  cumulativeNIITTax: { title: 'Cumulative NIIT Tax', format: 'currency' },
   annualEarlyWithdrawalPenalties: { title: 'Annual Early Withdrawal Penalties', format: 'currency' },
   cumulativeEarlyWithdrawalPenalties: { title: 'Cumulative Early Withdrawal Penalties', format: 'currency' },
   taxExemptIncome: { title: 'Tax-Exempt Income', format: 'currency' },
