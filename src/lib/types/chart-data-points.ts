@@ -27,8 +27,9 @@ export interface SingleSimulationCashFlowChartDataPoint {
   incomeTax: number;
   ficaTax: number;
   capGainsTax: number;
+  niitTax: number;
   earlyWithdrawalPenalties: number;
-  otherTaxes: number;
+  otherTaxes: number; // ficaTax + niitTax + earlyWithdrawalPenalties
   totalTaxesAndPenalties: number;
   expenses: number;
   cashFlow: number;
@@ -86,6 +87,12 @@ export interface SingleSimulationTaxesChartDataPoint {
   effectiveCapGainsTaxRate: number;
   topMarginalCapGainsTaxRate: number;
   capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
+
+  /* NIIT */
+  netInvestmentIncome: number;
+  incomeSubjectToNIIT: number;
+  annualNIITTax: number;
+  cumulativeNIITTax: number;
 
   /* Early Withdrawal Penalties */
   annualEarlyWithdrawalPenalties: number;

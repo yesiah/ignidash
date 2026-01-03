@@ -49,8 +49,7 @@ export interface IncomeTaxesData {
 
 export interface NIITTaxesData {
   netInvestmentIncome: number;
-  magiOverThreshold: number;
-  niitTaxableAmount: number;
+  incomeSubjectToNIIT: number;
   niitTaxAmount: number;
   threshold: number;
 }
@@ -247,10 +246,10 @@ export class TaxProcessor {
     const netInvestmentIncome = adjustedRealizedGains + otherInvestmentIncome;
 
     const magiOverThreshold = Math.max(0, adjustedGrossIncome - threshold);
-    const niitTaxableAmount = Math.min(netInvestmentIncome, magiOverThreshold);
-    const niitTaxAmount = niitTaxableAmount * NIIT_RATE;
+    const incomeSubjectToNIIT = Math.min(netInvestmentIncome, magiOverThreshold);
+    const niitTaxAmount = incomeSubjectToNIIT * NIIT_RATE;
 
-    return { netInvestmentIncome, magiOverThreshold, niitTaxableAmount, niitTaxAmount, threshold };
+    return { netInvestmentIncome, incomeSubjectToNIIT, niitTaxAmount, threshold };
   }
 
   private processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes: PortfolioData): EarlyWithdrawalPenaltyData {
