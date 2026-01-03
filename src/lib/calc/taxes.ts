@@ -22,6 +22,7 @@ import {
   CAPITAL_GAINS_TAX_BRACKETS_MARRIED_FILING_JOINTLY,
   CAPITAL_GAINS_TAX_BRACKETS_HEAD_OF_HOUSEHOLD,
 } from './tax-data/capital-gains-tax-brackets';
+import { NIIT_RATE, NIIT_THRESHOLDS } from './tax-data/niit-thresholds';
 import {
   type SocialSecurityTaxThreshold,
   SOCIAL_SECURITY_TAX_THRESHOLDS_SINGLE,
@@ -46,10 +47,19 @@ export interface IncomeTaxesData {
   capitalLossDeduction?: number;
 }
 
+export interface NIITTaxesData {
+  netInvestmentIncome: number;
+  magiOverThreshold: number;
+  niitTaxableAmount: number;
+  niitTaxAmount: number;
+  threshold: number;
+}
+
 export interface TaxesData {
   adjustedGrossIncome: number;
   incomeTaxes: IncomeTaxesData;
   capitalGainsTaxes: CapitalGainsTaxesData;
+  niitTaxes: NIITTaxesData;
   earlyWithdrawalPenalties: EarlyWithdrawalPenaltyData;
   socialSecurityTaxes: SocialSecurityTaxesData;
   incomeSources: IncomeSourcesData;
@@ -144,16 +154,22 @@ export class TaxProcessor {
       capitalGainsTaxBrackets,
     };
 
+    const niitTaxes = this.processNIIT(annualReturnsData, adjustedGrossIncome, adjustedRealizedGains, capitalLossDeduction);
+
     const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes);
 
     const totalTaxLiabilityExcludingFICA =
-      incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount + earlyWithdrawalPenalties.totalPenaltyAmount;
+      incomeTaxes.incomeTaxAmount +
+      capitalGainsTaxes.capitalGainsTaxAmount +
+      niitTaxes.niitTaxAmount +
+      earlyWithdrawalPenalties.totalPenaltyAmount;
     const difference = totalTaxLiabilityExcludingFICA - annualIncomesData.totalAmountWithheld;
 
     return {
       adjustedGrossIncome,
       incomeTaxes,
       capitalGainsTaxes,
+      niitTaxes,
       earlyWithdrawalPenalties,
       socialSecurityTaxes,
       incomeSources: { adjustedRealizedGains },
@@ -211,6 +227,30 @@ export class TaxProcessor {
     }
 
     return { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets };
+  }
+
+  private processNIIT(
+    annualReturnsData: ReturnsData,
+    adjustedGrossIncome: number,
+    adjustedRealizedGains: number,
+    capitalLossDeduction: number
+  ): NIITTaxesData {
+    const threshold = NIIT_THRESHOLDS[this.filingStatus];
+
+    const taxableDividends = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
+    const taxableInterest =
+      annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
+
+    // Capital gains are already reduced by losses (adjustedRealizedGains >= 0).
+    // Excess losses (up to $3K) can offset other investment income.
+    const otherInvestmentIncome = Math.max(0, taxableDividends + taxableInterest - capitalLossDeduction);
+    const netInvestmentIncome = adjustedRealizedGains + otherInvestmentIncome;
+
+    const magiOverThreshold = Math.max(0, adjustedGrossIncome - threshold);
+    const niitTaxableAmount = Math.min(netInvestmentIncome, magiOverThreshold);
+    const niitTaxAmount = niitTaxableAmount * NIIT_RATE;
+
+    return { netInvestmentIncome, magiOverThreshold, niitTaxableAmount, niitTaxAmount, threshold };
   }
 
   private processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes: PortfolioData): EarlyWithdrawalPenaltyData {
