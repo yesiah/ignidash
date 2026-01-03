@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useState, useCallback } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine, Cell } from 'recharts';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -295,7 +295,7 @@ export default function SingleSimulationCashFlowLineChart({
     <div>
       <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <ComposedChart
             data={chartData}
             className="text-xs"
             margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
@@ -325,6 +325,20 @@ export default function SingleSimulationCashFlowLineChart({
                 strokeOpacity={getOpacity(dataKey)}
               />
             ))}
+            {dataView === 'net' && (
+              <Bar dataKey="cashFlow" maxBarSize={20}>
+                {(chartData as SingleSimulationCashFlowChartDataPoint[]).map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
+                    fillOpacity={0.25}
+                    stroke={entry.cashFlow >= 0 ? 'var(--chart-2)' : 'var(--chart-4)'}
+                    strokeWidth={1}
+                    strokeOpacity={0.5}
+                  />
+                ))}
+              </Bar>
+            )}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
               cursor={{ stroke: foregroundColor }}
@@ -333,7 +347,7 @@ export default function SingleSimulationCashFlowLineChart({
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
             {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-          </LineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
       <TimeSeriesLegend
