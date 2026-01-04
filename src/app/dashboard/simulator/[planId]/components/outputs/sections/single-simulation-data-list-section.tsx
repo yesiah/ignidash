@@ -62,7 +62,7 @@ function TotalIncomeTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-zinc-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>All income including gross income and tax-exempt income.</p>
+        <p>Gross income plus tax-exempt income and the non-taxable portion of Social Security.</p>
         <p>Tax-exempt income includes gifts, inheritances, or other non-taxable sources.</p>
       </TooltipContent>
     </Tooltip>
