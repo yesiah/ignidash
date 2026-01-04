@@ -338,6 +338,9 @@ export class SimulationDataExtractor {
   static getTaxableIncomeSources(dp: SimulationDataPoint, age: number): TaxableIncomeSources {
     const portfolioData = dp.portfolio;
 
+    const regularQualifiedWithdrawalAge = 59.5;
+    const hsaQualifiedWithdrawalAge = 65;
+
     let taxDeferredWithdrawals = 0;
     let earlyRothEarningsWithdrawals = 0;
     let earlyWithdrawals = 0;
@@ -346,7 +349,7 @@ export class SimulationDataExtractor {
         case 'roth401k':
         case 'roth403b':
         case 'rothIra': {
-          if (age < 59.5) {
+          if (age < regularQualifiedWithdrawalAge) {
             const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
 
             earlyRothEarningsWithdrawals += annualEarningsWithdrawn;
@@ -360,14 +363,14 @@ export class SimulationDataExtractor {
           const annualWithdrawals = account.withdrawalsForPeriod;
 
           taxDeferredWithdrawals += annualWithdrawals;
-          if (age < 59.5) earlyWithdrawals += annualWithdrawals;
+          if (age < regularQualifiedWithdrawalAge) earlyWithdrawals += annualWithdrawals;
           break;
         }
         case 'hsa': {
           const annualWithdrawals = account.withdrawalsForPeriod;
 
           taxDeferredWithdrawals += annualWithdrawals;
-          if (age < 65) earlyWithdrawals += annualWithdrawals;
+          if (age < hsaQualifiedWithdrawalAge) earlyWithdrawals += annualWithdrawals;
           break;
         }
         default:
