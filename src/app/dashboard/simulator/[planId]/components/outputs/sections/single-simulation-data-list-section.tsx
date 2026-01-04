@@ -183,15 +183,15 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const {
-    earnedIncome,
-    socialSecurityIncome,
-    totalRetirementDistributions: retirementDistributions,
-    interestIncome,
-    grossCapGains,
-    grossIncome,
-    totalIncome,
-  } = SimulationDataExtractor.getTaxableIncomeSources(dp, selectedAge);
+  const taxesData = dp.taxes;
+
+  const earnedIncome = taxesData?.incomeSources.earnedIncome ?? 0;
+  const socialSecurityIncome = taxesData?.incomeSources.socialSecurityIncome ?? 0;
+  const retirementDistributions = taxesData?.incomeSources.taxableRetirementDistributions ?? 0;
+  const interestIncome = taxesData?.incomeSources.taxableInterest ?? 0;
+  const incomeTaxedAsCapGains = (taxesData?.incomeSources.taxableRealizedGains ?? 0) + (taxesData?.incomeSources.taxableDividends ?? 0);
+  const grossIncome = taxesData?.incomeSources.grossIncome ?? 0;
+  const totalIncome = taxesData?.incomeSources.totalIncome ?? 0;
 
   return (
     <Card className="my-0">
@@ -217,7 +217,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionDetails>{formatNumber(interestIncome, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm>Realized Capital Gains & Dividends</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(grossCapGains, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatNumber(incomeTaxedAsCapGains, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">
           Gross Income

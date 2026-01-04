@@ -64,23 +64,6 @@ export interface HoldingsByAssetClass {
   cashHoldings: number;
 }
 
-export interface TaxableIncomeSources {
-  realizedGains: number;
-  taxDeferredWithdrawals: number;
-  earlyRothEarningsWithdrawals: number;
-  totalRetirementDistributions: number;
-  earlyWithdrawals: number;
-  dividendIncome: number;
-  interestIncome: number;
-  earnedIncome: number;
-  socialSecurityIncome: number;
-  taxExemptIncome: number;
-  grossIncome: number;
-  grossOrdinaryIncome: number;
-  grossCapGains: number;
-  totalIncome: number;
-}
-
 export interface LifetimeTaxAmounts {
   lifetimeIncomeTaxes: number;
   lifetimeFicaTaxes: number;
@@ -332,88 +315,6 @@ export class SimulationDataExtractor {
       stockHoldings: totalValue * stocksAllocation,
       bondHoldings: totalValue * bondsAllocation,
       cashHoldings: totalValue * cashAllocation,
-    };
-  }
-
-  static getTaxableIncomeSources(dp: SimulationDataPoint, age: number): TaxableIncomeSources {
-    const portfolioData = dp.portfolio;
-
-    const regularQualifiedWithdrawalAge = 59.5;
-    const hsaQualifiedWithdrawalAge = 65;
-
-    let taxDeferredWithdrawals = 0;
-    let earlyRothEarningsWithdrawals = 0;
-    let earlyWithdrawals = 0;
-    for (const account of Object.values(portfolioData.perAccountData)) {
-      switch (account.type) {
-        case 'roth401k':
-        case 'roth403b':
-        case 'rothIra': {
-          if (age < regularQualifiedWithdrawalAge) {
-            const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
-
-            earlyRothEarningsWithdrawals += annualEarningsWithdrawn;
-            earlyWithdrawals += annualEarningsWithdrawn;
-          }
-          break;
-        }
-        case '401k':
-        case '403b':
-        case 'ira': {
-          const annualWithdrawals = account.withdrawalsForPeriod;
-
-          taxDeferredWithdrawals += annualWithdrawals;
-          if (age < regularQualifiedWithdrawalAge) earlyWithdrawals += annualWithdrawals;
-          break;
-        }
-        case 'hsa': {
-          const annualWithdrawals = account.withdrawalsForPeriod;
-
-          taxDeferredWithdrawals += annualWithdrawals;
-          if (age < hsaQualifiedWithdrawalAge) earlyWithdrawals += annualWithdrawals;
-          break;
-        }
-        default:
-          break;
-      }
-    }
-
-    const retirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
-
-    const taxesData = dp.taxes;
-    const realizedGains = taxesData?.incomeSources.taxableRealizedGains ?? 0;
-
-    const returnsData = dp.returns;
-    const dividendIncome = returnsData?.yieldAmountsForPeriod.taxable.stocks ?? 0;
-    const interestIncome =
-      (returnsData?.yieldAmountsForPeriod.taxable.bonds ?? 0) + (returnsData?.yieldAmountsForPeriod.cashSavings.cash ?? 0);
-
-    const incomesData = dp.incomes;
-    const totalIncomeFromIncomes = incomesData?.totalIncome ?? 0;
-    const socialSecurityIncome = incomesData?.totalSocialSecurityIncome ?? 0;
-    const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
-
-    const grossOrdinaryIncome = earnedIncome + retirementDistributions + interestIncome + socialSecurityIncome;
-    const grossCapGains = realizedGains + dividendIncome;
-    const grossIncome = grossOrdinaryIncome + grossCapGains;
-    const totalIncome = grossIncome + taxExemptIncome;
-
-    return {
-      realizedGains,
-      taxDeferredWithdrawals,
-      earlyRothEarningsWithdrawals,
-      totalRetirementDistributions: retirementDistributions,
-      earlyWithdrawals,
-      dividendIncome,
-      interestIncome,
-      earnedIncome,
-      socialSecurityIncome,
-      taxExemptIncome,
-      grossIncome,
-      grossOrdinaryIncome,
-      grossCapGains,
-      totalIncome,
     };
   }
 
