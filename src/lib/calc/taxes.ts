@@ -134,7 +134,7 @@ export class TaxProcessor {
     const taxableOrdinaryIncome = Math.max(0, incomeData.adjustedIncomeTaxedAsOrdinary - deductionUsedForOrdinary);
     const taxableCapitalGains = Math.max(0, incomeData.adjustedIncomeTaxedAsCapGains - deductionUsedForGains);
 
-    const { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets } = this.processIncomeTaxes(taxableOrdinaryIncome);
+    const { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets } = this.processIncomeTaxes({ taxableOrdinaryIncome });
     const incomeTaxes: IncomeTaxesData = {
       taxableOrdinaryIncome,
       incomeTaxAmount,
@@ -144,10 +144,10 @@ export class TaxProcessor {
       capitalLossDeduction: incomeData.capitalLossDeduction !== 0 ? incomeData.capitalLossDeduction : undefined,
     };
 
-    const { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets } = this.processCapitalGainsTaxes(
+    const { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets } = this.processCapitalGainsTaxes({
       taxableCapitalGains,
-      taxableOrdinaryIncome
-    );
+      taxableOrdinaryIncome,
+    });
     const capitalGainsTaxes: CapitalGainsTaxesData = {
       taxableCapitalGains,
       capitalGainsTaxAmount,
@@ -294,7 +294,7 @@ export class TaxProcessor {
     };
   }
 
-  private processIncomeTaxes(taxableOrdinaryIncome: number): {
+  private processIncomeTaxes({ taxableOrdinaryIncome }: { taxableOrdinaryIncome: number }): {
     incomeTaxAmount: number;
     topMarginalIncomeTaxRate: number;
     incomeTaxBrackets: IncomeTaxBracket[];
@@ -314,10 +314,13 @@ export class TaxProcessor {
     return { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets };
   }
 
-  private processCapitalGainsTaxes(
-    taxableCapitalGains: number,
-    taxableOrdinaryIncome: number
-  ): {
+  private processCapitalGainsTaxes({
+    taxableCapitalGains,
+    taxableOrdinaryIncome,
+  }: {
+    taxableCapitalGains: number;
+    taxableOrdinaryIncome: number;
+  }): {
     capitalGainsTaxAmount: number;
     topMarginalCapitalGainsTaxRate: number;
     capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
