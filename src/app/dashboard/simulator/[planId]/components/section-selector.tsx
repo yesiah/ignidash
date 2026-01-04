@@ -2,7 +2,7 @@
 
 import {
   CalculatorIcon,
-  SlidersHorizontalIcon,
+  SettingsIcon,
   PresentationIcon,
   TrendingUpIcon,
   BanknoteXIcon,
@@ -96,7 +96,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   );
   const simulationSettingsTitleComponent = (
     <div className="flex items-center gap-2">
-      <SlidersHorizontalIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+      <SettingsIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
       <span>Simulation Settings</span>
     </div>
   );
@@ -152,7 +152,7 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 surfaceColor="emphasized"
               />
               <IconButton
-                icon={SlidersHorizontalIcon}
+                icon={SettingsIcon}
                 label="Simulation Settings"
                 onClick={() => setSimulationSettingsOpen(true)}
                 surfaceColor="emphasized"
