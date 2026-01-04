@@ -188,7 +188,6 @@ export default function Table<T extends Record<string, unknown>>({
                             onRowClick?.(row);
                           })();
                         }}
-                        onMouseDown={(e) => e.preventDefault()}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
