@@ -55,7 +55,6 @@ export interface NIITData {
 }
 
 export interface TaxesData {
-  adjustedGrossIncome: number;
   incomeTaxes: IncomeTaxesData;
   capitalGainsTaxes: CapitalGainsTaxesData;
   niit: NIITData;
@@ -87,8 +86,8 @@ export interface IncomeSourcesData {
   capitalLossDeduction: number;
   taxDeferredWithdrawals: number;
   taxableRetirementDistributions: number;
-  taxableDividends: number;
-  taxableInterest: number;
+  taxableDividendIncome: number;
+  taxableInterestIncome: number;
   earnedIncome: number;
   socialSecurityIncome: number;
   taxableSocialSecurityIncome: number;
@@ -166,7 +165,6 @@ export class TaxProcessor {
     const difference = totalTaxLiabilityExcludingFICA - annualIncomesData.totalAmountWithheld;
 
     return {
-      adjustedGrossIncome: incomeData.adjustedGrossIncome,
       incomeTaxes,
       capitalGainsTaxes,
       niit,
@@ -231,8 +229,8 @@ export class TaxProcessor {
 
     const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
     const { taxableRealizedGains, capitalLossDeduction } = this.getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes);
-    const taxableDividends = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
-    const taxableInterest =
+    const taxableDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
+    const taxableInterestIncome =
       annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
 
     const totalIncomeFromIncomes = annualIncomesData.totalIncome;
@@ -240,8 +238,8 @@ export class TaxProcessor {
     const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
     const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
 
-    const incomeTaxedAsOrdinaryExceptSocSec = earnedIncome + taxableRetirementDistributions + taxableInterest;
-    const incomeTaxedAsCapGains = taxableRealizedGains + taxableDividends;
+    const incomeTaxedAsOrdinaryExceptSocSec = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
+    const incomeTaxedAsCapGains = taxableRealizedGains + taxableDividendIncome;
     const grossIncomeExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec + incomeTaxedAsCapGains;
 
     const taxDeferredAccountTypes: AccountInputs['type'][] = ['401k', '403b', 'ira', 'hsa'];
@@ -272,8 +270,8 @@ export class TaxProcessor {
       capitalLossDeduction,
       taxDeferredWithdrawals,
       taxableRetirementDistributions,
-      taxableDividends,
-      taxableInterest,
+      taxableDividendIncome,
+      taxableInterestIncome,
       earnedIncome,
       socialSecurityIncome,
       taxableSocialSecurityIncome,
@@ -348,9 +346,9 @@ export class TaxProcessor {
   private processNIIT(incomeData: IncomeSourcesData): NIITData {
     const threshold = NIIT_THRESHOLDS[this.filingStatus];
 
-    const { taxableDividends, taxableInterest, capitalLossDeduction, taxableRealizedGains, adjustedGrossIncome } = incomeData;
+    const { taxableDividendIncome, taxableInterestIncome, capitalLossDeduction, taxableRealizedGains, adjustedGrossIncome } = incomeData;
 
-    const otherInvestmentIncome = Math.max(0, taxableDividends + taxableInterest - capitalLossDeduction);
+    const otherInvestmentIncome = Math.max(0, taxableDividendIncome + taxableInterestIncome - capitalLossDeduction);
     const netInvestmentIncome = taxableRealizedGains + otherInvestmentIncome;
 
     const magiOverThreshold = Math.max(0, adjustedGrossIncome - threshold);

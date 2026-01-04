@@ -63,6 +63,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   cumulativeFicaTax: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
+  early401kAndIraWithdrawals: number;
+  earlyHsaWithdrawals: number;
   retirementDistributions: number;
   interestIncome: number;
   taxableOrdinaryIncome: number;
