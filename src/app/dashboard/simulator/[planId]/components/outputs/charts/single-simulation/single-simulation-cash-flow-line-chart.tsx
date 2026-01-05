@@ -37,7 +37,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - Math.floor(startAge));
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
   const formatValue = (value: number, mode: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate') => {
     switch (mode) {
@@ -52,18 +52,20 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   const tooltipBodyComponent = (
     <div className="flex flex-col gap-1">
-      {transformedPayload.map((entry) => (
-        <p
-          key={entry.dataKey}
-          style={{ backgroundColor: entry.color }}
-          className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
-            'text-background': needsBgTextColor.includes(entry.color),
-          })}
-        >
-          <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-          <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
-        </p>
-      ))}
+      {transformedPayload
+        .filter((entry) => entry.value !== 0)
+        .map((entry) => (
+          <p
+            key={entry.dataKey}
+            style={{ backgroundColor: entry.color }}
+            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
+              'text-background': needsBgTextColor.includes(entry.color),
+            })}
+          >
+            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+            <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+          </p>
+        ))}
     </div>
   );
 
@@ -169,7 +171,7 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       barDataKeys.push('income', 'expenses', 'taxesAndPenalties');
-      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
 
       chartData = chartData.map((entry) => ({
         ...entry,
@@ -184,17 +186,17 @@ export default function SingleSimulationCashFlowLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
-      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     }
     case 'expenses': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      barDataKeys.push('expenses', 'incomeTax', 'capGainsTax', 'otherTaxes');
-      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)', 'var(--chart-4)');
+      barDataKeys.push('expenses', 'incomeTax', 'ficaTax', 'capGainsTax', 'niit', 'earlyWithdrawalPenalties');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)');
       break;
     }
-    case 'custom':
+    case 'custom': {
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
         break;
@@ -233,12 +235,14 @@ export default function SingleSimulationCashFlowLineChart({
       }
 
       break;
-    case 'savingsRate':
+    }
+    case 'savingsRate': {
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
 
       lineDataKeys.push('savingsRate');
       strokeColors.push('var(--chart-3)');
       break;
+    }
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
