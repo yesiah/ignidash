@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
@@ -44,7 +44,7 @@ interface CustomTooltipProps {
     | 'socialSecurityTaxablePercentage';
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
+const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
@@ -189,7 +189,9 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       {totalFooter}
     </div>
   );
-};
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
 
 const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)', 'var(--foreground)'];
 

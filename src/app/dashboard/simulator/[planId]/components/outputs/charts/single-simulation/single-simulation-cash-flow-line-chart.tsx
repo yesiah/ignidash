@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine, Cell } from 'recharts';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
@@ -30,7 +30,7 @@ interface CustomTooltipProps {
   dataView: 'net' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
+const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
@@ -172,7 +172,9 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       {tooltipFooterComponent}
     </div>
   );
-};
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
 
 interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];

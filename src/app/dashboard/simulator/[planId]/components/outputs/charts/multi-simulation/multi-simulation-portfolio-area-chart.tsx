@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import type { MultiSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
@@ -26,7 +26,7 @@ interface CustomTooltipProps {
   disabled: boolean;
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomTooltipProps) => {
+const CustomTooltip = memo(({ active, payload, label, startAge, disabled }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
@@ -56,7 +56,9 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled }: CustomToo
       </div>
     </div>
   );
-};
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
 
 const COLORS = ['var(--chart-3)', 'var(--chart-2)', 'var(--chart-1)', 'var(--chart-4)'];
 
