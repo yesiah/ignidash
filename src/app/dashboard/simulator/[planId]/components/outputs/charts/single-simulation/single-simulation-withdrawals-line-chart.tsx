@@ -238,7 +238,7 @@ export default function SingleSimulationWithdrawalsLineChart({
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
-  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
     return Math.ceil(dataLength / desiredTicks) - 1;
   }, []);
