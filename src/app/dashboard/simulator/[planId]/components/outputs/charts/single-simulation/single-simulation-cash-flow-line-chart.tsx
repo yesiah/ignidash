@@ -48,7 +48,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     }
   };
 
-  const transformedPayload = payload.filter((entry) => entry.dataKey !== 'cashFlow');
+  const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
 
   const tooltipBodyComponent = (
     <div className="flex flex-col gap-1">
@@ -70,7 +70,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
   let tooltipFooterComponent = null;
   switch (dataView) {
     case 'net':
-      const cashFlow = payload.find((entry) => entry.dataKey === 'cashFlow')!;
+      const cashFlow = payload.find((entry) => entry.dataKey === 'cashFlow');
+      if (!cashFlow) console.error('Cash flow data not found');
 
       tooltipFooterComponent = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
@@ -78,7 +79,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">Net Cash Flow:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(cashFlow.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatNumber(cashFlow!.value, 3, '$')}</span>
         </p>
       );
       break;
@@ -116,6 +117,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
 CustomTooltip.displayName = 'CustomTooltip';
 
+const LINE_COLOR = 'var(--foreground)';
+
 interface SingleSimulationCashFlowLineChartProps {
   rawChartData: SingleSimulationCashFlowChartDataPoint[];
   startAge: number;
@@ -152,17 +155,21 @@ export default function SingleSimulationCashFlowLineChart({
 
   const lineDataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
   const strokeColors: string[] = [];
+
+  const barDataKeys: (keyof SingleSimulationCashFlowChartDataPoint | keyof IncomeData | keyof ExpenseData)[] = [];
+  const barColors: string[] = [];
+
   let formatter = undefined;
-  let bar = null;
   let stackOffset: 'sign' | undefined = undefined;
   switch (dataView) {
-    case 'net':
+    case 'net': {
       lineDataKeys.push('cashFlow');
-      strokeColors.push('var(--foreground)');
+      strokeColors.push(LINE_COLOR);
+
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      const barDataKeys: (keyof SingleSimulationCashFlowChartDataPoint)[] = ['income', 'expenses', 'taxesAndPenalties'];
-      const barColors = ['var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)'];
+      barDataKeys.push('income', 'expenses', 'taxesAndPenalties');
+      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
 
       chartData = chartData.map((entry) => ({
         ...entry,
@@ -170,21 +177,23 @@ export default function SingleSimulationCashFlowLineChart({
         taxesAndPenalties: -entry.taxesAndPenalties,
       }));
 
-      bar = barDataKeys.map((dataKey, index) => (
-        <Bar key={`bar-${dataKey}`} dataKey={dataKey} maxBarSize={20} stackId="stack" fill={barColors[index]} isAnimationActive={false} />
-      ));
       stackOffset = 'sign';
       break;
-    case 'incomes':
-      lineDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
-      strokeColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
+    }
+    case 'incomes': {
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
+      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)');
       break;
-    case 'expenses':
-      lineDataKeys.push('expenses', 'incomeTax', 'capGainsTax', 'otherTaxes');
-      strokeColors.push('var(--chart-4)', 'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
+    }
+    case 'expenses': {
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('expenses', 'incomeTax', 'capGainsTax', 'otherTaxes');
+      barColors.push('var(--chart-2)', 'var(--chart-1)', 'var(--chart-3)', 'var(--chart-4)');
       break;
+    }
     case 'custom':
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
@@ -198,10 +207,12 @@ export default function SingleSimulationCashFlowLineChart({
       );
 
       if (perIncomeData.length > 0) {
-        chartData = perIncomeData;
+        formatter = (value: number) => formatNumber(value, 1, '$');
+
         lineDataKeys.push('income');
         strokeColors.push('var(--chart-2)');
-        formatter = (value: number) => formatNumber(value, 1, '$');
+
+        chartData = perIncomeData;
         break;
       }
 
@@ -212,18 +223,21 @@ export default function SingleSimulationCashFlowLineChart({
       );
 
       if (perExpenseData.length > 0) {
-        chartData = perExpenseData;
+        formatter = (value: number) => formatNumber(value, 1, '$');
+
         lineDataKeys.push('expense');
         strokeColors.push('var(--chart-4)');
-        formatter = (value: number) => formatNumber(value, 1, '$');
+
+        chartData = perExpenseData;
         break;
       }
 
       break;
     case 'savingsRate':
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+
       lineDataKeys.push('savingsRate');
       strokeColors.push('var(--chart-3)');
-      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
   }
 
@@ -284,7 +298,16 @@ export default function SingleSimulationCashFlowLineChart({
                 strokeOpacity={getOpacity(dataKey)}
               />
             ))}
-            {bar}
+            {barDataKeys.map((dataKey, index) => (
+              <Bar
+                key={`bar-${dataKey}`}
+                dataKey={dataKey}
+                maxBarSize={20}
+                stackId="stack"
+                fill={barColors[index]}
+                isAnimationActive={chartData.length <= 30}
+              />
+            ))}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
               cursor={{ stroke: foregroundColor }}
