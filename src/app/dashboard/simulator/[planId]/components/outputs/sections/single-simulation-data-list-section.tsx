@@ -13,14 +13,21 @@ import { Subheading } from '@/components/catalyst/heading';
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { useSingleSimulationCategory } from '@/lib/stores/simulator-store';
 
-function CashFlowTooltip({ taxExemptIncome }: { taxExemptIncome: number }) {
+function CashFlowTooltip({ taxExemptIncome, socialSecurityIncome }: { taxExemptIncome: number; socialSecurityIncome: number }) {
+  const incomeTypes = ['Earned income'];
+
+  if (taxExemptIncome !== 0) incomeTypes.push('tax-exempt income');
+  if (socialSecurityIncome !== 0) incomeTypes.push('Social Security');
+
+  const incomeDescription = incomeTypes.length === 1 ? incomeTypes[0] : incomeTypes.slice(0, -1).join(', ') + ' and ' + incomeTypes.at(-1);
+
   return (
     <Tooltip>
       <TooltipTrigger>
         <InfoIcon className="size-4 fill-white dark:fill-zinc-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>{`${taxExemptIncome !== 0 ? 'Earned and tax-exempt income' : 'Earned income'} minus all taxes and expenses.`}</p>
+        <p>{`${incomeDescription} minus all taxes and expenses.`}</p>
         <p>Investment income and portfolio withdrawals are excluded.</p>
       </TooltipContent>
     </Tooltip>
@@ -165,7 +172,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
           </DescriptionTerm>
           <DescriptionDetails className="font-bold">{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
@@ -188,8 +195,9 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const earnedIncome = taxesData?.incomeSources.earnedIncome ?? 0;
   const socialSecurityIncome = taxesData?.incomeSources.socialSecurityIncome ?? 0;
   const retirementDistributions = taxesData?.incomeSources.taxableRetirementDistributions ?? 0;
-  const interestIncome = taxesData?.incomeSources.taxableInterest ?? 0;
-  const incomeTaxedAsCapGains = (taxesData?.incomeSources.taxableRealizedGains ?? 0) + (taxesData?.incomeSources.taxableDividends ?? 0);
+  const interestIncome = taxesData?.incomeSources.taxableInterestIncome ?? 0;
+  const incomeTaxedAsCapGains =
+    (taxesData?.incomeSources.taxableRealizedGains ?? 0) + (taxesData?.incomeSources.taxableDividendIncome ?? 0);
   const grossIncome = taxesData?.incomeSources.grossIncome ?? 0;
   const totalIncome = taxesData?.incomeSources.totalIncome ?? 0;
 
@@ -272,7 +280,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const annualContributions = portfolioData.contributionsForPeriod;
   const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
-  const { taxExemptIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { taxExemptIncome, socialSecurityIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
 
   return (
     <div>
@@ -287,7 +295,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
           </DescriptionTerm>
           <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
@@ -307,7 +315,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-  const { taxExemptIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { taxExemptIncome, socialSecurityIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);
 
   return (
@@ -323,7 +331,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} />
+            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
           </DescriptionTerm>
           <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
