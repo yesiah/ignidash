@@ -291,7 +291,7 @@ export default function SingleSimulationCashFlowLineChart({
 
   const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
     if (dataLength <= desiredTicks) return 0;
-    return Math.ceil(dataLength / desiredTicks);
+    return Math.ceil(dataLength / desiredTicks) - 1;
   }, []);
   const interval = calculateInterval(chartData.length);
 
