@@ -297,9 +297,8 @@ export default function SingleSimulationCashFlowLineChart({
                 type="monotone"
                 dataKey={dataKey}
                 stroke={strokeColors[index]}
-                dot={false}
                 activeDot={true}
-                strokeWidth={3}
+                strokeWidth={2}
                 strokeOpacity={getOpacity(dataKey)}
               />
             ))}
