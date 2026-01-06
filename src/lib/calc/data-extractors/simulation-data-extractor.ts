@@ -18,10 +18,11 @@ export interface ReturnsStatsData {
 }
 
 export interface CashFlowData {
-  totalIncomeFromIncomes: number;
+  totalIncome: number;
   earnedIncome: number;
   socialSecurityIncome: number;
   taxExemptIncome: number;
+  employerMatch: number;
   totalExpenses: number;
   totalTaxesAndPenalties: number;
   cashFlow: number;
@@ -184,19 +185,30 @@ export class SimulationDataExtractor {
   static getCashFlowData(dp: SimulationDataPoint): CashFlowData {
     const incomesData = dp.incomes;
     const expensesData = dp.expenses;
+    const portfolioData = dp.portfolio;
 
-    const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
+    const employerMatch = portfolioData.employerMatchForPeriod;
+    const totalIncome = incomesData?.totalIncome ?? 0 + employerMatch;
 
-    const totalIncomeFromIncomes = incomesData?.totalIncome ?? 0;
     const socialSecurityIncome = incomesData?.totalSocialSecurityIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
+    const earnedIncome = totalIncome - employerMatch - socialSecurityIncome - taxExemptIncome;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
+    const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
 
-    const cashFlow = totalIncomeFromIncomes - totalExpenses - totalTaxesAndPenalties;
+    const cashFlow = totalIncome - totalExpenses - totalTaxesAndPenalties;
 
-    return { totalIncomeFromIncomes, earnedIncome, socialSecurityIncome, taxExemptIncome, totalExpenses, totalTaxesAndPenalties, cashFlow };
+    return {
+      totalIncome,
+      earnedIncome,
+      socialSecurityIncome,
+      taxExemptIncome,
+      employerMatch,
+      totalExpenses,
+      totalTaxesAndPenalties,
+      cashFlow,
+    };
   }
 
   static getContributionsByTaxCategory(dp: SimulationDataPoint): ContributionsByTaxCategory {
@@ -356,8 +368,8 @@ export class SimulationDataExtractor {
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { totalIncomeFromIncomes, totalTaxesAndPenalties, cashFlow } = this.getCashFlowData(dp);
-    const totalIncomeMinusTaxes = totalIncomeFromIncomes - totalTaxesAndPenalties;
+    const { totalIncome, totalTaxesAndPenalties, cashFlow } = this.getCashFlowData(dp);
+    const totalIncomeMinusTaxes = totalIncome - totalTaxesAndPenalties;
     return totalIncomeMinusTaxes > 0 ? cashFlow / totalIncomeMinusTaxes : null;
   }
 

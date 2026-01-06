@@ -292,6 +292,21 @@ export class TaxProcessor {
     };
   }
 
+  private getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes: PortfolioData): {
+    taxableRealizedGains: number;
+    capitalLossDeduction: number;
+  } {
+    const realizedGainsAfterCarryover = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + this.capitalLossCarryover;
+    if (realizedGainsAfterCarryover >= 0) {
+      this.capitalLossCarryover = 0;
+      return { taxableRealizedGains: realizedGainsAfterCarryover, capitalLossDeduction: 0 };
+    }
+
+    const capitalLossDeduction = -Math.max(-3000, realizedGainsAfterCarryover);
+    this.capitalLossCarryover = realizedGainsAfterCarryover + capitalLossDeduction;
+    return { taxableRealizedGains: 0, capitalLossDeduction };
+  }
+
   private processIncomeTaxes({ taxableOrdinaryIncome }: { taxableOrdinaryIncome: number }): {
     incomeTaxAmount: number;
     topMarginalIncomeTaxRate: number;
@@ -363,21 +378,6 @@ export class TaxProcessor {
     const taxFreePenaltyAmount = earlyWithdrawalsData.rothEarnings * 0.1;
 
     return { taxDeferredPenaltyAmount, taxFreePenaltyAmount, totalPenaltyAmount: taxDeferredPenaltyAmount + taxFreePenaltyAmount };
-  }
-
-  private getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes: PortfolioData): {
-    taxableRealizedGains: number;
-    capitalLossDeduction: number;
-  } {
-    const realizedGainsAfterCarryover = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + this.capitalLossCarryover;
-    if (realizedGainsAfterCarryover >= 0) {
-      this.capitalLossCarryover = 0;
-      return { taxableRealizedGains: realizedGainsAfterCarryover, capitalLossDeduction: 0 };
-    }
-
-    const capitalLossDeduction = -Math.max(-3000, realizedGainsAfterCarryover);
-    this.capitalLossCarryover = realizedGainsAfterCarryover + capitalLossDeduction;
-    return { taxableRealizedGains: 0, capitalLossDeduction };
   }
 
   private getTaxablePortionOfSocialSecurityIncome({

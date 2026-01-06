@@ -58,10 +58,11 @@ export abstract class ChartDataExtractor {
         totalTaxesAndPenalties: taxesAndPenalties,
       } = SimulationDataExtractor.getTaxAmountsByType(data);
       const {
-        totalIncomeFromIncomes: income,
+        totalIncome: income,
         earnedIncome,
         socialSecurityIncome,
         taxExemptIncome,
+        employerMatch,
         totalExpenses: expenses,
         cashFlow,
       } = SimulationDataExtractor.getCashFlowData(data);
@@ -74,13 +75,13 @@ export abstract class ChartDataExtractor {
         earnedIncome,
         socialSecurityIncome,
         taxExemptIncome,
+        employerMatch,
         income,
         incomeTax,
         ficaTax,
         capGainsTax,
         niit,
         earlyWithdrawalPenalties,
-        otherTaxes: ficaTax + niit + earlyWithdrawalPenalties,
         taxesAndPenalties,
         expenses,
         cashFlow,
