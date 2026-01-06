@@ -104,6 +104,7 @@ export abstract class TableDataExtractor {
           earnedIncome: null,
           socialSecurityIncome: null,
           taxExemptIncome: null,
+          employerMatch: null,
           incomeTax: null,
           ficaTax: null,
           capGainsTax: null,
@@ -123,6 +124,7 @@ export abstract class TableDataExtractor {
         earnedIncome,
         socialSecurityIncome,
         taxExemptIncome,
+        employerMatch,
         totalExpenses: expenses,
         cashFlow,
       } = SimulationDataExtractor.getCashFlowData(data);
@@ -135,6 +137,7 @@ export abstract class TableDataExtractor {
         earnedIncome,
         socialSecurityIncome,
         taxExemptIncome,
+        employerMatch,
         incomeTax,
         ficaTax,
         capGainsTax,
