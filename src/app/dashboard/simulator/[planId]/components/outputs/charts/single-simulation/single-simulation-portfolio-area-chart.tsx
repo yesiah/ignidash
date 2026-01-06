@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useState, useCallback, memo } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import type { SingleSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
@@ -172,42 +172,43 @@ export default function SingleSimulationPortfolioAreaChart({
   return (
     <div>
       <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={chartData}
-            className="text-xs"
-            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
-            tabIndex={-1}
-            onClick={onClick}
-          >
-            <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
-            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataKeys.map((dataKey, index) => (
-              <Area
-                key={dataKey}
-                type="monotone"
-                dataKey={dataKey}
-                stackId="1"
-                stroke={COLORS[index % COLORS.length]}
-                fill={COLORS[index % COLORS.length]}
-                fillOpacity={1}
-                activeDot={false}
-              />
-            ))}
-            <Tooltip
-              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
-              cursor={{ stroke: foregroundColor }}
+        <AreaChart
+          responsive
+          width="100%"
+          height="100%"
+          data={chartData}
+          className="text-xs"
+          margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+          tabIndex={-1}
+          onClick={onClick}
+        >
+          <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
+          <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
+          <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+          {dataKeys.map((dataKey, index) => (
+            <Area
+              key={dataKey}
+              type="monotone"
+              dataKey={dataKey}
+              stackId="1"
+              stroke={COLORS[index % COLORS.length]}
+              fill={COLORS[index % COLORS.length]}
+              fillOpacity={1}
+              activeDot={false}
             />
-            {keyMetrics.retirementAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-            )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-            {keyMetrics.portfolioAtRetirement && showReferenceLines && dataView !== 'custom' && (
-              <ReferenceLine y={Math.round(keyMetrics.portfolioAtRetirement)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-            )}
-          </AreaChart>
-        </ResponsiveContainer>
+          ))}
+          <Tooltip
+            content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} />}
+            cursor={{ stroke: foregroundColor }}
+          />
+          {keyMetrics.retirementAge && showReferenceLines && (
+            <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+          )}
+          {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
+          {keyMetrics.portfolioAtRetirement && showReferenceLines && dataView !== 'custom' && (
+            <ReferenceLine y={Math.round(keyMetrics.portfolioAtRetirement)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+          )}
+        </AreaChart>
       </div>
     </div>
   );
