@@ -13,22 +13,28 @@ import { Subheading } from '@/components/catalyst/heading';
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { useSingleSimulationCategory } from '@/lib/stores/simulator-store';
 
-function CashFlowTooltip({ taxExemptIncome, socialSecurityIncome }: { taxExemptIncome: number; socialSecurityIncome: number }) {
-  const incomeTypes = ['Earned income'];
-
-  if (taxExemptIncome !== 0) incomeTypes.push('tax-exempt income');
-  if (socialSecurityIncome !== 0) incomeTypes.push('Social Security');
-
-  const incomeDescription = incomeTypes.length === 1 ? incomeTypes[0] : incomeTypes.slice(0, -1).join(', ') + ' and ' + incomeTypes.at(-1);
-
+function NetPortfolioChangeTooltip() {
   return (
     <Tooltip>
       <TooltipTrigger>
         <InfoIcon className="size-4 fill-white dark:fill-zinc-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>{`${incomeDescription} minus all taxes and expenses.`}</p>
-        <p>Investment income and portfolio withdrawals are excluded.</p>
+        <p>Calculated as annual returns plus contributions, minus withdrawals.</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function CashFlowTooltip() {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <InfoIcon className="size-4 fill-white dark:fill-zinc-950" />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Earned income, employer match, tax-exempt income, and Social Security, minus taxes and expenses.</p>
+        <p>Investment income is automatically reinvested; withdrawals are tracked separately.</p>
       </TooltipContent>
     </Tooltip>
   );
@@ -125,7 +131,10 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionTerm>Annual Withdrawals</DescriptionTerm>
         <DescriptionDetails>{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm className="font-bold">Net Portfolio Change</DescriptionTerm>
+        <DescriptionTerm className="flex items-center gap-3 font-bold">
+          Net Portfolio Change
+          <NetPortfolioChangeTooltip />
+        </DescriptionTerm>
         <DescriptionDetails className="font-bold">
           {formatNumber(stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals, 2, '$')}
         </DescriptionDetails>
@@ -135,7 +144,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const { socialSecurityIncome, taxExemptIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   const portfolioData = dp.portfolio;
@@ -159,7 +168,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
+            <CashFlowTooltip />
           </DescriptionTerm>
           <DescriptionDetails className="font-bold">{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
@@ -267,7 +276,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const annualContributions = portfolioData.contributionsForPeriod;
   const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
-  const { taxExemptIncome, socialSecurityIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
 
   return (
     <div>
@@ -282,7 +291,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
+            <CashFlowTooltip />
           </DescriptionTerm>
           <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
@@ -302,7 +311,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-  const { taxExemptIncome, socialSecurityIncome, cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const { cashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);
 
   return (
@@ -318,7 +327,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 
           <DescriptionTerm className="flex items-center gap-3">
             Cash Flow
-            <CashFlowTooltip taxExemptIncome={taxExemptIncome} socialSecurityIncome={socialSecurityIncome} />
+            <CashFlowTooltip />
           </DescriptionTerm>
           <DescriptionDetails>{formatNumber(cashFlow, 2, '$')}</DescriptionDetails>
 
