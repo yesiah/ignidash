@@ -238,13 +238,15 @@ export abstract class ChartDataExtractor {
         taxDeferredWithdrawals,
         taxFreeWithdrawals,
         cashSavingsWithdrawals: cashWithdrawals,
-        earlyWithdrawals: annualEarlyWithdrawals,
       } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
-      cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
       const taxesData = data.taxes!;
+
       const annualEarlyWithdrawalPenalties = taxesData.earlyWithdrawalPenalties.totalPenaltyAmount;
       cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
+
+      const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
+      cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
       const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(data);
 

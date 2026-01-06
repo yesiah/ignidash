@@ -447,8 +447,9 @@ export abstract class TableDataExtractor {
         taxDeferredWithdrawals: taxDeferred,
         taxFreeWithdrawals: taxFree,
         cashSavingsWithdrawals: cashSavings,
-        earlyWithdrawals: annualEarlyWithdrawals,
       } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
+
+      const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
       const { earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties } = SimulationDataExtractor.getTaxAmountsByType(data);

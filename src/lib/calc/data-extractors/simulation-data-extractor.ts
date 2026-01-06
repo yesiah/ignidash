@@ -50,7 +50,6 @@ export interface WithdrawalsByTaxCategory {
   taxableBrokerageWithdrawals: number;
   taxDeferredWithdrawals: number;
   taxFreeWithdrawals: number;
-  earlyWithdrawals: number;
 }
 
 export interface PortfolioValueByTaxCategory {
@@ -187,12 +186,13 @@ export class SimulationDataExtractor {
     const expensesData = dp.expenses;
     const portfolioData = dp.portfolio;
 
-    const employerMatch = portfolioData.employerMatchForPeriod;
-    const totalIncome = incomesData?.totalIncome ?? 0 + employerMatch;
-
+    const totalIncomeFromIncomes = incomesData?.totalIncome ?? 0;
     const socialSecurityIncome = incomesData?.totalSocialSecurityIncome ?? 0;
     const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = totalIncome - employerMatch - socialSecurityIncome - taxExemptIncome;
+    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
+
+    const employerMatch = portfolioData.employerMatchForPeriod;
+    const totalIncome = totalIncomeFromIncomes + employerMatch;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
     const { totalTaxesAndPenalties } = this.getTaxAmountsByType(dp);
@@ -251,7 +251,6 @@ export class SimulationDataExtractor {
     let taxableBrokerageWithdrawals = 0;
     let taxDeferredWithdrawals = 0;
     let taxFreeWithdrawals = 0;
-    let earlyWithdrawals = 0;
 
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
@@ -265,22 +264,30 @@ export class SimulationDataExtractor {
         case '403b':
         case 'ira':
           taxDeferredWithdrawals += account.withdrawalsForPeriod;
-          if (age < 59.5) earlyWithdrawals += account.withdrawalsForPeriod;
           break;
         case 'hsa':
           taxDeferredWithdrawals += account.withdrawalsForPeriod;
-          if (age < 65) earlyWithdrawals += account.withdrawalsForPeriod;
           break;
         case 'roth401k':
         case 'roth403b':
         case 'rothIra':
           taxFreeWithdrawals += account.withdrawalsForPeriod;
-          if (age < 59.5) earlyWithdrawals += account.earningsWithdrawnForPeriod;
           break;
       }
     }
 
-    return { cashSavingsWithdrawals, taxableBrokerageWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, earlyWithdrawals };
+    return { cashSavingsWithdrawals, taxableBrokerageWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals };
+  }
+
+  static getEarlyWithdrawals(dp: SimulationDataPoint, age: number): number {
+    const taxesData = dp.taxes;
+    if (!taxesData) return 0;
+
+    return (
+      taxesData.incomeSources.earlyWithdrawals.rothEarnings +
+      taxesData.incomeSources.earlyWithdrawals['401kAndIra'] +
+      taxesData.incomeSources.earlyWithdrawals.hsa
+    );
   }
 
   static getPortfolioValueByTaxCategory(dp: SimulationDataPoint): PortfolioValueByTaxCategory {
