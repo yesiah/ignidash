@@ -291,7 +291,7 @@ export default function SingleSimulationCashFlowLineChart({
             <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
             <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
             <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataView === 'net' && <ReferenceLine y={0} stroke={foregroundColor} ifOverflow="extendDomain" />}
+            {dataView === 'net' && <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={0.5} ifOverflow="extendDomain" />}
             {lineDataKeys.map((dataKey, index) => (
               <Line
                 key={dataKey}
@@ -312,8 +312,7 @@ export default function SingleSimulationCashFlowLineChart({
                 stackId="stack"
                 fill={barColors[index]}
                 stroke={foregroundColor}
-                strokeWidth={chartData.length <= 30 ? 0.5 : 0.25}
-                isAnimationActive={chartData.length <= 30}
+                strokeWidth={0.25}
               />
             ))}
             <Tooltip
