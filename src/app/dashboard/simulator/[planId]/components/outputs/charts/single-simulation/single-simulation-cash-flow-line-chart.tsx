@@ -305,14 +305,7 @@ export default function SingleSimulationCashFlowLineChart({
               />
             ))}
             {barDataKeys.map((dataKey, index) => (
-              <Bar
-                key={`bar-${dataKey}`}
-                dataKey={dataKey}
-                maxBarSize={20}
-                stackId="stack"
-                fill={barColors[index]}
-                isAnimationActive={false}
-              />
+              <Bar key={`bar-${dataKey}`} dataKey={dataKey} maxBarSize={20} stackId="stack" fill={barColors[index]} />
             ))}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
