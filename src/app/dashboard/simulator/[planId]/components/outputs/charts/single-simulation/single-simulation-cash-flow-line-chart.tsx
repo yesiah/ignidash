@@ -14,7 +14,6 @@ import type { IncomeData } from '@/lib/calc/incomes';
 import type { ExpenseData } from '@/lib/calc/expenses';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -73,7 +72,10 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
   switch (dataView) {
     case 'net':
       const cashFlow = payload.find((entry) => entry.dataKey === 'cashFlow');
-      if (!cashFlow) console.error('Cash flow data not found');
+      if (!cashFlow) {
+        console.error('Cash flow data not found');
+        break;
+      }
 
       tooltipFooterComponent = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
@@ -81,7 +83,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">Net Cash Flow:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(cashFlow!.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatNumber(cashFlow.value, 3, '$')}</span>
         </p>
       );
       break;
@@ -212,7 +214,7 @@ export default function SingleSimulationCashFlowLineChart({
         formatter = (value: number) => formatNumber(value, 1, '$');
 
         lineDataKeys.push('income');
-        strokeColors.push('var(--chart-2)');
+        strokeColors.push('var(--chart-1)');
 
         chartData = perIncomeData;
         break;
@@ -228,7 +230,7 @@ export default function SingleSimulationCashFlowLineChart({
         formatter = (value: number) => formatNumber(value, 1, '$');
 
         lineDataKeys.push('expense');
-        strokeColors.push('var(--chart-4)');
+        strokeColors.push('var(--chart-2)');
 
         chartData = perExpenseData;
         break;
@@ -248,7 +250,6 @@ export default function SingleSimulationCashFlowLineChart({
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
   const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
@@ -265,7 +266,7 @@ export default function SingleSimulationCashFlowLineChart({
     [onAgeSelect]
   );
 
-  const { getOpacity, handleMouseEnter, handleMouseLeave } = useLineChartLegendEffectOpacity();
+  const { getOpacity } = useLineChartLegendEffectOpacity();
 
   return (
     <div>
@@ -323,14 +324,6 @@ export default function SingleSimulationCashFlowLineChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <TimeSeriesLegend
-        colors={strokeColors}
-        legendStrokeColor={legendStrokeColor}
-        dataKeys={lineDataKeys}
-        isSmallScreen={isSmallScreen}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
     </div>
   );
 }
