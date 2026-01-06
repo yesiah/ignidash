@@ -95,7 +95,7 @@ export interface IncomeSourcesData {
   provisionalIncome: number;
   taxExemptIncome: number;
   grossIncome: number;
-  taxDeferredContributions: number;
+  taxDeductibleContributions: number;
   adjustedGrossIncome: number;
   adjustedIncomeTaxedAsOrdinary: number;
   adjustedIncomeTaxedAsCapGains: number;
@@ -174,7 +174,10 @@ export class TaxProcessor {
       totalTaxesDue: difference > 0 ? difference : 0,
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
       totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
-      adjustments: { taxDeferredContributions: incomeData.taxDeferredContributions, capitalLossDeduction: incomeData.capitalLossDeduction },
+      adjustments: {
+        taxDeductibleContributions: incomeData.taxDeductibleContributions,
+        capitalLossDeduction: incomeData.capitalLossDeduction,
+      },
       deductions: { standardDeduction },
     };
   }
@@ -243,9 +246,12 @@ export class TaxProcessor {
     const grossIncomeExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec + incomeTaxedAsCapGains;
 
     const taxDeferredAccountTypes: AccountInputs['type'][] = ['401k', '403b', 'ira', 'hsa'];
-    const taxDeferredContributions = this.getEmployeeContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, taxDeferredAccountTypes);
+    const taxDeductibleContributions = this.getEmployeeContributionsForAccountTypes(
+      annualPortfolioDataBeforeTaxes,
+      taxDeferredAccountTypes
+    );
 
-    const totalAdjustments = taxDeferredContributions + capitalLossDeduction;
+    const totalAdjustments = taxDeductibleContributions + capitalLossDeduction;
     const adjustmentsAppliedToOrdinary = Math.min(totalAdjustments, incomeTaxedAsOrdinaryExceptSocSec);
     const adjustmentsAppliedToCapGains = totalAdjustments - adjustmentsAppliedToOrdinary;
 
@@ -279,7 +285,7 @@ export class TaxProcessor {
       provisionalIncome,
       taxExemptIncome,
       grossIncome,
-      taxDeferredContributions,
+      taxDeductibleContributions,
       adjustedGrossIncome,
       adjustedIncomeTaxedAsOrdinary,
       adjustedIncomeTaxedAsCapGains,

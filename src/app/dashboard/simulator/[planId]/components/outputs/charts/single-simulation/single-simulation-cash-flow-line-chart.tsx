@@ -49,7 +49,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
 
-  const tooltipBodyComponent = (
+  const body = (
     <div className="flex flex-col gap-1">
       {transformedPayload
         .filter((entry) => entry.value !== 0)
@@ -68,7 +68,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     </div>
   );
 
-  let tooltipFooterComponent = null;
+  let footer = null;
   switch (dataView) {
     case 'net':
       const cashFlow = payload.find((entry) => entry.dataKey === 'cashFlow');
@@ -77,7 +77,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         break;
       }
 
-      tooltipFooterComponent = (
+      footer = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
           <span className="flex items-center gap-1">
             <ChartLineIcon className="h-3 w-3" />
@@ -89,7 +89,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       break;
     case 'incomes':
     case 'expenses':
-      tooltipFooterComponent = (
+      footer = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
@@ -113,8 +113,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
-      {tooltipBodyComponent}
-      {tooltipFooterComponent}
+      {body}
+      {footer}
     </div>
   );
 });

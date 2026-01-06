@@ -47,7 +47,7 @@ export const simulationDataPointValidator = v.object({
   effectiveCapitalGainsTaxRate: v.number(),
   topMarginalCapitalGainsTaxRate: v.number(),
 
-  taxDeferredContributionsDeduction: v.number(),
+  taxDeductibleContributions: v.number(),
   capitalLossDeduction: v.number(),
 
   // Contributions

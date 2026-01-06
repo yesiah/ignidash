@@ -331,8 +331,8 @@ export default function SingleSimulationTaxesBarChart({
       desktop: ['Annual EW Penalties', 'Cumul. EW Penalties'],
     },
     adjustmentsAndDeductions: {
-      mobile: ['Tax-Deferred', 'CL Deduction', 'Std. Deduction'],
-      desktop: ['Tax-Deferred Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
+      mobile: ['Deductible Contrib.', 'CL Deduction', 'Std. Deduction'],
+      desktop: ['Tax-Deductible Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
     },
     socialSecurityIncome: {
       mobile: ['Soc. Sec.', 'Taxable Soc. Sec.'],
@@ -504,12 +504,12 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'adjustmentsAndDeductions': {
-      const [taxDeferredContributionsLabel, capLossDeductionLabel, standardDeductionLabel] = getLabelsForScreenSize(
+      const [taxDeductibleContributionsLabel, capLossDeductionLabel, standardDeductionLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
       transformedChartData = chartData.flatMap((item) => [
-        { name: taxDeferredContributionsLabel, amount: item.taxDeferredContributions },
+        { name: taxDeductibleContributionsLabel, amount: item.taxDeductibleContributions },
         { name: capLossDeductionLabel, amount: item.capitalLossDeduction },
         { name: standardDeductionLabel, amount: item.standardDeduction },
       ]);

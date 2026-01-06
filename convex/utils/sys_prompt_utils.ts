@@ -508,7 +508,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
     if (rates.length) sections.push(`rates: ${rates.join(', ')}`);
 
     const deductions = [
-      d.taxDeferredContributionsDeduction && `tradContrib:${fmt(d.taxDeferredContributionsDeduction)}`,
+      d.taxDeductibleContributions && `tradContrib:${fmt(d.taxDeductibleContributions)}`,
       d.capitalLossDeduction && `capLoss:${fmt(d.capitalLossDeduction)}`,
     ].filter(Boolean);
     if (deductions.length) sections.push(`deductions: ${deductions.join(', ')}`);

@@ -111,7 +111,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   /* Adjustments & Deductions */
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
-  taxDeferredContributions: number;
+  taxDeductibleContributions: number;
   standardDeduction: number;
   capitalLossDeduction: number;
 }

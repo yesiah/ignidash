@@ -162,7 +162,7 @@ export abstract class ChartDataExtractor {
         cumulativeTotalTaxesAndPenalties,
         adjustments: taxesData.adjustments,
         deductions: taxesData.deductions,
-        taxDeferredContributions: taxesData.adjustments.taxDeferredContributions ?? 0,
+        taxDeductibleContributions: taxesData.adjustments.taxDeductibleContributions ?? 0,
         standardDeduction: taxesData.deductions.standardDeduction ?? 0,
         capitalLossDeduction: taxesData.incomeTaxes.capitalLossDeduction ?? 0,
       };

@@ -2,7 +2,8 @@
 
 import { useTheme } from 'next-themes';
 import { useState, useCallback, memo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { ChartLineIcon } from 'lucide-react';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -94,8 +95,10 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     }
   };
 
+  const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
+
   let header = null;
-  let totalFooter = null;
+  let footer = null;
   switch (dataView) {
     case 'marginalRates':
     case 'effectiveRates':
@@ -109,8 +112,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     case 'capGainsAndDividends':
     case 'earlyWithdrawalPenalties':
     case 'adjustmentsAndDeductions':
-      totalFooter = (
-        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
             {formatNumber(
@@ -126,15 +129,23 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     case 'adjustedGrossIncome':
       const entry = payload[0].payload;
 
-      const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
-        <p key={name} className="flex justify-between text-sm font-semibold">
+      const lineEntry = payload.find((entry) => entry.color === LINE_COLOR);
+      if (!lineEntry) {
+        console.error('Line entry data not found');
+        break;
+      }
+
+      const adjustmentsData = Object.entries(entry.adjustments).filter(([, value]) => value !== 0);
+      const adjustments = adjustmentsData.map(([name, value]) => (
+        <p key={name} className="flex justify-between text-xs font-semibold">
           <span className="mr-2">{`${formatChartString(name)}:`}</span>
           <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
         </p>
       ));
 
-      const deductions = Object.entries(entry.deductions).map(([name, value]) => (
-        <p key={name} className="flex justify-between text-sm font-semibold">
+      const deductionsData = dataView === 'taxableIncome' ? Object.entries(entry.deductions).filter(([, value]) => value !== 0) : [];
+      const deductions = deductionsData.map(([name, value]) => (
+        <p key={name} className="flex justify-between text-xs font-semibold">
           <span className="mr-2">{`${formatChartString(name)}:`}</span>
           <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
         </p>
@@ -142,22 +153,25 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
       header = (
         <div className="mx-1 mb-2 flex flex-col gap-2">
-          <p className="flex justify-between text-sm font-semibold">
+          <p className="flex justify-between text-xs font-semibold">
             <span className="mr-2">Gross Income:</span>
             <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
           </p>
-          <Divider />
-          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
-          {adjustments}
-          <Divider />
-          {dataView === 'taxableIncome' && (
-            <>
-              <p className="text-muted-foreground -mb-2 text-xs/6">Deductions</p>
-              {deductions}
-              <Divider />
-            </>
-          )}
+          <Divider soft />
+          {adjustmentsData.length > 0 && adjustments}
+          {deductionsData.length > 0 && deductions}
+          {(adjustmentsData.length > 0 || deductionsData.length > 0) && <Divider soft />}
         </div>
+      );
+
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
+          <span className="flex items-center gap-1">
+            <ChartLineIcon className="h-3 w-3" />
+            <span className="mr-2">{`${formatChartString(lineEntry.dataKey)}:`}</span>
+          </span>
+          <span className="ml-1 font-semibold">{formatNumber(lineEntry.value, 3, '$')}</span>
+        </p>
       );
       break;
     case 'taxExemptIncome':
@@ -167,33 +181,35 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-      <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
+      <p className="mx-1 mb-2 flex justify-between text-xs font-semibold">
         <span>Age {label}</span>
         <span className="text-muted-foreground">{yearForAge}</span>
       </p>
       {header}
-      <div className="flex flex-col gap-2">
-        {payload.map((entry) => (
-          <p
-            key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
-            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-              'text-background': needsBgTextColor.includes(entry.color),
-            })}
-          >
-            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
-          </p>
-        ))}
+      <div className="flex flex-col gap-1">
+        {transformedPayload
+          .filter((entry) => entry.value !== 0)
+          .map((entry) => (
+            <p
+              key={entry.dataKey}
+              style={{ backgroundColor: entry.color }}
+              className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
+                'text-background': needsBgTextColor.includes(entry.color),
+              })}
+            >
+              <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+              <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+            </p>
+          ))}
       </div>
-      {totalFooter}
+      {footer}
     </div>
   );
 });
 
 CustomTooltip.displayName = 'CustomTooltip';
 
-const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)', 'var(--foreground)'];
+const LINE_COLOR = 'var(--foreground)';
 
 interface SingleSimulationTaxesLineChartProps {
   rawChartData: SingleSimulationTaxesChartDataPoint[];
@@ -241,79 +257,124 @@ export default function SingleSimulationTaxesLineChart({
 
   const chartData: SingleSimulationTaxesChartDataPoint[] = useChartDataSlice(rawChartData);
 
-  const dataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const lineDataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const strokeColors: string[] = [];
+
+  const barDataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const barColors: string[] = [];
+
   let formatter = undefined;
+  let stackId: string | undefined = 'stack';
   switch (dataView) {
     case 'marginalRates':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('topMarginalIncomeTaxRate', 'topMarginalCapGainsTaxRate');
+
+      lineDataKeys.push('topMarginalIncomeTaxRate', 'topMarginalCapGainsTaxRate');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'effectiveRates':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('effectiveIncomeTaxRate', 'effectiveCapGainsTaxRate');
+
+      lineDataKeys.push('effectiveIncomeTaxRate', 'effectiveCapGainsTaxRate');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('annualIncomeTax', 'annualFicaTax', 'annualCapGainsTax', 'annualNiit', 'annualEarlyWithdrawalPenalties');
+
+      barDataKeys.push('annualIncomeTax', 'annualFicaTax', 'annualCapGainsTax', 'annualNiit', 'annualEarlyWithdrawalPenalties');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push(
+
+      barDataKeys.push(
         'cumulativeIncomeTax',
         'cumulativeFicaTax',
         'cumulativeCapGainsTax',
         'cumulativeNiit',
         'cumulativeEarlyWithdrawalPenalties'
       );
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'taxableIncome');
+
+      lineDataKeys.push('taxableIncome');
+      strokeColors.push('var(--foreground)');
+
+      barDataKeys.push('taxableOrdinaryIncome', 'taxableCapGains');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'adjustedGrossIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('adjustedGrossIncome');
+
+      lineDataKeys.push('adjustedGrossIncome');
+      strokeColors.push('var(--foreground)');
+
+      barDataKeys.push('adjustedGrossIncome');
+      barColors.push('var(--chart-1)');
       break;
     case 'investmentIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('interestIncome', 'dividendIncome');
+
+      barDataKeys.push('interestIncome', 'dividendIncome');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'retirementDistributions':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+
+      barDataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'taxExemptIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxExemptIncome');
+
+      lineDataKeys.push('taxExemptIncome');
+      strokeColors.push('var(--chart-2)');
       break;
     case 'ordinaryIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('earnedIncome', 'socialSecurityIncome', 'interestIncome', 'retirementDistributions');
+
+      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'interestIncome', 'retirementDistributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'capGainsAndDividends':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('realizedGains', 'dividendIncome');
+
+      barDataKeys.push('realizedGains', 'dividendIncome');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'earlyWithdrawalPenalties':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
+      stackId = undefined;
+
+      barDataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'adjustmentsAndDeductions':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxDeferredContributions', 'capitalLossDeduction', 'standardDeduction');
+
+      barDataKeys.push('taxDeductibleContributions', 'capitalLossDeduction', 'standardDeduction');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'socialSecurityIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');
+      stackId = undefined;
+
+      barDataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'socialSecurityTaxablePercentage':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('maxTaxablePercentage', 'actualTaxablePercentage');
+
+      lineDataKeys.push('maxTaxablePercentage', 'actualTaxablePercentage');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
   const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
+  const backgroundColor = resolvedTheme === 'dark' ? '#27272a' : '#ffffff'; // zinc-800 : white
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
   const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
@@ -338,7 +399,7 @@ export default function SingleSimulationTaxesLineChart({
     <div>
       <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <ComposedChart
             data={chartData}
             className="text-xs"
             margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
@@ -348,17 +409,20 @@ export default function SingleSimulationTaxesLineChart({
             <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
             <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
             <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataKeys.map((dataKey, index) => (
+            {lineDataKeys.map((dataKey, index) => (
               <Line
                 key={dataKey}
                 type="monotone"
                 dataKey={dataKey}
-                stroke={COLORS[index % COLORS.length]}
-                dot={false}
-                activeDot={false}
-                strokeWidth={3}
+                stroke={strokeColors[index]}
+                activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
+                dot={{ fill: backgroundColor, strokeWidth: 2 }}
+                strokeWidth={2}
                 strokeOpacity={getOpacity(dataKey)}
               />
+            ))}
+            {barDataKeys.map((dataKey, index) => (
+              <Bar key={`bar-${dataKey}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[index]} />
             ))}
             <Tooltip
               content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
@@ -368,17 +432,19 @@ export default function SingleSimulationTaxesLineChart({
               <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
             )}
             {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-          </LineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <TimeSeriesLegend
-        colors={COLORS}
-        legendStrokeColor={legendStrokeColor}
-        dataKeys={dataKeys}
-        isSmallScreen={isSmallScreen}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+      {strokeColors.length > 0 && barDataKeys.length === 0 && (
+        <TimeSeriesLegend
+          colors={strokeColors}
+          legendStrokeColor={legendStrokeColor}
+          dataKeys={lineDataKeys}
+          isSmallScreen={isSmallScreen}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      )}
     </div>
   );
 }

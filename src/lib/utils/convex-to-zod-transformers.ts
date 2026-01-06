@@ -427,7 +427,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       topMarginalIncomeTaxRate: taxesData[i].topMarginalIncomeTaxRate,
       effectiveCapitalGainsTaxRate: taxesData[i].effectiveCapGainsTaxRate,
       topMarginalCapitalGainsTaxRate: taxesData[i].topMarginalCapGainsTaxRate,
-      taxDeferredContributionsDeduction: taxesData[i].taxDeferredContributions,
+      taxDeductibleContributions: taxesData[i].taxDeductibleContributions,
       capitalLossDeduction: taxesData[i].capitalLossDeduction,
 
       // Contributions

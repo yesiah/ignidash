@@ -203,7 +203,7 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   cumulativeTotalTaxesAndPenalties: z.number().nullable(),
 
   /* Adjustments & Deductions */
-  taxDeferredContributions: z.number().nullable(),
+  taxDeductibleContributions: z.number().nullable(),
   standardDeduction: z.number().nullable(),
   capitalLossDeduction: z.number().nullable(),
   historicalYear: z.number().nullable(),
@@ -247,7 +247,7 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   taxExemptIncome: { title: 'Tax-Exempt Income', format: 'currency' },
   annualTotalTaxesAndPenalties: { title: 'Annual Total Taxes & Penalties', format: 'currency' },
   cumulativeTotalTaxesAndPenalties: { title: 'Cumulative Total Taxes & Penalties', format: 'currency' },
-  taxDeferredContributions: { title: 'Tax-Deferred Contributions', format: 'currency' },
+  taxDeductibleContributions: { title: 'Tax-Deductible Contributions', format: 'currency' },
   standardDeduction: { title: 'Standard Deduction', format: 'currency' },
   capitalLossDeduction: { title: 'Capital Loss Deduction', format: 'currency' },
   historicalYear: { title: 'Historical Year', format: 'number' },
