@@ -62,8 +62,12 @@ export default function SingleSimulationCashFlowBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     net: {
-      mobile: ['Earned Income', 'Soc. Sec.', 'Exempt Income', 'Taxes', 'Expenses'],
-      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Taxes & Penalties', 'Expenses'],
+      mobile: ['Earned', 'Soc. Sec.', 'Exempt', 'Match', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
+    },
+    incomes: {
+      mobile: ['Match'],
+      desktop: ['Employer Match'],
     },
     expenses: {
       mobile: ['Income Tax', 'FICA Tax', 'Cap Gains Tax', 'NIIT', 'EW Penalty'],
@@ -81,19 +85,27 @@ export default function SingleSimulationCashFlowBarChart({
   const formatter = (value: number) => formatNumber(value, 1, '$');
   switch (dataView) {
     case 'net': {
-      const [earnedIncomeLabel, socialSecurityIncomeLabel, taxExemptIncomeLabel, taxesAndPenaltiesLabel, expensesLabel] =
-        getLabelsForScreenSize(dataView, isSmallScreen);
+      const [
+        earnedIncomeLabel,
+        socialSecurityIncomeLabel,
+        taxExemptIncomeLabel,
+        employerMatchLabel,
+        taxesAndPenaltiesLabel,
+        expensesLabel,
+      ] = getLabelsForScreenSize(dataView, isSmallScreen);
 
-      transformedChartData = chartData.flatMap(({ earnedIncome, socialSecurityIncome, taxExemptIncome, taxesAndPenalties, expenses }) =>
-        [
-          { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
-          { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
-          { name: taxExemptIncomeLabel, amount: taxExemptIncome, color: 'var(--chart-1)' },
-          { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
-          { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
-        ]
-          .filter((item) => item.amount !== 0)
-          .sort((a, b) => b.amount - a.amount)
+      transformedChartData = chartData.flatMap(
+        ({ earnedIncome, socialSecurityIncome, taxExemptIncome, employerMatch, taxesAndPenalties, expenses }) =>
+          [
+            { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
+            { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
+            { name: taxExemptIncomeLabel, amount: taxExemptIncome, color: 'var(--chart-1)' },
+            { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-1)' },
+            { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
+            { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
+          ]
+            .filter((item) => item.amount !== 0)
+            .sort((a, b) => b.amount - a.amount)
       );
       break;
     }
@@ -104,10 +116,12 @@ export default function SingleSimulationCashFlowBarChart({
         return 'var(--chart-1)';
       };
 
+      const [employerMatchLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData
-        .flatMap(({ perIncomeData }) =>
-          perIncomeData.map((income) => ({ name: income.name, amount: income.income, color: getIncomeColor(income) }))
-        )
+        .flatMap(({ perIncomeData, employerMatch }) => [
+          ...perIncomeData.map((income) => ({ name: income.name, amount: income.income, color: getIncomeColor(income) })),
+          { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-4)' },
+        ])
         .sort((a, b) => b.amount - a.amount);
       break;
     }

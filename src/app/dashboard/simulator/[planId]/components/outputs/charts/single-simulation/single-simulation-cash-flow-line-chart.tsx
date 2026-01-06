@@ -187,8 +187,8 @@ export default function SingleSimulationCashFlowLineChart({
     case 'incomes': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome');
-      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
+      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxExemptIncome', 'employerMatch');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     }
     case 'expenses': {
