@@ -48,7 +48,7 @@ function SavingsRateTooltip() {
       </TooltipTrigger>
       <TooltipContent>
         <p>The percentage of after-tax income that you save rather than spend.</p>
-        <p>Calculated from the same income sources as Cash Flow.</p>
+        <p>Calculated with the same income sources as Cash Flow.</p>
       </TooltipContent>
     </Tooltip>
   );
