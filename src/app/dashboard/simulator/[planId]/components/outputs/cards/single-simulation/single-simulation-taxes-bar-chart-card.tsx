@@ -60,7 +60,7 @@ export default function SingleSimulationTaxesBarChartCard({
       title = 'Taxable Income';
       break;
     case 'adjustedGrossIncome':
-      title = 'Adjusted Gross Income (AGI)';
+      title = 'Adjusted Gross Income';
       break;
     case 'investmentIncome':
       title = 'Investment Income';
