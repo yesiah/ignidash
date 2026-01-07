@@ -155,7 +155,7 @@ export default function SingleSimulationContributionsBarChart({
         <BarChart
           data={transformedChartData}
           className="text-xs"
-          margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+          margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }}
           tabIndex={-1}
         >
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />

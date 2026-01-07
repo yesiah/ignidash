@@ -82,7 +82,7 @@ export default function MultiSimulationPortfolioBarChart({ age, rawChartData }: 
   return (
     <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
+        <BarChart data={chartData} className="text-xs" margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />

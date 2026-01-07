@@ -118,7 +118,7 @@ export default function MultiSimulationPortfolioAreaChart({
           <AreaChart
             data={chartData}
             className="text-xs"
-            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+            margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
             tabIndex={-1}
             onClick={onClick}
           >

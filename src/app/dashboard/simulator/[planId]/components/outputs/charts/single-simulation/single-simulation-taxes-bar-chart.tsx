@@ -300,6 +300,7 @@ export default function SingleSimulationTaxesBarChart({
               ],
             },
           ]);
+          stackId = 'stack';
           break;
         default:
           transformedChartData = chartData.flatMap((item) => [
@@ -309,7 +310,6 @@ export default function SingleSimulationTaxesBarChart({
           break;
       }
 
-      stackId = 'stack';
       break;
     }
     case 'adjustedGrossIncome': {
@@ -433,6 +433,7 @@ export default function SingleSimulationTaxesBarChart({
   const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
   const { maxSegments, normalizedData } = normalizeChartData(transformedChartData);
+  const getDataKey = (segmentIndex: number) => `segments[${segmentIndex}].amount`;
 
   return (
     <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
@@ -441,25 +442,24 @@ export default function SingleSimulationTaxesBarChart({
           data={normalizedData}
           className="text-xs"
           stackOffset={stackOffset}
-          margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+          margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }}
           tabIndex={-1}
         >
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
           {Array.from({ length: maxSegments }).map((_, segmentIndex) => (
-            <Bar key={segmentIndex} dataKey={`segments[${segmentIndex}].amount`} maxBarSize={60} minPointSize={20} stackId={stackId}>
-              {normalizedData.map((entry, i) => (
-                <Cell
-                  key={i}
-                  fill={entry.segments[segmentIndex]?.color}
-                  fillOpacity={0.5}
-                  stroke={entry.segments[segmentIndex]?.color}
-                  strokeWidth={3}
-                />
-              ))}
+            <Bar key={segmentIndex} dataKey={getDataKey(segmentIndex)} maxBarSize={60} minPointSize={20} stackId={stackId}>
+              {normalizedData.map((entry, i) => {
+                const segment = entry.segments[segmentIndex];
+
+                const color = segment?.color;
+                const amount = segment?.amount;
+
+                return <Cell key={i} fill={color} fillOpacity={amount > 0 ? 0.5 : 0} stroke={color} strokeWidth={amount > 0 ? 3 : 0} />;
+              })}
               <LabelList
-                dataKey={`segments[${segmentIndex}].amount`}
+                dataKey={getDataKey(segmentIndex)}
                 position="middle"
                 content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
               />
