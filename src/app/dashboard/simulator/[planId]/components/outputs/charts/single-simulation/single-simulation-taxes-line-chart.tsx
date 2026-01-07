@@ -13,7 +13,6 @@ import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Divider } from '@/components/catalyst/divider';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -376,7 +375,6 @@ export default function SingleSimulationTaxesLineChart({
   const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
   const backgroundColor = resolvedTheme === 'dark' ? '#27272a' : '#ffffff'; // zinc-800 : white
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
@@ -393,7 +391,7 @@ export default function SingleSimulationTaxesLineChart({
     [onAgeSelect]
   );
 
-  const { getOpacity, handleMouseEnter, handleMouseLeave } = useLineChartLegendEffectOpacity();
+  const { getOpacity } = useLineChartLegendEffectOpacity();
 
   return (
     <div>
@@ -417,8 +415,8 @@ export default function SingleSimulationTaxesLineChart({
               type="monotone"
               dataKey={dataKey}
               stroke={strokeColors[index]}
-              activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
-              dot={{ fill: backgroundColor, strokeWidth: 2 }}
+              activeDot={{ stroke: backgroundColor, strokeWidth: 2, opacity: getOpacity(dataKey) }}
+              dot={{ fill: backgroundColor, strokeWidth: 2, opacity: getOpacity(dataKey) }}
               strokeWidth={2}
               strokeOpacity={getOpacity(dataKey)}
             />
@@ -436,16 +434,6 @@ export default function SingleSimulationTaxesLineChart({
           {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
         </ComposedChart>
       </div>
-      {strokeColors.length > 0 && barDataKeys.length === 0 && (
-        <TimeSeriesLegend
-          colors={strokeColors}
-          legendStrokeColor={legendStrokeColor}
-          dataKeys={lineDataKeys}
-          isSmallScreen={isSmallScreen}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
-      )}
     </div>
   );
 }
