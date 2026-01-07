@@ -142,7 +142,6 @@ interface SingleSimulationTaxesBarChartProps {
     | 'socialSecurityTaxablePercentage';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
-  startAge: number;
 }
 
 export default function SingleSimulationTaxesBarChart({
@@ -150,7 +149,6 @@ export default function SingleSimulationTaxesBarChart({
   dataView,
   rawChartData,
   referenceLineMode,
-  startAge,
 }: SingleSimulationTaxesBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
@@ -171,6 +169,10 @@ export default function SingleSimulationTaxesBarChart({
     cumulativeAmounts: {
       mobile: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. CG Tax', 'Cumul. NIIT', 'Cumul. EW Penalty'],
       desktop: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. Cap Gains Tax', 'Cumul. NIIT', 'Cumul. EW Penalties'],
+    },
+    taxableIncome: {
+      mobile: ['Taxable Ordinary', 'Taxable Gains'],
+      desktop: ['Taxable Ordinary Income', 'Taxable Cap Gains'],
     },
     retirementDistributions: {
       mobile: ['Tax-Deferred', 'Early Roth'],
@@ -265,10 +267,26 @@ export default function SingleSimulationTaxesBarChart({
     case 'taxableIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Taxable Ordinary Income', amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' },
-        { name: 'Taxable Cap Gains', amount: item.taxableCapGains, color: 'var(--chart-2)' },
-      ]);
+      const [taxableOrdinaryIncomeLabel, taxableCapGainsLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      switch (referenceLineMode) {
+        case 'marginalIncomeTaxRates':
+          transformedChartData = chartData.flatMap((item) => [
+            { name: taxableOrdinaryIncomeLabel, amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' },
+          ]);
+          break;
+        case 'marginalCapGainsTaxRates':
+          transformedChartData = chartData.flatMap((item) => [
+            { name: taxableOrdinaryIncomeLabel, amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' },
+            { name: taxableCapGainsLabel, amount: item.taxableOrdinaryIncome + item.taxableCapGains, color: 'var(--chart-2)' },
+          ]);
+          break;
+        default:
+          transformedChartData = chartData.flatMap((item) => [
+            { name: taxableOrdinaryIncomeLabel, amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' },
+            { name: taxableCapGainsLabel, amount: item.taxableCapGains, color: 'var(--chart-2)' },
+          ]);
+          break;
+      }
 
       stackId = 'stack';
       break;
