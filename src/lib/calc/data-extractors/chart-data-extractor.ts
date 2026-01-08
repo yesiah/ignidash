@@ -175,6 +175,11 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns!;
 
+      const totalCumulativeGrowth =
+        returnsData.totalReturnAmounts.stocks + returnsData.totalReturnAmounts.bonds + returnsData.totalReturnAmounts.cash;
+      const totalAnnualGrowth =
+        returnsData.returnAmountsForPeriod.stocks + returnsData.returnAmountsForPeriod.bonds + returnsData.returnAmountsForPeriod.cash;
+
       return {
         age,
         realStockReturn: returnsData.annualReturnRates.stocks,
@@ -184,9 +189,11 @@ export abstract class ChartDataExtractor {
         cumulativeStockGrowth: returnsData.totalReturnAmounts.stocks,
         cumulativeBondGrowth: returnsData.totalReturnAmounts.bonds,
         cumulativeCashGrowth: returnsData.totalReturnAmounts.cash,
+        totalCumulativeGrowth,
         annualStockGrowth: returnsData.returnAmountsForPeriod.stocks,
         annualBondGrowth: returnsData.returnAmountsForPeriod.bonds,
         annualCashGrowth: returnsData.returnAmountsForPeriod.cash,
+        totalAnnualGrowth,
         perAccountData: Object.values(returnsData.perAccountData),
       };
     });

@@ -46,9 +46,11 @@ export interface SingleSimulationReturnsChartDataPoint {
   cumulativeStockGrowth: number;
   cumulativeBondGrowth: number;
   cumulativeCashGrowth: number;
+  totalCumulativeGrowth: number;
   annualStockGrowth: number;
   annualBondGrowth: number;
   annualCashGrowth: number;
+  totalAnnualGrowth: number;
   perAccountData: AccountDataWithReturns[];
 }
 

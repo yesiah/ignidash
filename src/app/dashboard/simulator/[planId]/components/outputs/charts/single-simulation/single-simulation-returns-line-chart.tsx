@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
+import { ChartLineIcon } from 'lucide-react';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -22,7 +23,13 @@ interface CustomTooltipProps {
     dataKey: keyof SingleSimulationReturnsChartDataPoint;
     payload:
       | SingleSimulationReturnsChartDataPoint
-      | ({ age: number; annualStockGrowth: number; annualBondGrowth: number; annualCashGrowth: number } & AccountDataWithReturns);
+      | ({
+          age: number;
+          annualStockGrowth: number;
+          annualBondGrowth: number;
+          annualCashGrowth: number;
+          totalAnnualGrowth: number;
+        } & AccountDataWithReturns);
   }>;
   label?: number;
   startAge: number;
@@ -51,6 +58,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     }
   };
 
+  const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
+
   let footer = null;
   switch (dataView) {
     case 'rates':
@@ -58,16 +67,19 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     case 'annualAmounts':
     case 'cumulativeAmounts':
     case 'custom':
+      const lineEntry = payload.find((entry) => entry.color === LINE_COLOR);
+      if (!lineEntry) {
+        console.error('Line entry data not found');
+        break;
+      }
+
       footer = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
-          <span className="mr-2">Total:</span>
-          <span className="ml-1 font-semibold">
-            {formatNumber(
-              payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
-            )}
+          <span className="flex items-center gap-1">
+            <ChartLineIcon className="h-3 w-3" />
+            <span className="mr-2">{formatChartString(lineEntry.name)}:</span>
           </span>
+          <span className="ml-1 font-semibold">{formatNumber(lineEntry.value, 3, '$')}</span>
         </p>
       );
       break;
@@ -80,7 +92,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <span className="text-muted-foreground ml-1">{yearForAge}</span>
       </p>
       <div className="flex flex-col gap-1">
-        {payload.map((entry) => (
+        {transformedPayload.map((entry) => (
           <p
             key={entry.dataKey}
             style={{ backgroundColor: entry.color }}
@@ -99,6 +111,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 });
 
 CustomTooltip.displayName = 'CustomTooltip';
+
+const LINE_COLOR = 'var(--foreground)';
 
 interface SingleSimulationReturnsLineChartProps {
   rawChartData: SingleSimulationReturnsChartDataPoint[];
@@ -154,11 +168,17 @@ export default function SingleSimulationReturnsLineChart({
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
+      lineDataKeys.push('totalAnnualGrowth');
+      strokeColors.push(LINE_COLOR);
+
       barDataKeys.push('annualStockGrowth', 'annualBondGrowth', 'annualCashGrowth');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      lineDataKeys.push('totalCumulativeGrowth');
+      strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('cumulativeStockGrowth', 'cumulativeBondGrowth', 'cumulativeCashGrowth');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
@@ -180,8 +200,13 @@ export default function SingleSimulationReturnsLineChart({
             annualStockGrowth: account.returnAmountsForPeriod.stocks,
             annualBondGrowth: account.returnAmountsForPeriod.bonds,
             annualCashGrowth: account.returnAmountsForPeriod.cash,
+            totalAnnualGrowth:
+              account.returnAmountsForPeriod.stocks + account.returnAmountsForPeriod.bonds + account.returnAmountsForPeriod.cash,
           }))
       );
+
+      lineDataKeys.push('totalAnnualGrowth');
+      strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('annualStockGrowth', 'annualBondGrowth', 'annualCashGrowth');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
@@ -218,6 +243,7 @@ export default function SingleSimulationReturnsLineChart({
         height="100%"
         data={chartData}
         className="text-xs"
+        stackOffset="sign"
         margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
         tabIndex={-1}
         onClick={onClick}
