@@ -408,20 +408,20 @@ export default function SingleSimulationTaxesLineChart({
         <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
         <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
         <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-        {lineDataKeys.map((dataKey, index) => (
+        {lineDataKeys.map((dataKey, i) => (
           <Line
-            key={dataKey}
+            key={`line-${dataKey}-${i}`}
             type="monotone"
             dataKey={dataKey}
-            stroke={strokeColors[index]}
-            activeDot={{ stroke: backgroundColor, strokeWidth: 2, opacity: getOpacity(dataKey) }}
-            dot={{ fill: backgroundColor, strokeWidth: 2, opacity: getOpacity(dataKey) }}
+            stroke={strokeColors[i]}
+            activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
+            dot={{ fill: backgroundColor, strokeWidth: 2 }}
             strokeWidth={2}
             strokeOpacity={getOpacity(dataKey)}
           />
         ))}
-        {barDataKeys.map((dataKey, index) => (
-          <Bar key={`bar-${dataKey}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[index]} />
+        {barDataKeys.map((dataKey, i) => (
+          <Bar key={`bar-${dataKey}-${i}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[i]} />
         ))}
         <Tooltip
           content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
