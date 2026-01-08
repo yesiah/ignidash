@@ -168,10 +168,10 @@ export default function SingleSimulationCashFlowLineChart({
 
   switch (dataView) {
     case 'net': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       lineDataKeys.push('netCashFlow');
       strokeColors.push(LINE_COLOR);
-
-      formatter = (value: number) => formatNumber(value, 1, '$');
 
       barDataKeys.push('income', 'expenses', 'taxesAndPenalties');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
@@ -205,6 +205,8 @@ export default function SingleSimulationCashFlowLineChart({
         break;
       }
 
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const perIncomeData = chartData.flatMap(({ age, perIncomeData }) =>
         Object.values(perIncomeData)
           .map((income) => ({ age, ...income }))
@@ -212,8 +214,6 @@ export default function SingleSimulationCashFlowLineChart({
       );
 
       if (perIncomeData.length > 0) {
-        formatter = (value: number) => formatNumber(value, 1, '$');
-
         lineDataKeys.push('income');
         strokeColors.push('var(--chart-1)');
 
@@ -228,8 +228,6 @@ export default function SingleSimulationCashFlowLineChart({
       );
 
       if (perExpenseData.length > 0) {
-        formatter = (value: number) => formatNumber(value, 1, '$');
-
         lineDataKeys.push('expense');
         strokeColors.push('var(--chart-2)');
 

@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useState, useCallback, memo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -12,7 +12,6 @@ import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/ch
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -39,10 +38,10 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
-  let tooltipFooterComponent = null;
+  let footer = null;
   if (dataView === 'taxCategory') {
-    tooltipFooterComponent = (
-      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+    footer = (
+      <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
         <span className="mr-2">Total:</span>
         <span className="ml-1 font-semibold">
           {formatNumber(
@@ -57,32 +56,32 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-      <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
+      <p className="mx-1 mb-2 flex justify-between text-xs font-semibold">
         <span className="mr-2">Age {label}</span>
         <span className="text-muted-foreground ml-1">{yearForAge}</span>
       </p>
-      <div className="flex flex-col gap-2">
-        {payload.map((entry) => (
-          <p
-            key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
-            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-              'text-background': needsBgTextColor.includes(entry.color),
-            })}
-          >
-            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
-          </p>
-        ))}
+      <div className="flex flex-col gap-1">
+        {payload
+          .filter((entry) => entry.value !== 0)
+          .map((entry) => (
+            <p
+              key={entry.dataKey}
+              style={{ backgroundColor: entry.color }}
+              className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
+                'text-background': needsBgTextColor.includes(entry.color),
+              })}
+            >
+              <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+              <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+            </p>
+          ))}
       </div>
-      {tooltipFooterComponent}
+      {footer}
     </div>
   );
 });
 
 CustomTooltip.displayName = 'CustomTooltip';
-
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
 
 interface SingleSimulationContributionsLineChartProps {
   rawChartData: SingleSimulationContributionsChartDataPoint[];
@@ -120,23 +119,39 @@ export default function SingleSimulationContributionsLineChart({
     | Array<{ age: number; annualContributions: number; cumulativeContributions: number } & AccountDataWithTransactions> =
     useChartDataSlice(rawChartData);
 
-  const dataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];
+  const lineDataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];
+  const strokeColors: string[] = [];
+
+  const barDataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];
+  const barColors: string[] = [];
+
   const formatter = (value: number) => formatNumber(value, 1, '$');
+  let stackId: string | undefined = 'stack';
+
   switch (dataView) {
     case 'annualAmounts':
-      dataKeys.push('annualContributions');
+      lineDataKeys.push('annualContributions');
+      strokeColors.push('var(--chart-2)');
       break;
     case 'cumulativeAmounts':
-      dataKeys.push('cumulativeContributions');
+      lineDataKeys.push('cumulativeContributions');
+      strokeColors.push('var(--chart-2)');
       break;
     case 'taxCategory':
-      dataKeys.push('taxableContributions', 'taxDeferredContributions', 'taxFreeContributions', 'cashContributions');
+      barDataKeys.push('taxableContributions', 'taxDeferredContributions', 'taxFreeContributions', 'cashContributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'employerMatch':
-      dataKeys.push('annualEmployerMatch', 'cumulativeEmployerMatch');
+      stackId = undefined;
+
+      barDataKeys.push('annualEmployerMatch', 'cumulativeEmployerMatch');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'shortfall':
-      dataKeys.push('annualShortfallRepaid', 'outstandingShortfall');
+      stackId = undefined;
+
+      barDataKeys.push('annualShortfallRepaid', 'outstandingShortfall');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'custom':
       if (!customDataID) {
@@ -144,7 +159,9 @@ export default function SingleSimulationContributionsLineChart({
         break;
       }
 
-      const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
+      stackId = undefined;
+
+      chartData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
           .filter((account) => account.id === customDataID)
           .map((account) => ({
@@ -155,15 +172,15 @@ export default function SingleSimulationContributionsLineChart({
           }))
       );
 
-      chartData = perAccountData;
-      dataKeys.push('annualContributions', 'cumulativeContributions');
+      barDataKeys.push('annualContributions', 'cumulativeContributions');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
   const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
+  const backgroundColor = resolvedTheme === 'dark' ? '#27272a' : '#ffffff'; // zinc-800 : white
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
 
   const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
@@ -180,53 +197,47 @@ export default function SingleSimulationContributionsLineChart({
     [onAgeSelect]
   );
 
-  const { getOpacity, handleMouseEnter, handleMouseLeave } = useLineChartLegendEffectOpacity();
+  const { getOpacity } = useLineChartLegendEffectOpacity();
 
   return (
-    <div>
-      <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            className="text-xs"
-            margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
-            tabIndex={-1}
-            onClick={onClick}
-          >
-            <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
-            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataKeys.map((dataKey, index) => (
-              <Line
-                key={dataKey}
-                type="monotone"
-                dataKey={dataKey}
-                stroke={COLORS[index % COLORS.length]}
-                dot={false}
-                activeDot={false}
-                strokeWidth={3}
-                strokeOpacity={getOpacity(dataKey)}
-              />
-            ))}
-            <Tooltip
-              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
-              cursor={{ stroke: foregroundColor }}
-            />
-            {keyMetrics.retirementAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-            )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <TimeSeriesLegend
-        colors={COLORS}
-        legendStrokeColor={legendStrokeColor}
-        dataKeys={dataKeys}
-        isSmallScreen={isSmallScreen}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+    <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+      <ComposedChart
+        responsive
+        width="100%"
+        height="100%"
+        data={chartData}
+        className="text-xs"
+        margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
+        tabIndex={-1}
+        onClick={onClick}
+      >
+        <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
+        <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
+        <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+        {lineDataKeys.map((dataKey, i) => (
+          <Line
+            key={`line-${dataKey}-${i}`}
+            type="monotone"
+            dataKey={dataKey}
+            stroke={strokeColors[i]}
+            activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
+            dot={{ fill: backgroundColor, strokeWidth: 2 }}
+            strokeWidth={2}
+            strokeOpacity={getOpacity(dataKey)}
+          />
+        ))}
+        {barDataKeys.map((dataKey, i) => (
+          <Bar key={`bar-${dataKey}-${i}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[i]} />
+        ))}
+        <Tooltip
+          content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+          cursor={{ stroke: foregroundColor }}
+        />
+        {keyMetrics.retirementAge && showReferenceLines && (
+          <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+        )}
+        {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
+      </ComposedChart>
     </div>
   );
 }
