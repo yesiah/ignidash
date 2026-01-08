@@ -107,9 +107,9 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     case 'cumulativeAmounts':
     case 'investmentIncome':
     case 'retirementDistributions':
+    case 'taxExemptIncome':
     case 'ordinaryIncome':
     case 'capGainsAndDividends':
-    case 'earlyWithdrawalPenalties':
     case 'adjustmentsAndDeductions':
       footer = (
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
@@ -173,7 +173,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         </p>
       );
       break;
-    case 'taxExemptIncome':
+    case 'earlyWithdrawalPenalties':
     case 'socialSecurityIncome':
       break;
   }
