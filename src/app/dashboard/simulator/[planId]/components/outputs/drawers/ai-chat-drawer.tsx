@@ -333,7 +333,7 @@ export default function AIChatDrawer({ setOpen }: AIChatDrawerProps) {
   return (
     <>
       <aside className="hidden md:fixed md:top-[4.8125rem] md:bottom-0 md:-mx-3 md:flex md:w-64 md:flex-col">
-        <div className="border-border/50 flex grow flex-col border-r bg-zinc-50 dark:bg-black/10">
+        <div className="border-border/50 flex h-full flex-col border-r bg-zinc-50 dark:bg-black/10">
           <ul className="divide-border/25 flex-1 divide-y overflow-y-auto">
             <Subheading level={3} className="px-4 py-3">
               Recent Chats
