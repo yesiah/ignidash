@@ -123,7 +123,6 @@ export default function SingleSimulationContributionsBarChart({
     case 'custom':
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
-        transformedChartData = [];
         break;
       }
 

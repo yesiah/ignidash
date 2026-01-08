@@ -138,7 +138,6 @@ export default function SingleSimulationReturnsBarChart({
     case 'custom': {
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
-        transformedChartData = [];
         break;
       }
 
@@ -148,10 +147,10 @@ export default function SingleSimulationReturnsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .flatMap(({ id, returnAmountsForPeriod }) => [
-          { id, name: stockLabel, amount: returnAmountsForPeriod.stocks, color: 'var(--chart-2)' },
-          { id, name: bondLabel, amount: returnAmountsForPeriod.bonds, color: 'var(--chart-3)' },
-          { id, name: cashLabel, amount: returnAmountsForPeriod.cash, color: 'var(--chart-4)' },
+        .flatMap(({ returnAmountsForPeriod }) => [
+          { name: stockLabel, amount: returnAmountsForPeriod.stocks, color: 'var(--chart-2)' },
+          { name: bondLabel, amount: returnAmountsForPeriod.bonds, color: 'var(--chart-3)' },
+          { name: cashLabel, amount: returnAmountsForPeriod.cash, color: 'var(--chart-4)' },
         ]);
       break;
     }

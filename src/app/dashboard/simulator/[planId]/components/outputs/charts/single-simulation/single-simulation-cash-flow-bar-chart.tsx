@@ -80,6 +80,7 @@ export default function SingleSimulationCashFlowBarChart({
   };
 
   const chartData = rawChartData.filter((item) => item.age === age);
+
   let transformedChartData: { name: string; amount: number; color: string }[] = [];
   const formatter = (value: number) => formatNumber(value, 1, '$');
 
