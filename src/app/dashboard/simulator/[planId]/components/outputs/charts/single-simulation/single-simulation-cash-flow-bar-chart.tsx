@@ -151,11 +151,11 @@ export default function SingleSimulationCashFlowBarChart({
         ...chartData
           .flatMap(({ perIncomeData }) => perIncomeData)
           .filter(({ id }) => id === customDataID)
-          .map(({ name, income }) => ({ name, amount: income, color: 'var(--chart-1)' })),
+          .map(({ name, income }) => ({ name, amount: income, color: 'var(--chart-2)' })),
         ...chartData
           .flatMap(({ perExpenseData }) => perExpenseData)
           .filter(({ id }) => id === customDataID)
-          .map(({ name, expense }) => ({ name, amount: expense, color: 'var(--chart-2)' })),
+          .map(({ name, expense }) => ({ name, amount: expense, color: 'var(--chart-4)' })),
       ];
       break;
     }

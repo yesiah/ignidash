@@ -213,7 +213,7 @@ export default function SingleSimulationCashFlowLineChart({
 
       if (perIncomeData.length > 0) {
         lineDataKeys.push('income');
-        strokeColors.push('var(--chart-1)');
+        strokeColors.push('var(--chart-2)');
 
         chartData = perIncomeData;
         break;
@@ -225,7 +225,7 @@ export default function SingleSimulationCashFlowLineChart({
 
       if (perExpenseData.length > 0) {
         lineDataKeys.push('expense');
-        strokeColors.push('var(--chart-2)');
+        strokeColors.push('var(--chart-4)');
 
         chartData = perExpenseData;
         break;
