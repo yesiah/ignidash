@@ -108,8 +108,8 @@ export default function SingleSimulationTaxesLineChartCard({
               <option value="effectiveRates">Effective Rates</option>
             </optgroup>
             <optgroup label="Income Calculations">
-              <option value="taxableIncome">Taxable Income</option>
               <option value="adjustedGrossIncome">Adjusted Gross Income</option>
+              <option value="taxableIncome">Taxable Income</option>
             </optgroup>
             <optgroup label="Income Sources">
               <option value="ordinaryIncome">Ordinary Income</option>
