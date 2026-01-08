@@ -71,7 +71,7 @@ interface SingleSimulationPortfolioPieChartProps {
 
 export default function SingleSimulationPortfolioPieChart({ chartData }: SingleSimulationPortfolioPieChartProps) {
   if (chartData.reduce((sum, item) => sum + item.value, 0) === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
   return (
