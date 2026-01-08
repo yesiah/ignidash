@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,7 +9,7 @@ import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-da
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
-  const { x, y, width, height, offset, value, fill, isSmallScreen, dataView } = props;
+  const { x, y, width, height, offset, value, isSmallScreen, dataView } = props;
   if (!value || value === 0) {
     return null;
   }
@@ -27,13 +27,11 @@ const CustomLabelListContent = (props: any) => {
     }
   };
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
-
   return (
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill={needsBgTextColor.includes(fill) ? 'var(--background)' : 'var(--foreground)'}
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -57,8 +55,6 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
     </g>
   );
 };
-
-const COLORS = ['var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
 
 interface SingleSimulationReturnsBarChartProps {
   age: number;
@@ -102,37 +98,41 @@ export default function SingleSimulationReturnsBarChart({
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let formatter = undefined;
-  let transformedChartData: { name: string; amount: number }[] = [];
+  let transformedChartData: { name: string; amount: number; color: string }[] = [];
+
   switch (dataView) {
     case 'rates': {
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+
       const [stockLabel, bondLabel, cashLabel, inflationLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.realStockReturn },
-        { name: bondLabel, amount: item.realBondReturn },
-        { name: cashLabel, amount: item.realCashReturn },
-        { name: inflationLabel, amount: item.inflationRate },
+        { name: stockLabel, amount: item.realStockReturn, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.realBondReturn, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.realCashReturn, color: 'var(--chart-4)' },
+        { name: inflationLabel, amount: item.inflationRate, color: 'var(--foreground)' },
       ]);
-      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     }
     case 'annualAmounts': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.annualStockGrowth },
-        { name: bondLabel, amount: item.annualBondGrowth },
-        { name: cashLabel, amount: item.annualCashGrowth },
+        { name: stockLabel, amount: item.annualStockGrowth, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.annualBondGrowth, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.annualCashGrowth, color: 'var(--chart-4)' },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'cumulativeAmounts': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.cumulativeStockGrowth },
-        { name: bondLabel, amount: item.cumulativeBondGrowth },
-        { name: cashLabel, amount: item.cumulativeCashGrowth },
+        { name: stockLabel, amount: item.cumulativeStockGrowth, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.cumulativeBondGrowth, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.cumulativeCashGrowth, color: 'var(--chart-4)' },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'custom': {
@@ -142,16 +142,17 @@ export default function SingleSimulationReturnsBarChart({
         break;
       }
 
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
         .flatMap(({ id, returnAmountsForPeriod }) => [
-          { id, name: stockLabel, amount: returnAmountsForPeriod.stocks },
-          { id, name: bondLabel, amount: returnAmountsForPeriod.bonds },
-          { id, name: cashLabel, amount: returnAmountsForPeriod.cash },
+          { id, name: stockLabel, amount: returnAmountsForPeriod.stocks, color: 'var(--chart-2)' },
+          { id, name: bondLabel, amount: returnAmountsForPeriod.bonds, color: 'var(--chart-3)' },
+          { id, name: cashLabel, amount: returnAmountsForPeriod.cash, color: 'var(--chart-4)' },
         ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
   }
@@ -161,7 +162,6 @@ export default function SingleSimulationReturnsBarChart({
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
 
   const shouldUseCustomTick = transformedChartData.length > 3 || (isSmallScreen && transformedChartData.length > 1);
@@ -180,15 +180,15 @@ export default function SingleSimulationReturnsBarChart({
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          <Bar dataKey="amount" maxBarSize={75} minPointSize={20}>
-            {transformedChartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={foregroundColor} strokeWidth={0.5} />
+          <Bar
+            dataKey="amount"
+            maxBarSize={75}
+            minPointSize={20}
+            label={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
+          >
+            {transformedChartData.map((entry, i) => (
+              <Cell key={`${entry.name}-${i}`} fill={entry.color} fillOpacity={0.5} stroke={entry.color} strokeWidth={3} />
             ))}
-            <LabelList
-              dataKey="amount"
-              position="middle"
-              content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
-            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
