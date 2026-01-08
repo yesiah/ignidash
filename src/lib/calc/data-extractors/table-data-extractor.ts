@@ -358,6 +358,7 @@ export abstract class TableDataExtractor {
           cumulativeEmployerMatch: null,
           totalPortfolioValue: null,
           netCashFlow: null,
+          savingsRate: null,
           annualShortfallRepaid: null,
           outstandingShortfall: null,
           historicalYear,
@@ -376,6 +377,7 @@ export abstract class TableDataExtractor {
         cashSavingsContributions: cashSavings,
       } = SimulationDataExtractor.getContributionsByTaxCategory(data);
       const { netCashFlow } = SimulationDataExtractor.getCashFlowData(data);
+      const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
         year: idx,
@@ -391,6 +393,7 @@ export abstract class TableDataExtractor {
         cumulativeEmployerMatch: portfolioData.totalEmployerMatch,
         totalPortfolioValue,
         netCashFlow,
+        savingsRate,
         annualShortfallRepaid: portfolioData.shortfallRepaidForPeriod,
         outstandingShortfall: portfolioData.outstandingShortfall,
         historicalYear,

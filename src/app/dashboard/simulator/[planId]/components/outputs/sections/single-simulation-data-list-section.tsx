@@ -274,9 +274,9 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
   const annualContributions = portfolioData.contributionsForPeriod;
-  const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
   const { netCashFlow } = SimulationDataExtractor.getCashFlowData(dp);
+  const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
     <div>
@@ -295,11 +295,16 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           </DescriptionTerm>
           <DescriptionDetails>{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
 
-          <DescriptionTerm>Annual Employer Match</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(annualEmployerMatch, 2, '$')}</DescriptionDetails>
-
           <DescriptionTerm className="font-bold">Annual Contributions</DescriptionTerm>
           <DescriptionDetails className="font-bold">{formatNumber(annualContributions, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm className="flex items-center gap-3 font-bold">
+            Savings Rate
+            <SavingsRateTooltip />
+          </DescriptionTerm>
+          <DescriptionDetails className="font-bold">
+            {savingsRate !== null ? `${formatNumber(savingsRate * 100, 1)}%` : 'N/A'}
+          </DescriptionDetails>
         </DescriptionList>
       </Card>
     </div>
