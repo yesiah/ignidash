@@ -81,7 +81,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
           <span className="flex items-center gap-1">
             <ChartLineIcon className="h-3 w-3" />
-            <span className="mr-2">Cash Flow:</span>
+            <span className="mr-2">Net Cash Flow:</span>
           </span>
           <span className="ml-1 font-semibold">{formatNumber(netCashFlow.value, 3, '$')}</span>
         </p>
