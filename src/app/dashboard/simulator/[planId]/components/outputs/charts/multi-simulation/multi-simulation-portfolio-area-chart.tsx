@@ -59,7 +59,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled }: Cust
 
 CustomTooltip.displayName = 'CustomTooltip';
 
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)'];
+const COLORS = ['var(--chart-3)', 'var(--chart-2)', 'var(--chart-1)'];
 
 interface MultiSimulationPortfolioAreaChartProps {
   rawChartData: MultiSimulationPortfolioChartDataPoint[];
@@ -87,7 +87,7 @@ export default function MultiSimulationPortfolioAreaChart({
   );
 
   const chartData: MultiSimulationPortfolioChartDataPoint[] = useChartDataSlice(rawChartData);
-  const dataKeys: (keyof MultiSimulationPortfolioChartDataPoint)[] = ['p25PortfolioValue', 'p50PortfolioValue', 'p75PortfolioValue'];
+  const dataKeys: (keyof MultiSimulationPortfolioChartDataPoint)[] = ['p75PortfolioValue', 'p50PortfolioValue', 'p25PortfolioValue'];
   const formatter = (value: number) => formatNumber(value, 1, '$');
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300

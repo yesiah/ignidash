@@ -314,7 +314,7 @@ export abstract class InvestmentAccount extends Account {
     const newStocksValue = currentStocksValue - stockWithdrawal;
     const newBalance = newBondsValue + newStocksValue;
 
-    this.balance = newBalance;
+    this.balance = Math.max(0, newBalance);
     this.currPercentBonds = newBalance > 0 ? newBondsValue / newBalance : this.currPercentBonds;
 
     this.totalWithdrawals += amount;
