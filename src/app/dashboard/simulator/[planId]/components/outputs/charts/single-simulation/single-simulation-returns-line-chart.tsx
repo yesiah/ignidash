@@ -28,7 +28,7 @@ interface CustomTooltipProps {
           annualStockGain: number;
           annualBondGain: number;
           annualCashGain: number;
-          totalAnnualGain: number;
+          totalAnnualGains: number;
         } & AccountDataWithReturns);
   }>;
   label?: number;
@@ -155,7 +155,7 @@ export default function SingleSimulationReturnsLineChart({
           annualStockGain: number;
           annualBondGain: number;
           annualCashGain: number;
-          totalAnnualGain: number;
+          totalAnnualGains: number;
         } & AccountDataWithReturns
       > = useChartDataSlice(rawChartData);
 
@@ -177,7 +177,7 @@ export default function SingleSimulationReturnsLineChart({
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('totalAnnualGain');
+      lineDataKeys.push('totalAnnualGains');
       strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('annualStockGain', 'annualBondGain', 'annualCashGain');
@@ -186,7 +186,7 @@ export default function SingleSimulationReturnsLineChart({
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('totalCumulativeGain');
+      lineDataKeys.push('totalCumulativeGains');
       strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('cumulativeStockGain', 'cumulativeBondGain', 'cumulativeCashGain');
@@ -195,7 +195,7 @@ export default function SingleSimulationReturnsLineChart({
     case 'taxCategory':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('totalAnnualGain');
+      lineDataKeys.push('totalAnnualGains');
       strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('taxableGains', 'taxDeferredGains', 'taxFreeGains', 'cashSavingsGains');
@@ -218,12 +218,12 @@ export default function SingleSimulationReturnsLineChart({
             annualStockGain: account.returnAmountsForPeriod.stocks,
             annualBondGain: account.returnAmountsForPeriod.bonds,
             annualCashGain: account.returnAmountsForPeriod.cash,
-            totalAnnualGain:
+            totalAnnualGains:
               account.returnAmountsForPeriod.stocks + account.returnAmountsForPeriod.bonds + account.returnAmountsForPeriod.cash,
           }))
       );
 
-      lineDataKeys.push('totalAnnualGain');
+      lineDataKeys.push('totalAnnualGains');
       strokeColors.push(LINE_COLOR);
 
       barDataKeys.push('annualStockGain', 'annualBondGain', 'annualCashGain');

@@ -170,9 +170,9 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns!;
 
-      const totalCumulativeGain =
+      const totalCumulativeGains =
         returnsData.totalReturnAmounts.stocks + returnsData.totalReturnAmounts.bonds + returnsData.totalReturnAmounts.cash;
-      const totalAnnualGain =
+      const totalAnnualGains =
         returnsData.returnAmountsForPeriod.stocks + returnsData.returnAmountsForPeriod.bonds + returnsData.returnAmountsForPeriod.cash;
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
@@ -186,11 +186,11 @@ export abstract class ChartDataExtractor {
         cumulativeStockGain: returnsData.totalReturnAmounts.stocks,
         cumulativeBondGain: returnsData.totalReturnAmounts.bonds,
         cumulativeCashGain: returnsData.totalReturnAmounts.cash,
-        totalCumulativeGain,
+        totalCumulativeGains,
         annualStockGain: returnsData.returnAmountsForPeriod.stocks,
         annualBondGain: returnsData.returnAmountsForPeriod.bonds,
         annualCashGain: returnsData.returnAmountsForPeriod.cash,
-        totalAnnualGain,
+        totalAnnualGains,
         taxableGains,
         taxDeferredGains,
         taxFreeGains,

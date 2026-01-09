@@ -289,8 +289,8 @@ export abstract class TableDataExtractor {
           year: idx,
           age,
           phaseName: formattedPhaseName,
-          totalAnnualGain: null,
-          totalCumulativeGain: null,
+          totalAnnualGains: null,
+          totalCumulativeGains: null,
           taxableGains: null,
           taxDeferredGains: null,
           taxFreeGains: null,
@@ -316,9 +316,9 @@ export abstract class TableDataExtractor {
 
       const returnsData = data.returns;
 
-      const totalCumulativeGain =
+      const totalCumulativeGains =
         returnsData!.totalReturnAmounts.stocks + returnsData!.totalReturnAmounts.bonds + returnsData!.totalReturnAmounts.cash;
-      const totalAnnualGain =
+      const totalAnnualGains =
         returnsData!.returnAmountsForPeriod.stocks + returnsData!.returnAmountsForPeriod.bonds + returnsData!.returnAmountsForPeriod.cash;
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
@@ -327,8 +327,8 @@ export abstract class TableDataExtractor {
         year: idx,
         age,
         phaseName: formattedPhaseName,
-        totalAnnualGain,
-        totalCumulativeGain,
+        totalAnnualGains,
+        totalCumulativeGains,
         taxableGains,
         taxDeferredGains,
         taxFreeGains,

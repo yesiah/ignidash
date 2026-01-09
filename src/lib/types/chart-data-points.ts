@@ -46,11 +46,11 @@ export interface SingleSimulationReturnsChartDataPoint {
   cumulativeStockGain: number;
   cumulativeBondGain: number;
   cumulativeCashGain: number;
-  totalCumulativeGain: number;
+  totalCumulativeGains: number;
   annualStockGain: number;
   annualBondGain: number;
   annualCashGain: number;
-  totalAnnualGain: number;
+  totalAnnualGains: number;
   taxableGains: number;
   taxDeferredGains: number;
   taxFreeGains: number;
