@@ -58,7 +58,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     }
   };
 
-  const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
+  const transformedPayload = dataView !== 'rates' ? payload.filter((entry) => entry.color !== LINE_COLOR) : [...payload];
 
   let footer = null;
   switch (dataView) {
