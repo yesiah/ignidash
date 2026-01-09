@@ -40,21 +40,21 @@ export interface TaxAmountsByType {
 
 export interface ContributionsByTaxCategory {
   cashSavingsContributions: number;
-  taxableBrokerageContributions: number;
+  taxableContributions: number;
   taxDeferredContributions: number;
   taxFreeContributions: number;
 }
 
 export interface WithdrawalsByTaxCategory {
   cashSavingsWithdrawals: number;
-  taxableBrokerageWithdrawals: number;
+  taxableWithdrawals: number;
   taxDeferredWithdrawals: number;
   taxFreeWithdrawals: number;
 }
 
 export interface PortfolioValueByTaxCategory {
   cashSavings: number;
-  taxableBrokerageValue: number;
+  taxableValue: number;
   taxDeferredValue: number;
   taxFreeValue: number;
 }
@@ -222,7 +222,7 @@ export class SimulationDataExtractor {
     const portfolioData = dp.portfolio;
 
     let cashSavingsContributions = 0;
-    let taxableBrokerageContributions = 0;
+    let taxableContributions = 0;
     let taxDeferredContributions = 0;
     let taxFreeContributions = 0;
 
@@ -232,7 +232,7 @@ export class SimulationDataExtractor {
           cashSavingsContributions += account.contributionsForPeriod;
           break;
         case 'taxableBrokerage':
-          taxableBrokerageContributions += account.contributionsForPeriod;
+          taxableContributions += account.contributionsForPeriod;
           break;
         case '401k':
         case '403b':
@@ -248,14 +248,14 @@ export class SimulationDataExtractor {
       }
     }
 
-    return { cashSavingsContributions, taxableBrokerageContributions, taxDeferredContributions, taxFreeContributions };
+    return { cashSavingsContributions, taxableContributions, taxDeferredContributions, taxFreeContributions };
   }
 
   static getWithdrawalsByTaxCategory(dp: SimulationDataPoint, age: number): WithdrawalsByTaxCategory {
     const portfolioData = dp.portfolio;
 
     let cashSavingsWithdrawals = 0;
-    let taxableBrokerageWithdrawals = 0;
+    let taxableWithdrawals = 0;
     let taxDeferredWithdrawals = 0;
     let taxFreeWithdrawals = 0;
 
@@ -265,7 +265,7 @@ export class SimulationDataExtractor {
           cashSavingsWithdrawals += account.withdrawalsForPeriod;
           break;
         case 'taxableBrokerage':
-          taxableBrokerageWithdrawals += account.withdrawalsForPeriod;
+          taxableWithdrawals += account.withdrawalsForPeriod;
           break;
         case '401k':
         case '403b':
@@ -283,7 +283,7 @@ export class SimulationDataExtractor {
       }
     }
 
-    return { cashSavingsWithdrawals, taxableBrokerageWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals };
+    return { cashSavingsWithdrawals, taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals };
   }
 
   static getEarlyWithdrawals(dp: SimulationDataPoint, age: number): number {
@@ -301,7 +301,7 @@ export class SimulationDataExtractor {
     const portfolioData = dp.portfolio;
 
     let cashSavings = 0;
-    let taxableBrokerageValue = 0;
+    let taxableValue = 0;
     let taxDeferredValue = 0;
     let taxFreeValue = 0;
 
@@ -311,7 +311,7 @@ export class SimulationDataExtractor {
           cashSavings += account.balance;
           break;
         case 'taxableBrokerage':
-          taxableBrokerageValue += account.balance;
+          taxableValue += account.balance;
           break;
         case '401k':
         case '403b':
@@ -327,7 +327,7 @@ export class SimulationDataExtractor {
       }
     }
 
-    return { cashSavings, taxableBrokerageValue, taxDeferredValue, taxFreeValue };
+    return { cashSavings, taxableValue, taxDeferredValue, taxFreeValue };
   }
 
   static getGainsByTaxCategory(dp: SimulationDataPoint): GainsByTaxCategory {

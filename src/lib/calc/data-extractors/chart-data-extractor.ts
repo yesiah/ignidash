@@ -24,12 +24,7 @@ export abstract class ChartDataExtractor {
       const portfolioData = data.portfolio;
 
       const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
-      const {
-        taxableBrokerageValue: taxableValue,
-        taxDeferredValue,
-        taxFreeValue,
-        cashSavings,
-      } = SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
+      const { taxableValue, taxDeferredValue, taxFreeValue, cashSavings } = SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
 
       return {
         age,
@@ -213,7 +208,7 @@ export abstract class ChartDataExtractor {
       const annualContributions = portfolioData.contributionsForPeriod;
 
       const {
-        taxableBrokerageContributions: taxableContributions,
+        taxableContributions,
         taxDeferredContributions,
         taxFreeContributions,
         cashSavingsContributions: cashContributions,
@@ -247,7 +242,7 @@ export abstract class ChartDataExtractor {
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
       const {
-        taxableBrokerageWithdrawals: taxableWithdrawals,
+        taxableWithdrawals,
         taxDeferredWithdrawals,
         taxFreeWithdrawals,
         cashSavingsWithdrawals: cashWithdrawals,

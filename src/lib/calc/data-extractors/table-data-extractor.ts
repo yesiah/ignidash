@@ -30,8 +30,7 @@ export abstract class TableDataExtractor {
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
 
-      const { taxableBrokerageValue, taxDeferredValue, taxFreeValue, cashSavings } =
-        SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
+      const { taxableValue, taxDeferredValue, taxFreeValue, cashSavings } = SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
       const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
 
       if (idx === 0) {
@@ -47,7 +46,7 @@ export abstract class TableDataExtractor {
           stockHoldings,
           bondHoldings,
           cashHoldings,
-          taxableBrokerageValue,
+          taxableValue,
           taxDeferredValue,
           taxFreeValue,
           cashSavings,
@@ -77,7 +76,7 @@ export abstract class TableDataExtractor {
         stockHoldings,
         bondHoldings,
         cashHoldings,
-        taxableBrokerageValue,
+        taxableValue,
         taxDeferredValue,
         taxFreeValue,
         cashSavings,
@@ -290,6 +289,12 @@ export abstract class TableDataExtractor {
           year: idx,
           age,
           phaseName: formattedPhaseName,
+          totalAnnualGain: null,
+          totalCumulativeGain: null,
+          taxableGains: null,
+          taxDeferredGains: null,
+          taxFreeGains: null,
+          cashSavingsGains: null,
           stockReturnRate: null,
           cumulativeStockGain: null,
           annualStockGain: null,
@@ -311,10 +316,23 @@ export abstract class TableDataExtractor {
 
       const returnsData = data.returns;
 
+      const totalCumulativeGain =
+        returnsData!.totalReturnAmounts.stocks + returnsData!.totalReturnAmounts.bonds + returnsData!.totalReturnAmounts.cash;
+      const totalAnnualGain =
+        returnsData!.returnAmountsForPeriod.stocks + returnsData!.returnAmountsForPeriod.bonds + returnsData!.returnAmountsForPeriod.cash;
+
+      const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
+
       return {
         year: idx,
         age,
         phaseName: formattedPhaseName,
+        totalAnnualGain,
+        totalCumulativeGain,
+        taxableGains,
+        taxDeferredGains,
+        taxFreeGains,
+        cashSavingsGains,
         stockReturnRate: returnsData?.annualReturnRates.stocks ?? null,
         cumulativeStockGain: returnsData?.totalReturnAmounts.stocks ?? null,
         annualStockGain: returnsData?.returnAmountsForPeriod.stocks ?? null,
@@ -350,10 +368,10 @@ export abstract class TableDataExtractor {
           phaseName: formattedPhaseName,
           annualContributions: null,
           cumulativeContributions: null,
-          taxableBrokerage: null,
-          taxDeferred: null,
-          taxFree: null,
-          cashSavings: null,
+          taxableContributions: null,
+          taxDeferredContributions: null,
+          taxFreeContributions: null,
+          cashSavingsContributions: null,
           annualEmployerMatch: null,
           cumulativeEmployerMatch: null,
           totalPortfolioValue: null,
@@ -370,12 +388,8 @@ export abstract class TableDataExtractor {
       const annualContributions = portfolioData.contributionsForPeriod;
       const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
-      const {
-        taxableBrokerageContributions: taxableBrokerage,
-        taxDeferredContributions: taxDeferred,
-        taxFreeContributions: taxFree,
-        cashSavingsContributions: cashSavings,
-      } = SimulationDataExtractor.getContributionsByTaxCategory(data);
+      const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
+        SimulationDataExtractor.getContributionsByTaxCategory(data);
       const { netCashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
@@ -385,10 +399,10 @@ export abstract class TableDataExtractor {
         phaseName: formattedPhaseName,
         annualContributions,
         cumulativeContributions: portfolioData.totalContributions,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        taxableContributions,
+        taxDeferredContributions,
+        taxFreeContributions,
+        cashSavingsContributions,
         annualEmployerMatch,
         cumulativeEmployerMatch: portfolioData.totalEmployerMatch,
         totalPortfolioValue,
@@ -421,10 +435,10 @@ export abstract class TableDataExtractor {
           phaseName: formattedPhaseName,
           annualWithdrawals: null,
           cumulativeWithdrawals: null,
-          taxableBrokerage: null,
-          taxDeferred: null,
-          taxFree: null,
-          cashSavings: null,
+          taxableWithdrawals: null,
+          taxDeferredWithdrawals: null,
+          taxFreeWithdrawals: null,
+          cashSavingsWithdrawals: null,
           annualRealizedGains: null,
           cumulativeRealizedGains: null,
           annualRequiredMinimumDistributions: null,
@@ -448,12 +462,8 @@ export abstract class TableDataExtractor {
       const totalPortfolioValue = portfolioData.totalValue;
       const annualWithdrawals = portfolioData.withdrawalsForPeriod;
 
-      const {
-        taxableBrokerageWithdrawals: taxableBrokerage,
-        taxDeferredWithdrawals: taxDeferred,
-        taxFreeWithdrawals: taxFree,
-        cashSavingsWithdrawals: cashSavings,
-      } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
+      const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
+        SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
 
       const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
@@ -470,10 +480,10 @@ export abstract class TableDataExtractor {
         phaseName: formattedPhaseName,
         annualWithdrawals,
         cumulativeWithdrawals: portfolioData.totalWithdrawals,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        taxableWithdrawals,
+        taxDeferredWithdrawals,
+        taxFreeWithdrawals,
+        cashSavingsWithdrawals,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
         cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRequiredMinimumDistributions: portfolioData.rmdsForPeriod,
