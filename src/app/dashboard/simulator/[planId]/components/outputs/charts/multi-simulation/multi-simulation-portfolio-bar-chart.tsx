@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,18 +9,16 @@ import type { MultiSimulationPortfolioChartDataPoint } from '@/lib/types/chart-d
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
-  const { x, y, width, height, offset, value, fill, isSmallScreen } = props;
+  const { x, y, width, height, offset, value, isSmallScreen } = props;
   if (!value || value === 0) {
     return null;
   }
-
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
   return (
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill={needsBgTextColor.includes(fill) ? 'var(--background)' : 'var(--foreground)'}
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -45,8 +43,6 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
-
 interface MultiSimulationPortfolioBarChartProps {
   age: number;
   rawChartData: MultiSimulationPortfolioChartDataPoint[];
@@ -57,14 +53,14 @@ export default function MultiSimulationPortfolioBarChart({ age, rawChartData }: 
   const isSmallScreen = useIsMobile();
 
   const formatter = (value: number) => formatNumber(value, 1, '$');
-  const chartData: { name: string; amount: number }[] = rawChartData
+  const chartData: { name: string; amount: number; color: string }[] = rawChartData
     .filter((item) => item.age === age)
     .flatMap(({ p10PortfolioValue, p25PortfolioValue, p50PortfolioValue, p75PortfolioValue, p90PortfolioValue }) => [
-      { name: 'P10 Value', amount: p10PortfolioValue },
-      { name: 'P25 Value', amount: p25PortfolioValue },
-      { name: 'P50 Value', amount: p50PortfolioValue },
-      { name: 'P75 Value', amount: p75PortfolioValue },
-      { name: 'P90 Value', amount: p90PortfolioValue },
+      { name: 'P10 Value', amount: p10PortfolioValue, color: 'var(--chart-1)' },
+      { name: 'P25 Value', amount: p25PortfolioValue, color: 'var(--chart-2)' },
+      { name: 'P50 Value', amount: p50PortfolioValue, color: 'var(--chart-3)' },
+      { name: 'P75 Value', amount: p75PortfolioValue, color: 'var(--chart-4)' },
+      { name: 'P90 Value', amount: p90PortfolioValue, color: 'var(--chart-1)' },
     ]);
 
   if (chartData.length === 0) {
@@ -72,7 +68,6 @@ export default function MultiSimulationPortfolioBarChart({ age, rawChartData }: 
   }
 
   const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
   const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
 
   const shouldUseCustomTick = chartData.length > 3 || (isSmallScreen && chartData.length > 1);
@@ -86,11 +81,10 @@ export default function MultiSimulationPortfolioBarChart({ age, rawChartData }: 
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          <Bar dataKey="amount" maxBarSize={75} minPointSize={20}>
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={foregroundColor} strokeWidth={0.5} />
+          <Bar dataKey="amount" maxBarSize={75} minPointSize={20} label={<CustomLabelListContent isSmallScreen={isSmallScreen} />}>
+            {chartData.map((entry, i) => (
+              <Cell key={`${entry.name}-${i}`} fill={entry.color} fillOpacity={0.5} stroke={entry.color} strokeWidth={3} />
             ))}
-            <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
