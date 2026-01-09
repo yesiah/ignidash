@@ -74,20 +74,20 @@ export default function SingleSimulationReturnsBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     rates: {
-      mobile: ['Stock Return', 'Bond Return', 'Cash Return', 'Inflation Rate'],
-      desktop: ['Real Stock Return', 'Real Bond Return', 'Real Cash Return', 'Inflation Rate'],
+      mobile: ['Stock Rate', 'Bond Rate', 'Cash Rate', 'Inflation Rate'],
+      desktop: ['Real Stock Rate', 'Real Bond Rate', 'Real Cash Rate', 'Inflation Rate'],
     },
     annualAmounts: {
-      mobile: ['Stock Growth', 'Bond Growth', 'Cash Growth'],
-      desktop: ['Annual Stock Growth', 'Annual Bond Growth', 'Annual Cash Growth'],
+      mobile: ['Stock Gain', 'Bond Gain', 'Cash Gain'],
+      desktop: ['Annual Stock Gain', 'Annual Bond Gain', 'Annual Cash Gain'],
     },
     cumulativeAmounts: {
       mobile: ['Cumul. Stock', 'Cumul. Bond', 'Cumul. Cash'],
-      desktop: ['Cumul. Stock Growth', 'Cumul. Bond Growth', 'Cumul. Cash Growth'],
+      desktop: ['Cumul. Stock Gain', 'Cumul. Bond Gain', 'Cumul. Cash Gain'],
     },
     custom: {
-      mobile: ['Stock Growth', 'Bond Growth', 'Cash Growth'],
-      desktop: ['Annual Stock Growth', 'Annual Bond Growth', 'Annual Cash Growth'],
+      mobile: ['Stock Gain', 'Bond Gain', 'Cash Gain'],
+      desktop: ['Annual Stock Gain', 'Annual Bond Gain', 'Annual Cash Gain'],
     },
   };
 
@@ -106,9 +106,9 @@ export default function SingleSimulationReturnsBarChart({
 
       const [stockLabel, bondLabel, cashLabel, inflationLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.realStockReturn, color: 'var(--chart-2)' },
-        { name: bondLabel, amount: item.realBondReturn, color: 'var(--chart-3)' },
-        { name: cashLabel, amount: item.realCashReturn, color: 'var(--chart-4)' },
+        { name: stockLabel, amount: item.realStockReturnRate, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.realBondReturnRate, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.realCashReturnRate, color: 'var(--chart-4)' },
         { name: inflationLabel, amount: item.inflationRate, color: 'var(--foreground)' },
       ]);
       break;
@@ -118,9 +118,9 @@ export default function SingleSimulationReturnsBarChart({
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.annualStockGrowth, color: 'var(--chart-2)' },
-        { name: bondLabel, amount: item.annualBondGrowth, color: 'var(--chart-3)' },
-        { name: cashLabel, amount: item.annualCashGrowth, color: 'var(--chart-4)' },
+        { name: stockLabel, amount: item.annualStockGain, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.annualBondGain, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.annualCashGain, color: 'var(--chart-4)' },
       ]);
       break;
     }
@@ -129,9 +129,9 @@ export default function SingleSimulationReturnsBarChart({
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.cumulativeStockGrowth, color: 'var(--chart-2)' },
-        { name: bondLabel, amount: item.cumulativeBondGrowth, color: 'var(--chart-3)' },
-        { name: cashLabel, amount: item.cumulativeCashGrowth, color: 'var(--chart-4)' },
+        { name: stockLabel, amount: item.cumulativeStockGain, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.cumulativeBondGain, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.cumulativeCashGain, color: 'var(--chart-4)' },
       ]);
       break;
     }

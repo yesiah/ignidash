@@ -73,11 +73,11 @@ export default function SingleSimulationReturnsLineChartCard({
             }}
           >
             <optgroup label="Return Rates">
-              <option value="rates">Real Annual Returns</option>
+              <option value="rates">Real Annual Rates</option>
             </optgroup>
-            <optgroup label="Growth Amounts">
-              <option value="annualAmounts">Annual Growth</option>
-              <option value="cumulativeAmounts">Cumulative Growth</option>
+            <optgroup label="Return Amounts">
+              <option value="annualAmounts">Annual Gains</option>
+              <option value="cumulativeAmounts">Cumulative Gains</option>
             </optgroup>
             <optgroup label="By Account">
               {uniqueAccounts.map((account) => (

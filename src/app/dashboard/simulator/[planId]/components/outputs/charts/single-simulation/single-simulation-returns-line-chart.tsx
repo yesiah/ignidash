@@ -25,10 +25,10 @@ interface CustomTooltipProps {
       | SingleSimulationReturnsChartDataPoint
       | ({
           age: number;
-          annualStockGrowth: number;
-          annualBondGrowth: number;
-          annualCashGrowth: number;
-          totalAnnualGrowth: number;
+          annualStockGain: number;
+          annualBondGain: number;
+          annualCashGain: number;
+          totalAnnualGain: number;
         } & AccountDataWithReturns);
   }>;
   label?: number;
@@ -147,7 +147,7 @@ export default function SingleSimulationReturnsLineChart({
 
   let chartData:
     | SingleSimulationReturnsChartDataPoint[]
-    | Array<{ age: number; annualStockGrowth: number; annualBondGrowth: number; annualCashGrowth: number } & AccountDataWithReturns> =
+    | Array<{ age: number; annualStockGain: number; annualBondGain: number; annualCashGain: number } & AccountDataWithReturns> =
     useChartDataSlice(rawChartData);
 
   const lineDataKeys: (keyof SingleSimulationReturnsChartDataPoint)[] = [];
@@ -162,25 +162,25 @@ export default function SingleSimulationReturnsLineChart({
     case 'rates':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-      lineDataKeys.push('realStockReturn', 'realBondReturn', 'realCashReturn', 'inflationRate');
+      lineDataKeys.push('realStockReturnRate', 'realBondReturnRate', 'realCashReturnRate', 'inflationRate');
       strokeColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--foreground)');
       break;
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('totalAnnualGrowth');
+      lineDataKeys.push('totalAnnualGain');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('annualStockGrowth', 'annualBondGrowth', 'annualCashGrowth');
+      barDataKeys.push('annualStockGain', 'annualBondGain', 'annualCashGain');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('totalCumulativeGrowth');
+      lineDataKeys.push('totalCumulativeGain');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('cumulativeStockGrowth', 'cumulativeBondGrowth', 'cumulativeCashGrowth');
+      barDataKeys.push('cumulativeStockGain', 'cumulativeBondGain', 'cumulativeCashGain');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'custom':
@@ -197,18 +197,18 @@ export default function SingleSimulationReturnsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualStockGrowth: account.returnAmountsForPeriod.stocks,
-            annualBondGrowth: account.returnAmountsForPeriod.bonds,
-            annualCashGrowth: account.returnAmountsForPeriod.cash,
-            totalAnnualGrowth:
+            annualStockGain: account.returnAmountsForPeriod.stocks,
+            annualBondGain: account.returnAmountsForPeriod.bonds,
+            annualCashGain: account.returnAmountsForPeriod.cash,
+            totalAnnualGain:
               account.returnAmountsForPeriod.stocks + account.returnAmountsForPeriod.bonds + account.returnAmountsForPeriod.cash,
           }))
       );
 
-      lineDataKeys.push('totalAnnualGrowth');
+      lineDataKeys.push('totalAnnualGain');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('annualStockGrowth', 'annualBondGrowth', 'annualCashGrowth');
+      barDataKeys.push('annualStockGain', 'annualBondGain', 'annualCashGain');
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
   }

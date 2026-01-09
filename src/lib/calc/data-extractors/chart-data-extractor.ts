@@ -175,25 +175,25 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns!;
 
-      const totalCumulativeGrowth =
+      const totalCumulativeGain =
         returnsData.totalReturnAmounts.stocks + returnsData.totalReturnAmounts.bonds + returnsData.totalReturnAmounts.cash;
-      const totalAnnualGrowth =
+      const totalAnnualGain =
         returnsData.returnAmountsForPeriod.stocks + returnsData.returnAmountsForPeriod.bonds + returnsData.returnAmountsForPeriod.cash;
 
       return {
         age,
-        realStockReturn: returnsData.annualReturnRates.stocks,
-        realBondReturn: returnsData.annualReturnRates.bonds,
-        realCashReturn: returnsData.annualReturnRates.cash,
+        realStockReturnRate: returnsData.annualReturnRates.stocks,
+        realBondReturnRate: returnsData.annualReturnRates.bonds,
+        realCashReturnRate: returnsData.annualReturnRates.cash,
         inflationRate: returnsData.annualInflationRate,
-        cumulativeStockGrowth: returnsData.totalReturnAmounts.stocks,
-        cumulativeBondGrowth: returnsData.totalReturnAmounts.bonds,
-        cumulativeCashGrowth: returnsData.totalReturnAmounts.cash,
-        totalCumulativeGrowth,
-        annualStockGrowth: returnsData.returnAmountsForPeriod.stocks,
-        annualBondGrowth: returnsData.returnAmountsForPeriod.bonds,
-        annualCashGrowth: returnsData.returnAmountsForPeriod.cash,
-        totalAnnualGrowth,
+        cumulativeStockGain: returnsData.totalReturnAmounts.stocks,
+        cumulativeBondGain: returnsData.totalReturnAmounts.bonds,
+        cumulativeCashGain: returnsData.totalReturnAmounts.cash,
+        totalCumulativeGain,
+        annualStockGain: returnsData.returnAmountsForPeriod.stocks,
+        annualBondGain: returnsData.returnAmountsForPeriod.bonds,
+        annualCashGain: returnsData.returnAmountsForPeriod.cash,
+        totalAnnualGain,
         perAccountData: Object.values(returnsData.perAccountData),
       };
     });
