@@ -325,9 +325,9 @@ export default function SingleSimulationTaxesBarChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Interest Income', segments: [{ amount: item.interestIncome, color: 'var(--chart-1)' }] },
-        { name: 'Dividend Income', segments: [{ amount: item.dividendIncome, color: 'var(--chart-2)' }] },
-        { name: 'Realized Gains', segments: [{ amount: item.realizedGains, color: 'var(--chart-3)' }] },
+        { name: 'Interest Income', segments: [{ amount: item.taxableInterestIncome, color: 'var(--chart-1)' }] },
+        { name: 'Dividend Income', segments: [{ amount: item.taxableDividendIncome, color: 'var(--chart-2)' }] },
+        { name: 'Realized Gains', segments: [{ amount: item.taxableRealizedGains, color: 'var(--chart-3)' }] },
       ]);
       break;
     }
@@ -359,8 +359,8 @@ export default function SingleSimulationTaxesBarChart({
       transformedChartData = chartData.flatMap((item) => [
         { name: earnedIncomeLabel, segments: [{ amount: item.earnedIncome, color: 'var(--chart-1)' }] },
         { name: socialSecurityIncomeLabel, segments: [{ amount: item.socialSecurityIncome, color: 'var(--chart-2)' }] },
-        { name: interestIncomeLabel, segments: [{ amount: item.interestIncome, color: 'var(--chart-3)' }] },
-        { name: retirementDistributionsLabel, segments: [{ amount: item.retirementDistributions, color: 'var(--chart-4)' }] },
+        { name: interestIncomeLabel, segments: [{ amount: item.taxableInterestIncome, color: 'var(--chart-3)' }] },
+        { name: retirementDistributionsLabel, segments: [{ amount: item.taxableRetirementDistributions, color: 'var(--chart-4)' }] },
       ]);
       break;
     }
@@ -368,8 +368,8 @@ export default function SingleSimulationTaxesBarChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Realized Gains', segments: [{ amount: item.realizedGains, color: 'var(--chart-1)' }] },
-        { name: 'Dividend Income', segments: [{ amount: item.dividendIncome, color: 'var(--chart-2)' }] },
+        { name: 'Realized Gains', segments: [{ amount: item.taxableRealizedGains, color: 'var(--chart-1)' }] },
+        { name: 'Dividend Income', segments: [{ amount: item.taxableDividendIncome, color: 'var(--chart-2)' }] },
       ]);
       break;
     }

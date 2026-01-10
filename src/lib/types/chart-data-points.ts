@@ -72,8 +72,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   earlyRothEarningsWithdrawals: number;
   early401kAndIraWithdrawals: number;
   earlyHsaWithdrawals: number;
-  retirementDistributions: number;
-  interestIncome: number;
+  taxableRetirementDistributions: number;
+  taxableInterestIncome: number;
   taxableOrdinaryIncome: number;
   annualIncomeTax: number;
   cumulativeIncomeTax: number;
@@ -88,8 +88,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   actualTaxablePercentage: number;
 
   /* Cap Gains */
-  realizedGains: number;
-  dividendIncome: number;
+  taxableRealizedGains: number;
+  taxableDividendIncome: number;
   taxableCapGains: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;
