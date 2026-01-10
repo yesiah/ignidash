@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell }
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
+import { sumTransactions } from '@/lib/calc/asset';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -129,7 +130,7 @@ export default function SingleSimulationContributionsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .map(({ name, contributionsForPeriod }) => ({ name, amount: contributionsForPeriod, color: 'var(--chart-2)' }));
+        .map(({ name, contributionsForPeriod }) => ({ name, amount: sumTransactions(contributionsForPeriod), color: 'var(--chart-2)' }));
       break;
   }
 

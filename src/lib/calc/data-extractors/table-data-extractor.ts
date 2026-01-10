@@ -7,10 +7,11 @@ import type {
   SingleSimulationWithdrawalsTableRow,
 } from '@/lib/schemas/tables/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
-import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
+import { sumTransactions } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
+import { SimulationDataExtractor } from './simulation-data-extractor';
 
 export abstract class TableDataExtractor {
   // ================================
@@ -54,8 +55,8 @@ export abstract class TableDataExtractor {
         };
       }
 
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
-      const annualContributions = portfolioData.contributionsForPeriod;
+      const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+      const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
 
       const returnsData = data.returns;
       const {
@@ -385,7 +386,8 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualContributions = portfolioData.contributionsForPeriod;
+      const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
+      const cumulativeContributions = sumTransactions(portfolioData.totalContributions);
       const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
       const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
@@ -398,7 +400,7 @@ export abstract class TableDataExtractor {
         age,
         phaseName: formattedPhaseName,
         annualContributions,
-        cumulativeContributions: portfolioData.totalContributions,
+        cumulativeContributions,
         taxableContributions,
         taxDeferredContributions,
         taxFreeContributions,
@@ -457,7 +459,8 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+      const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+      const cumulativeWithdrawals = sumTransactions(portfolioData.totalWithdrawals);
 
       const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
         SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
@@ -473,7 +476,7 @@ export abstract class TableDataExtractor {
         age,
         phaseName: formattedPhaseName,
         annualWithdrawals,
-        cumulativeWithdrawals: portfolioData.totalWithdrawals,
+        cumulativeWithdrawals,
         taxableWithdrawals,
         taxDeferredWithdrawals,
         taxFreeWithdrawals,
@@ -536,6 +539,10 @@ export abstract class TableDataExtractor {
       const returnAmounts = lastDp.returns?.totalReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
       const lifetimeReturns = returnAmounts.stocks + returnAmounts.bonds + returnAmounts.cash;
 
+      const lifetimeContributions = sumTransactions(lastDp.portfolio.totalContributions);
+
+      const lifetimeWithdrawals = sumTransactions(lastDp.portfolio.totalWithdrawals);
+
       return {
         seed,
         success,
@@ -557,8 +564,8 @@ export abstract class TableDataExtractor {
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,
         lifetimeReturns,
-        lifetimeContributions: lastDp.portfolio.totalContributions,
-        lifetimeWithdrawals: lastDp.portfolio.totalWithdrawals,
+        lifetimeContributions,
+        lifetimeWithdrawals,
         lifetimeRealizedGains: lastDp.portfolio.totalRealizedGains,
         lifetimeRequiredMinimumDistributions: lastDp.portfolio.totalRmds,
         historicalRanges,

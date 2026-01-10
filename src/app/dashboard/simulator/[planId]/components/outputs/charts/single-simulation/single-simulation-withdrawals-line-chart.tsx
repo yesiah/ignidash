@@ -10,6 +10,7 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
+import { sumTransactions } from '@/lib/calc/asset';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { uniformLifetimeMap } from '@/lib/calc/historical-data/rmds-table';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
@@ -242,8 +243,8 @@ export default function SingleSimulationWithdrawalsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualWithdrawals: account.withdrawalsForPeriod,
-            cumulativeWithdrawals: account.totalWithdrawals,
+            annualWithdrawals: sumTransactions(account.withdrawalsForPeriod),
+            cumulativeWithdrawals: sumTransactions(account.totalWithdrawals),
           }))
       );
 

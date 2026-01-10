@@ -5,6 +5,7 @@ import type { SimulationState } from './simulation-engine';
 import type { IncomesData } from './incomes';
 import type { PortfolioData } from './portfolio';
 import type { ReturnsData } from './returns';
+import { sumTransactions } from './asset';
 import {
   STANDARD_DEDUCTION_SINGLE,
   STANDARD_DEDUCTION_MARRIED_FILING_JOINTLY,
@@ -212,14 +213,14 @@ export class TaxProcessor {
         case '401k':
         case '403b':
         case 'ira': {
-          const annualWithdrawals = account.withdrawalsForPeriod;
+          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < regularQualifiedWithdrawalAge) early401kAndIraWithdrawals += annualWithdrawals;
           break;
         }
         case 'hsa': {
-          const annualWithdrawals = account.withdrawalsForPeriod;
+          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < hsaQualifiedWithdrawalAge) earlyHsaWithdrawals += annualWithdrawals;
@@ -423,7 +424,7 @@ export class TaxProcessor {
   ): number {
     return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (account.contributionsForPeriod - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
   }
 
   private getStandardDeduction(): number {

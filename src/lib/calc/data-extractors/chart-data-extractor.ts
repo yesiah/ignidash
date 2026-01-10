@@ -8,10 +8,11 @@ import type {
   MultiSimulationPortfolioChartDataPoint,
   MultiSimulationPhasesChartDataPoint,
 } from '@/lib/types/chart-data-points';
-import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
+import { sumTransactions } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
+import { SimulationDataExtractor } from './simulation-data-extractor';
 
 export abstract class ChartDataExtractor {
   // ================================
@@ -205,7 +206,8 @@ export abstract class ChartDataExtractor {
       const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
-      const annualContributions = portfolioData.contributionsForPeriod;
+      const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
+      const cumulativeContributions = sumTransactions(portfolioData.totalContributions);
 
       const {
         taxableContributions,
@@ -216,7 +218,7 @@ export abstract class ChartDataExtractor {
 
       return {
         age,
-        cumulativeContributions: portfolioData.totalContributions,
+        cumulativeContributions,
         annualContributions,
         cumulativeEmployerMatch: portfolioData.totalEmployerMatch,
         annualEmployerMatch: portfolioData.employerMatchForPeriod,
@@ -238,7 +240,8 @@ export abstract class ChartDataExtractor {
       const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+      const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+      const cumulativeWithdrawals = sumTransactions(portfolioData.totalWithdrawals);
 
       const {
         taxableWithdrawals,
@@ -254,7 +257,7 @@ export abstract class ChartDataExtractor {
 
       return {
         age,
-        cumulativeWithdrawals: portfolioData.totalWithdrawals,
+        cumulativeWithdrawals,
         annualWithdrawals,
         cumulativeRealizedGains: portfolioData.totalRealizedGains,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,

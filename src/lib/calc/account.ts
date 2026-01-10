@@ -4,10 +4,10 @@ import type {
   AssetReturnRates,
   AssetReturnAmounts,
   AssetAllocation,
-  AssetValues,
   AssetYieldRates,
   AssetYieldAmounts,
   TaxCategory,
+  AssetTransactions,
 } from './asset';
 
 type WithdrawalType = 'rmd' | 'regular';
@@ -15,9 +15,9 @@ type ContributionType = 'self' | 'employer';
 
 export interface AccountData {
   balance: number;
-  totalContributions: number;
+  totalContributions: AssetTransactions;
   totalEmployerMatch: number;
-  totalWithdrawals: number;
+  totalWithdrawals: AssetTransactions;
   totalRealizedGains: number;
   totalEarningsWithdrawn: number;
   totalRmds: number;
@@ -28,9 +28,9 @@ export interface AccountData {
 }
 
 export interface AccountDataWithTransactions extends AccountData {
-  contributionsForPeriod: number;
+  contributionsForPeriod: AssetTransactions;
   employerMatchForPeriod: number;
-  withdrawalsForPeriod: number;
+  withdrawalsForPeriod: AssetTransactions;
   realizedGainsForPeriod: number;
   earningsWithdrawnForPeriod: number;
   rmdsForPeriod: number;
@@ -45,9 +45,9 @@ export abstract class Account {
     protected id: string,
     protected type: AccountInputs['type'],
     protected totalReturns: AssetReturnAmounts,
-    protected totalContributions: number,
+    protected totalContributions: AssetTransactions,
     protected totalEmployerMatch: number,
-    protected totalWithdrawals: number,
+    protected totalWithdrawals: AssetTransactions,
     protected totalRealizedGains: number,
     protected totalEarningsWithdrawn: number,
     protected totalRmds: number,
@@ -74,7 +74,7 @@ export abstract class Account {
     return this.totalReturns;
   }
 
-  getTotalContributions(): number {
+  getTotalContributions(): AssetTransactions {
     return this.totalContributions;
   }
 
@@ -82,7 +82,7 @@ export abstract class Account {
     return this.totalEmployerMatch;
   }
 
-  getTotalWithdrawals(): number {
+  getTotalWithdrawals(): AssetTransactions {
     return this.totalWithdrawals;
   }
 
@@ -106,23 +106,24 @@ export abstract class Account {
   abstract getAccountData(): AccountData;
   abstract applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts };
   abstract applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts };
-  abstract applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues;
+  abstract applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions;
   abstract applyWithdrawal(
     amount: number,
     type: WithdrawalType,
     withdrawalAllocation: AssetAllocation
-  ): AssetValues & { realizedGains: number; earningsWithdrawn: number };
+  ): AssetTransactions & { realizedGains: number; earningsWithdrawn: number };
 }
 
 export class SavingsAccount extends Account {
   readonly taxCategory: TaxCategory = 'cashSavings';
 
   constructor(data: AccountInputs) {
-    super(data.balance, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, 0, {
-      stocks: 0,
-      bonds: 0,
-      cash: 0,
-    });
+    const totalReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const totalContributions: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
+    const totalWithdrawals: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
+    const totalYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
+
+    super(data.balance, data.name, data.id, data.type, totalReturns, totalContributions, 0, totalWithdrawals, 0, 0, 0, totalYields);
   }
 
   getHasRMDs(): boolean {
@@ -130,16 +131,12 @@ export class SavingsAccount extends Account {
   }
 
   getAccountData(): AccountData {
-    const assetAllocation: AssetAllocation = {
-      cash: 1,
-      bonds: 0,
-      stocks: 0,
-    };
+    const assetAllocation: AssetAllocation = { cash: 1, bonds: 0, stocks: 0 };
 
     return {
       balance: this.balance,
-      totalWithdrawals: this.totalWithdrawals,
-      totalContributions: this.totalContributions,
+      totalWithdrawals: { ...this.totalWithdrawals },
+      totalContributions: { ...this.totalContributions },
       totalEmployerMatch: this.totalEmployerMatch,
       totalRealizedGains: this.totalRealizedGains,
       totalEarningsWithdrawn: this.totalEarningsWithdrawn,
@@ -172,9 +169,9 @@ export class SavingsAccount extends Account {
     };
   }
 
-  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues {
+  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions {
     this.balance += amount;
-    this.totalContributions += amount;
+    this.totalContributions.cash += amount;
     if (type === 'employer') this.totalEmployerMatch += amount;
 
     return { stocks: 0, bonds: 0, cash: amount };
@@ -184,12 +181,12 @@ export class SavingsAccount extends Account {
     amount: number,
     type: WithdrawalType,
     withdrawalAllocation: AssetAllocation
-  ): AssetValues & { realizedGains: number; earningsWithdrawn: number } {
+  ): AssetTransactions & { realizedGains: number; earningsWithdrawn: number } {
     if (amount > this.balance) throw new Error('Insufficient funds for withdrawal');
     if (type === 'rmd') throw new Error('Savings account should not have RMDs');
 
     this.balance -= amount;
-    this.totalWithdrawals += amount;
+    this.totalWithdrawals.cash += amount;
 
     return { stocks: 0, bonds: 0, cash: amount, realizedGains: 0, earningsWithdrawn: 0 };
   }
@@ -199,11 +196,12 @@ export abstract class InvestmentAccount extends Account {
   private currPercentBonds: number;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
-    super(data.balance, data.name, data.id, data.type, { cash: 0, bonds: 0, stocks: 0 }, 0, 0, 0, 0, 0, 0, {
-      stocks: 0,
-      bonds: 0,
-      cash: 0,
-    });
+    const totalReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const totalContributions: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
+    const totalWithdrawals: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
+    const totalYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
+
+    super(data.balance, data.name, data.id, data.type, totalReturns, totalContributions, 0, totalWithdrawals, 0, 0, 0, totalYields);
     this.currPercentBonds = data.percentBonds / 100;
   }
 
@@ -212,16 +210,12 @@ export abstract class InvestmentAccount extends Account {
   }
 
   getAccountData(): AccountData {
-    const assetAllocation: AssetAllocation = {
-      cash: 0,
-      bonds: this.currPercentBonds,
-      stocks: 1 - this.currPercentBonds,
-    };
+    const assetAllocation: AssetAllocation = { cash: 0, bonds: this.currPercentBonds, stocks: 1 - this.currPercentBonds };
 
     return {
       balance: this.balance,
-      totalWithdrawals: this.totalWithdrawals,
-      totalContributions: this.totalContributions,
+      totalWithdrawals: { ...this.totalWithdrawals },
+      totalContributions: { ...this.totalContributions },
       totalEmployerMatch: this.totalEmployerMatch,
       totalRealizedGains: this.totalRealizedGains,
       totalEarningsWithdrawn: this.totalEarningsWithdrawn,
@@ -275,7 +269,7 @@ export abstract class InvestmentAccount extends Account {
     };
   }
 
-  protected applyContributionShared(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues {
+  protected applyContributionShared(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions {
     if (amount < 0) throw new Error('Contribution amount must be non-negative');
     if (amount === 0) return { stocks: 0, bonds: 0, cash: 0 };
 
@@ -292,13 +286,14 @@ export abstract class InvestmentAccount extends Account {
     this.balance = newBalance;
     this.currPercentBonds = newBalance > 0 ? newBondsValue / newBalance : this.currPercentBonds;
 
-    this.totalContributions += amount;
+    this.totalContributions.stocks += stockContribution;
+    this.totalContributions.bonds += bondContribution;
     if (type === 'employer') this.totalEmployerMatch += amount;
 
     return { stocks: stockContribution, bonds: bondContribution, cash: 0 };
   }
 
-  protected applyWithdrawalShared(amount: number, type: WithdrawalType, withdrawalAllocation: AssetAllocation): AssetValues {
+  protected applyWithdrawalShared(amount: number, type: WithdrawalType, withdrawalAllocation: AssetAllocation): AssetTransactions {
     if (amount < 0) throw new Error('Withdrawal amount must be non-negative');
     if (amount === 0) return { stocks: 0, bonds: 0, cash: 0 };
     if (amount > this.balance) throw new Error('Insufficient funds for withdrawal');
@@ -317,7 +312,8 @@ export abstract class InvestmentAccount extends Account {
     this.balance = Math.max(0, newBalance);
     this.currPercentBonds = newBalance > 0 ? newBondsValue / newBalance : this.currPercentBonds;
 
-    this.totalWithdrawals += amount;
+    this.totalWithdrawals.stocks += stockWithdrawal;
+    this.totalWithdrawals.bonds += bondWithdrawal;
     if (type === 'rmd') this.totalRmds += amount;
 
     return { stocks: stockWithdrawal, bonds: bondWithdrawal, cash: 0 };
@@ -360,17 +356,17 @@ export class TaxableBrokerageAccount extends InvestmentAccount {
     return this.costBasis;
   }
 
-  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues {
-    const { stocks, bonds, cash } = super.applyContributionShared(amount, type, contributionAllocation);
+  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions {
+    const contributed = super.applyContributionShared(amount, type, contributionAllocation);
     this.costBasis += amount;
-    return { stocks, bonds, cash };
+    return contributed;
   }
 
   applyWithdrawal(
     amount: number,
     type: WithdrawalType,
     withdrawalAllocation: AssetAllocation
-  ): AssetValues & { realizedGains: number; earningsWithdrawn: number } {
+  ): AssetTransactions & { realizedGains: number; earningsWithdrawn: number } {
     const basisProportion = this.costBasis / this.balance;
     const basisWithdrawn = Math.min(amount * basisProportion, this.costBasis);
     this.costBasis -= basisWithdrawn;
@@ -378,9 +374,9 @@ export class TaxableBrokerageAccount extends InvestmentAccount {
     const realizedGains = amount - basisWithdrawn;
     this.totalRealizedGains += realizedGains;
 
-    const { stocks, bonds, cash } = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
+    const withdrawn = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
 
-    return { stocks, bonds, cash, realizedGains, earningsWithdrawn: 0 };
+    return { ...withdrawn, realizedGains, earningsWithdrawn: 0 };
   }
 
   protected calculateRebalanceGains(stocksSold: number, bondsSold: number): number {
@@ -406,7 +402,7 @@ export class TaxDeferredAccount extends InvestmentAccount {
     super(data);
   }
 
-  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues {
+  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions {
     return super.applyContributionShared(amount, type, contributionAllocation);
   }
 
@@ -414,9 +410,9 @@ export class TaxDeferredAccount extends InvestmentAccount {
     amount: number,
     type: WithdrawalType,
     withdrawalAllocation: AssetAllocation
-  ): AssetValues & { realizedGains: number; earningsWithdrawn: number } {
-    const { stocks, bonds, cash } = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
-    return { stocks, bonds, cash, realizedGains: 0, earningsWithdrawn: 0 };
+  ): AssetTransactions & { realizedGains: number; earningsWithdrawn: number } {
+    const withdrawn = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
+    return { ...withdrawn, realizedGains: 0, earningsWithdrawn: 0 };
   }
 }
 
@@ -434,25 +430,25 @@ export class TaxFreeAccount extends InvestmentAccount {
     return this.contributionBasis;
   }
 
-  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetValues {
-    const { stocks, bonds, cash } = super.applyContributionShared(amount, type, contributionAllocation);
+  applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions {
+    const contributed = super.applyContributionShared(amount, type, contributionAllocation);
     this.contributionBasis += amount;
-    return { stocks, bonds, cash };
+    return contributed;
   }
 
   applyWithdrawal(
     amount: number,
     type: WithdrawalType,
     withdrawalAllocation: AssetAllocation
-  ): AssetValues & { realizedGains: number; earningsWithdrawn: number } {
+  ): AssetTransactions & { realizedGains: number; earningsWithdrawn: number } {
     const contributionWithdrawn = Math.min(amount, this.contributionBasis);
     this.contributionBasis -= contributionWithdrawn;
 
     const earningsWithdrawn = amount - contributionWithdrawn;
     this.totalEarningsWithdrawn += earningsWithdrawn;
 
-    const { stocks, bonds, cash } = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
+    const withdrawn = super.applyWithdrawalShared(amount, type, withdrawalAllocation);
 
-    return { stocks, bonds, cash, earningsWithdrawn, realizedGains: 0 };
+    return { ...withdrawn, earningsWithdrawn, realizedGains: 0 };
   }
 }

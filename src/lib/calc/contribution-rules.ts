@@ -9,6 +9,7 @@ import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 import type { PortfolioData } from './portfolio';
 import { Account } from './account';
 import type { IncomesData } from './incomes';
+import { sumTransactions } from './asset';
 
 export class ContributionRules {
   private readonly contributionRules: ContributionRule[];
@@ -108,14 +109,14 @@ export class ContributionRule {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (account.contributionsForPeriod - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
   }
 
   private getEmployeeContributionsSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => account.id === accountID)
-      .reduce((sum, account) => sum + (account.contributionsForPeriod - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
   }
 
   private getEmployerMatchSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {

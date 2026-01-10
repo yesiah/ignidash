@@ -10,6 +10,7 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
+import { sumTransactions } from '@/lib/calc/asset';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
 
@@ -163,8 +164,8 @@ export default function SingleSimulationContributionsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualContributions: account.contributionsForPeriod,
-            cumulativeContributions: account.totalContributions,
+            annualContributions: sumTransactions(account.contributionsForPeriod),
+            cumulativeContributions: sumTransactions(account.totalContributions),
           }))
       );
 

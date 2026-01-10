@@ -9,3 +9,6 @@ export type AssetYieldAmounts = Record<AssetClass, number>;
 
 export type AssetAllocation = Record<AssetClass, number>;
 export type AssetValues = Record<AssetClass, number>;
+export type AssetTransactions = Record<AssetClass, number>;
+
+export const sumTransactions = (t: AssetTransactions): number => t.stocks + t.bonds + t.cash;
