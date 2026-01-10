@@ -189,12 +189,9 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
-  const earnedIncome = taxesData?.incomeSources.earnedIncome ?? 0;
-  const socialSecurityIncome = taxesData?.incomeSources.socialSecurityIncome ?? 0;
-  const retirementDistributions = taxesData?.incomeSources.taxableRetirementDistributions ?? 0;
-  const interestIncome = taxesData?.incomeSources.taxableInterestIncome ?? 0;
-  const incomeTaxedAsCapGains =
-    (taxesData?.incomeSources.taxableRealizedGains ?? 0) + (taxesData?.incomeSources.taxableDividendIncome ?? 0);
+  const incomeTaxedAsOrdinary = taxesData?.incomeSources.incomeTaxedAsOrdinary ?? 0;
+  const incomeTaxedAsCapGains = taxesData?.incomeSources.incomeTaxedAsCapGains ?? 0;
+
   const grossIncome = taxesData?.incomeSources.grossIncome ?? 0;
   const totalIncome = taxesData?.incomeSources.totalIncome ?? 0;
 
@@ -205,23 +202,10 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
       </Subheading>
       <DescriptionList>
-        <DescriptionTerm>Earned Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(earnedIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Income Taxed as Ordinary</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(incomeTaxedAsOrdinary, 2, '$')}</DescriptionDetails>
 
-        {socialSecurityIncome !== 0 && (
-          <>
-            <DescriptionTerm>Social Security Income</DescriptionTerm>
-            <DescriptionDetails>{formatNumber(socialSecurityIncome, 2, '$')}</DescriptionDetails>
-          </>
-        )}
-
-        <DescriptionTerm>Retirement Distributions</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(retirementDistributions, 2, '$')}</DescriptionDetails>
-
-        <DescriptionTerm>Interest Income</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(interestIncome, 2, '$')}</DescriptionDetails>
-
-        <DescriptionTerm>Realized Capital Gains & Dividends</DescriptionTerm>
+        <DescriptionTerm>Income Taxed as Capital Gains</DescriptionTerm>
         <DescriptionDetails>{formatNumber(incomeTaxedAsCapGains, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">

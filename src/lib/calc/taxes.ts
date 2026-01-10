@@ -96,6 +96,8 @@ export interface IncomeSourcesData {
   provisionalIncome: number;
   taxExemptIncome: number;
   grossIncome: number;
+  incomeTaxedAsOrdinary: number;
+  incomeTaxedAsCapGains: number;
   taxDeductibleContributions: number;
   adjustedGrossIncome: number;
   adjustedIncomeTaxedAsOrdinary: number;
@@ -266,6 +268,7 @@ export class TaxProcessor {
       socialSecurityIncome,
     });
 
+    const incomeTaxedAsOrdinary = incomeTaxedAsOrdinaryExceptSocSec + taxableSocialSecurityIncome;
     const adjustedIncomeTaxedAsOrdinary = adjustedIncomeTaxedAsOrdinaryExceptSocSec + taxableSocialSecurityIncome;
     const adjustedGrossIncome = adjustedIncomeTaxedAsOrdinary + adjustedIncomeTaxedAsCapGains;
 
@@ -286,6 +289,8 @@ export class TaxProcessor {
       provisionalIncome,
       taxExemptIncome,
       grossIncome,
+      incomeTaxedAsOrdinary,
+      incomeTaxedAsCapGains,
       taxDeductibleContributions,
       adjustedGrossIncome,
       adjustedIncomeTaxedAsOrdinary,
