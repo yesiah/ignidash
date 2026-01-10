@@ -112,7 +112,7 @@ export default function SingleSimulationWithdrawalsBarChart({
         { name: taxableLabel, amount: item.taxableWithdrawals, color: 'var(--chart-1)' },
         { name: taxDeferredLabel, amount: item.taxDeferredWithdrawals, color: 'var(--chart-2)' },
         { name: taxFreeLabel, amount: item.taxFreeWithdrawals, color: 'var(--chart-3)' },
-        { name: cashLabel, amount: item.cashWithdrawals, color: 'var(--chart-4)' },
+        { name: cashLabel, amount: item.cashSavingsWithdrawals, color: 'var(--chart-4)' },
       ]);
       break;
     }

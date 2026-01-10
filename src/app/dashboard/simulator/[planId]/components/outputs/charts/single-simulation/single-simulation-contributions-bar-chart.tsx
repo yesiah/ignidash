@@ -101,7 +101,7 @@ export default function SingleSimulationContributionsBarChart({
         { name: taxableLabel, amount: item.taxableContributions, color: 'var(--chart-1)' },
         { name: taxDeferredLabel, amount: item.taxDeferredContributions, color: 'var(--chart-2)' },
         { name: taxFreeLabel, amount: item.taxFreeContributions, color: 'var(--chart-3)' },
-        { name: cashLabel, amount: item.cashContributions, color: 'var(--chart-4)' },
+        { name: cashLabel, amount: item.cashSavingsContributions, color: 'var(--chart-4)' },
       ]);
       break;
     }

@@ -200,7 +200,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
       stackId = 'stack';
 
-      barDataKeys.push('taxableWithdrawals', 'taxDeferredWithdrawals', 'taxFreeWithdrawals', 'cashWithdrawals');
+      barDataKeys.push('taxableWithdrawals', 'taxDeferredWithdrawals', 'taxFreeWithdrawals', 'cashSavingsWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'realizedGains':

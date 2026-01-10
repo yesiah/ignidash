@@ -208,24 +208,26 @@ export abstract class ChartDataExtractor {
       const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
       const cumulativeContributions = sumTransactions(portfolioData.cumulativeContributions);
 
-      const {
-        taxableContributions,
-        taxDeferredContributions,
-        taxFreeContributions,
-        cashSavingsContributions: cashContributions,
-      } = SimulationDataExtractor.getContributionsByTaxCategory(data);
+      const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
+        SimulationDataExtractor.getContributionsByTaxCategory(data);
 
       return {
         age,
         annualContributions,
         cumulativeContributions,
+        annualStockContributions: portfolioData.contributionsForPeriod.stocks,
+        cumulativeStockContributions: portfolioData.cumulativeContributions.stocks,
+        annualBondContributions: portfolioData.contributionsForPeriod.bonds,
+        cumulativeBondContributions: portfolioData.cumulativeContributions.bonds,
+        annualCashContributions: portfolioData.contributionsForPeriod.cash,
+        cumulativeCashContributions: portfolioData.cumulativeContributions.cash,
         annualEmployerMatch: portfolioData.employerMatchForPeriod,
         cumulativeEmployerMatch: portfolioData.cumulativeEmployerMatch,
         perAccountData: Object.values(portfolioData.perAccountData),
         taxableContributions,
         taxDeferredContributions,
         taxFreeContributions,
-        cashContributions,
+        cashSavingsContributions,
         annualShortfallRepaid: portfolioData.shortfallRepaidForPeriod,
         outstandingShortfall: portfolioData.outstandingShortfall,
       };
@@ -242,12 +244,8 @@ export abstract class ChartDataExtractor {
       const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
       const cumulativeWithdrawals = sumTransactions(portfolioData.cumulativeWithdrawals);
 
-      const {
-        taxableWithdrawals,
-        taxDeferredWithdrawals,
-        taxFreeWithdrawals,
-        cashSavingsWithdrawals: cashWithdrawals,
-      } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
+      const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
+        SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
 
       const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
@@ -258,6 +256,12 @@ export abstract class ChartDataExtractor {
         age,
         annualWithdrawals,
         cumulativeWithdrawals,
+        annualStockWithdrawals: portfolioData.withdrawalsForPeriod.stocks,
+        cumulativeStockWithdrawals: portfolioData.cumulativeWithdrawals.stocks,
+        annualBondWithdrawals: portfolioData.withdrawalsForPeriod.bonds,
+        cumulativeBondWithdrawals: portfolioData.cumulativeWithdrawals.bonds,
+        annualCashWithdrawals: portfolioData.withdrawalsForPeriod.cash,
+        cumulativeCashWithdrawals: portfolioData.cumulativeWithdrawals.cash,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
         cumulativeRealizedGains: portfolioData.cumulativeRealizedGains,
         annualRequiredMinimumDistributions: portfolioData.rmdsForPeriod,
@@ -270,7 +274,7 @@ export abstract class ChartDataExtractor {
         taxableWithdrawals,
         taxDeferredWithdrawals,
         taxFreeWithdrawals,
-        cashWithdrawals,
+        cashSavingsWithdrawals,
         withdrawalRate,
         annualShortfall: portfolioData.shortfallForPeriod,
         outstandingShortfall: portfolioData.outstandingShortfall,

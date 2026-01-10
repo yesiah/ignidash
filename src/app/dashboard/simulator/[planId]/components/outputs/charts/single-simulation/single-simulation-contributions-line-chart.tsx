@@ -145,7 +145,7 @@ export default function SingleSimulationContributionsLineChart({
     case 'taxCategory':
       stackId = 'stack';
 
-      barDataKeys.push('taxableContributions', 'taxDeferredContributions', 'taxFreeContributions', 'cashContributions');
+      barDataKeys.push('taxableContributions', 'taxDeferredContributions', 'taxFreeContributions', 'cashSavingsContributions');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'employerMatch':

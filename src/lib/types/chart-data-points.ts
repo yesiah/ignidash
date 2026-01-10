@@ -126,13 +126,19 @@ export interface SingleSimulationContributionsChartDataPoint {
   age: number;
   annualContributions: number;
   cumulativeContributions: number;
+  annualStockContributions: number;
+  cumulativeStockContributions: number;
+  annualBondContributions: number;
+  cumulativeBondContributions: number;
+  annualCashContributions: number;
+  cumulativeCashContributions: number;
   annualEmployerMatch: number;
   cumulativeEmployerMatch: number;
   perAccountData: AccountDataWithTransactions[];
   taxableContributions: number;
   taxDeferredContributions: number;
   taxFreeContributions: number;
-  cashContributions: number;
+  cashSavingsContributions: number;
   annualShortfallRepaid: number;
   outstandingShortfall: number;
 }
@@ -141,6 +147,12 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   age: number;
   annualWithdrawals: number;
   cumulativeWithdrawals: number;
+  annualStockWithdrawals: number;
+  cumulativeStockWithdrawals: number;
+  annualBondWithdrawals: number;
+  cumulativeBondWithdrawals: number;
+  annualCashWithdrawals: number;
+  cumulativeCashWithdrawals: number;
   annualRealizedGains: number;
   cumulativeRealizedGains: number;
   annualRequiredMinimumDistributions: number;
@@ -153,7 +165,7 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   taxableWithdrawals: number;
   taxDeferredWithdrawals: number;
   taxFreeWithdrawals: number;
-  cashWithdrawals: number;
+  cashSavingsWithdrawals: number;
   withdrawalRate: number | null;
   annualShortfall: number;
   outstandingShortfall: number;
