@@ -22,7 +22,6 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
-      | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
       | 'shortfall'
       | 'withdrawalRate'
@@ -34,7 +33,6 @@ interface SingleSimulationWithdrawalsLineChartCardProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
@@ -89,7 +87,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                 e.target.value !== 'taxCategory' &&
                 e.target.value !== 'realizedGains' &&
                 e.target.value !== 'requiredMinimumDistributions' &&
-                e.target.value !== 'earlyWithdrawalPenalties' &&
                 e.target.value !== 'earlyWithdrawals' &&
                 e.target.value !== 'shortfall' &&
                 e.target.value !== 'withdrawalRate';
@@ -104,7 +101,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
                     | 'taxCategory'
                     | 'realizedGains'
                     | 'requiredMinimumDistributions'
-                    | 'earlyWithdrawalPenalties'
                     | 'earlyWithdrawals'
                     | 'shortfall'
                     | 'withdrawalRate'
@@ -122,7 +118,6 @@ export default function SingleSimulationWithdrawalsLineChartCard({
               <option value="realizedGains">Realized Gains</option>
             </optgroup>
             <optgroup label="Issues & Penalties">
-              <option value="earlyWithdrawalPenalties">Early Withdrawal Penalties</option>
               <option value="earlyWithdrawals">Early Withdrawals</option>
               <option value="shortfall">Shortfall</option>
             </optgroup>

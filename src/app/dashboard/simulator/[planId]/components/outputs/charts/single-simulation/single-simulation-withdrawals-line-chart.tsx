@@ -34,7 +34,6 @@ interface CustomTooltipProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
@@ -57,7 +56,6 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
-      | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
       | 'shortfall'
       | 'withdrawalRate'
@@ -138,7 +136,6 @@ interface SingleSimulationWithdrawalsLineChartProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
@@ -211,12 +208,6 @@ export default function SingleSimulationWithdrawalsLineChart({
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       barDataKeys.push('annualRequiredMinimumDistributions', 'cumulativeRequiredMinimumDistributions');
-      barColors.push('var(--chart-2)', 'var(--chart-4)');
-      break;
-    case 'earlyWithdrawalPenalties':
-      formatter = (value: number) => formatNumber(value, 1, '$');
-
-      barDataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'earlyWithdrawals':

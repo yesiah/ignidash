@@ -232,7 +232,6 @@ export abstract class ChartDataExtractor {
   }
 
   static extractSingleSimulationWithdrawalsChartData(simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] {
-    let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.slice(1).map((data) => {
@@ -247,11 +246,6 @@ export abstract class ChartDataExtractor {
         taxFreeWithdrawals,
         cashSavingsWithdrawals: cashWithdrawals,
       } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
-
-      const taxesData = data.taxes!;
-
-      const annualEarlyWithdrawalPenalties = taxesData.earlyWithdrawalPenalties.totalPenaltyAmount;
-      cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
 
       const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
@@ -268,8 +262,6 @@ export abstract class ChartDataExtractor {
         annualRequiredMinimumDistributions: portfolioData.rmdsForPeriod,
         cumulativeRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
         annualRothEarningsWithdrawals: portfolioData.earningsWithdrawnForPeriod,
-        cumulativeEarlyWithdrawalPenalties,
-        annualEarlyWithdrawalPenalties,
         cumulativeEarlyWithdrawals,
         annualEarlyWithdrawals,
         perAccountData: Object.values(portfolioData.perAccountData),

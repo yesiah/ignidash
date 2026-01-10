@@ -51,7 +51,6 @@ interface SingleSimulationWithdrawalsBarChartProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
@@ -77,10 +76,6 @@ export default function SingleSimulationWithdrawalsBarChart({
     realizedGains: {
       mobile: ['Annual Gains', 'Cumul. Gains'],
       desktop: ['Annual Realized Gains', 'Cumul. Realized Gains'],
-    },
-    earlyWithdrawalPenalties: {
-      mobile: ['Annual EW Penalty', 'Cumul. EW Penalty'],
-      desktop: ['Annual EW Penalties', 'Cumul. EW Penalties'],
     },
     earlyWithdrawals: {
       mobile: ['Annual EWs', 'Cumul. EWs'],
@@ -132,14 +127,6 @@ export default function SingleSimulationWithdrawalsBarChart({
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual RMDs', amount: item.annualRequiredMinimumDistributions, color: 'var(--chart-2)' },
         { name: 'Cumul. RMDs', amount: item.cumulativeRequiredMinimumDistributions, color: 'var(--chart-4)' },
-      ]);
-      break;
-    }
-    case 'earlyWithdrawalPenalties': {
-      const [annualLabel, cumulativeLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
-      transformedChartData = chartData.flatMap((item) => [
-        { name: annualLabel, amount: item.annualEarlyWithdrawalPenalties, color: 'var(--chart-2)' },
-        { name: cumulativeLabel, amount: item.cumulativeEarlyWithdrawalPenalties, color: 'var(--chart-4)' },
       ]);
       break;
     }

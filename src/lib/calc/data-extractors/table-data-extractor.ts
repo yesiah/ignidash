@@ -418,7 +418,6 @@ export abstract class TableDataExtractor {
   static extractSingleSimulationWithdrawalsData(simulation: SimulationResult): SingleSimulationWithdrawalsTableRow[] {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
-    let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.map((data, idx) => {
@@ -445,8 +444,6 @@ export abstract class TableDataExtractor {
           cumulativeRequiredMinimumDistributions: null,
           annualEarlyWithdrawals: null,
           cumulativeEarlyWithdrawals: null,
-          annualEarlyWithdrawalPenalties: null,
-          cumulativeEarlyWithdrawalPenalties: null,
           annualRothEarningsWithdrawals: null,
           cumulativeRothEarningsWithdrawals: null,
           totalPortfolioValue: null,
@@ -468,9 +465,6 @@ export abstract class TableDataExtractor {
       const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
-      const { earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties } = SimulationDataExtractor.getTaxAmountsByType(data);
-      cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
-
       const { netCashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(data);
 
@@ -490,8 +484,6 @@ export abstract class TableDataExtractor {
         cumulativeRequiredMinimumDistributions: portfolioData.totalRmds,
         annualEarlyWithdrawals,
         cumulativeEarlyWithdrawals,
-        annualEarlyWithdrawalPenalties,
-        cumulativeEarlyWithdrawalPenalties,
         annualRothEarningsWithdrawals: portfolioData.earningsWithdrawnForPeriod,
         cumulativeRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
         totalPortfolioValue,

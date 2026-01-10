@@ -144,13 +144,11 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   cumulativeRequiredMinimumDistributions: number;
   cumulativeEarlyWithdrawals: number;
   cumulativeRothEarningsWithdrawals: number;
-  cumulativeEarlyWithdrawalPenalties: number;
   annualWithdrawals: number;
   annualRealizedGains: number;
   annualRequiredMinimumDistributions: number;
   annualEarlyWithdrawals: number;
   annualRothEarningsWithdrawals: number;
-  annualEarlyWithdrawalPenalties: number;
   perAccountData: AccountDataWithTransactions[];
   taxableWithdrawals: number;
   taxDeferredWithdrawals: number;
