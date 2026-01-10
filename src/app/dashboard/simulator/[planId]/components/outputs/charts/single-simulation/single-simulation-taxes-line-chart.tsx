@@ -322,11 +322,10 @@ export default function SingleSimulationTaxesLineChart({
       barColors.push('var(--chart-1)');
       break;
     case 'investmentIncome':
-      // TODO: Include realized gains in investment income
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      barDataKeys.push('interestIncome', 'dividendIncome');
-      barColors.push('var(--chart-1)', 'var(--chart-2)');
+      barDataKeys.push('interestIncome', 'dividendIncome', 'realizedGains');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'retirementDistributions':
       formatter = (value: number) => formatNumber(value, 1, '$');
