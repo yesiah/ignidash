@@ -64,7 +64,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   adjustedGrossIncome: number;
   taxableIncome: number;
 
-  /* Ordinary Income */
+  // Ordinary Income
   earnedIncome: number;
   annualFicaTax: number;
   cumulativeFicaTax: number;
@@ -75,46 +75,48 @@ export interface SingleSimulationTaxesChartDataPoint {
   taxableRetirementDistributions: number;
   taxableInterestIncome: number;
   taxableOrdinaryIncome: number;
+  incomeTaxedAsOrdinary: number;
   annualIncomeTax: number;
   cumulativeIncomeTax: number;
   effectiveIncomeTaxRate: number;
   topMarginalIncomeTaxRate: number;
   incomeTaxBrackets: IncomeTaxBracket[];
 
-  /* Social Security */
+  // Social Security
   socialSecurityIncome: number;
   taxableSocialSecurityIncome: number;
   maxTaxablePercentage: number;
   actualTaxablePercentage: number;
 
-  /* Cap Gains */
+  // Cap Gains
   taxableRealizedGains: number;
   taxableDividendIncome: number;
   taxableCapGains: number;
+  incomeTaxedAsCapGains: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;
   effectiveCapGainsTaxRate: number;
   topMarginalCapGainsTaxRate: number;
   capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
 
-  /* NIIT */
+  // NIIT
   netInvestmentIncome: number;
   incomeSubjectToNiit: number;
   annualNiit: number;
   cumulativeNiit: number;
 
-  /* Early Withdrawal Penalties */
+  // Early Withdrawal Penalties
   annualEarlyWithdrawalPenalties: number;
   cumulativeEarlyWithdrawalPenalties: number;
 
-  /* Tax-Exempt Income */
+  // Tax-Exempt Income
   taxExemptIncome: number;
 
-  /* Totals */
+  // Totals
   annualTotalTaxesAndPenalties: number;
   cumulativeTotalTaxesAndPenalties: number;
 
-  /* Adjustments & Deductions */
+  // Adjustments & Deductions
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
   taxDeductibleContributions: number;

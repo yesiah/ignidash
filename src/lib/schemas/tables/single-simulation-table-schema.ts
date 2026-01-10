@@ -171,7 +171,7 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   adjustedGrossIncome: z.number().nullable(),
   taxableIncome: z.number().nullable(),
 
-  /* Ordinary Income */
+  // Ordinary Income
   earnedIncome: z.number().nullable(),
   annualFicaTax: z.number().nullable(),
   cumulativeFicaTax: z.number().nullable(),
@@ -182,14 +182,14 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   effectiveIncomeTaxRate: z.number().nullable(),
   topMarginalIncomeTaxRate: z.number().nullable(),
 
-  /* Social Security */
+  // Social Security
   socialSecurityIncome: z.number().nullable(),
   taxableSocialSecurityIncome: z.number().nullable(),
   provisionalIncome: z.number().nullable(),
   maxTaxableSocialSecurityPercentage: z.number().nullable(),
   actualTaxableSocialSecurityPercentage: z.number().nullable(),
 
-  /* Cap Gains */
+  // Cap Gains
   realizedGains: z.number().nullable(),
   dividendIncome: z.number().nullable(),
   annualCapGainsTax: z.number().nullable(),
@@ -197,24 +197,24 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   effectiveCapGainsTaxRate: z.number().nullable(),
   topMarginalCapGainsTaxRate: z.number().nullable(),
 
-  /* NIIT */
+  // NIIT
   netInvestmentIncome: z.number().nullable(),
   incomeSubjectToNiit: z.number().nullable(),
   annualNiit: z.number().nullable(),
   cumulativeNiit: z.number().nullable(),
 
-  /* Early Withdrawal Penalties */
+  // Early Withdrawal Penalties
   annualEarlyWithdrawalPenalties: z.number().nullable(),
   cumulativeEarlyWithdrawalPenalties: z.number().nullable(),
 
-  /* Tax-Exempt Income */
+  // Tax-Exempt Income
   taxExemptIncome: z.number().nullable(),
 
-  /* Totals */
+  // Totals
   annualTotalTaxesAndPenalties: z.number().nullable(),
   cumulativeTotalTaxesAndPenalties: z.number().nullable(),
 
-  /* Adjustments & Deductions */
+  // Adjustments & Deductions
   taxDeductibleContributions: z.number().nullable(),
   standardDeduction: z.number().nullable(),
   capitalLossDeduction: z.number().nullable(),

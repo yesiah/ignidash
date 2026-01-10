@@ -98,7 +98,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
 
   let filterZeroValues = true;
 
-  let body = null;
+  let header = null;
   let footer = null;
 
   switch (dataView) {
@@ -138,32 +138,13 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         break;
       }
 
-      const adjustmentsData = Object.entries(entry.adjustments).filter(([, value]) => value !== 0);
-      const adjustments = adjustmentsData.map(([name, value]) => (
-        <p key={name} className="flex justify-between text-xs font-semibold">
-          <span className="mr-2">{`${formatChartString(name)}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-        </p>
-      ));
-
-      const deductionsData = dataView === 'taxableIncome' ? Object.entries(entry.deductions).filter(([, value]) => value !== 0) : [];
-      const deductions = deductionsData.map(([name, value]) => (
-        <p key={name} className="flex justify-between text-xs font-semibold">
-          <span className="mr-2">{`${formatChartString(name)}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-        </p>
-      ));
-
-      body = (
-        <div className="mx-1 mb-2 flex flex-col gap-2">
-          <p className="flex justify-between text-xs font-semibold">
+      header = (
+        <div className="mb-2 flex flex-col gap-2">
+          <p className="mx-1 flex justify-between text-xs font-semibold">
             <span className="mr-2">Gross Income:</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+            <span className="ml-1 font-semibold">{formatValue(entry.grossIncome, dataView)}</span>
           </p>
           <Divider soft />
-          {adjustmentsData.length > 0 && adjustments}
-          {deductionsData.length > 0 && deductions}
-          {(adjustmentsData.length > 0 || deductionsData.length > 0) && <Divider soft />}
         </div>
       );
 
@@ -173,7 +154,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">{`${formatChartString(lineEntry.dataKey)}:`}</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(lineEntry.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatValue(lineEntry.value, dataView)}</span>
         </p>
       );
       break;
@@ -188,22 +169,45 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <span className="mr-2">Age {label}</span>
         <span className="text-muted-foreground ml-1">{yearForAge}</span>
       </p>
-      {body}
-      <div className="flex flex-col gap-1">
-        {transformedPayload
-          .filter((entry) => (filterZeroValues ? entry.value !== 0 : true))
-          .map((entry) => (
-            <p
-              key={entry.dataKey}
-              style={{ backgroundColor: entry.color }}
-              className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
-                'text-background': needsBgTextColor.includes(entry.color),
-              })}
-            >
-              <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-              <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
-            </p>
-          ))}
+      {header}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
+          {transformedPayload
+            .filter((entry) => (filterZeroValues ? entry.value > 0 : entry.value >= 0))
+            .map((entry) => (
+              <p
+                key={entry.dataKey}
+                style={{ backgroundColor: entry.color }}
+                className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
+                  'text-background': needsBgTextColor.includes(entry.color),
+                })}
+              >
+                <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+                <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+              </p>
+            ))}
+        </div>
+        {transformedPayload.some((entry) => entry.value < 0) && (
+          <>
+            <Divider soft />
+            <div className="flex flex-col gap-1">
+              {transformedPayload
+                .filter((entry) => entry.value < 0)
+                .map((entry) => (
+                  <p
+                    key={entry.dataKey}
+                    style={{ backgroundColor: entry.color }}
+                    className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-xs', {
+                      'text-background': needsBgTextColor.includes(entry.color),
+                    })}
+                  >
+                    <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+                    <span className="ml-1 font-semibold">{formatValue(Math.abs(entry.value), dataView)}</span>
+                  </p>
+                ))}
+            </div>
+          </>
+        )}
       </div>
       {footer}
     </div>
@@ -258,7 +262,7 @@ export default function SingleSimulationTaxesLineChart({
     () => setClickedOutsideChart(false)
   );
 
-  const chartData: SingleSimulationTaxesChartDataPoint[] = useChartDataSlice(rawChartData);
+  let chartData: SingleSimulationTaxesChartDataPoint[] = useChartDataSlice(rawChartData);
 
   const lineDataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
   const strokeColors: string[] = [];
@@ -268,7 +272,7 @@ export default function SingleSimulationTaxesLineChart({
 
   let formatter = undefined;
   let stackId: string | undefined = 'stack';
-  const stackOffset: 'sign' | undefined = undefined;
+  let stackOffset: 'sign' | undefined = undefined;
 
   switch (dataView) {
     case 'marginalRates':
@@ -302,24 +306,45 @@ export default function SingleSimulationTaxesLineChart({
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'taxableIncome':
-      // TODO: Include adjustments and deductions in taxable income
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       lineDataKeys.push('taxableIncome');
       strokeColors.push('var(--foreground)');
 
-      barDataKeys.push('taxableOrdinaryIncome', 'taxableCapGains');
-      barColors.push('var(--chart-1)', 'var(--chart-2)');
+      barDataKeys.push(
+        'incomeTaxedAsOrdinary',
+        'incomeTaxedAsCapGains',
+        'taxDeductibleContributions',
+        'standardDeduction',
+        'capitalLossDeduction'
+      );
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
+
+      chartData = chartData.map((entry) => ({
+        ...entry,
+        taxDeductibleContributions: -entry.taxDeductibleContributions,
+        standardDeduction: -entry.standardDeduction,
+        capitalLossDeduction: -entry.capitalLossDeduction,
+      }));
+
+      stackOffset = 'sign';
       break;
     case 'adjustedGrossIncome':
-      // TODO: Include adjustments in adjusted gross income
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       lineDataKeys.push('adjustedGrossIncome');
       strokeColors.push('var(--foreground)');
 
-      barDataKeys.push('adjustedGrossIncome');
-      barColors.push('var(--chart-1)');
+      barDataKeys.push('incomeTaxedAsOrdinary', 'incomeTaxedAsCapGains', 'taxDeductibleContributions', 'capitalLossDeduction');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-5)');
+
+      chartData = chartData.map((entry) => ({
+        ...entry,
+        taxDeductibleContributions: -entry.taxDeductibleContributions,
+        capitalLossDeduction: -entry.capitalLossDeduction,
+      }));
+
+      stackOffset = 'sign';
       break;
     case 'investmentIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
