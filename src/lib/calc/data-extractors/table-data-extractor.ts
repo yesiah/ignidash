@@ -541,6 +541,9 @@ export abstract class TableDataExtractor {
         lifetimeTaxesAndPenalties,
       } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
 
+      const returnAmounts = lastDp.returns?.totalReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
+      const lifetimeReturns = returnAmounts.stocks + returnAmounts.bonds + returnAmounts.cash;
+
       return {
         seed,
         success,
@@ -561,6 +564,7 @@ export abstract class TableDataExtractor {
         lifetimeNiit,
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,
+        lifetimeReturns,
         lifetimeContributions: lastDp.portfolio.totalContributions,
         lifetimeWithdrawals: lastDp.portfolio.totalWithdrawals,
         lifetimeRealizedGains: lastDp.portfolio.totalRealizedGains,
