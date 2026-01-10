@@ -533,9 +533,9 @@ export abstract class TableDataExtractor {
       const formattedFinalPhaseName = finalPhaseName !== null ? finalPhaseName.charAt(0).toUpperCase() + finalPhaseName.slice(1) : null;
 
       const {
-        lifetimeIncomeTaxes,
-        lifetimeFicaTaxes,
-        lifetimeCapGainsTaxes,
+        lifetimeIncomeTax,
+        lifetimeFicaTax,
+        lifetimeCapGainsTax,
         lifetimeNiit,
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,
@@ -555,9 +555,9 @@ export abstract class TableDataExtractor {
         meanBondReturn,
         meanCashReturn,
         meanInflationRate,
-        lifetimeIncomeTaxes,
-        lifetimeFicaTaxes,
-        lifetimeCapGainsTaxes,
+        lifetimeIncomeTax,
+        lifetimeFicaTax,
+        lifetimeCapGainsTax,
         lifetimeNiit,
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,
