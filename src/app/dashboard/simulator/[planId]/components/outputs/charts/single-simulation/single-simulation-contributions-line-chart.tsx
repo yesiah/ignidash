@@ -10,7 +10,6 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
-import { sumTransactions } from '@/lib/calc/asset';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
 
@@ -23,7 +22,12 @@ interface CustomTooltipProps {
     dataKey: keyof SingleSimulationContributionsChartDataPoint;
     payload:
       | SingleSimulationContributionsChartDataPoint
-      | ({ age: number; annualContributions: number; cumulativeContributions: number } & AccountDataWithTransactions);
+      | ({
+          age: number;
+          annualStockContributions: number;
+          annualBondContributions: number;
+          annualCashContributions: number;
+        } & AccountDataWithTransactions);
   }>;
   label?: number;
   startAge: number;
@@ -40,19 +44,26 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
   const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
   let footer = null;
-  if (dataView === 'taxCategory') {
-    footer = (
-      <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
-        <span className="mr-2">Total:</span>
-        <span className="ml-1 font-semibold">
-          {formatNumber(
-            payload.reduce((sum, item) => sum + item.value, 0),
-            3,
-            '$'
-          )}
-        </span>
-      </p>
-    );
+  switch (dataView) {
+    case 'annualAmounts':
+    case 'cumulativeAmounts':
+    case 'taxCategory':
+    case 'custom':
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
+    default:
+      break;
   }
 
   return (
@@ -118,10 +129,12 @@ export default function SingleSimulationContributionsLineChart({
   let chartData:
     | SingleSimulationContributionsChartDataPoint[]
     | Array<
-        { age: number; annualContributions: number; cumulativeContributions: number } & Omit<
-          AccountDataWithTransactions,
-          'cumulativeContributions'
-        >
+        {
+          age: number;
+          annualStockContributions: number;
+          annualBondContributions: number;
+          annualCashContributions: number;
+        } & AccountDataWithTransactions
       > = useChartDataSlice(rawChartData);
 
   const lineDataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];
@@ -135,12 +148,16 @@ export default function SingleSimulationContributionsLineChart({
 
   switch (dataView) {
     case 'annualAmounts':
-      lineDataKeys.push('annualContributions');
-      strokeColors.push('var(--chart-2)');
+      stackId = 'stack';
+
+      barDataKeys.push('annualStockContributions', 'annualBondContributions', 'annualCashContributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'cumulativeAmounts':
-      lineDataKeys.push('cumulativeContributions');
-      strokeColors.push('var(--chart-2)');
+      stackId = 'stack';
+
+      barDataKeys.push('cumulativeStockContributions', 'cumulativeBondContributions', 'cumulativeCashContributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'taxCategory':
       stackId = 'stack';
@@ -162,19 +179,22 @@ export default function SingleSimulationContributionsLineChart({
         break;
       }
 
+      stackId = 'stack';
+
       chartData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
           .filter((account) => account.id === customDataID)
           .map((account) => ({
             age,
             ...account,
-            annualContributions: sumTransactions(account.contributionsForPeriod),
-            cumulativeContributions: sumTransactions(account.cumulativeContributions),
+            annualStockContributions: account.contributionsForPeriod.stocks,
+            annualBondContributions: account.contributionsForPeriod.bonds,
+            annualCashContributions: account.contributionsForPeriod.cash,
           }))
       );
 
-      barDataKeys.push('annualContributions', 'cumulativeContributions');
-      barColors.push('var(--chart-2)', 'var(--chart-4)');
+      barDataKeys.push('annualStockContributions', 'annualBondContributions', 'annualCashContributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
   }
 

@@ -10,7 +10,6 @@ import { useClickDetection } from '@/hooks/use-outside-click';
 import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
 import type { AccountDataWithTransactions } from '@/lib/calc/account';
-import { sumTransactions } from '@/lib/calc/asset';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { uniformLifetimeMap } from '@/lib/calc/historical-data/rmds-table';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
@@ -24,7 +23,12 @@ interface CustomTooltipProps {
     dataKey: keyof SingleSimulationWithdrawalsChartDataPoint;
     payload:
       | SingleSimulationWithdrawalsChartDataPoint
-      | ({ age: number; annualWithdrawals: number; cumulativeWithdrawals: number } & AccountDataWithTransactions);
+      | ({
+          age: number;
+          annualStockWithdrawals: number;
+          annualBondWithdrawals: number;
+          annualCashWithdrawals: number;
+        } & AccountDataWithTransactions);
   }>;
   label?: number;
   startAge: number;
@@ -71,29 +75,39 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
   };
 
   let footer = null;
-  if (dataView === 'taxCategory') {
-    footer = (
-      <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
-        <span className="mr-2">Total:</span>
-        <span className="ml-1 font-semibold">
-          {formatNumber(
-            payload.reduce((sum, item) => sum + item.value, 0),
-            3,
-            '$'
-          )}
-        </span>
-      </p>
-    );
-  } else if (dataView === 'requiredMinimumDistributions' && label && label >= 73) {
-    const lookupAge = Math.min(Math.floor(label), 120);
-    const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
+  switch (dataView) {
+    case 'annualAmounts':
+    case 'cumulativeAmounts':
+    case 'taxCategory':
+    case 'custom':
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
+    case 'requiredMinimumDistributions':
+      if (label && label >= 73) {
+        const lookupAge = Math.min(Math.floor(label), 120);
+        const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
 
-    footer = (
-      <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
-        <span className="mr-2">Life Expectancy Factor:</span>
-        <span className="ml-1 font-semibold">{lifeExpectancyFactor}</span>
-      </p>
-    );
+        footer = (
+          <p className="mx-1 mt-2 flex justify-between text-xs font-semibold">
+            <span className="mr-2">Life Expectancy Factor:</span>
+            <span className="ml-1 font-semibold">{lifeExpectancyFactor}</span>
+          </p>
+        );
+      }
+      break;
+    default:
+      break;
   }
 
   return (
@@ -168,10 +182,12 @@ export default function SingleSimulationWithdrawalsLineChart({
   let chartData:
     | SingleSimulationWithdrawalsChartDataPoint[]
     | Array<
-        { age: number; annualWithdrawals: number; cumulativeWithdrawals: number } & Omit<
-          AccountDataWithTransactions,
-          'cumulativeWithdrawals'
-        >
+        {
+          age: number;
+          annualStockWithdrawals: number;
+          annualBondWithdrawals: number;
+          annualCashWithdrawals: number;
+        } & AccountDataWithTransactions
       > = useChartDataSlice(rawChartData);
 
   const lineDataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
@@ -186,15 +202,17 @@ export default function SingleSimulationWithdrawalsLineChart({
   switch (dataView) {
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
 
-      lineDataKeys.push('annualWithdrawals');
-      strokeColors.push('var(--chart-2)');
+      barDataKeys.push('annualStockWithdrawals', 'annualBondWithdrawals', 'annualCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
 
-      lineDataKeys.push('cumulativeWithdrawals');
-      strokeColors.push('var(--chart-2)');
+      barDataKeys.push('cumulativeStockWithdrawals', 'cumulativeBondWithdrawals', 'cumulativeCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'taxCategory':
       formatter = (value: number) => formatNumber(value, 1, '$');
@@ -240,6 +258,7 @@ export default function SingleSimulationWithdrawalsLineChart({
       }
 
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
 
       chartData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
@@ -247,13 +266,14 @@ export default function SingleSimulationWithdrawalsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualWithdrawals: sumTransactions(account.withdrawalsForPeriod),
-            cumulativeWithdrawals: sumTransactions(account.cumulativeWithdrawals),
+            annualStockWithdrawals: account.withdrawalsForPeriod.stocks,
+            annualBondWithdrawals: account.withdrawalsForPeriod.bonds,
+            annualCashWithdrawals: account.withdrawalsForPeriod.cash,
           }))
       );
 
-      barDataKeys.push('annualWithdrawals', 'cumulativeWithdrawals');
-      barColors.push('var(--chart-2)', 'var(--chart-4)');
+      barDataKeys.push('annualStockWithdrawals', 'annualBondWithdrawals', 'annualCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
   }
 

@@ -6,7 +6,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell }
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
-import { sumTransactions } from '@/lib/calc/asset';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -70,6 +69,14 @@ export default function SingleSimulationWithdrawalsBarChart({
   const isSmallScreen = useIsMobile();
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    annualAmounts: {
+      mobile: ['Stock Withdrawals', 'Bond Withdrawals', 'Cash Withdrawals'],
+      desktop: ['Annual Stock Withdrawals', 'Annual Bond Withdrawals', 'Annual Cash Withdrawals'],
+    },
+    cumulativeAmounts: {
+      mobile: ['Cumul. Stock', 'Cumul. Bond', 'Cumul. Cash'],
+      desktop: ['Cumul. Stock Withdrawals', 'Cumul. Bond Withdrawals', 'Cumul. Cash Withdrawals'],
+    },
     taxCategory: {
       mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
       desktop: ['Taxable Withdrawals', 'Tax-Deferred Withdrawals', 'Tax-Free Withdrawals', 'Cash Withdrawals'],
@@ -95,14 +102,20 @@ export default function SingleSimulationWithdrawalsBarChart({
 
   switch (dataView) {
     case 'annualAmounts': {
+      const [annualStockLabel, annualBondLabel, annualCashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Withdrawals', amount: item.annualWithdrawals, color: 'var(--chart-2)' },
+        { name: annualStockLabel, amount: item.annualStockWithdrawals, color: 'var(--chart-1)' },
+        { name: annualBondLabel, amount: item.annualBondWithdrawals, color: 'var(--chart-2)' },
+        { name: annualCashLabel, amount: item.annualCashWithdrawals, color: 'var(--chart-3)' },
       ]);
       break;
     }
     case 'cumulativeAmounts': {
+      const [cumulativeStockLabel, cumulativeBondLabel, cumulativeCashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Cumul. Withdrawals', amount: item.cumulativeWithdrawals, color: 'var(--chart-2)' },
+        { name: cumulativeStockLabel, amount: item.cumulativeStockWithdrawals, color: 'var(--chart-1)' },
+        { name: cumulativeBondLabel, amount: item.cumulativeBondWithdrawals, color: 'var(--chart-2)' },
+        { name: cumulativeCashLabel, amount: item.cumulativeCashWithdrawals, color: 'var(--chart-3)' },
       ]);
       break;
     }
@@ -155,7 +168,11 @@ export default function SingleSimulationWithdrawalsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .map(({ name, withdrawalsForPeriod }) => ({ name, amount: sumTransactions(withdrawalsForPeriod), color: 'var(--chart-2)' }));
+        .flatMap(({ name, withdrawalsForPeriod }) => [
+          { name: `${name} — Stock Withdrawals`, amount: withdrawalsForPeriod.stocks, color: 'var(--chart-1)' },
+          { name: `${name} — Bond Withdrawals`, amount: withdrawalsForPeriod.bonds, color: 'var(--chart-2)' },
+          { name: `${name} — Cash Withdrawals`, amount: withdrawalsForPeriod.cash, color: 'var(--chart-3)' },
+        ]);
       break;
     }
     case 'withdrawalRate':

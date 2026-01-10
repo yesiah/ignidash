@@ -6,7 +6,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell }
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
-import { sumTransactions } from '@/lib/calc/asset';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -61,6 +60,14 @@ export default function SingleSimulationContributionsBarChart({
   const isSmallScreen = useIsMobile();
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
+    annualAmounts: {
+      mobile: ['Stock Contrib.', 'Bond Contrib.', 'Cash Contrib.'],
+      desktop: ['Annual Stock Contrib.', 'Annual Bond Contrib.', 'Annual Cash Contrib.'],
+    },
+    cumulativeAmounts: {
+      mobile: ['Cumul. Stock', 'Cumul. Bond', 'Cumul. Cash'],
+      desktop: ['Cumul. Stock Contrib.', 'Cumul. Bond Contrib.', 'Cumul. Cash Contrib.'],
+    },
     taxCategory: {
       mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
       desktop: ['Taxable Contrib.', 'Tax-Deferred Contrib.', 'Tax-Free Contrib.', 'Cash Contrib.'],
@@ -85,16 +92,24 @@ export default function SingleSimulationContributionsBarChart({
   let transformedChartData: { name: string; amount: number; color: string }[] = [];
 
   switch (dataView) {
-    case 'annualAmounts':
+    case 'annualAmounts': {
+      const [annualStockLabel, annualBondLabel, annualCashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Annual Contributions', amount: item.annualContributions, color: 'var(--chart-2)' },
+        { name: annualStockLabel, amount: item.annualStockContributions, color: 'var(--chart-1)' },
+        { name: annualBondLabel, amount: item.annualBondContributions, color: 'var(--chart-2)' },
+        { name: annualCashLabel, amount: item.annualCashContributions, color: 'var(--chart-3)' },
       ]);
       break;
-    case 'cumulativeAmounts':
+    }
+    case 'cumulativeAmounts': {
+      const [cumulativeStockLabel, cumulativeBondLabel, cumulativeCashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Cumulative Contributions', amount: item.cumulativeContributions, color: 'var(--chart-2)' },
+        { name: cumulativeStockLabel, amount: item.cumulativeStockContributions, color: 'var(--chart-1)' },
+        { name: cumulativeBondLabel, amount: item.cumulativeBondContributions, color: 'var(--chart-2)' },
+        { name: cumulativeCashLabel, amount: item.cumulativeCashContributions, color: 'var(--chart-3)' },
       ]);
       break;
+    }
     case 'taxCategory': {
       const [taxableLabel, taxDeferredLabel, taxFreeLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
@@ -121,7 +136,7 @@ export default function SingleSimulationContributionsBarChart({
       ]);
       break;
     }
-    case 'custom':
+    case 'custom': {
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
         break;
@@ -130,8 +145,13 @@ export default function SingleSimulationContributionsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .map(({ name, contributionsForPeriod }) => ({ name, amount: sumTransactions(contributionsForPeriod), color: 'var(--chart-2)' }));
+        .flatMap(({ name, contributionsForPeriod }) => [
+          { name: `${name} — Stock Contrib.`, amount: contributionsForPeriod.stocks, color: 'var(--chart-1)' },
+          { name: `${name} — Bond Contrib.`, amount: contributionsForPeriod.bonds, color: 'var(--chart-2)' },
+          { name: `${name} — Cash Contrib.`, amount: contributionsForPeriod.cash, color: 'var(--chart-3)' },
+        ]);
       break;
+    }
   }
 
   transformedChartData = transformedChartData.filter((item) => item.amount !== 0).sort((a, b) => b.amount - a.amount);
