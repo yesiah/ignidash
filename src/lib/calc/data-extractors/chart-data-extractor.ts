@@ -10,6 +10,7 @@ import type {
 } from '@/lib/types/chart-data-points';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 import { sumTransactions } from '@/lib/calc/asset';
+import { sumReturns } from '@/lib/calc/returns';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -171,10 +172,8 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns!;
 
-      const totalCumulativeGains =
-        returnsData.totalReturnAmounts.stocks + returnsData.totalReturnAmounts.bonds + returnsData.totalReturnAmounts.cash;
-      const totalAnnualGains =
-        returnsData.returnAmountsForPeriod.stocks + returnsData.returnAmountsForPeriod.bonds + returnsData.returnAmountsForPeriod.cash;
+      const totalCumulativeGains = sumReturns(returnsData.cumulativeReturnAmounts);
+      const totalAnnualGains = sumReturns(returnsData.returnAmountsForPeriod);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 
@@ -184,9 +183,9 @@ export abstract class ChartDataExtractor {
         realBondReturnRate: returnsData.annualReturnRates.bonds,
         realCashReturnRate: returnsData.annualReturnRates.cash,
         inflationRate: returnsData.annualInflationRate,
-        cumulativeStockGain: returnsData.totalReturnAmounts.stocks,
-        cumulativeBondGain: returnsData.totalReturnAmounts.bonds,
-        cumulativeCashGain: returnsData.totalReturnAmounts.cash,
+        cumulativeStockGain: returnsData.cumulativeReturnAmounts.stocks,
+        cumulativeBondGain: returnsData.cumulativeReturnAmounts.bonds,
+        cumulativeCashGain: returnsData.cumulativeReturnAmounts.cash,
         totalCumulativeGains,
         annualStockGain: returnsData.returnAmountsForPeriod.stocks,
         annualBondGain: returnsData.returnAmountsForPeriod.bonds,

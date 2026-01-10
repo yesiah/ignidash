@@ -9,29 +9,31 @@ export interface AccountDataWithReturns {
   id: string;
   type: AccountInputs['type'];
   returnAmountsForPeriod: AssetReturnAmounts;
-  totalReturnAmounts: AssetReturnAmounts;
+  cumulativeReturnAmounts: AssetReturnAmounts;
 }
 
 export interface ReturnsData {
-  // Total return data
-  totalReturnAmounts: AssetReturnAmounts;
-  totalYieldAmounts: Record<TaxCategory, AssetYieldAmounts>;
+  // Cumulative return data
+  cumulativeReturnAmounts: AssetReturnAmounts;
+  cumulativeYieldAmounts: Record<TaxCategory, AssetYieldAmounts>;
 
   // Monthly return data
   returnAmountsForPeriod: AssetReturnAmounts;
   returnRatesForPeriod: AssetReturnRates;
-  inflationRateForPeriod: number;
   yieldAmountsForPeriod: Record<TaxCategory, AssetYieldAmounts>;
   yieldRatesForPeriod: AssetYieldRates;
+  inflationRateForPeriod: number;
 
   // Annual return data
   annualReturnRates: AssetReturnRates;
-  annualInflationRate: number;
   annualYieldRates: AssetYieldRates;
+  annualInflationRate: number;
 
   // Per account data
   perAccountData: Record<string, AccountDataWithReturns>;
 }
+
+const TAX_CATEGORIES: TaxCategory[] = ['taxable', 'taxDeferred', 'taxFree', 'cashSavings'];
 
 export class ReturnsProcessor {
   private cachedAnnualReturnRates: AssetReturnRates;
@@ -85,18 +87,18 @@ export class ReturnsProcessor {
       cash: this.cachedAnnualYieldRates.cash / 12,
     };
 
-    const { yieldsForPeriod: yieldAmountsForPeriod, totalYields: totalYieldAmounts } =
+    const { yieldsForPeriod: yieldAmountsForPeriod, cumulativeYields: cumulativeYieldAmounts } =
       this.simulationState.portfolio.applyYields(yieldRatesForPeriod);
 
     const {
       returnsForPeriod: returnAmountsForPeriod,
-      totalReturns: totalReturnAmounts,
+      cumulativeReturns: cumulativeReturnAmounts,
       byAccount: perAccountData,
     } = this.simulationState.portfolio.applyReturns(returnRatesForPeriod);
 
     const result = {
-      totalReturnAmounts,
-      totalYieldAmounts,
+      cumulativeReturnAmounts,
+      cumulativeYieldAmounts,
       returnAmountsForPeriod,
       returnRatesForPeriod,
       inflationRateForPeriod,
@@ -117,11 +119,14 @@ export class ReturnsProcessor {
   }
 
   getAnnualData(): ReturnsData {
-    const addAssetReturns = (a: AssetReturnAmounts | undefined, b: AssetReturnAmounts): AssetReturnAmounts => ({
-      stocks: (a?.stocks ?? 0) + b.stocks,
-      bonds: (a?.bonds ?? 0) + b.bonds,
-      cash: (a?.cash ?? 0) + b.cash,
-    });
+    const addAssetReturns = (a: AssetReturnAmounts | undefined, b: AssetReturnAmounts): AssetReturnAmounts => {
+      if (!a) return { ...b };
+      return {
+        stocks: a.stocks + b.stocks,
+        bonds: a.bonds + b.bonds,
+        cash: a.cash + b.cash,
+      };
+    };
 
     const lastMonthData = this.monthlyData[this.monthlyData.length - 1];
 
@@ -133,22 +138,20 @@ export class ReturnsProcessor {
           acc.returnAmountsForPeriod.bonds += curr.returnAmountsForPeriod.bonds;
           acc.returnAmountsForPeriod.cash += curr.returnAmountsForPeriod.cash;
 
-          (['taxable', 'taxDeferred', 'taxFree', 'cashSavings'] as TaxCategory[]).forEach((category) => {
+          for (const category of TAX_CATEGORIES) {
             acc.yieldAmountsForPeriod[category].stocks += curr.yieldAmountsForPeriod[category].stocks;
             acc.yieldAmountsForPeriod[category].bonds += curr.yieldAmountsForPeriod[category].bonds;
             acc.yieldAmountsForPeriod[category].cash += curr.yieldAmountsForPeriod[category].cash;
-          });
+          }
 
-          Object.entries(curr.perAccountData).forEach(([accountID, accountData]) => {
+          for (const [accountID, accountData] of Object.entries(curr.perAccountData)) {
+            const existing = acc.perAccountData[accountID];
             acc.perAccountData[accountID] = {
               ...accountData,
-              returnAmountsForPeriod: addAssetReturns(
-                acc.perAccountData[accountID]?.returnAmountsForPeriod,
-                accountData.returnAmountsForPeriod
-              ),
-              totalReturnAmounts: addAssetReturns(acc.perAccountData[accountID]?.totalReturnAmounts, accountData.totalReturnAmounts),
+              returnAmountsForPeriod: addAssetReturns(existing?.returnAmountsForPeriod, accountData.returnAmountsForPeriod),
+              cumulativeReturnAmounts: addAssetReturns(existing?.cumulativeReturnAmounts, accountData.cumulativeReturnAmounts),
             };
-          });
+          }
 
           return acc;
         },
@@ -166,3 +169,5 @@ export class ReturnsProcessor {
     };
   }
 }
+
+export const sumReturns = (r: AssetReturnAmounts): number => r.stocks + r.bonds + r.cash;

@@ -9,6 +9,7 @@ import type {
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
 import { sumTransactions } from '@/lib/calc/asset';
+import { sumReturns } from '@/lib/calc/returns';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -317,10 +318,8 @@ export abstract class TableDataExtractor {
 
       const returnsData = data.returns;
 
-      const totalCumulativeGains =
-        returnsData!.totalReturnAmounts.stocks + returnsData!.totalReturnAmounts.bonds + returnsData!.totalReturnAmounts.cash;
-      const totalAnnualGains =
-        returnsData!.returnAmountsForPeriod.stocks + returnsData!.returnAmountsForPeriod.bonds + returnsData!.returnAmountsForPeriod.cash;
+      const totalCumulativeGains = sumReturns(returnsData!.cumulativeReturnAmounts);
+      const totalAnnualGains = sumReturns(returnsData!.returnAmountsForPeriod);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 
@@ -335,15 +334,15 @@ export abstract class TableDataExtractor {
         taxFreeGains,
         cashSavingsGains,
         stockReturnRate: returnsData?.annualReturnRates.stocks ?? null,
-        cumulativeStockGain: returnsData?.totalReturnAmounts.stocks ?? null,
+        cumulativeStockGain: returnsData?.cumulativeReturnAmounts.stocks ?? null,
         annualStockGain: returnsData?.returnAmountsForPeriod.stocks ?? null,
         stockHoldings,
         bondReturnRate: returnsData?.annualReturnRates.bonds ?? null,
-        cumulativeBondGain: returnsData?.totalReturnAmounts.bonds ?? null,
+        cumulativeBondGain: returnsData?.cumulativeReturnAmounts.bonds ?? null,
         annualBondGain: returnsData?.returnAmountsForPeriod.bonds ?? null,
         bondHoldings,
         cashReturnRate: returnsData?.annualReturnRates.cash ?? null,
-        cumulativeCashGain: returnsData?.totalReturnAmounts.cash ?? null,
+        cumulativeCashGain: returnsData?.cumulativeReturnAmounts.cash ?? null,
         annualCashGain: returnsData?.returnAmountsForPeriod.cash ?? null,
         cashHoldings,
         inflationRate: returnsData?.annualInflationRate ?? null,
@@ -536,8 +535,8 @@ export abstract class TableDataExtractor {
         lifetimeTaxesAndPenalties,
       } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
 
-      const returnAmounts = lastDp.returns?.totalReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
-      const lifetimeReturns = returnAmounts.stocks + returnAmounts.bonds + returnAmounts.cash;
+      const cumulativeReturnAmounts = lastDp.returns?.cumulativeReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
+      const lifetimeReturns = sumReturns(cumulativeReturnAmounts);
 
       const lifetimeContributions = sumTransactions(lastDp.portfolio.totalContributions);
 

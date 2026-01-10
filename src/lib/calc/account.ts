@@ -44,14 +44,14 @@ export abstract class Account {
     protected name: string,
     protected id: string,
     protected type: AccountInputs['type'],
-    protected totalReturns: AssetReturnAmounts,
+    protected cumulativeReturns: AssetReturnAmounts,
     protected totalContributions: AssetTransactions,
     protected totalEmployerMatch: number,
     protected totalWithdrawals: AssetTransactions,
     protected totalRealizedGains: number,
     protected totalEarningsWithdrawn: number,
     protected totalRmds: number,
-    protected totalYields: AssetYieldAmounts
+    protected cumulativeYields: AssetYieldAmounts
   ) {}
 
   getBalance(): number {
@@ -70,8 +70,8 @@ export abstract class Account {
     return this.type;
   }
 
-  getTotalReturns(): AssetReturnAmounts {
-    return this.totalReturns;
+  getCumulativeReturns(): AssetReturnAmounts {
+    return this.cumulativeReturns;
   }
 
   getTotalContributions(): AssetTransactions {
@@ -98,14 +98,14 @@ export abstract class Account {
     return this.totalRmds;
   }
 
-  getTotalYields(): AssetYieldAmounts {
-    return this.totalYields;
+  getCumulativeYields(): AssetYieldAmounts {
+    return this.cumulativeYields;
   }
 
   abstract getHasRMDs(): boolean;
   abstract getAccountData(): AccountData;
-  abstract applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts };
-  abstract applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts };
+  abstract applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; cumulativeReturns: AssetReturnAmounts };
+  abstract applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; cumulativeYields: AssetYieldAmounts };
   abstract applyContribution(amount: number, type: ContributionType, contributionAllocation: AssetAllocation): AssetTransactions;
   abstract applyWithdrawal(
     amount: number,
@@ -118,12 +118,25 @@ export class SavingsAccount extends Account {
   readonly taxCategory: TaxCategory = 'cashSavings';
 
   constructor(data: AccountInputs) {
-    const totalReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const cumulativeReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
     const totalContributions: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
     const totalWithdrawals: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
-    const totalYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const cumulativeYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
 
-    super(data.balance, data.name, data.id, data.type, totalReturns, totalContributions, 0, totalWithdrawals, 0, 0, 0, totalYields);
+    super(
+      data.balance,
+      data.name,
+      data.id,
+      data.type,
+      cumulativeReturns,
+      totalContributions,
+      0,
+      totalWithdrawals,
+      0,
+      0,
+      0,
+      cumulativeYields
+    );
   }
 
   getHasRMDs(): boolean {
@@ -148,24 +161,24 @@ export class SavingsAccount extends Account {
     };
   }
 
-  applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts } {
+  applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; cumulativeReturns: AssetReturnAmounts } {
     const cashReturnsAmount = this.balance * returns.cash;
 
     this.balance += cashReturnsAmount;
-    this.totalReturns.cash += cashReturnsAmount;
+    this.cumulativeReturns.cash += cashReturnsAmount;
 
-    return { returnsForPeriod: { cash: cashReturnsAmount, bonds: 0, stocks: 0 }, totalReturns: { ...this.totalReturns } };
+    return { returnsForPeriod: { cash: cashReturnsAmount, bonds: 0, stocks: 0 }, cumulativeReturns: { ...this.cumulativeReturns } };
   }
 
-  applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
+  applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; cumulativeYields: AssetYieldAmounts } {
     const { cash: cashYield } = yields;
 
     const cashYieldAmount = this.balance * cashYield;
-    this.totalYields.cash += cashYieldAmount;
+    this.cumulativeYields.cash += cashYieldAmount;
 
     return {
       yieldsForPeriod: { cash: cashYieldAmount, bonds: 0, stocks: 0 },
-      totalYields: { ...this.totalYields },
+      cumulativeYields: { ...this.cumulativeYields },
     };
   }
 
@@ -196,12 +209,25 @@ export abstract class InvestmentAccount extends Account {
   private currPercentBonds: number;
 
   constructor(data: AccountInputs & { type: InvestmentAccountType }) {
-    const totalReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const cumulativeReturns: AssetReturnAmounts = { cash: 0, bonds: 0, stocks: 0 };
     const totalContributions: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
     const totalWithdrawals: AssetTransactions = { cash: 0, bonds: 0, stocks: 0 };
-    const totalYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
+    const cumulativeYields: AssetYieldAmounts = { cash: 0, bonds: 0, stocks: 0 };
 
-    super(data.balance, data.name, data.id, data.type, totalReturns, totalContributions, 0, totalWithdrawals, 0, 0, 0, totalYields);
+    super(
+      data.balance,
+      data.name,
+      data.id,
+      data.type,
+      cumulativeReturns,
+      totalContributions,
+      0,
+      totalWithdrawals,
+      0,
+      0,
+      0,
+      cumulativeYields
+    );
     this.currPercentBonds = data.percentBonds / 100;
   }
 
@@ -227,7 +253,7 @@ export abstract class InvestmentAccount extends Account {
     };
   }
 
-  applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; totalReturns: AssetReturnAmounts } {
+  applyReturns(returns: AssetReturnRates): { returnsForPeriod: AssetReturnAmounts; cumulativeReturns: AssetReturnAmounts } {
     const bondsPercent = this.currPercentBonds;
     const stocksPercent = 1 - bondsPercent;
 
@@ -235,20 +261,23 @@ export abstract class InvestmentAccount extends Account {
     const currentStocksValue = this.balance * stocksPercent;
 
     const bondReturnsAmount = currentBondsValue * returns.bonds;
-    this.totalReturns.bonds += bondReturnsAmount;
+    this.cumulativeReturns.bonds += bondReturnsAmount;
     const newBondsValue = currentBondsValue + bondReturnsAmount;
 
     const stockReturnsAmount = currentStocksValue * returns.stocks;
-    this.totalReturns.stocks += stockReturnsAmount;
+    this.cumulativeReturns.stocks += stockReturnsAmount;
     const newStocksValue = currentStocksValue + stockReturnsAmount;
 
     this.balance = newBondsValue + newStocksValue;
     this.currPercentBonds = this.balance ? newBondsValue / this.balance : this.currPercentBonds;
 
-    return { returnsForPeriod: { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount }, totalReturns: { ...this.totalReturns } };
+    return {
+      returnsForPeriod: { cash: 0, bonds: bondReturnsAmount, stocks: stockReturnsAmount },
+      cumulativeReturns: { ...this.cumulativeReturns },
+    };
   }
 
-  applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; totalYields: AssetYieldAmounts } {
+  applyYields(yields: AssetYieldRates): { yieldsForPeriod: AssetYieldAmounts; cumulativeYields: AssetYieldAmounts } {
     const { stocks: dividendYield, bonds: bondYield } = yields;
 
     const bondsPercent = this.currPercentBonds;
@@ -260,12 +289,12 @@ export abstract class InvestmentAccount extends Account {
     const bondYieldAmount = currentBondsValue * bondYield;
     const dividendYieldAmount = currentStocksValue * dividendYield;
 
-    this.totalYields.bonds += bondYieldAmount;
-    this.totalYields.stocks += dividendYieldAmount;
+    this.cumulativeYields.bonds += bondYieldAmount;
+    this.cumulativeYields.stocks += dividendYieldAmount;
 
     return {
       yieldsForPeriod: { bonds: bondYieldAmount, stocks: dividendYieldAmount, cash: 0 },
-      totalYields: { ...this.totalYields },
+      cumulativeYields: { ...this.cumulativeYields },
     };
   }
 
