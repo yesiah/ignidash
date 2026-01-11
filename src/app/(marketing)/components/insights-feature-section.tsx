@@ -31,7 +31,7 @@ export default function InsightsFeatureSection() {
           <div className="absolute -inset-2 rounded-[calc(var(--radius-xl)+calc(var(--spacing)*2))] shadow-xs ring-1 ring-black/5 dark:bg-white/2.5 dark:ring-white/10" />
           <Image
             alt="AI insights screenshot"
-            src="/screenshots/new-insights-light.webp"
+            src="/screenshots/insights-light.webp"
             width={2362}
             height={1328}
             className="h-full rounded-xl shadow-2xl ring-1 ring-black/10 dark:hidden dark:ring-white/10"
@@ -39,7 +39,7 @@ export default function InsightsFeatureSection() {
           />
           <Image
             alt="AI insights screenshot"
-            src="/screenshots/new-insights-dark.webp"
+            src="/screenshots/insights-dark.webp"
             width={2362}
             height={1328}
             className="h-full rounded-xl shadow-2xl ring-1 ring-black/10 not-dark:hidden dark:ring-white/10"
