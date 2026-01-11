@@ -442,6 +442,9 @@ export default function SingleSimulationTaxesLineChart({
         <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
         <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
         <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+        {(dataView === 'taxableIncome' || dataView === 'adjustedGrossIncome') && (
+          <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />
+        )}
         {lineDataKeys.map((dataKey, i) => (
           <Line
             key={`line-${dataKey}-${i}`}

@@ -450,6 +450,9 @@ export default function SingleSimulationTaxesBarChart({
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+          {(dataView === 'taxableIncome' || dataView === 'adjustedGrossIncome') && (
+            <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />
+          )}
           {Array.from({ length: maxSegments }).map((_, segmentIndex) => (
             <Bar key={segmentIndex} dataKey={getDataKey(segmentIndex)} maxBarSize={75} minPointSize={20} stackId={stackId}>
               {normalizedData.map((entry, i) => {
