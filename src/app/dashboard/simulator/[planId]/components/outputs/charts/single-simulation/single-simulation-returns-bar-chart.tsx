@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -14,12 +14,13 @@ const CustomLabelListContent = (props: any) => {
     return null;
   }
 
-  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'custom') => {
+  const formatValue = (value: number, mode: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom') => {
     switch (mode) {
       case 'rates':
         return `${(value * 100).toFixed(1)}%`;
       case 'annualAmounts':
       case 'cumulativeAmounts':
+      case 'taxCategory':
       case 'custom':
         return formatNumber(value, 1, '$');
       default:
@@ -31,7 +32,7 @@ const CustomLabelListContent = (props: any) => {
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill="currentColor"
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -56,11 +57,9 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-const COLORS = ['var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--foreground)'];
-
 interface SingleSimulationReturnsBarChartProps {
   age: number;
-  dataView: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'custom';
+  dataView: 'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom';
   rawChartData: SingleSimulationReturnsChartDataPoint[];
   customDataID: string;
 }
@@ -76,20 +75,24 @@ export default function SingleSimulationReturnsBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     rates: {
-      mobile: ['Stock Return', 'Bond Return', 'Cash Return', 'Inflation Rate'],
-      desktop: ['Real Stock Return', 'Real Bond Return', 'Real Cash Return', 'Inflation Rate'],
+      mobile: ['Stock Rate', 'Bond Rate', 'Cash Rate', 'Inflation Rate'],
+      desktop: ['Real Stock Rate', 'Real Bond Rate', 'Real Cash Rate', 'Inflation Rate'],
     },
     annualAmounts: {
-      mobile: ['Stock Growth', 'Bond Growth', 'Cash Growth'],
-      desktop: ['Annual Stock Growth', 'Annual Bond Growth', 'Annual Cash Growth'],
+      mobile: ['Stock Gain', 'Bond Gain', 'Cash Gain'],
+      desktop: ['Annual Stock Gain', 'Annual Bond Gain', 'Annual Cash Gain'],
     },
     cumulativeAmounts: {
       mobile: ['Cumul. Stock', 'Cumul. Bond', 'Cumul. Cash'],
-      desktop: ['Cumul. Stock Growth', 'Cumul. Bond Growth', 'Cumul. Cash Growth'],
+      desktop: ['Cumul. Stock Gain', 'Cumul. Bond Gain', 'Cumul. Cash Gain'],
+    },
+    taxCategory: {
+      mobile: ['Taxable', 'Tax-Deferred', 'Tax-Free', 'Cash'],
+      desktop: ['Taxable Gains', 'Tax-Deferred Gains', 'Tax-Free Gains', 'Cash Gains'],
     },
     custom: {
-      mobile: ['Stock Growth', 'Bond Growth', 'Cash Growth'],
-      desktop: ['Annual Stock Growth', 'Annual Bond Growth', 'Annual Cash Growth'],
+      mobile: ['Stock Gain', 'Bond Gain', 'Cash Gain'],
+      desktop: ['Annual Stock Gain', 'Annual Bond Gain', 'Annual Cash Gain'],
     },
   };
 
@@ -100,98 +103,110 @@ export default function SingleSimulationReturnsBarChart({
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let formatter = undefined;
-  let transformedChartData: { name: string; amount: number }[] = [];
+  let transformedChartData: { name: string; amount: number; color: string }[] = [];
+
   switch (dataView) {
     case 'rates': {
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+
       const [stockLabel, bondLabel, cashLabel, inflationLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.realStockReturn },
-        { name: bondLabel, amount: item.realBondReturn },
-        { name: cashLabel, amount: item.realCashReturn },
-        { name: inflationLabel, amount: item.inflationRate },
+        { name: stockLabel, amount: item.realStockReturnRate, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.realBondReturnRate, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.realCashReturnRate, color: 'var(--chart-4)' },
+        { name: inflationLabel, amount: item.inflationRate, color: 'var(--foreground)' },
       ]);
-      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     }
     case 'annualAmounts': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.annualStockGrowth },
-        { name: bondLabel, amount: item.annualBondGrowth },
-        { name: cashLabel, amount: item.annualCashGrowth },
+        { name: stockLabel, amount: item.annualStockGain, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.annualBondGain, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.annualCashGain, color: 'var(--chart-4)' },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'cumulativeAmounts': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: stockLabel, amount: item.cumulativeStockGrowth },
-        { name: bondLabel, amount: item.cumulativeBondGrowth },
-        { name: cashLabel, amount: item.cumulativeCashGrowth },
+        { name: stockLabel, amount: item.cumulativeStockGain, color: 'var(--chart-2)' },
+        { name: bondLabel, amount: item.cumulativeBondGain, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.cumulativeCashGain, color: 'var(--chart-4)' },
       ]);
+      break;
+    }
+    case 'taxCategory': {
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      const [taxableLabel, taxDeferredLabel, taxFreeLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      transformedChartData = chartData.flatMap((item) => [
+        { name: taxableLabel, amount: item.taxableGains, color: 'var(--chart-1)' },
+        { name: taxDeferredLabel, amount: item.taxDeferredGains, color: 'var(--chart-2)' },
+        { name: taxFreeLabel, amount: item.taxFreeGains, color: 'var(--chart-3)' },
+        { name: cashLabel, amount: item.cashSavingsGains, color: 'var(--chart-4)' },
+      ]);
       break;
     }
     case 'custom': {
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
-        transformedChartData = [];
         break;
       }
+
+      formatter = (value: number) => formatNumber(value, 1, '$');
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .flatMap(({ id, returnAmountsForPeriod }) => [
-          { id, name: stockLabel, amount: returnAmountsForPeriod.stocks },
-          { id, name: bondLabel, amount: returnAmountsForPeriod.bonds },
-          { id, name: cashLabel, amount: returnAmountsForPeriod.cash },
+        .flatMap(({ returnAmountsForPeriod }) => [
+          { name: stockLabel, amount: returnAmountsForPeriod.stocks, color: 'var(--chart-2)' },
+          { name: bondLabel, amount: returnAmountsForPeriod.bonds, color: 'var(--chart-3)' },
+          { name: cashLabel, amount: returnAmountsForPeriod.cash, color: 'var(--chart-4)' },
         ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
   }
 
   if (transformedChartData.length === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
   const shouldUseCustomTick = transformedChartData.length > 3 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
   return (
-    <div className="h-full min-h-64 w-full sm:min-h-72 lg:min-h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+    <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={transformedChartData}
           className="text-xs"
-          margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+          margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }}
           tabIndex={-1}
         >
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-          <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
+          <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
-            {transformedChartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-                stroke={COLORS[index % COLORS.length]}
-                strokeWidth={3}
-                fillOpacity={0.5}
-              />
+          <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />
+          <Bar
+            dataKey="amount"
+            maxBarSize={75}
+            minPointSize={20}
+            label={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
+          >
+            {transformedChartData.map((entry, i) => (
+              <Cell key={`${entry.name}-${i}`} fill={entry.color} fillOpacity={0.5} stroke={entry.color} strokeWidth={3} />
             ))}
-            <LabelList
-              dataKey="amount"
-              position="middle"
-              content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
-            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

@@ -406,13 +406,13 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       earnedIncome: cashFlowData[i].earnedIncome,
       socialSecurityIncome: cashFlowData[i].socialSecurityIncome,
       taxExemptIncome: cashFlowData[i].taxExemptIncome,
-      retirementDistributions: taxesData[i].retirementDistributions,
-      interestIncome: taxesData[i].interestIncome,
+      retirementDistributions: taxesData[i].taxableRetirementDistributions,
+      interestIncome: taxesData[i].taxableInterestIncome,
       realizedGains: taxesData[i].realizedGains,
-      dividendIncome: taxesData[i].dividendIncome,
-      totalTaxesAndPenalties: cashFlowData[i].totalTaxesAndPenalties,
+      dividendIncome: taxesData[i].taxableDividendIncome,
+      taxesAndPenalties: cashFlowData[i].taxesAndPenalties,
       expenses: cashFlowData[i].expenses,
-      netCashFlow: cashFlowData[i].cashFlow,
+      netCashFlow: cashFlowData[i].netCashFlow,
       savingsRate: cashFlowData[i].savingsRate,
 
       // Taxes
@@ -427,7 +427,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       topMarginalIncomeTaxRate: taxesData[i].topMarginalIncomeTaxRate,
       effectiveCapitalGainsTaxRate: taxesData[i].effectiveCapGainsTaxRate,
       topMarginalCapitalGainsTaxRate: taxesData[i].topMarginalCapGainsTaxRate,
-      taxDeferredContributionsDeduction: taxesData[i].taxDeferredContributions,
+      taxDeductibleContributions: taxesData[i].taxDeductibleContributions,
       capitalLossDeduction: taxesData[i].capitalLossDeduction,
 
       // Contributions
@@ -435,7 +435,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       taxableContributions: contributionsData[i].taxableContributions,
       taxDeferredContributions: contributionsData[i].taxDeferredContributions,
       taxFreeContributions: contributionsData[i].taxFreeContributions,
-      cashContributions: contributionsData[i].cashContributions,
+      cashContributions: contributionsData[i].cashSavingsContributions,
       employerMatch: contributionsData[i].annualEmployerMatch,
 
       // Withdrawals
@@ -443,7 +443,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       taxableWithdrawals: withdrawalsData[i].taxableWithdrawals,
       taxDeferredWithdrawals: withdrawalsData[i].taxDeferredWithdrawals,
       taxFreeWithdrawals: withdrawalsData[i].taxFreeWithdrawals,
-      cashWithdrawals: withdrawalsData[i].cashWithdrawals,
+      cashWithdrawals: withdrawalsData[i].cashSavingsWithdrawals,
       requiredMinimumDistributions: withdrawalsData[i].annualRequiredMinimumDistributions,
       earlyWithdrawals: withdrawalsData[i].annualEarlyWithdrawals,
       rothEarningsWithdrawals: withdrawalsData[i].annualRothEarningsWithdrawals,

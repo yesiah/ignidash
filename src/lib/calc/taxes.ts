@@ -5,6 +5,7 @@ import type { SimulationState } from './simulation-engine';
 import type { IncomesData } from './incomes';
 import type { PortfolioData } from './portfolio';
 import type { ReturnsData } from './returns';
+import { sumTransactions } from './asset';
 import {
   STANDARD_DEDUCTION_SINGLE,
   STANDARD_DEDUCTION_MARRIED_FILING_JOINTLY,
@@ -22,6 +23,7 @@ import {
   CAPITAL_GAINS_TAX_BRACKETS_MARRIED_FILING_JOINTLY,
   CAPITAL_GAINS_TAX_BRACKETS_HEAD_OF_HOUSEHOLD,
 } from './tax-data/capital-gains-tax-brackets';
+import { NIIT_RATE, NIIT_THRESHOLDS } from './tax-data/niit-thresholds';
 import {
   type SocialSecurityTaxThreshold,
   SOCIAL_SECURITY_TAX_THRESHOLDS_SINGLE,
@@ -30,7 +32,7 @@ import {
 } from './tax-data/social-security-tax-brackets';
 
 export interface CapitalGainsTaxesData {
-  taxableCapitalGains: number;
+  taxableIncomeTaxedAsCapGains: number;
   capitalGainsTaxAmount: number;
   effectiveCapitalGainsTaxRate: number;
   topMarginalCapitalGainsTaxRate: number;
@@ -38,7 +40,7 @@ export interface CapitalGainsTaxesData {
 }
 
 export interface IncomeTaxesData {
-  taxableOrdinaryIncome: number;
+  taxableIncomeTaxedAsOrdinary: number;
   incomeTaxAmount: number;
   effectiveIncomeTaxRate: number;
   topMarginalIncomeTaxRate: number;
@@ -46,10 +48,17 @@ export interface IncomeTaxesData {
   capitalLossDeduction?: number;
 }
 
+export interface NIITData {
+  netInvestmentIncome: number;
+  incomeSubjectToNiit: number;
+  niitAmount: number;
+  threshold: number;
+}
+
 export interface TaxesData {
-  adjustedGrossIncome: number;
   incomeTaxes: IncomeTaxesData;
   capitalGainsTaxes: CapitalGainsTaxesData;
+  niit: NIITData;
   earlyWithdrawalPenalties: EarlyWithdrawalPenaltyData;
   socialSecurityTaxes: SocialSecurityTaxesData;
   incomeSources: IncomeSourcesData;
@@ -67,16 +76,38 @@ export interface EarlyWithdrawalPenaltyData {
 }
 
 export interface SocialSecurityTaxesData {
-  taxableSocialSecurity: number;
+  taxableSocialSecurityIncome: number;
   maxTaxablePercentage: number;
   actualTaxablePercentage: number;
   provisionalIncome: number;
 }
 
-// TODO: Add more income source data
-// Reduces code duplication from getTaxableIncomeSources
 export interface IncomeSourcesData {
-  adjustedRealizedGains: number;
+  realizedGains: number;
+  capitalLossDeduction: number;
+  taxDeferredWithdrawals: number;
+  taxableRetirementDistributions: number;
+  taxableDividendIncome: number;
+  taxableInterestIncome: number;
+  earnedIncome: number;
+  socialSecurityIncome: number;
+  taxableSocialSecurityIncome: number;
+  maxTaxableSocialSecurityPercentage: number;
+  provisionalIncome: number;
+  taxExemptIncome: number;
+  grossIncome: number;
+  incomeTaxedAsOrdinary: number;
+  incomeTaxedAsCapGains: number;
+  taxDeductibleContributions: number;
+  adjustedGrossIncome: number;
+  adjustedIncomeTaxedAsOrdinary: number;
+  adjustedIncomeTaxedAsCapGains: number;
+  totalIncome: number;
+  earlyWithdrawals: {
+    rothEarnings: number;
+    '401kAndIra': number;
+    hsa: number;
+  };
 }
 
 export class TaxProcessor {
@@ -88,84 +119,207 @@ export class TaxProcessor {
   ) {}
 
   process(annualPortfolioDataBeforeTaxes: PortfolioData, annualIncomesData: IncomesData, annualReturnsData: ReturnsData): TaxesData {
-    const { totalIncome, adjustedOrdinaryIncome, taxDeferredContributions } = this.getIncomeData(
-      annualPortfolioDataBeforeTaxes,
-      annualIncomesData,
-      annualReturnsData
-    );
-    const { adjustedRealizedGains, capitalLossDeduction } = this.getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes);
+    const incomeData = this.getTaxableIncomeData(annualPortfolioDataBeforeTaxes, annualIncomesData, annualReturnsData);
 
-    let adjustedIncomeTaxedAsIncome = Math.max(0, adjustedOrdinaryIncome - capitalLossDeduction);
-    const adjustedIncomeTaxedAsCapGains = adjustedRealizedGains + annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
-
-    const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
-    const provisionalIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains + socialSecurityIncome * 0.5;
-
-    const { taxableSocialSecurity, maxTaxablePercentage } = this.getTaxablePortionOfSocialSecurityIncome(
-      provisionalIncome,
-      socialSecurityIncome
-    );
-    adjustedIncomeTaxedAsIncome += taxableSocialSecurity;
     const socialSecurityTaxes: SocialSecurityTaxesData = {
-      taxableSocialSecurity,
-      maxTaxablePercentage,
-      actualTaxablePercentage: socialSecurityIncome > 0 ? taxableSocialSecurity / socialSecurityIncome : 0,
-      provisionalIncome,
+      taxableSocialSecurityIncome: incomeData.taxableSocialSecurityIncome,
+      maxTaxablePercentage: incomeData.maxTaxableSocialSecurityPercentage,
+      actualTaxablePercentage:
+        incomeData.socialSecurityIncome > 0 ? incomeData.taxableSocialSecurityIncome / incomeData.socialSecurityIncome : 0,
+      provisionalIncome: incomeData.provisionalIncome,
     };
-
-    const adjustedGrossIncome = adjustedIncomeTaxedAsIncome + adjustedIncomeTaxedAsCapGains;
 
     const standardDeduction = this.getStandardDeduction();
-    const deductionUsedForOrdinary = Math.min(standardDeduction, adjustedIncomeTaxedAsIncome);
+    const deductionUsedForOrdinary = Math.min(standardDeduction, incomeData.adjustedIncomeTaxedAsOrdinary);
     const deductionUsedForGains = standardDeduction - deductionUsedForOrdinary;
 
-    const taxableOrdinaryIncome = Math.max(0, adjustedIncomeTaxedAsIncome - deductionUsedForOrdinary);
-    const taxableCapitalGains = Math.max(0, adjustedIncomeTaxedAsCapGains - deductionUsedForGains);
+    const taxableIncomeTaxedAsOrdinary = Math.max(0, incomeData.adjustedIncomeTaxedAsOrdinary - deductionUsedForOrdinary);
+    const taxableIncomeTaxedAsCapGains = Math.max(0, incomeData.adjustedIncomeTaxedAsCapGains - deductionUsedForGains);
 
-    const { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets } = this.processIncomeTaxes(taxableOrdinaryIncome);
+    const { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets } = this.processIncomeTaxes({ taxableIncomeTaxedAsOrdinary });
     const incomeTaxes: IncomeTaxesData = {
-      taxableOrdinaryIncome,
+      taxableIncomeTaxedAsOrdinary,
       incomeTaxAmount,
-      effectiveIncomeTaxRate: totalIncome > 0 ? incomeTaxAmount / totalIncome : 0,
+      effectiveIncomeTaxRate: incomeData.totalIncome > 0 ? incomeTaxAmount / incomeData.totalIncome : 0,
       topMarginalIncomeTaxRate,
       incomeTaxBrackets,
-      capitalLossDeduction: capitalLossDeduction !== 0 ? capitalLossDeduction : undefined,
+      capitalLossDeduction: incomeData.capitalLossDeduction !== 0 ? incomeData.capitalLossDeduction : undefined,
     };
 
-    const { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets } = this.processCapitalGainsTaxes(
-      taxableCapitalGains,
-      taxableOrdinaryIncome
-    );
+    const { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets } = this.processCapitalGainsTaxes({
+      taxableIncomeTaxedAsCapGains,
+      taxableIncomeTaxedAsOrdinary,
+    });
     const capitalGainsTaxes: CapitalGainsTaxesData = {
-      taxableCapitalGains,
+      taxableIncomeTaxedAsCapGains,
       capitalGainsTaxAmount,
-      effectiveCapitalGainsTaxRate: adjustedIncomeTaxedAsCapGains > 0 ? capitalGainsTaxAmount / adjustedIncomeTaxedAsCapGains : 0,
+      effectiveCapitalGainsTaxRate:
+        incomeData.adjustedIncomeTaxedAsCapGains > 0 ? capitalGainsTaxAmount / incomeData.adjustedIncomeTaxedAsCapGains : 0,
       topMarginalCapitalGainsTaxRate,
       capitalGainsTaxBrackets,
     };
 
-    const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes);
+    const niit = this.processNIIT(incomeData);
+
+    const earlyWithdrawalPenalties = this.processEarlyWithdrawalPenalties(incomeData.earlyWithdrawals);
 
     const totalTaxLiabilityExcludingFICA =
-      incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount + earlyWithdrawalPenalties.totalPenaltyAmount;
+      incomeTaxes.incomeTaxAmount + capitalGainsTaxes.capitalGainsTaxAmount + niit.niitAmount + earlyWithdrawalPenalties.totalPenaltyAmount;
     const difference = totalTaxLiabilityExcludingFICA - annualIncomesData.totalAmountWithheld;
 
     return {
-      adjustedGrossIncome,
       incomeTaxes,
       capitalGainsTaxes,
+      niit,
       earlyWithdrawalPenalties,
       socialSecurityTaxes,
-      incomeSources: { adjustedRealizedGains },
+      incomeSources: incomeData,
       totalTaxesDue: difference > 0 ? difference : 0,
       totalTaxesRefund: difference < 0 ? Math.abs(difference) : 0,
-      totalTaxableIncome: taxableOrdinaryIncome + taxableCapitalGains,
-      adjustments: { taxDeferredContributions, capitalLossDeduction },
+      totalTaxableIncome: taxableIncomeTaxedAsOrdinary + taxableIncomeTaxedAsCapGains,
+      adjustments: {
+        taxDeductibleContributions: incomeData.taxDeductibleContributions,
+        capitalLossDeduction: incomeData.capitalLossDeduction,
+      },
       deductions: { standardDeduction },
     };
   }
 
-  private processIncomeTaxes(taxableOrdinaryIncome: number): {
+  private getTaxableIncomeData(
+    annualPortfolioDataBeforeTaxes: PortfolioData,
+    annualIncomesData: IncomesData,
+    annualReturnsData: ReturnsData
+  ): IncomeSourcesData {
+    const age = this.simulationState.time.age;
+
+    const regularQualifiedWithdrawalAge = 59.5;
+    const hsaQualifiedWithdrawalAge = 65;
+
+    let taxDeferredWithdrawals = 0;
+    let earlyRothEarningsWithdrawals = 0;
+    let early401kAndIraWithdrawals = 0;
+    let earlyHsaWithdrawals = 0;
+
+    for (const account of Object.values(annualPortfolioDataBeforeTaxes.perAccountData)) {
+      switch (account.type) {
+        case 'roth401k':
+        case 'roth403b':
+        case 'rothIra': {
+          if (age < regularQualifiedWithdrawalAge) {
+            const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
+
+            earlyRothEarningsWithdrawals += annualEarningsWithdrawn;
+          }
+          break;
+        }
+        case '401k':
+        case '403b':
+        case 'ira': {
+          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
+
+          taxDeferredWithdrawals += annualWithdrawals;
+          if (age < regularQualifiedWithdrawalAge) early401kAndIraWithdrawals += annualWithdrawals;
+          break;
+        }
+        case 'hsa': {
+          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
+
+          taxDeferredWithdrawals += annualWithdrawals;
+          if (age < hsaQualifiedWithdrawalAge) earlyHsaWithdrawals += annualWithdrawals;
+          break;
+        }
+        default:
+          break;
+      }
+    }
+
+    const taxableRetirementDistributions = taxDeferredWithdrawals + earlyRothEarningsWithdrawals;
+    const { realizedGains, capitalLossDeduction } = this.getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes);
+    const taxableDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
+    const taxableInterestIncome =
+      annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
+
+    const totalIncomeFromIncomes = annualIncomesData.totalIncome;
+    const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
+    const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
+    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
+
+    const incomeTaxedAsOrdinaryExceptSocSec = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
+    const incomeTaxedAsCapGains = realizedGains + taxableDividendIncome;
+    const grossIncomeExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec + incomeTaxedAsCapGains;
+
+    const taxDeferredAccountTypes: AccountInputs['type'][] = ['401k', '403b', 'ira', 'hsa'];
+    const taxDeductibleContributions = this.getEmployeeContributionsForAccountTypes(
+      annualPortfolioDataBeforeTaxes,
+      taxDeferredAccountTypes
+    );
+
+    const totalAdjustments = taxDeductibleContributions + capitalLossDeduction;
+    const adjustmentsAppliedToOrdinary = Math.min(totalAdjustments, incomeTaxedAsOrdinaryExceptSocSec);
+    const adjustmentsAppliedToCapGains = totalAdjustments - adjustmentsAppliedToOrdinary;
+
+    const adjustedIncomeTaxedAsOrdinaryExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec - adjustmentsAppliedToOrdinary;
+    const adjustedIncomeTaxedAsCapGains = Math.max(0, incomeTaxedAsCapGains - adjustmentsAppliedToCapGains);
+    const adjustedGrossIncomeExceptSocSec = adjustedIncomeTaxedAsOrdinaryExceptSocSec + adjustedIncomeTaxedAsCapGains;
+
+    const provisionalIncome = adjustedGrossIncomeExceptSocSec + socialSecurityIncome * 0.5;
+    const { taxableSocialSecurityIncome, maxTaxableSocialSecurityPercentage } = this.getTaxablePortionOfSocialSecurityIncome({
+      provisionalIncome,
+      socialSecurityIncome,
+    });
+
+    const incomeTaxedAsOrdinary = incomeTaxedAsOrdinaryExceptSocSec + taxableSocialSecurityIncome;
+    const adjustedIncomeTaxedAsOrdinary = adjustedIncomeTaxedAsOrdinaryExceptSocSec + taxableSocialSecurityIncome;
+    const adjustedGrossIncome = adjustedIncomeTaxedAsOrdinary + adjustedIncomeTaxedAsCapGains;
+
+    const grossIncome = grossIncomeExceptSocSec + taxableSocialSecurityIncome;
+    const totalIncome = grossIncome + taxExemptIncome + (socialSecurityIncome - taxableSocialSecurityIncome);
+
+    return {
+      realizedGains,
+      capitalLossDeduction,
+      taxDeferredWithdrawals,
+      taxableRetirementDistributions,
+      taxableDividendIncome,
+      taxableInterestIncome,
+      earnedIncome,
+      socialSecurityIncome,
+      taxableSocialSecurityIncome,
+      maxTaxableSocialSecurityPercentage,
+      provisionalIncome,
+      taxExemptIncome,
+      grossIncome,
+      incomeTaxedAsOrdinary,
+      incomeTaxedAsCapGains,
+      taxDeductibleContributions,
+      adjustedGrossIncome,
+      adjustedIncomeTaxedAsOrdinary,
+      adjustedIncomeTaxedAsCapGains,
+      totalIncome,
+      earlyWithdrawals: {
+        rothEarnings: earlyRothEarningsWithdrawals,
+        '401kAndIra': early401kAndIraWithdrawals,
+        hsa: earlyHsaWithdrawals,
+      },
+    };
+  }
+
+  private getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes: PortfolioData): {
+    realizedGains: number;
+    capitalLossDeduction: number;
+  } {
+    const realizedGainsAfterCarryover = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + this.capitalLossCarryover;
+    if (realizedGainsAfterCarryover >= 0) {
+      this.capitalLossCarryover = 0;
+      return { realizedGains: realizedGainsAfterCarryover, capitalLossDeduction: 0 };
+    }
+
+    const capitalLossDeduction = -Math.max(-3000, realizedGainsAfterCarryover);
+    this.capitalLossCarryover = realizedGainsAfterCarryover + capitalLossDeduction;
+    return { realizedGains: 0, capitalLossDeduction };
+  }
+
+  private processIncomeTaxes({ taxableIncomeTaxedAsOrdinary }: { taxableIncomeTaxedAsOrdinary: number }): {
     incomeTaxAmount: number;
     topMarginalIncomeTaxRate: number;
     incomeTaxBrackets: IncomeTaxBracket[];
@@ -175,9 +329,9 @@ export class TaxProcessor {
 
     const incomeTaxBrackets = this.getIncomeTaxBrackets();
     for (const bracket of incomeTaxBrackets) {
-      if (taxableOrdinaryIncome <= bracket.min) break;
+      if (taxableIncomeTaxedAsOrdinary <= bracket.min) break;
 
-      const taxableInBracket = Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min;
+      const taxableInBracket = Math.min(taxableIncomeTaxedAsOrdinary, bracket.max) - bracket.min;
       incomeTaxAmount += taxableInBracket * bracket.rate;
       topMarginalIncomeTaxRate = bracket.rate;
     }
@@ -185,15 +339,18 @@ export class TaxProcessor {
     return { incomeTaxAmount, topMarginalIncomeTaxRate, incomeTaxBrackets };
   }
 
-  private processCapitalGainsTaxes(
-    taxableCapitalGains: number,
-    taxableOrdinaryIncome: number
-  ): {
+  private processCapitalGainsTaxes({
+    taxableIncomeTaxedAsCapGains,
+    taxableIncomeTaxedAsOrdinary,
+  }: {
+    taxableIncomeTaxedAsCapGains: number;
+    taxableIncomeTaxedAsOrdinary: number;
+  }): {
     capitalGainsTaxAmount: number;
     topMarginalCapitalGainsTaxRate: number;
     capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
   } {
-    const totalTaxableIncome = taxableOrdinaryIncome + taxableCapitalGains;
+    const totalTaxableIncome = taxableIncomeTaxedAsOrdinary + taxableIncomeTaxedAsCapGains;
 
     let capitalGainsTaxAmount = 0;
     let topMarginalCapitalGainsTaxRate = 0;
@@ -203,7 +360,7 @@ export class TaxProcessor {
       if (totalTaxableIncome <= bracket.min) break;
 
       const incomeInBracket = Math.min(totalTaxableIncome, bracket.max) - bracket.min;
-      const ordinaryIncomeInBracket = Math.max(0, Math.min(taxableOrdinaryIncome, bracket.max) - bracket.min);
+      const ordinaryIncomeInBracket = Math.max(0, Math.min(taxableIncomeTaxedAsOrdinary, bracket.max) - bracket.min);
       const capitalGainsInBracket = incomeInBracket - ordinaryIncomeInBracket;
 
       capitalGainsTaxAmount += capitalGainsInBracket * bracket.rate;
@@ -213,112 +370,57 @@ export class TaxProcessor {
     return { capitalGainsTaxAmount, topMarginalCapitalGainsTaxRate, capitalGainsTaxBrackets };
   }
 
-  private processEarlyWithdrawalPenalties(annualPortfolioDataBeforeTaxes: PortfolioData): EarlyWithdrawalPenaltyData {
-    let taxDeferredPenaltyAmount = 0;
-    let taxFreePenaltyAmount = 0;
+  private processNIIT(incomeData: IncomeSourcesData): NIITData {
+    const threshold = NIIT_THRESHOLDS[this.filingStatus];
 
-    const age = this.simulationState.time.age;
-    const regularQualifiedWithdrawalAge = 59.5;
+    const { taxableDividendIncome, taxableInterestIncome, capitalLossDeduction, realizedGains, adjustedGrossIncome } = incomeData;
 
-    if (age < regularQualifiedWithdrawalAge) {
-      const taxDeferredWithdrawalsFrom401kAndIra = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, [
-        '401k',
-        '403b',
-        'ira',
-      ]);
-      taxDeferredPenaltyAmount += taxDeferredWithdrawalsFrom401kAndIra * 0.1;
+    const otherInvestmentIncome = Math.max(0, taxableDividendIncome + taxableInterestIncome - capitalLossDeduction);
+    const netInvestmentIncome = realizedGains + otherInvestmentIncome;
 
-      const earningsWithdrawnFromRoth = this.getEarningsWithdrawnFromRothAccountTypes(annualPortfolioDataBeforeTaxes);
-      taxFreePenaltyAmount += earningsWithdrawnFromRoth * 0.1;
-    }
+    const magiOverThreshold = Math.max(0, adjustedGrossIncome - threshold);
+    const incomeSubjectToNiit = Math.min(netInvestmentIncome, magiOverThreshold);
+    const niitAmount = incomeSubjectToNiit * NIIT_RATE;
 
-    const hsaQualifiedWithdrawalAge = 65;
-    if (age < hsaQualifiedWithdrawalAge) {
-      const taxDeferredWithdrawalsFromHsa = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, ['hsa']);
-      taxDeferredPenaltyAmount += taxDeferredWithdrawalsFromHsa * 0.2;
-    }
+    return { netInvestmentIncome, incomeSubjectToNiit, niitAmount, threshold };
+  }
+
+  private processEarlyWithdrawalPenalties(earlyWithdrawalsData: IncomeSourcesData['earlyWithdrawals']): EarlyWithdrawalPenaltyData {
+    const taxDeferredPenaltyAmount = earlyWithdrawalsData['401kAndIra'] * 0.1 + earlyWithdrawalsData.hsa * 0.2;
+    const taxFreePenaltyAmount = earlyWithdrawalsData.rothEarnings * 0.1;
 
     return { taxDeferredPenaltyAmount, taxFreePenaltyAmount, totalPenaltyAmount: taxDeferredPenaltyAmount + taxFreePenaltyAmount };
   }
 
-  private getIncomeData(
-    annualPortfolioDataBeforeTaxes: PortfolioData,
-    annualIncomesData: IncomesData,
-    annualReturnsData: ReturnsData
-  ): { totalIncome: number; grossOrdinaryIncome: number; adjustedOrdinaryIncome: number; taxDeferredContributions: number } {
-    const grossIncomeFromIncomes = annualIncomesData.totalIncome;
-    const grossIncomeFromInterest =
-      annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
-
-    const age = this.simulationState.time.age;
-    const rothEarningsQualifiedWithdrawalAge = 59.5;
-
-    let grossIncomeFromTaxDeferredWithdrawals = this.getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes, [
-      '401k',
-      '403b',
-      'ira',
-      'hsa',
-    ]);
-    if (age < rothEarningsQualifiedWithdrawalAge) {
-      grossIncomeFromTaxDeferredWithdrawals += this.getEarningsWithdrawnFromRothAccountTypes(annualPortfolioDataBeforeTaxes);
-    }
-
-    const taxDeferredContributions = this.getEmployeeContributionsForAccountTypes(annualPortfolioDataBeforeTaxes, [
-      '401k',
-      '403b',
-      'ira',
-      'hsa',
-    ]);
-    const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
-    const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
-
-    const totalIncome = grossIncomeFromIncomes + grossIncomeFromInterest + grossIncomeFromTaxDeferredWithdrawals;
-    const grossOrdinaryIncome = Math.max(0, totalIncome - socialSecurityIncome - taxExemptIncome);
-    const adjustedOrdinaryIncome = Math.max(0, grossOrdinaryIncome - taxDeferredContributions);
-
-    return {
-      totalIncome,
-      grossOrdinaryIncome,
-      adjustedOrdinaryIncome,
-      taxDeferredContributions,
-    };
-  }
-
-  private getRealizedGainsAndCapLossDeductionData(annualPortfolioDataBeforeTaxes: PortfolioData): {
-    adjustedRealizedGains: number;
-    capitalLossDeduction: number;
-  } {
-    const adjustedRealizedGains = annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + this.capitalLossCarryover;
-    if (adjustedRealizedGains >= 0) {
-      this.capitalLossCarryover = 0;
-      return { adjustedRealizedGains, capitalLossDeduction: 0 };
-    } else {
-      const capitalLossDeduction = -Math.max(-3000, adjustedRealizedGains);
-      this.capitalLossCarryover = adjustedRealizedGains + capitalLossDeduction;
-      return { adjustedRealizedGains: 0, capitalLossDeduction };
-    }
-  }
-
-  private getTaxablePortionOfSocialSecurityIncome(
-    provisionalIncome: number,
-    totalSocialSecurityIncome: number
-  ): { taxableSocialSecurity: number; maxTaxablePercentage: number } {
+  private getTaxablePortionOfSocialSecurityIncome({
+    provisionalIncome,
+    socialSecurityIncome,
+  }: {
+    provisionalIncome: number;
+    socialSecurityIncome: number;
+  }): { taxableSocialSecurityIncome: number; maxTaxableSocialSecurityPercentage: number } {
     const thresholds = this.getSocialSecurityTaxThresholds();
 
-    if (provisionalIncome <= thresholds[0].max) return { taxableSocialSecurity: 0, maxTaxablePercentage: 0 };
+    if (provisionalIncome <= thresholds[0].max) return { taxableSocialSecurityIncome: 0, maxTaxableSocialSecurityPercentage: 0 };
 
     if (provisionalIncome > thresholds[1].min && provisionalIncome <= thresholds[1].max) {
       const excessIncome = provisionalIncome - thresholds[1].min;
-      return { taxableSocialSecurity: Math.min(excessIncome * 0.5, totalSocialSecurityIncome * 0.5), maxTaxablePercentage: 0.5 };
+      return {
+        taxableSocialSecurityIncome: Math.min(excessIncome * 0.5, socialSecurityIncome * 0.5),
+        maxTaxableSocialSecurityPercentage: 0.5,
+      };
     }
 
     const tier1Excess = thresholds[1].max - thresholds[1].min;
-    const tier1Amount = Math.min(tier1Excess * 0.5, totalSocialSecurityIncome * 0.5);
+    const tier1Amount = Math.min(tier1Excess * 0.5, socialSecurityIncome * 0.5);
 
     const tier2Excess = provisionalIncome - thresholds[2].min;
     const tier2Amount = tier2Excess * 0.85;
 
-    return { taxableSocialSecurity: Math.min(tier1Amount + tier2Amount, totalSocialSecurityIncome * 0.85), maxTaxablePercentage: 0.85 };
+    return {
+      taxableSocialSecurityIncome: Math.min(tier1Amount + tier2Amount, socialSecurityIncome * 0.85),
+      maxTaxableSocialSecurityPercentage: 0.85,
+    };
   }
 
   private getEmployeeContributionsForAccountTypes(
@@ -327,21 +429,7 @@ export class TaxProcessor {
   ): number {
     return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (account.contributionsForPeriod - account.employerMatchForPeriod), 0);
-  }
-
-  private getWithdrawalsForAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData, accountTypes: AccountInputs['type'][]): number {
-    return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
-      .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + account.withdrawalsForPeriod, 0);
-  }
-
-  private getEarningsWithdrawnFromRothAccountTypes(annualPortfolioDataBeforeTaxes: PortfolioData): number {
-    const rothAccountTypes = ['roth401k', 'roth403b', 'rothIra'] as AccountInputs['type'][];
-
-    return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
-      .filter((account) => rothAccountTypes.includes(account.type))
-      .reduce((sum, account) => sum + account.earningsWithdrawnForPeriod, 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
   }
 
   private getStandardDeduction(): number {

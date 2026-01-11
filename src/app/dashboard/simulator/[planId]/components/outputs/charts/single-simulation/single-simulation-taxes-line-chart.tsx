@@ -1,8 +1,9 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useCallback } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { useState, useCallback, memo } from 'react';
+import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
+import { ChartLineIcon } from 'lucide-react';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -12,7 +13,6 @@ import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { Divider } from '@/components/catalyst/divider';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -44,13 +44,13 @@ interface CustomTooltipProps {
     | 'socialSecurityTaxablePercentage';
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
+const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - Math.floor(startAge));
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
   const formatValue = (
     value: number,
@@ -94,22 +94,28 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     }
   };
 
+  const transformedPayload = payload.filter((entry) => entry.color !== LINE_COLOR);
+
+  let filterZeroValues = true;
+
   let header = null;
-  let totalFooter = null;
+  let footer = null;
+
   switch (dataView) {
     case 'marginalRates':
     case 'effectiveRates':
     case 'socialSecurityTaxablePercentage':
+      filterZeroValues = false;
       break;
     case 'annualAmounts':
     case 'cumulativeAmounts':
     case 'investmentIncome':
     case 'retirementDistributions':
+    case 'taxExemptIncome':
     case 'ordinaryIncome':
     case 'capGainsAndDividends':
-    case 'earlyWithdrawalPenalties':
     case 'adjustmentsAndDeductions':
-      totalFooter = (
+      footer = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
@@ -126,72 +132,93 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     case 'adjustedGrossIncome':
       const entry = payload[0].payload;
 
-      const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
-        <p key={name} className="flex justify-between text-sm font-semibold">
-          <span className="mr-2">{`${formatChartString(name)}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-        </p>
-      ));
-
-      const deductions = Object.entries(entry.deductions).map(([name, value]) => (
-        <p key={name} className="flex justify-between text-sm font-semibold">
-          <span className="mr-2">{`${formatChartString(name)}:`}</span>
-          <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-        </p>
-      ));
+      const lineEntry = payload.find((entry) => entry.color === LINE_COLOR);
+      if (!lineEntry) {
+        console.error('Line entry data not found');
+        break;
+      }
 
       header = (
-        <div className="mx-1 mb-2 flex flex-col gap-2">
-          <p className="flex justify-between text-sm font-semibold">
+        <div className="mb-2 flex flex-col gap-2">
+          <p className="mx-1 flex justify-between text-sm font-semibold">
             <span className="mr-2">Gross Income:</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
+            <span className="ml-1 font-semibold">{formatValue(entry.grossIncome, dataView)}</span>
           </p>
-          <Divider />
-          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
-          {adjustments}
-          <Divider />
-          {dataView === 'taxableIncome' && (
-            <>
-              <p className="text-muted-foreground -mb-2 text-xs/6">Deductions</p>
-              {deductions}
-              <Divider />
-            </>
-          )}
+          <Divider soft />
         </div>
       );
+
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+          <span className="flex items-center gap-1">
+            <ChartLineIcon className="h-3 w-3" />
+            <span className="mr-2">{`${formatChartString(lineEntry.dataKey)}:`}</span>
+          </span>
+          <span className="ml-1 font-semibold">{formatValue(lineEntry.value, dataView)}</span>
+        </p>
+      );
       break;
-    case 'taxExemptIncome':
+    case 'earlyWithdrawalPenalties':
+      filterZeroValues = false;
+      break;
     case 'socialSecurityIncome':
+      filterZeroValues = false;
       break;
   }
+
+  const positiveEntries = transformedPayload.filter((entry) => (filterZeroValues ? entry.value > 0 : entry.value >= 0));
+  const negativeEntries = transformedPayload.filter((entry) => entry.value < 0);
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-        <span>Age {label}</span>
-        <span className="text-muted-foreground">{yearForAge}</span>
+        <span className="mr-2">Age {label}</span>
+        <span className="text-muted-foreground ml-1">{yearForAge}</span>
       </p>
       {header}
       <div className="flex flex-col gap-2">
-        {payload.map((entry) => (
-          <p
-            key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
-            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-              'text-background': needsBgTextColor.includes(entry.color),
-            })}
-          >
-            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
-          </p>
-        ))}
+        {positiveEntries.length > 0 && (
+          <div className="flex flex-col gap-1">
+            {positiveEntries.map((entry) => (
+              <p
+                key={entry.dataKey}
+                style={{ backgroundColor: entry.color }}
+                className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
+                  'text-background': needsBgTextColor.includes(entry.color),
+                })}
+              >
+                <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+                <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+              </p>
+            ))}
+          </div>
+        )}
+        {positiveEntries.length > 0 && negativeEntries.length > 0 && <Divider soft />}
+        {negativeEntries.length > 0 && (
+          <div className="flex flex-col gap-1">
+            {negativeEntries.map((entry) => (
+              <p
+                key={entry.dataKey}
+                style={{ backgroundColor: entry.color }}
+                className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
+                  'text-background': needsBgTextColor.includes(entry.color),
+                })}
+              >
+                <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+                <span className="ml-1 font-semibold">{formatValue(Math.abs(entry.value), dataView)}</span>
+              </p>
+            ))}
+          </div>
+        )}
       </div>
-      {totalFooter}
+      {footer}
     </div>
   );
-};
+});
 
-const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)'];
+CustomTooltip.displayName = 'CustomTooltip';
+
+const LINE_COLOR = 'var(--foreground)';
 
 interface SingleSimulationTaxesLineChartProps {
   rawChartData: SingleSimulationTaxesChartDataPoint[];
@@ -237,81 +264,156 @@ export default function SingleSimulationTaxesLineChart({
     () => setClickedOutsideChart(false)
   );
 
-  const chartData: SingleSimulationTaxesChartDataPoint[] = useChartDataSlice(rawChartData);
+  let chartData: SingleSimulationTaxesChartDataPoint[] = useChartDataSlice(rawChartData);
 
-  const dataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const lineDataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const strokeColors: string[] = [];
+
+  const barDataKeys: (keyof SingleSimulationTaxesChartDataPoint)[] = [];
+  const barColors: string[] = [];
+
   let formatter = undefined;
+  let stackId: string | undefined = 'stack';
+  let stackOffset: 'sign' | undefined = undefined;
+
   switch (dataView) {
     case 'marginalRates':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('topMarginalIncomeTaxRate', 'topMarginalCapGainsTaxRate');
+
+      lineDataKeys.push('topMarginalIncomeTaxRate', 'topMarginalCapGainsTaxRate');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'effectiveRates':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('effectiveIncomeTaxRate', 'effectiveCapGainsTaxRate');
+
+      lineDataKeys.push('effectiveIncomeTaxRate', 'effectiveCapGainsTaxRate');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'annualAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('annualIncomeTax', 'annualFicaTax', 'annualCapGainsTax', 'annualEarlyWithdrawalPenalties');
+
+      barDataKeys.push('annualIncomeTax', 'annualFicaTax', 'annualCapGainsTax', 'annualNiit', 'annualEarlyWithdrawalPenalties');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'cumulativeAmounts':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('cumulativeIncomeTax', 'cumulativeFicaTax', 'cumulativeCapGainsTax', 'cumulativeEarlyWithdrawalPenalties');
+
+      barDataKeys.push(
+        'cumulativeIncomeTax',
+        'cumulativeFicaTax',
+        'cumulativeCapGainsTax',
+        'cumulativeNiit',
+        'cumulativeEarlyWithdrawalPenalties'
+      );
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'taxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxableOrdinaryIncome', 'taxableCapGains', 'taxableIncome');
+
+      lineDataKeys.push('taxableIncome');
+      strokeColors.push('var(--foreground)');
+
+      barDataKeys.push(
+        'incomeTaxedAsOrdinary',
+        'incomeTaxedAsCapGains',
+        'taxDeductibleContributions',
+        'standardDeduction',
+        'capitalLossDeduction'
+      );
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
+
+      chartData = chartData.map((entry) => ({
+        ...entry,
+        taxDeductibleContributions: -entry.taxDeductibleContributions,
+        standardDeduction: -entry.standardDeduction,
+        capitalLossDeduction: -entry.capitalLossDeduction,
+      }));
+
+      stackOffset = 'sign';
       break;
     case 'adjustedGrossIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('adjustedGrossIncome');
+
+      lineDataKeys.push('adjustedGrossIncome');
+      strokeColors.push('var(--foreground)');
+
+      barDataKeys.push('incomeTaxedAsOrdinary', 'incomeTaxedAsCapGains', 'taxDeductibleContributions', 'capitalLossDeduction');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-5)');
+
+      chartData = chartData.map((entry) => ({
+        ...entry,
+        taxDeductibleContributions: -entry.taxDeductibleContributions,
+        capitalLossDeduction: -entry.capitalLossDeduction,
+      }));
+
+      stackOffset = 'sign';
       break;
     case 'investmentIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('interestIncome', 'dividendIncome');
+
+      barDataKeys.push('taxableInterestIncome', 'taxableDividendIncome', 'realizedGains');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'retirementDistributions':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+
+      barDataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'taxExemptIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxExemptIncome');
+
+      lineDataKeys.push('taxExemptIncome');
+      strokeColors.push('var(--chart-2)');
       break;
     case 'ordinaryIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('earnedIncome', 'socialSecurityIncome', 'interestIncome', 'retirementDistributions');
+
+      barDataKeys.push('earnedIncome', 'taxableSocialSecurityIncome', 'taxableInterestIncome', 'taxableRetirementDistributions');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'capGainsAndDividends':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('realizedGains', 'dividendIncome');
+
+      barDataKeys.push('realizedGains', 'taxableDividendIncome');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'earlyWithdrawalPenalties':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
+      stackId = undefined;
+
+      barDataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'adjustmentsAndDeductions':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('taxDeferredContributions', 'capitalLossDeduction', 'standardDeduction');
+
+      barDataKeys.push('taxDeductibleContributions', 'capitalLossDeduction', 'standardDeduction');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'socialSecurityIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
-      dataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');
+      stackId = undefined;
+
+      barDataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');
+      barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'socialSecurityTaxablePercentage':
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
-      dataKeys.push('maxTaxablePercentage', 'actualTaxablePercentage');
+
+      lineDataKeys.push('maxTaxablePercentage', 'actualTaxablePercentage');
+      strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const backgroundColor = resolvedTheme === 'dark' ? '#292524' : '#ffffff'; // stone-800 : white
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
-  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
-    return Math.ceil(dataLength / desiredTicks);
+    return Math.ceil(dataLength / desiredTicks) - 1;
   }, []);
   const interval = calculateInterval(chartData.length);
 
@@ -324,53 +426,58 @@ export default function SingleSimulationTaxesLineChart({
     [onAgeSelect]
   );
 
-  const { getOpacity, handleMouseEnter, handleMouseLeave } = useLineChartLegendEffectOpacity();
+  const { getOpacity } = useLineChartLegendEffectOpacity();
+
+  const allDataKeys = [...lineDataKeys, ...barDataKeys];
+  const hasNoData =
+    chartData.length === 0 || chartData.every((point) => allDataKeys.every((key) => point[key as keyof typeof point] === 0));
+  if (hasNoData) {
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
+  }
 
   return (
-    <div>
-      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            className="text-xs"
-            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
-            tabIndex={-1}
-            onClick={onClick}
-          >
-            <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
-            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataKeys.map((dataKey, index) => (
-              <Line
-                key={dataKey}
-                type="monotone"
-                dataKey={dataKey}
-                stroke={COLORS[index % COLORS.length]}
-                dot={false}
-                activeDot={false}
-                strokeWidth={3}
-                strokeOpacity={getOpacity(dataKey)}
-              />
-            ))}
-            <Tooltip
-              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
-              cursor={{ stroke: foregroundColor }}
-            />
-            {keyMetrics.retirementAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-            )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <TimeSeriesLegend
-        colors={COLORS}
-        legendStrokeColor={legendStrokeColor}
-        dataKeys={dataKeys}
-        isSmallScreen={isSmallScreen}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+    <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+      <ComposedChart
+        responsive
+        width="100%"
+        height="100%"
+        data={chartData}
+        className="text-xs"
+        stackOffset={stackOffset}
+        margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
+        tabIndex={-1}
+        onClick={onClick}
+      >
+        <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
+        <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
+        <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+        {(dataView === 'taxableIncome' || dataView === 'adjustedGrossIncome') && (
+          <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />
+        )}
+        {lineDataKeys.map((dataKey, i) => (
+          <Line
+            key={`line-${dataKey}-${i}`}
+            type="monotone"
+            dataKey={dataKey}
+            stroke={strokeColors[i]}
+            activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
+            dot={{ fill: backgroundColor, strokeWidth: 2 }}
+            strokeWidth={2}
+            strokeOpacity={getOpacity(dataKey)}
+          />
+        ))}
+        {barDataKeys.map((dataKey, i) => (
+          <Bar key={`bar-${dataKey}-${i}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[i]} />
+        ))}
+        <Tooltip
+          content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+          cursor={{ stroke: foregroundColor }}
+        />
+        {keyMetrics.retirementAge && showReferenceLines && (
+          <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+        )}
+        {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
+      </ComposedChart>
     </div>
   );
 }

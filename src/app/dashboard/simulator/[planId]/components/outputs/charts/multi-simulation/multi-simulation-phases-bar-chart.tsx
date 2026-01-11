@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -18,7 +18,7 @@ const CustomLabelListContent = (props: any) => {
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill="currentColor"
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -43,8 +43,6 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
-
 interface MultiSimulationPhasesBarChartProps {
   age: number;
   rawChartData: MultiSimulationPhasesChartDataPoint[];
@@ -54,49 +52,37 @@ export default function MultiSimulationPhasesBarChart({ age, rawChartData }: Mul
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
-  const chartData: { name: string; amount: number }[] = rawChartData
+  const formatter = (value: number) => formatNumber(value, 0);
+  const chartData: { name: string; amount: number; color: string }[] = rawChartData
     .filter((item) => item.age === age)
     .flatMap(({ numberAccumulation, numberRetirement, numberBankrupt }) => [
-      { name: 'Accum. Count', amount: numberAccumulation },
-      { name: 'Retirement Count', amount: numberRetirement },
-      { name: 'Bankrupt Count', amount: numberBankrupt },
+      { name: 'Accum. Count', amount: numberAccumulation, color: 'var(--chart-1)' },
+      { name: 'Retirement Count', amount: numberRetirement, color: 'var(--chart-2)' },
+      { name: 'Bankrupt Count', amount: numberBankrupt, color: 'var(--chart-3)' },
     ]);
 
   if (chartData.length === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
   const shouldUseCustomTick = chartData.length > 3 || (isSmallScreen && chartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
   return (
-    <div className="h-full min-h-64 w-full sm:min-h-72 lg:min-h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+    <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} className="text-xs" margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
+        <BarChart data={chartData} className="text-xs" margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-          <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
-          <YAxis
-            tick={{ fill: foregroundMutedColor }}
-            axisLine={false}
-            tickLine={false}
-            hide={isSmallScreen}
-            tickFormatter={(value: number) => formatNumber(value, 0)}
-          />
-          <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
-            {chartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-                stroke={COLORS[index % COLORS.length]}
-                strokeWidth={3}
-                fillOpacity={0.5}
-              />
+          <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
+          <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+          <Bar dataKey="amount" maxBarSize={75} minPointSize={20} label={<CustomLabelListContent isSmallScreen={isSmallScreen} />}>
+            {chartData.map((entry, i) => (
+              <Cell key={`${entry.name}-${i}`} fill={entry.color} fillOpacity={0.5} stroke={entry.color} strokeWidth={3} />
             ))}
-            <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

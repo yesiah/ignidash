@@ -26,13 +26,13 @@ export default function SingleSimulationCashFlowBarChartCard({
   let title;
   switch (dataView) {
     case 'net':
-      title = 'Inflows & Outflows';
+      title = 'Income Sources & Expenses';
       break;
     case 'incomes':
-      title = 'All Incomes';
+      title = 'Income Sources';
       break;
     case 'expenses':
-      title = 'All Expenses';
+      title = 'Expenses & Taxes';
       break;
     case 'custom':
       if (incomeData) {

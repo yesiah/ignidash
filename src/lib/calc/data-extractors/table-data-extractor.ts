@@ -7,10 +7,12 @@ import type {
   SingleSimulationWithdrawalsTableRow,
 } from '@/lib/schemas/tables/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
-import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
+import { sumTransactions } from '@/lib/calc/asset';
+import { sumReturns } from '@/lib/calc/returns';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
+import { SimulationDataExtractor } from './simulation-data-extractor';
 
 export abstract class TableDataExtractor {
   // ================================
@@ -29,12 +31,33 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
-      const annualContributions = portfolioData.contributionsForPeriod;
 
-      const { taxableBrokerageValue, taxDeferredValue, taxFreeValue, cashSavings } =
-        SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
+      const { taxableValue, taxDeferredValue, taxFreeValue, cashSavings } = SimulationDataExtractor.getPortfolioValueByTaxCategory(data);
       const { stockHoldings, bondHoldings, cashHoldings } = SimulationDataExtractor.getHoldingsByAssetClass(data);
+
+      if (idx === 0) {
+        return {
+          year: idx,
+          age,
+          phaseName: formattedPhaseName,
+          totalPortfolioValue,
+          annualReturns: null,
+          annualContributions: null,
+          annualWithdrawals: null,
+          netPortfolioChange: null,
+          stockHoldings,
+          bondHoldings,
+          cashHoldings,
+          taxableValue,
+          taxDeferredValue,
+          taxFreeValue,
+          cashSavings,
+          historicalYear,
+        };
+      }
+
+      const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+      const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
 
       const returnsData = data.returns;
       const {
@@ -55,7 +78,7 @@ export abstract class TableDataExtractor {
         stockHoldings,
         bondHoldings,
         cashHoldings,
-        taxableBrokerageValue,
+        taxableValue,
         taxDeferredValue,
         taxFreeValue,
         cashSavings,
@@ -80,28 +103,31 @@ export abstract class TableDataExtractor {
           age,
           phaseName: formattedPhaseName,
           earnedIncome: null,
+          employerMatch: null,
           socialSecurityIncome: null,
           taxExemptIncome: null,
           incomeTax: null,
           ficaTax: null,
           capGainsTax: null,
+          niit: null,
           earlyWithdrawalPenalties: null,
           totalTaxesAndPenalties: null,
           expenses: null,
-          cashFlow: null,
+          netCashFlow: null,
           savingsRate: null,
           historicalYear,
         };
       }
 
-      const { incomeTax, ficaTax, capGainsTax, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
+      const { incomeTax, ficaTax, capGainsTax, niit, earlyWithdrawalPenalties, totalTaxesAndPenalties } =
         SimulationDataExtractor.getTaxAmountsByType(data);
       const {
         earnedIncome,
         socialSecurityIncome,
         taxExemptIncome,
+        employerMatch,
         totalExpenses: expenses,
-        cashFlow,
+        netCashFlow,
       } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
@@ -110,15 +136,17 @@ export abstract class TableDataExtractor {
         age,
         phaseName: formattedPhaseName,
         earnedIncome,
+        employerMatch,
         socialSecurityIncome,
         taxExemptIncome,
         incomeTax,
         ficaTax,
         capGainsTax,
+        niit,
         earlyWithdrawalPenalties,
         totalTaxesAndPenalties,
         expenses,
-        cashFlow,
+        netCashFlow,
         savingsRate,
         historicalYear,
       };
@@ -131,6 +159,7 @@ export abstract class TableDataExtractor {
     let cumulativeIncomeTax = 0;
     let cumulativeFicaTax = 0;
     let cumulativeCapGainsTax = 0;
+    let cumulativeNiit = 0;
     let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeTotalTaxesAndPenalties = 0;
 
@@ -150,8 +179,8 @@ export abstract class TableDataExtractor {
           adjustedGrossIncome: null,
           taxableIncome: null,
           earnedIncome: null,
-          retirementDistributions: null,
-          interestIncome: null,
+          taxableRetirementDistributions: null,
+          taxableInterestIncome: null,
           annualIncomeTax: null,
           cumulativeIncomeTax: null,
           annualFicaTax: null,
@@ -164,17 +193,21 @@ export abstract class TableDataExtractor {
           maxTaxableSocialSecurityPercentage: null,
           actualTaxableSocialSecurityPercentage: null,
           realizedGains: null,
-          dividendIncome: null,
+          taxableDividendIncome: null,
           annualCapGainsTax: null,
           cumulativeCapGainsTax: null,
           effectiveCapGainsTaxRate: null,
           topMarginalCapGainsTaxRate: null,
+          netInvestmentIncome: null,
+          incomeSubjectToNiit: null,
+          annualNiit: null,
+          cumulativeNiit: null,
           annualEarlyWithdrawalPenalties: null,
           cumulativeEarlyWithdrawalPenalties: null,
           taxExemptIncome: null,
           annualTotalTaxesAndPenalties: null,
           cumulativeTotalTaxesAndPenalties: null,
-          taxDeferredContributions: null,
+          taxDeductibleContributions: null,
           standardDeduction: null,
           capitalLossDeduction: null,
           historicalYear,
@@ -185,6 +218,7 @@ export abstract class TableDataExtractor {
         incomeTax: annualIncomeTax,
         ficaTax: annualFicaTax,
         capGainsTax: annualCapGainsTax,
+        niit: annualNiit,
         earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties,
         totalTaxesAndPenalties: annualTotalTaxesAndPenalties,
       } = SimulationDataExtractor.getTaxAmountsByType(data);
@@ -192,19 +226,9 @@ export abstract class TableDataExtractor {
       cumulativeIncomeTax += annualIncomeTax;
       cumulativeFicaTax += annualFicaTax;
       cumulativeCapGainsTax += annualCapGainsTax;
+      cumulativeNiit += annualNiit;
       cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
       cumulativeTotalTaxesAndPenalties += annualTotalTaxesAndPenalties;
-
-      const {
-        realizedGains,
-        totalRetirementDistributions: retirementDistributions,
-        dividendIncome,
-        interestIncome,
-        earnedIncome,
-        socialSecurityIncome,
-        taxExemptIncome,
-        grossIncome,
-      } = SimulationDataExtractor.getTaxableIncomeSources(data, age);
 
       const taxesData = data.taxes;
 
@@ -212,35 +236,39 @@ export abstract class TableDataExtractor {
         year: idx,
         age,
         phaseName: formattedPhaseName,
-        grossIncome,
-        adjustedGrossIncome: taxesData?.adjustedGrossIncome ?? 0,
+        grossIncome: taxesData?.incomeSources.grossIncome ?? 0,
+        adjustedGrossIncome: taxesData?.incomeSources.adjustedGrossIncome ?? 0,
         taxableIncome: taxesData?.totalTaxableIncome ?? 0,
-        earnedIncome,
-        retirementDistributions,
-        interestIncome,
+        earnedIncome: taxesData?.incomeSources.earnedIncome ?? 0,
+        taxableRetirementDistributions: taxesData?.incomeSources.taxableRetirementDistributions ?? 0,
+        taxableInterestIncome: taxesData?.incomeSources.taxableInterestIncome ?? 0,
         annualIncomeTax,
         cumulativeIncomeTax,
         annualFicaTax,
         cumulativeFicaTax,
         effectiveIncomeTaxRate: taxesData?.incomeTaxes.effectiveIncomeTaxRate ?? 0,
         topMarginalIncomeTaxRate: taxesData?.incomeTaxes.topMarginalIncomeTaxRate ?? 0,
-        socialSecurityIncome,
-        taxableSocialSecurityIncome: taxesData?.socialSecurityTaxes.taxableSocialSecurity ?? 0,
+        socialSecurityIncome: taxesData?.incomeSources.socialSecurityIncome ?? 0,
+        taxableSocialSecurityIncome: taxesData?.socialSecurityTaxes.taxableSocialSecurityIncome ?? 0,
         provisionalIncome: taxesData?.socialSecurityTaxes.provisionalIncome ?? 0,
         maxTaxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.maxTaxablePercentage ?? 0,
         actualTaxableSocialSecurityPercentage: taxesData?.socialSecurityTaxes.actualTaxablePercentage ?? 0,
-        realizedGains,
-        dividendIncome,
+        realizedGains: taxesData?.incomeSources.realizedGains ?? 0,
+        taxableDividendIncome: taxesData?.incomeSources.taxableDividendIncome ?? 0,
         annualCapGainsTax,
         cumulativeCapGainsTax,
         effectiveCapGainsTaxRate: taxesData?.capitalGainsTaxes.effectiveCapitalGainsTaxRate ?? 0,
         topMarginalCapGainsTaxRate: taxesData?.capitalGainsTaxes.topMarginalCapitalGainsTaxRate ?? 0,
+        netInvestmentIncome: taxesData?.niit.netInvestmentIncome ?? 0,
+        incomeSubjectToNiit: taxesData?.niit.incomeSubjectToNiit ?? 0,
+        annualNiit,
+        cumulativeNiit,
         annualEarlyWithdrawalPenalties,
         cumulativeEarlyWithdrawalPenalties,
-        taxExemptIncome,
+        taxExemptIncome: taxesData?.incomeSources.taxExemptIncome ?? 0,
         annualTotalTaxesAndPenalties,
         cumulativeTotalTaxesAndPenalties,
-        taxDeferredContributions: taxesData?.adjustments.taxDeferredContributions ?? null,
+        taxDeductibleContributions: taxesData?.adjustments.taxDeductibleContributions ?? null,
         standardDeduction: taxesData?.deductions.standardDeduction ?? null,
         capitalLossDeduction: taxesData?.incomeTaxes.capitalLossDeduction ?? null,
         historicalYear,
@@ -263,17 +291,23 @@ export abstract class TableDataExtractor {
           year: idx,
           age,
           phaseName: formattedPhaseName,
-          stockRate: null,
-          cumulativeStockAmount: null,
-          annualStockAmount: null,
+          totalAnnualGains: null,
+          totalCumulativeGains: null,
+          taxableGains: null,
+          taxDeferredGains: null,
+          taxFreeGains: null,
+          cashSavingsGains: null,
+          stockReturnRate: null,
+          cumulativeStockGain: null,
+          annualStockGain: null,
           stockHoldings: null,
-          bondRate: null,
-          cumulativeBondAmount: null,
-          annualBondAmount: null,
+          bondReturnRate: null,
+          cumulativeBondGain: null,
+          annualBondGain: null,
           bondHoldings: null,
-          cashRate: null,
-          cumulativeCashAmount: null,
-          annualCashAmount: null,
+          cashReturnRate: null,
+          cumulativeCashGain: null,
+          annualCashGain: null,
           cashHoldings: null,
           inflationRate: null,
           historicalYear,
@@ -284,21 +318,32 @@ export abstract class TableDataExtractor {
 
       const returnsData = data.returns;
 
+      const totalCumulativeGains = sumReturns(returnsData!.cumulativeReturnAmounts);
+      const totalAnnualGains = sumReturns(returnsData!.returnAmountsForPeriod);
+
+      const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
+
       return {
         year: idx,
         age,
         phaseName: formattedPhaseName,
-        stockRate: returnsData?.annualReturnRates.stocks ?? null,
-        cumulativeStockAmount: returnsData?.totalReturnAmounts.stocks ?? null,
-        annualStockAmount: returnsData?.returnAmountsForPeriod.stocks ?? null,
+        totalAnnualGains,
+        totalCumulativeGains,
+        taxableGains,
+        taxDeferredGains,
+        taxFreeGains,
+        cashSavingsGains,
+        stockReturnRate: returnsData?.annualReturnRates.stocks ?? null,
+        cumulativeStockGain: returnsData?.cumulativeReturnAmounts.stocks ?? null,
+        annualStockGain: returnsData?.returnAmountsForPeriod.stocks ?? null,
         stockHoldings,
-        bondRate: returnsData?.annualReturnRates.bonds ?? null,
-        cumulativeBondAmount: returnsData?.totalReturnAmounts.bonds ?? null,
-        annualBondAmount: returnsData?.returnAmountsForPeriod.bonds ?? null,
+        bondReturnRate: returnsData?.annualReturnRates.bonds ?? null,
+        cumulativeBondGain: returnsData?.cumulativeReturnAmounts.bonds ?? null,
+        annualBondGain: returnsData?.returnAmountsForPeriod.bonds ?? null,
         bondHoldings,
-        cashRate: returnsData?.annualReturnRates.cash ?? null,
-        cumulativeCashAmount: returnsData?.totalReturnAmounts.cash ?? null,
-        annualCashAmount: returnsData?.returnAmountsForPeriod.cash ?? null,
+        cashReturnRate: returnsData?.annualReturnRates.cash ?? null,
+        cumulativeCashGain: returnsData?.cumulativeReturnAmounts.cash ?? null,
+        annualCashGain: returnsData?.returnAmountsForPeriod.cash ?? null,
         cashHoldings,
         inflationRate: returnsData?.annualInflationRate ?? null,
         historicalYear,
@@ -323,14 +368,18 @@ export abstract class TableDataExtractor {
           phaseName: formattedPhaseName,
           annualContributions: null,
           cumulativeContributions: null,
-          taxableBrokerage: null,
-          taxDeferred: null,
-          taxFree: null,
-          cashSavings: null,
+          stockContributions: null,
+          bondContributions: null,
+          cashContributions: null,
+          taxableContributions: null,
+          taxDeferredContributions: null,
+          taxFreeContributions: null,
+          cashSavingsContributions: null,
           annualEmployerMatch: null,
           cumulativeEmployerMatch: null,
           totalPortfolioValue: null,
-          cashFlow: null,
+          netCashFlow: null,
+          savingsRate: null,
           annualShortfallRepaid: null,
           outstandingShortfall: null,
           historicalYear,
@@ -339,31 +388,33 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualContributions = portfolioData.contributionsForPeriod;
+      const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
+      const cumulativeContributions = sumTransactions(portfolioData.cumulativeContributions);
       const annualEmployerMatch = portfolioData.employerMatchForPeriod;
 
-      const {
-        taxableBrokerageContributions: taxableBrokerage,
-        taxDeferredContributions: taxDeferred,
-        taxFreeContributions: taxFree,
-        cashSavingsContributions: cashSavings,
-      } = SimulationDataExtractor.getContributionsByTaxCategory(data);
-      const { cashFlow } = SimulationDataExtractor.getCashFlowData(data);
+      const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
+        SimulationDataExtractor.getContributionsByTaxCategory(data);
+      const { netCashFlow } = SimulationDataExtractor.getCashFlowData(data);
+      const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
         year: idx,
         age,
         phaseName: formattedPhaseName,
         annualContributions,
-        cumulativeContributions: portfolioData.totalContributions,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        cumulativeContributions,
+        stockContributions: portfolioData.contributionsForPeriod.stocks,
+        bondContributions: portfolioData.contributionsForPeriod.bonds,
+        cashContributions: portfolioData.contributionsForPeriod.cash,
+        taxableContributions,
+        taxDeferredContributions,
+        taxFreeContributions,
+        cashSavingsContributions,
         annualEmployerMatch,
-        cumulativeEmployerMatch: portfolioData.totalEmployerMatch,
+        cumulativeEmployerMatch: portfolioData.cumulativeEmployerMatch,
         totalPortfolioValue,
-        cashFlow,
+        netCashFlow,
+        savingsRate,
         annualShortfallRepaid: portfolioData.shortfallRepaidForPeriod,
         outstandingShortfall: portfolioData.outstandingShortfall,
         historicalYear,
@@ -374,7 +425,6 @@ export abstract class TableDataExtractor {
   static extractSingleSimulationWithdrawalsData(simulation: SimulationResult): SingleSimulationWithdrawalsTableRow[] {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
-    let cumulativeEarlyWithdrawalPenalties = 0;
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.map((data, idx) => {
@@ -391,22 +441,23 @@ export abstract class TableDataExtractor {
           phaseName: formattedPhaseName,
           annualWithdrawals: null,
           cumulativeWithdrawals: null,
-          taxableBrokerage: null,
-          taxDeferred: null,
-          taxFree: null,
-          cashSavings: null,
+          stockWithdrawals: null,
+          bondWithdrawals: null,
+          cashWithdrawals: null,
+          taxableWithdrawals: null,
+          taxDeferredWithdrawals: null,
+          taxFreeWithdrawals: null,
+          cashSavingsWithdrawals: null,
           annualRealizedGains: null,
           cumulativeRealizedGains: null,
           annualRequiredMinimumDistributions: null,
           cumulativeRequiredMinimumDistributions: null,
           annualEarlyWithdrawals: null,
           cumulativeEarlyWithdrawals: null,
-          annualEarlyWithdrawalPenalties: null,
-          cumulativeEarlyWithdrawalPenalties: null,
           annualRothEarningsWithdrawals: null,
           cumulativeRothEarningsWithdrawals: null,
           totalPortfolioValue: null,
-          cashFlow: null,
+          netCashFlow: null,
           withdrawalRate: null,
           annualShortfall: null,
           outstandingShortfall: null,
@@ -416,21 +467,16 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualWithdrawals = portfolioData.withdrawalsForPeriod;
+      const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+      const cumulativeWithdrawals = sumTransactions(portfolioData.cumulativeWithdrawals);
 
-      const {
-        taxableBrokerageWithdrawals: taxableBrokerage,
-        taxDeferredWithdrawals: taxDeferred,
-        taxFreeWithdrawals: taxFree,
-        cashSavingsWithdrawals: cashSavings,
-        earlyWithdrawals: annualEarlyWithdrawals,
-      } = SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
+      const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
+        SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
+
+      const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
-      const { earlyWithdrawalPenalties: annualEarlyWithdrawalPenalties } = SimulationDataExtractor.getTaxAmountsByType(data);
-      cumulativeEarlyWithdrawalPenalties += annualEarlyWithdrawalPenalties;
-
-      const { cashFlow } = SimulationDataExtractor.getCashFlowData(data);
+      const { netCashFlow } = SimulationDataExtractor.getCashFlowData(data);
       const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(data);
 
       return {
@@ -438,23 +484,24 @@ export abstract class TableDataExtractor {
         age,
         phaseName: formattedPhaseName,
         annualWithdrawals,
-        cumulativeWithdrawals: portfolioData.totalWithdrawals,
-        taxableBrokerage,
-        taxDeferred,
-        taxFree,
-        cashSavings,
+        cumulativeWithdrawals,
+        stockWithdrawals: portfolioData.withdrawalsForPeriod.stocks,
+        bondWithdrawals: portfolioData.withdrawalsForPeriod.bonds,
+        cashWithdrawals: portfolioData.withdrawalsForPeriod.cash,
+        taxableWithdrawals,
+        taxDeferredWithdrawals,
+        taxFreeWithdrawals,
+        cashSavingsWithdrawals,
         annualRealizedGains: portfolioData.realizedGainsForPeriod,
-        cumulativeRealizedGains: portfolioData.totalRealizedGains,
+        cumulativeRealizedGains: portfolioData.cumulativeRealizedGains,
         annualRequiredMinimumDistributions: portfolioData.rmdsForPeriod,
-        cumulativeRequiredMinimumDistributions: portfolioData.totalRmds,
+        cumulativeRequiredMinimumDistributions: portfolioData.cumulativeRmds,
         annualEarlyWithdrawals,
         cumulativeEarlyWithdrawals,
-        annualEarlyWithdrawalPenalties,
-        cumulativeEarlyWithdrawalPenalties,
         annualRothEarningsWithdrawals: portfolioData.earningsWithdrawnForPeriod,
-        cumulativeRothEarningsWithdrawals: portfolioData.totalEarningsWithdrawn,
+        cumulativeRothEarningsWithdrawals: portfolioData.cumulativeEarningsWithdrawn,
         totalPortfolioValue,
-        cashFlow,
+        netCashFlow,
         withdrawalRate,
         annualShortfall: portfolioData.shortfallForPeriod,
         outstandingShortfall: portfolioData.outstandingShortfall,
@@ -491,8 +538,20 @@ export abstract class TableDataExtractor {
       const finalPhaseName = lastDp.phase?.name ?? null;
       const formattedFinalPhaseName = finalPhaseName !== null ? finalPhaseName.charAt(0).toUpperCase() + finalPhaseName.slice(1) : null;
 
-      const { lifetimeIncomeTaxes, lifetimeFicaTaxes, lifetimeCapGainsTaxes, lifetimeEarlyWithdrawalPenalties, lifetimeTaxesAndPenalties } =
-        SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
+      const {
+        lifetimeIncomeTax,
+        lifetimeFicaTax,
+        lifetimeCapGainsTax,
+        lifetimeNiit,
+        lifetimeEarlyWithdrawalPenalties,
+        lifetimeTaxesAndPenalties,
+      } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
+
+      const cumulativeReturnAmounts = lastDp.returns?.cumulativeReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
+      const lifetimeReturns = sumReturns(cumulativeReturnAmounts);
+
+      const lifetimeContributions = sumTransactions(lastDp.portfolio.cumulativeContributions);
+      const lifetimeWithdrawals = sumTransactions(lastDp.portfolio.cumulativeWithdrawals);
 
       return {
         seed,
@@ -508,15 +567,17 @@ export abstract class TableDataExtractor {
         meanBondReturn,
         meanCashReturn,
         meanInflationRate,
-        lifetimeIncomeTaxes,
-        lifetimeFicaTaxes,
-        lifetimeCapGainsTaxes,
+        lifetimeIncomeTax,
+        lifetimeFicaTax,
+        lifetimeCapGainsTax,
+        lifetimeNiit,
         lifetimeEarlyWithdrawalPenalties,
         lifetimeTaxesAndPenalties,
-        lifetimeContributions: lastDp.portfolio.totalContributions,
-        lifetimeWithdrawals: lastDp.portfolio.totalWithdrawals,
-        lifetimeRealizedGains: lastDp.portfolio.totalRealizedGains,
-        lifetimeRequiredMinimumDistributions: lastDp.portfolio.totalRmds,
+        lifetimeReturns,
+        lifetimeContributions,
+        lifetimeWithdrawals,
+        lifetimeRealizedGains: lastDp.portfolio.cumulativeRealizedGains,
+        lifetimeRequiredMinimumDistributions: lastDp.portfolio.cumulativeRmds,
         historicalRanges,
       };
     });

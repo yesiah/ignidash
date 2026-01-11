@@ -1,6 +1,6 @@
 'use client';
 
-import { Pie, PieChart, ResponsiveContainer, Sector, SectorProps, Cell } from 'recharts';
+import { Pie, PieChart, Sector, SectorProps, Cell } from 'recharts';
 
 import { formatNumber, formatChartString } from '@/lib/utils';
 
@@ -71,21 +71,19 @@ interface SingleSimulationPortfolioPieChartProps {
 
 export default function SingleSimulationPortfolioPieChart({ chartData }: SingleSimulationPortfolioPieChartProps) {
   if (chartData.reduce((sum, item) => sum + item.value, 0) === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
   return (
     <div className="flex items-center">
-      <div className="h-64 w-full sm:h-72 lg:h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart className="text-xs">
-            <Pie activeShape={renderActiveShape} data={chartData} cx="50%" cy="50%" innerRadius={80} outerRadius={100} dataKey="value">
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} stroke="currentColor" />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+        <PieChart responsive width="100%" height="100%" className="text-xs">
+          <Pie activeShape={renderActiveShape} data={chartData} cx="50%" cy="50%" innerRadius={75} outerRadius={100} dataKey="value">
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} stroke="currentColor" />
+            ))}
+          </Pie>
+        </PieChart>
       </div>
     </div>
   );

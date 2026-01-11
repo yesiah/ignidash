@@ -211,10 +211,12 @@ export class FinancialSimulationEngine {
     const totalPortfolioValue = initialSimulationState.portfolio.getTotalValue();
     const assetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
 
+    const defaultAssetTransactions = { stocks: 0, bonds: 0, cash: 0 };
+
     const defaultTransactionsData = {
-      contributionsForPeriod: 0,
+      contributionsForPeriod: { ...defaultAssetTransactions },
       employerMatchForPeriod: 0,
-      withdrawalsForPeriod: 0,
+      withdrawalsForPeriod: { ...defaultAssetTransactions },
       realizedGainsForPeriod: 0,
       earningsWithdrawnForPeriod: 0,
       rmdsForPeriod: 0,
@@ -231,16 +233,16 @@ export class FinancialSimulationEngine {
       age: initialSimulationState.time.age,
       portfolio: {
         totalValue: totalPortfolioValue,
-        totalContributions: 0,
-        totalEmployerMatch: 0,
-        totalWithdrawals: 0,
-        totalRealizedGains: 0,
-        totalEarningsWithdrawn: 0,
-        totalRmds: 0,
+        cumulativeContributions: { ...defaultAssetTransactions },
+        cumulativeEmployerMatch: 0,
+        cumulativeWithdrawals: { ...defaultAssetTransactions },
+        cumulativeRealizedGains: 0,
+        cumulativeEarningsWithdrawn: 0,
+        cumulativeRmds: 0,
         outstandingShortfall: 0,
-        contributionsForPeriod: 0,
+        contributionsForPeriod: { ...defaultAssetTransactions },
         employerMatchForPeriod: 0,
-        withdrawalsForPeriod: 0,
+        withdrawalsForPeriod: { ...defaultAssetTransactions },
         realizedGainsForPeriod: 0,
         earningsWithdrawnForPeriod: 0,
         rmdsForPeriod: 0,

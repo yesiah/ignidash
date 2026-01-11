@@ -1,11 +1,12 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell /* Tooltip */ } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
+import type { IncomeData } from '@/lib/calc/incomes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomLabelListContent = (props: any) => {
@@ -18,7 +19,7 @@ const CustomLabelListContent = (props: any) => {
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill="currentColor"
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -61,12 +62,16 @@ export default function SingleSimulationCashFlowBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     net: {
-      mobile: ['Earned Income', 'Soc. Sec.', 'Exempt Income', 'Taxes', 'Expenses'],
-      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Taxes & Penalties', 'Expenses'],
+      mobile: ['Earned', 'Soc. Sec.', 'Exempt', 'Match', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
+    },
+    incomes: {
+      mobile: ['Match'],
+      desktop: ['Employer Match'],
     },
     expenses: {
-      mobile: ['Taxes'],
-      desktop: ['Taxes & Penalties'],
+      mobile: ['Income Tax', 'FICA Tax', 'Cap Gains Tax', 'NIIT', 'EW Penalty'],
+      desktop: ['Income Tax', 'FICA Tax', 'Cap Gains Tax', 'NIIT', 'EW Penalties'],
     },
   };
 
@@ -76,93 +81,119 @@ export default function SingleSimulationCashFlowBarChart({
 
   const chartData = rawChartData.filter((item) => item.age === age);
 
-  let transformedChartData: { name: string; amount: number; type: string }[] = [];
+  let transformedChartData: { name: string; amount: number; color: string }[] = [];
   const formatter = (value: number) => formatNumber(value, 1, '$');
+
   switch (dataView) {
     case 'net': {
-      const [earnedIncomeLabel, socialSecurityIncomeLabel, taxExemptIncomeLabel, taxesAndPenaltiesLabel, expensesLabel] =
-        getLabelsForScreenSize(dataView, isSmallScreen);
+      const [
+        earnedIncomeLabel,
+        socialSecurityIncomeLabel,
+        taxExemptIncomeLabel,
+        employerMatchLabel,
+        taxesAndPenaltiesLabel,
+        expensesLabel,
+      ] = getLabelsForScreenSize(dataView, isSmallScreen);
+
       transformedChartData = chartData.flatMap(
-        ({ earnedIncome, socialSecurityIncome, taxExemptIncome, totalTaxesAndPenalties, expenses }) => [
-          { name: earnedIncomeLabel, amount: earnedIncome, type: 'income' },
-          ...(socialSecurityIncome > 0 ? [{ name: socialSecurityIncomeLabel, amount: socialSecurityIncome, type: 'income' }] : []),
-          ...(taxExemptIncome > 0 ? [{ name: taxExemptIncomeLabel, amount: taxExemptIncome, type: 'income' }] : []),
-          { name: taxesAndPenaltiesLabel, amount: -totalTaxesAndPenalties, type: 'expense' },
-          { name: expensesLabel, amount: -expenses, type: 'expense' },
+        ({ earnedIncome, socialSecurityIncome, taxExemptIncome, employerMatch, taxesAndPenalties, expenses }) => [
+          { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
+          { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
+          { name: taxExemptIncomeLabel, amount: taxExemptIncome, color: 'var(--chart-1)' },
+          { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-1)' },
+          { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
+          { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
         ]
       );
       break;
     }
-    case 'incomes':
-      transformedChartData = chartData.flatMap(({ perIncomeData }) =>
-        perIncomeData.map(({ name, income }) => ({ name, amount: income, type: 'income' }))
-      );
-      break;
-    case 'expenses': {
-      const [taxesAndPenaltiesLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
-      transformedChartData = chartData.flatMap(({ perExpenseData, totalTaxesAndPenalties }) =>
-        perExpenseData
-          .map(({ name, expense }) => ({ name, amount: expense, type: 'expense' }))
-          .concat({ name: taxesAndPenaltiesLabel, amount: totalTaxesAndPenalties, type: 'expense' })
-      );
+    case 'incomes': {
+      const getIncomeColor = (income: IncomeData) => {
+        if (income.socialSecurityIncome > 0) return 'var(--chart-2)';
+        if (income.taxExemptIncome > 0) return 'var(--chart-3)';
+        return 'var(--chart-1)';
+      };
+
+      const [employerMatchLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
+      transformedChartData = chartData.flatMap(({ perIncomeData, employerMatch }) => [
+        ...perIncomeData.map((income) => ({ name: income.name, amount: income.income, color: getIncomeColor(income) })),
+        { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-4)' },
+      ]);
       break;
     }
-    case 'custom':
+    case 'expenses': {
+      const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, niitLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
+        dataView,
+        isSmallScreen
+      );
+
+      transformedChartData = chartData.flatMap(({ perExpenseData, incomeTax, ficaTax, capGainsTax, niit, earlyWithdrawalPenalties }) => [
+        ...perExpenseData.map(({ name, expense }) => ({
+          name,
+          amount: expense,
+          color: 'var(--chart-1)',
+        })),
+        { name: incomeTaxLabel, amount: incomeTax, color: 'var(--chart-2)' },
+        { name: ficaTaxLabel, amount: ficaTax, color: 'var(--chart-3)' },
+        { name: capGainsTaxLabel, amount: capGainsTax, color: 'var(--chart-4)' },
+        { name: niitLabel, amount: niit, color: 'var(--chart-5)' },
+        { name: earlyWithdrawalPenaltiesLabel, amount: earlyWithdrawalPenalties, color: 'var(--chart-6)' },
+      ]);
+      break;
+    }
+    case 'custom': {
       if (!customDataID) {
         console.warn('Custom data name is required for custom data view');
-        transformedChartData = [];
         break;
       }
 
       transformedChartData = [
         ...chartData
-          .flatMap(({ perIncomeData }) => perIncomeData.map(({ id, name, income }) => ({ id, name, amount: income, type: 'income' })))
-          .filter(({ id }) => id === customDataID),
+          .flatMap(({ perIncomeData }) => perIncomeData)
+          .filter(({ id }) => id === customDataID)
+          .map(({ name, income }) => ({ name, amount: income, color: 'var(--chart-2)' })),
         ...chartData
-          .flatMap(({ perExpenseData }) => perExpenseData.map(({ id, name, expense }) => ({ id, name, amount: expense, type: 'expense' })))
-          .filter(({ id }) => id === customDataID),
+          .flatMap(({ perExpenseData }) => perExpenseData)
+          .filter(({ id }) => id === customDataID)
+          .map(({ name, expense }) => ({ name, amount: expense, color: 'var(--chart-4)' })),
       ];
       break;
-    case 'savingsRate':
+    }
+    case 'savingsRate': {
       break;
+    }
   }
 
+  transformedChartData = transformedChartData.filter((item) => item.amount !== 0).sort((a, b) => b.amount - a.amount);
   if (transformedChartData.length === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const incomeBarColor = 'var(--chart-2)';
-  const expenseBarColor = 'var(--chart-4)';
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
   const shouldUseCustomTick = transformedChartData.length > 3 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
   return (
-    <div className="h-full min-h-64 w-full sm:min-h-72 lg:min-h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+    <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={transformedChartData}
           className="text-xs"
-          margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
+          margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }}
           tabIndex={-1}
         >
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-          <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
+          <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          <Bar dataKey="amount" maxBarSize={250} minPointSize={20}>
-            {transformedChartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={entry.type === 'income' ? incomeBarColor : expenseBarColor}
-                stroke={entry.type === 'income' ? incomeBarColor : expenseBarColor}
-                strokeWidth={3}
-                fillOpacity={0.5}
-              />
+          {dataView === 'net' && <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />}
+          <Bar dataKey="amount" maxBarSize={75} minPointSize={20} label={<CustomLabelListContent isSmallScreen={isSmallScreen} />}>
+            {transformedChartData.map((entry, i) => (
+              <Cell key={`${entry.name}-${i}`} fill={entry.color} fillOpacity={0.5} stroke={entry.color} strokeWidth={3} />
             ))}
-            <LabelList dataKey="amount" position="middle" content={<CustomLabelListContent isSmallScreen={isSmallScreen} />} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

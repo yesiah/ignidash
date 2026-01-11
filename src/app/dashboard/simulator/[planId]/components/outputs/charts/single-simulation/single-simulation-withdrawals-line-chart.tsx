@@ -1,8 +1,8 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState, useCallback } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
+import { useState, useCallback, memo } from 'react';
+import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -13,7 +13,6 @@ import type { AccountDataWithTransactions } from '@/lib/calc/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { uniformLifetimeMap } from '@/lib/calc/historical-data/rmds-table';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
-import TimeSeriesLegend from '@/components/time-series-legend';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -24,7 +23,12 @@ interface CustomTooltipProps {
     dataKey: keyof SingleSimulationWithdrawalsChartDataPoint;
     payload:
       | SingleSimulationWithdrawalsChartDataPoint
-      | ({ age: number; annualWithdrawals: number; cumulativeWithdrawals: number } & AccountDataWithTransactions);
+      | ({
+          age: number;
+          annualStockWithdrawals: number;
+          annualBondWithdrawals: number;
+          annualCashWithdrawals: number;
+        } & AccountDataWithTransactions);
   }>;
   label?: number;
   startAge: number;
@@ -35,20 +39,19 @@ interface CustomTooltipProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
     | 'custom';
 }
 
-const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
+const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataView }: CustomTooltipProps) => {
   if (!(active && payload && payload.length) || disabled) return null;
 
   const currentYear = new Date().getFullYear();
   const yearForAge = currentYear + (label! - Math.floor(startAge));
 
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
+  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)', 'var(--chart-6)', 'var(--chart-7)', 'var(--foreground)'];
 
   const formatValue = (
     value: number,
@@ -58,7 +61,6 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
       | 'taxCategory'
       | 'realizedGains'
       | 'requiredMinimumDistributions'
-      | 'earlyWithdrawalPenalties'
       | 'earlyWithdrawals'
       | 'shortfall'
       | 'withdrawalRate'
@@ -72,58 +74,74 @@ const CustomTooltip = ({ active, payload, label, startAge, disabled, dataView }:
     }
   };
 
-  let tooltipFooterComponent = null;
-  if (dataView === 'taxCategory') {
-    tooltipFooterComponent = (
-      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-        <span className="mr-2">Total:</span>
-        <span className="ml-1 font-semibold">
-          {formatNumber(
-            payload.reduce((sum, item) => sum + item.value, 0),
-            3,
-            '$'
-          )}
-        </span>
-      </p>
-    );
-  } else if (dataView === 'requiredMinimumDistributions' && label && label >= 73) {
-    const lookupAge = Math.min(Math.floor(label), 120);
-    const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
+  let footer = null;
+  switch (dataView) {
+    case 'annualAmounts':
+    case 'cumulativeAmounts':
+    case 'taxCategory':
+    case 'custom':
+      footer = (
+        <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+          <span className="mr-2">Total:</span>
+          <span className="ml-1 font-semibold">
+            {formatNumber(
+              payload.reduce((sum, item) => sum + item.value, 0),
+              3,
+              '$'
+            )}
+          </span>
+        </p>
+      );
+      break;
+    case 'requiredMinimumDistributions':
+      if (label && label >= 73) {
+        const lookupAge = Math.min(Math.floor(label), 120);
+        const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
 
-    tooltipFooterComponent = (
-      <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
-        <span className="mr-2">Life Expectancy Factor:</span>
-        <span className="ml-1 font-semibold">{lifeExpectancyFactor}</span>
-      </p>
-    );
+        footer = (
+          <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
+            <span className="mr-2">Life Expectancy Factor:</span>
+            <span className="ml-1 font-semibold">{lifeExpectancyFactor}</span>
+          </p>
+        );
+      }
+      break;
+    default:
+      break;
   }
+
+  const filterZeroValues = !['realizedGains', 'requiredMinimumDistributions', 'earlyWithdrawals', 'shortfall', 'withdrawalRate'].includes(
+    dataView
+  );
 
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-        <span>Age {label}</span>
-        <span className="text-muted-foreground">{yearForAge}</span>
+        <span className="mr-2">Age {label}</span>
+        <span className="text-muted-foreground ml-1">{yearForAge}</span>
       </p>
-      <div className="flex flex-col gap-2">
-        {payload.map((entry) => (
-          <p
-            key={entry.dataKey}
-            style={{ backgroundColor: entry.color }}
-            className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-              'text-background': needsBgTextColor.includes(entry.color),
-            })}
-          >
-            <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
-          </p>
-        ))}
+      <div className="flex flex-col gap-1">
+        {payload
+          .filter((entry) => (filterZeroValues ? entry.value !== 0 : true))
+          .map((entry) => (
+            <p
+              key={entry.dataKey}
+              style={{ backgroundColor: entry.color }}
+              className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
+                'text-background': needsBgTextColor.includes(entry.color),
+              })}
+            >
+              <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
+              <span className="ml-1 font-semibold">{formatValue(entry.value, dataView)}</span>
+            </p>
+          ))}
       </div>
-      {tooltipFooterComponent}
+      {footer}
     </div>
   );
-};
+});
 
-const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)'];
+CustomTooltip.displayName = 'CustomTooltip';
 
 interface SingleSimulationWithdrawalsLineChartProps {
   rawChartData: SingleSimulationWithdrawalsChartDataPoint[];
@@ -137,7 +155,6 @@ interface SingleSimulationWithdrawalsLineChartProps {
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'
@@ -168,47 +185,75 @@ export default function SingleSimulationWithdrawalsLineChart({
 
   let chartData:
     | SingleSimulationWithdrawalsChartDataPoint[]
-    | Array<{ age: number; annualWithdrawals: number; cumulativeWithdrawals: number } & AccountDataWithTransactions> =
-    useChartDataSlice(rawChartData);
+    | Array<
+        {
+          age: number;
+          annualStockWithdrawals: number;
+          annualBondWithdrawals: number;
+          annualCashWithdrawals: number;
+        } & AccountDataWithTransactions
+      > = useChartDataSlice(rawChartData);
 
-  const dataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
+  const lineDataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
+  const strokeColors: string[] = [];
+
+  const barDataKeys: (keyof SingleSimulationWithdrawalsChartDataPoint)[] = [];
+  const barColors: string[] = [];
+
   let formatter = undefined;
+  let stackId: string | undefined = undefined;
+
   switch (dataView) {
     case 'annualAmounts':
-      dataKeys.push('annualWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
+
+      barDataKeys.push('annualStockWithdrawals', 'annualBondWithdrawals', 'annualCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'cumulativeAmounts':
-      dataKeys.push('cumulativeWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
+
+      barDataKeys.push('cumulativeStockWithdrawals', 'cumulativeBondWithdrawals', 'cumulativeCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'taxCategory':
-      dataKeys.push('taxableWithdrawals', 'taxDeferredWithdrawals', 'taxFreeWithdrawals', 'cashWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
+
+      barDataKeys.push('taxableWithdrawals', 'taxDeferredWithdrawals', 'taxFreeWithdrawals', 'cashSavingsWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'realizedGains':
-      dataKeys.push('annualRealizedGains', 'cumulativeRealizedGains');
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('annualRealizedGains', 'cumulativeRealizedGains');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'requiredMinimumDistributions':
-      dataKeys.push('annualRequiredMinimumDistributions', 'cumulativeRequiredMinimumDistributions');
       formatter = (value: number) => formatNumber(value, 1, '$');
-      break;
-    case 'earlyWithdrawalPenalties':
-      dataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
-      formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('annualRequiredMinimumDistributions', 'cumulativeRequiredMinimumDistributions');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'earlyWithdrawals':
-      dataKeys.push('annualEarlyWithdrawals', 'cumulativeEarlyWithdrawals');
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('annualEarlyWithdrawals', 'cumulativeEarlyWithdrawals');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'shortfall':
-      dataKeys.push('annualShortfall', 'outstandingShortfall');
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      barDataKeys.push('annualShortfall', 'outstandingShortfall');
+      barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'withdrawalRate':
-      dataKeys.push('withdrawalRate');
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+
+      lineDataKeys.push('withdrawalRate');
+      strokeColors.push('var(--chart-2)');
       break;
     case 'custom':
       if (!customDataID) {
@@ -216,31 +261,34 @@ export default function SingleSimulationWithdrawalsLineChart({
         break;
       }
 
-      const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
+
+      chartData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData
           .filter((account) => account.id === customDataID)
           .map((account) => ({
             age,
             ...account,
-            annualWithdrawals: account.withdrawalsForPeriod,
-            cumulativeWithdrawals: account.totalWithdrawals,
+            annualStockWithdrawals: account.withdrawalsForPeriod.stocks,
+            annualBondWithdrawals: account.withdrawalsForPeriod.bonds,
+            annualCashWithdrawals: account.withdrawalsForPeriod.cash,
           }))
       );
 
-      chartData = perAccountData;
-      dataKeys.push('annualWithdrawals', 'cumulativeWithdrawals');
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      barDataKeys.push('annualStockWithdrawals', 'annualBondWithdrawals', 'annualCashWithdrawals');
+      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
-  const legendStrokeColor = resolvedTheme === 'dark' ? 'white' : 'black';
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const backgroundColor = resolvedTheme === 'dark' ? '#292524' : '#ffffff'; // stone-800 : white
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
-  const calculateInterval = useCallback((dataLength: number, desiredTicks = 8) => {
+  const calculateInterval = useCallback((dataLength: number, desiredTicks = 12) => {
     if (dataLength <= desiredTicks) return 0;
-    return Math.ceil(dataLength / desiredTicks);
+    return Math.ceil(dataLength / desiredTicks) - 1;
   }, []);
   const interval = calculateInterval(chartData.length);
 
@@ -253,53 +301,54 @@ export default function SingleSimulationWithdrawalsLineChart({
     [onAgeSelect]
   );
 
-  const { getOpacity, handleMouseEnter, handleMouseLeave } = useLineChartLegendEffectOpacity();
+  const { getOpacity } = useLineChartLegendEffectOpacity();
+
+  const allDataKeys = [...lineDataKeys, ...barDataKeys];
+  const hasNoData =
+    chartData.length === 0 || chartData.every((point) => allDataKeys.every((key) => point[key as keyof typeof point] === 0));
+  if (hasNoData) {
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
+  }
 
   return (
-    <div>
-      <div ref={chartRef} className="h-64 w-full sm:h-72 lg:h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            className="text-xs"
-            margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
-            tabIndex={-1}
-            onClick={onClick}
-          >
-            <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-            <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
-            <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-            {dataKeys.map((dataKey, index) => (
-              <Line
-                key={dataKey}
-                type="monotone"
-                dataKey={dataKey}
-                stroke={COLORS[index % COLORS.length]}
-                dot={false}
-                activeDot={false}
-                strokeWidth={3}
-                strokeOpacity={getOpacity(dataKey)}
-              />
-            ))}
-            <Tooltip
-              content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
-              cursor={{ stroke: foregroundColor }}
-            />
-            {keyMetrics.retirementAge && showReferenceLines && (
-              <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
-            )}
-            {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <TimeSeriesLegend
-        colors={COLORS}
-        legendStrokeColor={legendStrokeColor}
-        dataKeys={dataKeys}
-        isSmallScreen={isSmallScreen}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+    <div ref={chartRef} className="h-72 w-full sm:h-84 lg:h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+      <ComposedChart
+        responsive
+        width="100%"
+        height="100%"
+        data={chartData}
+        className="text-xs"
+        margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
+        tabIndex={-1}
+        onClick={onClick}
+      >
+        <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
+        <XAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} dataKey="age" interval={interval} />
+        <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
+        {lineDataKeys.map((dataKey, i) => (
+          <Line
+            key={`line-${dataKey}-${i}`}
+            type="monotone"
+            dataKey={dataKey}
+            stroke={strokeColors[i]}
+            activeDot={{ stroke: backgroundColor, strokeWidth: 2 }}
+            dot={{ fill: backgroundColor, strokeWidth: 2 }}
+            strokeWidth={2}
+            strokeOpacity={getOpacity(dataKey)}
+          />
+        ))}
+        {barDataKeys.map((dataKey, i) => (
+          <Bar key={`bar-${dataKey}-${i}`} dataKey={dataKey} maxBarSize={20} stackId={stackId} fill={barColors[i]} />
+        ))}
+        <Tooltip
+          content={<CustomTooltip startAge={startAge} disabled={isSmallScreen && clickedOutsideChart} dataView={dataView} />}
+          cursor={{ stroke: foregroundColor }}
+        />
+        {keyMetrics.retirementAge && showReferenceLines && (
+          <ReferenceLine x={Math.round(keyMetrics.retirementAge)} stroke={foregroundMutedColor} strokeDasharray="10 5" />
+        )}
+        {selectedAge && <ReferenceLine x={selectedAge} stroke={foregroundMutedColor} strokeWidth={1.5} ifOverflow="visible" />}
+      </ComposedChart>
     </div>
   );
 }

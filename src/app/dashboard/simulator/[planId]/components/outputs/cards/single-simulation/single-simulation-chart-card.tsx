@@ -136,7 +136,6 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
         setReferenceLineMode={setReferenceLineMode}
         referenceLineMode={referenceLineMode}
         referenceLineModes={referenceLineModes}
-        startAge={startAge}
       />
     </>
   );
@@ -145,7 +144,7 @@ function TaxesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAg
 function ReturnsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, startAge }: ChartsCategoryProps) {
   const rawChartData = useSingleSimulationReturnsChartData(simulation);
 
-  const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'custom'>('rates');
+  const [dataView, setDataView] = useState<'rates' | 'annualAmounts' | 'cumulativeAmounts' | 'taxCategory' | 'custom'>('rates');
   const [customDataID, setCustomDataID] = useState<string>('');
 
   return (
@@ -211,7 +210,6 @@ function WithdrawalsCharts({ simulation, keyMetrics, onAgeSelect, selectedAge, s
     | 'taxCategory'
     | 'realizedGains'
     | 'requiredMinimumDistributions'
-    | 'earlyWithdrawalPenalties'
     | 'earlyWithdrawals'
     | 'shortfall'
     | 'withdrawalRate'

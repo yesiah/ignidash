@@ -94,10 +94,10 @@ export default function ResultsSections() {
                 <Skeleton className="h-[110px] w-full rounded-xl" />
               </div>
               <Skeleton className="h-[55px] w-full rounded-xl" />
-              <div className="grid grid-cols-1 gap-2 @[96rem]:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 @[120rem]:grid-cols-2">
                 <Skeleton className="h-[475px] w-full rounded-xl" />
                 <Skeleton className="h-[475px] w-full rounded-xl" />
-                <div className="@[96rem]:col-span-2">
+                <div className="@[120rem]:col-span-2">
                   <Skeleton className="h-[275px] w-full rounded-xl" />
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function ResultsSections() {
                               ) : (
                                 <XCircleIcon
                                   aria-hidden="true"
-                                  className="size-full text-zinc-300 group-hover:text-zinc-400 dark:text-white/25 dark:group-hover:text-white/50"
+                                  className="size-full text-stone-300 group-hover:text-stone-400 dark:text-white/25 dark:group-hover:text-white/50"
                                 />
                               )}
                             </span>

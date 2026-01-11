@@ -478,7 +478,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
 
     const cashFlow = [
       d.expenses && `expenses:${fmt(d.expenses)}`,
-      d.totalTaxesAndPenalties && `taxes:${fmt(d.totalTaxesAndPenalties)}`,
+      d.taxesAndPenalties && `taxes:${fmt(d.taxesAndPenalties)}`,
       d.netCashFlow && `net:${fmt(d.netCashFlow)}`,
       d.savingsRate && `saveRate:${pct(d.savingsRate)}`,
     ].filter(Boolean);
@@ -508,7 +508,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
     if (rates.length) sections.push(`rates: ${rates.join(', ')}`);
 
     const deductions = [
-      d.taxDeferredContributionsDeduction && `tradContrib:${fmt(d.taxDeferredContributionsDeduction)}`,
+      d.taxDeductibleContributions && `tradContrib:${fmt(d.taxDeductibleContributions)}`,
       d.capitalLossDeduction && `capLoss:${fmt(d.capitalLossDeduction)}`,
     ].filter(Boolean);
     if (deductions.length) sections.push(`deductions: ${deductions.join(', ')}`);

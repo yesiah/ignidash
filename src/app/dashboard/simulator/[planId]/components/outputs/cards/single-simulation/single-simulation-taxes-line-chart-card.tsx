@@ -103,13 +103,13 @@ export default function SingleSimulationTaxesLineChartCard({
               <option value="cumulativeAmounts">Cumulative Taxes</option>
               <option value="adjustmentsAndDeductions">Adjustments &amp; Deductions</option>
             </optgroup>
-            <optgroup label="Income Calculations">
-              <option value="taxableIncome">Taxable Income</option>
-              <option value="adjustedGrossIncome">Adjusted Gross Income</option>
-            </optgroup>
             <optgroup label="Tax Rates">
               <option value="marginalRates">Top Marginal Rates</option>
               <option value="effectiveRates">Effective Rates</option>
+            </optgroup>
+            <optgroup label="Income Calculations">
+              <option value="adjustedGrossIncome">Adjusted Gross Income</option>
+              <option value="taxableIncome">Taxable Income</option>
             </optgroup>
             <optgroup label="Income Sources">
               <option value="ordinaryIncome">Ordinary Income</option>

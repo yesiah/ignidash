@@ -60,7 +60,6 @@ function PhasesDataListCardV2({ chartData, selectedAge }: DataListCardProps) {
     <Card className="my-0">
       <Subheading level={4}>
         <span className="mr-2">Context</span>
-        <span className="text-muted-foreground hidden sm:inline">Summary</span>
       </Subheading>
       <DescriptionList>
         <DescriptionTerm>Chance of Retirement</DescriptionTerm>

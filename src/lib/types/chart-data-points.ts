@@ -24,29 +24,37 @@ export interface SingleSimulationCashFlowChartDataPoint {
   earnedIncome: number;
   socialSecurityIncome: number;
   taxExemptIncome: number;
+  employerMatch: number;
+  income: number;
   incomeTax: number;
   ficaTax: number;
   capGainsTax: number;
+  niit: number;
   earlyWithdrawalPenalties: number;
-  otherTaxes: number;
-  totalTaxesAndPenalties: number;
+  taxesAndPenalties: number;
   expenses: number;
-  cashFlow: number;
+  netCashFlow: number;
   savingsRate: number | null;
 }
 
 export interface SingleSimulationReturnsChartDataPoint {
   age: number;
-  realStockReturn: number;
-  realBondReturn: number;
-  realCashReturn: number;
+  realStockReturnRate: number;
+  realBondReturnRate: number;
+  realCashReturnRate: number;
   inflationRate: number;
-  cumulativeStockGrowth: number;
-  cumulativeBondGrowth: number;
-  cumulativeCashGrowth: number;
-  annualStockGrowth: number;
-  annualBondGrowth: number;
-  annualCashGrowth: number;
+  cumulativeStockGain: number;
+  cumulativeBondGain: number;
+  cumulativeCashGain: number;
+  totalCumulativeGains: number;
+  annualStockGain: number;
+  annualBondGain: number;
+  annualCashGain: number;
+  totalAnnualGains: number;
+  taxableGains: number;
+  taxDeferredGains: number;
+  taxFreeGains: number;
+  cashSavingsGains: number;
   perAccountData: AccountDataWithReturns[];
 }
 
@@ -56,90 +64,112 @@ export interface SingleSimulationTaxesChartDataPoint {
   adjustedGrossIncome: number;
   taxableIncome: number;
 
-  /* Ordinary Income */
+  // Ordinary Income
   earnedIncome: number;
   annualFicaTax: number;
   cumulativeFicaTax: number;
   taxDeferredWithdrawals: number;
   earlyRothEarningsWithdrawals: number;
-  retirementDistributions: number;
-  interestIncome: number;
-  taxableOrdinaryIncome: number;
+  early401kAndIraWithdrawals: number;
+  earlyHsaWithdrawals: number;
+  taxableRetirementDistributions: number;
+  taxableInterestIncome: number;
+  taxableIncomeTaxedAsOrdinary: number;
+  adjustedIncomeTaxedAsOrdinary: number;
+  incomeTaxedAsOrdinary: number;
   annualIncomeTax: number;
   cumulativeIncomeTax: number;
   effectiveIncomeTaxRate: number;
   topMarginalIncomeTaxRate: number;
   incomeTaxBrackets: IncomeTaxBracket[];
 
-  /* Social Security */
+  // Social Security
   socialSecurityIncome: number;
   taxableSocialSecurityIncome: number;
   maxTaxablePercentage: number;
   actualTaxablePercentage: number;
 
-  /* Cap Gains */
+  // Cap Gains
   realizedGains: number;
-  dividendIncome: number;
-  taxableCapGains: number;
+  taxableDividendIncome: number;
+  taxableIncomeTaxedAsCapGains: number;
+  adjustedIncomeTaxedAsCapGains: number;
+  incomeTaxedAsCapGains: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;
   effectiveCapGainsTaxRate: number;
   topMarginalCapGainsTaxRate: number;
   capitalGainsTaxBrackets: CapitalGainsTaxBracket[];
 
-  /* Early Withdrawal Penalties */
+  // NIIT
+  netInvestmentIncome: number;
+  incomeSubjectToNiit: number;
+  annualNiit: number;
+  cumulativeNiit: number;
+
+  // Early Withdrawal Penalties
   annualEarlyWithdrawalPenalties: number;
   cumulativeEarlyWithdrawalPenalties: number;
 
-  /* Tax-Exempt Income */
+  // Tax-Exempt Income
   taxExemptIncome: number;
 
-  /* Totals */
+  // Totals
   annualTotalTaxesAndPenalties: number;
   cumulativeTotalTaxesAndPenalties: number;
 
-  /* Adjustments & Deductions */
+  // Adjustments & Deductions
   adjustments: Record<string, number>;
   deductions: Record<string, number>;
-  taxDeferredContributions: number;
+  taxDeductibleContributions: number;
   standardDeduction: number;
   capitalLossDeduction: number;
 }
 
 export interface SingleSimulationContributionsChartDataPoint {
   age: number;
-  cumulativeContributions: number;
   annualContributions: number;
-  cumulativeEmployerMatch: number;
+  cumulativeContributions: number;
+  annualStockContributions: number;
+  cumulativeStockContributions: number;
+  annualBondContributions: number;
+  cumulativeBondContributions: number;
+  annualCashContributions: number;
+  cumulativeCashContributions: number;
   annualEmployerMatch: number;
+  cumulativeEmployerMatch: number;
   perAccountData: AccountDataWithTransactions[];
   taxableContributions: number;
   taxDeferredContributions: number;
   taxFreeContributions: number;
-  cashContributions: number;
+  cashSavingsContributions: number;
   annualShortfallRepaid: number;
   outstandingShortfall: number;
 }
 
 export interface SingleSimulationWithdrawalsChartDataPoint {
   age: number;
-  cumulativeWithdrawals: number;
-  cumulativeRealizedGains: number;
-  cumulativeRequiredMinimumDistributions: number;
-  cumulativeEarlyWithdrawals: number;
-  cumulativeRothEarningsWithdrawals: number;
-  cumulativeEarlyWithdrawalPenalties: number;
   annualWithdrawals: number;
+  cumulativeWithdrawals: number;
+  annualStockWithdrawals: number;
+  cumulativeStockWithdrawals: number;
+  annualBondWithdrawals: number;
+  cumulativeBondWithdrawals: number;
+  annualCashWithdrawals: number;
+  cumulativeCashWithdrawals: number;
   annualRealizedGains: number;
+  cumulativeRealizedGains: number;
   annualRequiredMinimumDistributions: number;
+  cumulativeRequiredMinimumDistributions: number;
   annualEarlyWithdrawals: number;
+  cumulativeEarlyWithdrawals: number;
   annualRothEarningsWithdrawals: number;
-  annualEarlyWithdrawalPenalties: number;
+  cumulativeRothEarningsWithdrawals: number;
   perAccountData: AccountDataWithTransactions[];
   taxableWithdrawals: number;
   taxDeferredWithdrawals: number;
   taxFreeWithdrawals: number;
-  cashWithdrawals: number;
+  cashSavingsWithdrawals: number;
   withdrawalRate: number | null;
   annualShortfall: number;
   outstandingShortfall: number;

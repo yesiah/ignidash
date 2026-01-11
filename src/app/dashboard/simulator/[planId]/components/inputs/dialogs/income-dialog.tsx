@@ -251,7 +251,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                   {errors.frequency && <ErrorMessage>{errors.frequency?.message}</ErrorMessage>}
                 </Field>
               </div>
-              <Disclosure as="div" className="border-border/50 border-t pt-4">
+              <Disclosure as="div" className="border-border/25 border-t pt-4">
                 {({ open, close }) => (
                   <>
                     <DisclosureButton
@@ -284,7 +284,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                     <DisclosurePanel className="pt-4">
                       <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2">
                         <Field className={getStartColSpan()}>
-                          <Label htmlFor="timeframe.start.type">Start</Label>
+                          <Label htmlFor="timeframe.start.type">Start Time</Label>
                           <Select {...register('timeframe.start.type')} id="timeframe.start.type" name="timeframe.start.type">
                             <option value="now">Now</option>
                             <option value="atRetirement">At Retirement</option>
@@ -374,7 +374,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                       {frequency !== 'oneTime' && (
                         <div className="mt-4 grid grid-cols-2 items-end gap-x-4 gap-y-2">
                           <Field className={getEndColSpan()}>
-                            <Label htmlFor="timeframe.end.type">End</Label>
+                            <Label htmlFor="timeframe.end.type">End Time</Label>
                             <Select {...register('timeframe.end.type')} id="timeframe.end.type" name="timeframe.end.type">
                               <option value="atRetirement">At Retirement</option>
                               <option value="atLifeExpectancy">At Life Expectancy</option>
@@ -467,7 +467,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                 )}
               </Disclosure>
               {frequency !== 'oneTime' && (
-                <Disclosure as="div" className="border-border/50 border-t pt-4">
+                <Disclosure as="div" className="border-border/25 border-t pt-4">
                   {({ open, close }) => (
                     <>
                       <DisclosureButton
@@ -532,7 +532,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                   )}
                 </Disclosure>
               )}
-              <Disclosure as="div" className="border-border/50 border-t pt-4">
+              <Disclosure as="div" className="border-border/25 border-t pt-4">
                 {({ open, close }) => (
                   <>
                     <DisclosureButton

@@ -26,8 +26,10 @@ export function formatChartString(input: string): string {
   const replacements: Array<[string, string]> = [
     ['Tax Free', 'Tax-Free'],
     ['Tax Deferred', 'Tax-Deferred'],
+    ['Tax Deductible', 'Tax-Deductible'],
     ['Tax Exempt', 'Tax-Exempt'],
     ['Fica', 'FICA'],
+    ['Niit', 'NIIT'],
     ['Cumulative', 'Cumul.'],
     ['Required Minimum Distributions', 'RMDs'],
     ['Early Withdrawal Penalties', 'EW Penalties'],

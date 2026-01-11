@@ -1,53 +1,23 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, ReferenceLine, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine, LabelList } from 'recharts';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useClickDetection } from '@/hooks/use-outside-click';
 import type { IncomeTaxBracket } from '@/lib/calc/tax-data/income-tax-brackets';
 import type { CapitalGainsTaxBracket } from '@/lib/calc/tax-data/capital-gains-tax-brackets';
 import type { SingleSimulationTaxesChartDataPoint } from '@/lib/types/chart-data-points';
-import { Divider } from '@/components/catalyst/divider';
 
-type IncomeCalculationsTooltipPayload = {
-  name: string;
-  taxableOrdinaryIncome: number;
-  taxableCapGains: number;
-  grossIncome: number;
-  adjustedGrossIncome: number;
-  taxableIncome: number;
-  adjustments: Record<string, number>;
-  deductions: Record<string, number>;
-};
-
-interface IncomeCalculationsTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    value: number;
-    name: string;
-    color: string;
-    dataKey: keyof IncomeCalculationsTooltipPayload;
-    payload: IncomeCalculationsTooltipPayload;
-  }>;
-  label?: number;
-  startAge: number;
-  age: number;
-  disabled: boolean;
-  dataView: 'taxableIncome' | 'adjustedGrossIncome';
-}
-
-function getTaxBrackets(chartData: SingleSimulationTaxesChartDataPoint[]): {
+const getTaxBrackets = (
+  chartData: SingleSimulationTaxesChartDataPoint[]
+): {
   incomeTaxBrackets: IncomeTaxBracket[] | null;
   capitalGainsTaxBrackets: CapitalGainsTaxBracket[] | null;
-} {
-  return {
-    incomeTaxBrackets: chartData[0]?.incomeTaxBrackets ?? null,
-    capitalGainsTaxBrackets: chartData[0]?.capitalGainsTaxBrackets ?? null,
-  };
-}
+} => ({
+  incomeTaxBrackets: chartData[0]?.incomeTaxBrackets ?? null,
+  capitalGainsTaxBrackets: chartData[0]?.capitalGainsTaxBrackets ?? null,
+});
 
 const renderTaxBracketReferenceLines = (
   taxBrackets: IncomeTaxBracket[] | CapitalGainsTaxBracket[],
@@ -72,116 +42,6 @@ const renderTaxBracketReferenceLines = (
       }}
     />
   ));
-};
-
-const IncomeCalculationsTooltip = ({ active, payload, startAge, age, disabled, dataView }: IncomeCalculationsTooltipProps) => {
-  if (!(active && payload && payload.length) || disabled) return null;
-
-  const currentYear = new Date().getFullYear();
-  const yearForAge = currentYear + (age - startAge);
-
-  const needsBgTextColor = ['var(--chart-3)', 'var(--chart-4)'];
-
-  const entry = payload[0].payload;
-
-  const grossIncome = (
-    <p className="flex justify-between text-sm font-semibold">
-      <span className="mr-2">Gross Income:</span>
-      <span className="ml-1 font-semibold">{formatNumber(entry.grossIncome, 1, '$')}</span>
-    </p>
-  );
-
-  const adjustments = Object.entries(entry.adjustments).map(([name, value]) => (
-    <p key={name} className="flex justify-between text-sm font-semibold">
-      <span className="mr-2">{`${formatChartString(name)}:`}</span>
-      <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-    </p>
-  ));
-
-  const deductions = Object.entries(entry.deductions).map(([name, value]) => (
-    <p key={name} className="flex justify-between text-sm font-semibold">
-      <span className="mr-2">{`${formatChartString(name)}:`}</span>
-      <span className="ml-1 font-semibold">{formatNumber(value, 1, '$')}</span>
-    </p>
-  ));
-
-  switch (dataView) {
-    case 'taxableIncome': {
-      const header = (
-        <div className="mx-1 mb-2 flex flex-col gap-2">
-          {grossIncome}
-          <Divider />
-          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
-          {adjustments}
-          <Divider />
-          <p className="text-muted-foreground -mb-2 text-xs/6">Deductions</p>
-          {deductions}
-          <Divider />
-        </div>
-      );
-
-      return (
-        <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-          <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-            <span>Age {age}</span>
-            <span className="text-muted-foreground">{yearForAge}</span>
-          </p>
-          {header}
-          <div className="flex flex-col gap-2">
-            {payload.map((entry) => (
-              <p
-                key={entry.dataKey}
-                style={{ backgroundColor: entry.color }}
-                className={cn('border-foreground/50 flex justify-between rounded-lg border px-2 text-sm', {
-                  'text-background': needsBgTextColor.includes(entry.color),
-                })}
-              >
-                <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-                <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
-              </p>
-            ))}
-            <p
-              style={{ backgroundColor: 'var(--chart-3)' }}
-              className={`border-foreground/50 text-background flex justify-between rounded-lg border px-2 text-sm`}
-            >
-              <span className="mr-2">{`${formatChartString('taxableIncome')}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.taxableIncome, 1, '$')}</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-    case 'adjustedGrossIncome': {
-      const header = (
-        <div className="mx-1 mb-2 flex flex-col gap-2">
-          {grossIncome}
-          <Divider />
-          <p className="text-muted-foreground -mb-2 text-xs/6">Adjustments</p>
-          {adjustments}
-          <Divider />
-        </div>
-      );
-
-      return (
-        <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
-          <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
-            <span>Age {age}</span>
-            <span className="text-muted-foreground">{yearForAge}</span>
-          </p>
-          {header}
-          <div className="flex flex-col gap-2">
-            <p
-              style={{ backgroundColor: 'var(--chart-2)' }}
-              className={`border-foreground/50 flex justify-between rounded-lg border px-2 text-sm`}
-            >
-              <span className="mr-2">{`${formatChartString('adjustedGrossIncome')}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.adjustedGrossIncome, 1, '$')}</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -237,7 +97,7 @@ const CustomLabelListContent = (props: any) => {
     <text
       x={x + width / 2}
       y={y + height / 2 + (isSmallScreen ? offset : 0)}
-      fill="currentColor"
+      fill="var(--foreground)"
       textAnchor="middle"
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
@@ -262,7 +122,21 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-const COLORS = ['var(--chart-2)', 'var(--chart-4)', 'var(--chart-3)', 'var(--chart-1)'];
+type BarChartData = {
+  name: string;
+  segments: Array<{ amount: number; color: string }>;
+};
+
+const normalizeChartData = (data: BarChartData[]) => {
+  const maxSegments = Math.max(...data.map((d) => d.segments.length), 0);
+  return {
+    maxSegments,
+    normalizedData: data.map((item) => ({
+      ...item,
+      segments: Array.from({ length: maxSegments }, (_, i) => item.segments[i] ?? { amount: 0, color: 'none' }),
+    })),
+  };
+};
 
 interface SingleSimulationTaxesBarChartProps {
   age: number;
@@ -284,7 +158,6 @@ interface SingleSimulationTaxesBarChartProps {
     | 'socialSecurityTaxablePercentage';
   rawChartData: SingleSimulationTaxesChartDataPoint[];
   referenceLineMode: 'hideReferenceLines' | 'marginalCapGainsTaxRates' | 'marginalIncomeTaxRates' | null;
-  startAge: number;
 }
 
 export default function SingleSimulationTaxesBarChart({
@@ -292,10 +165,7 @@ export default function SingleSimulationTaxesBarChart({
   dataView,
   rawChartData,
   referenceLineMode,
-  startAge,
 }: SingleSimulationTaxesBarChartProps) {
-  const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
-
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 
@@ -309,12 +179,12 @@ export default function SingleSimulationTaxesBarChart({
       desktop: ['Effective Income Tax Rate', 'Effective Cap Gains Tax Rate'],
     },
     annualAmounts: {
-      mobile: ['Income Tax', 'FICA Tax', 'Cap Gains Tax', 'EW Penalty'],
-      desktop: ['Annual Income Tax', 'Annual FICA Tax', 'Annual Cap Gains Tax', 'Annual EW Penalties'],
+      mobile: ['Income Tax', 'FICA Tax', 'Cap Gains Tax', 'NIIT', 'EW Penalty'],
+      desktop: ['Annual Income Tax', 'Annual FICA Tax', 'Annual Cap Gains Tax', 'Annual NIIT', 'Annual EW Penalties'],
     },
     cumulativeAmounts: {
-      mobile: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. CG Tax', 'Cumul. EW Penalty'],
-      desktop: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. Cap Gains Tax', 'Cumul. EW Penalties'],
+      mobile: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. CG Tax', 'Cumul. NIIT', 'Cumul. EW Penalty'],
+      desktop: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. Cap Gains Tax', 'Cumul. NIIT', 'Cumul. EW Penalties'],
     },
     retirementDistributions: {
       mobile: ['Tax-Deferred', 'Early Roth'],
@@ -329,8 +199,8 @@ export default function SingleSimulationTaxesBarChart({
       desktop: ['Annual EW Penalties', 'Cumul. EW Penalties'],
     },
     adjustmentsAndDeductions: {
-      mobile: ['Tax-Deferred', 'CL Deduction', 'Std. Deduction'],
-      desktop: ['Tax-Deferred Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
+      mobile: ['Deductible Contrib.', 'CL Deduction', 'Std. Deduction'],
+      desktop: ['Tax-Deductible Contributions', 'Capital Loss Deduction', 'Standard Deduction'],
     },
     socialSecurityIncome: {
       mobile: ['Soc. Sec.', 'Taxable Soc. Sec.'],
@@ -342,270 +212,248 @@ export default function SingleSimulationTaxesBarChart({
     return labelConfig[dataView][isSmallScreen ? 'mobile' : 'desktop'];
   };
 
-  const chartRef = useClickDetection<HTMLDivElement>(
-    () => setClickedOutsideChart(true),
-    () => setClickedOutsideChart(false)
-  );
-
   const chartData = rawChartData.filter((item) => item.age === age);
+
   const { incomeTaxBrackets, capitalGainsTaxBrackets } = getTaxBrackets(chartData);
   const taxableIncome = Math.max(...chartData.map((item) => item.taxableIncome));
 
   let formatter = undefined;
-  let transformedChartData: { name: string; [key: string]: number | string | Record<string, number> }[] = [];
-  let dataKeys: string[] = ['amount'];
+  let transformedChartData: BarChartData[] = [];
 
-  let isStacked = false;
-  const stackedColors: string[] = [];
+  let filterZeroValues = true;
+  let stackId: string | undefined = undefined;
 
   switch (dataView) {
     case 'marginalRates': {
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+      filterZeroValues = false;
+
       const [incomeTaxLabel, capGainsTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: incomeTaxLabel, amount: item.topMarginalIncomeTaxRate },
-        { name: capGainsTaxLabel, amount: item.topMarginalCapGainsTaxRate },
+        { name: incomeTaxLabel, segments: [{ amount: item.topMarginalIncomeTaxRate, color: 'var(--chart-2)' }] },
+        { name: capGainsTaxLabel, segments: [{ amount: item.topMarginalCapGainsTaxRate, color: 'var(--chart-4)' }] },
       ]);
-      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     }
     case 'effectiveRates': {
+      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+      filterZeroValues = false;
+
       const [incomeTaxLabel, capGainsTaxLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: incomeTaxLabel, amount: item.effectiveIncomeTaxRate },
-        { name: capGainsTaxLabel, amount: item.effectiveCapGainsTaxRate },
+        { name: incomeTaxLabel, segments: [{ amount: item.effectiveIncomeTaxRate, color: 'var(--chart-2)' }] },
+        { name: capGainsTaxLabel, segments: [{ amount: item.effectiveCapGainsTaxRate, color: 'var(--chart-4)' }] },
       ]);
-      formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
       break;
     }
     case 'annualAmounts': {
-      const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
+      const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, niitLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
       transformedChartData = chartData.flatMap((item) => [
-        { name: incomeTaxLabel, amount: item.annualIncomeTax },
-        { name: ficaTaxLabel, amount: item.annualFicaTax },
-        { name: capGainsTaxLabel, amount: item.annualCapGainsTax },
-        { name: earlyWithdrawalPenaltiesLabel, amount: item.annualEarlyWithdrawalPenalties },
+        { name: incomeTaxLabel, segments: [{ amount: item.annualIncomeTax, color: 'var(--chart-1)' }] },
+        { name: ficaTaxLabel, segments: [{ amount: item.annualFicaTax, color: 'var(--chart-2)' }] },
+        { name: capGainsTaxLabel, segments: [{ amount: item.annualCapGainsTax, color: 'var(--chart-3)' }] },
+        { name: niitLabel, segments: [{ amount: item.annualNiit, color: 'var(--chart-4)' }] },
+        { name: earlyWithdrawalPenaltiesLabel, segments: [{ amount: item.annualEarlyWithdrawalPenalties, color: 'var(--chart-5)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'cumulativeAmounts': {
-      const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
+      const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, niitLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
       transformedChartData = chartData.flatMap((item) => [
-        { name: incomeTaxLabel, amount: item.cumulativeIncomeTax },
-        { name: ficaTaxLabel, amount: item.cumulativeFicaTax },
-        { name: capGainsTaxLabel, amount: item.cumulativeCapGainsTax },
-        { name: earlyWithdrawalPenaltiesLabel, amount: item.cumulativeEarlyWithdrawalPenalties },
+        { name: incomeTaxLabel, segments: [{ amount: item.cumulativeIncomeTax, color: 'var(--chart-1)' }] },
+        { name: ficaTaxLabel, segments: [{ amount: item.cumulativeFicaTax, color: 'var(--chart-2)' }] },
+        { name: capGainsTaxLabel, segments: [{ amount: item.cumulativeCapGainsTax, color: 'var(--chart-3)' }] },
+        { name: niitLabel, segments: [{ amount: item.cumulativeNiit, color: 'var(--chart-4)' }] },
+        { name: earlyWithdrawalPenaltiesLabel, segments: [{ amount: item.cumulativeEarlyWithdrawalPenalties, color: 'var(--chart-5)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
-    case 'taxableIncome':
-      const hasOrdinaryIncome = chartData.some((item) => item.taxableOrdinaryIncome > 0);
-      const hasCapGains = chartData.some((item) => item.taxableCapGains > 0);
-
-      transformedChartData = chartData.map((item) => ({
-        name: 'Taxable Income',
-        taxableOrdinaryIncome: item.taxableOrdinaryIncome,
-        taxableCapGains: item.taxableCapGains,
-        grossIncome: item.grossIncome,
-        adjustedGrossIncome: item.adjustedGrossIncome,
-        taxableIncome: item.taxableIncome,
-        adjustments: item.adjustments,
-        deductions: item.deductions,
-      }));
-
-      dataKeys = [];
-      if (hasOrdinaryIncome) {
-        dataKeys.push('taxableOrdinaryIncome');
-        stackedColors.push(COLORS[0]);
-      }
-
-      if (hasCapGains) {
-        dataKeys.push('taxableCapGains');
-        stackedColors.push(COLORS[1]);
-      }
-
+    case 'taxableIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
-      isStacked = true;
-      break;
-    case 'adjustedGrossIncome':
-      transformedChartData = chartData.map((item) => ({
-        name: 'AGI',
-        taxableOrdinaryIncome: item.taxableOrdinaryIncome,
-        taxableCapGains: item.taxableCapGains,
-        grossIncome: item.grossIncome,
-        adjustedGrossIncome: item.adjustedGrossIncome,
-        taxableIncome: item.taxableIncome,
-        adjustments: item.adjustments,
-        deductions: item.deductions,
-      }));
+      stackId = 'stack';
 
-      dataKeys = ['adjustedGrossIncome'];
-      formatter = (value: number) => formatNumber(value, 1, '$');
-      break;
-    case 'investmentIncome':
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Interest Income', amount: item.interestIncome },
-        { name: 'Dividend Income', amount: item.dividendIncome },
+        {
+          name: 'Taxable Income',
+          segments: [
+            { amount: item.taxableIncomeTaxedAsOrdinary, color: 'var(--chart-1)' },
+            { amount: item.taxableIncomeTaxedAsCapGains, color: 'var(--chart-2)' },
+          ],
+        },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
+    }
+    case 'adjustedGrossIncome': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      stackId = 'stack';
+
+      transformedChartData = chartData.flatMap((item) => [
+        {
+          name: 'Adjusted Gross Income',
+          segments: [
+            { amount: item.adjustedIncomeTaxedAsOrdinary, color: 'var(--chart-1)' },
+            { amount: item.adjustedIncomeTaxedAsCapGains, color: 'var(--chart-2)' },
+          ],
+        },
+      ]);
+      break;
+    }
+    case 'investmentIncome': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Interest Income', segments: [{ amount: item.taxableInterestIncome, color: 'var(--chart-1)' }] },
+        { name: 'Dividend Income', segments: [{ amount: item.taxableDividendIncome, color: 'var(--chart-2)' }] },
+        { name: 'Realized Gains', segments: [{ amount: item.realizedGains, color: 'var(--chart-3)' }] },
+      ]);
+      break;
+    }
     case 'retirementDistributions': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [taxDeferredWithdrawalsLabel, earlyRothWithdrawalsLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: taxDeferredWithdrawalsLabel, amount: item.taxDeferredWithdrawals },
-        { name: earlyRothWithdrawalsLabel, amount: item.earlyRothEarningsWithdrawals },
+        { name: taxDeferredWithdrawalsLabel, segments: [{ amount: item.taxDeferredWithdrawals, color: 'var(--chart-1)' }] },
+        { name: earlyRothWithdrawalsLabel, segments: [{ amount: item.earlyRothEarningsWithdrawals, color: 'var(--chart-2)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
-    case 'taxExemptIncome':
-      transformedChartData = chartData.flatMap((item) => [{ name: 'Tax-Exempt Income', amount: item.taxExemptIncome }]);
+    case 'taxExemptIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Tax-Exempt Income', segments: [{ amount: item.taxExemptIncome, color: 'var(--chart-2)' }] },
+      ]);
       break;
+    }
     case 'ordinaryIncome': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
       const [earnedIncomeLabel, socialSecurityIncomeLabel, interestIncomeLabel, retirementDistributionsLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
       transformedChartData = chartData.flatMap((item) => [
-        { name: earnedIncomeLabel, amount: item.earnedIncome },
-        { name: socialSecurityIncomeLabel, amount: item.socialSecurityIncome },
-        { name: interestIncomeLabel, amount: item.interestIncome },
-        { name: retirementDistributionsLabel, amount: item.retirementDistributions },
+        { name: earnedIncomeLabel, segments: [{ amount: item.earnedIncome, color: 'var(--chart-1)' }] },
+        { name: socialSecurityIncomeLabel, segments: [{ amount: item.socialSecurityIncome, color: 'var(--chart-2)' }] },
+        { name: interestIncomeLabel, segments: [{ amount: item.taxableInterestIncome, color: 'var(--chart-3)' }] },
+        { name: retirementDistributionsLabel, segments: [{ amount: item.taxableRetirementDistributions, color: 'var(--chart-4)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
-    case 'capGainsAndDividends':
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Realized Gains', amount: item.realizedGains },
-        { name: 'Dividend Income', amount: item.dividendIncome },
-      ]);
+    case 'capGainsAndDividends': {
       formatter = (value: number) => formatNumber(value, 1, '$');
+
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Realized Gains', segments: [{ amount: item.realizedGains, color: 'var(--chart-1)' }] },
+        { name: 'Dividend Income', segments: [{ amount: item.taxableDividendIncome, color: 'var(--chart-2)' }] },
+      ]);
       break;
+    }
     case 'earlyWithdrawalPenalties': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      filterZeroValues = false;
+
       const [annualPenaltiesLabel, cumulativePenaltiesLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: annualPenaltiesLabel, amount: item.annualEarlyWithdrawalPenalties },
-        { name: cumulativePenaltiesLabel, amount: item.cumulativeEarlyWithdrawalPenalties },
+        { name: annualPenaltiesLabel, segments: [{ amount: item.annualEarlyWithdrawalPenalties, color: 'var(--chart-2)' }] },
+        { name: cumulativePenaltiesLabel, segments: [{ amount: item.cumulativeEarlyWithdrawalPenalties, color: 'var(--chart-4)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'adjustmentsAndDeductions': {
-      const [taxDeferredContributionsLabel, capLossDeductionLabel, standardDeductionLabel] = getLabelsForScreenSize(
+      formatter = (value: number) => formatNumber(value, 1, '$');
+
+      const [taxDeductibleContributionsLabel, capLossDeductionLabel, standardDeductionLabel] = getLabelsForScreenSize(
         dataView,
         isSmallScreen
       );
       transformedChartData = chartData.flatMap((item) => [
-        { name: taxDeferredContributionsLabel, amount: item.taxDeferredContributions },
-        { name: capLossDeductionLabel, amount: item.capitalLossDeduction },
-        { name: standardDeductionLabel, amount: item.standardDeduction },
+        { name: taxDeductibleContributionsLabel, segments: [{ amount: item.taxDeductibleContributions, color: 'var(--chart-1)' }] },
+        { name: capLossDeductionLabel, segments: [{ amount: item.capitalLossDeduction, color: 'var(--chart-2)' }] },
+        { name: standardDeductionLabel, segments: [{ amount: item.standardDeduction, color: 'var(--chart-3)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
     case 'socialSecurityIncome': {
+      formatter = (value: number) => formatNumber(value, 1, '$');
+      filterZeroValues = false;
+
       const [socialSecurityLabel, taxableSocialSecurityLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
-        { name: socialSecurityLabel, amount: item.socialSecurityIncome },
-        { name: taxableSocialSecurityLabel, amount: item.taxableSocialSecurityIncome },
+        { name: socialSecurityLabel, segments: [{ amount: item.socialSecurityIncome, color: 'var(--chart-1)' }] },
+        { name: taxableSocialSecurityLabel, segments: [{ amount: item.taxableSocialSecurityIncome, color: 'var(--chart-2)' }] },
       ]);
-      formatter = (value: number) => formatNumber(value, 1, '$');
       break;
     }
-    case 'socialSecurityTaxablePercentage':
-      transformedChartData = chartData.flatMap((item) => [
-        { name: 'Max Taxable %', amount: item.maxTaxablePercentage },
-        { name: 'Actual Taxable %', amount: item.actualTaxablePercentage },
-      ]);
+    case 'socialSecurityTaxablePercentage': {
       formatter = (value: number) => `${(value * 100).toFixed(1)}%`;
+      filterZeroValues = false;
+
+      transformedChartData = chartData.flatMap((item) => [
+        { name: 'Max Taxable %', segments: [{ amount: item.maxTaxablePercentage, color: 'var(--chart-2)' }] },
+        { name: 'Actual Taxable %', segments: [{ amount: item.actualTaxablePercentage, color: 'var(--chart-4)' }] },
+      ]);
       break;
+    }
   }
 
-  if (transformedChartData.length === 0 || dataKeys.length === 0) {
-    return <div className="flex h-64 w-full items-center justify-center sm:h-72 lg:h-80">No data available for the selected view.</div>;
+  const getTotalAmount = (item: BarChartData) => item.segments.reduce((acc, s) => acc + s.amount, 0);
+  transformedChartData = transformedChartData
+    .filter((item) => (filterZeroValues ? getTotalAmount(item) !== 0 : true))
+    .sort((a, b) => getTotalAmount(b) - getTotalAmount(a));
+  if (transformedChartData.length === 0) {
+    return <div className="flex h-72 w-full items-center justify-center sm:h-84 lg:h-96">No data available for the selected view.</div>;
   }
 
-  const gridColor = resolvedTheme === 'dark' ? '#3f3f46' : '#d4d4d8'; // zinc-700 : zinc-300
-  const foregroundColor = resolvedTheme === 'dark' ? '#f4f4f5' : '#18181b'; // zinc-100 : zinc-900
-  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d4d4d8' : '#52525b'; // zinc-300 : zinc-600
+  const gridColor = resolvedTheme === 'dark' ? '#44403c' : '#d6d3d1'; // stone-700 : stone-300
+  const foregroundColor = resolvedTheme === 'dark' ? '#f5f5f4' : '#1c1917'; // stone-100 : stone-900
+  const foregroundMutedColor = resolvedTheme === 'dark' ? '#d6d3d1' : '#57534e'; // stone-300 : stone-600
 
   const shouldUseCustomTick = transformedChartData.length > 3 || (isSmallScreen && transformedChartData.length > 1);
   const tick = shouldUseCustomTick ? CustomizedAxisTick : { fill: foregroundMutedColor };
   const bottomMargin = shouldUseCustomTick ? 100 : 25;
 
+  const { maxSegments, normalizedData } = normalizeChartData(transformedChartData);
+  const getDataKey = (segmentIndex: number) => `segments[${segmentIndex}].amount`;
+
   return (
-    <div ref={chartRef} className="h-full min-h-64 w-full sm:min-h-72 lg:min-h-80 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
+    <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={transformedChartData}
-          className="text-xs"
-          margin={{ top: 0, right: 10, left: 10, bottom: bottomMargin }}
-          tabIndex={-1}
-        >
+        <BarChart data={normalizedData} className="text-xs" margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
-          <XAxis tick={tick} axisLine={false} tickLine={false} dataKey="name" interval={0} />
+          <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          {!isStacked &&
-            dataKeys.map((dataKey, idx) => (
-              <Bar key={`${dataKey}-${idx}`} dataKey={dataKey} maxBarSize={250} minPointSize={20}>
-                {transformedChartData.map((entry, idx) => (
-                  <Cell
-                    key={`cell-${idx}`}
-                    fill={COLORS[idx % COLORS.length]}
-                    stroke={COLORS[idx % COLORS.length]}
-                    strokeWidth={3}
-                    fillOpacity={0.5}
-                  />
-                ))}
-                <LabelList
-                  dataKey={dataKey}
-                  position="middle"
-                  content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
-                />
-              </Bar>
-            ))}
-          {isStacked &&
-            dataKeys.map((dataKey, idx) => (
-              <Bar
-                key={`${dataKey}-${idx}`}
-                dataKey={dataKey}
-                stackId="stack"
-                maxBarSize={250}
-                minPointSize={20}
-                fill={stackedColors[idx]}
-                stroke={stackedColors[idx]}
-                strokeWidth={3}
-                fillOpacity={0.5}
-              >
-                <LabelList
-                  dataKey={dataKey}
-                  position="middle"
-                  content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
-                />
-              </Bar>
-            ))}
-          {(dataView === 'taxableIncome' || dataView === 'adjustedGrossIncome') && (
-            <Tooltip
-              content={
-                <IncomeCalculationsTooltip
-                  startAge={startAge}
-                  age={age}
-                  disabled={isSmallScreen && clickedOutsideChart}
-                  dataView={dataView}
-                />
-              }
-              cursor={false}
-            />
-          )}
+          {Array.from({ length: maxSegments }).map((_, segmentIndex) => (
+            <Bar key={segmentIndex} dataKey={getDataKey(segmentIndex)} maxBarSize={75} minPointSize={20} stackId={stackId}>
+              {normalizedData.map((entry, i) => {
+                const segment = entry.segments[segmentIndex];
+
+                const color = segment?.color;
+                const amount = segment?.amount;
+
+                const fillOpacity = filterZeroValues ? (amount !== 0 ? 0.5 : 0) : 0.5;
+                const strokeWidth = filterZeroValues ? (amount !== 0 ? 3 : 0) : 3;
+
+                return <Cell key={i} fill={color} fillOpacity={fillOpacity} stroke={color} strokeWidth={strokeWidth} />;
+              })}
+              <LabelList
+                dataKey={getDataKey(segmentIndex)}
+                position="middle"
+                content={<CustomLabelListContent isSmallScreen={isSmallScreen} dataView={dataView} />}
+              />
+            </Bar>
+          ))}
           {referenceLineMode === 'marginalIncomeTaxRates' &&
             incomeTaxBrackets &&
             renderTaxBracketReferenceLines(incomeTaxBrackets, taxableIncome, foregroundColor, foregroundMutedColor)}
