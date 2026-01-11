@@ -74,7 +74,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   earlyHsaWithdrawals: number;
   taxableRetirementDistributions: number;
   taxableInterestIncome: number;
-  taxableOrdinaryIncome: number;
+  taxableIncomeTaxedAsOrdinary: number;
+  adjustedIncomeTaxedAsOrdinary: number;
   incomeTaxedAsOrdinary: number;
   annualIncomeTax: number;
   cumulativeIncomeTax: number;
@@ -91,7 +92,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   // Cap Gains
   taxableRealizedGains: number;
   taxableDividendIncome: number;
-  taxableCapGains: number;
+  taxableIncomeTaxedAsCapGains: number;
+  adjustedIncomeTaxedAsCapGains: number;
   incomeTaxedAsCapGains: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;

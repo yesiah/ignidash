@@ -186,10 +186,6 @@ export default function SingleSimulationTaxesBarChart({
       mobile: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. CG Tax', 'Cumul. NIIT', 'Cumul. EW Penalty'],
       desktop: ['Cumul. Income Tax', 'Cumul. FICA Tax', 'Cumul. Cap Gains Tax', 'Cumul. NIIT', 'Cumul. EW Penalties'],
     },
-    taxableIncome: {
-      mobile: ['Taxable Ordinary', 'Taxable Gains'],
-      desktop: ['Taxable Ordinary Income', 'Taxable Cap Gains'],
-    },
     retirementDistributions: {
       mobile: ['Tax-Deferred', 'Early Roth'],
       desktop: ['Tax-Deferred Withdrawals', 'Early Roth Earnings Withdrawals'],
@@ -225,7 +221,6 @@ export default function SingleSimulationTaxesBarChart({
   let formatter = undefined;
 
   let stackId: string | undefined = undefined;
-  const stackOffset: 'sign' | undefined = undefined;
 
   switch (dataView) {
     case 'marginalRates': {
@@ -283,41 +278,32 @@ export default function SingleSimulationTaxesBarChart({
     case 'taxableIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      const [taxableOrdinaryIncomeLabel, taxableCapGainsLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
-      switch (referenceLineMode) {
-        case 'marginalIncomeTaxRates':
-          transformedChartData = chartData.flatMap((item) => [
-            { name: taxableOrdinaryIncomeLabel, segments: [{ amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' }] },
-          ]);
-          break;
-        case 'marginalCapGainsTaxRates':
-          stackId = 'stack';
+      stackId = 'stack';
 
-          transformedChartData = chartData.flatMap((item) => [
-            {
-              name: taxableCapGainsLabel,
-              segments: [
-                { amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' },
-                { amount: item.taxableCapGains, color: 'var(--chart-2)' },
-              ],
-            },
-          ]);
-          break;
-        default:
-          transformedChartData = chartData.flatMap((item) => [
-            { name: taxableOrdinaryIncomeLabel, segments: [{ amount: item.taxableOrdinaryIncome, color: 'var(--chart-1)' }] },
-            { name: taxableCapGainsLabel, segments: [{ amount: item.taxableCapGains, color: 'var(--chart-2)' }] },
-          ]);
-          break;
-      }
-
+      transformedChartData = chartData.flatMap((item) => [
+        {
+          name: 'Taxable Income',
+          segments: [
+            { amount: item.taxableIncomeTaxedAsOrdinary, color: 'var(--chart-1)' },
+            { amount: item.taxableIncomeTaxedAsCapGains, color: 'var(--chart-2)' },
+          ],
+        },
+      ]);
       break;
     }
     case 'adjustedGrossIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
+      stackId = 'stack';
+
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Adjusted Gross Income', segments: [{ amount: item.adjustedGrossIncome, color: 'var(--chart-1)' }] },
+        {
+          name: 'Adjusted Gross Income',
+          segments: [
+            { amount: item.adjustedIncomeTaxedAsOrdinary, color: 'var(--chart-1)' },
+            { amount: item.adjustedIncomeTaxedAsCapGains, color: 'var(--chart-2)' },
+          ],
+        },
       ]);
       break;
     }
@@ -440,17 +426,12 @@ export default function SingleSimulationTaxesBarChart({
   return (
     <div className="h-full min-h-72 w-full sm:min-h-84 lg:min-h-96 [&_g:focus]:outline-none [&_svg:focus]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={normalizedData}
-          className="text-xs"
-          stackOffset={stackOffset}
-          margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }}
-          tabIndex={-1}
-        >
+        <BarChart data={normalizedData} className="text-xs" margin={{ top: 5, right: 10, left: 10, bottom: bottomMargin }} tabIndex={-1}>
           <CartesianGrid strokeDasharray="5 5" stroke={gridColor} vertical={false} />
           <XAxis tick={tick} axisLine={false} dataKey="name" interval={0} />
           <YAxis tick={{ fill: foregroundMutedColor }} axisLine={false} tickLine={false} hide={isSmallScreen} tickFormatter={formatter} />
-          {(dataView === 'taxableIncome' || dataView === 'adjustedGrossIncome') && (
+          {((dataView === 'taxableIncome' && (referenceLineMode ?? 'hideReferenceLines') === 'hideReferenceLines') ||
+            dataView === 'adjustedGrossIncome') && (
             <ReferenceLine y={0} stroke={foregroundColor} strokeWidth={1} ifOverflow="extendDomain" />
           )}
           {Array.from({ length: maxSegments }).map((_, segmentIndex) => (
@@ -461,7 +442,7 @@ export default function SingleSimulationTaxesBarChart({
                 const color = segment?.color;
                 const amount = segment?.amount;
 
-                return <Cell key={i} fill={color} fillOpacity={amount > 0 ? 0.5 : 0} stroke={color} strokeWidth={amount > 0 ? 3 : 0} />;
+                return <Cell key={i} fill={color} fillOpacity={amount !== 0 ? 0.5 : 0} stroke={color} strokeWidth={amount !== 0 ? 3 : 0} />;
               })}
               <LabelList
                 dataKey={getDataKey(segmentIndex)}
