@@ -110,6 +110,10 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       break;
   }
 
+  const filterZeroValues = !['realizedGains', 'requiredMinimumDistributions', 'earlyWithdrawals', 'shortfall', 'withdrawalRate'].includes(
+    dataView
+  );
+
   return (
     <div className="text-foreground bg-background rounded-lg border p-2 shadow-md">
       <p className="mx-1 mb-2 flex justify-between text-sm font-semibold">
@@ -118,7 +122,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       </p>
       <div className="flex flex-col gap-1">
         {payload
-          .filter((entry) => entry.value !== 0)
+          .filter((entry) => (filterZeroValues ? entry.value !== 0 : true))
           .map((entry) => (
             <p
               key={entry.dataKey}
