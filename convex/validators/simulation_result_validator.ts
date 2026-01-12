@@ -40,7 +40,11 @@ export const simulationDataPointValidator = v.object({
   ficaTax: v.number(),
   federalIncomeTax: v.number(),
   capitalGainsTax: v.number(),
+  niit: v.number(),
   earlyWithdrawalPenalties: v.number(),
+
+  netInvestmentIncome: v.number(),
+  incomeSubjectToNiit: v.number(),
 
   effectiveIncomeTaxRate: v.number(),
   topMarginalIncomeTaxRate: v.number(),
@@ -77,6 +81,7 @@ export const simulationResultValidator = v.object({
   incomeTaxBrackets: v.array(taxBracketValidator),
   capitalGainsTaxBrackets: v.array(taxBracketValidator),
   standardDeduction: v.number(),
+  niitThreshold: v.number(),
 });
 
 export type SimulationResult = Infer<typeof simulationResultValidator>;

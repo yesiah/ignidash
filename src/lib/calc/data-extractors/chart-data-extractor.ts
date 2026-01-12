@@ -156,6 +156,7 @@ export abstract class ChartDataExtractor {
         incomeSubjectToNiit: taxesData.niit.incomeSubjectToNiit,
         annualNiit,
         cumulativeNiit,
+        niitThreshold: taxesData.niit.threshold,
         annualEarlyWithdrawalPenalties,
         cumulativeEarlyWithdrawalPenalties,
         taxExemptIncome: taxesData.incomeSources.taxExemptIncome,

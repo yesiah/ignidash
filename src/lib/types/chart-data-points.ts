@@ -106,6 +106,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   incomeSubjectToNiit: number;
   annualNiit: number;
   cumulativeNiit: number;
+  niitThreshold: number;
 
   // Early Withdrawal Penalties
   annualEarlyWithdrawalPenalties: number;

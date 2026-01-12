@@ -108,17 +108,18 @@ const systemPrompt = (planData: string, keyMetrics: string): string => `
   - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, tax-exempt), withholding percentage
   - **Expenses:** Name, amount, frequency, start/end dates, growth rate with optional cap
   - **Accounts:** Savings, Taxable Brokerage, 401(k), Roth 401(k), Traditional IRA, Roth IRA, HSA—each with balance and bond allocation; taxable accounts track cost basis, Roth accounts track contribution basis
+  - **Glide Path:** Enable/disable automatic rebalancing toward a target bond allocation; specify end time (custom date or custom age) and target bond percentage; prioritizes tax-advantaged accounts for rebalancing
   - **Contribution Rules:** Priority-ordered rules specifying account, amount (fixed/percentage/unlimited), optional employer match, optional max balance cap
   - **Market Assumptions:** Expected returns and dividend/interest yields for stocks, bonds, and cash; inflation rate
   - **Tax Settings:** Filing status (single, married filing jointly, head of household)
   - **Simulation Mode:** Single projection (fixed, stochastic, or historical returns with custom start years) or Monte Carlo (500 runs); seed available for reproducibility
 
   **Simulation Outputs:**
-  - Portfolio value over time by asset class, tax category, and individual account
-  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains), net flow, savings rate
-  - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction
+  - Portfolio value over time by asset class, tax category (taxable, tax-deferred, tax-free, cash savings), and individual account
+  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), net flow, savings rate
+  - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction, NIIT
   - Investment returns: real returns by asset class, inflation impact, cumulative and annual growth
-  - Contributions and withdrawals: amounts by tax category, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
+  - Contributions and withdrawals: amounts by tax category and asset class, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
   - Key metrics: success rate, retirement age, bankruptcy age, portfolio milestones, lifetime taxes
   - Monte Carlo results: percentile distributions (P10-P90), phase breakdowns, outcome probabilities
 
@@ -270,22 +271,23 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   ## What Ignidash Simulator Models
 
-  **User Inputs:**
+  **Inputs User Can Change:**
   - **Timeline:** Current age, life expectancy, retirement target (fixed age or SWR-based)
   - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, tax-exempt), withholding percentage
   - **Expenses:** Name, amount, frequency, start/end dates, growth rate with optional cap
   - **Accounts:** Savings, Taxable Brokerage, 401(k), Roth 401(k), Traditional IRA, Roth IRA, HSA—each with balance and bond allocation; taxable accounts track cost basis, Roth accounts track contribution basis
+  - **Glide Path:** Enable/disable automatic rebalancing toward a target bond allocation; specify end time (custom date or custom age) and target bond percentage; prioritizes tax-advantaged accounts for rebalancing
   - **Contribution Rules:** Priority-ordered rules specifying account, amount (fixed/percentage/unlimited), optional employer match, optional max balance cap
   - **Market Assumptions:** Expected returns and dividend/interest yields for stocks, bonds, and cash; inflation rate
   - **Tax Settings:** Filing status (single, married filing jointly, head of household)
   - **Simulation Mode:** Single projection (fixed, stochastic, or historical returns with custom start years) or Monte Carlo (500 runs); seed available for reproducibility
 
   **Simulation Outputs:**
-  - Portfolio value over time by asset class, tax category, and individual account
-  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains), net flow, savings rate
-  - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction
+  - Portfolio value over time by asset class, tax category (taxable, tax-deferred, tax-free, cash savings), and individual account
+  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), net flow, savings rate
+  - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction, NIIT
   - Investment returns: real returns by asset class, inflation impact, cumulative and annual growth
-  - Contributions and withdrawals: amounts by tax category, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
+  - Contributions and withdrawals: amounts by tax category and asset class, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
   - Key metrics: success rate, retirement age, bankruptcy age, portfolio milestones, lifetime taxes
   - Monte Carlo results: percentile distributions (P10-P90), phase breakdowns, outcome probabilities
 
@@ -428,7 +430,7 @@ const formatKeyMetrics = (keyMetrics: KeyMetrics | null): string => {
 };
 
 const formatSimulationResult = (simulationResult: SimulationResult): string => {
-  const { simulationResult: data, incomeTaxBrackets, capitalGainsTaxBrackets, standardDeduction } = simulationResult;
+  const { simulationResult: data, incomeTaxBrackets, capitalGainsTaxBrackets, standardDeduction, niitThreshold } = simulationResult;
 
   if (!data.length) return 'No simulation data available';
 
@@ -444,6 +446,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
   lines.push(`  Income: ${incomeTaxBrackets.map(fmtBracket).join(', ')}`);
   lines.push(`  CapGains: ${capitalGainsTaxBrackets.map(fmtBracket).join(', ')}`);
   lines.push(`  StdDeduction: ${fmt(standardDeduction)}`);
+  lines.push(`  NIIT Threshold: ${fmt(niitThreshold)}`);
 
   lines.push(`\nYear-by-Year:`);
 
@@ -488,6 +491,8 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
       d.grossIncome && `gross:${fmt(d.grossIncome)}`,
       d.adjustedGrossIncome && `AGI:${fmt(d.adjustedGrossIncome)}`,
       d.taxableIncome && `taxable:${fmt(d.taxableIncome)}`,
+      d.netInvestmentIncome && `netInvestment:${fmt(d.netInvestmentIncome)}`,
+      d.incomeSubjectToNiit && `incomeSubjectToNiit:${fmt(d.incomeSubjectToNiit)}`,
     ].filter(Boolean);
     if (taxBasis.length) sections.push(`taxBasis: ${taxBasis.join(', ')}`);
 
@@ -495,6 +500,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
       d.federalIncomeTax && `income:${fmt(d.federalIncomeTax)}`,
       d.capitalGainsTax && `capGains:${fmt(d.capitalGainsTax)}`,
       d.ficaTax && `FICA:${fmt(d.ficaTax)}`,
+      d.niit && `NIIT:${fmt(d.niit)}`,
       d.earlyWithdrawalPenalties && `penalties:${fmt(d.earlyWithdrawalPenalties)}`,
     ].filter(Boolean);
     if (taxes.length) sections.push(`taxes: ${taxes.join(', ')}`);

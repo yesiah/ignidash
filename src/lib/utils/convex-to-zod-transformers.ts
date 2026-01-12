@@ -422,7 +422,10 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       ficaTax: taxesData[i].annualFicaTax,
       federalIncomeTax: taxesData[i].annualIncomeTax,
       capitalGainsTax: taxesData[i].annualCapGainsTax,
+      niit: taxesData[i].annualNiit,
       earlyWithdrawalPenalties: taxesData[i].annualEarlyWithdrawalPenalties,
+      netInvestmentIncome: taxesData[i].netInvestmentIncome,
+      incomeSubjectToNiit: taxesData[i].incomeSubjectToNiit,
       effectiveIncomeTaxRate: taxesData[i].effectiveIncomeTaxRate,
       topMarginalIncomeTaxRate: taxesData[i].topMarginalIncomeTaxRate,
       effectiveCapitalGainsTaxRate: taxesData[i].effectiveCapGainsTaxRate,
@@ -454,8 +457,9 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
   const incomeTaxBrackets: ConvexSimulationResult['incomeTaxBrackets'] = taxesData[0].incomeTaxBrackets;
   const capitalGainsTaxBrackets: ConvexSimulationResult['capitalGainsTaxBrackets'] = taxesData[0].capitalGainsTaxBrackets;
   const standardDeduction: ConvexSimulationResult['standardDeduction'] = taxesData[0].standardDeduction;
+  const niitThreshold: ConvexSimulationResult['niitThreshold'] = taxesData[0].niitThreshold;
 
-  return { simulationResult, incomeTaxBrackets, capitalGainsTaxBrackets, standardDeduction };
+  return { simulationResult, incomeTaxBrackets, capitalGainsTaxBrackets, standardDeduction, niitThreshold };
 }
 
 // ============================================================================
