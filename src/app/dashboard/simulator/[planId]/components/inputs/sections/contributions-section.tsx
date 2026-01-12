@@ -3,7 +3,7 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, RefObject, useCallback, useMemo } from 'react';
-import { HandCoinsIcon } from 'lucide-react';
+import { HandCoinsIcon, InfoIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import {
   closestCenter,
@@ -19,7 +19,6 @@ import {
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { Field as HeadlessField } from '@headlessui/react';
-import { InfoIcon } from 'lucide-react';
 
 import { useContributionRulesData, useBaseContributionRuleData, useAccountsData } from '@/hooks/use-convex-data';
 import { contributionToConvex, baseContributionToConvex } from '@/lib/utils/convex-to-zod-transformers';
