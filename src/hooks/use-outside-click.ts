@@ -17,31 +17,26 @@ export function useClickDetection<T extends HTMLElement = HTMLDivElement>(
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
-    // Capture the current ref value to avoid stale closures
     const element = ref.current;
 
-    const handleInteractionStart = (event: MouseEvent | TouchEvent) => {
+    const handleInteraction = (event: MouseEvent | TouchEvent) => {
       if (!element) return;
 
       if (element.contains(event.target as Node)) {
-        // Click is inside the element
         onInside();
       } else {
-        // Click is outside the element
         onOutside();
       }
     };
 
-    // Add event listeners to document
-    document.addEventListener('mousedown', handleInteractionStart);
-    document.addEventListener('touchstart', handleInteractionStart);
+    document.addEventListener('mousedown', handleInteraction);
+    document.addEventListener('touchend', handleInteraction);
 
-    // Cleanup function removes event listeners
     return () => {
-      document.removeEventListener('mousedown', handleInteractionStart);
-      document.removeEventListener('touchstart', handleInteractionStart);
+      document.removeEventListener('mousedown', handleInteraction);
+      document.removeEventListener('touchend', handleInteraction);
     };
-  }, [onOutside, onInside]); // Include callbacks in dependencies
+  }, [onOutside, onInside]);
 
   return ref;
 }
