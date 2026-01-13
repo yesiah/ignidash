@@ -94,7 +94,8 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       );
       break;
     case 'requiredMinimumDistributions':
-      if (label && label >= 73) {
+      const rmdAge = (payload[0].payload as SingleSimulationWithdrawalsChartDataPoint).rmdAge;
+      if (label && label >= rmdAge) {
         const lookupAge = Math.min(Math.floor(label), 120);
         const lifeExpectancyFactor = uniformLifetimeMap[lookupAge];
 

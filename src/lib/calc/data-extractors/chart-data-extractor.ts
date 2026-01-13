@@ -275,6 +275,7 @@ export abstract class ChartDataExtractor {
 
       return {
         age,
+        rmdAge: simulation.context.rmdAge,
         annualWithdrawals,
         cumulativeWithdrawals,
         annualStockWithdrawals: portfolioData.withdrawalsForPeriod.stocks,

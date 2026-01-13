@@ -154,6 +154,7 @@ export interface SingleSimulationContributionsChartDataPoint {
 
 export interface SingleSimulationWithdrawalsChartDataPoint {
   age: number;
+  rmdAge: number;
   annualWithdrawals: number;
   cumulativeWithdrawals: number;
   annualStockWithdrawals: number;

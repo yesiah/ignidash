@@ -36,6 +36,7 @@ export interface SimulationResult {
     startDate: ISODateString;
     endDate: ISODateString;
     retirementStrategy: RetirementStrategyInputs;
+    rmdAge: number;
     historicalRanges?: Array<{ startYear: number; endYear: number }>;
   };
 }
@@ -47,6 +48,7 @@ export interface SimulationContext {
   readonly startDate: Date;
   readonly endDate: Date;
   readonly retirementStrategy: RetirementStrategyInputs;
+  readonly rmdAge: number;
 }
 
 export interface SimulationState {
@@ -85,7 +87,8 @@ export class FinancialSimulationEngine {
       this.incrementSimulationTime(simulationState, simulationContext);
 
       // Handle RMDs at start of year, before any other processing
-      if (simulationState.time.age >= 73 && simulationState.time.month % 12 === 1) portfolioProcessor.processRequiredMinimumDistributions();
+      if (simulationState.time.age >= simulationContext.rmdAge && simulationState.time.month % 12 === 1)
+        portfolioProcessor.processRequiredMinimumDistributions();
 
       // Process one month of simulation
       returnsProcessor.process();
@@ -162,6 +165,7 @@ export class FinancialSimulationEngine {
       startDate: simulationContext.startDate.toISOString().split('T')[0],
       endDate: simulationContext.endDate.toISOString().split('T')[0],
       retirementStrategy: simulationContext.retirementStrategy,
+      rmdAge: simulationContext.rmdAge,
     };
 
     return { data: resultData, context };
@@ -193,7 +197,10 @@ export class FinancialSimulationEngine {
 
     const retirementStrategy = timeline.retirementStrategy;
 
-    return { startAge, endAge, yearsToSimulate, startDate, endDate, retirementStrategy };
+    // SECURE Act 2.0: RMD age is 75 for those born 1960+, otherwise 73
+    const rmdAge = timeline.birthYear >= 1960 ? 75 : 73;
+
+    return { startAge, endAge, yearsToSimulate, startDate, endDate, retirementStrategy, rmdAge };
   }
 
   private initSimulationState(simulationContext: SimulationContext): SimulationState {

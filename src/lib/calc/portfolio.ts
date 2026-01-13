@@ -386,7 +386,8 @@ export class PortfolioProcessor {
 
   processRequiredMinimumDistributions(): PortfolioData {
     const age = this.simulationState.time.age;
-    if (age < 73) throw new Error('RMDs should not be processed for ages under 73');
+    if (age < this.simulationContext.rmdAge)
+      throw new Error(`RMDs should not be processed for ages under ${this.simulationContext.rmdAge}`);
 
     const withdrawalsByAccount: Record<string, AssetTransactions> = {};
     const rmdsByAccount: Record<string, number> = {};
