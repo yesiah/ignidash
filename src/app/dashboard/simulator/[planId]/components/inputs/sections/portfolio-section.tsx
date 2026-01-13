@@ -125,7 +125,8 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Set a glide path to automatically rebalance toward your target bond allocation.</p>
+                    <p className="sm:hidden">Auto-rebalance toward target bond allocation.</p>
+                    <p className="hidden sm:block">Set a glide path to automatically rebalance toward your target bond allocation.</p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -136,7 +137,10 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add all current cash savings (e.g. checking, savings, money market) to simulate your portfolio.</p>
+                    <p className="sm:hidden">Add current cash savings.</p>
+                    <p className="hidden sm:block">
+                      Add all current cash savings (e.g. checking, savings, money market) to simulate your portfolio.
+                    </p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -147,7 +151,10 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add all current investment accounts (e.g. stocks, bonds, mutual funds) to simulate your portfolio.</p>
+                    <p className="sm:hidden">Add current investment accounts.</p>
+                    <p className="hidden sm:block">
+                      Add all current investment accounts (e.g. stocks, bonds, mutual funds) to simulate your portfolio.
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </div>

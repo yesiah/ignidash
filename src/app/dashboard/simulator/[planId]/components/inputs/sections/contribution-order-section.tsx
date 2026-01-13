@@ -216,7 +216,8 @@ export default function ContributionOrderSection(props: ContributionOrderSection
                 <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Allocate any leftover cash after your contribution rules are applied.</p>
+                <p className="sm:hidden">Allocate any leftover cash after contributions.</p>
+                <p className="hidden sm:block">Allocate any leftover cash after your contribution rules are applied.</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -280,7 +281,10 @@ export default function ContributionOrderSection(props: ContributionOrderSection
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Set the order in which excess cash is contributed to your accounts during the simulation.</p>
+                    <p className="sm:hidden">Set the order in which excess cash is contributed.</p>
+                    <p className="hidden sm:block">
+                      Set the order in which excess cash is contributed to your accounts during the simulation.
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </div>

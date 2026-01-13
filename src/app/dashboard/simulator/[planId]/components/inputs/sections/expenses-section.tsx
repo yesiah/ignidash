@@ -122,7 +122,8 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add the expenses you expect to incur during your lifetime, excluding taxes.</p>
+                    <p className="sm:hidden">Add expected lifetime expenses (excluding taxes).</p>
+                    <p className="hidden sm:block">Add the expenses you expect to incur during your lifetime, excluding taxes.</p>
                   </TooltipContent>
                 </Tooltip>
               </div>

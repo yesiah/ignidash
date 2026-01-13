@@ -122,8 +122,12 @@ export default function IncomesSection(props: IncomesSectionProps) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add the income sources you expect to receive during your lifetime.</p>
-                    <p>Exclude investment income and portfolio withdrawals (calculated automatically).</p>
+                    <p className="sm:hidden">Add expected lifetime income sources.</p>
+
+                    <div className="hidden sm:block">
+                      <p>Add the income sources you expect to receive during your lifetime.</p>
+                      <p>Exclude investment income and portfolio withdrawals (calculated automatically).</p>
+                    </div>
                   </TooltipContent>
                 </Tooltip>
               </div>
