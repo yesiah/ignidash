@@ -3,7 +3,7 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, RefObject } from 'react';
-import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon, RouteIcon } from 'lucide-react';
+import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon, RouteIcon, InfoIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 import { useAccountsData, useGlidePathData } from '@/hooks/use-convex-data';
@@ -20,6 +20,7 @@ import DataItem from '@/components/ui/data-item';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 import AccountDialog from '../dialogs/account-dialog';
 import SavingsDialog from '../dialogs/savings-dialog';
@@ -117,6 +118,15 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
                 ))}
               </ul>
               <div className="mt-auto flex items-center justify-end gap-x-2">
+                <Tooltip>
+                  <TooltipTrigger className="text-muted-foreground">
+                    <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add all current savings and investment accounts to simulate your portfolio.</p>
+                    <p>Set a glide path to automatically rebalance toward your target bond allocation.</p>
+                  </TooltipContent>
+                </Tooltip>
                 <Button outline onClick={() => setGlidePathDialogOpen(true)}>
                   <RouteIcon data-slot="icon" />
                 </Button>

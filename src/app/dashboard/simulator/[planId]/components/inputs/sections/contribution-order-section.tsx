@@ -212,7 +212,7 @@ export default function ContributionOrderSection(props: ContributionOrderSection
               </Select>
             </HeadlessField>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger className="text-muted-foreground">
                 <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
               </TooltipTrigger>
               <TooltipContent>
@@ -273,7 +273,7 @@ export default function ContributionOrderSection(props: ContributionOrderSection
               </DndContext>
               <div className="mt-auto flex items-center justify-end gap-x-2">
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger className="text-muted-foreground">
                     <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
                   </TooltipTrigger>
                   <TooltipContent>

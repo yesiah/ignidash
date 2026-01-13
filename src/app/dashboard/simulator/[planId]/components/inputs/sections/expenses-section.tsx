@@ -3,7 +3,7 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, RefObject, useCallback } from 'react';
-import { BanknoteArrowDownIcon } from 'lucide-react';
+import { BanknoteArrowDownIcon, InfoIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 import { useExpensesData } from '@/hooks/use-convex-data';
@@ -20,6 +20,7 @@ import DataItem from '@/components/ui/data-item';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 import ExpenseDialog from '../dialogs/expense-dialog';
 
@@ -112,7 +113,15 @@ export default function ExpensesSection(props: ExpensesSectionProps) {
                   />
                 ))}
               </ul>
-              <div className="mt-auto flex items-center justify-end">
+              <div className="mt-auto flex items-center justify-end gap-x-2">
+                <Tooltip>
+                  <TooltipTrigger className="text-muted-foreground">
+                    <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add the expenses you expect to incur during your lifetime, excluding taxes.</p>
+                  </TooltipContent>
+                </Tooltip>
                 <Button outline onClick={() => setExpenseDialogOpen(true)} disabled={!!selectedExpense}>
                   <PlusIcon />
                   Expense
