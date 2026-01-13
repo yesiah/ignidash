@@ -11,6 +11,7 @@ import { useAccountData } from '@/hooks/use-convex-data';
 import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
 
 import SingleSimulationPortfolioPieChart from '../../charts/single-simulation/single-simulation-portfolio-pie-chart';
+import SingleSimulationPortfolioBarChart from '../../charts/single-simulation/single-simulation-portfolio-bar-chart';
 
 interface SingleSimulationPortfolioAssetTypePieChartCardProps {
   rawChartData: SingleSimulationPortfolioChartDataPoint[];
@@ -29,6 +30,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
 
   let title = '';
   let chartData: { name: string; value: number }[] = [];
+  let useBarChart = false;
   switch (dataView) {
     case 'assetClass':
       title = 'By Asset Class';
@@ -53,6 +55,7 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
       break;
     case 'netChange':
       title = 'Net Portfolio Change';
+      useBarChart = true;
       break;
     case 'custom':
       title = accountData ? `${accountData.name} — ${taxCategoryFromAccountTypeForDisplay(accountData.type)}` : 'Custom Account';
@@ -89,25 +92,29 @@ export default function SingleSimulationPortfolioAssetTypePieChartCard({
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
       </div>
-      <div className="divide-border/25 flex h-full items-center pb-4 sm:divide-x">
-        <div className="flex-1 sm:pr-4">
-          <SingleSimulationPortfolioPieChart chartData={chartData} />
-        </div>
-        {totalValue > 0 && (
-          <div className="hidden flex-1 sm:block sm:pl-4">
-            <DescriptionList>
-              {chartData.map(({ name, value }) => (
-                <Fragment key={name}>
-                  <DescriptionTerm>{formatChartString(name)}</DescriptionTerm>
-                  <DescriptionDetails>{`${formatNumber(value, 2, '$')} (${formatNumber((value / totalValue) * 100, 1)}%)`}</DescriptionDetails>
-                </Fragment>
-              ))}
-              <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
-              <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
-            </DescriptionList>
+      {useBarChart ? (
+        <SingleSimulationPortfolioBarChart age={selectedAge} dataView="netChange" rawChartData={rawChartData} />
+      ) : (
+        <div className="divide-border/25 flex h-full items-center pb-4 sm:divide-x">
+          <div className="flex-1 sm:pr-4">
+            <SingleSimulationPortfolioPieChart chartData={chartData} />
           </div>
-        )}
-      </div>
+          {totalValue > 0 && (
+            <div className="hidden flex-1 sm:block sm:pl-4">
+              <DescriptionList>
+                {chartData.map(({ name, value }) => (
+                  <Fragment key={name}>
+                    <DescriptionTerm>{formatChartString(name)}</DescriptionTerm>
+                    <DescriptionDetails>{`${formatNumber(value, 2, '$')} (${formatNumber((value / totalValue) * 100, 1)}%)`}</DescriptionDetails>
+                  </Fragment>
+                ))}
+                <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
+                <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+              </DescriptionList>
+            </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }
