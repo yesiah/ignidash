@@ -1,23 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 
-import { usePlanData, useCountOfIncomes, useCountOfExpenses, useCountOfAccounts, useTimelineData } from '@/hooks/use-convex-data';
+import {
+  usePlanData,
+  useCountOfIncomes,
+  useCountOfExpenses,
+  useCountOfAccounts,
+  useTimelineData,
+  useTaxSettingsData,
+} from '@/hooks/use-convex-data';
 import { useIsCalculationReady } from '@/lib/stores/simulator-store';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
-import { HourglassIcon, LandmarkIcon, BanknoteArrowUpIcon, BanknoteArrowDownIcon } from 'lucide-react';
+import { HourglassIcon, LandmarkIcon, BanknoteArrowUpIcon, BanknoteArrowDownIcon, BanknoteXIcon } from 'lucide-react';
 import Drawer from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
+import PageLoading from '@/components/ui/page-loading';
 import { Dialog } from '@/components/catalyst/dialog';
 import { cn } from '@/lib/utils';
 
 import SingleSimulationResults from './results-pages/single-simulation-results';
 import MultiSimulationResults from './results-pages/multi-simulation-results';
-import TimelineDrawer from '../inputs/drawers/timeline-drawer';
 import IncomeDialog from '../inputs/dialogs/income-dialog';
 import ExpenseDialog from '../inputs/dialogs/expense-dialog';
 import SavingsDialog from '../inputs/dialogs/savings-dialog';
+
+const TimelineDrawer = lazy(() => import('../inputs/drawers/timeline-drawer'));
+const TaxSettingsDrawer = lazy(() => import('../inputs/drawers/tax-settings-drawer'));
 
 export default function ResultsSections() {
   const { data: inputs, isLoading } = usePlanData();
@@ -31,6 +41,12 @@ export default function ResultsSections() {
       onClick: () => setTimelineOpen(true),
       icon: HourglassIcon,
       status: timelineIsReady ? 'complete' : 'upcoming',
+    },
+    {
+      name: 'Set your tax filing status',
+      onClick: () => setTaxSettingsOpen(true),
+      icon: BanknoteXIcon,
+      status: false ? 'complete' : 'upcoming',
     },
     {
       name: 'Add at least one income',
@@ -53,6 +69,7 @@ export default function ResultsSections() {
   ];
 
   const [timelineOpen, setTimelineOpen] = useState(false);
+  const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
   const [incomeDialogOpen, setIncomeDialogOpen] = useState(false);
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
   const [savingsDialogOpen, setSavingsDialogOpen] = useState(false);
@@ -66,12 +83,19 @@ export default function ResultsSections() {
   const numAccounts = useCountOfAccounts();
 
   const timeline = useTimelineData();
+  const taxSettings = useTaxSettingsData();
 
   if (!(timelineIsReady && accountsAreReady && incomesAreReady && expensesAreReady)) {
     const timelineTitleComponent = (
       <div className="flex items-center gap-2">
         <HourglassIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
         <span>Timeline</span>
+      </div>
+    );
+    const taxSettingsTitleComponent = (
+      <div className="flex items-center gap-2">
+        <BanknoteXIcon className="text-primary size-6 shrink-0" aria-hidden="true" />
+        <span>Tax Settings</span>
       </div>
     );
 
@@ -140,7 +164,14 @@ export default function ResultsSections() {
           )}
         </div>
         <Drawer open={timelineOpen} setOpen={setTimelineOpen} title={timelineTitleComponent}>
-          <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+          <Suspense fallback={<PageLoading message="Loading Timeline" />}>
+            <TimelineDrawer setOpen={setTimelineOpen} timeline={timeline} />
+          </Suspense>
+        </Drawer>
+        <Drawer open={taxSettingsOpen} setOpen={setTaxSettingsOpen} title={taxSettingsTitleComponent}>
+          <Suspense fallback={<PageLoading message="Loading Tax Settings" />}>
+            <TaxSettingsDrawer setOpen={setTaxSettingsOpen} taxSettings={taxSettings} />
+          </Suspense>
         </Drawer>
         <Dialog size="xl" open={incomeDialogOpen} onClose={handleIncomeDialogClose}>
           <IncomeDialog selectedIncome={null} numIncomes={numIncomes} onClose={handleIncomeDialogClose} />
