@@ -201,7 +201,7 @@ export default function ExpenseDialog({ onClose, selectedExpense: _selectedExpen
         </div>
       </DialogTitle>
       <DialogDescription className="hidden sm:block">
-        Add any expense you expect to incur during your lifetime, excluding taxes.
+        Any expense you expect to incur during your lifetime, excluding taxes.
       </DialogDescription>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Expense details">

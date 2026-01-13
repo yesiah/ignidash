@@ -219,7 +219,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
         </div>
       </DialogTitle>
       <DialogDescription className="hidden sm:block">
-        Add any income source you expect to receive during your lifetime, excluding investment income and portfolio withdrawals.
+        Any income source you expect to receive during your lifetime, excluding investment income and portfolio withdrawals.
       </DialogDescription>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Income details">

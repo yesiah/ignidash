@@ -146,7 +146,7 @@ export default function ContributionRuleDialog({
         </div>
       </DialogTitle>
       <DialogDescription className="hidden sm:block">
-        Add a rule to control how excess cash is contributed to your accounts during the simulation.
+        Rules to control how any excess cash is contributed to your accounts during the simulation.
       </DialogDescription>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Fieldset aria-label="Contribution rule details">
