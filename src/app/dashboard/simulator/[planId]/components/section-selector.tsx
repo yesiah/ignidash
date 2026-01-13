@@ -11,6 +11,7 @@ import {
   MessageCircleMoreIcon,
 } from 'lucide-react';
 import { useState, lazy, Suspense } from 'react';
+import { track } from '@vercel/analytics';
 import posthog from 'posthog-js';
 
 import { cn } from '@/lib/utils';
@@ -20,6 +21,7 @@ import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
 import { useShowAIChatPulse, useUpdateShowAIChatPulse } from '@/lib/stores/simulator-store';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData, useSimulationSettingsData } from '@/hooks/use-convex-data';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 const UserFeedbackDrawer = lazy(() => import('@/components/layout/user-feedback-drawer'));
 const ExpectedReturnsDrawer = lazy(() => import('./inputs/drawers/expected-returns-drawer'));
@@ -41,6 +43,8 @@ interface SectionSelectorProps {
 }
 
 export default function SectionSelector({ activeSection, setActiveSection }: SectionSelectorProps) {
+  const planId = useSelectedPlanId();
+
   const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
   const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
@@ -97,6 +101,12 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const showAIChatPulse = useShowAIChatPulse();
   const updateShowAIChatPulse = useUpdateShowAIChatPulse();
 
+  const handleSectionSelect = (section: ActiveSection) => {
+    track('Select section', { section });
+    posthog.capture('select_section', { plan_id: planId, section });
+    setActiveSection(section);
+  };
+
   return (
     <>
       <div className="border-border/50 from-emphasized-background to-background fixed top-[4.0625rem] z-30 -mx-2 w-full border-b bg-gradient-to-bl py-2 sm:-mx-3 lg:top-0 lg:-mx-4 lg:w-[calc(100%-18rem)] lg:py-4 lg:group-data-[state=collapsed]/sidebar:w-[calc(100%-4rem)]">
@@ -105,7 +115,14 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
             {tabs.map((tab) => (
               <button
                 key={tab.name}
-                onClick={() => setActiveSection(tab.value)}
+                onPointerUp={() => handleSectionSelect(tab.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSectionSelect(tab.value);
+                  }
+                }}
+                type="button"
                 aria-current={tab.value === activeSection ? 'page' : undefined}
                 className={cn(
                   'text-muted-foreground focus-visible:ring-primary flex items-center gap-2 p-2 lowercase focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset lg:p-4',
