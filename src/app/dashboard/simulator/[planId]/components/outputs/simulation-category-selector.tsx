@@ -113,6 +113,11 @@ export default function SimulationCategorySelector({
   const resultsCategory = availableCategories.mode === 'single' ? singleSimulationCategory : multiSimulationCategory;
 
   const withScrollPreservation = useScrollPreservation();
+  const handleCategorySelect = (category: SingleSimulationCategory | MultiSimulationCategory) => {
+    track('Select simulation category', { category });
+    posthog.capture('select_simulation_category', { plan_id: planId, category });
+    updateResultsCategory(category);
+  };
 
   return (
     <div className="flex flex-col">
@@ -121,11 +126,13 @@ export default function SimulationCategorySelector({
           {availableCategories.categories.map((category) => (
             <button
               key={category}
-              onClick={withScrollPreservation(() => {
-                track('Select simulation category', { category });
-                posthog.capture('select_simulation_category', { plan_id: planId, category });
-                updateResultsCategory(category);
-              })}
+              onPointerUp={withScrollPreservation(() => handleCategorySelect(category))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  withScrollPreservation(() => handleCategorySelect(category))();
+                }
+              }}
               type="button"
               className={cn(
                 'text-muted-foreground bg-background hover:bg-emphasized-background focus-outline border-border/50 relative inline-flex items-center rounded-full border px-3 py-2 text-sm font-semibold focus:z-10',
