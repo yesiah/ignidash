@@ -65,6 +65,8 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
     defaultValues,
   });
 
+  const hasFormErrors = Object.keys(errors).length > 0;
+
   const m = useMutation(api.income.upsertIncome);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -218,9 +220,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
         <Fieldset aria-label="Income details">
           <DialogBody>
             <FieldGroup>
-              {(saveError || Object.keys(errors).length > 0) && (
-                <ErrorMessageCard errorMessage={saveError || getErrorMessages(errors).join(', ')} />
-              )}
+              {(saveError || hasFormErrors) && <ErrorMessageCard errorMessage={saveError || getErrorMessages(errors).join(', ')} />}
               <div className="grid grid-cols-2 gap-4">
                 <Field className="col-span-2">
                   <Label htmlFor="name">Name</Label>
