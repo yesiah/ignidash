@@ -7,13 +7,13 @@ import type { DisclosureState } from '@/lib/types/disclosure-state';
 import IncomesSection from './sections/incomes-section';
 import ExpensesSection from './sections/expenses-section';
 import PortfolioSection from './sections/portfolio-section';
-import ContributionsSection from './sections/contributions-section';
+import ContributionOrderSection from './sections/contribution-order-section';
 
 export default function NumbersColumnSections() {
   const incomesButtonRef = useRef<HTMLButtonElement | null>(null);
   const expensesButtonRef = useRef<HTMLButtonElement | null>(null);
   const portfolioButtonRef = useRef<HTMLButtonElement | null>(null);
-  const contributionsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const contributionOrderButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const [activeDisclosure, setActiveDisclosure] = useState<DisclosureState | null>(null);
   const toggleDisclosure = useCallback(
@@ -27,8 +27,8 @@ export default function NumbersColumnSections() {
           targetRef = expensesButtonRef.current;
         } else if (newDisclosure.key === 'portfolio') {
           targetRef = portfolioButtonRef.current;
-        } else if (newDisclosure.key === 'contributions') {
-          targetRef = contributionsButtonRef.current;
+        } else if (newDisclosure.key === 'contributionOrder') {
+          targetRef = contributionOrderButtonRef.current;
         }
 
         activeDisclosure.close(targetRef || undefined);
@@ -47,10 +47,10 @@ export default function NumbersColumnSections() {
       <IncomesSection toggleDisclosure={toggleDisclosure} disclosureButtonRef={incomesButtonRef} disclosureKey="incomes" />
       <ExpensesSection toggleDisclosure={toggleDisclosure} disclosureButtonRef={expensesButtonRef} disclosureKey="expenses" />
       <PortfolioSection toggleDisclosure={toggleDisclosure} disclosureButtonRef={portfolioButtonRef} disclosureKey="portfolio" />
-      <ContributionsSection
+      <ContributionOrderSection
         toggleDisclosure={toggleDisclosure}
-        disclosureButtonRef={contributionsButtonRef}
-        disclosureKey="contributions"
+        disclosureButtonRef={contributionOrderButtonRef}
+        disclosureKey="contributionOrder"
       />
     </>
   );

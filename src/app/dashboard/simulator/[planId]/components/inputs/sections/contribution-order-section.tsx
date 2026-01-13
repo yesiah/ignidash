@@ -73,13 +73,13 @@ const COLOR_MAP: Record<TaxCategory, string> = {
   cashSavings: 'bg-[var(--chart-4)]',
 } as const;
 
-interface ContributionsSectionProps {
+interface ContributionOrderSectionProps {
   toggleDisclosure: (newDisclosure: DisclosureState) => void;
   disclosureButtonRef: RefObject<HTMLButtonElement | null>;
   disclosureKey: string;
 }
 
-export default function ContributionsSection(props: ContributionsSectionProps) {
+export default function ContributionOrderSection(props: ContributionOrderSectionProps) {
   const planId = useSelectedPlanId();
 
   const [contributionRuleDialogOpen, setContributionRuleDialogOpen] = useState(false);
