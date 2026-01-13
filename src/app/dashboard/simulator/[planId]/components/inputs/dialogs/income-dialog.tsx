@@ -7,7 +7,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { CalendarIcon, BanknoteArrowUpIcon, TrendingUpIcon, BanknoteXIcon } from 'lucide-react';
+import { CalendarIcon, BanknoteArrowUpIcon, TrendingUpIcon, BanknoteXIcon, InfoIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import posthog from 'posthog-js';
@@ -28,6 +28,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface IncomeDialogProps {
   onClose: () => void;
@@ -503,7 +504,18 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                       <DisclosurePanel className="pt-4">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <Field>
-                            <Label htmlFor="growth.growthRate">Real Annual Growth</Label>
+                            <Label htmlFor="growth.growthRate" className="flex w-full items-center justify-between">
+                              <span className="whitespace-nowrap">Real Annual Growth</span>
+                              <Tooltip>
+                                <TooltipTrigger className="text-muted-foreground">
+                                  <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>The inflation-adjusted annual growth rate of your income.</p>
+                                  <p>A rate of 0% assumes income growth will keep up with inflation.</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </Label>
                             <NumberInput
                               name="growth.growthRate"
                               control={control}

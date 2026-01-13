@@ -4,7 +4,7 @@ import { ConvexError } from 'convex/values';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useEffect, useMemo, useState } from 'react';
-import { TrendingUpIcon } from 'lucide-react';
+import { TrendingUpIcon, InfoIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
@@ -21,6 +21,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface AccountDialogProps {
   onClose: () => void;
@@ -197,7 +198,18 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                   </Field>
                 )}
                 <Field className="col-span-2">
-                  <Label htmlFor="percentBonds">% Bonds</Label>
+                  <Label htmlFor="percentBonds" className="flex w-full items-center justify-between">
+                    <span className="whitespace-nowrap">% Bonds</span>
+                    <Tooltip>
+                      <TooltipTrigger className="text-muted-foreground">
+                        <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>The percentage of this account&apos;s holdings allocated to bonds.</p>
+                        <p>Modeled as US Treasury bonds, which generate taxable interest income.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Label>
                   <NumberInput
                     name="percentBonds"
                     control={control}
