@@ -3,7 +3,7 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, RefObject } from 'react';
-import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon, RouteIcon, InfoIcon } from 'lucide-react';
+import { LandmarkIcon, PiggyBankIcon, TrendingUpIcon, RouteIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 import { useAccountsData, useGlidePathData } from '@/hooks/use-convex-data';
@@ -119,25 +119,37 @@ export default function PortfolioSection(props: PortfolioSectionProps) {
               </ul>
               <div className="mt-auto flex items-center justify-end gap-x-2">
                 <Tooltip>
-                  <TooltipTrigger className="text-muted-foreground">
-                    <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                  <TooltipTrigger asChild>
+                    <Button outline onClick={() => setGlidePathDialogOpen(true)}>
+                      <RouteIcon data-slot="icon" />
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add all current cash savings and investment accounts to simulate your portfolio.</p>
                     <p>Set a glide path to automatically rebalance toward your target bond allocation.</p>
                   </TooltipContent>
                 </Tooltip>
-                <Button outline onClick={() => setGlidePathDialogOpen(true)}>
-                  <RouteIcon data-slot="icon" />
-                </Button>
-                <Button outline onClick={() => setSavingsDialogOpen(true)} disabled={!!selectedSavings}>
-                  <PlusIcon />
-                  Savings
-                </Button>
-                <Button outline onClick={() => setAccountDialogOpen(true)} disabled={!!selectedAccount}>
-                  <PlusIcon />
-                  Investment
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button outline onClick={() => setSavingsDialogOpen(true)} disabled={!!selectedSavings}>
+                      <PlusIcon />
+                      Savings
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add all current cash savings (e.g. checking, savings, money market) to simulate your portfolio.</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button outline onClick={() => setAccountDialogOpen(true)} disabled={!!selectedAccount}>
+                      <PlusIcon />
+                      Investment
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add all current investment accounts (e.g. stocks, bonds, mutual funds) to simulate your portfolio.</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </>
           )}

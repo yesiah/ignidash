@@ -3,7 +3,7 @@
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useState, RefObject, useCallback } from 'react';
-import { BanknoteArrowUpIcon, InfoIcon } from 'lucide-react';
+import { BanknoteArrowUpIcon } from 'lucide-react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 
 import { useIncomesData } from '@/hooks/use-convex-data';
@@ -115,18 +115,17 @@ export default function IncomesSection(props: IncomesSectionProps) {
               </ul>
               <div className="mt-auto flex items-center justify-end gap-x-2">
                 <Tooltip>
-                  <TooltipTrigger className="text-muted-foreground">
-                    <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                  <TooltipTrigger asChild>
+                    <Button outline onClick={() => setIncomeDialogOpen(true)} disabled={!!selectedIncome}>
+                      <PlusIcon />
+                      Income
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Add the income sources you expect to receive during your lifetime.</p>
                     <p>Exclude investment income and portfolio withdrawals (calculated automatically).</p>
                   </TooltipContent>
                 </Tooltip>
-                <Button outline onClick={() => setIncomeDialogOpen(true)} disabled={!!selectedIncome}>
-                  <PlusIcon />
-                  Income
-                </Button>
               </div>
             </>
           )}
