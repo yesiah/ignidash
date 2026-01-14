@@ -144,7 +144,6 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
   }, [frequency, startType, endType, unregister, incomeType]);
 
   const prevIncomeTypeRef = useRef<IncomeType>(incomeType);
-
   useEffect(() => {
     if (prevIncomeTypeRef.current !== incomeType) {
       if (selectedIncome?.taxes.incomeType === incomeType) {
