@@ -67,13 +67,17 @@ function HoverableIcon({
   if (!href) return <DefaultIcon className={className} />;
 
   return (
-    <div className="relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-      <DefaultIcon className={cn(className, 'transition-opacity duration-200', { 'opacity-0': isHovered })} />
+    <div
+      className="relative flex size-full items-center justify-center"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <DefaultIcon className={cn(className, 'transition-opacity duration-100', { 'opacity-0': isHovered })} />
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={cn('absolute inset-0 transition-opacity duration-200', {
+        className={cn('absolute inset-0 flex items-center justify-center transition-opacity duration-100', {
           'pointer-events-none opacity-0': !isHovered,
         })}
       >
