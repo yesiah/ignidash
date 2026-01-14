@@ -26,9 +26,9 @@ export interface SingleSimulationCashFlowChartDataPoint {
   perIncomeData: IncomeData[];
   perExpenseData: ExpenseData[];
   earnedIncome: number;
+  employerMatch: number;
   socialSecurityIncome: number;
   taxExemptIncome: number;
-  employerMatch: number;
   income: number;
   incomeTax: number;
   ficaTax: number;
