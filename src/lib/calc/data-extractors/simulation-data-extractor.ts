@@ -116,61 +116,72 @@ export class SimulationDataExtractor {
   static getMeanReturnsData(result: SimulationResult, retirementAge: number | null): ReturnsStatsData {
     const { data } = result;
 
-    const { stocks, bonds, cash, inflation, count, minStockReturn, maxStockReturn, earlyRetirementStocks, yearsOfEarlyRetirement } = data
-      .slice(1)
-      .reduce(
-        (acc, dp) => {
-          const age = Math.floor(dp.age);
-
-          const returnsData = dp.returns!;
-          const stockReturn = returnsData.annualReturnRates.stocks;
-
-          let earlyRetirementStocks = acc.earlyRetirementStocks;
-          let yearsOfEarlyRetirement = acc.yearsOfEarlyRetirement;
-          if (retirementAge !== null && age > retirementAge && age < retirementAge + 5) {
-            earlyRetirementStocks += stockReturn;
-            yearsOfEarlyRetirement += 1;
-          }
-
-          return {
-            stocks: acc.stocks + stockReturn,
-            bonds: acc.bonds + returnsData.annualReturnRates.bonds,
-            cash: acc.cash + returnsData.annualReturnRates.cash,
-            inflation: acc.inflation + returnsData.annualInflationRate,
-            count: acc.count + 1,
-            minStockReturn: Math.min(acc.minStockReturn, stockReturn),
-            maxStockReturn: Math.max(acc.maxStockReturn, stockReturn),
-            earlyRetirementStocks,
-            yearsOfEarlyRetirement,
-          };
-        },
-        {
-          stocks: 0,
-          bonds: 0,
-          cash: 0,
-          inflation: 0,
-          count: 0,
-          minStockReturn: Infinity,
-          maxStockReturn: -Infinity,
-          earlyRetirementStocks: 0,
-          yearsOfEarlyRetirement: 0,
-        }
-      );
-
-    const meanStockReturn = count > 0 ? stocks / count : null;
-    const meanBondReturn = count > 0 ? bonds / count : null;
-    const meanCashReturn = count > 0 ? cash / count : null;
-    const meanInflationRate = count > 0 ? inflation / count : null;
-    const earlyRetirementStockReturn = yearsOfEarlyRetirement > 0 ? earlyRetirementStocks / yearsOfEarlyRetirement : null;
-
-    return {
-      meanStockReturn,
-      meanBondReturn,
-      meanCashReturn,
-      meanInflationRate,
+    const {
+      stocksProduct,
+      bondsProduct,
+      cashProduct,
+      inflationProduct,
+      count,
       minStockReturn,
       maxStockReturn,
-      earlyRetirementStockReturn,
+      earlyRetirementStocksProduct,
+      yearsOfEarlyRetirement,
+    } = data.slice(1).reduce(
+      (acc, dp) => {
+        const age = Math.floor(dp.age);
+
+        const returnsData = dp.returns!;
+        const stockReturn = returnsData.annualReturnRates.stocks;
+        const bondReturn = returnsData.annualReturnRates.bonds;
+        const cashReturn = returnsData.annualReturnRates.cash;
+        const inflationReturn = returnsData.annualInflationRate;
+
+        let earlyRetirementStocksProduct = acc.earlyRetirementStocksProduct;
+        let yearsOfEarlyRetirement = acc.yearsOfEarlyRetirement;
+        if (retirementAge !== null && age > retirementAge && age < retirementAge + 5) {
+          earlyRetirementStocksProduct *= 1 + stockReturn;
+          yearsOfEarlyRetirement += 1;
+        }
+
+        return {
+          stocksProduct: acc.stocksProduct * (1 + stockReturn),
+          bondsProduct: acc.bondsProduct * (1 + bondReturn),
+          cashProduct: acc.cashProduct * (1 + cashReturn),
+          inflationProduct: acc.inflationProduct * (1 + inflationReturn),
+          count: acc.count + 1,
+          minStockReturn: Math.min(acc.minStockReturn, stockReturn),
+          maxStockReturn: Math.max(acc.maxStockReturn, stockReturn),
+          earlyRetirementStocksProduct,
+          yearsOfEarlyRetirement,
+        };
+      },
+      {
+        stocksProduct: 1,
+        bondsProduct: 1,
+        cashProduct: 1,
+        inflationProduct: 1,
+        count: 0,
+        minStockReturn: Infinity,
+        maxStockReturn: -Infinity,
+        earlyRetirementStocksProduct: 1,
+        yearsOfEarlyRetirement: 0,
+      }
+    );
+
+    // Geometric mean: nth root of product, minus 1
+    const geometricMean = (product: number, n: number): number | null => {
+      if (n === 0) return null;
+      return Math.pow(product, 1 / n) - 1;
+    };
+
+    return {
+      meanStockReturn: geometricMean(stocksProduct, count),
+      meanBondReturn: geometricMean(bondsProduct, count),
+      meanCashReturn: geometricMean(cashProduct, count),
+      meanInflationRate: geometricMean(inflationProduct, count),
+      minStockReturn,
+      maxStockReturn,
+      earlyRetirementStockReturn: geometricMean(earlyRetirementStocksProduct, yearsOfEarlyRetirement),
     };
   }
 
