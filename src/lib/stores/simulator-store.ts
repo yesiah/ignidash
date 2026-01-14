@@ -67,6 +67,9 @@ export type SimulationStatus = 'none' | 'loading';
 export type ChartTimeFrame = 'tenYears' | 'twentyYears' | 'thirtyYears' | 'fullPlan';
 
 interface SimulatorState {
+  numbers: {
+    hasOpenedTaxSettings: Record<Id<'plans'>, boolean>;
+  };
   results: {
     quickSelectPercentile: QuickSelectPercentile;
     selectedSeedFromTable: number | null;
@@ -98,6 +101,9 @@ interface SimulatorState {
   };
 
   actions: {
+    /* Numbers */
+    updateHasOpenedTaxSettings: (planId: Id<'plans'>, value: boolean) => void;
+
     /* Results */
     updateQuickSelectPercentile: (percentile: QuickSelectPercentile) => void;
     updateSelectedSeedFromTable: (seed: number | null) => void;
@@ -128,6 +134,9 @@ interface SimulatorState {
 }
 
 export const defaultState: Omit<SimulatorState, 'actions'> = {
+  numbers: {
+    hasOpenedTaxSettings: {},
+  },
   results: {
     quickSelectPercentile: 'p50',
     selectedSeedFromTable: null,
@@ -165,6 +174,10 @@ export const useSimulatorStore = create<SimulatorState>()(
       immer((set, get) => ({
         ...defaultState,
         actions: {
+          updateHasOpenedTaxSettings: (planId, value) =>
+            set((state) => {
+              state.numbers.hasOpenedTaxSettings[planId] = value;
+            }),
           updateQuickSelectPercentile: (percentile) =>
             set((state) => {
               state.results.quickSelectPercentile = percentile;
@@ -253,6 +266,8 @@ export const useSimulatorStore = create<SimulatorState>()(
  * Data selectors (stable references)
  * These hooks provide direct access to specific sections of the form data
  */
+export const useHasOpenedTaxSettings = (planId: Id<'plans'>) =>
+  useSimulatorStore((state) => state.numbers.hasOpenedTaxSettings[planId] ?? false);
 export const useQuickSelectPercentile = () => useSimulatorStore((state) => state.results.quickSelectPercentile);
 export const useSelectedSeedFromTable = () => useSimulatorStore((state) => state.results.selectedSeedFromTable);
 export const useSelectedSeedFromQuickPercentile = () => useSimulatorStore((state) => state.results.selectedSeedFromQuickPercentile);
@@ -271,6 +286,7 @@ export const useShowAIChatPulse = () => useSimulatorStore((state) => state.nux.s
  * Action selectors
  * These hooks provide access to update functions with built-in validation
  */
+export const useUpdateHasOpenedTaxSettings = () => useSimulatorStore((state) => state.actions.updateHasOpenedTaxSettings);
 export const useUpdateQuickSelectPercentile = () => useSimulatorStore((state) => state.actions.updateQuickSelectPercentile);
 export const useUpdateSelectedSeedFromTable = () => useSimulatorStore((state) => state.actions.updateSelectedSeedFromTable);
 export const useUpdateSelectedSeedFromQuickPercentile = () =>

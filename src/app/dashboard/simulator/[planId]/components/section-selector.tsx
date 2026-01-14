@@ -19,7 +19,12 @@ import IconButton from '@/components/ui/icon-button';
 import PageLoading from '@/components/ui/page-loading';
 import Drawer from '@/components/ui/drawer';
 import { useRegenSimulation } from '@/hooks/use-regen-simulation';
-import { useShowAIChatPulse, useUpdateShowAIChatPulse } from '@/lib/stores/simulator-store';
+import {
+  useShowAIChatPulse,
+  useUpdateShowAIChatPulse,
+  useHasOpenedTaxSettings,
+  useUpdateHasOpenedTaxSettings,
+} from '@/lib/stores/simulator-store';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData, useSimulationSettingsData } from '@/hooks/use-convex-data';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
@@ -101,6 +106,9 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
   const showAIChatPulse = useShowAIChatPulse();
   const updateShowAIChatPulse = useUpdateShowAIChatPulse();
 
+  const hasOpenedTaxSettings = useHasOpenedTaxSettings(planId);
+  const updateHasOpenedTaxSettings = useUpdateHasOpenedTaxSettings();
+
   const handleSectionSelect = (section: ActiveSection) => {
     track('Select section', { section });
     posthog.capture('select_section', { plan_id: planId, section });
@@ -143,7 +151,15 @@ export default function SectionSelector({ activeSection, setActiveSection }: Sec
                 onClick={() => setExpectedReturnsOpen(true)}
                 surfaceColor="emphasized"
               />
-              <IconButton icon={BanknoteXIcon} label="Tax Settings" onClick={() => setTaxSettingsOpen(true)} surfaceColor="emphasized" />
+              <IconButton
+                icon={BanknoteXIcon}
+                label="Tax Settings"
+                onClick={() => {
+                  if (!hasOpenedTaxSettings) updateHasOpenedTaxSettings(planId, true);
+                  setTaxSettingsOpen(true);
+                }}
+                surfaceColor="emphasized"
+              />
               <IconButton icon={HourglassIcon} label="Timeline" onClick={() => setTimelineOpen(true)} surfaceColor="emphasized" />
             </div>
           )}

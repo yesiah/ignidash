@@ -10,7 +10,7 @@ import {
   useTimelineData,
   useTaxSettingsData,
 } from '@/hooks/use-convex-data';
-import { useIsCalculationReady } from '@/lib/stores/simulator-store';
+import { useIsCalculationReady, useHasOpenedTaxSettings, useUpdateHasOpenedTaxSettings } from '@/lib/stores/simulator-store';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
 import { Subheading } from '@/components/catalyst/heading';
 import { HourglassIcon, LandmarkIcon, BanknoteArrowUpIcon, BanknoteArrowDownIcon, BanknoteXIcon } from 'lucide-react';
@@ -19,6 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import PageLoading from '@/components/ui/page-loading';
 import { Dialog } from '@/components/catalyst/dialog';
 import { cn } from '@/lib/utils';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 
 import SingleSimulationResults from './results-pages/single-simulation-results';
 import MultiSimulationResults from './results-pages/multi-simulation-results';
@@ -30,9 +31,14 @@ const TimelineDrawer = lazy(() => import('../inputs/drawers/timeline-drawer'));
 const TaxSettingsDrawer = lazy(() => import('../inputs/drawers/tax-settings-drawer'));
 
 export default function ResultsSections() {
+  const planId = useSelectedPlanId();
   const { data: inputs, isLoading } = usePlanData();
 
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady(inputs);
+
+  const hasOpenedTaxSettings = useHasOpenedTaxSettings(planId);
+  const updateHasOpenedTaxSettings = useUpdateHasOpenedTaxSettings();
+
   const simulationMode = inputs?.simulationSettings.simulationMode;
 
   const steps = [
@@ -43,10 +49,13 @@ export default function ResultsSections() {
       status: timelineIsReady ? 'complete' : 'upcoming',
     },
     {
-      name: 'Set your tax filing status',
-      onClick: () => setTaxSettingsOpen(true),
+      name: 'Verify your tax filing status',
+      onClick: () => {
+        if (!hasOpenedTaxSettings) updateHasOpenedTaxSettings(planId, true);
+        setTaxSettingsOpen(true);
+      },
       icon: BanknoteXIcon,
-      status: false ? 'complete' : 'upcoming',
+      status: hasOpenedTaxSettings ? 'complete' : 'upcoming',
     },
     {
       name: 'Add at least one income',

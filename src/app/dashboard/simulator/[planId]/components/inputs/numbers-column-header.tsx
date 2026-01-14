@@ -8,12 +8,16 @@ import PageLoading from '@/components/ui/page-loading';
 import Drawer from '@/components/ui/drawer';
 import ColumnHeader from '@/components/ui/column-header';
 import { useMarketAssumptionsData, useTaxSettingsData, useTimelineData } from '@/hooks/use-convex-data';
+import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
+import { useHasOpenedTaxSettings, useUpdateHasOpenedTaxSettings } from '@/lib/stores/simulator-store';
 
 const ExpectedReturnsDrawer = lazy(() => import('./drawers/expected-returns-drawer'));
 const TaxSettingsDrawer = lazy(() => import('./drawers/tax-settings-drawer'));
 const TimelineDrawer = lazy(() => import('./drawers/timeline-drawer'));
 
 export default function NumbersColumnHeader() {
+  const planId = useSelectedPlanId();
+
   const [expectedReturnsOpen, setExpectedReturnsOpen] = useState(false);
   const [taxSettingsOpen, setTaxSettingsOpen] = useState(false);
   const [timelineOpen, setTimelineOpen] = useState(false);
@@ -41,6 +45,9 @@ export default function NumbersColumnHeader() {
     </div>
   );
 
+  const hasOpenedTaxSettings = useHasOpenedTaxSettings(planId);
+  const updateHasOpenedTaxSettings = useUpdateHasOpenedTaxSettings();
+
   return (
     <>
       <ColumnHeader
@@ -54,7 +61,15 @@ export default function NumbersColumnHeader() {
               onClick={() => setExpectedReturnsOpen(true)}
               surfaceColor="emphasized"
             />
-            <IconButton icon={BanknoteXIcon} label="Tax Settings" onClick={() => setTaxSettingsOpen(true)} surfaceColor="emphasized" />
+            <IconButton
+              icon={BanknoteXIcon}
+              label="Tax Settings"
+              onClick={() => {
+                if (!hasOpenedTaxSettings) updateHasOpenedTaxSettings(planId, true);
+                setTaxSettingsOpen(true);
+              }}
+              surfaceColor="emphasized"
+            />
             <IconButton icon={HourglassIcon} label="Timeline" onClick={() => setTimelineOpen(true)} surfaceColor="emphasized" />
           </div>
         }
