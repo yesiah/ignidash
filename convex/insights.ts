@@ -40,12 +40,12 @@ export const getCountOfInsights = query({
   handler: async (ctx, { planId }) => {
     await getPlanForCurrentUserOrThrow(ctx, planId);
 
-    return (
-      await ctx.db
-        .query('insights')
-        .withIndex('by_planId_updatedAt', (q) => q.eq('planId', planId))
-        .collect()
-    ).length;
+    let count = 0;
+    for await (const _ of ctx.db.query('insights').withIndex('by_planId_updatedAt', (q) => q.eq('planId', planId))) {
+      count++;
+    }
+
+    return count;
   },
 });
 
