@@ -8,7 +8,22 @@ export const assetFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
   value: currencyFieldAllowsZero('Value cannot be negative'),
   updatedAt: z.number(),
-  url: z.url().optional().or(z.literal('')),
+  url: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+
+        try {
+          const parsed = new URL(val);
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        } catch {
+          return false;
+        }
+      },
+      { message: 'Must be a valid http:// or https:// URL' }
+    ),
   type: z.enum([
     'savings',
     'checking',

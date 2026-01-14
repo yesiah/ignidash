@@ -6,6 +6,21 @@ import { liabilityValidator } from './validators/liability_validator';
 import { getUserIdOrThrow } from './utils/auth_utils';
 import { getFinancesForUser } from './utils/finances_utils';
 
+function validateUrl(url: string | undefined): void {
+  if (!url) return;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new ConvexError('Invalid URL format');
+  }
+
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new ConvexError('URL must use http:// or https://');
+  }
+}
+
 export const getAssets = query({
   handler: async (ctx) => {
     const { userId } = await getUserIdOrThrow(ctx);
@@ -35,6 +50,8 @@ export const upsertAsset = mutation({
   handler: async (ctx, { asset: _asset }) => {
     const { userId } = await getUserIdOrThrow(ctx);
 
+    validateUrl(_asset.url);
+
     const finances = await getFinancesForUser(ctx, userId);
 
     const asset = { ..._asset, updatedAt: Date.now() };
@@ -59,6 +76,8 @@ export const upsertLiability = mutation({
   },
   handler: async (ctx, { liability: _liability }) => {
     const { userId } = await getUserIdOrThrow(ctx);
+
+    validateUrl(_liability.url);
 
     const finances = await getFinancesForUser(ctx, userId);
 

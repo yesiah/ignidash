@@ -152,7 +152,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
           ) : (
             <>
               <div className="flex w-full items-center justify-between">
-                <Subheading level={5} className="font-medium">
+                <Subheading level={5} className="font-medium underline decoration-stone-300 underline-offset-4 dark:decoration-stone-600">
                   Assets
                 </Subheading>
                 <span className="text-base/7 font-bold text-stone-950 sm:text-sm/6 dark:text-white">
@@ -170,8 +170,8 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
                       name={
                         asset.url ? (
                           <a href={asset.url} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2">
-                            <span>{asset.name}</span>
-                            <ExternalLinkIcon className="text-muted-foreground size-4 shrink-0" />
+                            <span className="underline-offset-2 group-hover:underline">{asset.name}</span>
+                            <ExternalLinkIcon className="text-muted-foreground size-3.5 shrink-0" />
                           </a>
                         ) : (
                           asset.name
@@ -194,7 +194,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
           ) : (
             <>
               <div className="flex w-full items-center justify-between">
-                <Subheading level={5} className="font-medium">
+                <Subheading level={5} className="font-medium underline decoration-stone-300 underline-offset-4 dark:decoration-stone-600">
                   Liabilities
                 </Subheading>
                 <span className="text-base/7 font-bold text-stone-950 sm:text-sm/6 dark:text-white">
@@ -217,8 +217,8 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
                             rel="noopener noreferrer"
                             className="group inline-flex items-center gap-2"
                           >
-                            <span>{liability.name}</span>
-                            <ExternalLinkIcon className="text-muted-foreground size-4 shrink-0" />
+                            <span className="underline-offset-2 group-hover:underline">{liability.name}</span>
+                            <ExternalLinkIcon className="text-muted-foreground size-3.5 shrink-0" />
                           </a>
                         ) : (
                           liability.name
