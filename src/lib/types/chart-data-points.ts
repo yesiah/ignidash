@@ -98,7 +98,7 @@ export interface SingleSimulationTaxesChartDataPoint {
   taxableDividendIncome: number;
   taxableIncomeTaxedAsCapGains: number;
   adjustedIncomeTaxedAsCapGains: number;
-  incomeTaxedAsCapGains: number;
+  incomeTaxedAsLtcg: number;
   annualCapGainsTax: number;
   cumulativeCapGainsTax: number;
   effectiveCapGainsTaxRate: number;

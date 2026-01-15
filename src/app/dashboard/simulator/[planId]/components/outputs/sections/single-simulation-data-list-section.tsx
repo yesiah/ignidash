@@ -189,7 +189,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const incomeTaxedAsOrdinary = taxesData?.incomeSources.incomeTaxedAsOrdinary ?? 0;
-  const incomeTaxedAsCapGains = taxesData?.incomeSources.incomeTaxedAsCapGains ?? 0;
+  const incomeTaxedAsLtcg = taxesData?.incomeSources.incomeTaxedAsLtcg ?? 0;
 
   const grossIncome = taxesData?.incomeSources.grossIncome ?? 0;
   const totalIncome = taxesData?.incomeSources.totalIncome ?? 0;
@@ -204,8 +204,8 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
         <DescriptionTerm>Income Taxed as Ordinary</DescriptionTerm>
         <DescriptionDetails>{formatNumber(incomeTaxedAsOrdinary, 2, '$')}</DescriptionDetails>
 
-        <DescriptionTerm>Income Taxed as Capital Gains</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(incomeTaxedAsCapGains, 2, '$')}</DescriptionDetails>
+        <DescriptionTerm>Income Taxed as LTCG</DescriptionTerm>
+        <DescriptionDetails>{formatNumber(incomeTaxedAsLtcg, 2, '$')}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">
           Gross Income

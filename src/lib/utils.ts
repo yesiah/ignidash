@@ -24,6 +24,7 @@ export function formatChartString(input: string): string {
   let result = withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
 
   const replacements: Array<[string, string]> = [
+    ['Ltcg', 'LTCG'],
     ['Tax Free', 'Tax-Free'],
     ['Tax Deferred', 'Tax-Deferred'],
     ['Tax Deductible', 'Tax-Deductible'],

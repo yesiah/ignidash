@@ -97,7 +97,7 @@ export interface IncomeSourcesData {
   nonTaxableIncome: number;
   grossIncome: number;
   incomeTaxedAsOrdinary: number;
-  incomeTaxedAsCapGains: number;
+  incomeTaxedAsLtcg: number;
   taxDeductibleContributions: number;
   adjustedGrossIncome: number;
   adjustedIncomeTaxedAsOrdinary: number;
@@ -245,8 +245,8 @@ export class TaxProcessor {
     const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - nonTaxableIncome;
 
     const incomeTaxedAsOrdinaryExceptSocSec = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
-    const incomeTaxedAsCapGains = realizedGains + taxableDividendIncome;
-    const grossIncomeExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec + incomeTaxedAsCapGains;
+    const incomeTaxedAsLtcg = realizedGains + taxableDividendIncome;
+    const grossIncomeExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec + incomeTaxedAsLtcg;
 
     const taxDeferredAccountTypes: AccountInputs['type'][] = ['401k', '403b', 'ira', 'hsa'];
     const taxDeductibleContributions = this.getEmployeeContributionsForAccountTypes(
@@ -259,7 +259,7 @@ export class TaxProcessor {
     const adjustmentsAppliedToCapGains = totalAdjustments - adjustmentsAppliedToOrdinary;
 
     const adjustedIncomeTaxedAsOrdinaryExceptSocSec = incomeTaxedAsOrdinaryExceptSocSec - adjustmentsAppliedToOrdinary;
-    const adjustedIncomeTaxedAsCapGains = Math.max(0, incomeTaxedAsCapGains - adjustmentsAppliedToCapGains);
+    const adjustedIncomeTaxedAsCapGains = Math.max(0, incomeTaxedAsLtcg - adjustmentsAppliedToCapGains);
     const adjustedGrossIncomeExceptSocSec = adjustedIncomeTaxedAsOrdinaryExceptSocSec + adjustedIncomeTaxedAsCapGains;
 
     const provisionalIncome = adjustedGrossIncomeExceptSocSec + socialSecurityIncome * 0.5;
@@ -290,7 +290,7 @@ export class TaxProcessor {
       nonTaxableIncome,
       grossIncome,
       incomeTaxedAsOrdinary,
-      incomeTaxedAsCapGains,
+      incomeTaxedAsLtcg,
       taxDeductibleContributions,
       adjustedGrossIncome,
       adjustedIncomeTaxedAsOrdinary,

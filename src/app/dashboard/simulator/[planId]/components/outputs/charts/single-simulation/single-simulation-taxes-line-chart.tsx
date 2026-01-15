@@ -315,7 +315,7 @@ export default function SingleSimulationTaxesLineChart({
 
       barDataKeys.push(
         'incomeTaxedAsOrdinary',
-        'incomeTaxedAsCapGains',
+        'incomeTaxedAsLtcg',
         'taxDeductibleContributions',
         'standardDeduction',
         'capitalLossDeduction'
@@ -337,7 +337,7 @@ export default function SingleSimulationTaxesLineChart({
       lineDataKeys.push('adjustedGrossIncome');
       strokeColors.push('var(--foreground)');
 
-      barDataKeys.push('incomeTaxedAsOrdinary', 'incomeTaxedAsCapGains', 'taxDeductibleContributions', 'capitalLossDeduction');
+      barDataKeys.push('incomeTaxedAsOrdinary', 'incomeTaxedAsLtcg', 'taxDeductibleContributions', 'capitalLossDeduction');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-5)');
 
       chartData = chartData.map((entry) => ({

@@ -162,7 +162,7 @@ export abstract class ChartDataExtractor {
         taxableDividendIncome: taxesData.incomeSources.taxableDividendIncome,
         taxableIncomeTaxedAsCapGains: taxesData.capitalGainsTaxes.taxableIncomeTaxedAsCapGains,
         adjustedIncomeTaxedAsCapGains: taxesData.incomeSources.adjustedIncomeTaxedAsCapGains,
-        incomeTaxedAsCapGains: taxesData.incomeSources.incomeTaxedAsCapGains,
+        incomeTaxedAsLtcg: taxesData.incomeSources.incomeTaxedAsLtcg,
         annualCapGainsTax,
         cumulativeCapGainsTax,
         effectiveCapGainsTaxRate: taxesData.capitalGainsTaxes.effectiveCapitalGainsTaxRate,
