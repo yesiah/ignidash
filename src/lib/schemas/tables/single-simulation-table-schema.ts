@@ -99,67 +99,6 @@ export const SIMULATION_CASHFLOW_TABLE_CONFIG: Record<keyof SingleSimulationCash
   SINGLE_SIMULATION_CASHFLOW_COLUMNS;
 
 // ================================
-// RETURNS TABLE SCHEMA
-// ================================
-
-export const singleSimulationReturnsTableRowSchema = z.object({
-  year: z.number(),
-  age: z.number(),
-  phaseName: z.string().nullable(),
-  totalAnnualGains: z.number().nullable(),
-  totalCumulativeGains: z.number().nullable(),
-  taxableGains: z.number().nullable(),
-  taxDeferredGains: z.number().nullable(),
-  taxFreeGains: z.number().nullable(),
-  cashSavingsGains: z.number().nullable(),
-  stockReturnRate: z.number().nullable(),
-  stockHoldings: z.number().nullable(),
-  annualStockGain: z.number().nullable(),
-  cumulativeStockGain: z.number().nullable(),
-  bondReturnRate: z.number().nullable(),
-  bondHoldings: z.number().nullable(),
-  annualBondGain: z.number().nullable(),
-  cumulativeBondGain: z.number().nullable(),
-  cashReturnRate: z.number().nullable(),
-  cashHoldings: z.number().nullable(),
-  annualCashGain: z.number().nullable(),
-  cumulativeCashGain: z.number().nullable(),
-  inflationRate: z.number().nullable(),
-  historicalYear: z.number().nullable(),
-});
-
-export type SingleSimulationReturnsTableRow = z.infer<typeof singleSimulationReturnsTableRowSchema>;
-
-const SINGLE_SIMULATION_RETURNS_COLUMNS = {
-  year: { title: 'Year', format: 'number' },
-  age: { title: 'Age', format: 'number' },
-  phaseName: { title: 'Phase Name', format: 'string' },
-  totalAnnualGains: { title: 'Total Annual Gains', format: 'currency' },
-  totalCumulativeGains: { title: 'Total Cumulative Gains', format: 'currency' },
-  taxableGains: { title: 'Taxable Gains', format: 'currency' },
-  taxDeferredGains: { title: 'Tax-Deferred Gains', format: 'currency' },
-  taxFreeGains: { title: 'Tax-Free Gains', format: 'currency' },
-  cashSavingsGains: { title: 'Cash Savings Gains', format: 'currency' },
-  stockReturnRate: { title: 'Real Stock Return Rate', format: 'percentage' },
-  stockHoldings: { title: 'Stock Holdings', format: 'currency' },
-  annualStockGain: { title: 'Annual Stock Gain', format: 'currency' },
-  cumulativeStockGain: { title: 'Cumulative Stock Gain', format: 'currency' },
-  bondReturnRate: { title: 'Real Bond Return Rate', format: 'percentage' },
-  bondHoldings: { title: 'Bond Holdings', format: 'currency' },
-  annualBondGain: { title: 'Annual Bond Gain', format: 'currency' },
-  cumulativeBondGain: { title: 'Cumulative Bond Gain', format: 'currency' },
-  cashReturnRate: { title: 'Real Cash Return Rate', format: 'percentage' },
-  cashHoldings: { title: 'Cash Holdings', format: 'currency' },
-  annualCashGain: { title: 'Annual Cash Gain', format: 'currency' },
-  cumulativeCashGain: { title: 'Cumulative Cash Gain', format: 'currency' },
-  inflationRate: { title: 'Inflation Rate', format: 'percentage' },
-  historicalYear: { title: 'Historical Year', format: 'number' },
-} as const;
-
-export const SIMULATION_RETURNS_TABLE_CONFIG: Record<keyof SingleSimulationReturnsTableRow, { title: string; format: ColumnFormat }> =
-  SINGLE_SIMULATION_RETURNS_COLUMNS;
-
-// ================================
 // TAXES TABLE SCHEMA
 // ================================
 
@@ -267,6 +206,67 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
 
 export const SIMULATION_TAXES_TABLE_CONFIG: Record<keyof SingleSimulationTaxesTableRow, { title: string; format: ColumnFormat }> =
   SINGLE_SIMULATION_TAXES_COLUMNS;
+
+// ================================
+// RETURNS TABLE SCHEMA
+// ================================
+
+export const singleSimulationReturnsTableRowSchema = z.object({
+  year: z.number(),
+  age: z.number(),
+  phaseName: z.string().nullable(),
+  totalAnnualGains: z.number().nullable(),
+  totalCumulativeGains: z.number().nullable(),
+  taxableGains: z.number().nullable(),
+  taxDeferredGains: z.number().nullable(),
+  taxFreeGains: z.number().nullable(),
+  cashSavingsGains: z.number().nullable(),
+  stockReturnRate: z.number().nullable(),
+  stockHoldings: z.number().nullable(),
+  annualStockGain: z.number().nullable(),
+  cumulativeStockGain: z.number().nullable(),
+  bondReturnRate: z.number().nullable(),
+  bondHoldings: z.number().nullable(),
+  annualBondGain: z.number().nullable(),
+  cumulativeBondGain: z.number().nullable(),
+  cashReturnRate: z.number().nullable(),
+  cashHoldings: z.number().nullable(),
+  annualCashGain: z.number().nullable(),
+  cumulativeCashGain: z.number().nullable(),
+  inflationRate: z.number().nullable(),
+  historicalYear: z.number().nullable(),
+});
+
+export type SingleSimulationReturnsTableRow = z.infer<typeof singleSimulationReturnsTableRowSchema>;
+
+const SINGLE_SIMULATION_RETURNS_COLUMNS = {
+  year: { title: 'Year', format: 'number' },
+  age: { title: 'Age', format: 'number' },
+  phaseName: { title: 'Phase Name', format: 'string' },
+  totalAnnualGains: { title: 'Total Annual Gains', format: 'currency' },
+  totalCumulativeGains: { title: 'Total Cumulative Gains', format: 'currency' },
+  taxableGains: { title: 'Taxable Gains', format: 'currency' },
+  taxDeferredGains: { title: 'Tax-Deferred Gains', format: 'currency' },
+  taxFreeGains: { title: 'Tax-Free Gains', format: 'currency' },
+  cashSavingsGains: { title: 'Cash Savings Gains', format: 'currency' },
+  stockReturnRate: { title: 'Real Stock Return Rate', format: 'percentage' },
+  stockHoldings: { title: 'Stock Holdings', format: 'currency' },
+  annualStockGain: { title: 'Annual Stock Gain', format: 'currency' },
+  cumulativeStockGain: { title: 'Cumulative Stock Gain', format: 'currency' },
+  bondReturnRate: { title: 'Real Bond Return Rate', format: 'percentage' },
+  bondHoldings: { title: 'Bond Holdings', format: 'currency' },
+  annualBondGain: { title: 'Annual Bond Gain', format: 'currency' },
+  cumulativeBondGain: { title: 'Cumulative Bond Gain', format: 'currency' },
+  cashReturnRate: { title: 'Real Cash Return Rate', format: 'percentage' },
+  cashHoldings: { title: 'Cash Holdings', format: 'currency' },
+  annualCashGain: { title: 'Annual Cash Gain', format: 'currency' },
+  cumulativeCashGain: { title: 'Cumulative Cash Gain', format: 'currency' },
+  inflationRate: { title: 'Inflation Rate', format: 'percentage' },
+  historicalYear: { title: 'Historical Year', format: 'number' },
+} as const;
+
+export const SIMULATION_RETURNS_TABLE_CONFIG: Record<keyof SingleSimulationReturnsTableRow, { title: string; format: ColumnFormat }> =
+  SINGLE_SIMULATION_RETURNS_COLUMNS;
 
 // ================================
 // CONTRIBUTIONS TABLE SCHEMA
