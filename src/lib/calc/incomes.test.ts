@@ -10,7 +10,7 @@ import type { SimulationState } from './simulation-engine';
  * Tests for:
  * - Timeframe start/end (customAge, customDate, now, atRetirement)
  * - Growth rate application (yearly, with limits)
- * - Income type tax handling (wage, socialSecurity, exempt)
+ * - Income type tax handling (wage, socialSecurity, non-taxable)
  * - Frequency handling (yearly, monthly, oneTime, etc.)
  */
 
@@ -350,7 +350,7 @@ describe('Income Type Tax Handling', () => {
     expect(result.amountWithheld).toBeCloseTo(2200); // 22% of $10k
     expect(result.ficaTax).toBeCloseTo(765); // 7.65% FICA
     expect(result.incomeAfterPayrollDeductions).toBeCloseTo(10000 - 2200 - 765);
-    expect(result.taxExemptIncome).toBe(0);
+    expect(result.nonTaxableIncome).toBe(0);
     expect(result.socialSecurityIncome).toBe(0);
   });
 
@@ -369,10 +369,10 @@ describe('Income Type Tax Handling', () => {
     expect(result.amountWithheld).toBeCloseTo(250); // 10%
     expect(result.ficaTax).toBe(0); // No FICA on SS
     expect(result.socialSecurityIncome).toBe(2500); // Tracked for provisional income
-    expect(result.taxExemptIncome).toBe(0);
+    expect(result.nonTaxableIncome).toBe(0);
   });
 
-  it('exempt income: no taxes, tracked as tax-exempt', () => {
+  it('non-taxable income: no taxes, tracked as non-taxable', () => {
     const income = new Income(
       createIncomeInput({
         amount: 3000,
@@ -386,7 +386,7 @@ describe('Income Type Tax Handling', () => {
     expect(result.income).toBe(3000);
     expect(result.amountWithheld).toBe(0);
     expect(result.ficaTax).toBe(0);
-    expect(result.taxExemptIncome).toBe(3000);
+    expect(result.nonTaxableIncome).toBe(3000);
     expect(result.socialSecurityIncome).toBe(0);
     expect(result.incomeAfterPayrollDeductions).toBe(3000);
   });

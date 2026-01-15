@@ -94,7 +94,7 @@ export interface IncomeSourcesData {
   taxableSocialSecurityIncome: number;
   maxTaxableSocialSecurityPercentage: number;
   provisionalIncome: number;
-  taxExemptIncome: number;
+  nonTaxableIncome: number;
   grossIncome: number;
   incomeTaxedAsOrdinary: number;
   incomeTaxedAsCapGains: number;
@@ -241,8 +241,8 @@ export class TaxProcessor {
 
     const totalIncomeFromIncomes = annualIncomesData.totalIncome;
     const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
-    const taxExemptIncome = annualIncomesData.totalTaxExemptIncome;
-    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
+    const nonTaxableIncome = annualIncomesData.totalNonTaxableIncome;
+    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - nonTaxableIncome;
 
     const incomeTaxedAsOrdinaryExceptSocSec = earnedIncome + taxableRetirementDistributions + taxableInterestIncome;
     const incomeTaxedAsCapGains = realizedGains + taxableDividendIncome;
@@ -273,7 +273,7 @@ export class TaxProcessor {
     const adjustedGrossIncome = adjustedIncomeTaxedAsOrdinary + adjustedIncomeTaxedAsCapGains;
 
     const grossIncome = grossIncomeExceptSocSec + taxableSocialSecurityIncome;
-    const totalIncome = grossIncome + taxExemptIncome + (socialSecurityIncome - taxableSocialSecurityIncome);
+    const totalIncome = grossIncome + nonTaxableIncome + (socialSecurityIncome - taxableSocialSecurityIncome);
 
     return {
       realizedGains,
@@ -287,7 +287,7 @@ export class TaxProcessor {
       taxableSocialSecurityIncome,
       maxTaxableSocialSecurityPercentage,
       provisionalIncome,
-      taxExemptIncome,
+      nonTaxableIncome,
       grossIncome,
       incomeTaxedAsOrdinary,
       incomeTaxedAsCapGains,

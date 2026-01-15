@@ -35,7 +35,7 @@ interface CustomTooltipProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
-    | 'taxExemptIncome'
+    | 'nonTaxableIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -63,7 +63,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       | 'adjustedGrossIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
-      | 'taxExemptIncome'
+      | 'nonTaxableIncome'
       | 'ordinaryIncome'
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
@@ -82,7 +82,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       case 'adjustedGrossIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
-      case 'taxExemptIncome':
+      case 'nonTaxableIncome':
       case 'ordinaryIncome':
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
@@ -111,7 +111,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
     case 'cumulativeAmounts':
     case 'investmentIncome':
     case 'retirementDistributions':
-    case 'taxExemptIncome':
+    case 'nonTaxableIncome':
     case 'ordinaryIncome':
     case 'capGainsAndDividends':
     case 'adjustmentsAndDeductions':
@@ -235,7 +235,7 @@ interface SingleSimulationTaxesLineChartProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
-    | 'taxExemptIncome'
+    | 'nonTaxableIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -360,10 +360,10 @@ export default function SingleSimulationTaxesLineChart({
       barDataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
-    case 'taxExemptIncome':
+    case 'nonTaxableIncome':
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      lineDataKeys.push('taxExemptIncome');
+      lineDataKeys.push('nonTaxableIncome');
       strokeColors.push('var(--chart-2)');
       break;
     case 'ordinaryIncome':

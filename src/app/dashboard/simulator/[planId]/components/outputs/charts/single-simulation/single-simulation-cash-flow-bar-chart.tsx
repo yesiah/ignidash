@@ -62,8 +62,8 @@ export default function SingleSimulationCashFlowBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     net: {
-      mobile: ['Earned', 'Soc. Sec.', 'Exempt', 'Match', 'Taxes', 'Expenses'],
-      desktop: ['Earned Income', 'Social Security', 'Tax-Exempt Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
+      mobile: ['Earned', 'Soc. Sec.', 'Non-Taxable', 'Match', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Social Security', 'Non-Taxable Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
     },
     incomes: {
       mobile: ['Match'],
@@ -89,17 +89,17 @@ export default function SingleSimulationCashFlowBarChart({
       const [
         earnedIncomeLabel,
         socialSecurityIncomeLabel,
-        taxExemptIncomeLabel,
+        nonTaxableIncomeLabel,
         employerMatchLabel,
         taxesAndPenaltiesLabel,
         expensesLabel,
       ] = getLabelsForScreenSize(dataView, isSmallScreen);
 
       transformedChartData = chartData.flatMap(
-        ({ earnedIncome, socialSecurityIncome, taxExemptIncome, employerMatch, taxesAndPenalties, expenses }) => [
+        ({ earnedIncome, socialSecurityIncome, nonTaxableIncome, employerMatch, taxesAndPenalties, expenses }) => [
           { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
           { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
-          { name: taxExemptIncomeLabel, amount: taxExemptIncome, color: 'var(--chart-1)' },
+          { name: nonTaxableIncomeLabel, amount: nonTaxableIncome, color: 'var(--chart-1)' },
           { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-1)' },
           { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
           { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
@@ -110,7 +110,7 @@ export default function SingleSimulationCashFlowBarChart({
     case 'incomes': {
       const getIncomeColor = (income: IncomeData) => {
         if (income.socialSecurityIncome > 0) return 'var(--chart-2)';
-        if (income.taxExemptIncome > 0) return 'var(--chart-3)';
+        if (income.nonTaxableIncome > 0) return 'var(--chart-3)';
         return 'var(--chart-1)';
       };
 

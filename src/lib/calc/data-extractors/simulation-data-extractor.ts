@@ -21,9 +21,9 @@ export interface ReturnsStatsData {
 export interface CashFlowData {
   totalIncome: number;
   earnedIncome: number;
-  socialSecurityIncome: number;
-  taxExemptIncome: number;
   employerMatch: number;
+  socialSecurityIncome: number;
+  nonTaxableIncome: number;
   totalExpenses: number;
   totalTaxesAndPenalties: number;
   netCashFlow: number;
@@ -207,8 +207,8 @@ export class SimulationDataExtractor {
 
     const totalIncomeFromIncomes = incomesData?.totalIncome ?? 0;
     const socialSecurityIncome = incomesData?.totalSocialSecurityIncome ?? 0;
-    const taxExemptIncome = incomesData?.totalTaxExemptIncome ?? 0;
-    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxExemptIncome;
+    const nonTaxableIncome = incomesData?.totalNonTaxableIncome ?? 0;
+    const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - nonTaxableIncome;
 
     const employerMatch = portfolioData.employerMatchForPeriod;
     const totalIncome = totalIncomeFromIncomes + employerMatch;
@@ -221,9 +221,9 @@ export class SimulationDataExtractor {
     return {
       totalIncome,
       earnedIncome,
-      socialSecurityIncome,
-      taxExemptIncome,
       employerMatch,
+      socialSecurityIncome,
+      nonTaxableIncome,
       totalExpenses,
       totalTaxesAndPenalties,
       netCashFlow,

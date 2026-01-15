@@ -62,7 +62,7 @@ const CustomLabelListContent = (props: any) => {
       | 'adjustedGrossIncome'
       | 'investmentIncome'
       | 'retirementDistributions'
-      | 'taxExemptIncome'
+      | 'nonTaxableIncome'
       | 'ordinaryIncome'
       | 'capGainsAndDividends'
       | 'earlyWithdrawalPenalties'
@@ -81,7 +81,7 @@ const CustomLabelListContent = (props: any) => {
       case 'adjustedGrossIncome':
       case 'investmentIncome':
       case 'retirementDistributions':
-      case 'taxExemptIncome':
+      case 'nonTaxableIncome':
       case 'ordinaryIncome':
       case 'capGainsAndDividends':
       case 'earlyWithdrawalPenalties':
@@ -149,7 +149,7 @@ interface SingleSimulationTaxesBarChartProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
-    | 'taxExemptIncome'
+    | 'nonTaxableIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -328,11 +328,11 @@ export default function SingleSimulationTaxesBarChart({
       ]);
       break;
     }
-    case 'taxExemptIncome': {
+    case 'nonTaxableIncome': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
       transformedChartData = chartData.flatMap((item) => [
-        { name: 'Tax-Exempt Income', segments: [{ amount: item.taxExemptIncome, color: 'var(--chart-2)' }] },
+        { name: 'Non-Taxable Income', segments: [{ amount: item.nonTaxableIncome, color: 'var(--chart-2)' }] },
       ]);
       break;
     }

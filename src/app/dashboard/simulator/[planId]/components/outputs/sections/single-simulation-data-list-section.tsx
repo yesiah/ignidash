@@ -34,7 +34,7 @@ function NetCashFlowTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>Earned income, employer match, tax-exempt income, and Social Security, minus taxes and expenses.</p>
+        <p>Earned income, employer match, non-taxable income, and Social Security, minus taxes and expenses.</p>
         <p>Dividends and interest (automatically reinvested) are tracked separately, as are withdrawals.</p>
       </TooltipContent>
     </Tooltip>
@@ -76,8 +76,7 @@ function TotalIncomeTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>Gross income plus tax-exempt income and the non-taxable portion of Social Security.</p>
-        <p>Tax-exempt income includes gifts, inheritances, or other non-taxable sources.</p>
+        <p>Gross income plus non-taxable income (gifts, inheritances, etc.) and the non-taxable portion of Social Security.</p>
       </TooltipContent>
     </Tooltip>
   );

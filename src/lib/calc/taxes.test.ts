@@ -50,7 +50,7 @@ const createEmptyIncomesData = (): IncomesData => ({
   totalAmountWithheld: 0,
   totalFicaTax: 0,
   totalIncomeAfterPayrollDeductions: 0,
-  totalTaxExemptIncome: 0,
+  totalNonTaxableIncome: 0,
   totalSocialSecurityIncome: 0,
   perIncomeData: {},
 });

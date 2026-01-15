@@ -105,7 +105,7 @@ const systemPrompt = (planData: string, keyMetrics: string): string => `
 
   **Inputs User Can Change:**
   - **Timeline:** Current age, life expectancy, retirement target (fixed age or SWR-based)
-  - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, tax-exempt), withholding percentage
+  - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, non-taxable), withholding percentage
   - **Expenses:** Name, amount, frequency, start/end dates, growth rate with optional cap
   - **Accounts:** Savings, Taxable Brokerage, 401(k), Roth 401(k), Traditional IRA, Roth IRA, HSA—each with balance and bond allocation; taxable accounts track cost basis, Roth accounts track contribution basis
   - **Glide Path:** Enable/disable automatic rebalancing toward a target bond allocation; specify end time (custom date or custom age) and target bond percentage; prioritizes tax-advantaged accounts for rebalancing
@@ -187,7 +187,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
   Explain income stacking and taxation rules for the user's income sources, which may include:
   - Earned Income (W-2): ordinary income + FICA
   - Social Security: ordinary income (0-85% taxable based on provisional income)
-  - Tax-Exempt Income: not subject to federal income tax
+  - Non-Taxable Income: not subject to federal income tax
   - Retirement Distributions (401(k), IRA, HSA): ordinary income
   - Interest Income (from bonds/cash): ordinary income
   - Realized Gains (from taxable account withdrawals): long-term capital gains rates
@@ -273,7 +273,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   **Inputs User Can Change:**
   - **Timeline:** Current age, life expectancy, retirement target (fixed age or SWR-based)
-  - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, tax-exempt), withholding percentage
+  - **Income:** Name, amount, frequency (one-time/recurring), start/end dates, growth rate with optional cap, tax type (wage, Social Security, non-taxable), withholding percentage
   - **Expenses:** Name, amount, frequency, start/end dates, growth rate with optional cap
   - **Accounts:** Savings, Taxable Brokerage, 401(k), Roth 401(k), Traditional IRA, Roth IRA, HSA—each with balance and bond allocation; taxable accounts track cost basis, Roth accounts track contribution basis
   - **Glide Path:** Enable/disable automatic rebalancing toward a target bond allocation; specify end time (custom date or custom age) and target bond percentage; prioritizes tax-advantaged accounts for rebalancing
@@ -471,7 +471,7 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
     const income = [
       d.earnedIncome && `earned:${fmt(d.earnedIncome)}`,
       d.socialSecurityIncome && `SS:${fmt(d.socialSecurityIncome)}`,
-      d.taxExemptIncome && `taxExempt:${fmt(d.taxExemptIncome)}`,
+      d.nonTaxableIncome && `nonTaxable:${fmt(d.nonTaxableIncome)}`,
       d.retirementDistributions && `retireDist:${fmt(d.retirementDistributions)}`,
       d.interestIncome && `interest:${fmt(d.interestIncome)}`,
       d.dividendIncome && `dividends:${fmt(d.dividendIncome)}`,

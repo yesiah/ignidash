@@ -612,7 +612,7 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                           <Select {...register('taxes.incomeType')} id="taxes.incomeType" name="taxes.incomeType">
                             <option value="wage">Wages & Salary (W-2)</option>
                             <option value="socialSecurity">Social Security</option>
-                            <option value="exempt">Tax-Exempt (gifts, inheritances, etc.)</option>
+                            <option value="exempt">Non-Taxable (gifts, inheritances, etc.)</option>
                             <option value="selfEmployment" disabled>
                               Self-Employment (1099) (coming soon!)
                             </option>

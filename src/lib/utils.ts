@@ -28,6 +28,7 @@ export function formatChartString(input: string): string {
     ['Tax Deferred', 'Tax-Deferred'],
     ['Tax Deductible', 'Tax-Deductible'],
     ['Tax Exempt', 'Tax-Exempt'],
+    ['Non Taxable', 'Non-Taxable'],
     ['Fica', 'FICA'],
     ['Niit', 'NIIT'],
     ['Cumulative', 'Cumul.'],

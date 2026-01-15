@@ -105,7 +105,7 @@ const createEmptyIncomesData = (overrides?: Partial<IncomesData>): IncomesData =
   totalAmountWithheld: overrides?.totalAmountWithheld ?? 0,
   totalFicaTax: overrides?.totalFicaTax ?? 0,
   totalIncomeAfterPayrollDeductions: overrides?.totalIncomeAfterPayrollDeductions ?? 0,
-  totalTaxExemptIncome: overrides?.totalTaxExemptIncome ?? 0,
+  totalNonTaxableIncome: overrides?.totalNonTaxableIncome ?? 0,
   totalSocialSecurityIncome: overrides?.totalSocialSecurityIncome ?? 0,
   perIncomeData: overrides?.perIncomeData ?? {},
 });
@@ -550,7 +550,7 @@ describe('ContributionRules', () => {
             amountWithheld: 0,
             ficaTax: 0,
             incomeAfterPayrollDeductions: 5000,
-            taxExemptIncome: 0,
+            nonTaxableIncome: 0,
             socialSecurityIncome: 0,
           },
           'income-2': {
@@ -560,7 +560,7 @@ describe('ContributionRules', () => {
             amountWithheld: 0,
             ficaTax: 0,
             incomeAfterPayrollDeductions: 2000,
-            taxExemptIncome: 0,
+            nonTaxableIncome: 0,
             socialSecurityIncome: 0,
           },
           'income-3': {
@@ -570,7 +570,7 @@ describe('ContributionRules', () => {
             amountWithheld: 0,
             ficaTax: 0,
             incomeAfterPayrollDeductions: 3000,
-            taxExemptIncome: 0,
+            nonTaxableIncome: 0,
             socialSecurityIncome: 0,
           },
         },
