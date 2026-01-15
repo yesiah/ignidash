@@ -174,7 +174,15 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                   <Field>
                     <Label htmlFor="costBasis" className="flex w-full items-center justify-between">
                       <span className="whitespace-nowrap">Cost Basis</span>
-                      <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                      <Tooltip>
+                        <TooltipTrigger className="text-muted-foreground">
+                          <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>What you originally paid for your taxable investments.</p>
+                          <p>Optional—helps calculate taxes owed when you sell.</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </Label>
                     <NumberInput name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="–" prefix="$" />
                     {costBasisError && <ErrorMessage>{costBasisError.message}</ErrorMessage>}
@@ -184,7 +192,15 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                   <Field>
                     <Label htmlFor="contributionBasis" className="flex w-full items-center justify-between">
                       <span className="whitespace-nowrap">Contribution Basis</span>
-                      <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
+                      <Tooltip>
+                        <TooltipTrigger className="text-muted-foreground">
+                          <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>The sum of your direct contributions (not earnings).</p>
+                          <p>Optional—this portion can be withdrawn without penalty.</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </Label>
                     <NumberInput
                       name="contributionBasis"
