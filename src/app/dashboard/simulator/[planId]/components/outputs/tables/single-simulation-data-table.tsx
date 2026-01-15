@@ -37,37 +37,79 @@ interface TableCategoryProps {
 function PortfolioTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationPortfolioTableData(simulation);
 
-  return <Table<SingleSimulationPortfolioTableRow> columns={generatePortfolioTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationPortfolioTableRow>
+      columns={generatePortfolioTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="portfolio-data.csv"
+    />
+  );
 }
 
 function CashFlowTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationCashFlowTableData(simulation);
 
-  return <Table<SingleSimulationCashFlowTableRow> columns={generateCashFlowTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationCashFlowTableRow>
+      columns={generateCashFlowTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="cash-flow-data.csv"
+    />
+  );
 }
 
 function ReturnsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationReturnsTableData(simulation);
 
-  return <Table<SingleSimulationReturnsTableRow> columns={generateReturnsTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationReturnsTableRow>
+      columns={generateReturnsTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="returns-data.csv"
+    />
+  );
 }
 
 function TaxesTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationTaxesTableData(simulation);
 
-  return <Table<SingleSimulationTaxesTableRow> columns={generateTaxesTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationTaxesTableRow>
+      columns={generateTaxesTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="taxes-data.csv"
+    />
+  );
 }
 
 function ContributionsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationContributionsTableData(simulation);
 
-  return <Table<SingleSimulationContributionsTableRow> columns={generateContributionsTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationContributionsTableRow>
+      columns={generateContributionsTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="contributions-data.csv"
+    />
+  );
 }
 
 function WithdrawalsTable({ simulation }: TableCategoryProps) {
   const tableData = useSingleSimulationWithdrawalsTableData(simulation);
 
-  return <Table<SingleSimulationWithdrawalsTableRow> columns={generateWithdrawalsTableColumns()} data={tableData} keyField="year" />;
+  return (
+    <Table<SingleSimulationWithdrawalsTableRow>
+      columns={generateWithdrawalsTableColumns()}
+      data={tableData}
+      keyField="year"
+      exportFilename="withdrawals-data.csv"
+    />
+  );
 }
 
 interface SingleSimulationDataTableProps {

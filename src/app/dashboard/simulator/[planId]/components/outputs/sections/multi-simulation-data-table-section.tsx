@@ -48,12 +48,18 @@ function MultiSimulationDataTableSection({
             data={tableData}
             keyField="seed"
             onRowClick={(row: MultiSimulationTableRow) => handleSeedFromTableChange(row.seed)}
+            exportFilename="multi-simulation-data.csv"
           />
         );
         break;
       case TableType.YearlyResults:
         tableComponent = (
-          <Table<YearlyAggregateTableRow> columns={generateYearlyAggregateTableColumns()} data={yearlyTableData} keyField="year" />
+          <Table<YearlyAggregateTableRow>
+            columns={generateYearlyAggregateTableColumns()}
+            data={yearlyTableData}
+            keyField="year"
+            exportFilename="yearly-aggregate-data.csv"
+          />
         );
         break;
     }

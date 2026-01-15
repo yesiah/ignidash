@@ -2,12 +2,21 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/16/solid';
+import { CopyIcon, CheckIcon, DownloadIcon } from 'lucide-react';
 
 import type { TableColumn } from '@/lib/types/table';
 import Pagination from '@/components/ui/pagination';
 import Card from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useScrollPreservation } from '@/hooks/use-scroll-preserving-state';
+import { Button } from '@/components/catalyst/button';
+
+type SortDirection = 'asc' | 'desc' | null;
+
+interface SortState<T> {
+  column: keyof T | null;
+  direction: SortDirection;
+}
 
 interface TableProps<T extends Record<string, unknown>> {
   className?: string;
@@ -17,13 +26,7 @@ interface TableProps<T extends Record<string, unknown>> {
   itemsPerPage?: number;
   showPagination?: boolean;
   onRowClick?: (row: T) => void;
-}
-
-type SortDirection = 'asc' | 'desc' | null;
-
-interface SortState<T> {
-  column: keyof T | null;
-  direction: SortDirection;
+  exportFilename: string;
 }
 
 export default function Table<T extends Record<string, unknown>>({
@@ -34,6 +37,7 @@ export default function Table<T extends Record<string, unknown>>({
   itemsPerPage = 10,
   showPagination = true,
   onRowClick,
+  exportFilename,
 }: TableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortState, setSortState] = useState<SortState<T>>({
@@ -99,6 +103,77 @@ export default function Table<T extends Record<string, unknown>>({
   const handlePageChange = withScrollPreservation((page: number) => setCurrentPage(page));
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setCurrentPage(1), [data]);
+
+  const [copied, setCopied] = useState(false);
+
+  const escapeCSVValue = (value: string): string => {
+    if (value.includes(',') || value.includes('"') || value.includes('\n')) return `"${value.replace(/"/g, '""')}"`;
+    return value;
+  };
+
+  const handleCopy = async () => {
+    const headers = columns.map((col) => col.title).join('\t');
+    const rows = sortedData
+      .map((row) =>
+        columns
+          .map((col) => {
+            const rawValue = row[col.key];
+            return col.format ? col.format(rawValue) : String(rawValue ?? '');
+          })
+          .join('\t')
+      )
+      .join('\n');
+
+    await navigator.clipboard.writeText(`${headers}\n${rows}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleExport = async () => {
+    const BOM = '\uFEFF';
+    const headers = columns.map((col) => escapeCSVValue(col.title)).join(',');
+    const rows = sortedData
+      .map((row) =>
+        columns
+          .map((col) => {
+            const rawValue = row[col.key];
+            const formatted = col.format ? col.format(rawValue) : String(rawValue ?? '');
+            return escapeCSVValue(formatted);
+          })
+          .join(',')
+      )
+      .join('\n');
+
+    const csvContent = `${BOM}${headers}\n${rows}`;
+
+    if ('showSaveFilePicker' in window) {
+      try {
+        const showSaveFilePicker = window.showSaveFilePicker as (options: {
+          suggestedName: string;
+          types: { description: string; accept: Record<string, string[]> }[];
+        }) => Promise<FileSystemFileHandle>;
+
+        const handle = await showSaveFilePicker({
+          suggestedName: exportFilename,
+          types: [{ description: 'CSV Files', accept: { 'text/csv': ['.csv'] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(csvContent);
+        await writable.close();
+        return;
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+      }
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = exportFilename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
@@ -267,6 +342,16 @@ export default function Table<T extends Record<string, unknown>>({
           />
         )}
       </Card>
+      <div className="mt-2 flex justify-end gap-x-2">
+        <Button outline onClick={handleCopy}>
+          {copied ? <CheckIcon data-slot="icon" /> : <CopyIcon data-slot="icon" />}
+          {copied ? 'Copied' : 'Copy'}
+        </Button>
+        <Button onClick={handleExport}>
+          <DownloadIcon data-slot="icon" />
+          Export
+        </Button>
+      </div>
     </>
   );
 }

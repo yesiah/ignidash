@@ -43,10 +43,10 @@ export default function AIOutput() {
   const selectedInsight = insights.length > 0 && selectedInsightIndex <= insights.length - 1 ? insights[selectedInsightIndex] : null;
 
   const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
+  const handleCopy = async () => {
     const contentToCopy = selectedInsight?.content;
     if (contentToCopy) {
-      navigator.clipboard.writeText(contentToCopy);
+      await navigator.clipboard.writeText(contentToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

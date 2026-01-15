@@ -104,10 +104,10 @@ function ChatMessage({ message, image }: ChatMessageProps) {
 
   if (message.author === 'system') return null;
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     const messageToCopy = message.body;
     if (messageToCopy) {
-      navigator.clipboard.writeText(messageToCopy);
+      await navigator.clipboard.writeText(messageToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
