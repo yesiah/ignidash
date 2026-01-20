@@ -96,8 +96,6 @@ See [Known Limitations](https://www.ignidash.com/help#:~:text=Known%20limitation
 
 See [SELF_HOSTING.md](./SELF_HOSTING.md) for how to host Ignidash yourself with Docker.
 
-> **Prefer a hassle-free experience?** Use the [hosted version at ignidash.com](https://www.ignidash.com/) — no setup required, automatic updates, and you'll support ongoing development.
-
 ## Local Development
 
 ### Prerequisites
