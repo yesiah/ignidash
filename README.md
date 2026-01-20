@@ -76,11 +76,13 @@ Ignidash is in beta and actively under development. Planned features:
 - Configurable drawdown order
 - Modeling debt and physical assets
 - State & local taxes, IRMAA surcharges
+- Roth conversions & SEPP
 
 **Q2 2026**
 
-- Roth conversions & SEPP
 - Custom financial goals & milestones
+- Support for planning as a couple
+- Track NW with real-time data (by ticker?)
 
 See [Known Limitations](https://www.ignidash.com/help#:~:text=Known%20limitations) for details.
 

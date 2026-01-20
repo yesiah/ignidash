@@ -110,7 +110,7 @@ export default function HelpPage() {
             <CircleQuestionMarkIcon className="text-primary h-12 w-12" />
             <div>
               <h1 className="mb-2 text-3xl font-bold">Help Center</h1>
-              <p className="text-muted-foreground text-sm">Last updated: January 12, 2026</p>
+              <p className="text-muted-foreground text-sm">Last updated: January 19, 2026</p>
             </div>
           </div>
         </div>
@@ -170,9 +170,15 @@ export default function HelpPage() {
             <DescriptionDetails>Q1 2026</DescriptionDetails>
 
             <DescriptionTerm>Roth conversions & SEPP</DescriptionTerm>
-            <DescriptionDetails>Q2 2026</DescriptionDetails>
+            <DescriptionDetails>Q1 2026</DescriptionDetails>
 
             <DescriptionTerm>Custom financial goals & milestones</DescriptionTerm>
+            <DescriptionDetails>Q2 2026</DescriptionDetails>
+
+            <DescriptionTerm>Support for planning as a couple</DescriptionTerm>
+            <DescriptionDetails>Q2 2026</DescriptionDetails>
+
+            <DescriptionTerm>Track NW with real-time data</DescriptionTerm>
             <DescriptionDetails>Q2 2026</DescriptionDetails>
           </DescriptionList>
         </div>
