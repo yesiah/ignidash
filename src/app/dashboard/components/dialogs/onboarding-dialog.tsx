@@ -148,10 +148,8 @@ export default function OnboardingDialog({ onClose }: OnboardingDialogProps) {
                 <Text>Simulator is where you&apos;ll spend most of your time.</Text>
                 <Text>
                   Here, you&apos;ll enter financial information such as incomes, expenses, and investment accounts under{' '}
-                  <Strong>Numbers</Strong>, and receive detailed long-term projections under <Strong>Results</Strong>.
-                </Text>
-                <Text>
-                  To discuss your plan and results with AI chat powered by GPT-5.2, click the{' '}
+                  <Strong>Numbers</Strong>, and receive detailed long-term projections under <Strong>Results</Strong>. To discuss your plan
+                  and results with AI chat powered by GPT-5.2, click the{' '}
                   <WandSparklesIcon className="text-primary mx-1 inline size-5 shrink-0" aria-label="Ask AI button icon" /> next to{' '}
                   <Strong>Results</Strong>.
                 </Text>
