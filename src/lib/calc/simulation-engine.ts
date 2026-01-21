@@ -95,7 +95,10 @@ export class FinancialSimulationEngine {
       const incomesData = incomesProcessor.process();
       const expensesData = expensesProcessor.process();
 
-      const { discretionaryExpense: monthlyDiscretionaryExpense } = portfolioProcessor.processCashFlows(incomesData, expensesData);
+      const { discretionaryExpense: monthlyDiscretionaryExpense } = portfolioProcessor.processContributionsAndWithdrawals(
+        incomesData,
+        expensesData
+      );
       if (monthlyDiscretionaryExpense) expensesProcessor.processDiscretionaryExpense(monthlyDiscretionaryExpense);
 
       if (simulationState.time.month % 12 === 0) {

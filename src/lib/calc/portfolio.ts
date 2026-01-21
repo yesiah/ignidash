@@ -75,8 +75,11 @@ export class PortfolioProcessor {
     });
   }
 
-  processCashFlows(incomesData: IncomesData, expensesData: ExpensesData): { portfolioData: PortfolioData; discretionaryExpense: number } {
-    const grossCashFlow = incomesData.totalIncomeAfterPayrollDeductions - expensesData.totalExpenses;
+  processContributionsAndWithdrawals(
+    incomesData: IncomesData,
+    expensesData: ExpensesData
+  ): { portfolioData: PortfolioData; discretionaryExpense: number } {
+    const surplusDeficitAfterPayrollDeductions = incomesData.totalIncomeAfterPayrollDeductions - expensesData.totalExpenses;
 
     const {
       totalForPeriod: contributionsForPeriod,
@@ -85,7 +88,7 @@ export class PortfolioProcessor {
       employerMatchForPeriod,
       employerMatchByAccount,
       shortfallRepaidForPeriod,
-    } = this.processContributions(grossCashFlow, incomesData);
+    } = this.processContributions(surplusDeficitAfterPayrollDeductions, incomesData);
 
     const {
       totalForPeriod: withdrawalsForPeriod,
@@ -95,7 +98,7 @@ export class PortfolioProcessor {
       earningsWithdrawnForPeriod,
       earningsWithdrawnByAccount,
       shortfallForPeriod,
-    } = this.processWithdrawals(grossCashFlow);
+    } = this.processWithdrawals(surplusDeficitAfterPayrollDeductions);
 
     const { realizedGainsFromRebalance, realizedGainsByAccountFromRebalance } = this.processRebalance();
 
@@ -204,7 +207,7 @@ export class PortfolioProcessor {
   }
 
   private processContributions(
-    grossCashFlow: number,
+    surplusDeficit: number,
     incomesData?: IncomesData
   ): TransactionsBreakdown & {
     discretionaryExpense: number;
@@ -214,7 +217,7 @@ export class PortfolioProcessor {
   } {
     const byAccount: Record<string, AssetTransactions> = {};
     const employerMatchByAccount: Record<string, number> = {};
-    if (!(grossCashFlow > 0)) {
+    if (!(surplusDeficit > 0)) {
       return {
         totalForPeriod: zeroTransactions(),
         byAccount,
@@ -225,7 +228,7 @@ export class PortfolioProcessor {
       };
     }
 
-    const shortfallRepaidForPeriod = Math.min(grossCashFlow, this.outstandingShortfall);
+    const shortfallRepaidForPeriod = Math.min(surplusDeficit, this.outstandingShortfall);
     this.outstandingShortfall -= shortfallRepaidForPeriod;
 
     const age = this.simulationState.time.age;
@@ -233,7 +236,7 @@ export class PortfolioProcessor {
 
     let employerMatchForPeriod = 0;
 
-    let remainingToContribute = grossCashFlow - shortfallRepaidForPeriod;
+    let remainingToContribute = surplusDeficit - shortfallRepaidForPeriod;
     let currentRuleIndex = 0;
     while (remainingToContribute > 0 && currentRuleIndex < contributionRules.length) {
       const rule = contributionRules[currentRuleIndex];
@@ -307,7 +310,7 @@ export class PortfolioProcessor {
     return { totalForPeriod, byAccount, discretionaryExpense, employerMatchForPeriod, employerMatchByAccount, shortfallRepaidForPeriod };
   }
 
-  private processWithdrawals(grossCashFlow: number): TransactionsBreakdown & {
+  private processWithdrawals(surplusDeficit: number): TransactionsBreakdown & {
     realizedGainsForPeriod: number;
     realizedGainsByAccount: Record<string, number>;
     earningsWithdrawnForPeriod: number;
@@ -317,7 +320,7 @@ export class PortfolioProcessor {
     const byAccount: Record<string, AssetTransactions> = {};
     const realizedGainsByAccount: Record<string, number> = {};
     const earningsWithdrawnByAccount: Record<string, number> = {};
-    if (!(grossCashFlow < 0)) {
+    if (!(surplusDeficit < 0)) {
       return {
         totalForPeriod: zeroTransactions(),
         byAccount,
@@ -333,7 +336,7 @@ export class PortfolioProcessor {
     let earningsWithdrawnForPeriod = 0;
 
     const withdrawalOrder = this.getWithdrawalOrder();
-    let remainingToWithdraw = Math.abs(grossCashFlow);
+    let remainingToWithdraw = Math.abs(surplusDeficit);
 
     for (const { accountType, modifier } of withdrawalOrder) {
       if (remainingToWithdraw <= 0) break;
