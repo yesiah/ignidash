@@ -123,7 +123,7 @@ CustomTooltip.displayName = 'CustomTooltip';
 
 const LINE_COLOR = 'var(--foreground)';
 
-interface SingleSimulationCashFlowLineChartProps {
+interface SingleSimulationIncomeExpensesLineChartProps {
   rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
   startAge: number;
   keyMetrics: KeyMetrics;
@@ -134,7 +134,7 @@ interface SingleSimulationCashFlowLineChartProps {
   customDataID?: string;
 }
 
-export default function SingleSimulationCashFlowLineChart({
+export default function SingleSimulationIncomeExpensesLineChart({
   rawChartData,
   startAge,
   keyMetrics,
@@ -143,7 +143,7 @@ export default function SingleSimulationCashFlowLineChart({
   selectedAge,
   dataView,
   customDataID,
-}: SingleSimulationCashFlowLineChartProps) {
+}: SingleSimulationIncomeExpensesLineChartProps) {
   const [clickedOutsideChart, setClickedOutsideChart] = useState(false);
 
   const { resolvedTheme } = useTheme();

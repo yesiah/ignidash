@@ -9,10 +9,10 @@ import { Select } from '@/components/catalyst/select';
 import type { SingleSimulationIncomeExpensesChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
 
-import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/single-simulation-cash-flow-line-chart';
+import SingleSimulationIncomeExpensesLineChart from '../../charts/single-simulation/single-simulation-income-expenses-line-chart';
 import ChartTimeFrameDropdown from '../../chart-time-frame-dropdown';
 
-interface SingleSimulationCashFlowLineChartCardProps {
+interface SingleSimulationIncomeExpensesLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'surplusDeficit' | 'incomes' | 'expenses' | 'custom' | 'savingsRate') => void;
@@ -24,7 +24,7 @@ interface SingleSimulationCashFlowLineChartCardProps {
   startAge: number;
 }
 
-export default function SingleSimulationCashFlowLineChartCard({
+export default function SingleSimulationIncomeExpensesLineChartCard({
   onAgeSelect,
   selectedAge,
   setDataView,
@@ -34,7 +34,7 @@ export default function SingleSimulationCashFlowLineChartCard({
   rawChartData,
   keyMetrics,
   startAge,
-}: SingleSimulationCashFlowLineChartCardProps) {
+}: SingleSimulationIncomeExpensesLineChartCardProps) {
   const showReferenceLines = useShowReferenceLines();
 
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
@@ -101,7 +101,7 @@ export default function SingleSimulationCashFlowLineChartCard({
           <ChartTimeFrameDropdown timeFrameType="single" />
         </div>
       </div>
-      <SingleSimulationCashFlowLineChart
+      <SingleSimulationIncomeExpensesLineChart
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         keyMetrics={keyMetrics}

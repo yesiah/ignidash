@@ -44,19 +44,19 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-interface SingleSimulationCashFlowBarChartProps {
+interface SingleSimulationIncomeExpensesBarChartProps {
   age: number;
   dataView: 'surplusDeficit' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
   customDataID: string;
 }
 
-export default function SingleSimulationCashFlowBarChart({
+export default function SingleSimulationIncomeExpensesBarChart({
   age,
   dataView,
   rawChartData,
   customDataID,
-}: SingleSimulationCashFlowBarChartProps) {
+}: SingleSimulationIncomeExpensesBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 

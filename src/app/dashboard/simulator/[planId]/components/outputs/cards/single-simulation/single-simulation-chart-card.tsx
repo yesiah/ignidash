@@ -17,8 +17,8 @@ import { SingleSimulationCategory } from '@/lib/types/simulation-category';
 
 import SingleSimulationPortfolioAreaChartCard from './single-simulation-portfolio-area-chart-card';
 import SingleSimulationPortfolioPieChartCard from './single-simulation-portfolio-pie-chart-card';
-import SingleSimulationCashFlowLineChartCard from './single-simulation-cash-flow-line-chart-card';
-import SingleSimulationCashFlowBarChartCard from './single-simulation-cash-flow-bar-chart-card';
+import SingleSimulationIncomeExpensesLineChartCard from './single-simulation-income-expenses-line-chart-card';
+import SingleSimulationIncomeExpensesBarChartCard from './single-simulation-income-expenses-bar-chart-card';
 import SingleSimulationReturnsLineChartCard from './single-simulation-returns-line-chart-card';
 import SingleSimulationReturnsBarChartCard from './single-simulation-returns-bar-chart-card';
 import SingleSimulationTaxesLineChartCard from './single-simulation-taxes-line-chart-card';
@@ -73,7 +73,7 @@ function IncomeExpensesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge
 
   return (
     <>
-      <SingleSimulationCashFlowLineChartCard
+      <SingleSimulationIncomeExpensesLineChartCard
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         setDataView={setDataView}
@@ -84,7 +84,7 @@ function IncomeExpensesCharts({ simulation, keyMetrics, onAgeSelect, selectedAge
         keyMetrics={keyMetrics}
         startAge={startAge}
       />
-      <SingleSimulationCashFlowBarChartCard
+      <SingleSimulationIncomeExpensesBarChartCard
         rawChartData={rawChartData}
         selectedAge={selectedAge}
         dataView={dataView}

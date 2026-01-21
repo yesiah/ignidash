@@ -5,21 +5,21 @@ import type { SingleSimulationIncomeExpensesChartDataPoint } from '@/lib/types/c
 import { Subheading } from '@/components/catalyst/heading';
 import { useIncomeData, useExpenseData } from '@/hooks/use-convex-data';
 
-import SingleSimulationCashFlowBarChart from '../../charts/single-simulation/single-simulation-cash-flow-bar-chart';
+import SingleSimulationIncomeExpensesBarChart from '../../charts/single-simulation/single-simulation-income-expenses-bar-chart';
 
-interface SingleSimulationCashFlowBarChartCardProps {
+interface SingleSimulationIncomeExpensesBarChartCardProps {
   selectedAge: number;
   rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
   dataView: 'surplusDeficit' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   customDataID: string;
 }
 
-export default function SingleSimulationCashFlowBarChartCard({
+export default function SingleSimulationIncomeExpensesBarChartCard({
   selectedAge,
   rawChartData,
   dataView,
   customDataID,
-}: SingleSimulationCashFlowBarChartCardProps) {
+}: SingleSimulationIncomeExpensesBarChartCardProps) {
   const incomeData = useIncomeData(customDataID !== '' ? customDataID : null);
   const expenseData = useExpenseData(customDataID !== '' ? customDataID : null);
 
@@ -56,7 +56,12 @@ export default function SingleSimulationCashFlowBarChartCard({
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
       </div>
-      <SingleSimulationCashFlowBarChart age={selectedAge} rawChartData={rawChartData} dataView={dataView} customDataID={customDataID} />
+      <SingleSimulationIncomeExpensesBarChart
+        age={selectedAge}
+        rawChartData={rawChartData}
+        dataView={dataView}
+        customDataID={customDataID}
+      />
     </Card>
   );
 }
