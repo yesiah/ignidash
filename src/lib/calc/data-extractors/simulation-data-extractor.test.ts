@@ -252,3 +252,610 @@ describe('SimulationDataExtractor.getMeanReturnsData', () => {
     expect(stats.meanBondReturn).toBe(0);
   });
 });
+
+/**
+ * Tests for SimulationDataExtractor.getMilestonesData
+ */
+
+// Helper to create a data point with specified age, phase, and portfolio value
+const createMilestoneDataPoint = (age: number, phase: 'accumulation' | 'retirement', totalValue: number): SimulationDataPoint => ({
+  date: '2024-01-01',
+  age,
+  portfolio: {
+    totalValue,
+    assetAllocation: { stocks: 0.6, bonds: 0.3, cash: 0.1 },
+    contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+    employerMatchForPeriod: 0,
+    cumulativeEmployerMatch: 0,
+    realizedGainsForPeriod: 0,
+    cumulativeRealizedGains: 0,
+    rmdsForPeriod: 0,
+    cumulativeRmds: 0,
+    earningsWithdrawnForPeriod: 0,
+    cumulativeEarningsWithdrawn: 0,
+    shortfallForPeriod: 0,
+    shortfallRepaidForPeriod: 0,
+    outstandingShortfall: 0,
+    perAccountData: {},
+  },
+  incomes: null,
+  expenses: null,
+  taxes: null,
+  returns: null,
+  phase: { name: phase },
+});
+
+describe('SimulationDataExtractor.getMilestonesData', () => {
+  it('detects retirement age correctly from first retirement phase year', () => {
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30, 'accumulation', 500000),
+      createMilestoneDataPoint(31, 'accumulation', 550000),
+      createMilestoneDataPoint(32, 'accumulation', 600000),
+      createMilestoneDataPoint(33, 'retirement', 700000), // First retirement year
+      createMilestoneDataPoint(34, 'retirement', 750000),
+    ];
+
+    const milestones = SimulationDataExtractor.getMilestonesData(data, 30);
+
+    expect(milestones.retirementAge).toBe(33);
+    expect(milestones.yearsToRetirement).toBe(3);
+  });
+
+  it('detects bankruptcy age when portfolio drops below 0.1', () => {
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30, 'accumulation', 500000),
+      createMilestoneDataPoint(31, 'accumulation', 400000),
+      createMilestoneDataPoint(32, 'retirement', 300000),
+      createMilestoneDataPoint(33, 'retirement', 100000),
+      createMilestoneDataPoint(34, 'retirement', 0.05), // Bankruptcy
+      createMilestoneDataPoint(35, 'retirement', 0),
+    ];
+
+    const milestones = SimulationDataExtractor.getMilestonesData(data, 30);
+
+    expect(milestones.bankruptcyAge).toBe(34);
+    expect(milestones.yearsToBankruptcy).toBe(4);
+  });
+
+  it('returns null values when milestones are not reached', () => {
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30, 'accumulation', 500000),
+      createMilestoneDataPoint(31, 'accumulation', 600000),
+      createMilestoneDataPoint(32, 'accumulation', 700000),
+    ];
+
+    const milestones = SimulationDataExtractor.getMilestonesData(data, 30);
+
+    expect(milestones.retirementAge).toBeNull();
+    expect(milestones.yearsToRetirement).toBeNull();
+    expect(milestones.bankruptcyAge).toBeNull();
+    expect(milestones.yearsToBankruptcy).toBeNull();
+  });
+
+  it('calculates years-to-milestone correctly from non-integer start age', () => {
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30.5, 'accumulation', 500000),
+      createMilestoneDataPoint(31.5, 'accumulation', 550000),
+      createMilestoneDataPoint(32.5, 'retirement', 600000),
+    ];
+
+    const milestones = SimulationDataExtractor.getMilestonesData(data, 30.5);
+
+    // retirementAge = floor(32.5) = 32
+    // yearsToRetirement = 32 - floor(30.5) = 32 - 30 = 2
+    expect(milestones.retirementAge).toBe(32);
+    expect(milestones.yearsToRetirement).toBe(2);
+  });
+
+  it('only records the first occurrence of each milestone', () => {
+    // Test that even if portfolio dips multiple times below 0.1, only first bankruptcy is recorded
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30, 'accumulation', 500000),
+      createMilestoneDataPoint(31, 'retirement', 600000),
+      createMilestoneDataPoint(32, 'retirement', 0.05), // First bankruptcy
+      createMilestoneDataPoint(33, 'retirement', 50000), // Recovery (hypothetical)
+      createMilestoneDataPoint(34, 'retirement', 0), // Second bankruptcy
+    ];
+
+    const milestones = SimulationDataExtractor.getMilestonesData(data, 30);
+
+    // Should only record the first bankruptcy at age 32
+    expect(milestones.bankruptcyAge).toBe(32);
+    expect(milestones.yearsToRetirement).toBe(1);
+    expect(milestones.retirementAge).toBe(31);
+  });
+});
+
+/**
+ * Tests for SimulationDataExtractor.getTaxAmountsByType
+ */
+
+// Helper to create a data point with tax data
+const createTaxDataPoint = (options: {
+  incomeTax?: number;
+  ficaTax?: number;
+  capGainsTax?: number;
+  niit?: number;
+  earlyWithdrawalPenalties?: number;
+}): SimulationDataPoint => ({
+  date: '2024-01-01',
+  age: 40,
+  portfolio: {
+    totalValue: 1000000,
+    assetAllocation: { stocks: 0.6, bonds: 0.3, cash: 0.1 },
+    contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+    employerMatchForPeriod: 0,
+    cumulativeEmployerMatch: 0,
+    realizedGainsForPeriod: 0,
+    cumulativeRealizedGains: 0,
+    rmdsForPeriod: 0,
+    cumulativeRmds: 0,
+    earningsWithdrawnForPeriod: 0,
+    cumulativeEarningsWithdrawn: 0,
+    shortfallForPeriod: 0,
+    shortfallRepaidForPeriod: 0,
+    outstandingShortfall: 0,
+    perAccountData: {},
+  },
+  incomes: {
+    totalIncome: 100000,
+    totalAmountWithheld: 20000,
+    totalFicaTax: options.ficaTax ?? 0,
+    totalIncomeAfterPayrollDeductions: 72350,
+    totalSocialSecurityIncome: 0,
+    totalNonTaxableIncome: 0,
+    perIncomeData: {},
+  },
+  expenses: null,
+  taxes: {
+    incomeTaxes: {
+      taxableIncomeTaxedAsOrdinary: 65400,
+      incomeTaxBrackets: [],
+      incomeTaxAmount: options.incomeTax ?? 0,
+      effectiveIncomeTaxRate: 0.125,
+      topMarginalIncomeTaxRate: 0.22,
+    },
+    capitalGainsTaxes: {
+      taxableIncomeTaxedAsCapGains: 0,
+      capitalGainsTaxBrackets: [],
+      capitalGainsTaxAmount: options.capGainsTax ?? 0,
+      effectiveCapitalGainsTaxRate: 0,
+      topMarginalCapitalGainsTaxRate: 0,
+    },
+    niit: {
+      netInvestmentIncome: 0,
+      incomeSubjectToNiit: 0,
+      niitAmount: options.niit ?? 0,
+      threshold: 200000,
+    },
+    socialSecurityTaxes: {
+      taxableSocialSecurityIncome: 0,
+      maxTaxablePercentage: 0.85,
+      actualTaxablePercentage: 0,
+      provisionalIncome: 0,
+    },
+    earlyWithdrawalPenalties: {
+      taxDeferredPenaltyAmount: 0,
+      taxFreePenaltyAmount: 0,
+      totalPenaltyAmount: options.earlyWithdrawalPenalties ?? 0,
+    },
+    totalTaxesDue: 0,
+    totalTaxesRefund: 0,
+    totalTaxableIncome: 65400,
+    adjustments: {},
+    deductions: {},
+    incomeSources: {
+      realizedGains: 0,
+      capitalLossDeduction: 0,
+      taxDeferredWithdrawals: 0,
+      taxableRetirementDistributions: 0,
+      taxableDividendIncome: 0,
+      taxableInterestIncome: 0,
+      earnedIncome: 80000,
+      socialSecurityIncome: 0,
+      taxableSocialSecurityIncome: 0,
+      maxTaxableSocialSecurityPercentage: 0.85,
+      provisionalIncome: 0,
+      nonTaxableIncome: 0,
+      grossIncome: 80000,
+      incomeTaxedAsOrdinary: 80000,
+      incomeTaxedAsLtcg: 0,
+      taxDeductibleContributions: 0,
+      adjustedGrossIncome: 80000,
+      adjustedIncomeTaxedAsOrdinary: 80000,
+      adjustedIncomeTaxedAsCapGains: 0,
+      totalIncome: 80000,
+      earlyWithdrawals: { rothEarnings: 0, '401kAndIra': 0, hsa: 0 },
+    },
+  },
+  returns: null,
+  phase: { name: 'accumulation' },
+});
+
+describe('SimulationDataExtractor.getTaxAmountsByType', () => {
+  it('extracts all tax types correctly', () => {
+    const dp = createTaxDataPoint({
+      incomeTax: 15000,
+      ficaTax: 7650,
+      capGainsTax: 3000,
+      niit: 500,
+      earlyWithdrawalPenalties: 1000,
+    });
+
+    const taxes = SimulationDataExtractor.getTaxAmountsByType(dp);
+
+    expect(taxes.incomeTax).toBe(15000);
+    expect(taxes.ficaTax).toBe(7650);
+    expect(taxes.capGainsTax).toBe(3000);
+    expect(taxes.niit).toBe(500);
+    expect(taxes.earlyWithdrawalPenalties).toBe(1000);
+  });
+
+  it('calculates totalTaxes correctly (excluding penalties)', () => {
+    const dp = createTaxDataPoint({
+      incomeTax: 10000,
+      ficaTax: 5000,
+      capGainsTax: 2000,
+      niit: 500,
+      earlyWithdrawalPenalties: 1000,
+    });
+
+    const taxes = SimulationDataExtractor.getTaxAmountsByType(dp);
+
+    // totalTaxes = incomeTax + ficaTax + capGainsTax + niit
+    expect(taxes.totalTaxes).toBe(17500);
+  });
+
+  it('calculates totalTaxesAndPenalties correctly', () => {
+    const dp = createTaxDataPoint({
+      incomeTax: 10000,
+      ficaTax: 5000,
+      capGainsTax: 2000,
+      niit: 500,
+      earlyWithdrawalPenalties: 1000,
+    });
+
+    const taxes = SimulationDataExtractor.getTaxAmountsByType(dp);
+
+    // totalTaxesAndPenalties = totalTaxes + earlyWithdrawalPenalties
+    expect(taxes.totalTaxesAndPenalties).toBe(18500);
+  });
+
+  it('handles missing tax data (nulls) by returning zeros', () => {
+    const dp: SimulationDataPoint = {
+      ...createTaxDataPoint({}),
+      taxes: null,
+      incomes: null,
+    };
+
+    const taxes = SimulationDataExtractor.getTaxAmountsByType(dp);
+
+    expect(taxes.incomeTax).toBe(0);
+    expect(taxes.ficaTax).toBe(0);
+    expect(taxes.capGainsTax).toBe(0);
+    expect(taxes.niit).toBe(0);
+    expect(taxes.totalTaxes).toBe(0);
+    expect(taxes.earlyWithdrawalPenalties).toBe(0);
+    expect(taxes.totalTaxesAndPenalties).toBe(0);
+  });
+});
+
+/**
+ * Tests for SimulationDataExtractor.getSurplusDeficitData
+ */
+
+// Helper to create a data point with income/expense/tax data for surplus/deficit testing
+const createSurplusDeficitDataPoint = (options: {
+  totalIncome: number;
+  socialSecurityIncome?: number;
+  nonTaxableIncome?: number;
+  employerMatch?: number;
+  totalExpenses: number;
+  totalTaxesAndPenalties: number;
+}): SimulationDataPoint => ({
+  date: '2024-01-01',
+  age: 40,
+  portfolio: {
+    totalValue: 1000000,
+    assetAllocation: { stocks: 0.6, bonds: 0.3, cash: 0.1 },
+    contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+    cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+    employerMatchForPeriod: options.employerMatch ?? 0,
+    cumulativeEmployerMatch: 0,
+    realizedGainsForPeriod: 0,
+    cumulativeRealizedGains: 0,
+    rmdsForPeriod: 0,
+    cumulativeRmds: 0,
+    earningsWithdrawnForPeriod: 0,
+    cumulativeEarningsWithdrawn: 0,
+    shortfallForPeriod: 0,
+    shortfallRepaidForPeriod: 0,
+    outstandingShortfall: 0,
+    perAccountData: {},
+  },
+  incomes: {
+    totalIncome: options.totalIncome,
+    totalAmountWithheld: 0,
+    totalFicaTax: 0,
+    totalIncomeAfterPayrollDeductions: options.totalIncome,
+    totalSocialSecurityIncome: options.socialSecurityIncome ?? 0,
+    totalNonTaxableIncome: options.nonTaxableIncome ?? 0,
+    perIncomeData: {},
+  },
+  expenses: {
+    totalExpenses: options.totalExpenses,
+    perExpenseData: {},
+  },
+  taxes: {
+    incomeTaxes: {
+      taxableIncomeTaxedAsOrdinary: options.totalIncome - 14600,
+      incomeTaxBrackets: [],
+      incomeTaxAmount: options.totalTaxesAndPenalties,
+      effectiveIncomeTaxRate: 0.125,
+      topMarginalIncomeTaxRate: 0.22,
+    },
+    capitalGainsTaxes: {
+      taxableIncomeTaxedAsCapGains: 0,
+      capitalGainsTaxBrackets: [],
+      capitalGainsTaxAmount: 0,
+      effectiveCapitalGainsTaxRate: 0,
+      topMarginalCapitalGainsTaxRate: 0,
+    },
+    niit: {
+      netInvestmentIncome: 0,
+      incomeSubjectToNiit: 0,
+      niitAmount: 0,
+      threshold: 200000,
+    },
+    socialSecurityTaxes: {
+      taxableSocialSecurityIncome: 0,
+      maxTaxablePercentage: 0.85,
+      actualTaxablePercentage: 0,
+      provisionalIncome: 0,
+    },
+    earlyWithdrawalPenalties: {
+      taxDeferredPenaltyAmount: 0,
+      taxFreePenaltyAmount: 0,
+      totalPenaltyAmount: 0,
+    },
+    totalTaxesDue: options.totalTaxesAndPenalties,
+    totalTaxesRefund: 0,
+    totalTaxableIncome: options.totalIncome - 14600,
+    adjustments: {},
+    deductions: {},
+    incomeSources: {
+      realizedGains: 0,
+      capitalLossDeduction: 0,
+      taxDeferredWithdrawals: 0,
+      taxableRetirementDistributions: 0,
+      taxableDividendIncome: 0,
+      taxableInterestIncome: 0,
+      earnedIncome: options.totalIncome,
+      socialSecurityIncome: options.socialSecurityIncome ?? 0,
+      taxableSocialSecurityIncome: 0,
+      maxTaxableSocialSecurityPercentage: 0.85,
+      provisionalIncome: 0,
+      nonTaxableIncome: options.nonTaxableIncome ?? 0,
+      grossIncome: options.totalIncome,
+      incomeTaxedAsOrdinary: options.totalIncome,
+      incomeTaxedAsLtcg: 0,
+      taxDeductibleContributions: 0,
+      adjustedGrossIncome: options.totalIncome,
+      adjustedIncomeTaxedAsOrdinary: options.totalIncome,
+      adjustedIncomeTaxedAsCapGains: 0,
+      totalIncome: options.totalIncome,
+      earlyWithdrawals: { rothEarnings: 0, '401kAndIra': 0, hsa: 0 },
+    },
+  },
+  returns: null,
+  phase: { name: 'accumulation' },
+});
+
+describe('SimulationDataExtractor.getSurplusDeficitData', () => {
+  it('calculates surplus/deficit correctly (income - expenses - taxes)', () => {
+    const dp = createSurplusDeficitDataPoint({
+      totalIncome: 100000,
+      totalExpenses: 50000,
+      totalTaxesAndPenalties: 20000,
+    });
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    // surplusDeficit = totalIncome - totalExpenses - totalTaxesAndPenalties
+    // = 100000 - 50000 - 20000 = 30000
+    expect(data.surplusDeficit).toBe(30000);
+  });
+
+  it('includes employer match in total income', () => {
+    const dp = createSurplusDeficitDataPoint({
+      totalIncome: 100000,
+      employerMatch: 5000,
+      totalExpenses: 50000,
+      totalTaxesAndPenalties: 20000,
+    });
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    // totalIncome = income from incomes + employerMatch = 100000 + 5000 = 105000
+    expect(data.totalIncome).toBe(105000);
+    expect(data.employerMatch).toBe(5000);
+    // surplusDeficit = 105000 - 50000 - 20000 = 35000
+    expect(data.surplusDeficit).toBe(35000);
+  });
+
+  it('separates Social Security income correctly', () => {
+    const dp = createSurplusDeficitDataPoint({
+      totalIncome: 80000,
+      socialSecurityIncome: 30000,
+      totalExpenses: 40000,
+      totalTaxesAndPenalties: 10000,
+    });
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    expect(data.socialSecurityIncome).toBe(30000);
+    expect(data.earnedIncome).toBe(50000); // 80000 - 30000 - 0 (nonTaxable)
+  });
+
+  it('separates non-taxable income correctly', () => {
+    const dp = createSurplusDeficitDataPoint({
+      totalIncome: 100000,
+      nonTaxableIncome: 10000,
+      totalExpenses: 50000,
+      totalTaxesAndPenalties: 15000,
+    });
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    expect(data.nonTaxableIncome).toBe(10000);
+    expect(data.earnedIncome).toBe(90000); // 100000 - 0 (SS) - 10000 (nonTaxable)
+  });
+
+  it('handles null income data by returning zeros', () => {
+    const dp: SimulationDataPoint = {
+      ...createSurplusDeficitDataPoint({
+        totalIncome: 0,
+        totalExpenses: 0,
+        totalTaxesAndPenalties: 0,
+      }),
+      incomes: null,
+    };
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    expect(data.totalIncome).toBe(0);
+    expect(data.earnedIncome).toBe(0);
+    expect(data.socialSecurityIncome).toBe(0);
+    expect(data.nonTaxableIncome).toBe(0);
+  });
+
+  it('handles null expense data by returning zero expenses', () => {
+    const dp: SimulationDataPoint = {
+      ...createSurplusDeficitDataPoint({
+        totalIncome: 100000,
+        totalExpenses: 0,
+        totalTaxesAndPenalties: 15000,
+      }),
+      expenses: null,
+    };
+
+    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+
+    expect(data.totalExpenses).toBe(0);
+  });
+});
+
+/**
+ * Tests for SimulationDataExtractor.getPercentInPhaseForYear
+ */
+
+import type { MultiSimulationResult } from '../simulation-engine';
+
+// Helper to create a multi-simulation result with specified phases for a given year
+const createMultiSimForPhaseTest = (
+  phaseConfigs: Array<{ phase: 'accumulation' | 'retirement'; totalValue: number }>
+): MultiSimulationResult => {
+  const simulations: Array<[number, SimulationResult]> = phaseConfigs.map((config, index) => {
+    const data: SimulationDataPoint[] = [
+      createMilestoneDataPoint(30, 'accumulation', 500000), // Year 0
+      createMilestoneDataPoint(31, config.phase, config.totalValue), // Year 1
+    ];
+
+    return [
+      index,
+      {
+        data,
+        context: {
+          startAge: 30,
+          endAge: 31,
+          yearsToSimulate: 1,
+          startDate: '2024-01-01',
+          endDate: '2025-01-01',
+          retirementStrategy: { type: 'fixedAge' as const, retirementAge: 65 },
+          rmdAge: 73,
+        },
+      },
+    ];
+  });
+
+  return { simulations };
+};
+
+describe('SimulationDataExtractor.getPercentInPhaseForYear', () => {
+  it('calculates correct phase distribution across simulations', () => {
+    // 3 in accumulation, 2 in retirement
+    const multiSim = createMultiSimForPhaseTest([
+      { phase: 'accumulation', totalValue: 500000 },
+      { phase: 'accumulation', totalValue: 600000 },
+      { phase: 'retirement', totalValue: 700000 },
+      { phase: 'accumulation', totalValue: 550000 },
+      { phase: 'retirement', totalValue: 800000 },
+    ]);
+
+    const data = SimulationDataExtractor.getPercentInPhaseForYear(multiSim, 1);
+
+    expect(data.numberAccumulation).toBe(3);
+    expect(data.percentAccumulation).toBeCloseTo(0.6, 3);
+    expect(data.numberRetirement).toBe(2);
+    expect(data.percentRetirement).toBeCloseTo(0.4, 3);
+    expect(data.numberBankrupt).toBe(0);
+    expect(data.percentBankrupt).toBe(0);
+  });
+
+  it('bankruptcy overrides retirement phase', () => {
+    // 1 accumulation, 2 retirement (one with bankrupt portfolio), 1 explicit bankrupt
+    const multiSim = createMultiSimForPhaseTest([
+      { phase: 'accumulation', totalValue: 500000 },
+      { phase: 'retirement', totalValue: 0.05 }, // Bankrupt in retirement
+      { phase: 'retirement', totalValue: 700000 },
+      { phase: 'accumulation', totalValue: 0 }, // Bankrupt in accumulation
+    ]);
+
+    const data = SimulationDataExtractor.getPercentInPhaseForYear(multiSim, 1);
+
+    expect(data.numberAccumulation).toBe(1);
+    expect(data.percentAccumulation).toBeCloseTo(0.25, 3);
+    expect(data.numberRetirement).toBe(1);
+    expect(data.percentRetirement).toBeCloseTo(0.25, 3);
+    expect(data.numberBankrupt).toBe(2);
+    expect(data.percentBankrupt).toBeCloseTo(0.5, 3);
+  });
+
+  it('handles all simulations bankrupt', () => {
+    const multiSim = createMultiSimForPhaseTest([
+      { phase: 'retirement', totalValue: 0 },
+      { phase: 'retirement', totalValue: 0.05 },
+      { phase: 'accumulation', totalValue: 0.1 }, // Exactly 0.1 is bankrupt
+    ]);
+
+    const data = SimulationDataExtractor.getPercentInPhaseForYear(multiSim, 1);
+
+    expect(data.numberBankrupt).toBe(3);
+    expect(data.percentBankrupt).toBe(1);
+    expect(data.numberAccumulation).toBe(0);
+    expect(data.numberRetirement).toBe(0);
+  });
+
+  it('returns correct counts for year 0', () => {
+    const multiSim = createMultiSimForPhaseTest([
+      { phase: 'retirement', totalValue: 1000000 },
+      { phase: 'retirement', totalValue: 1500000 },
+    ]);
+
+    // Year 0 - all should be in accumulation (initial data point)
+    const data = SimulationDataExtractor.getPercentInPhaseForYear(multiSim, 0);
+
+    expect(data.numberAccumulation).toBe(2);
+    expect(data.percentAccumulation).toBe(1);
+    expect(data.numberRetirement).toBe(0);
+    expect(data.numberBankrupt).toBe(0);
+  });
+});
