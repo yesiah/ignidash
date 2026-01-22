@@ -22,7 +22,6 @@ import ProgressBar from '@/components/ui/progress-bar';
 
 import SimulationMetrics from '../simulation-metrics';
 import MultiSimulationMainResults from './multi-simulation-main-results';
-import FooterDisclaimer from './footer-disclaimer';
 
 interface MultiSimulationResultsSharedProps {
   startAge: number;
@@ -75,7 +74,6 @@ function MultiSimulationResultsForActiveSeed({
         activeSeedType={activeSeedType}
         {...sharedProps}
       />
-      <FooterDisclaimer />
     </>
   );
 }
@@ -163,7 +161,6 @@ export default function MultiSimulationResults({ inputs, simulationMode }: Multi
         <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <MultiSimulationMainResults simulation={null} keyMetrics={keyMetrics} {...sharedProps} />
-      <FooterDisclaimer />
     </>
   );
 }

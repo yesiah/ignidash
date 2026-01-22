@@ -6,7 +6,6 @@ import SectionContainer from '@/components/ui/section-container';
 
 import SimulationMetrics from '../simulation-metrics';
 import SingleSimulationMainResults from './single-simulation-main-results';
-import FooterDisclaimer from './footer-disclaimer';
 
 interface SingleSimulationResultsProps {
   inputs: SimulatorInputs;
@@ -31,7 +30,6 @@ export default function SingleSimulationResults({ inputs, simulationMode }: Sing
         <SimulationMetrics keyMetrics={keyMetrics} />
       </SectionContainer>
       <SingleSimulationMainResults simulation={simulationResult} keyMetrics={keyMetrics} />
-      <FooterDisclaimer />
     </>
   );
 }
