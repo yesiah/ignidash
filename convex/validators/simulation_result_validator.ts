@@ -22,7 +22,7 @@ export const simulationDataPointValidator = v.object({
   // Income & Expenses
   earnedIncome: v.number(),
   socialSecurityIncome: v.number(),
-  nonTaxableIncome: v.number(),
+  taxFreeIncome: v.number(),
   retirementDistributions: v.number(),
   interestIncome: v.number(),
   realizedGains: v.number(),
@@ -31,6 +31,7 @@ export const simulationDataPointValidator = v.object({
   expenses: v.number(),
   surplusDeficit: v.number(),
   savingsRate: v.nullable(v.number()),
+  netCashFlow: v.number(),
 
   // Taxes
   grossIncome: v.number(),

@@ -62,12 +62,12 @@ export default function SingleSimulationIncomeExpensesBarChart({
 
   const labelConfig: Record<string, { mobile: string[]; desktop: string[] }> = {
     surplusDeficit: {
-      mobile: ['Earned', 'Soc. Sec.', 'Non-Taxable', 'Match', 'Taxes', 'Expenses'],
-      desktop: ['Earned Income', 'Social Security', 'Non-Taxable Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
+      mobile: ['Earned', 'Soc. Sec.', 'Tax-Free', 'Match', 'Taxes', 'Expenses'],
+      desktop: ['Earned Income', 'Social Security', 'Tax-Free Income', 'Employer Match', 'Taxes & Penalties', 'Expenses'],
     },
     cashFlow: {
-      mobile: ['Earned', 'Soc. Sec.', 'Non-Taxable', 'Liquidated', 'Taxes', 'Expenses', 'Invested'],
-      desktop: ['Earned Income', 'Social Security', 'Non-Taxable Income', 'Liquidated', 'Taxes & Penalties', 'Expenses', 'Invested'],
+      mobile: ['Earned', 'Soc. Sec.', 'Tax-Free', 'Liquidated', 'Taxes', 'Expenses', 'Invested'],
+      desktop: ['Earned Income', 'Social Security', 'Tax-Free Income', 'Liquidated', 'Taxes & Penalties', 'Expenses', 'Invested'],
     },
     incomes: {
       mobile: ['Match'],
@@ -90,20 +90,14 @@ export default function SingleSimulationIncomeExpensesBarChart({
 
   switch (dataView) {
     case 'surplusDeficit': {
-      const [
-        earnedIncomeLabel,
-        socialSecurityIncomeLabel,
-        nonTaxableIncomeLabel,
-        employerMatchLabel,
-        taxesAndPenaltiesLabel,
-        expensesLabel,
-      ] = getLabelsForScreenSize(dataView, isSmallScreen);
+      const [earnedIncomeLabel, socialSecurityIncomeLabel, taxFreeIncomeLabel, employerMatchLabel, taxesAndPenaltiesLabel, expensesLabel] =
+        getLabelsForScreenSize(dataView, isSmallScreen);
 
       transformedChartData = chartData.flatMap(
-        ({ earnedIncome, socialSecurityIncome, nonTaxableIncome, employerMatch, taxesAndPenalties, expenses }) => [
+        ({ earnedIncome, socialSecurityIncome, taxFreeIncome, employerMatch, taxesAndPenalties, expenses }) => [
           { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
           { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
-          { name: nonTaxableIncomeLabel, amount: nonTaxableIncome, color: 'var(--chart-1)' },
+          { name: taxFreeIncomeLabel, amount: taxFreeIncome, color: 'var(--chart-1)' },
           { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-4)' },
           { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
           { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
@@ -115,7 +109,7 @@ export default function SingleSimulationIncomeExpensesBarChart({
       const [
         earnedIncomeLabel,
         socialSecurityIncomeLabel,
-        nonTaxableIncomeLabel,
+        taxFreeIncomeLabel,
         liquidatedLabel,
         taxesAndPenaltiesLabel,
         expensesLabel,
@@ -123,10 +117,10 @@ export default function SingleSimulationIncomeExpensesBarChart({
       ] = getLabelsForScreenSize(dataView, isSmallScreen);
 
       transformedChartData = chartData.flatMap(
-        ({ earnedIncome, socialSecurityIncome, nonTaxableIncome, liquidated, taxesAndPenalties, expenses, invested }) => [
+        ({ earnedIncome, socialSecurityIncome, taxFreeIncome, liquidated, taxesAndPenalties, expenses, invested }) => [
           { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
           { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
-          { name: nonTaxableIncomeLabel, amount: nonTaxableIncome, color: 'var(--chart-1)' },
+          { name: taxFreeIncomeLabel, amount: taxFreeIncome, color: 'var(--chart-1)' },
           { name: liquidatedLabel, amount: liquidated, color: 'var(--chart-4)' },
           { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
           { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
@@ -138,7 +132,7 @@ export default function SingleSimulationIncomeExpensesBarChart({
     case 'incomes': {
       const getIncomeColor = (income: IncomeData) => {
         if (income.socialSecurityIncome > 0) return 'var(--chart-2)';
-        if (income.nonTaxableIncome > 0) return 'var(--chart-3)';
+        if (income.taxFreeIncome > 0) return 'var(--chart-3)';
         return 'var(--chart-1)';
       };
 

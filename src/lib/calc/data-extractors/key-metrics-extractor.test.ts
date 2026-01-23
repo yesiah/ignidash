@@ -66,7 +66,7 @@ const createDataPoint = (options: {
     totalFicaTax: options.ficaTax ?? 7650,
     totalIncomeAfterPayrollDeductions: 72350,
     totalSocialSecurityIncome: 0,
-    totalNonTaxableIncome: 0,
+    totalTaxFreeIncome: 0,
     perIncomeData: {},
   },
   expenses: {
@@ -122,7 +122,7 @@ const createDataPoint = (options: {
       taxableSocialSecurityIncome: 0,
       maxTaxableSocialSecurityPercentage: 0.85,
       provisionalIncome: 0,
-      nonTaxableIncome: 0,
+      taxFreeIncome: 0,
       grossIncome: 80000,
       incomeTaxedAsOrdinary: 80000,
       incomeTaxedAsLtcg: 0,

@@ -28,7 +28,7 @@ export interface SingleSimulationIncomeExpensesChartDataPoint {
   earnedIncome: number;
   employerMatch: number;
   socialSecurityIncome: number;
-  nonTaxableIncome: number;
+  taxFreeIncome: number;
   income: number;
   incomeTax: number;
   ficaTax: number;
@@ -119,8 +119,8 @@ export interface SingleSimulationTaxesChartDataPoint {
   annualEarlyWithdrawalPenalties: number;
   cumulativeEarlyWithdrawalPenalties: number;
 
-  // Non-Taxable Income
-  nonTaxableIncome: number;
+  // Tax-Free Income
+  taxFreeIncome: number;
 
   // Totals
   annualTotalTaxesAndPenalties: number;

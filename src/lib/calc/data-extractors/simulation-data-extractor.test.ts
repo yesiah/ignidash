@@ -409,7 +409,7 @@ const createTaxDataPoint = (options: {
     totalFicaTax: options.ficaTax ?? 0,
     totalIncomeAfterPayrollDeductions: 72350,
     totalSocialSecurityIncome: 0,
-    totalNonTaxableIncome: 0,
+    totalTaxFreeIncome: 0,
     perIncomeData: {},
   },
   expenses: null,
@@ -462,7 +462,7 @@ const createTaxDataPoint = (options: {
       taxableSocialSecurityIncome: 0,
       maxTaxableSocialSecurityPercentage: 0.85,
       provisionalIncome: 0,
-      nonTaxableIncome: 0,
+      taxFreeIncome: 0,
       grossIncome: 80000,
       incomeTaxedAsOrdinary: 80000,
       incomeTaxedAsLtcg: 0,
@@ -554,7 +554,7 @@ describe('SimulationDataExtractor.getTaxAmountsByType', () => {
 const createCashFlowDataPoint = (options: {
   totalIncome: number;
   socialSecurityIncome?: number;
-  nonTaxableIncome?: number;
+  taxFreeIncome?: number;
   employerMatch?: number;
   totalExpenses: number;
   totalTaxesAndPenalties: number;
@@ -587,7 +587,7 @@ const createCashFlowDataPoint = (options: {
     totalFicaTax: 0,
     totalIncomeAfterPayrollDeductions: options.totalIncome,
     totalSocialSecurityIncome: options.socialSecurityIncome ?? 0,
-    totalNonTaxableIncome: options.nonTaxableIncome ?? 0,
+    totalTaxFreeIncome: options.taxFreeIncome ?? 0,
     perIncomeData: {},
   },
   expenses: {
@@ -643,7 +643,7 @@ const createCashFlowDataPoint = (options: {
       taxableSocialSecurityIncome: 0,
       maxTaxableSocialSecurityPercentage: 0.85,
       provisionalIncome: 0,
-      nonTaxableIncome: options.nonTaxableIncome ?? 0,
+      taxFreeIncome: options.taxFreeIncome ?? 0,
       grossIncome: options.totalIncome,
       incomeTaxedAsOrdinary: options.totalIncome,
       incomeTaxedAsLtcg: 0,
@@ -702,21 +702,21 @@ describe('SimulationDataExtractor.getCashFlowData', () => {
     const data = SimulationDataExtractor.getCashFlowData(dp);
 
     expect(data.socialSecurityIncome).toBe(30000);
-    expect(data.earnedIncome).toBe(50000); // 80000 - 30000 - 0 (nonTaxable)
+    expect(data.earnedIncome).toBe(50000); // 80000 - 30000 - 0 (taxFree)
   });
 
-  it('separates non-taxable income correctly', () => {
+  it('separates tax-free income correctly', () => {
     const dp = createCashFlowDataPoint({
       totalIncome: 100000,
-      nonTaxableIncome: 10000,
+      taxFreeIncome: 10000,
       totalExpenses: 50000,
       totalTaxesAndPenalties: 15000,
     });
 
     const data = SimulationDataExtractor.getCashFlowData(dp);
 
-    expect(data.nonTaxableIncome).toBe(10000);
-    expect(data.earnedIncome).toBe(90000); // 100000 - 0 (SS) - 10000 (nonTaxable)
+    expect(data.taxFreeIncome).toBe(10000);
+    expect(data.earnedIncome).toBe(90000); // 100000 - 0 (SS) - 10000 (taxFree)
   });
 
   it('handles null income data by returning zeros', () => {
@@ -734,7 +734,7 @@ describe('SimulationDataExtractor.getCashFlowData', () => {
     expect(data.totalIncome).toBe(0);
     expect(data.earnedIncome).toBe(0);
     expect(data.socialSecurityIncome).toBe(0);
-    expect(data.nonTaxableIncome).toBe(0);
+    expect(data.taxFreeIncome).toBe(0);
   });
 
   it('handles null expense data by returning zero expenses', () => {

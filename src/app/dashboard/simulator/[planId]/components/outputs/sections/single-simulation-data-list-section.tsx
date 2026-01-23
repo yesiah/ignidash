@@ -34,7 +34,7 @@ function SurplusDeficitTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>Earned income, employer match, non-taxable income, and Social Security, minus taxes and expenses.</p>
+        <p>Earned income, employer match, tax-free income, and Social Security, minus taxes and expenses.</p>
         <p>Portfolio withdrawals, dividends, and interest are not included.</p>
       </TooltipContent>
     </Tooltip>
@@ -76,7 +76,7 @@ function TotalIncomeTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>Gross income plus non-taxable income (gifts, inheritances, etc.) and the non-taxable portion of Social Security.</p>
+        <p>Gross income plus tax-free income (gifts, inheritances, etc.) and the non-taxable portion of Social Security.</p>
       </TooltipContent>
     </Tooltip>
   );

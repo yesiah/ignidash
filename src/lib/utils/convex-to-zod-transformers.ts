@@ -405,7 +405,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       // Income & Expenses
       earnedIncome: incomeExpensesData[i].earnedIncome,
       socialSecurityIncome: incomeExpensesData[i].socialSecurityIncome,
-      nonTaxableIncome: incomeExpensesData[i].nonTaxableIncome,
+      taxFreeIncome: incomeExpensesData[i].taxFreeIncome,
       retirementDistributions: taxesData[i].taxableRetirementDistributions,
       interestIncome: taxesData[i].taxableInterestIncome,
       realizedGains: taxesData[i].realizedGains,
@@ -414,6 +414,7 @@ export function simulationResultToConvex(simulation: SimulationResult): ConvexSi
       expenses: incomeExpensesData[i].expenses,
       surplusDeficit: incomeExpensesData[i].surplusDeficit,
       savingsRate: incomeExpensesData[i].savingsRate,
+      netCashFlow: incomeExpensesData[i].netCashFlow,
 
       // Taxes
       grossIncome: taxesData[i].grossIncome,

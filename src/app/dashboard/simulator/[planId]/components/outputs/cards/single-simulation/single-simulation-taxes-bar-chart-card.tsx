@@ -22,7 +22,7 @@ interface SingleSimulationTaxesBarChartCardProps {
     | 'adjustedGrossIncome'
     | 'investmentIncome'
     | 'retirementDistributions'
-    | 'nonTaxableIncome'
+    | 'taxFreeIncome'
     | 'ordinaryIncome'
     | 'capGainsAndDividends'
     | 'earlyWithdrawalPenalties'
@@ -74,8 +74,8 @@ export default function SingleSimulationTaxesBarChartCard({
     case 'retirementDistributions':
       title = 'Retirement Distributions';
       break;
-    case 'nonTaxableIncome':
-      title = 'Non-Taxable Income';
+    case 'taxFreeIncome':
+      title = 'Tax-Free Income';
       break;
     case 'ordinaryIncome':
       title = 'Ordinary Income';

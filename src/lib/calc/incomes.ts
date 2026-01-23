@@ -22,7 +22,7 @@ export class IncomesProcessor {
         acc.totalAmountWithheld += curr.amountWithheld;
         acc.totalFicaTax += curr.ficaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.incomeAfterPayrollDeductions;
-        acc.totalNonTaxableIncome += curr.nonTaxableIncome;
+        acc.totalTaxFreeIncome += curr.taxFreeIncome;
         acc.totalSocialSecurityIncome += curr.socialSecurityIncome;
         return acc;
       },
@@ -31,7 +31,7 @@ export class IncomesProcessor {
         totalAmountWithheld: 0,
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
-        totalNonTaxableIncome: 0,
+        totalTaxFreeIncome: 0,
         totalSocialSecurityIncome: 0,
       }
     );
@@ -54,7 +54,7 @@ export class IncomesProcessor {
         acc.totalAmountWithheld += curr.totalAmountWithheld;
         acc.totalFicaTax += curr.totalFicaTax;
         acc.totalIncomeAfterPayrollDeductions += curr.totalIncomeAfterPayrollDeductions;
-        acc.totalNonTaxableIncome += curr.totalNonTaxableIncome;
+        acc.totalTaxFreeIncome += curr.totalTaxFreeIncome;
         acc.totalSocialSecurityIncome += curr.totalSocialSecurityIncome;
 
         Object.entries(curr.perIncomeData).forEach(([incomeID, incomeData]) => {
@@ -65,7 +65,7 @@ export class IncomesProcessor {
             ficaTax: (acc.perIncomeData[incomeID]?.ficaTax ?? 0) + incomeData.ficaTax,
             incomeAfterPayrollDeductions:
               (acc.perIncomeData[incomeID]?.incomeAfterPayrollDeductions ?? 0) + incomeData.incomeAfterPayrollDeductions,
-            nonTaxableIncome: (acc.perIncomeData[incomeID]?.nonTaxableIncome ?? 0) + incomeData.nonTaxableIncome,
+            taxFreeIncome: (acc.perIncomeData[incomeID]?.taxFreeIncome ?? 0) + incomeData.taxFreeIncome,
             socialSecurityIncome: (acc.perIncomeData[incomeID]?.socialSecurityIncome ?? 0) + incomeData.socialSecurityIncome,
           };
         });
@@ -77,7 +77,7 @@ export class IncomesProcessor {
         totalAmountWithheld: 0,
         totalFicaTax: 0,
         totalIncomeAfterPayrollDeductions: 0,
-        totalNonTaxableIncome: 0,
+        totalTaxFreeIncome: 0,
         totalSocialSecurityIncome: 0,
         perIncomeData: {},
       }
@@ -90,7 +90,7 @@ export interface IncomesData {
   totalAmountWithheld: number;
   totalFicaTax: number;
   totalIncomeAfterPayrollDeductions: number;
-  totalNonTaxableIncome: number;
+  totalTaxFreeIncome: number;
   totalSocialSecurityIncome: number;
   perIncomeData: Record<string, IncomeData>;
 }
@@ -114,7 +114,7 @@ export interface IncomeData {
   amountWithheld: number;
   ficaTax: number;
   incomeAfterPayrollDeductions: number;
-  nonTaxableIncome: number;
+  taxFreeIncome: number;
   socialSecurityIncome: number;
 }
 
@@ -180,7 +180,7 @@ export class Income {
         amountWithheld: 0,
         ficaTax: 0,
         incomeAfterPayrollDeductions: 0,
-        nonTaxableIncome: 0,
+        taxFreeIncome: 0,
         socialSecurityIncome: 0,
       };
     }
@@ -189,7 +189,7 @@ export class Income {
 
     let amountWithheld: number = 0;
     let ficaTax: number = 0;
-    let nonTaxableIncome: number = 0;
+    let taxFreeIncome: number = 0;
     let socialSecurityIncome: number = 0;
     switch (this.incomeType) {
       case 'wage':
@@ -197,7 +197,7 @@ export class Income {
         ficaTax = income * 0.0765;
         break;
       case 'exempt':
-        nonTaxableIncome = income;
+        taxFreeIncome = income;
         break;
       case 'socialSecurity':
         amountWithheld = income * (this.withholdingRate / 100);
@@ -217,7 +217,7 @@ export class Income {
       amountWithheld,
       ficaTax,
       incomeAfterPayrollDeductions,
-      nonTaxableIncome,
+      taxFreeIncome,
       socialSecurityIncome,
     };
   }

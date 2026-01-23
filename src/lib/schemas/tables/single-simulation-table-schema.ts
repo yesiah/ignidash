@@ -60,7 +60,7 @@ export const singleSimulationIncomeExpensesTableRowSchema = z.object({
   earnedIncome: z.number().nullable(),
   employerMatch: z.number().nullable(),
   socialSecurityIncome: z.number().nullable(),
-  nonTaxableIncome: z.number().nullable(),
+  taxFreeIncome: z.number().nullable(),
   incomeTax: z.number().nullable(),
   ficaTax: z.number().nullable(),
   capGainsTax: z.number().nullable(),
@@ -82,7 +82,7 @@ const SINGLE_SIMULATION_INCOME_EXPENSES_COLUMNS = {
   earnedIncome: { title: 'Earned Income', format: 'currency' },
   employerMatch: { title: 'Employer Match', format: 'currency' },
   socialSecurityIncome: { title: 'Social Security Income', format: 'currency' },
-  nonTaxableIncome: { title: 'Non-Taxable Income', format: 'currency' },
+  taxFreeIncome: { title: 'Tax-Free Income', format: 'currency' },
   incomeTax: { title: 'Income Tax', format: 'currency' },
   ficaTax: { title: 'FICA Tax', format: 'currency' },
   capGainsTax: { title: 'Capital Gains Tax', format: 'currency' },
@@ -148,8 +148,8 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   annualEarlyWithdrawalPenalties: z.number().nullable(),
   cumulativeEarlyWithdrawalPenalties: z.number().nullable(),
 
-  // Non-Taxable Income
-  nonTaxableIncome: z.number().nullable(),
+  // Tax-Free Income
+  taxFreeIncome: z.number().nullable(),
 
   // Totals
   annualTotalTaxesAndPenalties: z.number().nullable(),
@@ -197,7 +197,7 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   cumulativeNiit: { title: 'Cumulative NIIT', format: 'currency' },
   annualEarlyWithdrawalPenalties: { title: 'Annual Early Withdrawal Penalties', format: 'currency' },
   cumulativeEarlyWithdrawalPenalties: { title: 'Cumulative Early Withdrawal Penalties', format: 'currency' },
-  nonTaxableIncome: { title: 'Non-Taxable Income', format: 'currency' },
+  taxFreeIncome: { title: 'Tax-Free Income', format: 'currency' },
   annualTotalTaxesAndPenalties: { title: 'Annual Total Taxes & Penalties', format: 'currency' },
   cumulativeTotalTaxesAndPenalties: { title: 'Cumulative Total Taxes & Penalties', format: 'currency' },
   taxDeductibleContributions: { title: 'Tax-Deductible Contributions', format: 'currency' },

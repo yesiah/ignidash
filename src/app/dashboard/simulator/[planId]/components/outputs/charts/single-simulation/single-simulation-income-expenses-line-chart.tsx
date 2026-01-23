@@ -226,7 +226,7 @@ export default function SingleSimulationIncomeExpensesLineChart({
     case 'incomes': {
       formatter = (value: number) => formatNumber(value, 1, '$');
 
-      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'nonTaxableIncome', 'employerMatch');
+      barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxFreeIncome', 'employerMatch');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     }
