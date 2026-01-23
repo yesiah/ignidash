@@ -9,8 +9,7 @@ import type {
   MultiSimulationPhasesChartDataPoint,
 } from '@/lib/types/chart-data-points';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
-import { sumTransactions } from '@/lib/calc/asset';
-import { sumReturns } from '@/lib/calc/returns';
+import { sumTransactions, sumReturnAmounts } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -199,8 +198,8 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns!;
 
-      const totalCumulativeGains = sumReturns(returnsData.cumulativeReturnAmounts);
-      const totalAnnualGains = sumReturns(returnsData.returnAmountsForPeriod);
+      const totalCumulativeGains = sumReturnAmounts(returnsData.cumulativeReturnAmounts);
+      const totalAnnualGains = sumReturnAmounts(returnsData.returnAmountsForPeriod);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 

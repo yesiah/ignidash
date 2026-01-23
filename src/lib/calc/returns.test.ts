@@ -691,4 +691,85 @@ describe('ReturnsProcessor.getAnnualData', () => {
     // Per-account period returns ARE summed
     expect(annualData.perAccountData['acc-1'].returnAmountsForPeriod.stocks).toBe(330);
   });
+
+  it('sums yieldAmountsForPeriod across all months for each tax category', () => {
+    // Create mock that returns non-zero yields per tax category
+    let yieldCallIdx = 0;
+    const monthlyYields: Array<Record<TaxCategory, AssetYieldAmounts>> = [
+      {
+        taxable: { stocks: 10, bonds: 5, cash: 2 },
+        taxDeferred: { stocks: 20, bonds: 10, cash: 4 },
+        taxFree: { stocks: 15, bonds: 8, cash: 3 },
+        cashSavings: { stocks: 0, bonds: 0, cash: 6 },
+      },
+      {
+        taxable: { stocks: 12, bonds: 6, cash: 3 },
+        taxDeferred: { stocks: 22, bonds: 11, cash: 5 },
+        taxFree: { stocks: 17, bonds: 9, cash: 4 },
+        cashSavings: { stocks: 0, bonds: 0, cash: 7 },
+      },
+      {
+        taxable: { stocks: 14, bonds: 7, cash: 4 },
+        taxDeferred: { stocks: 24, bonds: 12, cash: 6 },
+        taxFree: { stocks: 19, bonds: 10, cash: 5 },
+        cashSavings: { stocks: 0, bonds: 0, cash: 8 },
+      },
+    ];
+
+    const mockPortfolio = {
+      applyYields: () => {
+        const yields = monthlyYields[yieldCallIdx] ?? monthlyYields[monthlyYields.length - 1];
+        yieldCallIdx++;
+        return { yieldsForPeriod: yields, cumulativeYields: yields };
+      },
+      applyReturns: () => ({
+        returnsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+        cumulativeReturns: { stocks: 0, bonds: 0, cash: 0 },
+        byAccount: {},
+      }),
+    } as unknown as Portfolio;
+
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: mockPortfolio,
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    const provider: ReturnsProvider = {
+      getReturns: () => ({
+        returns: { stocks: 0.08, bonds: 0.04, cash: 0.02 },
+        yields: { stocks: 2, bonds: 3, cash: 1 },
+        inflationRate: 3,
+        metadata: {},
+      }),
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+    processor.process();
+    processor.process();
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // Yields ARE summed across months: 10+12+14=36, 5+6+7=18, 2+3+4=9
+    expect(annualData.yieldAmountsForPeriod.taxable.stocks).toBe(36);
+    expect(annualData.yieldAmountsForPeriod.taxable.bonds).toBe(18);
+    expect(annualData.yieldAmountsForPeriod.taxable.cash).toBe(9);
+
+    // taxDeferred: 20+22+24=66, 10+11+12=33, 4+5+6=15
+    expect(annualData.yieldAmountsForPeriod.taxDeferred.stocks).toBe(66);
+    expect(annualData.yieldAmountsForPeriod.taxDeferred.bonds).toBe(33);
+    expect(annualData.yieldAmountsForPeriod.taxDeferred.cash).toBe(15);
+
+    // taxFree: 15+17+19=51, 8+9+10=27, 3+4+5=12
+    expect(annualData.yieldAmountsForPeriod.taxFree.stocks).toBe(51);
+    expect(annualData.yieldAmountsForPeriod.taxFree.bonds).toBe(27);
+    expect(annualData.yieldAmountsForPeriod.taxFree.cash).toBe(12);
+
+    // cashSavings: 0+0+0=0, 0+0+0=0, 6+7+8=21
+    expect(annualData.yieldAmountsForPeriod.cashSavings.stocks).toBe(0);
+    expect(annualData.yieldAmountsForPeriod.cashSavings.bonds).toBe(0);
+    expect(annualData.yieldAmountsForPeriod.cashSavings.cash).toBe(21);
+  });
 });

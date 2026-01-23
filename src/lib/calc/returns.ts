@@ -119,13 +119,12 @@ export class ReturnsProcessor {
   }
 
   getAnnualData(): ReturnsData {
-    const addAssetReturns = (a: AssetReturnAmounts | undefined, b: AssetReturnAmounts): AssetReturnAmounts => {
+    const addAssetAmounts = (
+      a: AssetReturnAmounts | AssetYieldAmounts | undefined,
+      b: AssetReturnAmounts | AssetYieldAmounts
+    ): AssetReturnAmounts | AssetYieldAmounts => {
       if (!a) return { ...b };
-      return {
-        stocks: a.stocks + b.stocks,
-        bonds: a.bonds + b.bonds,
-        cash: a.cash + b.cash,
-      };
+      return { stocks: a.stocks + b.stocks, bonds: a.bonds + b.bonds, cash: a.cash + b.cash };
     };
 
     const zeroAssetReturnAmounts: AssetReturnAmounts = { stocks: 0, bonds: 0, cash: 0 };
@@ -137,21 +136,20 @@ export class ReturnsProcessor {
       ...lastMonthData,
       ...this.monthlyData.reduce(
         (acc, curr) => {
-          acc.returnAmountsForPeriod.stocks += curr.returnAmountsForPeriod.stocks;
-          acc.returnAmountsForPeriod.bonds += curr.returnAmountsForPeriod.bonds;
-          acc.returnAmountsForPeriod.cash += curr.returnAmountsForPeriod.cash;
+          acc.returnAmountsForPeriod = addAssetAmounts(acc.returnAmountsForPeriod, curr.returnAmountsForPeriod);
 
           for (const category of TAX_CATEGORIES) {
-            acc.yieldAmountsForPeriod[category].stocks += curr.yieldAmountsForPeriod[category].stocks;
-            acc.yieldAmountsForPeriod[category].bonds += curr.yieldAmountsForPeriod[category].bonds;
-            acc.yieldAmountsForPeriod[category].cash += curr.yieldAmountsForPeriod[category].cash;
+            acc.yieldAmountsForPeriod[category] = addAssetAmounts(
+              acc.yieldAmountsForPeriod[category],
+              curr.yieldAmountsForPeriod[category]
+            );
           }
 
           for (const [accountID, accountData] of Object.entries(curr.perAccountData)) {
             const existing = acc.perAccountData[accountID];
             acc.perAccountData[accountID] = {
               ...accountData,
-              returnAmountsForPeriod: addAssetReturns(existing?.returnAmountsForPeriod, accountData.returnAmountsForPeriod),
+              returnAmountsForPeriod: addAssetAmounts(existing?.returnAmountsForPeriod, accountData.returnAmountsForPeriod),
             };
           }
 
@@ -171,5 +169,3 @@ export class ReturnsProcessor {
     };
   }
 }
-
-export const sumReturns = (r: AssetReturnAmounts): number => r.stocks + r.bonds + r.cash;

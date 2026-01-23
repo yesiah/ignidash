@@ -8,8 +8,7 @@ import type {
 } from '@/lib/schemas/tables/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
-import { sumTransactions } from '@/lib/calc/asset';
-import { sumReturns } from '@/lib/calc/returns';
+import { sumTransactions, sumReturnAmounts } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -328,8 +327,8 @@ export abstract class TableDataExtractor {
 
       const returnsData = data.returns;
 
-      const totalCumulativeGains = sumReturns(returnsData!.cumulativeReturnAmounts);
-      const totalAnnualGains = sumReturns(returnsData!.returnAmountsForPeriod);
+      const totalCumulativeGains = sumReturnAmounts(returnsData!.cumulativeReturnAmounts);
+      const totalAnnualGains = sumReturnAmounts(returnsData!.returnAmountsForPeriod);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 
@@ -558,7 +557,7 @@ export abstract class TableDataExtractor {
       } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);
 
       const cumulativeReturnAmounts = lastDp.returns?.cumulativeReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
-      const lifetimeReturns = sumReturns(cumulativeReturnAmounts);
+      const lifetimeReturns = sumReturnAmounts(cumulativeReturnAmounts);
 
       const lifetimeContributions = sumTransactions(lastDp.portfolio.cumulativeContributions);
       const lifetimeWithdrawals = sumTransactions(lastDp.portfolio.cumulativeWithdrawals);
