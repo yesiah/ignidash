@@ -116,7 +116,7 @@ const systemPrompt = (planData: string, keyMetrics: string): string => `
 
   **Simulation Outputs:**
   - Portfolio value over time by asset class, tax category (taxable, tax-deferred, tax-free, cash savings), and individual account
-  - Income & expenses: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), surplus/deficit, savings rate
+  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), surplus/deficit, savings rate, net cash flow
   - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction, NIIT
   - Investment returns: real returns by asset class, inflation impact, cumulative and annual growth
   - Contributions and withdrawals: amounts by tax category and asset class, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
@@ -284,7 +284,7 @@ const insightsSystemPrompt = (planData: string, keyMetrics: string, simulationRe
 
   **Simulation Outputs:**
   - Portfolio value over time by asset class, tax category (taxable, tax-deferred, tax-free, cash savings), and individual account
-  - Income & expenses: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), surplus/deficit, savings rate
+  - Cash flow: income by type, expenses, taxes (federal income, FICA, capital gains, NIIT), surplus/deficit, savings rate, net cash flow
   - Tax detail: AGI, taxable income, effective/marginal rates, Social Security taxation, capital gains treatment, early withdrawal penalties, standard deduction, NIIT
   - Investment returns: real returns by asset class, inflation impact, cumulative and annual growth
   - Contributions and withdrawals: amounts by tax category and asset class, RMDs, early withdrawal penalties, Roth earnings withdrawals, withdrawal rate
@@ -479,13 +479,14 @@ const formatSimulationResult = (simulationResult: SimulationResult): string => {
     ].filter(Boolean);
     if (income.length) sections.push(`income: ${income.join(', ')}`);
 
-    const incomeExpenses = [
+    const cashFlow = [
       d.expenses && `expenses:${fmt(d.expenses)}`,
       d.taxesAndPenalties && `taxes:${fmt(d.taxesAndPenalties)}`,
       d.surplusDeficit && `surplusDeficit:${fmt(d.surplusDeficit)}`,
       d.savingsRate && `saveRate:${pct(d.savingsRate)}`,
+      d.netCashFlow && `netCashFlow:${fmt(d.netCashFlow)}`,
     ].filter(Boolean);
-    if (incomeExpenses.length) sections.push(`incomeExpenses: ${incomeExpenses.join(', ')}`);
+    if (cashFlow.length) sections.push(`cashFlow: ${cashFlow.join(', ')}`);
 
     const taxBasis = [
       d.grossIncome && `gross:${fmt(d.grossIncome)}`,

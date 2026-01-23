@@ -3,8 +3,8 @@ import type { ColumnFormat } from '@/lib/types/column-format';
 import {
   type SingleSimulationPortfolioTableRow,
   SIMULATION_PORTFOLIO_TABLE_CONFIG,
-  type SingleSimulationIncomeExpensesTableRow,
-  SIMULATION_INCOME_EXPENSES_TABLE_CONFIG,
+  type SingleSimulationCashFlowTableRow,
+  SIMULATION_CASH_FLOW_TABLE_CONFIG,
   type SingleSimulationReturnsTableRow,
   SIMULATION_RETURNS_TABLE_CONFIG,
   type SingleSimulationTaxesTableRow,
@@ -67,12 +67,11 @@ export const generatePortfolioTableColumns = (): TableColumn<SingleSimulationPor
   }));
 };
 
-export const generateIncomeExpensesTableColumns = (): TableColumn<SingleSimulationIncomeExpensesTableRow>[] => {
-  return Object.entries(SIMULATION_INCOME_EXPENSES_TABLE_CONFIG).map(([key, config]) => ({
-    key: key as keyof SingleSimulationIncomeExpensesTableRow,
+export const generateCashFlowTableColumns = (): TableColumn<SingleSimulationCashFlowTableRow>[] => {
+  return Object.entries(SIMULATION_CASH_FLOW_TABLE_CONFIG).map(([key, config]) => ({
+    key: key as keyof SingleSimulationCashFlowTableRow,
     title: config.title,
-    format: (value: SingleSimulationIncomeExpensesTableRow[keyof SingleSimulationIncomeExpensesTableRow]) =>
-      formatValue(value, config.format),
+    format: (value: SingleSimulationCashFlowTableRow[keyof SingleSimulationCashFlowTableRow]) => formatValue(value, config.format),
   }));
 };
 

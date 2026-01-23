@@ -1,25 +1,25 @@
 'use client';
 
 import Card from '@/components/ui/card';
-import type { SingleSimulationIncomeExpensesChartDataPoint } from '@/lib/types/chart-data-points';
+import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
 import { useIncomeData, useExpenseData } from '@/hooks/use-convex-data';
 
-import SingleSimulationIncomeExpensesBarChart from '../../charts/single-simulation/single-simulation-income-expenses-bar-chart';
+import SingleSimulationCashFlowBarChart from '../../charts/single-simulation/single-simulation-cash-flow-bar-chart';
 
-interface SingleSimulationIncomeExpensesBarChartCardProps {
+interface SingleSimulationCashFlowBarChartCardProps {
   selectedAge: number;
-  rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
+  rawChartData: SingleSimulationCashFlowChartDataPoint[];
   dataView: 'surplusDeficit' | 'cashFlow' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   customDataID: string;
 }
 
-export default function SingleSimulationIncomeExpensesBarChartCard({
+export default function SingleSimulationCashFlowBarChartCard({
   selectedAge,
   rawChartData,
   dataView,
   customDataID,
-}: SingleSimulationIncomeExpensesBarChartCardProps) {
+}: SingleSimulationCashFlowBarChartCardProps) {
   const incomeData = useIncomeData(customDataID !== '' ? customDataID : null);
   const expenseData = useExpenseData(customDataID !== '' ? customDataID : null);
 
@@ -59,12 +59,7 @@ export default function SingleSimulationIncomeExpensesBarChartCard({
           <span className="text-muted-foreground hidden sm:inline">Age {selectedAge}</span>
         </Subheading>
       </div>
-      <SingleSimulationIncomeExpensesBarChart
-        age={selectedAge}
-        rawChartData={rawChartData}
-        dataView={dataView}
-        customDataID={customDataID}
-      />
+      <SingleSimulationCashFlowBarChart age={selectedAge} rawChartData={rawChartData} dataView={dataView} customDataID={customDataID} />
     </Card>
   );
 }

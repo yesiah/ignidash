@@ -21,7 +21,7 @@ export interface SingleSimulationPortfolioChartDataPoint {
   perAccountData: AccountDataWithTransactions[];
 }
 
-export interface SingleSimulationIncomeExpensesChartDataPoint {
+export interface SingleSimulationCashFlowChartDataPoint {
   age: number;
   perIncomeData: IncomeData[];
   perExpenseData: ExpenseData[];

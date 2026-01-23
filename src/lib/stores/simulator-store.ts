@@ -21,7 +21,7 @@ import { createWorkerPool, releaseWorkerPool } from '@/lib/workers/simulation-wo
 import { getMergeWorker } from '@/lib/workers/merge-worker-api';
 import type {
   SingleSimulationPortfolioTableRow,
-  SingleSimulationIncomeExpensesTableRow,
+  SingleSimulationCashFlowTableRow,
   SingleSimulationReturnsTableRow,
   SingleSimulationTaxesTableRow,
   SingleSimulationContributionsTableRow,
@@ -31,7 +31,7 @@ import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/sch
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import type {
   SingleSimulationPortfolioChartDataPoint,
-  SingleSimulationIncomeExpensesChartDataPoint,
+  SingleSimulationCashFlowChartDataPoint,
   SingleSimulationTaxesChartDataPoint,
   SingleSimulationReturnsChartDataPoint,
   SingleSimulationContributionsChartDataPoint,
@@ -473,11 +473,9 @@ export const useSingleSimulationPortfolioChartData = (simulation: SimulationResu
   }, [simulation]);
 };
 
-export const useSingleSimulationIncomeExpensesChartData = (
-  simulation: SimulationResult
-): SingleSimulationIncomeExpensesChartDataPoint[] => {
+export const useSingleSimulationCashFlowChartData = (simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationIncomeExpensesChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationCashFlowChartData(simulation);
   }, [simulation]);
 };
 
@@ -515,9 +513,9 @@ export const useSingleSimulationPortfolioTableData = (simulation: SimulationResu
   }, [simulation]);
 };
 
-export const useSingleSimulationIncomeExpensesTableData = (simulation: SimulationResult): SingleSimulationIncomeExpensesTableRow[] => {
+export const useSingleSimulationCashFlowTableData = (simulation: SimulationResult): SingleSimulationCashFlowTableRow[] => {
   return useMemo(() => {
-    return TableDataExtractor.extractSingleSimulationIncomeExpensesData(simulation);
+    return TableDataExtractor.extractSingleSimulationCashFlowData(simulation);
   }, [simulation]);
 };
 

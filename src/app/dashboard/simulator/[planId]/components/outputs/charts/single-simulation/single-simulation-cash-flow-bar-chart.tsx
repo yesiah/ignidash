@@ -5,7 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, 
 
 import { formatNumber } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import type { SingleSimulationIncomeExpensesChartDataPoint } from '@/lib/types/chart-data-points';
+import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
 import type { IncomeData } from '@/lib/calc/incomes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,19 +44,19 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }: any) => {
   );
 };
 
-interface SingleSimulationIncomeExpensesBarChartProps {
+interface SingleSimulationCashFlowBarChartProps {
   age: number;
   dataView: 'surplusDeficit' | 'cashFlow' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
-  rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
+  rawChartData: SingleSimulationCashFlowChartDataPoint[];
   customDataID: string;
 }
 
-export default function SingleSimulationIncomeExpensesBarChart({
+export default function SingleSimulationCashFlowBarChart({
   age,
   dataView,
   rawChartData,
   customDataID,
-}: SingleSimulationIncomeExpensesBarChartProps) {
+}: SingleSimulationCashFlowBarChartProps) {
   const { resolvedTheme } = useTheme();
   const isSmallScreen = useIsMobile();
 

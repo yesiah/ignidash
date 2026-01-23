@@ -6,25 +6,25 @@ import { useShowReferenceLines } from '@/lib/stores/simulator-store';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import Card from '@/components/ui/card';
 import { Select } from '@/components/catalyst/select';
-import type { SingleSimulationIncomeExpensesChartDataPoint } from '@/lib/types/chart-data-points';
+import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
 import { Subheading } from '@/components/catalyst/heading';
 
-import SingleSimulationIncomeExpensesLineChart from '../../charts/single-simulation/single-simulation-income-expenses-line-chart';
+import SingleSimulationCashFlowLineChart from '../../charts/single-simulation/single-simulation-cash-flow-line-chart';
 import ChartTimeFrameDropdown from '../../chart-time-frame-dropdown';
 
-interface SingleSimulationIncomeExpensesLineChartCardProps {
+interface SingleSimulationCashFlowLineChartCardProps {
   onAgeSelect: (age: number) => void;
   selectedAge: number;
   setDataView: (view: 'surplusDeficit' | 'cashFlow' | 'incomes' | 'expenses' | 'custom' | 'savingsRate') => void;
   dataView: 'surplusDeficit' | 'cashFlow' | 'incomes' | 'expenses' | 'custom' | 'savingsRate';
   setCustomDataID: (name: string) => void;
   customDataID: string;
-  rawChartData: SingleSimulationIncomeExpensesChartDataPoint[];
+  rawChartData: SingleSimulationCashFlowChartDataPoint[];
   keyMetrics: KeyMetrics;
   startAge: number;
 }
 
-export default function SingleSimulationIncomeExpensesLineChartCard({
+export default function SingleSimulationCashFlowLineChartCard({
   onAgeSelect,
   selectedAge,
   setDataView,
@@ -34,7 +34,7 @@ export default function SingleSimulationIncomeExpensesLineChartCard({
   rawChartData,
   keyMetrics,
   startAge,
-}: SingleSimulationIncomeExpensesLineChartCardProps) {
+}: SingleSimulationCashFlowLineChartCardProps) {
   const showReferenceLines = useShowReferenceLines();
 
   const getUniqueItems = useCallback((items: Array<{ id: string; name: string }>) => {
@@ -103,7 +103,7 @@ export default function SingleSimulationIncomeExpensesLineChartCard({
           <ChartTimeFrameDropdown timeFrameType="single" />
         </div>
       </div>
-      <SingleSimulationIncomeExpensesLineChart
+      <SingleSimulationCashFlowLineChart
         onAgeSelect={onAgeSelect}
         selectedAge={selectedAge}
         keyMetrics={keyMetrics}
