@@ -193,18 +193,18 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails className="font-bold">{formatNumber(surplusDeficit, 2, '$')}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
+            Net Cash Flow
+            <NetCashFlowTooltip />
+          </DescriptionTerm>
+          <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+
+          <DescriptionTerm className="flex items-center gap-3 font-bold">
             Savings Rate
             <SavingsRateTooltip />
           </DescriptionTerm>
           <DescriptionDetails className="font-bold">
             {savingsRate !== null ? `${formatNumber(savingsRate * 100, 1)}%` : 'N/A'}
           </DescriptionDetails>
-
-          <DescriptionTerm className="flex items-center gap-3 font-bold">
-            Net Cash Flow
-            <NetCashFlowTooltip />
-          </DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
         </DescriptionList>
       </Card>
     </div>
