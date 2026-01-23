@@ -39,8 +39,8 @@ export interface CashFlowData {
   totalExpenses: number;
   totalTaxesAndPenalties: number;
   surplusDeficit: number;
-  invested: number;
-  liquidated: number;
+  amountInvested: number;
+  amountLiquidated: number;
   netCashFlow: number;
 }
 
@@ -233,11 +233,11 @@ export class SimulationDataExtractor {
 
     const surplusDeficit = totalIncome + employerMatch - totalExpenses - totalTaxesAndPenalties;
 
-    const invested = sumInvestments(portfolioData.contributionsForPeriod) - employerMatch;
-    const liquidated = sumLiquidations(portfolioData.withdrawalsForPeriod);
+    const amountInvested = sumInvestments(portfolioData.contributionsForPeriod) - employerMatch;
+    const amountLiquidated = sumLiquidations(portfolioData.withdrawalsForPeriod);
 
     // Round near-zero values to clean up tax convergence residuals
-    const netCashFlow = roundNearZero(totalIncome + liquidated - totalExpenses - totalTaxesAndPenalties - invested);
+    const netCashFlow = roundNearZero(totalIncome + amountLiquidated - totalExpenses - totalTaxesAndPenalties - amountInvested);
 
     return {
       totalIncome,
@@ -248,8 +248,8 @@ export class SimulationDataExtractor {
       totalExpenses,
       totalTaxesAndPenalties,
       surplusDeficit,
-      invested,
-      liquidated,
+      amountInvested,
+      amountLiquidated,
       netCashFlow,
     };
   }

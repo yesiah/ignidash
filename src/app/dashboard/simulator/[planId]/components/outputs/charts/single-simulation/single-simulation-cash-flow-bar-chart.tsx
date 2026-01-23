@@ -67,7 +67,15 @@ export default function SingleSimulationCashFlowBarChart({
     },
     cashFlow: {
       mobile: ['Earned', 'Soc. Sec.', 'Tax-Free', 'Liquidated', 'Taxes', 'Expenses', 'Invested'],
-      desktop: ['Earned Income', 'Social Security', 'Tax-Free Income', 'Liquidated', 'Taxes & Penalties', 'Expenses', 'Invested'],
+      desktop: [
+        'Earned Income',
+        'Social Security',
+        'Tax-Free Income',
+        'Amount Liquidated',
+        'Taxes & Penalties',
+        'Expenses',
+        'Amount Invested',
+      ],
     },
     incomes: {
       mobile: ['Match'],
@@ -110,21 +118,21 @@ export default function SingleSimulationCashFlowBarChart({
         earnedIncomeLabel,
         socialSecurityIncomeLabel,
         taxFreeIncomeLabel,
-        liquidatedLabel,
+        amountLiquidatedLabel,
         taxesAndPenaltiesLabel,
         expensesLabel,
-        investedLabel,
+        amountInvestedLabel,
       ] = getLabelsForScreenSize(dataView, isSmallScreen);
 
       transformedChartData = chartData.flatMap(
-        ({ earnedIncome, socialSecurityIncome, taxFreeIncome, liquidated, taxesAndPenalties, expenses, invested }) => [
+        ({ earnedIncome, socialSecurityIncome, taxFreeIncome, amountLiquidated, taxesAndPenalties, expenses, amountInvested }) => [
           { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
           { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
           { name: taxFreeIncomeLabel, amount: taxFreeIncome, color: 'var(--chart-1)' },
-          { name: liquidatedLabel, amount: liquidated, color: 'var(--chart-4)' },
+          { name: amountLiquidatedLabel, amount: amountLiquidated, color: 'var(--chart-4)' },
           { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
           { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
-          { name: investedLabel, amount: -invested, color: 'var(--chart-5)' },
+          { name: amountInvestedLabel, amount: -amountInvested, color: 'var(--chart-5)' },
         ]
       );
       break;

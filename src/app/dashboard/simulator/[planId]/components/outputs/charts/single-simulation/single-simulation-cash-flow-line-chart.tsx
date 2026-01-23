@@ -208,14 +208,14 @@ export default function SingleSimulationCashFlowLineChart({
       lineDataKeys.push('netCashFlow');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('income', 'liquidated', 'expenses', 'taxesAndPenalties', 'invested');
+      barDataKeys.push('income', 'amountLiquidated', 'expenses', 'taxesAndPenalties', 'amountInvested');
       barColors.push('var(--chart-1)', 'var(--chart-4)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-5)');
 
       chartData = chartData.map((entry) => ({
         ...entry,
         expenses: -entry.expenses,
         taxesAndPenalties: -entry.taxesAndPenalties,
-        invested: -entry.invested,
+        amountInvested: -entry.amountInvested,
       }));
 
       stackOffset = 'sign';

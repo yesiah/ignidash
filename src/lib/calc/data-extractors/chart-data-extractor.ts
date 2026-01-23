@@ -78,8 +78,8 @@ export abstract class ChartDataExtractor {
         employerMatch,
         totalExpenses: expenses,
         surplusDeficit,
-        invested,
-        liquidated,
+        amountInvested,
+        amountLiquidated,
         netCashFlow,
       } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
@@ -102,8 +102,8 @@ export abstract class ChartDataExtractor {
         expenses,
         surplusDeficit,
         savingsRate,
-        invested,
-        liquidated,
+        amountInvested,
+        amountLiquidated,
         netCashFlow,
       };
     });

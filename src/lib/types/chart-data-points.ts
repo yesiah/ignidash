@@ -39,8 +39,8 @@ export interface SingleSimulationCashFlowChartDataPoint {
   expenses: number;
   surplusDeficit: number;
   savingsRate: number | null;
-  invested: number;
-  liquidated: number;
+  amountInvested: number;
+  amountLiquidated: number;
   netCashFlow: number;
 }
 
