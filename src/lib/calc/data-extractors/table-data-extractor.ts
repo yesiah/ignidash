@@ -13,6 +13,7 @@ import { sumReturns } from '@/lib/calc/returns';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
+import { getHistoricalYear } from './get-historical-year';
 
 export abstract class TableDataExtractor {
   // ================================
@@ -23,7 +24,7 @@ export abstract class TableDataExtractor {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -91,7 +92,7 @@ export abstract class TableDataExtractor {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -164,7 +165,7 @@ export abstract class TableDataExtractor {
     let cumulativeTotalTaxesAndPenalties = 0;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -280,7 +281,7 @@ export abstract class TableDataExtractor {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -355,7 +356,7 @@ export abstract class TableDataExtractor {
     const historicalRanges = simulation.context.historicalRanges ?? null;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -428,7 +429,7 @@ export abstract class TableDataExtractor {
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.map((data, idx) => {
-      const historicalYear: number | null = this.getHistoricalYear(historicalRanges, idx);
+      const historicalYear: number | null = getHistoricalYear(historicalRanges, idx);
       const age = Math.floor(data.age);
 
       const phaseName = data.phase?.name ?? null;
@@ -615,33 +616,5 @@ export abstract class TableDataExtractor {
     }
 
     return res;
-  }
-
-  private static getHistoricalYear(
-    historicalRanges: { startYear: number; endYear: number }[] | null,
-    yearsSinceStart: number
-  ): number | null {
-    if (!historicalRanges?.length) return null;
-
-    let historicalYear: number | null = null;
-
-    let cumulativeYears = 0;
-    for (const range of historicalRanges) {
-      const rangeLength = range.endYear - range.startYear + 1;
-
-      if (yearsSinceStart < cumulativeYears + rangeLength) {
-        const yearsIntoRange = yearsSinceStart - cumulativeYears;
-        historicalYear = range.startYear + yearsIntoRange;
-        break;
-      }
-
-      cumulativeYears += rangeLength;
-    }
-
-    if (historicalYear === null && historicalRanges.length > 0) {
-      historicalYear = historicalRanges[historicalRanges.length - 1].endYear;
-    }
-
-    return historicalYear;
   }
 }
