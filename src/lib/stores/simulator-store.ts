@@ -469,37 +469,37 @@ export const useKeyMetrics = (simulationResult: SimulationResult | null | undefi
  */
 export const useSingleSimulationPortfolioChartData = (simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationPortfolioChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationPortfolioData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationCashFlowChartData = (simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationCashFlowChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationCashFlowData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationTaxesChartData = (simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationTaxesChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationTaxesData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationReturnsChartData = (simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationReturnsChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationReturnsData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationContributionsChartData = (simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationContributionsChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationContributionsData(simulation);
   }, [simulation]);
 };
 
 export const useSingleSimulationWithdrawalsChartData = (simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] => {
   return useMemo(() => {
-    return ChartDataExtractor.extractSingleSimulationWithdrawalsChartData(simulation);
+    return ChartDataExtractor.extractSingleSimulationWithdrawalsData(simulation);
   }, [simulation]);
 };
 

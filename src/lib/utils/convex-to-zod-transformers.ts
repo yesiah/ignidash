@@ -381,11 +381,11 @@ export function glidePathToConvex(glidePath: GlidePathInputs): NonNullable<Doc<'
  * Transforms TypeScript SimulationResult to Convex SimulationResult format
  */
 export function simulationResultToConvex(simulation: SimulationResult): ConvexSimulationResult {
-  const portfolioData = ChartDataExtractor.extractSingleSimulationPortfolioChartData(simulation).slice(1);
-  const cashFlowData = ChartDataExtractor.extractSingleSimulationCashFlowChartData(simulation);
-  const taxesData = ChartDataExtractor.extractSingleSimulationTaxesChartData(simulation);
-  const contributionsData = ChartDataExtractor.extractSingleSimulationContributionsChartData(simulation);
-  const withdrawalsData = ChartDataExtractor.extractSingleSimulationWithdrawalsChartData(simulation);
+  const portfolioData = ChartDataExtractor.extractSingleSimulationPortfolioData(simulation).slice(1);
+  const cashFlowData = ChartDataExtractor.extractSingleSimulationCashFlowData(simulation);
+  const taxesData = ChartDataExtractor.extractSingleSimulationTaxesData(simulation);
+  const contributionsData = ChartDataExtractor.extractSingleSimulationContributionsData(simulation);
+  const withdrawalsData = ChartDataExtractor.extractSingleSimulationWithdrawalsData(simulation);
 
   const simulationResult: ConvexSimulationResult['simulationResult'] = [];
   for (let i = 0; i < portfolioData.length; i++) {

@@ -52,8 +52,8 @@ const mergeAPI = {
     const tableData = TableDataExtractor.extractMultiSimulationData(res);
     const yearlyTableData = TableDataExtractor.extractMultiSimulationYearlyAggregateData(res);
 
-    const portfolioData = ChartDataExtractor.extractMultiSimulationPortfolioChartData(res);
-    const phasesData = ChartDataExtractor.extractMultiSimulationPhasesChartData(res);
+    const portfolioData = ChartDataExtractor.extractMultiSimulationPortfolioData(res);
+    const phasesData = ChartDataExtractor.extractMultiSimulationPhasesData(res);
 
     return { analysis, tableData, yearlyTableData, chartData: { portfolioData, phasesData }, keyMetrics };
   },

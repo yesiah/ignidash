@@ -20,7 +20,7 @@ export abstract class ChartDataExtractor {
   // SINGLE SIMULATION DATA EXTRACTION
   // ================================
 
-  static extractSingleSimulationPortfolioChartData(simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] {
+  static extractSingleSimulationPortfolioData(simulation: SimulationResult): SingleSimulationPortfolioChartDataPoint[] {
     return simulation.data.map((data) => {
       const age = Math.floor(data.age);
 
@@ -58,7 +58,7 @@ export abstract class ChartDataExtractor {
     });
   }
 
-  static extractSingleSimulationCashFlowChartData(simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] {
+  static extractSingleSimulationCashFlowData(simulation: SimulationResult): SingleSimulationCashFlowChartDataPoint[] {
     return simulation.data.slice(1).map((data) => {
       const age = Math.floor(data.age);
 
@@ -109,7 +109,7 @@ export abstract class ChartDataExtractor {
     });
   }
 
-  static extractSingleSimulationTaxesChartData(simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] {
+  static extractSingleSimulationTaxesData(simulation: SimulationResult): SingleSimulationTaxesChartDataPoint[] {
     let cumulativeIncomeTax = 0;
     let cumulativeFicaTax = 0;
     let cumulativeCapGainsTax = 0;
@@ -193,7 +193,7 @@ export abstract class ChartDataExtractor {
     });
   }
 
-  static extractSingleSimulationReturnsChartData(simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] {
+  static extractSingleSimulationReturnsData(simulation: SimulationResult): SingleSimulationReturnsChartDataPoint[] {
     return simulation.data.slice(1).map((data) => {
       const age = Math.floor(data.age);
 
@@ -227,7 +227,7 @@ export abstract class ChartDataExtractor {
     });
   }
 
-  static extractSingleSimulationContributionsChartData(simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] {
+  static extractSingleSimulationContributionsData(simulation: SimulationResult): SingleSimulationContributionsChartDataPoint[] {
     return simulation.data.slice(1).map((data) => {
       const age = Math.floor(data.age);
 
@@ -261,7 +261,7 @@ export abstract class ChartDataExtractor {
     });
   }
 
-  static extractSingleSimulationWithdrawalsChartData(simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] {
+  static extractSingleSimulationWithdrawalsData(simulation: SimulationResult): SingleSimulationWithdrawalsChartDataPoint[] {
     let cumulativeEarlyWithdrawals = 0;
 
     return simulation.data.slice(1).map((data) => {
@@ -314,7 +314,7 @@ export abstract class ChartDataExtractor {
   // MULTI SIMULATION DATA EXTRACTION
   // ================================
 
-  static extractMultiSimulationPortfolioChartData(simulations: MultiSimulationResult): MultiSimulationPortfolioChartDataPoint[] {
+  static extractMultiSimulationPortfolioData(simulations: MultiSimulationResult): MultiSimulationPortfolioChartDataPoint[] {
     const res: MultiSimulationPortfolioChartDataPoint[] = [];
 
     const simulationLength = simulations.simulations[0][1].data.length;
@@ -347,7 +347,7 @@ export abstract class ChartDataExtractor {
     return res;
   }
 
-  static extractMultiSimulationPhasesChartData(simulations: MultiSimulationResult): MultiSimulationPhasesChartDataPoint[] {
+  static extractMultiSimulationPhasesData(simulations: MultiSimulationResult): MultiSimulationPhasesChartDataPoint[] {
     const res: MultiSimulationPhasesChartDataPoint[] = [];
 
     const simulationLength = simulations.simulations[0][1].data.length;
