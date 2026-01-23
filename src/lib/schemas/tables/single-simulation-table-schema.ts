@@ -152,12 +152,12 @@ export const singleSimulationTaxesTableRowSchema = z.object({
   annualEarlyWithdrawalPenalties: z.number().nullable(),
   cumulativeEarlyWithdrawalPenalties: z.number().nullable(),
 
-  // Tax-Free Income
-  taxFreeIncome: z.number().nullable(),
-
   // Totals
   annualTotalTaxesAndPenalties: z.number().nullable(),
   cumulativeTotalTaxesAndPenalties: z.number().nullable(),
+
+  // Tax-Free Income
+  taxFreeIncome: z.number().nullable(),
 
   // Adjustments & Deductions
   taxDeductibleContributions: z.number().nullable(),
@@ -201,9 +201,9 @@ const SINGLE_SIMULATION_TAXES_COLUMNS = {
   cumulativeNiit: { title: 'Cumulative NIIT', format: 'currency' },
   annualEarlyWithdrawalPenalties: { title: 'Annual Early Withdrawal Penalties', format: 'currency' },
   cumulativeEarlyWithdrawalPenalties: { title: 'Cumulative Early Withdrawal Penalties', format: 'currency' },
-  taxFreeIncome: { title: 'Tax-Free Income', format: 'currency' },
   annualTotalTaxesAndPenalties: { title: 'Annual Total Taxes & Penalties', format: 'currency' },
   cumulativeTotalTaxesAndPenalties: { title: 'Cumulative Total Taxes & Penalties', format: 'currency' },
+  taxFreeIncome: { title: 'Tax-Free Income', format: 'currency' },
   taxDeductibleContributions: { title: 'Tax-Deductible Contributions', format: 'currency' },
   standardDeduction: { title: 'Standard Deduction', format: 'currency' },
   capitalLossDeduction: { title: 'Capital Loss Deduction', format: 'currency' },

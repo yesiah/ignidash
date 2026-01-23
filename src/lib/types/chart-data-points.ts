@@ -119,12 +119,12 @@ export interface SingleSimulationTaxesChartDataPoint {
   annualEarlyWithdrawalPenalties: number;
   cumulativeEarlyWithdrawalPenalties: number;
 
-  // Tax-Free Income
-  taxFreeIncome: number;
-
   // Totals
   annualTotalTaxesAndPenalties: number;
   cumulativeTotalTaxesAndPenalties: number;
+
+  // Tax-Free Income
+  taxFreeIncome: number;
 
   // Adjustments & Deductions
   adjustments: Record<string, number>;
