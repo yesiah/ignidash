@@ -58,6 +58,23 @@ function SavingsRateTooltip() {
   );
 }
 
+function NetCashFlowTooltip() {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>The net change in cash holdings after income, expenses, and portfolio transactions.</p>
+        <p>
+          <strong>Zero</strong> = balanced (typical). <strong>Positive</strong> = unallocated cash. <strong>Negative</strong> = drawing down
+          cash savings.
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 function GrossIncomeTooltip() {
   return (
     <Tooltip>
@@ -147,7 +164,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
+  const { surplusDeficit, netCashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   const portfolioData = dp.portfolio;
@@ -182,6 +199,12 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
           <DescriptionDetails className="font-bold">
             {savingsRate !== null ? `${formatNumber(savingsRate * 100, 1)}%` : 'N/A'}
           </DescriptionDetails>
+
+          <DescriptionTerm className="flex items-center gap-3 font-bold">
+            Net Cash Flow
+            <NetCashFlowTooltip />
+          </DescriptionTerm>
+          <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
         </DescriptionList>
       </Card>
     </div>
