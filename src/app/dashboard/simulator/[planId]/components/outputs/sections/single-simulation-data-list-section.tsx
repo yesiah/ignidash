@@ -34,8 +34,11 @@ function SurplusDeficitTooltip() {
         <InfoIcon className="size-4 fill-white dark:fill-stone-950" />
       </TooltipTrigger>
       <TooltipContent>
-        <p>Earned income, employer match, tax-free income, and Social Security, minus taxes and expenses.</p>
-        <p>Portfolio withdrawals, dividends, and interest are not included.</p>
+        <p>Your income (wages, employer match, tax-free income, and Social Security) minus taxes and expenses.</p>
+        <p>
+          <strong>Positive</strong> = saving money. <strong>Negative</strong> = portfolio withdrawals needed to cover the gap.
+        </p>
+        <p>Dividends and interest are excluded because they&apos;re automatically reinvested.</p>
       </TooltipContent>
     </Tooltip>
   );
