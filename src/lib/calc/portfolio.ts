@@ -925,28 +925,22 @@ export class Portfolio {
     cumulativeReturns: AssetReturnAmounts;
     byAccount: Record<string, AccountDataWithReturns>;
   } {
-    const returnsForPeriod: AssetReturnAmounts = {
-      cash: 0,
-      bonds: 0,
-      stocks: 0,
+    const addAssetAmounts = (a: AssetReturnAmounts, b: AssetReturnAmounts): AssetReturnAmounts => {
+      return { stocks: a.stocks + b.stocks, bonds: a.bonds + b.bonds, cash: a.cash + b.cash };
     };
-    const cumulativeReturns: AssetReturnAmounts = {
-      cash: 0,
-      bonds: 0,
-      stocks: 0,
-    };
+
+    const zeroAssetReturnAmounts: AssetReturnAmounts = { stocks: 0, bonds: 0, cash: 0 };
+
+    let returnsForPeriod: AssetReturnAmounts = { ...zeroAssetReturnAmounts };
+    let cumulativeReturns: AssetReturnAmounts = { ...zeroAssetReturnAmounts };
+
     const byAccount: Record<string, AccountDataWithReturns> = {};
 
     this.accounts.forEach((account) => {
       const { returnsForPeriod: accountReturnsForPeriod, cumulativeReturns: accountCumulativeReturns } = account.applyReturns(returns);
 
-      returnsForPeriod.cash += accountReturnsForPeriod.cash;
-      returnsForPeriod.bonds += accountReturnsForPeriod.bonds;
-      returnsForPeriod.stocks += accountReturnsForPeriod.stocks;
-
-      cumulativeReturns.cash += accountCumulativeReturns.cash;
-      cumulativeReturns.bonds += accountCumulativeReturns.bonds;
-      cumulativeReturns.stocks += accountCumulativeReturns.stocks;
+      returnsForPeriod = addAssetAmounts(returnsForPeriod, accountReturnsForPeriod);
+      cumulativeReturns = addAssetAmounts(cumulativeReturns, accountCumulativeReturns);
 
       byAccount[account.getAccountID()] = {
         name: account.getAccountName(),
@@ -964,17 +958,23 @@ export class Portfolio {
     yieldsForPeriod: Record<TaxCategory, AssetYieldAmounts>;
     cumulativeYields: Record<TaxCategory, AssetYieldAmounts>;
   } {
+    const addAssetAmounts = (a: AssetYieldAmounts, b: AssetYieldAmounts): AssetYieldAmounts => {
+      return { stocks: a.stocks + b.stocks, bonds: a.bonds + b.bonds, cash: a.cash + b.cash };
+    };
+
+    const zeroAssetYieldAmounts: AssetYieldAmounts = { stocks: 0, bonds: 0, cash: 0 };
+
     const yieldsForPeriod: Record<TaxCategory, AssetYieldAmounts> = {
-      taxable: { stocks: 0, bonds: 0, cash: 0 },
-      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-      taxFree: { stocks: 0, bonds: 0, cash: 0 },
-      cashSavings: { stocks: 0, bonds: 0, cash: 0 },
+      taxable: { ...zeroAssetYieldAmounts },
+      taxDeferred: { ...zeroAssetYieldAmounts },
+      taxFree: { ...zeroAssetYieldAmounts },
+      cashSavings: { ...zeroAssetYieldAmounts },
     };
     const cumulativeYields: Record<TaxCategory, AssetYieldAmounts> = {
-      taxable: { stocks: 0, bonds: 0, cash: 0 },
-      taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-      taxFree: { stocks: 0, bonds: 0, cash: 0 },
-      cashSavings: { stocks: 0, bonds: 0, cash: 0 },
+      taxable: { ...zeroAssetYieldAmounts },
+      taxDeferred: { ...zeroAssetYieldAmounts },
+      taxFree: { ...zeroAssetYieldAmounts },
+      cashSavings: { ...zeroAssetYieldAmounts },
     };
 
     this.accounts.forEach((account) => {
@@ -982,13 +982,8 @@ export class Portfolio {
 
       const taxCategory = account.taxCategory;
 
-      yieldsForPeriod[taxCategory].stocks += accountYieldsForPeriod.stocks;
-      yieldsForPeriod[taxCategory].bonds += accountYieldsForPeriod.bonds;
-      yieldsForPeriod[taxCategory].cash += accountYieldsForPeriod.cash;
-
-      cumulativeYields[taxCategory].stocks += accountCumulativeYields.stocks;
-      cumulativeYields[taxCategory].bonds += accountCumulativeYields.bonds;
-      cumulativeYields[taxCategory].cash += accountCumulativeYields.cash;
+      yieldsForPeriod[taxCategory] = addAssetAmounts(yieldsForPeriod[taxCategory], accountYieldsForPeriod);
+      cumulativeYields[taxCategory] = addAssetAmounts(cumulativeYields[taxCategory], accountCumulativeYields);
     });
 
     return { yieldsForPeriod, cumulativeYields };

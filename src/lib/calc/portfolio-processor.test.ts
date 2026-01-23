@@ -633,4 +633,281 @@ describe('PortfolioProcessor', () => {
       expect(result.portfolioData.perAccountData[extraSavingsId].contributionsForPeriod.cash).toBe(3000);
     });
   });
+
+  // ============================================================================
+  // getAnnualData Tests
+  // ============================================================================
+
+  describe('getAnnualData', () => {
+    describe('period field aggregation', () => {
+      it('should aggregate contributionsForPeriod across multiple months', () => {
+        const portfolio = new Portfolio([create401kAccount({ id: '401k-1', balance: 50000 })]);
+        const state = createMockSimulationState(portfolio, 35, 'accumulation');
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext(),
+          new ContributionRules([createContributionRule({ accountId: '401k-1' })], { type: 'spend' })
+        );
+
+        // Process 3 months with contributions
+        for (let i = 0; i < 3; i++) {
+          const incomes = createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 2000 });
+          const expenses = createEmptyExpensesData({ totalExpenses: 0 });
+          processor.processContributionsAndWithdrawals(incomes, expenses);
+        }
+
+        const annualData = processor.getAnnualData();
+
+        // 2000 contributed each month for 3 months = 6000 total
+        const totalContributions =
+          annualData.contributionsForPeriod.stocks + annualData.contributionsForPeriod.bonds + annualData.contributionsForPeriod.cash;
+        expect(totalContributions).toBeCloseTo(6000, 0);
+      });
+
+      it('should aggregate withdrawalsForPeriod across multiple months', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ id: 'savings-1', balance: 30000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Process 3 months with withdrawals
+        for (let i = 0; i < 3; i++) {
+          const incomes = createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 });
+          const expenses = createEmptyExpensesData({ totalExpenses: 3000 });
+          processor.processContributionsAndWithdrawals(incomes, expenses);
+        }
+
+        const annualData = processor.getAnnualData();
+
+        // 3000 withdrawn each month for 3 months = 9000 total
+        const totalWithdrawals =
+          annualData.withdrawalsForPeriod.stocks + annualData.withdrawalsForPeriod.bonds + annualData.withdrawalsForPeriod.cash;
+        expect(totalWithdrawals).toBeCloseTo(9000, 0);
+      });
+
+      it('should aggregate shortfallForPeriod across multiple months', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ balance: 2000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Month 1: 2k available, 3k expenses = 1k shortfall
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 3000 })
+        );
+
+        // Month 2: 0 available, 2k expenses = 2k shortfall
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 2000 })
+        );
+
+        const annualData = processor.getAnnualData();
+
+        // Total shortfall = 1k + 2k = 3k
+        expect(annualData.shortfallForPeriod).toBe(3000);
+      });
+
+      it('should aggregate employerMatchForPeriod across multiple months', () => {
+        const portfolio = new Portfolio([create401kAccount({ id: '401k-1', balance: 50000 })]);
+        const state = createMockSimulationState(portfolio, 35, 'accumulation');
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext(),
+          new ContributionRules(
+            [
+              createContributionRule({
+                accountId: '401k-1',
+                // Use unlimited contributions so all available cash goes to the 401k each month
+                contributionType: 'unlimited',
+                employerMatch: 3000, // Employer matches dollar-for-dollar up to $3000 annual cap
+              }),
+            ],
+            { type: 'spend' }
+          )
+        );
+
+        // Process 3 months with $500 available to contribute each month
+        for (let i = 0; i < 3; i++) {
+          const incomes = createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 500 });
+          const expenses = createEmptyExpensesData({ totalExpenses: 0 });
+          processor.processContributionsAndWithdrawals(incomes, expenses);
+        }
+
+        const annualData = processor.getAnnualData();
+
+        // With unlimited contributions and $500/month available:
+        // Month 1: $500 contribution, $500 employer match (3000-500=2500 remaining in cap)
+        // Month 2: $500 contribution, $500 employer match (2500-500=2000 remaining in cap)
+        // Month 3: $500 contribution, $500 employer match (2000-500=1500 remaining in cap)
+        // Total employer match = 1500
+        expect(annualData.employerMatchForPeriod).toBeCloseTo(1500, 0);
+      });
+    });
+
+    describe('cumulative field handling', () => {
+      it('should use last month cumulative values, not aggregate them', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ id: 'savings-1', balance: 10000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Month 1: withdraw 2k
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 2000 })
+        );
+
+        // Month 2: withdraw 3k
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 3000 })
+        );
+
+        const annualData = processor.getAnnualData();
+
+        // Cumulative should be 5k (2k + 3k), not 7k (2k + 5k if incorrectly summing cumulative)
+        const totalCumulativeWithdrawals =
+          annualData.cumulativeWithdrawals.stocks + annualData.cumulativeWithdrawals.bonds + annualData.cumulativeWithdrawals.cash;
+        expect(totalCumulativeWithdrawals).toBeCloseTo(5000, 0);
+      });
+
+      it('should use last month totalValue, not sum across months', () => {
+        const portfolio = new Portfolio([create401kAccount({ id: '401k-1', balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 35, 'accumulation');
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext(),
+          new ContributionRules([createContributionRule({ accountId: '401k-1' })], { type: 'spend' })
+        );
+
+        // Process 3 months with contributions
+        for (let i = 0; i < 3; i++) {
+          processor.processContributionsAndWithdrawals(
+            createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 5000 }),
+            createEmptyExpensesData({ totalExpenses: 0 })
+          );
+        }
+
+        const annualData = processor.getAnnualData();
+
+        // Total value should be ~115k (100k + 15k contributions), not sum of all monthly values
+        expect(annualData.totalValue).toBeCloseTo(115000, 0);
+      });
+
+      it('should use last month outstandingShortfall, not aggregate', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ balance: 1000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Month 1: 1k shortfall (need 2k, have 1k)
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 2000 })
+        );
+
+        // Month 2: 1k more shortfall
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 1000 })
+        );
+
+        const annualData = processor.getAnnualData();
+
+        // Outstanding shortfall is cumulative, should be 2k at end of month 2
+        expect(annualData.outstandingShortfall).toBe(2000);
+        // Period shortfall should be aggregated: 1k + 1k = 2k
+        expect(annualData.shortfallForPeriod).toBe(2000);
+      });
+    });
+
+    describe('per-account data aggregation', () => {
+      it('should aggregate per-account period fields across months', () => {
+        const portfolio = new Portfolio([
+          create401kAccount({ id: '401k-1', balance: 50000 }),
+          createSavingsAccount({ id: 'savings-1', balance: 10000 }),
+        ]);
+        const state = createMockSimulationState(portfolio, 35, 'accumulation');
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext(),
+          new ContributionRules([createContributionRule({ accountId: '401k-1' })], { type: 'spend' })
+        );
+
+        // Process 3 months
+        for (let i = 0; i < 3; i++) {
+          processor.processContributionsAndWithdrawals(
+            createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 2000 }),
+            createEmptyExpensesData({ totalExpenses: 0 })
+          );
+        }
+
+        const annualData = processor.getAnnualData();
+
+        // 401k should have aggregated contributions from all 3 months
+        const account401kData = annualData.perAccountData['401k-1'];
+        const totalContributions =
+          account401kData.contributionsForPeriod.stocks +
+          account401kData.contributionsForPeriod.bonds +
+          account401kData.contributionsForPeriod.cash;
+        expect(totalContributions).toBeCloseTo(6000, 0);
+      });
+
+      it('should preserve per-account cumulative fields from last month', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ id: 'savings-1', balance: 10000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Month 1: withdraw 3k
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 3000 })
+        );
+
+        // Month 2: withdraw 2k
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 2000 })
+        );
+
+        const annualData = processor.getAnnualData();
+        const savingsData = annualData.perAccountData['savings-1'];
+
+        // Balance should be last month's value: 10k - 3k - 2k = 5k
+        expect(savingsData.balance).toBe(5000);
+
+        // Cumulative withdrawals should be 5k (from last month, not summed across months)
+        const totalCumulative =
+          savingsData.cumulativeWithdrawals.stocks + savingsData.cumulativeWithdrawals.bonds + savingsData.cumulativeWithdrawals.cash;
+        expect(totalCumulative).toBeCloseTo(5000, 0);
+
+        // Period withdrawals should be aggregated: 3k + 2k = 5k
+        const totalPeriod =
+          savingsData.withdrawalsForPeriod.stocks + savingsData.withdrawalsForPeriod.bonds + savingsData.withdrawalsForPeriod.cash;
+        expect(totalPeriod).toBeCloseTo(5000, 0);
+      });
+    });
+
+    describe('reset behavior', () => {
+      it('should return empty data after resetMonthlyData', () => {
+        const portfolio = new Portfolio([createSavingsAccount({ balance: 10000 })]);
+        const state = createMockSimulationState(portfolio, 65);
+        const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
+
+        // Process some data
+        processor.processContributionsAndWithdrawals(
+          createEmptyIncomesData({ totalIncomeAfterPayrollDeductions: 0 }),
+          createEmptyExpensesData({ totalExpenses: 5000 })
+        );
+
+        // Reset
+        processor.resetMonthlyData();
+
+        const annualData = processor.getAnnualData();
+
+        // After reset, period data should be zero (reduce starts from zero accumulator)
+        const totalWithdrawals =
+          annualData.withdrawalsForPeriod.stocks + annualData.withdrawalsForPeriod.bonds + annualData.withdrawalsForPeriod.cash;
+        expect(totalWithdrawals).toBe(0);
+      });
+    });
+  });
 });
