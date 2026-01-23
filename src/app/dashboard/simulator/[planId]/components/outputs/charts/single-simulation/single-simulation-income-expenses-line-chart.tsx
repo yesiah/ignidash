@@ -192,8 +192,8 @@ export default function SingleSimulationIncomeExpensesLineChart({
       lineDataKeys.push('surplusDeficit');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('income', 'expenses', 'taxesAndPenalties');
-      barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
+      barDataKeys.push('income', 'employerMatch', 'expenses', 'taxesAndPenalties');
+      barColors.push('var(--chart-1)', 'var(--chart-4)', 'var(--chart-2)', 'var(--chart-3)');
 
       chartData = chartData.map((entry) => ({
         ...entry,
@@ -210,7 +210,7 @@ export default function SingleSimulationIncomeExpensesLineChart({
       lineDataKeys.push('netCashFlow');
       strokeColors.push(LINE_COLOR);
 
-      barDataKeys.push('incomeExcludingEmployerMatch', 'liquidated', 'expenses', 'taxesAndPenalties', 'invested');
+      barDataKeys.push('income', 'liquidated', 'expenses', 'taxesAndPenalties', 'invested');
       barColors.push('var(--chart-1)', 'var(--chart-4)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-5)');
 
       chartData = chartData.map((entry) => ({

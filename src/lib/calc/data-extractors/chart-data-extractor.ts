@@ -72,7 +72,6 @@ export abstract class ChartDataExtractor {
       } = SimulationDataExtractor.getTaxAmountsByType(data);
       const {
         totalIncome: income,
-        totalIncomeExcludingEmployerMatch: incomeExcludingEmployerMatch,
         earnedIncome,
         socialSecurityIncome,
         nonTaxableIncome,
@@ -94,7 +93,6 @@ export abstract class ChartDataExtractor {
         socialSecurityIncome,
         nonTaxableIncome,
         income,
-        incomeExcludingEmployerMatch,
         incomeTax,
         ficaTax,
         capGainsTax,

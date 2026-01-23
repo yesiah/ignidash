@@ -30,7 +30,6 @@ export interface SingleSimulationIncomeExpensesChartDataPoint {
   socialSecurityIncome: number;
   nonTaxableIncome: number;
   income: number;
-  incomeExcludingEmployerMatch: number;
   incomeTax: number;
   ficaTax: number;
   capGainsTax: number;

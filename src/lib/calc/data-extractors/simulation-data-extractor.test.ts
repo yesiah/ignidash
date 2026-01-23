@@ -684,10 +684,10 @@ describe('SimulationDataExtractor.getCashFlowData', () => {
 
     const data = SimulationDataExtractor.getCashFlowData(dp);
 
-    // totalIncome = income from incomes + employerMatch = 100000 + 5000 = 105000
-    expect(data.totalIncome).toBe(105000);
+    // totalIncome = income from incomes = 100000
+    expect(data.totalIncome).toBe(100000);
     expect(data.employerMatch).toBe(5000);
-    // surplusDeficit = 105000 - 50000 - 20000 = 35000
+    // surplusDeficit = 100000 + 5000 - 50000 - 20000 = 35000
     expect(data.surplusDeficit).toBe(35000);
   });
 

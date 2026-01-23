@@ -104,7 +104,7 @@ export default function SingleSimulationIncomeExpensesBarChart({
           { name: earnedIncomeLabel, amount: earnedIncome, color: 'var(--chart-1)' },
           { name: socialSecurityIncomeLabel, amount: socialSecurityIncome, color: 'var(--chart-1)' },
           { name: nonTaxableIncomeLabel, amount: nonTaxableIncome, color: 'var(--chart-1)' },
-          { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-1)' },
+          { name: employerMatchLabel, amount: employerMatch, color: 'var(--chart-4)' },
           { name: taxesAndPenaltiesLabel, amount: -taxesAndPenalties, color: 'var(--chart-3)' },
           { name: expensesLabel, amount: -expenses, color: 'var(--chart-2)' },
         ]
