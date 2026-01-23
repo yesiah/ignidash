@@ -128,10 +128,14 @@ export class ReturnsProcessor {
       };
     };
 
+    const firstMonthData = this.monthlyData[0];
     const lastMonthData = this.monthlyData[this.monthlyData.length - 1];
 
     return {
       ...lastMonthData,
+      annualReturnRates: firstMonthData.annualReturnRates,
+      annualInflationRate: firstMonthData.annualInflationRate,
+      annualYieldRates: firstMonthData.annualYieldRates,
       ...this.monthlyData.reduce(
         (acc, curr) => {
           acc.returnAmountsForPeriod.stocks += curr.returnAmountsForPeriod.stocks;
@@ -149,7 +153,6 @@ export class ReturnsProcessor {
             acc.perAccountData[accountID] = {
               ...accountData,
               returnAmountsForPeriod: addAssetReturns(existing?.returnAmountsForPeriod, accountData.returnAmountsForPeriod),
-              cumulativeReturnAmounts: addAssetReturns(existing?.cumulativeReturnAmounts, accountData.cumulativeReturnAmounts),
             };
           }
 

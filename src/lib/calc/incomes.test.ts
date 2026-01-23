@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
-import { Income, Incomes, IncomesProcessor } from './incomes';
 import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
+
+import { Income, Incomes, IncomesProcessor } from './incomes';
 import type { SimulationState } from './simulation-engine';
 
 /**

@@ -1,8 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
-import { SavingsAccount, TaxDeferredAccount, TaxableBrokerageAccount, TaxFreeAccount } from './account';
-import type { AssetReturnRates, AssetYieldRates } from './asset';
 import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
+
+import { SavingsAccount, TaxDeferredAccount, TaxableBrokerageAccount, TaxFreeAccount } from './account';
+import type { AssetReturnRates, AssetYieldRates, AssetReturnAmounts, AssetYieldAmounts, TaxCategory } from './asset';
+import { ReturnsProcessor } from './returns';
+import type { ReturnsProvider } from './returns-providers/returns-provider';
+import type { SimulationState } from './simulation-engine';
+import type { Portfolio } from './portfolio';
 
 /**
  * Returns & Yields Tests
@@ -472,5 +477,213 @@ describe('Zero and Negative Returns', () => {
 
     expect(result.cumulativeReturns.stocks).toBeLessThan(0);
     expect(result.cumulativeReturns.bonds).toBeLessThan(0);
+  });
+});
+
+describe('ReturnsProcessor.getAnnualData', () => {
+  const zeroYields = (): Record<TaxCategory, AssetYieldAmounts> => ({
+    taxable: { stocks: 0, bonds: 0, cash: 0 },
+    taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
+    taxFree: { stocks: 0, bonds: 0, cash: 0 },
+    cashSavings: { stocks: 0, bonds: 0, cash: 0 },
+  });
+
+  const createMockPortfolio = (monthlyResults: Array<{ period: AssetReturnAmounts; cumulative: AssetReturnAmounts }>): Portfolio => {
+    let callIdx = 0;
+    return {
+      applyYields: () => ({ yieldsForPeriod: zeroYields(), cumulativeYields: zeroYields() }),
+      applyReturns: () => {
+        const data = monthlyResults[callIdx] ?? monthlyResults[monthlyResults.length - 1];
+        callIdx++;
+        return {
+          returnsForPeriod: data.period,
+          cumulativeReturns: data.cumulative,
+          byAccount: {
+            'acc-1': {
+              name: 'Test',
+              id: 'acc-1',
+              type: '401k' as const,
+              returnAmountsForPeriod: data.period,
+              cumulativeReturnAmounts: data.cumulative,
+            },
+          },
+        };
+      },
+    } as unknown as Portfolio;
+  };
+
+  it('returns annualReturnRates from first month when first and last months differ', () => {
+    // Mutable state so we can change year mid-processing
+    // Note: year is monthsElapsed/12, so year 0 = first year, year 1 = second year, etc.
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: createMockPortfolio([
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 100, bonds: 50, cash: 25 } },
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 200, bonds: 100, cash: 50 } },
+      ]),
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    // Provider returns different rates based on year
+    // Note: yields and inflationRate are percentages (e.g., 2 = 2%), returns are decimals (0.08 = 8%)
+    const provider: ReturnsProvider = {
+      getReturns: () => {
+        const isFirstYear = state.time.year === 0;
+        return {
+          returns: { stocks: isFirstYear ? 0.08 : 0.12, bonds: 0.04, cash: 0.02 },
+          yields: { stocks: isFirstYear ? 2 : 4, bonds: 3, cash: 1 }, // percentages
+          metadata: { inflationRate: isFirstYear ? 3 : 5 }, // percentage
+        };
+      },
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+
+    // Process first month in year 0
+    processor.process();
+
+    // Change to year 1 - this triggers rate update on next process()
+    state.time.year = 1;
+
+    // Process second month in year 1 (new rates cached)
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // MUST use first month's rates (year 0: 8% stocks, 2% yield, 3% inflation)
+    // NOT last month's rates (year 1: 12% stocks, 4% yield, 5% inflation)
+    // Note: yields/inflation are converted from percentages to decimals (2 -> 0.02)
+    expect(annualData.annualReturnRates.stocks).toBe(0.08);
+    expect(annualData.annualYieldRates.stocks).toBe(0.02); // 2% -> 0.02
+    expect(annualData.annualInflationRate).toBe(0.03); // 3% -> 0.03
+  });
+
+  it('returns cumulativeReturnAmounts from last month only, not summed', () => {
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: createMockPortfolio([
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 100, bonds: 50, cash: 25 } },
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 200, bonds: 100, cash: 50 } },
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 300, bonds: 150, cash: 75 } },
+      ]),
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    const provider: ReturnsProvider = {
+      getReturns: () => ({
+        returns: { stocks: 0.08, bonds: 0.04, cash: 0.02 },
+        yields: { stocks: 0.02, bonds: 0.03, cash: 0.01 },
+        metadata: { inflationRate: 3 },
+      }),
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+    processor.process();
+    processor.process();
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // MUST be last month's cumulative (300), NOT sum of all cumulatives (100+200+300=600)
+    expect(annualData.cumulativeReturnAmounts.stocks).toBe(300);
+    expect(annualData.cumulativeReturnAmounts.bonds).toBe(150);
+    expect(annualData.cumulativeReturnAmounts.cash).toBe(75);
+  });
+
+  it('sums returnAmountsForPeriod across all months', () => {
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: createMockPortfolio([
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 100, bonds: 50, cash: 25 } },
+        { period: { stocks: 110, bonds: 55, cash: 28 }, cumulative: { stocks: 210, bonds: 105, cash: 53 } },
+        { period: { stocks: 120, bonds: 60, cash: 30 }, cumulative: { stocks: 330, bonds: 165, cash: 83 } },
+      ]),
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    const provider: ReturnsProvider = {
+      getReturns: () => ({
+        returns: { stocks: 0.08, bonds: 0.04, cash: 0.02 },
+        yields: { stocks: 0.02, bonds: 0.03, cash: 0.01 },
+        metadata: { inflationRate: 3 },
+      }),
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+    processor.process();
+    processor.process();
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // Period returns ARE summed: 100+110+120=330
+    expect(annualData.returnAmountsForPeriod.stocks).toBe(330);
+    expect(annualData.returnAmountsForPeriod.bonds).toBe(165);
+    expect(annualData.returnAmountsForPeriod.cash).toBe(83);
+  });
+
+  it('uses last month cumulativeReturnAmounts for per-account data', () => {
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: createMockPortfolio([
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 100, bonds: 50, cash: 25 } },
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 200, bonds: 100, cash: 50 } },
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 300, bonds: 150, cash: 75 } },
+      ]),
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    const provider: ReturnsProvider = {
+      getReturns: () => ({
+        returns: { stocks: 0.08, bonds: 0.04, cash: 0.02 },
+        yields: { stocks: 0.02, bonds: 0.03, cash: 0.01 },
+        metadata: { inflationRate: 3 },
+      }),
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+    processor.process();
+    processor.process();
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // Per-account cumulative from last month (300), not summed
+    expect(annualData.perAccountData['acc-1'].cumulativeReturnAmounts.stocks).toBe(300);
+  });
+
+  it('sums per-account returnAmountsForPeriod across all months', () => {
+    const state = {
+      time: { date: new Date(), age: 35, year: 0, month: 1 },
+      portfolio: createMockPortfolio([
+        { period: { stocks: 100, bonds: 50, cash: 25 }, cumulative: { stocks: 100, bonds: 50, cash: 25 } },
+        { period: { stocks: 110, bonds: 55, cash: 28 }, cumulative: { stocks: 210, bonds: 105, cash: 53 } },
+        { period: { stocks: 120, bonds: 60, cash: 30 }, cumulative: { stocks: 330, bonds: 165, cash: 83 } },
+      ]),
+      phase: { name: 'accumulation' },
+      annualData: { expenses: [] },
+    } as SimulationState;
+
+    const provider: ReturnsProvider = {
+      getReturns: () => ({
+        returns: { stocks: 0.08, bonds: 0.04, cash: 0.02 },
+        yields: { stocks: 0.02, bonds: 0.03, cash: 0.01 },
+        metadata: { inflationRate: 3 },
+      }),
+    };
+
+    const processor = new ReturnsProcessor(state, provider);
+    processor.process();
+    processor.process();
+    processor.process();
+
+    const annualData = processor.getAnnualData();
+
+    // Per-account period returns ARE summed
+    expect(annualData.perAccountData['acc-1'].returnAmountsForPeriod.stocks).toBe(330);
   });
 });

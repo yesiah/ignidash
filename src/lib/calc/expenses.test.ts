@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
-import { Expense, Expenses, ExpensesProcessor } from './expenses';
 import type { ExpenseInputs } from '@/lib/schemas/inputs/expense-form-schema';
+
+import { Expense, Expenses, ExpensesProcessor } from './expenses';
 import type { SimulationState } from './simulation-engine';
 
 /**
