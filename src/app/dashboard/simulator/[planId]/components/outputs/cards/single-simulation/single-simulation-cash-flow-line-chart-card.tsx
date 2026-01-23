@@ -80,8 +80,8 @@ export default function SingleSimulationCashFlowLineChartCard({
               }
             }}
           >
-            <option value="surplusDeficit">Surplus/Deficit</option>
             <option value="cashFlow">Cash Flow</option>
+            <option value="surplusDeficit">Surplus/Deficit</option>
             <option value="incomes">Income Sources</option>
             <option value="expenses">Expenses &amp; Taxes</option>
             <option value="savingsRate">Savings Rate</option>
