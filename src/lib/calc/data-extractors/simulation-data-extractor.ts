@@ -18,7 +18,7 @@ export interface ReturnsStatsData {
   earlyRetirementStockReturn: number | null;
 }
 
-export interface SurplusDeficitData {
+export interface CashFlowData {
   totalIncome: number;
   totalIncomeExcludingEmployerMatch: number;
   earnedIncome: number;
@@ -204,7 +204,7 @@ export class SimulationDataExtractor {
     return { incomeTax, ficaTax, capGainsTax, niit, totalTaxes, earlyWithdrawalPenalties, totalTaxesAndPenalties };
   }
 
-  static getSurplusDeficitData(dp: SimulationDataPoint): SurplusDeficitData {
+  static getCashFlowData(dp: SimulationDataPoint): CashFlowData {
     const incomesData = dp.incomes;
     const expensesData = dp.expenses;
     const portfolioData = dp.portfolio;
@@ -443,7 +443,7 @@ export class SimulationDataExtractor {
   }
 
   static getSavingsRate(dp: SimulationDataPoint): number | null {
-    const { totalIncome, totalTaxesAndPenalties, surplusDeficit } = this.getSurplusDeficitData(dp);
+    const { totalIncome, totalTaxesAndPenalties, surplusDeficit } = this.getCashFlowData(dp);
 
     const totalIncomeMinusTaxes = totalIncome - totalTaxesAndPenalties;
     if (totalIncomeMinusTaxes <= 0) return null;

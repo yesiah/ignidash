@@ -82,7 +82,7 @@ export abstract class ChartDataExtractor {
         invested,
         liquidated,
         netCashFlow,
-      } = SimulationDataExtractor.getSurplusDeficitData(data);
+      } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {

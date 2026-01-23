@@ -547,11 +547,11 @@ describe('SimulationDataExtractor.getTaxAmountsByType', () => {
 });
 
 /**
- * Tests for SimulationDataExtractor.getSurplusDeficitData
+ * Tests for SimulationDataExtractor.getCashFlowData
  */
 
 // Helper to create a data point with income/expense/tax data for surplus/deficit testing
-const createSurplusDeficitDataPoint = (options: {
+const createCashFlowDataPoint = (options: {
   totalIncome: number;
   socialSecurityIncome?: number;
   nonTaxableIncome?: number;
@@ -659,15 +659,15 @@ const createSurplusDeficitDataPoint = (options: {
   phase: { name: 'accumulation' },
 });
 
-describe('SimulationDataExtractor.getSurplusDeficitData', () => {
+describe('SimulationDataExtractor.getCashFlowData', () => {
   it('calculates surplus/deficit correctly (income - expenses - taxes)', () => {
-    const dp = createSurplusDeficitDataPoint({
+    const dp = createCashFlowDataPoint({
       totalIncome: 100000,
       totalExpenses: 50000,
       totalTaxesAndPenalties: 20000,
     });
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     // surplusDeficit = totalIncome - totalExpenses - totalTaxesAndPenalties
     // = 100000 - 50000 - 20000 = 30000
@@ -675,14 +675,14 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
   });
 
   it('includes employer match in total income', () => {
-    const dp = createSurplusDeficitDataPoint({
+    const dp = createCashFlowDataPoint({
       totalIncome: 100000,
       employerMatch: 5000,
       totalExpenses: 50000,
       totalTaxesAndPenalties: 20000,
     });
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     // totalIncome = income from incomes + employerMatch = 100000 + 5000 = 105000
     expect(data.totalIncome).toBe(105000);
@@ -692,28 +692,28 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
   });
 
   it('separates Social Security income correctly', () => {
-    const dp = createSurplusDeficitDataPoint({
+    const dp = createCashFlowDataPoint({
       totalIncome: 80000,
       socialSecurityIncome: 30000,
       totalExpenses: 40000,
       totalTaxesAndPenalties: 10000,
     });
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     expect(data.socialSecurityIncome).toBe(30000);
     expect(data.earnedIncome).toBe(50000); // 80000 - 30000 - 0 (nonTaxable)
   });
 
   it('separates non-taxable income correctly', () => {
-    const dp = createSurplusDeficitDataPoint({
+    const dp = createCashFlowDataPoint({
       totalIncome: 100000,
       nonTaxableIncome: 10000,
       totalExpenses: 50000,
       totalTaxesAndPenalties: 15000,
     });
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     expect(data.nonTaxableIncome).toBe(10000);
     expect(data.earnedIncome).toBe(90000); // 100000 - 0 (SS) - 10000 (nonTaxable)
@@ -721,7 +721,7 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
 
   it('handles null income data by returning zeros', () => {
     const dp: SimulationDataPoint = {
-      ...createSurplusDeficitDataPoint({
+      ...createCashFlowDataPoint({
         totalIncome: 0,
         totalExpenses: 0,
         totalTaxesAndPenalties: 0,
@@ -729,7 +729,7 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
       incomes: null,
     };
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     expect(data.totalIncome).toBe(0);
     expect(data.earnedIncome).toBe(0);
@@ -739,7 +739,7 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
 
   it('handles null expense data by returning zero expenses', () => {
     const dp: SimulationDataPoint = {
-      ...createSurplusDeficitDataPoint({
+      ...createCashFlowDataPoint({
         totalIncome: 100000,
         totalExpenses: 0,
         totalTaxesAndPenalties: 15000,
@@ -747,7 +747,7 @@ describe('SimulationDataExtractor.getSurplusDeficitData', () => {
       expenses: null,
     };
 
-    const data = SimulationDataExtractor.getSurplusDeficitData(dp);
+    const data = SimulationDataExtractor.getCashFlowData(dp);
 
     expect(data.totalExpenses).toBe(0);
   });

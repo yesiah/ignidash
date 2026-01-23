@@ -144,7 +144,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
 }
 
 function IncomeExpensesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
-  const { surplusDeficit } = SimulationDataExtractor.getSurplusDeficitData(dp);
+  const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   const portfolioData = dp.portfolio;
@@ -259,7 +259,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
 
-  const { surplusDeficit } = SimulationDataExtractor.getSurplusDeficitData(dp);
+  const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
   return (
@@ -300,7 +300,7 @@ function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
 
-  const { surplusDeficit } = SimulationDataExtractor.getSurplusDeficitData(dp);
+  const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);
 
   return (

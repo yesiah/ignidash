@@ -128,7 +128,7 @@ export abstract class TableDataExtractor {
         employerMatch,
         totalExpenses: expenses,
         surplusDeficit,
-      } = SimulationDataExtractor.getSurplusDeficitData(data);
+      } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
@@ -394,7 +394,7 @@ export abstract class TableDataExtractor {
 
       const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
         SimulationDataExtractor.getContributionsByTaxCategory(data);
-      const { surplusDeficit } = SimulationDataExtractor.getSurplusDeficitData(data);
+      const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(data);
       const savingsRate = SimulationDataExtractor.getSavingsRate(data);
 
       return {
@@ -476,7 +476,7 @@ export abstract class TableDataExtractor {
       const annualEarlyWithdrawals = SimulationDataExtractor.getEarlyWithdrawals(data, age);
       cumulativeEarlyWithdrawals += annualEarlyWithdrawals;
 
-      const { surplusDeficit } = SimulationDataExtractor.getSurplusDeficitData(data);
+      const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(data);
       const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(data);
 
       return {
