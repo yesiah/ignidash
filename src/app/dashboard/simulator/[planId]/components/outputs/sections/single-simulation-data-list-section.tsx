@@ -120,7 +120,7 @@ interface DataListCardProps {
   selectedAge: number;
 }
 
-function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function PortfolioDataListCard({ dp, selectedAge }: DataListCardProps) {
   const returnsData = dp.returns;
 
   const {
@@ -162,7 +162,7 @@ function PortfolioDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function CashFlowDataListCard({ dp, selectedAge }: DataListCardProps) {
   const { surplusDeficit, netCashFlow } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
 
@@ -210,7 +210,7 @@ function CashFlowDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function TaxesDataListCard({ dp, selectedAge }: DataListCardProps) {
   const taxesData = dp.taxes;
 
   const incomeTaxedAsOrdinary = taxesData?.incomeSources.incomeTaxedAsOrdinary ?? 0;
@@ -247,7 +247,7 @@ function TaxesDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-function ReturnsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function ReturnsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
 
@@ -279,7 +279,7 @@ function ReturnsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
   const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
@@ -320,7 +320,7 @@ function ContributionsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
   );
 }
 
-function WithdrawalsDataListCardV2({ dp, selectedAge }: DataListCardProps) {
+function WithdrawalsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
   const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
@@ -377,37 +377,37 @@ function SingleSimulationDataListSection({ simulation, selectedAge }: SingleSimu
     case SingleSimulationCategory.Portfolio:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <PortfolioDataListCardV2 {...props} />
+          <PortfolioDataListCard {...props} />
         </div>
       );
     case SingleSimulationCategory.CashFlow:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <CashFlowDataListCardV2 {...props} />
+          <CashFlowDataListCard {...props} />
         </div>
       );
     case SingleSimulationCategory.Taxes:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <TaxesDataListCardV2 {...props} />
+          <TaxesDataListCard {...props} />
         </div>
       );
     case SingleSimulationCategory.Returns:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <ReturnsDataListCardV2 {...props} />
+          <ReturnsDataListCard {...props} />
         </div>
       );
     case SingleSimulationCategory.Contributions:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <ContributionsDataListCardV2 {...props} />
+          <ContributionsDataListCard {...props} />
         </div>
       );
     case SingleSimulationCategory.Withdrawals:
       return (
         <div className="grid grid-cols-1 gap-2">
-          <WithdrawalsDataListCardV2 {...props} />
+          <WithdrawalsDataListCard {...props} />
         </div>
       );
     default:
