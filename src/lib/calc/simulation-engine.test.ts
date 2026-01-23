@@ -16,7 +16,6 @@ import {
 } from './simulation-engine';
 import { FixedReturnsProvider } from './returns-providers/fixed-returns-provider';
 import { Portfolio } from './portfolio';
-import { SavingsAccount, TaxableBrokerageAccount, TaxDeferredAccount, TaxFreeAccount } from './account';
 import { Incomes, IncomesProcessor } from './incomes';
 import { Expenses, ExpensesProcessor } from './expenses';
 import { PhaseIdentifier } from './phase';
@@ -76,21 +75,6 @@ const createRothIraAccount = (overrides?: {
   balance: overrides?.balance ?? 50000,
   percentBonds: overrides?.percentBonds ?? 10,
   contributionBasis: overrides?.contributionBasis ?? 40000,
-});
-
-const createTaxableBrokerageAccount = (overrides?: {
-  id?: string;
-  name?: string;
-  balance?: number;
-  percentBonds?: number;
-  costBasis?: number;
-}): AccountInputs & { type: 'taxableBrokerage' } => ({
-  type: 'taxableBrokerage',
-  id: overrides?.id ?? 'taxable-1',
-  name: overrides?.name ?? 'Taxable Brokerage',
-  balance: overrides?.balance ?? 75000,
-  percentBonds: overrides?.percentBonds ?? 15,
-  costBasis: overrides?.costBasis ?? 50000,
 });
 
 // Income factory
@@ -234,109 +218,6 @@ describe('SeededRandom', () => {
     it('should handle negative seeds', () => {
       const rng = new SeededRandom(-100);
       expect(rng.next()).toBeGreaterThanOrEqual(0);
-    });
-  });
-});
-
-// ============================================================================
-// Account Tests
-// ============================================================================
-
-describe('Account Classes', () => {
-  describe('SavingsAccount', () => {
-    it('should initialize with correct values', () => {
-      const account = new SavingsAccount(createSavingsAccount({ balance: 5000 }));
-      expect(account.getBalance()).toBe(5000);
-      expect(account.taxCategory).toBe('cashSavings');
-      expect(account.getHasRMDs()).toBe(false);
-    });
-
-    it('should apply returns correctly', () => {
-      const account = new SavingsAccount(createSavingsAccount({ balance: 10000 }));
-      const { returnsForPeriod } = account.applyReturns({ stocks: 0.1, bonds: 0.05, cash: 0.03 });
-      expect(returnsForPeriod.cash).toBe(300);
-      expect(account.getBalance()).toBe(10300);
-    });
-
-    it('should apply contributions correctly', () => {
-      const account = new SavingsAccount(createSavingsAccount({ balance: 5000 }));
-      account.applyContribution(1000, 'self', { stocks: 0, bonds: 0, cash: 1 });
-      expect(account.getBalance()).toBe(6000);
-    });
-
-    it('should apply withdrawals correctly', () => {
-      const account = new SavingsAccount(createSavingsAccount({ balance: 5000 }));
-      const result = account.applyWithdrawal(2000, 'regular', { stocks: 0, bonds: 0, cash: 1 });
-      expect(account.getBalance()).toBe(3000);
-      expect(result.cash).toBe(2000);
-    });
-
-    it('should throw on insufficient funds', () => {
-      const account = new SavingsAccount(createSavingsAccount({ balance: 1000 }));
-      expect(() => account.applyWithdrawal(2000, 'regular', { stocks: 0, bonds: 0, cash: 1 })).toThrow();
-    });
-  });
-
-  describe('TaxDeferredAccount (401k)', () => {
-    it('should initialize with correct values', () => {
-      const account = new TaxDeferredAccount(create401kAccount({ balance: 100000, percentBonds: 30 }));
-      expect(account.getBalance()).toBe(100000);
-      expect(account.taxCategory).toBe('taxDeferred');
-      expect(account.getHasRMDs()).toBe(true);
-    });
-
-    it('should apply returns based on asset allocation', () => {
-      const account = new TaxDeferredAccount(create401kAccount({ balance: 100000, percentBonds: 20 }));
-      const { returnsForPeriod } = account.applyReturns({ stocks: 0.1, bonds: 0.05, cash: 0.03 });
-      expect(returnsForPeriod.stocks).toBe(8000); // 80% of 100k * 10%
-      expect(returnsForPeriod.bonds).toBe(1000); // 20% of 100k * 5%
-      expect(account.getBalance()).toBe(109000);
-    });
-  });
-
-  describe('TaxFreeAccount (Roth IRA)', () => {
-    it('should track contribution basis separately', () => {
-      const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
-      expect(account.getBalance()).toBe(50000);
-      expect(account.getContributionBasis()).toBe(40000);
-      expect(account.taxCategory).toBe('taxFree');
-    });
-
-    it('should calculate earnings withdrawn correctly', () => {
-      const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
-      const result = account.applyWithdrawal(50000, 'regular', { stocks: 0.8, bonds: 0.2, cash: 0 });
-      expect(result.earningsWithdrawn).toBe(10000);
-    });
-
-    it('should increase contribution basis on contributions', () => {
-      const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
-      account.applyContribution(5000, 'self', { stocks: 0.8, bonds: 0.2, cash: 0 });
-      expect(account.getBalance()).toBe(55000);
-      expect(account.getContributionBasis()).toBe(45000);
-    });
-  });
-
-  describe('TaxableBrokerageAccount', () => {
-    it('should track cost basis for capital gains', () => {
-      const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 100000, costBasis: 60000 }));
-      expect(account.getBalance()).toBe(100000);
-      expect(account.getCostBasis()).toBe(60000);
-      expect(account.taxCategory).toBe('taxable');
-    });
-
-    it('should calculate realized gains on withdrawal', () => {
-      const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 100000, costBasis: 60000 }));
-      const result = account.applyWithdrawal(50000, 'regular', { stocks: 0.8, bonds: 0.2, cash: 0 });
-      expect(result.realizedGains).toBe(20000); // 50k - (50k * 0.6 basis proportion)
-      expect(account.getBalance()).toBe(50000);
-      expect(account.getCostBasis()).toBe(30000);
-    });
-
-    it('should increase cost basis on contributions', () => {
-      const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 50000, costBasis: 50000 }));
-      account.applyContribution(10000, 'self', { stocks: 0.8, bonds: 0.2, cash: 0 });
-      expect(account.getBalance()).toBe(60000);
-      expect(account.getCostBasis()).toBe(60000);
     });
   });
 });

@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
 
-import type { SimulationState } from './simulation-engine';
-import type { PortfolioData } from './portfolio';
-import type { IncomesData } from './incomes';
-import type { ReturnsData } from './returns';
 import { TaxProcessor } from './taxes';
 import { Portfolio } from './portfolio';
 import {
@@ -12,71 +8,14 @@ import {
   STANDARD_DEDUCTION_HEAD_OF_HOUSEHOLD,
 } from './tax-data/standard-deduction';
 import { NIIT_RATE, NIIT_THRESHOLDS } from './tax-data/niit-thresholds';
-
-// ============================================================================
-// Test Helpers
-// ============================================================================
+import { createEmptyPortfolioData, createEmptyIncomesData, createEmptyReturnsData } from './__tests__/test-utils';
+import type { SimulationState } from './simulation-engine';
 
 const createMockSimulationState = (age: number): SimulationState => ({
   time: { date: new Date(2025, 0, 1), age, year: 2025, month: 1 },
   portfolio: new Portfolio([]),
   phase: { name: 'retirement' },
   annualData: { expenses: [] },
-});
-
-const createEmptyPortfolioData = (): PortfolioData => ({
-  totalValue: 0,
-  cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
-  cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
-  cumulativeEmployerMatch: 0,
-  cumulativeRealizedGains: 0,
-  cumulativeEarningsWithdrawn: 0,
-  cumulativeRmds: 0,
-  outstandingShortfall: 0,
-  withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  employerMatchForPeriod: 0,
-  realizedGainsForPeriod: 0,
-  earningsWithdrawnForPeriod: 0,
-  rmdsForPeriod: 0,
-  shortfallForPeriod: 0,
-  shortfallRepaidForPeriod: 0,
-  perAccountData: {},
-  assetAllocation: null,
-});
-
-const createEmptyIncomesData = (): IncomesData => ({
-  totalIncome: 0,
-  totalAmountWithheld: 0,
-  totalFicaTax: 0,
-  totalIncomeAfterPayrollDeductions: 0,
-  totalTaxFreeIncome: 0,
-  totalSocialSecurityIncome: 0,
-  perIncomeData: {},
-});
-
-const createEmptyReturnsData = (): ReturnsData => ({
-  cumulativeReturnAmounts: { stocks: 0, bonds: 0, cash: 0 },
-  cumulativeYieldAmounts: {
-    taxable: { stocks: 0, bonds: 0, cash: 0 },
-    taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-    taxFree: { stocks: 0, bonds: 0, cash: 0 },
-    cashSavings: { stocks: 0, bonds: 0, cash: 0 },
-  },
-  returnAmountsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  returnRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  yieldAmountsForPeriod: {
-    taxable: { stocks: 0, bonds: 0, cash: 0 },
-    taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
-    taxFree: { stocks: 0, bonds: 0, cash: 0 },
-    cashSavings: { stocks: 0, bonds: 0, cash: 0 },
-  },
-  yieldRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  inflationRateForPeriod: 0,
-  annualReturnRates: { stocks: 0, bonds: 0, cash: 0 },
-  annualYieldRates: { stocks: 0, bonds: 0, cash: 0 },
-  annualInflationRate: 0,
-  perAccountData: {},
 });
 
 // ============================================================================
@@ -393,6 +332,122 @@ describe('TaxProcessor', () => {
       const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
 
       expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.5);
+    });
+
+    describe('threshold boundary conditions', () => {
+      it('single filer: should not tax SS at exactly $25,000 provisional income (Tier 1 boundary)', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'single');
+        const incomes = createEmptyIncomesData();
+        // To get provisional income of exactly $25,000:
+        // Provisional = other income + (SS * 0.5)
+        // If SS = 20000, other income = 25000 - 10000 = 15000
+        incomes.totalSocialSecurityIncome = 20000;
+        incomes.totalIncome = 35000; // 20k SS + 15k earned
+        // Provisional = 15k + 10k = 25k (exactly at threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        // At exactly 25k, we're at the boundary - no SS should be taxable yet
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0);
+        expect(result.socialSecurityTaxes.taxableSocialSecurityIncome).toBe(0);
+      });
+
+      it('single filer: should tax at 50% just above $25,000 provisional income', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'single');
+        const incomes = createEmptyIncomesData();
+        incomes.totalSocialSecurityIncome = 20000;
+        incomes.totalIncome = 35001; // 20k SS + 15001 earned
+        // Provisional = 15001 + 10000 = 25001 (just above threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.5);
+        // Taxable = (25001 - 25000) * 0.5 = 0.5
+        expect(result.socialSecurityTaxes.taxableSocialSecurityIncome).toBeCloseTo(0.5, 2);
+      });
+
+      it('single filer: should tax at 50% at exactly $34,000 provisional income (Tier 2 boundary)', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'single');
+        const incomes = createEmptyIncomesData();
+        // To get provisional income of exactly $34,000:
+        // If SS = 20000, other income = 34000 - 10000 = 24000
+        incomes.totalSocialSecurityIncome = 20000;
+        incomes.totalIncome = 44000; // 20k SS + 24k earned
+        // Provisional = 24k + 10k = 34k (exactly at upper threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        // At exactly 34k, still in 50% tier
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.5);
+        // Taxable = (34000 - 25000) * 0.5 = 4500
+        expect(result.socialSecurityTaxes.taxableSocialSecurityIncome).toBeCloseTo(4500, 2);
+      });
+
+      it('single filer: should tax at 85% just above $34,000 provisional income', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'single');
+        const incomes = createEmptyIncomesData();
+        incomes.totalSocialSecurityIncome = 20000;
+        incomes.totalIncome = 44001; // 20k SS + 24001 earned
+        // Provisional = 24001 + 10000 = 34001 (just above upper threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.85);
+      });
+
+      it('MFJ: should not tax SS at exactly $32,000 provisional income (Tier 1 boundary)', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'marriedFilingJointly');
+        const incomes = createEmptyIncomesData();
+        // To get provisional income of exactly $32,000:
+        // If SS = 24000, other income = 32000 - 12000 = 20000
+        incomes.totalSocialSecurityIncome = 24000;
+        incomes.totalIncome = 44000; // 24k SS + 20k earned
+        // Provisional = 20k + 12k = 32k (exactly at threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0);
+        expect(result.socialSecurityTaxes.taxableSocialSecurityIncome).toBe(0);
+      });
+
+      it('MFJ: should tax at 50% just above $32,000 provisional income', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'marriedFilingJointly');
+        const incomes = createEmptyIncomesData();
+        incomes.totalSocialSecurityIncome = 24000;
+        incomes.totalIncome = 44001; // 24k SS + 20001 earned
+        // Provisional = 20001 + 12000 = 32001 (just above threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.5);
+      });
+
+      it('MFJ: should tax at 50% at exactly $44,000 provisional income (Tier 2 boundary)', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'marriedFilingJointly');
+        const incomes = createEmptyIncomesData();
+        // To get provisional income of exactly $44,000:
+        // If SS = 24000, other income = 44000 - 12000 = 32000
+        incomes.totalSocialSecurityIncome = 24000;
+        incomes.totalIncome = 56000; // 24k SS + 32k earned
+        // Provisional = 32k + 12k = 44k (exactly at upper threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        // At exactly 44k, still in 50% tier
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.5);
+      });
+
+      it('MFJ: should tax at 85% just above $44,000 provisional income', () => {
+        const processor = new TaxProcessor(createMockSimulationState(65), 'marriedFilingJointly');
+        const incomes = createEmptyIncomesData();
+        incomes.totalSocialSecurityIncome = 24000;
+        incomes.totalIncome = 56001; // 24k SS + 32001 earned
+        // Provisional = 32001 + 12000 = 44001 (just above upper threshold)
+
+        const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData());
+
+        expect(result.socialSecurityTaxes.maxTaxablePercentage).toBe(0.85);
+      });
     });
   });
 

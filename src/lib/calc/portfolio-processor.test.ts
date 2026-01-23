@@ -1,156 +1,25 @@
 import { describe, it, expect } from 'vitest';
 
-import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
-import type { ContributionInputs } from '@/lib/schemas/inputs/contribution-form-schema';
 import type { GlidePathInputs } from '@/lib/schemas/inputs/glide-path-schema';
 
 import { Portfolio, PortfolioProcessor } from './portfolio';
 import { ContributionRules } from './contribution-rules';
-import type { SimulationState, SimulationContext } from './simulation-engine';
-import type { IncomesData } from './incomes';
-import type { ExpensesData } from './expenses';
 import { uniformLifetimeMap } from './historical-data/rmds-table';
+import {
+  createSavingsAccount,
+  create401kAccount,
+  createIraAccount,
+  createRothIraAccount,
+  createTaxableBrokerageAccount,
+  createHsaAccount,
+  createContributionRule,
+  createMockSimulationState,
+  createSimulationContext,
+  createEmptyIncomesData,
+  createEmptyExpensesData,
+} from './__tests__/test-utils';
 
-// ============================================================================
-// Test Fixtures
-// ============================================================================
-
-const createSavingsAccount = (overrides?: Partial<AccountInputs & { type: 'savings' }>): AccountInputs & { type: 'savings' } => ({
-  type: 'savings',
-  id: overrides?.id ?? 'savings-1',
-  name: overrides?.name ?? 'Savings Account',
-  balance: overrides?.balance ?? 10000,
-});
-
-const create401kAccount = (overrides?: Partial<AccountInputs & { type: '401k' }>): AccountInputs & { type: '401k' } => ({
-  type: '401k',
-  id: overrides?.id ?? '401k-1',
-  name: overrides?.name ?? '401k Account',
-  balance: overrides?.balance ?? 100000,
-  percentBonds: overrides?.percentBonds ?? 20,
-});
-
-const createIraAccount = (overrides?: Partial<AccountInputs & { type: 'ira' }>): AccountInputs & { type: 'ira' } => ({
-  type: 'ira',
-  id: overrides?.id ?? 'ira-1',
-  name: overrides?.name ?? 'IRA Account',
-  balance: overrides?.balance ?? 50000,
-  percentBonds: overrides?.percentBonds ?? 30,
-});
-
-const createRothIraAccount = (overrides?: Partial<AccountInputs & { type: 'rothIra' }>): AccountInputs & { type: 'rothIra' } => ({
-  type: 'rothIra',
-  id: overrides?.id ?? 'roth-1',
-  name: overrides?.name ?? 'Roth IRA',
-  balance: overrides?.balance ?? 50000,
-  percentBonds: overrides?.percentBonds ?? 10,
-  contributionBasis: overrides?.contributionBasis ?? 40000,
-});
-
-const createTaxableBrokerageAccount = (
-  overrides?: Partial<AccountInputs & { type: 'taxableBrokerage' }>
-): AccountInputs & { type: 'taxableBrokerage' } => ({
-  type: 'taxableBrokerage',
-  id: overrides?.id ?? 'taxable-1',
-  name: overrides?.name ?? 'Taxable Brokerage',
-  balance: overrides?.balance ?? 75000,
-  percentBonds: overrides?.percentBonds ?? 15,
-  costBasis: overrides?.costBasis ?? 50000,
-});
-
-const createHsaAccount = (overrides?: Partial<AccountInputs & { type: 'hsa' }>): AccountInputs & { type: 'hsa' } => ({
-  type: 'hsa',
-  id: overrides?.id ?? 'hsa-1',
-  name: overrides?.name ?? 'HSA',
-  balance: overrides?.balance ?? 20000,
-  percentBonds: overrides?.percentBonds ?? 20,
-});
-
-// Factory function that creates properly typed contribution rules based on contributionType
-const createContributionRule = (
-  overrides?: Partial<Omit<ContributionInputs, 'contributionType'>> & {
-    contributionType?: ContributionInputs['contributionType'];
-    dollarAmount?: number;
-    percentRemaining?: number;
-  }
-): ContributionInputs => {
-  const base = {
-    id: overrides?.id ?? 'rule-1',
-    accountId: overrides?.accountId ?? '401k-1',
-    rank: overrides?.rank ?? 1,
-    disabled: overrides?.disabled ?? false,
-    employerMatch: overrides?.employerMatch,
-    maxBalance: overrides?.maxBalance,
-    incomeIds: overrides?.incomeIds,
-  };
-
-  const contributionType = overrides?.contributionType ?? 'unlimited';
-
-  if (contributionType === 'dollarAmount') {
-    return {
-      ...base,
-      contributionType: 'dollarAmount',
-      dollarAmount: overrides?.dollarAmount ?? 1000,
-    };
-  }
-
-  if (contributionType === 'percentRemaining') {
-    return {
-      ...base,
-      contributionType: 'percentRemaining',
-      percentRemaining: overrides?.percentRemaining ?? 50,
-    };
-  }
-
-  return {
-    ...base,
-    contributionType: 'unlimited',
-  };
-};
-
-const createMockSimulationState = (
-  portfolio: Portfolio,
-  age: number,
-  phase: 'accumulation' | 'retirement' = 'retirement'
-): SimulationState => ({
-  time: { date: new Date(2025, 0, 1), age, year: 2025, month: 1 },
-  portfolio,
-  phase: { name: phase },
-  annualData: { expenses: [] },
-});
-
-const createMockSimulationContext = (overrides?: Partial<SimulationContext>): SimulationContext => {
-  const startAge = overrides?.startAge ?? 35;
-  const endAge = overrides?.endAge ?? 90;
-  const yearsToSimulate = overrides?.yearsToSimulate ?? Math.ceil(endAge - startAge);
-  const startDate = overrides?.startDate ?? new Date(2025, 0, 1);
-  const endDate = overrides?.endDate ?? new Date(startDate.getFullYear() + yearsToSimulate, startDate.getMonth(), 1);
-
-  return {
-    startAge,
-    endAge,
-    yearsToSimulate,
-    startDate,
-    endDate,
-    retirementStrategy: overrides?.retirementStrategy ?? { type: 'fixedAge', retirementAge: 65 },
-    rmdAge: overrides?.rmdAge ?? 75,
-  };
-};
-
-const createEmptyIncomesData = (overrides?: Partial<IncomesData>): IncomesData => ({
-  totalIncome: overrides?.totalIncome ?? 0,
-  totalAmountWithheld: overrides?.totalAmountWithheld ?? 0,
-  totalFicaTax: overrides?.totalFicaTax ?? 0,
-  totalIncomeAfterPayrollDeductions: overrides?.totalIncomeAfterPayrollDeductions ?? 0,
-  totalTaxFreeIncome: overrides?.totalTaxFreeIncome ?? 0,
-  totalSocialSecurityIncome: overrides?.totalSocialSecurityIncome ?? 0,
-  perIncomeData: overrides?.perIncomeData ?? {},
-});
-
-const createEmptyExpensesData = (overrides?: Partial<ExpensesData>): ExpensesData => ({
-  totalExpenses: overrides?.totalExpenses ?? 0,
-  perExpenseData: overrides?.perExpenseData ?? {},
-});
+const createMockSimulationContext = createSimulationContext;
 
 // ============================================================================
 // Withdrawal Ordering Tests
@@ -403,6 +272,81 @@ describe('PortfolioProcessor', () => {
       );
 
       expect(() => processor.processRequiredMinimumDistributions()).toThrow();
+    });
+
+    describe('SECURE Act 2.0 RMD age boundaries', () => {
+      it('should process RMDs at age 73 when rmdAge is 73 (birth year 1959)', () => {
+        const portfolio = new Portfolio([create401kAccount({ balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 73);
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext({ rmdAge: 73 }), // Born 1959 or earlier
+          new ContributionRules([], { type: 'spend' })
+        );
+
+        const result = processor.processRequiredMinimumDistributions();
+
+        // At age 73, factor is 26.5
+        const expectedRmd = 100000 / uniformLifetimeMap[73];
+        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+      });
+
+      it('should not process RMDs at age 73 when rmdAge is 75 (birth year 1960+)', () => {
+        const portfolio = new Portfolio([create401kAccount({ balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 73);
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext({ rmdAge: 75 }), // Born 1960 or later
+          new ContributionRules([], { type: 'spend' })
+        );
+
+        // Should throw because age 73 < rmdAge 75
+        expect(() => processor.processRequiredMinimumDistributions()).toThrow();
+      });
+
+      it('should process RMDs at age 75 when rmdAge is 75 (birth year 1960+)', () => {
+        const portfolio = new Portfolio([create401kAccount({ balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 75);
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext({ rmdAge: 75 }), // Born 1960 or later
+          new ContributionRules([], { type: 'spend' })
+        );
+
+        const result = processor.processRequiredMinimumDistributions();
+
+        // At age 75, factor is 24.6
+        const expectedRmd = 100000 / uniformLifetimeMap[75];
+        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+      });
+
+      it('should not process RMDs at age 74 when rmdAge is 75 (boundary test)', () => {
+        const portfolio = new Portfolio([create401kAccount({ balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 74);
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext({ rmdAge: 75 }),
+          new ContributionRules([], { type: 'spend' })
+        );
+
+        expect(() => processor.processRequiredMinimumDistributions()).toThrow();
+      });
+
+      it('should process RMDs at age 74 when rmdAge is 73 (1 year after requirement)', () => {
+        const portfolio = new Portfolio([create401kAccount({ balance: 100000 })]);
+        const state = createMockSimulationState(portfolio, 74);
+        const processor = new PortfolioProcessor(
+          state,
+          createMockSimulationContext({ rmdAge: 73 }), // Born 1959 or earlier
+          new ContributionRules([], { type: 'spend' })
+        );
+
+        const result = processor.processRequiredMinimumDistributions();
+
+        // At age 74, factor is 25.5
+        const expectedRmd = 100000 / uniformLifetimeMap[74];
+        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+      });
     });
   });
 

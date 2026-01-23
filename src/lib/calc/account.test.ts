@@ -1,57 +1,14 @@
 import { describe, it, expect } from 'vitest';
 
-import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
-
 import { SavingsAccount, TaxableBrokerageAccount, TaxDeferredAccount, TaxFreeAccount } from './account';
-
-// ============================================================================
-// Test Fixtures
-// ============================================================================
-
-const createSavingsAccount = (overrides?: Partial<AccountInputs & { type: 'savings' }>): AccountInputs & { type: 'savings' } => ({
-  type: 'savings',
-  id: overrides?.id ?? 'savings-1',
-  name: overrides?.name ?? 'Savings Account',
-  balance: overrides?.balance ?? 10000,
-});
-
-const create401kAccount = (overrides?: Partial<AccountInputs & { type: '401k' }>): AccountInputs & { type: '401k' } => ({
-  type: '401k',
-  id: overrides?.id ?? '401k-1',
-  name: overrides?.name ?? '401k Account',
-  balance: overrides?.balance ?? 100000,
-  percentBonds: overrides?.percentBonds ?? 20,
-});
-
-const createRothIraAccount = (overrides?: Partial<AccountInputs & { type: 'rothIra' }>): AccountInputs & { type: 'rothIra' } => ({
-  type: 'rothIra',
-  id: overrides?.id ?? 'roth-1',
-  name: overrides?.name ?? 'Roth IRA',
-  balance: overrides?.balance ?? 50000,
-  percentBonds: overrides?.percentBonds ?? 10,
-  contributionBasis: overrides?.contributionBasis ?? 40000,
-});
-
-const createTaxableBrokerageAccount = (
-  overrides?: Partial<AccountInputs & { type: 'taxableBrokerage' }>
-): AccountInputs & { type: 'taxableBrokerage' } => ({
-  type: 'taxableBrokerage',
-  id: overrides?.id ?? 'taxable-1',
-  name: overrides?.name ?? 'Taxable Brokerage',
-  balance: overrides?.balance ?? 75000,
-  percentBonds: overrides?.percentBonds ?? 15,
-  costBasis: overrides?.costBasis ?? 50000,
-});
-
-const createHsaAccount = (overrides?: Partial<AccountInputs & { type: 'hsa' }>): AccountInputs & { type: 'hsa' } => ({
-  type: 'hsa',
-  id: overrides?.id ?? 'hsa-1',
-  name: overrides?.name ?? 'HSA',
-  balance: overrides?.balance ?? 20000,
-  percentBonds: overrides?.percentBonds ?? 20,
-});
-
-const defaultAllocation = { stocks: 0.6, bonds: 0.4, cash: 0 };
+import {
+  createSavingsAccount,
+  create401kAccount,
+  createRothIraAccount,
+  createTaxableBrokerageAccount,
+  createHsaAccount,
+  DEFAULT_ALLOCATION,
+} from './__tests__/test-utils';
 
 // ============================================================================
 // TaxableBrokerageAccount Cost Basis Tests
@@ -65,7 +22,7 @@ describe('TaxableBrokerageAccount', () => {
 
       // Withdraw 50k -> proportional basis is 30k (50% of 60k)
       // Realized gain = 50k - 30k = 20k
-      const result = account.applyWithdrawal(50000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(50000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.realizedGains).toBe(20000);
       expect(account.getBalance()).toBe(50000);
@@ -75,7 +32,7 @@ describe('TaxableBrokerageAccount', () => {
     it('should increase cost basis by contribution amount', () => {
       const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 50000, costBasis: 50000 }));
 
-      account.applyContribution(10000, 'self', defaultAllocation);
+      account.applyContribution(10000, 'self', DEFAULT_ALLOCATION);
 
       expect(account.getBalance()).toBe(60000);
       expect(account.getCostBasis()).toBe(60000);
@@ -87,7 +44,7 @@ describe('TaxableBrokerageAccount', () => {
 
       // Withdraw 20k (25% of balance)
       // Cost basis withdrawn = 20k * (40k / 80k) = 10k
-      account.applyWithdrawal(20000, 'regular', defaultAllocation);
+      account.applyWithdrawal(20000, 'regular', DEFAULT_ALLOCATION);
 
       expect(account.getBalance()).toBe(60000);
       expect(account.getCostBasis()).toBe(30000);
@@ -97,18 +54,18 @@ describe('TaxableBrokerageAccount', () => {
       const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 100000, costBasis: 50000 }));
 
       // First withdrawal: 20k, gain = 10k (50% gain ratio)
-      account.applyWithdrawal(20000, 'regular', defaultAllocation);
+      account.applyWithdrawal(20000, 'regular', DEFAULT_ALLOCATION);
       expect(account.getCumulativeRealizedGains()).toBe(10000);
 
       // Second withdrawal: 20k, gain = 10k (same ratio maintained)
-      account.applyWithdrawal(20000, 'regular', defaultAllocation);
+      account.applyWithdrawal(20000, 'regular', DEFAULT_ALLOCATION);
       expect(account.getCumulativeRealizedGains()).toBe(20000);
     });
 
     it('should handle full withdrawal correctly', () => {
       const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 100000, costBasis: 60000 }));
 
-      const result = account.applyWithdrawal(100000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(100000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.realizedGains).toBe(40000);
       expect(account.getBalance()).toBe(0);
@@ -118,7 +75,7 @@ describe('TaxableBrokerageAccount', () => {
     it('should handle account with no gains (cost basis = balance)', () => {
       const account = new TaxableBrokerageAccount(createTaxableBrokerageAccount({ balance: 50000, costBasis: 50000 }));
 
-      const result = account.applyWithdrawal(25000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(25000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.realizedGains).toBe(0);
       expect(account.getCostBasis()).toBe(25000);
@@ -130,7 +87,7 @@ describe('TaxableBrokerageAccount', () => {
 
       // Withdraw 20k, proportional basis = 20k * (50k/40k) = 25k
       // Realized loss = 20k - 25k = -5k
-      const result = account.applyWithdrawal(20000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(20000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.realizedGains).toBe(-5000);
     });
@@ -170,12 +127,12 @@ describe('TaxFreeAccount (Roth)', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
 
       // Withdraw 30k - all from contributions
-      const result1 = account.applyWithdrawal(30000, 'regular', defaultAllocation);
+      const result1 = account.applyWithdrawal(30000, 'regular', DEFAULT_ALLOCATION);
       expect(result1.earningsWithdrawn).toBe(0);
       expect(account.getContributionBasis()).toBe(10000);
 
       // Withdraw another 15k - 10k from contributions, 5k from earnings
-      const result2 = account.applyWithdrawal(15000, 'regular', defaultAllocation);
+      const result2 = account.applyWithdrawal(15000, 'regular', DEFAULT_ALLOCATION);
       expect(result2.earningsWithdrawn).toBe(5000);
       expect(account.getContributionBasis()).toBe(0);
     });
@@ -184,7 +141,7 @@ describe('TaxFreeAccount (Roth)', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 60000, contributionBasis: 40000 }));
 
       // Withdraw all 60k - 40k contributions, 20k earnings
-      const result = account.applyWithdrawal(60000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(60000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.earningsWithdrawn).toBe(20000);
       expect(account.getContributionBasis()).toBe(0);
@@ -193,7 +150,7 @@ describe('TaxFreeAccount (Roth)', () => {
     it('should increase contribution basis on new contributions', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
 
-      account.applyContribution(7000, 'self', defaultAllocation);
+      account.applyContribution(7000, 'self', DEFAULT_ALLOCATION);
 
       expect(account.getBalance()).toBe(57000);
       expect(account.getContributionBasis()).toBe(47000);
@@ -203,7 +160,7 @@ describe('TaxFreeAccount (Roth)', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 10000 }));
 
       // Withdraw more than contribution basis
-      const result = account.applyWithdrawal(30000, 'regular', defaultAllocation);
+      const result = account.applyWithdrawal(30000, 'regular', DEFAULT_ALLOCATION);
 
       expect(result.earningsWithdrawn).toBe(20000);
       expect(account.getContributionBasis()).toBe(0);
@@ -213,11 +170,11 @@ describe('TaxFreeAccount (Roth)', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 80000, contributionBasis: 50000 }));
 
       // First withdrawal: deplete contributions and some earnings
-      account.applyWithdrawal(60000, 'regular', defaultAllocation);
+      account.applyWithdrawal(60000, 'regular', DEFAULT_ALLOCATION);
       expect(account.getCumulativeEarningsWithdrawn()).toBe(10000);
 
       // Second withdrawal: only earnings left
-      account.applyWithdrawal(15000, 'regular', defaultAllocation);
+      account.applyWithdrawal(15000, 'regular', DEFAULT_ALLOCATION);
       expect(account.getCumulativeEarningsWithdrawn()).toBe(25000);
     });
 
@@ -225,7 +182,7 @@ describe('TaxFreeAccount (Roth)', () => {
       const account = new TaxFreeAccount(createRothIraAccount({ balance: 50000, contributionBasis: 40000 }));
 
       // Employer match also increases contribution basis
-      account.applyContribution(5000, 'employer', defaultAllocation);
+      account.applyContribution(5000, 'employer', DEFAULT_ALLOCATION);
 
       expect(account.getBalance()).toBe(55000);
       expect(account.getContributionBasis()).toBe(45000);
@@ -432,8 +389,8 @@ describe('cumulative tracking', () => {
   it('should track cumulative contributions', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 50000 }));
 
-    account.applyContribution(5000, 'self', defaultAllocation);
-    account.applyContribution(3000, 'self', defaultAllocation);
+    account.applyContribution(5000, 'self', DEFAULT_ALLOCATION);
+    account.applyContribution(3000, 'self', DEFAULT_ALLOCATION);
 
     const cumulative = account.getCumulativeContributions();
     expect(cumulative.stocks + cumulative.bonds).toBeCloseTo(8000, 0);
@@ -442,9 +399,9 @@ describe('cumulative tracking', () => {
   it('should track cumulative employer match separately', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 50000 }));
 
-    account.applyContribution(5000, 'self', defaultAllocation);
-    account.applyContribution(2500, 'employer', defaultAllocation);
-    account.applyContribution(3000, 'self', defaultAllocation);
+    account.applyContribution(5000, 'self', DEFAULT_ALLOCATION);
+    account.applyContribution(2500, 'employer', DEFAULT_ALLOCATION);
+    account.applyContribution(3000, 'self', DEFAULT_ALLOCATION);
 
     expect(account.getCumulativeEmployerMatch()).toBe(2500);
   });
@@ -452,8 +409,8 @@ describe('cumulative tracking', () => {
   it('should track cumulative withdrawals', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 100000 }));
 
-    account.applyWithdrawal(10000, 'regular', defaultAllocation);
-    account.applyWithdrawal(5000, 'regular', defaultAllocation);
+    account.applyWithdrawal(10000, 'regular', DEFAULT_ALLOCATION);
+    account.applyWithdrawal(5000, 'regular', DEFAULT_ALLOCATION);
 
     const cumulative = account.getCumulativeWithdrawals();
     expect(cumulative.stocks + cumulative.bonds).toBeCloseTo(15000, 0);
@@ -462,8 +419,8 @@ describe('cumulative tracking', () => {
   it('should track cumulative RMDs', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 100000 }));
 
-    account.applyWithdrawal(4000, 'rmd', defaultAllocation);
-    account.applyWithdrawal(4200, 'rmd', defaultAllocation);
+    account.applyWithdrawal(4000, 'rmd', DEFAULT_ALLOCATION);
+    account.applyWithdrawal(4200, 'rmd', DEFAULT_ALLOCATION);
 
     expect(account.getCumulativeRmds()).toBeCloseTo(8200, 0);
   });
@@ -497,25 +454,25 @@ describe('edge cases', () => {
   it('should throw on negative contribution', () => {
     const account = new TaxDeferredAccount(create401kAccount());
 
-    expect(() => account.applyContribution(-1000, 'self', defaultAllocation)).toThrow();
+    expect(() => account.applyContribution(-1000, 'self', DEFAULT_ALLOCATION)).toThrow();
   });
 
   it('should throw on negative withdrawal', () => {
     const account = new TaxDeferredAccount(create401kAccount());
 
-    expect(() => account.applyWithdrawal(-1000, 'regular', defaultAllocation)).toThrow();
+    expect(() => account.applyWithdrawal(-1000, 'regular', DEFAULT_ALLOCATION)).toThrow();
   });
 
   it('should throw on withdrawal exceeding balance', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 1000 }));
 
-    expect(() => account.applyWithdrawal(2000, 'regular', defaultAllocation)).toThrow();
+    expect(() => account.applyWithdrawal(2000, 'regular', DEFAULT_ALLOCATION)).toThrow();
   });
 
   it('should handle zero contribution gracefully', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 50000 }));
 
-    const result = account.applyContribution(0, 'self', defaultAllocation);
+    const result = account.applyContribution(0, 'self', DEFAULT_ALLOCATION);
 
     expect(result.stocks).toBe(0);
     expect(result.bonds).toBe(0);
@@ -525,7 +482,7 @@ describe('edge cases', () => {
   it('should handle zero withdrawal gracefully', () => {
     const account = new TaxDeferredAccount(create401kAccount({ balance: 50000 }));
 
-    const result = account.applyWithdrawal(0, 'regular', defaultAllocation);
+    const result = account.applyWithdrawal(0, 'regular', DEFAULT_ALLOCATION);
 
     expect(result.stocks).toBe(0);
     expect(result.bonds).toBe(0);
