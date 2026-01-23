@@ -14,6 +14,13 @@ import { Incomes, IncomesProcessor, type IncomesData } from './incomes';
 import { Expenses, ExpensesProcessor, type ExpensesData } from './expenses';
 import { TaxProcessor, type TaxesData } from './taxes';
 
+/**
+ * Tax convergence threshold in dollars.
+ * The iterative tax reconciliation loop converges when the remaining taxes due
+ * are within this threshold, leaving small residual values in cash flow calculations.
+ */
+export const TAX_CONVERGENCE_THRESHOLD = 1;
+
 type ISODateString = string;
 
 export interface SimulationDataPoint {
@@ -123,7 +130,7 @@ export class FinancialSimulationEngine {
           const totalTaxesDue = annualTaxesData.totalTaxesDue;
 
           const remainingTaxesDue = totalTaxesDue - totalTaxesPaid;
-          if (Math.abs(remainingTaxesDue) < 1) break;
+          if (Math.abs(remainingTaxesDue) < TAX_CONVERGENCE_THRESHOLD) break;
 
           ({ portfolioData: annualPortfolioDataAfterTaxes } = portfolioProcessor.processTaxes(annualPortfolioDataAfterTaxes, {
             totalTaxesDue: remainingTaxesDue,

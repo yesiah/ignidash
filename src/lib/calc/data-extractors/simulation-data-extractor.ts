@@ -1,5 +1,17 @@
-import type { MultiSimulationResult, SimulationDataPoint, SimulationResult } from '@/lib/calc/simulation-engine';
+import {
+  type MultiSimulationResult,
+  type SimulationDataPoint,
+  type SimulationResult,
+  TAX_CONVERGENCE_THRESHOLD,
+} from '@/lib/calc/simulation-engine';
 import { sumTransactions, sumInvestments, sumLiquidations } from '@/lib/calc/asset';
+
+/**
+ * Rounds values within the tax convergence threshold to zero.
+ * The simulation engine's iterative tax calculation converges to within this threshold,
+ * leaving small residual values that should be displayed as $0.
+ */
+export const roundNearZero = (value: number): number => (Math.abs(value) < TAX_CONVERGENCE_THRESHOLD ? 0 : value);
 
 export interface MilestonesData {
   yearsToRetirement: number | null;
@@ -223,7 +235,9 @@ export class SimulationDataExtractor {
 
     const invested = sumInvestments(portfolioData.contributionsForPeriod) - employerMatch;
     const liquidated = sumLiquidations(portfolioData.withdrawalsForPeriod);
-    const netCashFlow = totalIncome + liquidated - totalExpenses - totalTaxesAndPenalties - invested;
+
+    // Round near-zero values to clean up tax convergence residuals
+    const netCashFlow = roundNearZero(totalIncome + liquidated - totalExpenses - totalTaxesAndPenalties - invested);
 
     return {
       totalIncome,
