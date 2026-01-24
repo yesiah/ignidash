@@ -10,6 +10,7 @@ import { timelineValidator } from './validators/timeline_validator';
 import { incomeValidator } from './validators/incomes_validator';
 import { expenseValidator } from './validators/expenses_validator';
 import { accountValidator } from './validators/accounts_validator';
+import { glidePathValidator } from './validators/glide_path_validator';
 import { contributionRulesValidator, baseContributionRuleValidator } from './validators/contribution_rules_validator';
 import { marketAssumptionsValidator } from './validators/market_assumptions_validator';
 import { taxSettingsValidator } from './validators/tax_settings_validator';
@@ -145,6 +146,7 @@ export const createPlanWithData = mutation({
     incomes: v.array(incomeValidator),
     expenses: v.array(expenseValidator),
     accounts: v.array(accountValidator),
+    glidePath: v.optional(glidePathValidator),
     contributionRules: v.array(contributionRulesValidator),
     baseContributionRule: baseContributionRuleValidator,
     marketAssumptions: marketAssumptionsValidator,
@@ -161,6 +163,7 @@ export const createPlanWithData = mutation({
       incomes,
       expenses,
       accounts,
+      glidePath,
       contributionRules,
       baseContributionRule,
       marketAssumptions,
@@ -182,6 +185,7 @@ export const createPlanWithData = mutation({
       incomes,
       expenses,
       accounts,
+      glidePath,
       contributionRules,
       baseContributionRule,
       marketAssumptions,

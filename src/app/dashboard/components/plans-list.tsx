@@ -44,6 +44,11 @@ function PlanListItem({
   onDropdownClickSetAsDefault,
   disableActions,
 }: PlanListItems) {
+  const handleCopyAsJson = useCallback(() => {
+    const { _id, _creationTime, userId: _userId, ...planData } = plan;
+    navigator.clipboard.writeText(JSON.stringify(planData, null, 2));
+  }, [plan]);
+
   const inputs = useMemo(() => simulatorFromConvex(plan), [plan]);
 
   const { timelineIsReady, accountsAreReady, incomesAreReady, expensesAreReady } = useIsCalculationReady(inputs);
@@ -112,6 +117,7 @@ function PlanListItem({
                 Delete
               </DropdownItem>
               {!plan.isDefault && <DropdownItem onClick={onDropdownClickSetAsDefault}>Set as default</DropdownItem>}
+              <DropdownItem onClick={handleCopyAsJson}>Copy JSON</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
