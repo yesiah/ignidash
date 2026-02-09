@@ -11,7 +11,7 @@ import Card from '@/components/ui/card';
 import { SingleSimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
 import { SimulationDataExtractor } from '@/lib/calc/data-extractors/simulation-data-extractor';
-import { sumTransactions } from '@/lib/calc/asset';
+import { sumFlows } from '@/lib/calc/asset';
 import { useSingleSimulationCategory } from '@/lib/stores/simulator-store';
 
 function NetPortfolioChangeTooltip() {
@@ -124,16 +124,12 @@ interface DataListCardProps {
 function NetWorthDataListCard({ dp, selectedAge }: DataListCardProps) {
   const returnsData = dp.returns;
 
-  const {
-    stocks: stockAmount,
-    bonds: bondAmount,
-    cash: cashAmount,
-  } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
+  const { stocks: stockAmount, bonds: bondAmount, cash: cashAmount } = returnsData?.returnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
 
   const portfolioData = dp.portfolio;
 
-  const annualContributions = sumTransactions(portfolioData.contributions);
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
+  const annualContributions = sumFlows(portfolioData.contributions);
+  const annualWithdrawals = sumFlows(portfolioData.withdrawals);
 
   return (
     <Card className="my-0">
@@ -169,8 +165,8 @@ function CashFlowDataListCard({ dp, selectedAge }: DataListCardProps) {
 
   const portfolioData = dp.portfolio;
 
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
-  const annualContributions = sumTransactions(portfolioData.contributions);
+  const annualWithdrawals = sumFlows(portfolioData.withdrawals);
+  const annualContributions = sumFlows(portfolioData.contributions);
 
   return (
     <div>
@@ -283,7 +279,7 @@ function ReturnsDataListCard({ dp, selectedAge }: DataListCardProps) {
 function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
-  const annualContributions = sumTransactions(portfolioData.contributions);
+  const annualContributions = sumFlows(portfolioData.contributions);
 
   const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
@@ -324,7 +320,7 @@ function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
 function WithdrawalsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
+  const annualWithdrawals = sumFlows(portfolioData.withdrawals);
 
   const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);

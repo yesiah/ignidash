@@ -4,7 +4,7 @@ import {
   type SimulationResult,
   TAX_CONVERGENCE_THRESHOLD,
 } from '@/lib/calc/simulation-engine';
-import { sumTransactions, sumInvestments, sumLiquidations } from '@/lib/calc/asset';
+import { sumFlows, sumInvestments, sumLiquidations } from '@/lib/calc/asset';
 
 /**
  * Rounds values within the tax convergence threshold to zero.
@@ -306,21 +306,21 @@ export class SimulationDataExtractor {
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'savings':
-          cashSavingsContributions += sumTransactions(account.contributions);
+          cashSavingsContributions += sumFlows(account.contributions);
           break;
         case 'taxableBrokerage':
-          taxableContributions += sumTransactions(account.contributions);
+          taxableContributions += sumFlows(account.contributions);
           break;
         case '401k':
         case '403b':
         case 'ira':
         case 'hsa':
-          taxDeferredContributions += sumTransactions(account.contributions);
+          taxDeferredContributions += sumFlows(account.contributions);
           break;
         case 'roth401k':
         case 'roth403b':
         case 'rothIra':
-          taxFreeContributions += sumTransactions(account.contributions);
+          taxFreeContributions += sumFlows(account.contributions);
           break;
       }
     }
@@ -339,23 +339,23 @@ export class SimulationDataExtractor {
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'savings':
-          cashSavingsWithdrawals += sumTransactions(account.withdrawals);
+          cashSavingsWithdrawals += sumFlows(account.withdrawals);
           break;
         case 'taxableBrokerage':
-          taxableWithdrawals += sumTransactions(account.withdrawals);
+          taxableWithdrawals += sumFlows(account.withdrawals);
           break;
         case '401k':
         case '403b':
         case 'ira':
-          taxDeferredWithdrawals += sumTransactions(account.withdrawals);
+          taxDeferredWithdrawals += sumFlows(account.withdrawals);
           break;
         case 'hsa':
-          taxDeferredWithdrawals += sumTransactions(account.withdrawals);
+          taxDeferredWithdrawals += sumFlows(account.withdrawals);
           break;
         case 'roth401k':
         case 'roth403b':
         case 'rothIra':
-          taxFreeWithdrawals += sumTransactions(account.withdrawals);
+          taxFreeWithdrawals += sumFlows(account.withdrawals);
           break;
       }
     }
@@ -416,7 +416,7 @@ export class SimulationDataExtractor {
     let cashSavingsGains = 0;
 
     for (const account of Object.values(returnsData?.perAccountData ?? {})) {
-      const { stocks, bonds, cash } = account.returnAmountsForPeriod;
+      const { stocks, bonds, cash } = account.returnAmounts;
       const totalGains = stocks + bonds + cash;
 
       switch (account.type) {
@@ -550,7 +550,7 @@ export class SimulationDataExtractor {
     const portfolioData = dp.portfolio;
 
     const totalValue = portfolioData.totalValue;
-    const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
+    const annualWithdrawals = sumFlows(portfolioData.withdrawals);
 
     return totalValue + annualWithdrawals > 0 ? annualWithdrawals / (totalValue + annualWithdrawals) : null;
   }

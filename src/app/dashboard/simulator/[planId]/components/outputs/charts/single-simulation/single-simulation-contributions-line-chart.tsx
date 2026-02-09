@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useClickDetection } from '@/hooks/use-outside-click';
 import { useChartDataSlice } from '@/hooks/use-chart-data-slice';
 import type { SingleSimulationContributionsChartDataPoint } from '@/lib/types/chart-data-points';
-import type { AccountDataWithTransactions } from '@/lib/calc/account';
+import type { AccountDataWithFlows } from '@/lib/calc/account';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import { useLineChartLegendEffectOpacity } from '@/hooks/use-line-chart-legend-effect-opacity';
 
@@ -27,7 +27,7 @@ interface CustomTooltipProps {
           annualStockContributions: number;
           annualBondContributions: number;
           annualCashContributions: number;
-        } & AccountDataWithTransactions);
+        } & AccountDataWithFlows);
   }>;
   label?: number;
   startAge: number;
@@ -136,7 +136,7 @@ export default function SingleSimulationContributionsLineChart({
           annualStockContributions: number;
           annualBondContributions: number;
           annualCashContributions: number;
-        } & AccountDataWithTransactions
+        } & AccountDataWithFlows
       > = useChartDataSlice(rawChartData, 'single');
 
   const lineDataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];

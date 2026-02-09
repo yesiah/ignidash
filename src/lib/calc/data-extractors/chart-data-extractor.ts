@@ -9,7 +9,7 @@ import type {
   MultiSimulationPhasesChartDataPoint,
 } from '@/lib/types/chart-data-points';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
-import { sumTransactions, sumReturnAmounts } from '@/lib/calc/asset';
+import { sumFlows, sumReturnAmounts } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -28,17 +28,13 @@ export abstract class ChartDataExtractor {
 
       const returnsData = data.returns;
 
-      const {
-        stocks: stockAmount,
-        bonds: bondAmount,
-        cash: cashAmount,
-      } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
+      const { stocks: stockAmount, bonds: bondAmount, cash: cashAmount } = returnsData?.returnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
 
       const portfolioData = data.portfolio;
       const portfolioValue = portfolioData.totalValue;
 
-      const annualContributions = sumTransactions(portfolioData.contributions);
-      const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
+      const annualContributions = sumFlows(portfolioData.contributions);
+      const annualWithdrawals = sumFlows(portfolioData.withdrawals);
 
       const netPortfolioChange = stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals;
 
@@ -247,7 +243,7 @@ export abstract class ChartDataExtractor {
       const returnsData = data.returns!;
 
       const totalCumulativeGains = sumReturnAmounts(returnsData.cumulativeReturnAmounts);
-      const totalAnnualGains = sumReturnAmounts(returnsData.returnAmountsForPeriod);
+      const totalAnnualGains = sumReturnAmounts(returnsData.returnAmounts);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 
@@ -266,9 +262,9 @@ export abstract class ChartDataExtractor {
         cumulativeBondGain: returnsData.cumulativeReturnAmounts.bonds,
         cumulativeCashGain: returnsData.cumulativeReturnAmounts.cash,
         totalCumulativeGains,
-        annualStockGain: returnsData.returnAmountsForPeriod.stocks,
-        annualBondGain: returnsData.returnAmountsForPeriod.bonds,
-        annualCashGain: returnsData.returnAmountsForPeriod.cash,
+        annualStockGain: returnsData.returnAmounts.stocks,
+        annualBondGain: returnsData.returnAmounts.bonds,
+        annualCashGain: returnsData.returnAmounts.cash,
         totalAnnualGains,
         taxableGains,
         taxDeferredGains,
@@ -287,8 +283,8 @@ export abstract class ChartDataExtractor {
       const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
-      const annualContributions = sumTransactions(portfolioData.contributions);
-      const cumulativeContributions = sumTransactions(portfolioData.cumulativeContributions);
+      const annualContributions = sumFlows(portfolioData.contributions);
+      const cumulativeContributions = sumFlows(portfolioData.cumulativeContributions);
 
       const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
         SimulationDataExtractor.getContributionsByTaxCategory(data);
@@ -323,8 +319,8 @@ export abstract class ChartDataExtractor {
       const age = Math.floor(data.age);
 
       const portfolioData = data.portfolio;
-      const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
-      const cumulativeWithdrawals = sumTransactions(portfolioData.cumulativeWithdrawals);
+      const annualWithdrawals = sumFlows(portfolioData.withdrawals);
+      const cumulativeWithdrawals = sumFlows(portfolioData.cumulativeWithdrawals);
 
       const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
         SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);

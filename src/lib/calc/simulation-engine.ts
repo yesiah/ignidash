@@ -6,7 +6,7 @@ import { StochasticReturnsProvider } from './returns-providers/stochastic-return
 import { LcgHistoricalBacktestReturnsProvider } from './returns-providers/lcg-historical-backtest-returns-provider';
 
 import { Portfolio, type PortfolioData, PortfolioProcessor } from './portfolio';
-import type { AccountDataWithTransactions } from './account';
+import type { AccountDataWithFlows } from './account';
 import { ContributionRules } from './contribution-rules';
 import { PhaseIdentifier, type PhaseData } from './phase';
 import { ReturnsProcessor, type ReturnsData } from './returns';
@@ -106,7 +106,7 @@ export class FinancialSimulationEngine {
         portfolioProcessor.processRequiredMinimumDistributions();
 
       // Process one month of simulation
-      const { inflationRateForPeriod: monthlyInflationRate } = returnsProcessor.process();
+      const { inflationRate: monthlyInflationRate } = returnsProcessor.process();
       const incomesData = incomesProcessor.process();
       const expensesData = expensesProcessor.process();
       const physicalAssetsData = physicalAssetsProcessor.process(monthlyInflationRate);
@@ -269,21 +269,21 @@ export class FinancialSimulationEngine {
     const totalPortfolioValue = initialSimulationState.portfolio.getTotalValue();
     const assetAllocation = initialSimulationState.portfolio.getWeightedAssetAllocation();
 
-    const defaultAssetTransactions = { stocks: 0, bonds: 0, cash: 0 };
+    const defaultAssetFlows = { stocks: 0, bonds: 0, cash: 0 };
 
-    const defaultTransactionsData = {
-      contributions: { ...defaultAssetTransactions },
+    const defaultFlowsData = {
+      contributions: { ...defaultAssetFlows },
       employerMatch: 0,
-      withdrawals: { ...defaultAssetTransactions },
+      withdrawals: { ...defaultAssetFlows },
       realizedGains: 0,
       earningsWithdrawn: 0,
       rmds: 0,
     };
 
-    const perAccountData: Record<string, AccountDataWithTransactions> = Object.fromEntries(
+    const perAccountData: Record<string, AccountDataWithFlows> = Object.fromEntries(
       initialSimulationState.portfolio
         .getAccounts()
-        .map((account) => [account.getAccountID(), { ...account.getAccountData(), ...defaultTransactionsData }])
+        .map((account) => [account.getAccountID(), { ...account.getAccountData(), ...defaultFlowsData }])
     );
 
     const activeDebts = debts.getActiveDebts(initialSimulationState);
@@ -370,16 +370,16 @@ export class FinancialSimulationEngine {
       age: initialSimulationState.time.age,
       portfolio: {
         totalValue: totalPortfolioValue,
-        cumulativeContributions: { ...defaultAssetTransactions },
+        cumulativeContributions: { ...defaultAssetFlows },
         cumulativeEmployerMatch: 0,
-        cumulativeWithdrawals: { ...defaultAssetTransactions },
+        cumulativeWithdrawals: { ...defaultAssetFlows },
         cumulativeRealizedGains: 0,
         cumulativeEarningsWithdrawn: 0,
         cumulativeRmds: 0,
         outstandingShortfall: 0,
-        contributions: { ...defaultAssetTransactions },
+        contributions: { ...defaultAssetFlows },
         employerMatch: 0,
-        withdrawals: { ...defaultAssetTransactions },
+        withdrawals: { ...defaultAssetFlows },
         realizedGains: 0,
         earningsWithdrawn: 0,
         rmds: 0,

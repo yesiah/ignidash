@@ -1,6 +1,6 @@
 import type { ExpenseData } from '@/lib/calc/expenses';
 import type { IncomeData } from '@/lib/calc/incomes';
-import type { AccountDataWithTransactions } from '@/lib/calc/account';
+import type { AccountDataWithFlows } from '@/lib/calc/account';
 import type { AccountDataWithReturns } from '@/lib/calc/returns';
 import type { IncomeTaxBracket } from '@/lib/calc/tax-data/income-tax-brackets';
 import type { CapitalGainsTaxBracket } from '@/lib/calc/tax-data/capital-gains-tax-brackets';
@@ -36,7 +36,7 @@ export interface SingleSimulationNetWorthChartDataPoint {
   annualDebtPayoff: number;
   netDebtReduction: number;
   netWorthChange: number;
-  perAccountData: AccountDataWithTransactions[];
+  perAccountData: AccountDataWithFlows[];
   perAssetData: PhysicalAssetData[];
   perDebtData: DebtData[];
 }
@@ -172,7 +172,7 @@ export interface SingleSimulationContributionsChartDataPoint {
   cumulativeCashContributions: number;
   annualEmployerMatch: number;
   cumulativeEmployerMatch: number;
-  perAccountData: AccountDataWithTransactions[];
+  perAccountData: AccountDataWithFlows[];
   taxableContributions: number;
   taxDeferredContributions: number;
   taxFreeContributions: number;
@@ -200,7 +200,7 @@ export interface SingleSimulationWithdrawalsChartDataPoint {
   cumulativeEarlyWithdrawals: number;
   annualRothEarningsWithdrawals: number;
   cumulativeRothEarningsWithdrawals: number;
-  perAccountData: AccountDataWithTransactions[];
+  perAccountData: AccountDataWithFlows[];
   taxableWithdrawals: number;
   taxDeferredWithdrawals: number;
   taxFreeWithdrawals: number;

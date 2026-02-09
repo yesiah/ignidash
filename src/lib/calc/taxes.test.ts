@@ -216,7 +216,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       const portfolioData = createEmptyPortfolioData();
       const returnsData = createEmptyReturnsData();
-      returnsData.yieldAmountsForPeriod.taxable.stocks = 5000; // Dividends
+      returnsData.yieldAmounts.taxable.stocks = 5000; // Dividends
 
       const result = processor.process(portfolioData, incomes, returnsData, createEmptyPhysicalAssetsData());
 
@@ -280,9 +280,9 @@ describe('TaxProcessor', () => {
       const portfolioData = createEmptyPortfolioData();
       portfolioData.realizedGains = 20000;
       const returnsData = createEmptyReturnsData();
-      returnsData.yieldAmountsForPeriod.taxable.stocks = 10000; // Dividends
-      returnsData.yieldAmountsForPeriod.taxable.bonds = 5000; // Interest
-      returnsData.yieldAmountsForPeriod.cashSavings.cash = 3000; // Cash interest
+      returnsData.yieldAmounts.taxable.stocks = 10000; // Dividends
+      returnsData.yieldAmounts.taxable.bonds = 5000; // Interest
+      returnsData.yieldAmounts.cashSavings.cash = 3000; // Cash interest
 
       const result = processor.process(portfolioData, incomes, returnsData, createEmptyPhysicalAssetsData());
 

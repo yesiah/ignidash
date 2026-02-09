@@ -6,7 +6,7 @@ import type { IncomesData } from './incomes';
 import type { PortfolioData } from './portfolio';
 import type { ReturnsData } from './returns';
 import type { PhysicalAssetsData } from './physical-assets';
-import { sumTransactions } from './asset';
+import { sumFlows } from './asset';
 import {
   STANDARD_DEDUCTION_SINGLE,
   STANDARD_DEDUCTION_MARRIED_FILING_JOINTLY,
@@ -243,14 +243,14 @@ export class TaxProcessor {
         case '401k':
         case '403b':
         case 'ira': {
-          const annualWithdrawals = sumTransactions(account.withdrawals);
+          const annualWithdrawals = sumFlows(account.withdrawals);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < regularQualifiedWithdrawalAge) early401kAndIraWithdrawals += annualWithdrawals;
           break;
         }
         case 'hsa': {
-          const annualWithdrawals = sumTransactions(account.withdrawals);
+          const annualWithdrawals = sumFlows(account.withdrawals);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < hsaQualifiedWithdrawalAge) earlyHsaWithdrawals += annualWithdrawals;
@@ -266,9 +266,8 @@ export class TaxProcessor {
       annualPortfolioDataBeforeTaxes,
       annualPhysicalAssetsData
     );
-    const taxableDividendIncome = annualReturnsData.yieldAmountsForPeriod.taxable.stocks;
-    const taxableInterestIncome =
-      annualReturnsData.yieldAmountsForPeriod.taxable.bonds + annualReturnsData.yieldAmountsForPeriod.cashSavings.cash;
+    const taxableDividendIncome = annualReturnsData.yieldAmounts.taxable.stocks;
+    const taxableInterestIncome = annualReturnsData.yieldAmounts.taxable.bonds + annualReturnsData.yieldAmounts.cashSavings.cash;
 
     const totalIncomeFromIncomes = annualIncomesData.totalIncome;
     const socialSecurityIncome = annualIncomesData.totalSocialSecurityIncome;
@@ -469,7 +468,7 @@ export class TaxProcessor {
   ): number {
     return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
+      .reduce((sum, account) => sum + (sumFlows(account.contributions) - account.employerMatch), 0);
   }
 
   private getStandardDeduction(): number {

@@ -11,7 +11,7 @@ import type { AccountInputs } from '@/lib/schemas/inputs/account-form-schema';
 import type { PortfolioData } from './portfolio';
 import { Account } from './account';
 import type { IncomesData } from './incomes';
-import { sumTransactions } from './asset';
+import { sumFlows } from './asset';
 
 export class ContributionRules {
   private readonly contributionRules: ContributionRule[];
@@ -66,6 +66,7 @@ export class ContributionRule {
     if (this.contributionInput.employerMatch) {
       const employerMatchSoFar = this.getEmployerMatchSoFarByAccountID(monthlyPortfolioData, account.getAccountID());
       const remainingToMaxEmployerMatch = Math.max(0, this.contributionInput.employerMatch - employerMatchSoFar);
+
       employerMatchAmount = Math.min(contributionAmount, remainingToMaxEmployerMatch);
     }
 
@@ -120,7 +121,7 @@ export class ContributionRule {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
+      .reduce((sum, account) => sum + (sumFlows(account.contributions) - account.employerMatch), 0);
   }
 
   private getEmployerMatchSoFarByAccountTypes(monthlyPortfolioData: PortfolioData[], accountTypes: AccountInputs['type'][]): number {
@@ -134,7 +135,7 @@ export class ContributionRule {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => account.id === accountID)
-      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
+      .reduce((sum, account) => sum + (sumFlows(account.contributions) - account.employerMatch), 0);
   }
 
   private getEmployerMatchSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {

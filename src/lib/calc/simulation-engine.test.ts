@@ -252,9 +252,9 @@ describe('Portfolio', () => {
   describe('applyReturns', () => {
     it('should apply returns to all accounts', () => {
       const portfolio = new Portfolio([createSavingsAccount({ balance: 10000 }), create401kAccount({ balance: 90000, percentBonds: 0 })]);
-      const { returnsForPeriod } = portfolio.applyReturns({ stocks: 0.1, bonds: 0.05, cash: 0.02 });
-      expect(returnsForPeriod.cash).toBe(200);
-      expect(returnsForPeriod.stocks).toBe(9000);
+      const { returnAmounts } = portfolio.applyReturns({ stocks: 0.1, bonds: 0.05, cash: 0.02 });
+      expect(returnAmounts.cash).toBe(200);
+      expect(returnAmounts.stocks).toBe(9000);
       expect(portfolio.getTotalValue()).toBe(109200);
     });
   });

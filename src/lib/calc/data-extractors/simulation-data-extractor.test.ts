@@ -28,23 +28,23 @@ const createReturnsData = (returns: { stocks: number; bonds: number; cash: numbe
   },
   annualYieldRates: { stocks: 0, bonds: 0, cash: 0 },
   annualInflationRate: returns.inflation,
-  returnAmountsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-  returnRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+  returnAmounts: { stocks: 0, bonds: 0, cash: 0 },
+  returnRates: { stocks: 0, bonds: 0, cash: 0 },
   cumulativeReturnAmounts: { stocks: 0, bonds: 0, cash: 0 },
-  yieldAmountsForPeriod: {
+  yieldAmounts: {
     taxable: { stocks: 0, bonds: 0, cash: 0 },
     taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
     taxFree: { stocks: 0, bonds: 0, cash: 0 },
     cashSavings: { stocks: 0, bonds: 0, cash: 0 },
   },
-  yieldRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+  yieldRates: { stocks: 0, bonds: 0, cash: 0 },
   cumulativeYieldAmounts: {
     taxable: { stocks: 0, bonds: 0, cash: 0 },
     taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
     taxFree: { stocks: 0, bonds: 0, cash: 0 },
     cashSavings: { stocks: 0, bonds: 0, cash: 0 },
   },
-  inflationRateForPeriod: 0,
+  inflationRate: 0,
   perAccountData: {},
 });
 

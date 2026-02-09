@@ -7,7 +7,7 @@ import { ChartLineIcon } from 'lucide-react';
 
 import type { KeyMetrics } from '@/lib/types/key-metrics';
 import type { SingleSimulationNetWorthChartDataPoint } from '@/lib/types/chart-data-points';
-import type { AccountDataWithTransactions } from '@/lib/calc/account';
+import type { AccountDataWithFlows } from '@/lib/calc/account';
 import type { PhysicalAssetData } from '@/lib/calc/physical-assets';
 import type { DebtData } from '@/lib/calc/debts';
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
@@ -22,10 +22,10 @@ interface CustomTooltipProps {
     value: number;
     name: string;
     color: string;
-    dataKey: keyof SingleSimulationNetWorthChartDataPoint | keyof AccountDataWithTransactions | keyof PhysicalAssetData | keyof DebtData;
+    dataKey: keyof SingleSimulationNetWorthChartDataPoint | keyof AccountDataWithFlows | keyof PhysicalAssetData | keyof DebtData;
     payload:
       | SingleSimulationNetWorthChartDataPoint
-      | ({ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithTransactions)
+      | ({ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithFlows)
       | ({ age: number } & PhysicalAssetData)
       | ({ age: number } & DebtData);
   }>;
@@ -230,13 +230,13 @@ export default function SingleSimulationNetWorthAreaChart({
 
   let chartData:
     | SingleSimulationNetWorthChartDataPoint[]
-    | Array<{ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithTransactions>
+    | Array<{ age: number; stockHoldings: number; bondHoldings: number; cashHoldings: number } & AccountDataWithFlows>
     | Array<{ age: number } & PhysicalAssetData>
     | Array<{ age: number } & DebtData> = useChartDataSlice(rawChartData, 'single');
 
   const areaDataKeys: (
     | keyof SingleSimulationNetWorthChartDataPoint
-    | keyof AccountDataWithTransactions
+    | keyof AccountDataWithFlows
     | keyof PhysicalAssetData
     | keyof DebtData
   )[] = [];
@@ -244,14 +244,14 @@ export default function SingleSimulationNetWorthAreaChart({
 
   const lineDataKeys: (
     | keyof SingleSimulationNetWorthChartDataPoint
-    | keyof AccountDataWithTransactions
+    | keyof AccountDataWithFlows
     | keyof PhysicalAssetData
     | keyof DebtData
   )[] = [];
 
   const barDataKeys: (
     | keyof SingleSimulationNetWorthChartDataPoint
-    | keyof AccountDataWithTransactions
+    | keyof AccountDataWithFlows
     | keyof PhysicalAssetData
     | keyof DebtData
   )[] = [];

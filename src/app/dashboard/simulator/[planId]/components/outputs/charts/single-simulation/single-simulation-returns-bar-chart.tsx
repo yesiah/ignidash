@@ -177,10 +177,10 @@ export default function SingleSimulationReturnsBarChart({
       const perAccountData = chartData.flatMap(({ perAccountData }) => perAccountData).filter(({ id }) => id === customDataID);
       if (perAccountData.length > 0) {
         const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
-        transformedChartData = perAccountData.flatMap(({ returnAmountsForPeriod }) => [
-          { name: stockLabel, amount: returnAmountsForPeriod.stocks, color: 'var(--chart-2)' },
-          { name: bondLabel, amount: returnAmountsForPeriod.bonds, color: 'var(--chart-3)' },
-          { name: cashLabel, amount: returnAmountsForPeriod.cash, color: 'var(--chart-4)' },
+        transformedChartData = perAccountData.flatMap(({ returnAmounts }) => [
+          { name: stockLabel, amount: returnAmounts.stocks, color: 'var(--chart-2)' },
+          { name: bondLabel, amount: returnAmounts.bonds, color: 'var(--chart-3)' },
+          { name: cashLabel, amount: returnAmounts.cash, color: 'var(--chart-4)' },
         ]);
         break;
       }

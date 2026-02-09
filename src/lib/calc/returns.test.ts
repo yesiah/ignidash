@@ -62,11 +62,11 @@ describe('Returns vs Yields - Balance Update Behavior', () => {
       account.applyYields(yields);
       account.applyYields(yields);
 
-      const cumulativeYields = account.getCumulativeYields();
+      const cumulativeYieldAmounts = account.getCumulativeYieldAmounts();
       // 3 months of 0.5% on $10,000 = $150
-      expect(cumulativeYields.cash).toBeCloseTo(150);
-      expect(cumulativeYields.stocks).toBe(0);
-      expect(cumulativeYields.bonds).toBe(0);
+      expect(cumulativeYieldAmounts.cash).toBeCloseTo(150);
+      expect(cumulativeYieldAmounts.stocks).toBe(0);
+      expect(cumulativeYieldAmounts.bonds).toBe(0);
 
       // Balance should remain unchanged
       expect(account.getBalance()).toBe(10000);
@@ -81,7 +81,7 @@ describe('Returns vs Yields - Balance Update Behavior', () => {
       // First month: $10,000 * 1.01 = $10,100
       // Second month: $10,100 * 1.01 = $10,201
       expect(account.getBalance()).toBeCloseTo(10201);
-      expect(result.cumulativeReturns.cash).toBeCloseTo(201);
+      expect(result.cumulativeReturnAmounts.cash).toBeCloseTo(201);
     });
   });
 
@@ -138,9 +138,9 @@ describe('Returns vs Yields - Balance Update Behavior', () => {
       const result = account.applyYields(yields);
 
       // 60% stocks at 1% = $600 dividend
-      expect(result.yieldsForPeriod.stocks).toBeCloseTo(600);
+      expect(result.yieldAmounts.stocks).toBeCloseTo(600);
       // 40% bonds at 2% = $800 interest
-      expect(result.yieldsForPeriod.bonds).toBeCloseTo(800);
+      expect(result.yieldAmounts.bonds).toBeCloseTo(800);
 
       // Balance unchanged
       expect(account.getBalance()).toBe(100000);
@@ -219,9 +219,9 @@ describe('Returns vs Yields - Balance Update Behavior', () => {
       const result = account.applyYields(yields);
 
       // 80% stocks at 1% = $400 dividends
-      expect(result.yieldsForPeriod.stocks).toBeCloseTo(400);
+      expect(result.yieldAmounts.stocks).toBeCloseTo(400);
       // 20% bonds at 2% = $200 interest
-      expect(result.yieldsForPeriod.bonds).toBeCloseTo(200);
+      expect(result.yieldAmounts.bonds).toBeCloseTo(200);
 
       // These yields would be used downstream for tax calculations
       // but don't affect the account balance
@@ -282,8 +282,8 @@ describe('Returns vs Yields - Balance Update Behavior', () => {
       const result = account.applyYields(yields);
 
       // Yields are calculated
-      expect(result.yieldsForPeriod.stocks).toBeCloseTo(210); // 70% of $30k at 1%
-      expect(result.yieldsForPeriod.bonds).toBeCloseTo(180); // 30% of $30k at 2%
+      expect(result.yieldAmounts.stocks).toBeCloseTo(210); // 70% of $30k at 1%
+      expect(result.yieldAmounts.bonds).toBeCloseTo(180); // 30% of $30k at 2%
 
       // But in tax-free accounts, these don't generate taxable income
       // The taxCategory 'taxFree' indicates no tax liability
@@ -363,15 +363,15 @@ describe('Returns and Yields Integration', () => {
     const yieldResult = account.applyYields(yields);
 
     // Returns: 50k stocks * 1% = 500, 50k bonds * 0.5% = 250
-    expect(returnResult.cumulativeReturns.stocks).toBeCloseTo(500);
-    expect(returnResult.cumulativeReturns.bonds).toBeCloseTo(250);
+    expect(returnResult.cumulativeReturnAmounts.stocks).toBeCloseTo(500);
+    expect(returnResult.cumulativeReturnAmounts.bonds).toBeCloseTo(250);
 
     // After returns, balance is 100750, allocation shifted slightly
     // New stocks value: ~50500, new bonds value: ~50250
     // Yields are calculated on current (post-return) allocation
     // Using toBeCloseTo with -1 numDigits (10s precision) since exact values depend on allocation drift
-    expect(yieldResult.cumulativeYields.stocks).toBeCloseTo(101, -1);
-    expect(yieldResult.cumulativeYields.bonds).toBeCloseTo(151, -1);
+    expect(yieldResult.cumulativeYieldAmounts.stocks).toBeCloseTo(101, -1);
+    expect(yieldResult.cumulativeYieldAmounts.bonds).toBeCloseTo(151, -1);
   });
 });
 
@@ -475,8 +475,8 @@ describe('Zero and Negative Returns', () => {
     const returns: AssetReturnRates = { stocks: -0.05, bonds: -0.01, cash: 0 };
     const result = account.applyReturns(returns);
 
-    expect(result.cumulativeReturns.stocks).toBeLessThan(0);
-    expect(result.cumulativeReturns.bonds).toBeLessThan(0);
+    expect(result.cumulativeReturnAmounts.stocks).toBeLessThan(0);
+    expect(result.cumulativeReturnAmounts.bonds).toBeLessThan(0);
   });
 });
 
@@ -491,19 +491,19 @@ describe('ReturnsProcessor.getAnnualData', () => {
   const createMockPortfolio = (monthlyResults: Array<{ period: AssetReturnAmounts; cumulative: AssetReturnAmounts }>): Portfolio => {
     let callIdx = 0;
     return {
-      applyYields: () => ({ yieldsForPeriod: zeroYields(), cumulativeYields: zeroYields() }),
+      applyYields: () => ({ yieldAmounts: zeroYields(), cumulativeYieldAmounts: zeroYields() }),
       applyReturns: () => {
         const data = monthlyResults[callIdx] ?? monthlyResults[monthlyResults.length - 1];
         callIdx++;
         return {
-          returnsForPeriod: data.period,
-          cumulativeReturns: data.cumulative,
+          returnAmounts: data.period,
+          cumulativeReturnAmounts: data.cumulative,
           byAccount: {
             'acc-1': {
               name: 'Test',
               id: 'acc-1',
               type: '401k' as const,
-              returnAmountsForPeriod: data.period,
+              returnAmounts: data.period,
               cumulativeReturnAmounts: data.cumulative,
             },
           },
@@ -592,7 +592,7 @@ describe('ReturnsProcessor.getAnnualData', () => {
     expect(annualData.cumulativeReturnAmounts.cash).toBe(75);
   });
 
-  it('sums returnAmountsForPeriod across all months', () => {
+  it('sums returnAmounts across all months', () => {
     const state = {
       time: { date: new Date(), age: 35, year: 0, month: 1 },
       portfolio: createMockPortfolio([
@@ -620,9 +620,9 @@ describe('ReturnsProcessor.getAnnualData', () => {
     const annualData = processor.getAnnualData();
 
     // Period returns ARE summed: 100+110+120=330
-    expect(annualData.returnAmountsForPeriod.stocks).toBe(330);
-    expect(annualData.returnAmountsForPeriod.bonds).toBe(165);
-    expect(annualData.returnAmountsForPeriod.cash).toBe(83);
+    expect(annualData.returnAmounts.stocks).toBe(330);
+    expect(annualData.returnAmounts.bonds).toBe(165);
+    expect(annualData.returnAmounts.cash).toBe(83);
   });
 
   it('uses last month cumulativeReturnAmounts for per-account data', () => {
@@ -656,7 +656,7 @@ describe('ReturnsProcessor.getAnnualData', () => {
     expect(annualData.perAccountData['acc-1'].cumulativeReturnAmounts.stocks).toBe(300);
   });
 
-  it('sums per-account returnAmountsForPeriod across all months', () => {
+  it('sums per-account returnAmounts across all months', () => {
     const state = {
       time: { date: new Date(), age: 35, year: 0, month: 1 },
       portfolio: createMockPortfolio([
@@ -684,10 +684,10 @@ describe('ReturnsProcessor.getAnnualData', () => {
     const annualData = processor.getAnnualData();
 
     // Per-account period returns ARE summed
-    expect(annualData.perAccountData['acc-1'].returnAmountsForPeriod.stocks).toBe(330);
+    expect(annualData.perAccountData['acc-1'].returnAmounts.stocks).toBe(330);
   });
 
-  it('sums yieldAmountsForPeriod across all months for each tax category', () => {
+  it('sums yieldAmounts across all months for each tax category', () => {
     // Create mock that returns non-zero yields per tax category
     let yieldCallIdx = 0;
     const monthlyYields: Array<Record<TaxCategory, AssetYieldAmounts>> = [
@@ -715,11 +715,11 @@ describe('ReturnsProcessor.getAnnualData', () => {
       applyYields: () => {
         const yields = monthlyYields[yieldCallIdx] ?? monthlyYields[monthlyYields.length - 1];
         yieldCallIdx++;
-        return { yieldsForPeriod: yields, cumulativeYields: yields };
+        return { yieldAmounts: yields, cumulativeYieldAmounts: yields };
       },
       applyReturns: () => ({
-        returnsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-        cumulativeReturns: { stocks: 0, bonds: 0, cash: 0 },
+        returnAmounts: { stocks: 0, bonds: 0, cash: 0 },
+        cumulativeReturnAmounts: { stocks: 0, bonds: 0, cash: 0 },
         byAccount: {},
       }),
     } as unknown as Portfolio;
@@ -747,23 +747,23 @@ describe('ReturnsProcessor.getAnnualData', () => {
     const annualData = processor.getAnnualData();
 
     // Yields ARE summed across months: 10+12+14=36, 5+6+7=18, 2+3+4=9
-    expect(annualData.yieldAmountsForPeriod.taxable.stocks).toBe(36);
-    expect(annualData.yieldAmountsForPeriod.taxable.bonds).toBe(18);
-    expect(annualData.yieldAmountsForPeriod.taxable.cash).toBe(9);
+    expect(annualData.yieldAmounts.taxable.stocks).toBe(36);
+    expect(annualData.yieldAmounts.taxable.bonds).toBe(18);
+    expect(annualData.yieldAmounts.taxable.cash).toBe(9);
 
     // taxDeferred: 20+22+24=66, 10+11+12=33, 4+5+6=15
-    expect(annualData.yieldAmountsForPeriod.taxDeferred.stocks).toBe(66);
-    expect(annualData.yieldAmountsForPeriod.taxDeferred.bonds).toBe(33);
-    expect(annualData.yieldAmountsForPeriod.taxDeferred.cash).toBe(15);
+    expect(annualData.yieldAmounts.taxDeferred.stocks).toBe(66);
+    expect(annualData.yieldAmounts.taxDeferred.bonds).toBe(33);
+    expect(annualData.yieldAmounts.taxDeferred.cash).toBe(15);
 
     // taxFree: 15+17+19=51, 8+9+10=27, 3+4+5=12
-    expect(annualData.yieldAmountsForPeriod.taxFree.stocks).toBe(51);
-    expect(annualData.yieldAmountsForPeriod.taxFree.bonds).toBe(27);
-    expect(annualData.yieldAmountsForPeriod.taxFree.cash).toBe(12);
+    expect(annualData.yieldAmounts.taxFree.stocks).toBe(51);
+    expect(annualData.yieldAmounts.taxFree.bonds).toBe(27);
+    expect(annualData.yieldAmounts.taxFree.cash).toBe(12);
 
     // cashSavings: 0+0+0=0, 0+0+0=0, 6+7+8=21
-    expect(annualData.yieldAmountsForPeriod.cashSavings.stocks).toBe(0);
-    expect(annualData.yieldAmountsForPeriod.cashSavings.bonds).toBe(0);
-    expect(annualData.yieldAmountsForPeriod.cashSavings.cash).toBe(21);
+    expect(annualData.yieldAmounts.cashSavings.stocks).toBe(0);
+    expect(annualData.yieldAmounts.cashSavings.bonds).toBe(0);
+    expect(annualData.yieldAmounts.cashSavings.cash).toBe(21);
   });
 });

@@ -241,11 +241,10 @@ export default function SingleSimulationReturnsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualStockGain: account.returnAmountsForPeriod.stocks,
-            annualBondGain: account.returnAmountsForPeriod.bonds,
-            annualCashGain: account.returnAmountsForPeriod.cash,
-            totalAnnualGains:
-              account.returnAmountsForPeriod.stocks + account.returnAmountsForPeriod.bonds + account.returnAmountsForPeriod.cash,
+            annualStockGain: account.returnAmounts.stocks,
+            annualBondGain: account.returnAmounts.bonds,
+            annualCashGain: account.returnAmounts.cash,
+            totalAnnualGains: account.returnAmounts.stocks + account.returnAmounts.bonds + account.returnAmounts.cash,
           }))
       );
       if (perAccountData.length > 0) {

@@ -79,23 +79,23 @@ function createNetWorthTestDataPoint(options: {
     annualReturnRates: { stocks: 0, bonds: 0, cash: 0 },
     annualYieldRates: { stocks: 0, bonds: 0, cash: 0 },
     annualInflationRate: 0,
-    returnAmountsForPeriod: returns,
-    returnRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    returnAmounts: returns,
+    returnRates: { stocks: 0, bonds: 0, cash: 0 },
     cumulativeReturnAmounts: returns,
-    yieldAmountsForPeriod: {
+    yieldAmounts: {
       taxable: { stocks: 0, bonds: 0, cash: 0 },
       taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
       taxFree: { stocks: 0, bonds: 0, cash: 0 },
       cashSavings: { stocks: 0, bonds: 0, cash: 0 },
     },
-    yieldRatesForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    yieldRates: { stocks: 0, bonds: 0, cash: 0 },
     cumulativeYieldAmounts: {
       taxable: { stocks: 0, bonds: 0, cash: 0 },
       taxDeferred: { stocks: 0, bonds: 0, cash: 0 },
       taxFree: { stocks: 0, bonds: 0, cash: 0 },
       cashSavings: { stocks: 0, bonds: 0, cash: 0 },
     },
-    inflationRateForPeriod: 0,
+    inflationRate: 0,
     perAccountData: {},
   };
 

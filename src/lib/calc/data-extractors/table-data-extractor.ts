@@ -8,7 +8,7 @@ import type {
 } from '@/lib/schemas/tables/single-simulation-table-schema';
 import type { MultiSimulationTableRow, YearlyAggregateTableRow } from '@/lib/schemas/tables/multi-simulation-table-schema';
 import { type Percentiles, StatsUtils } from '@/lib/utils/stats-utils';
-import { sumTransactions, sumReturnAmounts } from '@/lib/calc/asset';
+import { sumFlows, sumReturnAmounts } from '@/lib/calc/asset';
 
 import type { SimulationResult, MultiSimulationResult } from '../simulation-engine';
 import { SimulationDataExtractor } from './simulation-data-extractor';
@@ -88,15 +88,11 @@ export abstract class TableDataExtractor {
         };
       }
 
-      const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
-      const annualContributions = sumTransactions(portfolioData.contributions);
+      const annualWithdrawals = sumFlows(portfolioData.withdrawals);
+      const annualContributions = sumFlows(portfolioData.contributions);
 
       const returnsData = data.returns;
-      const {
-        stocks: stockAmount,
-        bonds: bondAmount,
-        cash: cashAmount,
-      } = returnsData?.returnAmountsForPeriod ?? { stocks: 0, bonds: 0, cash: 0 };
+      const { stocks: stockAmount, bonds: bondAmount, cash: cashAmount } = returnsData?.returnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
 
       const netPortfolioChange = stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals;
 
@@ -390,7 +386,7 @@ export abstract class TableDataExtractor {
       const returnsData = data.returns;
 
       const totalCumulativeGains = sumReturnAmounts(returnsData!.cumulativeReturnAmounts);
-      const totalAnnualGains = sumReturnAmounts(returnsData!.returnAmountsForPeriod);
+      const totalAnnualGains = sumReturnAmounts(returnsData!.returnAmounts);
 
       const { taxableGains, taxDeferredGains, taxFreeGains, cashSavingsGains } = SimulationDataExtractor.getGainsByTaxCategory(data);
 
@@ -411,15 +407,15 @@ export abstract class TableDataExtractor {
         cashSavingsGains,
         stockReturnRate: returnsData?.annualReturnRates.stocks ?? null,
         cumulativeStockGain: returnsData?.cumulativeReturnAmounts.stocks ?? null,
-        annualStockGain: returnsData?.returnAmountsForPeriod.stocks ?? null,
+        annualStockGain: returnsData?.returnAmounts.stocks ?? null,
         stockHoldings,
         bondReturnRate: returnsData?.annualReturnRates.bonds ?? null,
         cumulativeBondGain: returnsData?.cumulativeReturnAmounts.bonds ?? null,
-        annualBondGain: returnsData?.returnAmountsForPeriod.bonds ?? null,
+        annualBondGain: returnsData?.returnAmounts.bonds ?? null,
         bondHoldings,
         cashReturnRate: returnsData?.annualReturnRates.cash ?? null,
         cumulativeCashGain: returnsData?.cumulativeReturnAmounts.cash ?? null,
-        annualCashGain: returnsData?.returnAmountsForPeriod.cash ?? null,
+        annualCashGain: returnsData?.returnAmounts.cash ?? null,
         cashHoldings,
         inflationRate: returnsData?.annualInflationRate ?? null,
         annualAssetAppreciation,
@@ -466,8 +462,8 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualContributions = sumTransactions(portfolioData.contributions);
-      const cumulativeContributions = sumTransactions(portfolioData.cumulativeContributions);
+      const annualContributions = sumFlows(portfolioData.contributions);
+      const cumulativeContributions = sumFlows(portfolioData.cumulativeContributions);
       const annualEmployerMatch = portfolioData.employerMatch;
 
       const { taxableContributions, taxDeferredContributions, taxFreeContributions, cashSavingsContributions } =
@@ -545,8 +541,8 @@ export abstract class TableDataExtractor {
 
       const portfolioData = data.portfolio;
       const totalPortfolioValue = portfolioData.totalValue;
-      const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
-      const cumulativeWithdrawals = sumTransactions(portfolioData.cumulativeWithdrawals);
+      const annualWithdrawals = sumFlows(portfolioData.withdrawals);
+      const cumulativeWithdrawals = sumFlows(portfolioData.cumulativeWithdrawals);
 
       const { taxableWithdrawals, taxDeferredWithdrawals, taxFreeWithdrawals, cashSavingsWithdrawals } =
         SimulationDataExtractor.getWithdrawalsByTaxCategory(data, age);
@@ -628,8 +624,8 @@ export abstract class TableDataExtractor {
       const cumulativeReturnAmounts = lastDp.returns?.cumulativeReturnAmounts ?? { stocks: 0, bonds: 0, cash: 0 };
       const lifetimeReturns = sumReturnAmounts(cumulativeReturnAmounts);
 
-      const lifetimeContributions = sumTransactions(lastDp.portfolio.cumulativeContributions);
-      const lifetimeWithdrawals = sumTransactions(lastDp.portfolio.cumulativeWithdrawals);
+      const lifetimeContributions = sumFlows(lastDp.portfolio.cumulativeContributions);
+      const lifetimeWithdrawals = sumFlows(lastDp.portfolio.cumulativeWithdrawals);
 
       return {
         seed,

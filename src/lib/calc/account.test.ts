@@ -433,7 +433,7 @@ describe('cumulative tracking', () => {
     // Second month returns
     account.applyReturns({ stocks: 0.02, bonds: 0.003, cash: 0 });
 
-    const cumulative = account.getCumulativeReturns();
+    const cumulative = account.getCumulativeReturnAmounts();
     expect(cumulative.stocks).toBeGreaterThan(0);
     expect(cumulative.bonds).toBeGreaterThan(0);
   });

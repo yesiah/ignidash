@@ -8,28 +8,21 @@ export interface AccountDataWithReturns {
   name: string;
   id: string;
   type: AccountInputs['type'];
-  returnAmountsForPeriod: AssetReturnAmounts;
+  returnAmounts: AssetReturnAmounts;
   cumulativeReturnAmounts: AssetReturnAmounts;
 }
 
 export interface ReturnsData {
-  // Cumulative return data
   cumulativeReturnAmounts: AssetReturnAmounts;
   cumulativeYieldAmounts: Record<TaxCategory, AssetYieldAmounts>;
-
-  // Monthly return data
-  returnAmountsForPeriod: AssetReturnAmounts;
-  returnRatesForPeriod: AssetReturnRates;
-  yieldAmountsForPeriod: Record<TaxCategory, AssetYieldAmounts>;
-  yieldRatesForPeriod: AssetYieldRates;
-  inflationRateForPeriod: number;
-
-  // Annual return data
+  returnAmounts: AssetReturnAmounts;
+  returnRates: AssetReturnRates;
+  yieldAmounts: Record<TaxCategory, AssetYieldAmounts>;
+  yieldRates: AssetYieldRates;
+  inflationRate: number;
   annualReturnRates: AssetReturnRates;
   annualYieldRates: AssetYieldRates;
   annualInflationRate: number;
-
-  // Per account data
   perAccountData: Record<string, AccountDataWithReturns>;
 }
 
@@ -56,6 +49,7 @@ export class ReturnsProcessor {
       bonds: returns.yields.bonds / 100,
       cash: returns.yields.cash / 100,
     };
+
     this.lastYear = this.simulationState.time.year;
   }
 
@@ -72,38 +66,34 @@ export class ReturnsProcessor {
         bonds: returns.yields.bonds / 100,
         cash: returns.yields.cash / 100,
       };
+
       this.lastYear = Math.floor(currentYear);
     }
 
-    const returnRatesForPeriod: AssetReturnRates = {
+    const returnRates: AssetReturnRates = {
       stocks: Math.pow(1 + this.cachedAnnualReturnRates.stocks, 1 / 12) - 1,
       bonds: Math.pow(1 + this.cachedAnnualReturnRates.bonds, 1 / 12) - 1,
       cash: Math.pow(1 + this.cachedAnnualReturnRates.cash, 1 / 12) - 1,
     };
-    const inflationRateForPeriod = Math.pow(1 + this.cachedAnnualInflationRate, 1 / 12) - 1;
-    const yieldRatesForPeriod: AssetYieldRates = {
+    const inflationRate = Math.pow(1 + this.cachedAnnualInflationRate, 1 / 12) - 1;
+    const yieldRates: AssetYieldRates = {
       stocks: this.cachedAnnualYieldRates.stocks / 12,
       bonds: this.cachedAnnualYieldRates.bonds / 12,
       cash: this.cachedAnnualYieldRates.cash / 12,
     };
 
-    const { yieldsForPeriod: yieldAmountsForPeriod, cumulativeYields: cumulativeYieldAmounts } =
-      this.simulationState.portfolio.applyYields(yieldRatesForPeriod);
+    const { yieldAmounts, cumulativeYieldAmounts } = this.simulationState.portfolio.applyYields(yieldRates);
 
-    const {
-      returnsForPeriod: returnAmountsForPeriod,
-      cumulativeReturns: cumulativeReturnAmounts,
-      byAccount: perAccountData,
-    } = this.simulationState.portfolio.applyReturns(returnRatesForPeriod);
+    const { returnAmounts, cumulativeReturnAmounts, byAccount: perAccountData } = this.simulationState.portfolio.applyReturns(returnRates);
 
     const result = {
       cumulativeReturnAmounts,
       cumulativeYieldAmounts,
-      returnAmountsForPeriod,
-      returnRatesForPeriod,
-      inflationRateForPeriod,
-      yieldAmountsForPeriod,
-      yieldRatesForPeriod,
+      returnAmounts,
+      returnRates,
+      inflationRate,
+      yieldAmounts,
+      yieldRates,
       annualReturnRates: this.cachedAnnualReturnRates,
       annualInflationRate: this.cachedAnnualInflationRate,
       annualYieldRates: this.cachedAnnualYieldRates,
@@ -136,28 +126,25 @@ export class ReturnsProcessor {
       ...lastMonthData,
       ...this.monthlyData.reduce(
         (acc, curr) => {
-          acc.returnAmountsForPeriod = addAssetAmounts(acc.returnAmountsForPeriod, curr.returnAmountsForPeriod);
+          acc.returnAmounts = addAssetAmounts(acc.returnAmounts, curr.returnAmounts);
 
           for (const category of TAX_CATEGORIES) {
-            acc.yieldAmountsForPeriod[category] = addAssetAmounts(
-              acc.yieldAmountsForPeriod[category],
-              curr.yieldAmountsForPeriod[category]
-            );
+            acc.yieldAmounts[category] = addAssetAmounts(acc.yieldAmounts[category], curr.yieldAmounts[category]);
           }
 
           for (const [accountID, accountData] of Object.entries(curr.perAccountData)) {
             const existing = acc.perAccountData[accountID];
             acc.perAccountData[accountID] = {
               ...accountData,
-              returnAmountsForPeriod: addAssetAmounts(existing?.returnAmountsForPeriod, accountData.returnAmountsForPeriod),
+              returnAmounts: addAssetAmounts(existing?.returnAmounts, accountData.returnAmounts),
             };
           }
 
           return acc;
         },
         {
-          returnAmountsForPeriod: { ...zeroAssetReturnAmounts },
-          yieldAmountsForPeriod: {
+          returnAmounts: { ...zeroAssetReturnAmounts },
+          yieldAmounts: {
             taxable: { ...zeroAssetYieldAmounts },
             taxDeferred: { ...zeroAssetYieldAmounts },
             taxFree: { ...zeroAssetYieldAmounts },
