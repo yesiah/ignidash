@@ -145,10 +145,10 @@ export default function SingleSimulationContributionsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .flatMap(({ name, contributionsForPeriod }) => [
-          { name: `${name} — Stock Contrib.`, amount: contributionsForPeriod.stocks, color: 'var(--chart-1)' },
-          { name: `${name} — Bond Contrib.`, amount: contributionsForPeriod.bonds, color: 'var(--chart-2)' },
-          { name: `${name} — Cash Contrib.`, amount: contributionsForPeriod.cash, color: 'var(--chart-3)' },
+        .flatMap(({ name, contributions }) => [
+          { name: `${name} — Stock Contrib.`, amount: contributions.stocks, color: 'var(--chart-1)' },
+          { name: `${name} — Bond Contrib.`, amount: contributions.bonds, color: 'var(--chart-2)' },
+          { name: `${name} — Cash Contrib.`, amount: contributions.cash, color: 'var(--chart-3)' },
         ]);
       break;
     }

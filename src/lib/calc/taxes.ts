@@ -234,7 +234,7 @@ export class TaxProcessor {
         case 'roth403b':
         case 'rothIra': {
           if (age < regularQualifiedWithdrawalAge) {
-            const annualEarningsWithdrawn = account.earningsWithdrawnForPeriod;
+            const annualEarningsWithdrawn = account.earningsWithdrawn;
 
             earlyRothEarningsWithdrawals += annualEarningsWithdrawn;
           }
@@ -243,14 +243,14 @@ export class TaxProcessor {
         case '401k':
         case '403b':
         case 'ira': {
-          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
+          const annualWithdrawals = sumTransactions(account.withdrawals);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < regularQualifiedWithdrawalAge) early401kAndIraWithdrawals += annualWithdrawals;
           break;
         }
         case 'hsa': {
-          const annualWithdrawals = sumTransactions(account.withdrawalsForPeriod);
+          const annualWithdrawals = sumTransactions(account.withdrawals);
 
           taxDeferredWithdrawals += annualWithdrawals;
           if (age < hsaQualifiedWithdrawalAge) earlyHsaWithdrawals += annualWithdrawals;
@@ -347,7 +347,7 @@ export class TaxProcessor {
     const { section121Exclusion, physicalAssetRealizedGains } = this.getSection121Exclusion(annualPhysicalAssetsData);
 
     const realizedGainsAfterCarryover =
-      annualPortfolioDataBeforeTaxes.realizedGainsForPeriod + physicalAssetRealizedGains + this.capitalLossCarryover;
+      annualPortfolioDataBeforeTaxes.realizedGains + physicalAssetRealizedGains + this.capitalLossCarryover;
 
     if (realizedGainsAfterCarryover >= 0) {
       this.capitalLossCarryover = 0;
@@ -469,7 +469,7 @@ export class TaxProcessor {
   ): number {
     return Object.values(annualPortfolioDataBeforeTaxes.perAccountData)
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
   }
 
   private getStandardDeduction(): number {

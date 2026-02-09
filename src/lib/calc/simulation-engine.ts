@@ -272,12 +272,12 @@ export class FinancialSimulationEngine {
     const defaultAssetTransactions = { stocks: 0, bonds: 0, cash: 0 };
 
     const defaultTransactionsData = {
-      contributionsForPeriod: { ...defaultAssetTransactions },
-      employerMatchForPeriod: 0,
-      withdrawalsForPeriod: { ...defaultAssetTransactions },
-      realizedGainsForPeriod: 0,
-      earningsWithdrawnForPeriod: 0,
-      rmdsForPeriod: 0,
+      contributions: { ...defaultAssetTransactions },
+      employerMatch: 0,
+      withdrawals: { ...defaultAssetTransactions },
+      realizedGains: 0,
+      earningsWithdrawn: 0,
+      rmds: 0,
     };
 
     const perAccountData: Record<string, AccountDataWithTransactions> = Object.fromEntries(
@@ -377,14 +377,14 @@ export class FinancialSimulationEngine {
         cumulativeEarningsWithdrawn: 0,
         cumulativeRmds: 0,
         outstandingShortfall: 0,
-        contributionsForPeriod: { ...defaultAssetTransactions },
-        employerMatchForPeriod: 0,
-        withdrawalsForPeriod: { ...defaultAssetTransactions },
-        realizedGainsForPeriod: 0,
-        earningsWithdrawnForPeriod: 0,
-        rmdsForPeriod: 0,
-        shortfallForPeriod: 0,
-        shortfallRepaidForPeriod: 0,
+        contributions: { ...defaultAssetTransactions },
+        employerMatch: 0,
+        withdrawals: { ...defaultAssetTransactions },
+        realizedGains: 0,
+        earningsWithdrawn: 0,
+        rmds: 0,
+        shortfall: 0,
+        shortfallRepaid: 0,
         perAccountData,
         assetAllocation,
       },

@@ -132,8 +132,8 @@ function NetWorthDataListCard({ dp, selectedAge }: DataListCardProps) {
 
   const portfolioData = dp.portfolio;
 
-  const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+  const annualContributions = sumTransactions(portfolioData.contributions);
+  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
 
   return (
     <Card className="my-0">
@@ -169,8 +169,8 @@ function CashFlowDataListCard({ dp, selectedAge }: DataListCardProps) {
 
   const portfolioData = dp.portfolio;
 
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
-  const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
+  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
+  const annualContributions = sumTransactions(portfolioData.contributions);
 
   return (
     <div>
@@ -283,7 +283,7 @@ function ReturnsDataListCard({ dp, selectedAge }: DataListCardProps) {
 function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
-  const annualContributions = sumTransactions(portfolioData.contributionsForPeriod);
+  const annualContributions = sumTransactions(portfolioData.contributions);
 
   const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const savingsRate = SimulationDataExtractor.getSavingsRate(dp);
@@ -324,7 +324,7 @@ function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
 function WithdrawalsDataListCard({ dp, selectedAge }: DataListCardProps) {
   const portfolioData = dp.portfolio;
   const totalValue = portfolioData.totalValue;
-  const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+  const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
 
   const { surplusDeficit } = SimulationDataExtractor.getCashFlowData(dp);
   const withdrawalRate = SimulationDataExtractor.getWithdrawalRate(dp);

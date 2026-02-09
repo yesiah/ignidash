@@ -120,27 +120,27 @@ export class ContributionRule {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
   }
 
   private getEmployerMatchSoFarByAccountTypes(monthlyPortfolioData: PortfolioData[], accountTypes: AccountInputs['type'][]): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => accountTypes.includes(account.type))
-      .reduce((sum, account) => sum + account.employerMatchForPeriod, 0);
+      .reduce((sum, account) => sum + account.employerMatch, 0);
   }
 
   private getEmployeeContributionsSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => account.id === accountID)
-      .reduce((sum, account) => sum + (sumTransactions(account.contributionsForPeriod) - account.employerMatchForPeriod), 0);
+      .reduce((sum, account) => sum + (sumTransactions(account.contributions) - account.employerMatch), 0);
   }
 
   private getEmployerMatchSoFarByAccountID(monthlyPortfolioData: PortfolioData[], accountID: string): number {
     return monthlyPortfolioData
       .flatMap((data) => Object.values(data.perAccountData))
       .filter((account) => account.id === accountID)
-      .reduce((sum, account) => sum + account.employerMatchForPeriod, 0);
+      .reduce((sum, account) => sum + account.employerMatch, 0);
   }
 }

@@ -271,9 +271,9 @@ export default function SingleSimulationWithdrawalsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualStockWithdrawals: account.withdrawalsForPeriod.stocks,
-            annualBondWithdrawals: account.withdrawalsForPeriod.bonds,
-            annualCashWithdrawals: account.withdrawalsForPeriod.cash,
+            annualStockWithdrawals: account.withdrawals.stocks,
+            annualBondWithdrawals: account.withdrawals.bonds,
+            annualCashWithdrawals: account.withdrawals.cash,
           }))
       );
 

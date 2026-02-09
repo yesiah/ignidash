@@ -189,9 +189,9 @@ export default function SingleSimulationContributionsLineChart({
           .map((account) => ({
             age,
             ...account,
-            annualStockContributions: account.contributionsForPeriod.stocks,
-            annualBondContributions: account.contributionsForPeriod.bonds,
-            annualCashContributions: account.contributionsForPeriod.cash,
+            annualStockContributions: account.contributions.stocks,
+            annualBondContributions: account.contributions.bonds,
+            annualCashContributions: account.contributions.cash,
           }))
       );
 

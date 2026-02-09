@@ -55,7 +55,7 @@ export abstract class KeyMetricsExtractor {
         break;
     }
 
-    const shortfallOccurred = data.some((dp) => dp.portfolio.shortfallForPeriod > 0);
+    const shortfallOccurred = data.some((dp) => dp.portfolio.shortfall > 0);
     const success = Number(retirementAge !== null && finalPortfolio > 0.1 && !shortfallOccurred);
 
     const { lifetimeTaxesAndPenalties } = SimulationDataExtractor.getLifetimeTaxesAndPenalties(data);

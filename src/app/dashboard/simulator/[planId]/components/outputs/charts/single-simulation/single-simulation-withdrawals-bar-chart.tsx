@@ -168,10 +168,10 @@ export default function SingleSimulationWithdrawalsBarChart({
       transformedChartData = chartData
         .flatMap(({ perAccountData }) => perAccountData)
         .filter(({ id }) => id === customDataID)
-        .flatMap(({ name, withdrawalsForPeriod }) => [
-          { name: `${name} — Stock Withdrawals`, amount: withdrawalsForPeriod.stocks, color: 'var(--chart-1)' },
-          { name: `${name} — Bond Withdrawals`, amount: withdrawalsForPeriod.bonds, color: 'var(--chart-2)' },
-          { name: `${name} — Cash Withdrawals`, amount: withdrawalsForPeriod.cash, color: 'var(--chart-3)' },
+        .flatMap(({ name, withdrawals }) => [
+          { name: `${name} — Stock Withdrawals`, amount: withdrawals.stocks, color: 'var(--chart-1)' },
+          { name: `${name} — Bond Withdrawals`, amount: withdrawals.bonds, color: 'var(--chart-2)' },
+          { name: `${name} — Cash Withdrawals`, amount: withdrawals.cash, color: 'var(--chart-3)' },
         ]);
       break;
     }

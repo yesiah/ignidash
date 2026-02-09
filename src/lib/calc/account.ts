@@ -28,12 +28,12 @@ export interface AccountData {
 }
 
 export interface AccountDataWithTransactions extends AccountData {
-  contributionsForPeriod: AssetTransactions;
-  employerMatchForPeriod: number;
-  withdrawalsForPeriod: AssetTransactions;
-  realizedGainsForPeriod: number;
-  earningsWithdrawnForPeriod: number;
-  rmdsForPeriod: number;
+  contributions: AssetTransactions;
+  employerMatch: number;
+  withdrawals: AssetTransactions;
+  realizedGains: number;
+  earningsWithdrawn: number;
+  rmds: number;
 }
 
 export abstract class Account {

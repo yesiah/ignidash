@@ -230,7 +230,7 @@ export class SimulationDataExtractor {
     const taxFreeIncome = incomesData?.totalTaxFreeIncome ?? 0;
     const earnedIncome = totalIncomeFromIncomes - socialSecurityIncome - taxFreeIncome;
 
-    const employerMatch = portfolioData.employerMatchForPeriod;
+    const employerMatch = portfolioData.employerMatch;
     const totalIncome = totalIncomeFromIncomes;
 
     const totalExpenses = expensesData?.totalExpenses ?? 0;
@@ -243,8 +243,8 @@ export class SimulationDataExtractor {
 
     const surplusDeficit = totalIncome - totalExpenses - totalTaxesAndPenalties - totalDebtPayments;
 
-    const amountInvested = sumInvestments(portfolioData.contributionsForPeriod) - employerMatch;
-    const amountLiquidated = sumLiquidations(portfolioData.withdrawalsForPeriod);
+    const amountInvested = sumInvestments(portfolioData.contributions) - employerMatch;
+    const amountLiquidated = sumLiquidations(portfolioData.withdrawals);
 
     const assetPurchaseOutlay = physicalAssetsData?.totalPurchaseOutlay ?? 0;
     const assetSaleProceeds = physicalAssetsData?.totalSaleProceeds ?? 0;
@@ -306,21 +306,21 @@ export class SimulationDataExtractor {
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'savings':
-          cashSavingsContributions += sumTransactions(account.contributionsForPeriod);
+          cashSavingsContributions += sumTransactions(account.contributions);
           break;
         case 'taxableBrokerage':
-          taxableContributions += sumTransactions(account.contributionsForPeriod);
+          taxableContributions += sumTransactions(account.contributions);
           break;
         case '401k':
         case '403b':
         case 'ira':
         case 'hsa':
-          taxDeferredContributions += sumTransactions(account.contributionsForPeriod);
+          taxDeferredContributions += sumTransactions(account.contributions);
           break;
         case 'roth401k':
         case 'roth403b':
         case 'rothIra':
-          taxFreeContributions += sumTransactions(account.contributionsForPeriod);
+          taxFreeContributions += sumTransactions(account.contributions);
           break;
       }
     }
@@ -339,23 +339,23 @@ export class SimulationDataExtractor {
     for (const account of Object.values(portfolioData.perAccountData)) {
       switch (account.type) {
         case 'savings':
-          cashSavingsWithdrawals += sumTransactions(account.withdrawalsForPeriod);
+          cashSavingsWithdrawals += sumTransactions(account.withdrawals);
           break;
         case 'taxableBrokerage':
-          taxableWithdrawals += sumTransactions(account.withdrawalsForPeriod);
+          taxableWithdrawals += sumTransactions(account.withdrawals);
           break;
         case '401k':
         case '403b':
         case 'ira':
-          taxDeferredWithdrawals += sumTransactions(account.withdrawalsForPeriod);
+          taxDeferredWithdrawals += sumTransactions(account.withdrawals);
           break;
         case 'hsa':
-          taxDeferredWithdrawals += sumTransactions(account.withdrawalsForPeriod);
+          taxDeferredWithdrawals += sumTransactions(account.withdrawals);
           break;
         case 'roth401k':
         case 'roth403b':
         case 'rothIra':
-          taxFreeWithdrawals += sumTransactions(account.withdrawalsForPeriod);
+          taxFreeWithdrawals += sumTransactions(account.withdrawals);
           break;
       }
     }
@@ -550,7 +550,7 @@ export class SimulationDataExtractor {
     const portfolioData = dp.portfolio;
 
     const totalValue = portfolioData.totalValue;
-    const annualWithdrawals = sumTransactions(portfolioData.withdrawalsForPeriod);
+    const annualWithdrawals = sumTransactions(portfolioData.withdrawals);
 
     return totalValue + annualWithdrawals > 0 ? annualWithdrawals / (totalValue + annualWithdrawals) : null;
   }

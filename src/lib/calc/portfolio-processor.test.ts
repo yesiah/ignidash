@@ -49,7 +49,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // Should withdraw from savings first (up to 5000 available)
-      expect(result.portfolioData.perAccountData['savings-1'].withdrawalsForPeriod.cash).toBe(3000);
+      expect(result.portfolioData.perAccountData['savings-1'].withdrawals.cash).toBe(3000);
     });
 
     it('should withdraw from taxable brokerage second before age 59.5', () => {
@@ -72,8 +72,8 @@ describe('PortfolioProcessor', () => {
       );
 
       // 1k from savings, 4k from taxable
-      expect(result.portfolioData.perAccountData['savings-1'].withdrawalsForPeriod.cash).toBe(1000);
-      const taxableWithdrawals = result.portfolioData.perAccountData['taxable-1'].withdrawalsForPeriod;
+      expect(result.portfolioData.perAccountData['savings-1'].withdrawals.cash).toBe(1000);
+      const taxableWithdrawals = result.portfolioData.perAccountData['taxable-1'].withdrawals;
       expect(taxableWithdrawals.stocks + taxableWithdrawals.bonds).toBeCloseTo(4000, 0);
     });
 
@@ -98,7 +98,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // 1k from savings, 1k from taxable, up to 8k from Roth contributions
-      const rothWithdrawals = result.portfolioData.perAccountData['roth-1'].withdrawalsForPeriod;
+      const rothWithdrawals = result.portfolioData.perAccountData['roth-1'].withdrawals;
       expect(rothWithdrawals.stocks + rothWithdrawals.bonds).toBeCloseTo(8000, 0);
       // Should not touch earnings yet (contributions only modifier)
     });
@@ -124,7 +124,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // 1k from savings, then tax-deferred (401k) before taxable
-      const k401Withdrawals = result.portfolioData.perAccountData['401k-1'].withdrawalsForPeriod;
+      const k401Withdrawals = result.portfolioData.perAccountData['401k-1'].withdrawals;
       expect(k401Withdrawals.stocks + k401Withdrawals.bonds).toBeCloseTo(19000, 0);
     });
 
@@ -155,7 +155,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // Before 59.5: should withdraw from taxable first
-      const taxableWithdrawalsBefore = resultBefore.portfolioData.perAccountData['taxable-1'].withdrawalsForPeriod;
+      const taxableWithdrawalsBefore = resultBefore.portfolioData.perAccountData['taxable-1'].withdrawals;
       expect(taxableWithdrawalsBefore.stocks + taxableWithdrawalsBefore.bonds).toBeCloseTo(10000, 0);
 
       // After 59.5
@@ -179,7 +179,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // At 59.5: should withdraw from 401k first
-      const k401WithdrawalsAfter = resultAfter.portfolioData.perAccountData['401k-1'].withdrawalsForPeriod;
+      const k401WithdrawalsAfter = resultAfter.portfolioData.perAccountData['401k-1'].withdrawals;
       expect(k401WithdrawalsAfter.stocks + k401WithdrawalsAfter.bonds).toBeCloseTo(10000, 0);
     });
 
@@ -206,7 +206,7 @@ describe('PortfolioProcessor', () => {
 
       // 1k savings + 1k 401k + 1k taxable + 1k roth = 4k from other accounts
       // 6k should come from HSA
-      const hsaWithdrawals = result.portfolioData.perAccountData['hsa-1'].withdrawalsForPeriod;
+      const hsaWithdrawals = result.portfolioData.perAccountData['hsa-1'].withdrawals;
       expect(hsaWithdrawals.stocks + hsaWithdrawals.bonds).toBeCloseTo(6000, 0);
     });
   });
@@ -229,7 +229,7 @@ describe('PortfolioProcessor', () => {
 
       // At age 75, factor is 24.6
       const expectedRmd = 100000 / uniformLifetimeMap[75];
-      expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+      expect(result.rmds).toBeCloseTo(expectedRmd, 2);
     });
 
     it('should apply RMD to 401k, 403b, and IRA but not Roth', () => {
@@ -252,10 +252,10 @@ describe('PortfolioProcessor', () => {
       const expected401kRmd = 100000 / factor;
       const expectedIraRmd = 50000 / factor;
 
-      expect(result.perAccountData['401k-1'].rmdsForPeriod).toBeCloseTo(expected401kRmd, 2);
-      expect(result.perAccountData['ira-1'].rmdsForPeriod).toBeCloseTo(expectedIraRmd, 2);
+      expect(result.perAccountData['401k-1'].rmds).toBeCloseTo(expected401kRmd, 2);
+      expect(result.perAccountData['ira-1'].rmds).toBeCloseTo(expectedIraRmd, 2);
       // Roth should have no RMD
-      expect(result.perAccountData['roth-1']?.rmdsForPeriod ?? 0).toBe(0);
+      expect(result.perAccountData['roth-1']?.rmds ?? 0).toBe(0);
     });
 
     it('should move RMD to separate RMD savings account', () => {
@@ -271,8 +271,8 @@ describe('PortfolioProcessor', () => {
 
       // RMD should be moved to RMD savings account
       const rmdSavingsId = 'd7288042-1f83-4e50-9a6a-b1ef7a6191cc';
-      const rmdAmount = result.rmdsForPeriod;
-      expect(result.perAccountData[rmdSavingsId].contributionsForPeriod.cash).toBeCloseTo(rmdAmount, 2);
+      const rmdAmount = result.rmds;
+      expect(result.perAccountData[rmdSavingsId].contributions.cash).toBeCloseTo(rmdAmount, 2);
     });
 
     it('should calculate correct RMD amounts at different ages', () => {
@@ -295,7 +295,7 @@ describe('PortfolioProcessor', () => {
         const result = processor.processRequiredMinimumDistributions();
         const expectedRmd = 100000 / factor;
 
-        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 1);
+        expect(result.rmds).toBeCloseTo(expectedRmd, 1);
       }
     });
 
@@ -325,7 +325,7 @@ describe('PortfolioProcessor', () => {
 
         // At age 73, factor is 26.5
         const expectedRmd = 100000 / uniformLifetimeMap[73];
-        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+        expect(result.rmds).toBeCloseTo(expectedRmd, 2);
       });
 
       it('should not process RMDs at age 73 when rmdAge is 75 (birth year 1960+)', () => {
@@ -354,7 +354,7 @@ describe('PortfolioProcessor', () => {
 
         // At age 75, factor is 24.6
         const expectedRmd = 100000 / uniformLifetimeMap[75];
-        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+        expect(result.rmds).toBeCloseTo(expectedRmd, 2);
       });
 
       it('should not process RMDs at age 74 when rmdAge is 75 (boundary test)', () => {
@@ -382,7 +382,7 @@ describe('PortfolioProcessor', () => {
 
         // At age 74, factor is 25.5
         const expectedRmd = 100000 / uniformLifetimeMap[74];
-        expect(result.rmdsForPeriod).toBeCloseTo(expectedRmd, 2);
+        expect(result.rmds).toBeCloseTo(expectedRmd, 2);
       });
     });
   });
@@ -408,7 +408,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // Should have 4k shortfall
-      expect(result.portfolioData.shortfallForPeriod).toBe(4000);
+      expect(result.portfolioData.shortfall).toBe(4000);
       expect(result.portfolioData.outstandingShortfall).toBe(4000);
     });
 
@@ -427,7 +427,7 @@ describe('PortfolioProcessor', () => {
         createEmptyDebtsData(),
         createEmptyPhysicalAssetsData()
       );
-      expect(result1.portfolioData.shortfallForPeriod).toBe(1000);
+      expect(result1.portfolioData.shortfall).toBe(1000);
       expect(result1.portfolioData.outstandingShortfall).toBe(1000);
 
       // Period 2: Another 2k expense, 2k shortfall (no funds left)
@@ -437,7 +437,7 @@ describe('PortfolioProcessor', () => {
         createEmptyDebtsData(),
         createEmptyPhysicalAssetsData()
       );
-      expect(result2.portfolioData.shortfallForPeriod).toBe(2000);
+      expect(result2.portfolioData.shortfall).toBe(2000);
       expect(result2.portfolioData.outstandingShortfall).toBe(3000);
     });
 
@@ -462,7 +462,7 @@ describe('PortfolioProcessor', () => {
         createEmptyPhysicalAssetsData()
       );
 
-      expect(result2.portfolioData.shortfallRepaidForPeriod).toBe(3000);
+      expect(result2.portfolioData.shortfallRepaid).toBe(3000);
       expect(result2.portfolioData.outstandingShortfall).toBe(0);
     });
   });
@@ -531,7 +531,7 @@ describe('PortfolioProcessor', () => {
 
       // Rebalancing sells stocks to buy bonds, generating realized gains in taxable account
       // Since cost basis is 50k on 100k balance, selling stocks realizes gains
-      expect(result.portfolioData.realizedGainsForPeriod).toBeGreaterThanOrEqual(0);
+      expect(result.portfolioData.realizedGains).toBeGreaterThanOrEqual(0);
     });
 
     it('should not rebalance when glide path is disabled', () => {
@@ -619,7 +619,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // Contributions should be weighted toward bonds to approach target allocation
-      const contributions = result.portfolioData.perAccountData['401k-1'].contributionsForPeriod;
+      const contributions = result.portfolioData.perAccountData['401k-1'].contributions;
       // With current 20% bonds and target ~36% bonds (halfway to 40%), contributions should favor bonds
       expect(contributions.bonds).toBeGreaterThan(0);
     });
@@ -659,7 +659,7 @@ describe('PortfolioProcessor', () => {
       );
 
       // Withdrawals should come more from stocks (overweight) than bonds (underweight)
-      const withdrawals = result.portfolioData.perAccountData['401k-1'].withdrawalsForPeriod;
+      const withdrawals = result.portfolioData.perAccountData['401k-1'].withdrawals;
       expect(withdrawals.stocks).toBeGreaterThan(withdrawals.bonds);
     });
   });
@@ -712,7 +712,7 @@ describe('PortfolioProcessor', () => {
       // 3k remaining should go to extra savings account
       expect(result.discretionaryExpense).toBe(0);
       const extraSavingsId = '54593a0d-7b4f-489d-a5bd-42500afba532';
-      expect(result.portfolioData.perAccountData[extraSavingsId].contributionsForPeriod.cash).toBe(3000);
+      expect(result.portfolioData.perAccountData[extraSavingsId].contributions.cash).toBe(3000);
     });
   });
 
@@ -735,7 +735,7 @@ describe('PortfolioProcessor', () => {
       const result = processor.processContributionsAndWithdrawals(incomes, expenses, createEmptyDebtsData(), physicalAssetsData);
 
       // 50k should be withdrawn from savings to pay for the purchase
-      expect(result.portfolioData.perAccountData['savings-1'].withdrawalsForPeriod.cash).toBe(50000);
+      expect(result.portfolioData.perAccountData['savings-1'].withdrawals.cash).toBe(50000);
     });
 
     it('financed purchase deducts down payment from portfolio', () => {
@@ -753,7 +753,7 @@ describe('PortfolioProcessor', () => {
       const result = processor.processContributionsAndWithdrawals(incomes, expenses, createEmptyDebtsData(), physicalAssetsData);
 
       // 80k down payment + 1.5k loan payment = 81.5k withdrawn
-      expect(result.portfolioData.perAccountData['savings-1'].withdrawalsForPeriod.cash).toBe(81500);
+      expect(result.portfolioData.perAccountData['savings-1'].withdrawals.cash).toBe(81500);
     });
 
     it('sale proceeds create contribution/surplus to portfolio', () => {
@@ -775,7 +775,7 @@ describe('PortfolioProcessor', () => {
 
       // 200k sale proceeds should be contributed to extra savings
       const extraSavingsId = '54593a0d-7b4f-489d-a5bd-42500afba532';
-      expect(result.portfolioData.perAccountData[extraSavingsId].contributionsForPeriod.cash).toBe(200000);
+      expect(result.portfolioData.perAccountData[extraSavingsId].contributions.cash).toBe(200000);
     });
 
     it('purchase and sale in same period nets correctly', () => {
@@ -795,7 +795,7 @@ describe('PortfolioProcessor', () => {
       // Net: +200k sale - 100k purchase = +100k surplus
       // Should be contributed to extra savings
       const extraSavingsId = '54593a0d-7b4f-489d-a5bd-42500afba532';
-      expect(result.portfolioData.perAccountData[extraSavingsId].contributionsForPeriod.cash).toBe(100000);
+      expect(result.portfolioData.perAccountData[extraSavingsId].contributions.cash).toBe(100000);
     });
 
     it('large purchase creates shortfall when insufficient funds', () => {
@@ -812,8 +812,8 @@ describe('PortfolioProcessor', () => {
       const result = processor.processContributionsAndWithdrawals(incomes, expenses, createEmptyDebtsData(), physicalAssetsData);
 
       // Should have 50k withdrawal and 50k shortfall
-      expect(result.portfolioData.perAccountData['savings-1'].withdrawalsForPeriod.cash).toBe(50000);
-      expect(result.portfolioData.shortfallForPeriod).toBe(50000);
+      expect(result.portfolioData.perAccountData['savings-1'].withdrawals.cash).toBe(50000);
+      expect(result.portfolioData.shortfall).toBe(50000);
     });
 
     it('sale proceeds can offset purchase in same period avoiding withdrawal', () => {
@@ -833,7 +833,7 @@ describe('PortfolioProcessor', () => {
       // Net cash flow: 5k income - 3k expenses - 50k purchase + 100k sale = 52k surplus
       // Should contribute 52k to extra savings
       const extraSavingsId = '54593a0d-7b4f-489d-a5bd-42500afba532';
-      expect(result.portfolioData.perAccountData[extraSavingsId].contributionsForPeriod.cash).toBe(52000);
+      expect(result.portfolioData.perAccountData[extraSavingsId].contributions.cash).toBe(52000);
     });
 
     it('loan payment continues to be deducted alongside income/expenses', () => {
@@ -861,7 +861,7 @@ describe('PortfolioProcessor', () => {
 
   describe('getAnnualData', () => {
     describe('period field aggregation', () => {
-      it('should aggregate contributionsForPeriod across multiple months', () => {
+      it('should aggregate contributions across multiple months', () => {
         const portfolio = new Portfolio([create401kAccount({ id: '401k-1', balance: 50000 })]);
         const state = createMockSimulationState(portfolio, 35, 'accumulation');
         const processor = new PortfolioProcessor(
@@ -880,12 +880,11 @@ describe('PortfolioProcessor', () => {
         const annualData = processor.getAnnualData();
 
         // 2000 contributed each month for 3 months = 6000 total
-        const totalContributions =
-          annualData.contributionsForPeriod.stocks + annualData.contributionsForPeriod.bonds + annualData.contributionsForPeriod.cash;
+        const totalContributions = annualData.contributions.stocks + annualData.contributions.bonds + annualData.contributions.cash;
         expect(totalContributions).toBeCloseTo(6000, 0);
       });
 
-      it('should aggregate withdrawalsForPeriod across multiple months', () => {
+      it('should aggregate withdrawals across multiple months', () => {
         const portfolio = new Portfolio([createSavingsAccount({ id: 'savings-1', balance: 30000 })]);
         const state = createMockSimulationState(portfolio, 65);
         const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
@@ -900,12 +899,11 @@ describe('PortfolioProcessor', () => {
         const annualData = processor.getAnnualData();
 
         // 3000 withdrawn each month for 3 months = 9000 total
-        const totalWithdrawals =
-          annualData.withdrawalsForPeriod.stocks + annualData.withdrawalsForPeriod.bonds + annualData.withdrawalsForPeriod.cash;
+        const totalWithdrawals = annualData.withdrawals.stocks + annualData.withdrawals.bonds + annualData.withdrawals.cash;
         expect(totalWithdrawals).toBeCloseTo(9000, 0);
       });
 
-      it('should aggregate shortfallForPeriod across multiple months', () => {
+      it('should aggregate shortfall across multiple months', () => {
         const portfolio = new Portfolio([createSavingsAccount({ balance: 2000 })]);
         const state = createMockSimulationState(portfolio, 65);
         const processor = new PortfolioProcessor(state, createMockSimulationContext(), new ContributionRules([], { type: 'spend' }));
@@ -929,10 +927,10 @@ describe('PortfolioProcessor', () => {
         const annualData = processor.getAnnualData();
 
         // Total shortfall = 1k + 2k = 3k
-        expect(annualData.shortfallForPeriod).toBe(3000);
+        expect(annualData.shortfall).toBe(3000);
       });
 
-      it('should aggregate employerMatchForPeriod across multiple months', () => {
+      it('should aggregate employerMatch across multiple months', () => {
         const portfolio = new Portfolio([create401kAccount({ id: '401k-1', balance: 50000 })]);
         const state = createMockSimulationState(portfolio, 35, 'accumulation');
         const processor = new PortfolioProcessor(
@@ -965,7 +963,7 @@ describe('PortfolioProcessor', () => {
         // Month 2: $500 contribution, $500 employer match (2500-500=2000 remaining in cap)
         // Month 3: $500 contribution, $500 employer match (2000-500=1500 remaining in cap)
         // Total employer match = 1500
-        expect(annualData.employerMatchForPeriod).toBeCloseTo(1500, 0);
+        expect(annualData.employerMatch).toBeCloseTo(1500, 0);
       });
     });
 
@@ -1050,7 +1048,7 @@ describe('PortfolioProcessor', () => {
         // Outstanding shortfall is cumulative, should be 2k at end of month 2
         expect(annualData.outstandingShortfall).toBe(2000);
         // Period shortfall should be aggregated: 1k + 1k = 2k
-        expect(annualData.shortfallForPeriod).toBe(2000);
+        expect(annualData.shortfall).toBe(2000);
       });
     });
 
@@ -1082,9 +1080,7 @@ describe('PortfolioProcessor', () => {
         // 401k should have aggregated contributions from all 3 months
         const account401kData = annualData.perAccountData['401k-1'];
         const totalContributions =
-          account401kData.contributionsForPeriod.stocks +
-          account401kData.contributionsForPeriod.bonds +
-          account401kData.contributionsForPeriod.cash;
+          account401kData.contributions.stocks + account401kData.contributions.bonds + account401kData.contributions.cash;
         expect(totalContributions).toBeCloseTo(6000, 0);
       });
 
@@ -1121,8 +1117,7 @@ describe('PortfolioProcessor', () => {
         expect(totalCumulative).toBeCloseTo(5000, 0);
 
         // Period withdrawals should be aggregated: 3k + 2k = 5k
-        const totalPeriod =
-          savingsData.withdrawalsForPeriod.stocks + savingsData.withdrawalsForPeriod.bonds + savingsData.withdrawalsForPeriod.cash;
+        const totalPeriod = savingsData.withdrawals.stocks + savingsData.withdrawals.bonds + savingsData.withdrawals.cash;
         expect(totalPeriod).toBeCloseTo(5000, 0);
       });
     });
@@ -1147,8 +1142,7 @@ describe('PortfolioProcessor', () => {
         const annualData = processor.getAnnualData();
 
         // After reset, period data should be zero (reduce starts from zero accumulator)
-        const totalWithdrawals =
-          annualData.withdrawalsForPeriod.stocks + annualData.withdrawalsForPeriod.bonds + annualData.withdrawalsForPeriod.cash;
+        const totalWithdrawals = annualData.withdrawals.stocks + annualData.withdrawals.bonds + annualData.withdrawals.cash;
         expect(totalWithdrawals).toBe(0);
       });
     });

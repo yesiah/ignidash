@@ -34,7 +34,7 @@ const createDataPoint = (options: {
   age: number;
   phase: 'accumulation' | 'retirement';
   totalValue: number;
-  shortfallForPeriod?: number;
+  shortfall?: number;
   incomeTax?: number;
   ficaTax?: number;
 }): SimulationDataPoint => ({
@@ -43,20 +43,20 @@ const createDataPoint = (options: {
   portfolio: {
     totalValue: options.totalValue,
     assetAllocation: { stocks: 0.6, bonds: 0.3, cash: 0.1 },
-    contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-    withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
+    contributions: { stocks: 0, bonds: 0, cash: 0 },
+    withdrawals: { stocks: 0, bonds: 0, cash: 0 },
     cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
     cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
-    employerMatchForPeriod: 0,
+    employerMatch: 0,
     cumulativeEmployerMatch: 0,
-    realizedGainsForPeriod: 0,
+    realizedGains: 0,
     cumulativeRealizedGains: 0,
-    rmdsForPeriod: 0,
+    rmds: 0,
     cumulativeRmds: 0,
-    earningsWithdrawnForPeriod: 0,
+    earningsWithdrawn: 0,
     cumulativeEarningsWithdrawn: 0,
-    shortfallForPeriod: options.shortfallForPeriod ?? 0,
-    shortfallRepaidForPeriod: 0,
+    shortfall: options.shortfall ?? 0,
+    shortfallRepaid: 0,
     outstandingShortfall: 0,
     perAccountData: {},
   },
@@ -177,14 +177,14 @@ const createSimulationResult = (options: {
       totalValue = 500000 + i * 50000;
     }
 
-    const shortfallForPeriod = shortfallYear !== undefined && i === shortfallYear ? 10000 : 0;
+    const shortfall = shortfallYear !== undefined && i === shortfallYear ? 10000 : 0;
 
     data.push(
       createDataPoint({
         age,
         phase,
         totalValue,
-        shortfallForPeriod,
+        shortfall,
         incomeTax: 10000 + i * 100,
         ficaTax: 7650,
       })

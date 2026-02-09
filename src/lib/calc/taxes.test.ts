@@ -154,7 +154,7 @@ describe('TaxProcessor', () => {
         const incomes = createEmptyIncomesData();
         incomes.totalIncome = 10000; // Only 10k ordinary income
         const portfolioData = createEmptyPortfolioData();
-        portfolioData.realizedGainsForPeriod = 20000; // 20k capital gains
+        portfolioData.realizedGains = 20000; // 20k capital gains
 
         const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -175,7 +175,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       const portfolioData = createEmptyPortfolioData();
       // No ordinary income, 32,025 gains - 15,000 std deduction = 17,025 taxable
-      portfolioData.realizedGainsForPeriod = 32025;
+      portfolioData.realizedGains = 32025;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -188,7 +188,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       const portfolioData = createEmptyPortfolioData();
       // No ordinary income, 100,000 gains - 15,000 std deduction = 85,000 taxable
-      portfolioData.realizedGainsForPeriod = 100000;
+      portfolioData.realizedGains = 100000;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -203,7 +203,7 @@ describe('TaxProcessor', () => {
       // 62,025 ordinary - 15,000 std deduction = 47,025 taxable (fills 0% cap gains bracket)
       incomes.totalIncome = 62025;
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 10000; // All taxed at 15%
+      portfolioData.realizedGains = 10000; // All taxed at 15%
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -235,7 +235,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       incomes.totalIncome = 100000;
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 50000;
+      portfolioData.realizedGains = 50000;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -248,7 +248,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       incomes.totalIncome = 150000;
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 100000;
+      portfolioData.realizedGains = 100000;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -264,7 +264,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       incomes.totalIncome = 200000;
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 100000;
+      portfolioData.realizedGains = 100000;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -278,7 +278,7 @@ describe('TaxProcessor', () => {
       const incomes = createEmptyIncomesData();
       incomes.totalIncome = 250000;
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 20000;
+      portfolioData.realizedGains = 20000;
       const returnsData = createEmptyReturnsData();
       returnsData.yieldAmountsForPeriod.taxable.stocks = 10000; // Dividends
       returnsData.yieldAmountsForPeriod.taxable.bonds = 5000; // Interest
@@ -494,12 +494,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 8000, bonds: 2000, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 0, bonds: 0, cash: 0 },
+          employerMatch: 0,
+          withdrawals: { stocks: 8000, bonds: 2000, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -525,12 +525,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 8000, bonds: 2000, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 0, bonds: 0, cash: 0 },
+          employerMatch: 0,
+          withdrawals: { stocks: 8000, bonds: 2000, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -555,12 +555,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 4000, bonds: 1000, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 0, bonds: 0, cash: 0 },
+          employerMatch: 0,
+          withdrawals: { stocks: 4000, bonds: 1000, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -586,12 +586,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 8000, bonds: 2000, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 3000, // Only earnings get penalized
-          rmdsForPeriod: 0,
+          contributions: { stocks: 0, bonds: 0, cash: 0 },
+          employerMatch: 0,
+          withdrawals: { stocks: 8000, bonds: 2000, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 3000, // Only earnings get penalized
+          rmds: 0,
         },
       };
 
@@ -610,7 +610,7 @@ describe('TaxProcessor', () => {
     it('should limit capital loss deduction to $3,000 per year', () => {
       const processor = new TaxProcessor(createMockSimulationState(65), 'single');
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = -10000; // 10k loss
+      portfolioData.realizedGains = -10000; // 10k loss
 
       const result = processor.process(portfolioData, createEmptyIncomesData(), createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -624,12 +624,12 @@ describe('TaxProcessor', () => {
       incomes.totalIncome = 50000;
 
       // Year 1: 10k loss, deduct 3k, carry over 7k
-      portfolioData.realizedGainsForPeriod = -10000;
+      portfolioData.realizedGains = -10000;
       const result1 = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
       expect(result1.incomeTaxes.capitalLossDeduction).toBe(3000);
 
       // Year 2: No new gains/losses, deduct 3k from carryover, 4k remaining
-      portfolioData.realizedGainsForPeriod = 0;
+      portfolioData.realizedGains = 0;
       const result2 = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
       expect(result2.incomeTaxes.capitalLossDeduction).toBe(3000);
 
@@ -649,12 +649,12 @@ describe('TaxProcessor', () => {
       incomes.totalIncome = 50000;
 
       // Year 1: 10k loss
-      portfolioData.realizedGainsForPeriod = -10000;
+      portfolioData.realizedGains = -10000;
       processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
       // Year 2: 5k gain, should offset with 5k carryover, leaving 2k carryover
       // Then deduct remaining from ordinary income (but there's only 2k left)
-      portfolioData.realizedGainsForPeriod = 5000;
+      portfolioData.realizedGains = 5000;
       const result2 = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
       // Carryover was 7k after year 1
       // 5k gain offsets 5k of carryover, leaving 2k
@@ -670,7 +670,7 @@ describe('TaxProcessor', () => {
       incomes.totalIncome = 50000;
 
       // Year 1: 10k loss - simulate iterative convergence by calling process() multiple times
-      portfolioData.realizedGainsForPeriod = -10000;
+      portfolioData.realizedGains = -10000;
 
       // Save snapshot before first calculation
       processor.saveCarryoverSnapshot();
@@ -688,7 +688,7 @@ describe('TaxProcessor', () => {
       expect(result1c.incomeTaxes.capitalLossDeduction).toBe(3000);
 
       // Year 2: No new losses - should still have 7k carryover available
-      portfolioData.realizedGainsForPeriod = 0;
+      portfolioData.realizedGains = 0;
       processor.saveCarryoverSnapshot();
       const result2 = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -732,12 +732,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 16000, bonds: 4000, cash: 0 }, // 20k total
-          employerMatchForPeriod: 5000, // Employer match not deductible
-          withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 16000, bonds: 4000, cash: 0 }, // 20k total
+          employerMatch: 5000, // Employer match not deductible
+          withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -767,12 +767,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 5600, bonds: 1400, cash: 0 }, // 7k IRA
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 5600, bonds: 1400, cash: 0 }, // 7k IRA
+          employerMatch: 0,
+          withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
         'hsa-1': {
           id: 'hsa-1',
@@ -786,12 +786,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 3200, bonds: 800, cash: 0 }, // 4k HSA
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 3200, bonds: 800, cash: 0 }, // 4k HSA
+          employerMatch: 0,
+          withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -819,12 +819,12 @@ describe('TaxProcessor', () => {
           cumulativeEarningsWithdrawn: 0,
           cumulativeRmds: 0,
           assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
-          contributionsForPeriod: { stocks: 5600, bonds: 1400, cash: 0 }, // 7k
-          employerMatchForPeriod: 0,
-          withdrawalsForPeriod: { stocks: 0, bonds: 0, cash: 0 },
-          realizedGainsForPeriod: 0,
-          earningsWithdrawnForPeriod: 0,
-          rmdsForPeriod: 0,
+          contributions: { stocks: 5600, bonds: 1400, cash: 0 }, // 7k
+          employerMatch: 0,
+          withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+          realizedGains: 0,
+          earningsWithdrawn: 0,
+          rmds: 0,
         },
       };
 
@@ -1057,7 +1057,7 @@ describe('TaxProcessor', () => {
     it('should exclude primary residence gains but not portfolio gains', () => {
       const processor = new TaxProcessor(createMockSimulationState(65), 'single');
       const portfolioData = createEmptyPortfolioData();
-      portfolioData.realizedGainsForPeriod = 50000;
+      portfolioData.realizedGains = 50000;
       const physicalAssetsData = createEmptyPhysicalAssetsData({
         totalRealizedGains: 200000,
         perAssetData: {
@@ -1255,7 +1255,7 @@ describe('TaxProcessor', () => {
 
       // Year 1: Portfolio loss of $10k creates carryover
       const portfolioDataYear1 = createEmptyPortfolioData();
-      portfolioDataYear1.realizedGainsForPeriod = -10000;
+      portfolioDataYear1.realizedGains = -10000;
       processor.process(portfolioDataYear1, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
       // After year 1: carryover = -(10000 - 3000) = -7000
 
