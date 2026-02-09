@@ -472,6 +472,169 @@ describe('ContributionRules', () => {
       // Employer match remaining is 500 (1500 - 1000 already matched)
       expect(result.employerMatchAmount).toBe(500);
     });
+
+    describe('multi-account employer match independence', () => {
+      it('should track employer match independently across multiple accounts', () => {
+        const rule401k = new ContributionRule(
+          createContributionRule({
+            id: 'rule-401k',
+            contributionType: 'dollarAmount',
+            dollarAmount: 10000,
+            accountId: '401k-1',
+            rank: 1,
+            employerMatch: 7000,
+          })
+        );
+        const ruleHsa = new ContributionRule(
+          createContributionRule({
+            id: 'rule-hsa',
+            contributionType: 'dollarAmount',
+            dollarAmount: 3000,
+            accountId: 'hsa-1',
+            rank: 2,
+            employerMatch: 750,
+          })
+        );
+
+        const account401k = new TaxDeferredAccount(create401kAccount());
+        const accountHsa = new TaxDeferredAccount({
+          type: 'hsa',
+          id: 'hsa-1',
+          name: 'HSA',
+          balance: 5000,
+          percentBonds: 10,
+        });
+
+        // Process 401(k) rule first
+        const result401k = rule401k.getContributionAmount(50000, account401k, [], 35);
+        expect(result401k.contributionAmount).toBe(10000);
+        expect(result401k.employerMatchAmount).toBe(7000);
+
+        // Build monthlyPortfolioData reflecting 401(k) contribution
+        const monthlyData: PortfolioData[] = [
+          {
+            ...createEmptyPortfolioData(),
+            perAccountData: {
+              '401k-1': {
+                id: '401k-1',
+                name: '401k Account',
+                type: '401k',
+                balance: 117000,
+                cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeEmployerMatch: 0,
+                cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeRealizedGains: 0,
+                cumulativeEarningsWithdrawn: 0,
+                cumulativeRmds: 0,
+                assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
+                contributions: { stocks: 13600, bonds: 3400, cash: 0 }, // 17k total (10k employee + 7k employer)
+                employerMatch: 7000,
+                withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                realizedGains: 0,
+                earningsWithdrawn: 0,
+                rmds: 0,
+              },
+            },
+          },
+        ];
+
+        // Process HSA rule — should be independent of 401(k) match
+        const resultHsa = ruleHsa.getContributionAmount(40000, accountHsa, monthlyData, 35);
+        expect(resultHsa.contributionAmount).toBe(3000);
+        expect(resultHsa.employerMatchAmount).toBe(750);
+      });
+
+      it("should not let one account's employer match affect another account's match", () => {
+        const rule401k = new ContributionRule(
+          createContributionRule({
+            id: 'rule-401k',
+            contributionType: 'dollarAmount',
+            dollarAmount: 6000,
+            accountId: '401k-1',
+            rank: 1,
+            employerMatch: 7000,
+          })
+        );
+        const ruleHsa = new ContributionRule(
+          createContributionRule({
+            id: 'rule-hsa',
+            contributionType: 'dollarAmount',
+            dollarAmount: 2000,
+            accountId: 'hsa-1',
+            rank: 2,
+            employerMatch: 750,
+          })
+        );
+
+        const account401k = new TaxDeferredAccount(create401kAccount());
+        const accountHsa = new TaxDeferredAccount({
+          type: 'hsa',
+          id: 'hsa-1',
+          name: 'HSA',
+          balance: 5000,
+          percentBonds: 10,
+        });
+
+        // Prior month: 401(k) has 3k employee + 5k employer = 8k total; HSA has 0
+        const monthlyData: PortfolioData[] = [
+          {
+            ...createEmptyPortfolioData(),
+            perAccountData: {
+              '401k-1': {
+                id: '401k-1',
+                name: '401k Account',
+                type: '401k',
+                balance: 108000,
+                cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeEmployerMatch: 0,
+                cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeRealizedGains: 0,
+                cumulativeEarningsWithdrawn: 0,
+                cumulativeRmds: 0,
+                assetAllocation: { stocks: 0.8, bonds: 0.2, cash: 0 },
+                contributions: { stocks: 6400, bonds: 1600, cash: 0 }, // 8k total (3k employee + 5k employer)
+                employerMatch: 5000,
+                withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                realizedGains: 0,
+                earningsWithdrawn: 0,
+                rmds: 0,
+              },
+              'hsa-1': {
+                id: 'hsa-1',
+                name: 'HSA',
+                type: 'hsa',
+                balance: 5000,
+                cumulativeContributions: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeEmployerMatch: 0,
+                cumulativeWithdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                cumulativeRealizedGains: 0,
+                cumulativeEarningsWithdrawn: 0,
+                cumulativeRmds: 0,
+                assetAllocation: { stocks: 0.9, bonds: 0.1, cash: 0 },
+                contributions: { stocks: 0, bonds: 0, cash: 0 }, // no prior contributions
+                employerMatch: 0,
+                withdrawals: { stocks: 0, bonds: 0, cash: 0 },
+                realizedGains: 0,
+                earningsWithdrawn: 0,
+                rmds: 0,
+              },
+            },
+          },
+        ];
+
+        // 401(k): dollarAmount=6000, 3k employee so far → 3k remaining
+        // employerMatch=7000, 5k already matched → 2k remaining; min(3000, 2000) = $2,000
+        const result401k = rule401k.getContributionAmount(50000, account401k, monthlyData, 35);
+        expect(result401k.contributionAmount).toBe(3000);
+        expect(result401k.employerMatchAmount).toBe(2000);
+
+        // HSA: dollarAmount=2000, 0 employee so far → full $2,000
+        // employerMatch=750, $0 already matched → full $750; min(2000, 750) = $750
+        const resultHsa = ruleHsa.getContributionAmount(50000, accountHsa, monthlyData, 35);
+        expect(resultHsa.contributionAmount).toBe(2000);
+        expect(resultHsa.employerMatchAmount).toBe(750);
+      });
+    });
   });
 
   // ============================================================================
