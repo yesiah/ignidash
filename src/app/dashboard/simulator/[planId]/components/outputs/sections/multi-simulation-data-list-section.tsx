@@ -4,6 +4,7 @@ import { memo } from 'react';
 
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import Card from '@/components/ui/card';
 import { MultiSimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
@@ -27,16 +28,16 @@ function PortfolioDataListCardV2({ chartData, selectedAge }: DataListCardProps) 
       </Subheading>
       <DescriptionList>
         <DescriptionTerm>Mean Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.meanPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(data.meanPortfolioValue, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Min Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.minPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(data.minPortfolioValue, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Max Portfolio Value</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.maxPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(data.maxPortfolioValue, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Standard Deviation</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(data.stdDevPortfolioValue, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(data.stdDevPortfolioValue, 2)}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );

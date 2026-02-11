@@ -4,7 +4,8 @@ import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 import { ChartLineIcon } from 'lucide-react';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -60,7 +61,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       case 'taxCategory':
       case 'appreciation':
       case 'custom':
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
       default:
         return value;
     }
@@ -92,7 +93,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">{formatChartString(lineEntry.name)}:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(lineEntry.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(lineEntry.value, 3)}</span>
         </p>
       );
       break;
@@ -202,7 +203,7 @@ export default function SingleSimulationReturnsLineChart({
       showReferenceLineAtZero = false;
       break;
     case 'annualAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('totalAnnualGains');
       strokeColors.push(LINE_COLOR);
@@ -211,7 +212,7 @@ export default function SingleSimulationReturnsLineChart({
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'cumulativeAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('totalCumulativeGains');
       strokeColors.push(LINE_COLOR);
@@ -220,7 +221,7 @@ export default function SingleSimulationReturnsLineChart({
       barColors.push('var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'taxCategory':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('totalAnnualGains');
       strokeColors.push(LINE_COLOR);
@@ -229,7 +230,7 @@ export default function SingleSimulationReturnsLineChart({
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'appreciation':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualAssetAppreciation', 'cumulativeAssetAppreciation');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
@@ -242,7 +243,7 @@ export default function SingleSimulationReturnsLineChart({
         break;
       }
 
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const perAccountData = chartData.flatMap(({ age, perAccountData }) =>
         perAccountData

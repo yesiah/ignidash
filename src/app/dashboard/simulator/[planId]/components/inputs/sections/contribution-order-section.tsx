@@ -25,7 +25,7 @@ import { contributionToConvex, baseContributionToConvex } from '@/lib/utils/conv
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { Divider } from '@/components/catalyst/divider';
 import { Select } from '@/components/catalyst/select';
@@ -49,7 +49,7 @@ function getContributionRuleDesc(accounts: Record<string, AccountInputs>, contri
   let description: string;
   switch (contributionInputs.contributionType) {
     case 'dollarAmount':
-      description = `${formatNumber(contributionInputs.dollarAmount, 2, '$')} per year`;
+      description = `${formatCompactCurrency(contributionInputs.dollarAmount, 2)} per year`;
       break;
     case 'percentRemaining':
       description = `${contributionInputs.percentRemaining}% remaining`;

@@ -30,6 +30,7 @@ import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Divider } from '@/components/catalyst/divider';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 import { PayoffEstimate } from './payoff-estimate';
 
@@ -208,8 +209,8 @@ export default function DebtDialog({ onClose, selectedDebt: _selectedDebt, numDe
                     control={control}
                     id="balance"
                     inputMode="decimal"
-                    placeholder="$7,500"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(7500)}
+                    prefix={getCurrencySymbol()}
                     autoFocus
                   />
                   {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
@@ -221,8 +222,8 @@ export default function DebtDialog({ onClose, selectedDebt: _selectedDebt, numDe
                     control={control}
                     id="monthlyPayment"
                     inputMode="decimal"
-                    placeholder="$500"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(500)}
+                    prefix={getCurrencySymbol()}
                   />
                   {errors.monthlyPayment && <ErrorMessage>{errors.monthlyPayment?.message}</ErrorMessage>}
                 </Field>

@@ -20,6 +20,7 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 import { getErrorMessages } from '@/lib/utils/form-utils';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface AssetDialogProps {
   onClose: () => void;
@@ -101,7 +102,15 @@ export default function AssetDialog({ onClose, selectedAsset: _selectedAsset, nu
               </Field>
               <Field>
                 <Label htmlFor="value">Value</Label>
-                <NumberInput name="value" control={control} id="value" inputMode="decimal" placeholder="$15,000" prefix="$" autoFocus />
+                <NumberInput
+                  name="value"
+                  control={control}
+                  id="value"
+                  inputMode="decimal"
+                  placeholder={formatCurrencyPlaceholder(15000)}
+                  prefix={getCurrencySymbol()}
+                  autoFocus
+                />
                 {errors.value && <ErrorMessage>{errors.value?.message}</ErrorMessage>}
               </Field>
               <Field>

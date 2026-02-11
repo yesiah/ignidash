@@ -11,6 +11,7 @@ import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
 import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { physicalAssetTimeFrameForDisplay } from '@/lib/utils/data-display-formatters';
 import { estimatePayoffMonths, formatPayoffEstimate } from '@/lib/utils/payoff-estimator';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
@@ -32,14 +33,14 @@ import PhysicalAssetDialog from '../dialogs/physical-asset-dialog';
 function getAccountDesc(account: AccountInputs) {
   return (
     <p>
-      {formatNumber(account.balance, 2, '$')} | {accountTypeForDisplay(account.type)}
+      {formatCompactCurrency(account.balance, 2)} | {accountTypeForDisplay(account.type)}
       {account.type !== 'savings' && ` | ${account.percentBonds ? `${formatNumber(account.percentBonds, 0)}% Bonds` : 'No Bonds'}`}
     </p>
   );
 }
 
 function getPhysicalAssetDesc(asset: PhysicalAssetInputs) {
-  const value = formatNumber(asset.marketValue ?? asset.purchasePrice, 2, '$');
+  const value = formatCompactCurrency(asset.marketValue ?? asset.purchasePrice, 2);
 
   switch (asset.paymentMethod.type) {
     case 'cash':
@@ -58,7 +59,7 @@ function getPhysicalAssetDesc(asset: PhysicalAssetInputs) {
       return (
         <>
           <p>
-            {value} | {formatNumber(monthlyPayment, 2, '$')} / mo
+            {value} | {formatCompactCurrency(monthlyPayment, 2)} / mo
           </p>
           <p>
             {saleDateType !== 'atLifeExpectancy' ? (

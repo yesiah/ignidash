@@ -3,7 +3,8 @@
 import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -55,10 +56,9 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
-            {formatNumber(
+            {formatCompactCurrency(
               payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
+              3
             )}
           </span>
         </p>
@@ -88,7 +88,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
               })}
             >
               <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+              <span className="ml-1 font-semibold">{formatCompactCurrency(entry.value, 1)}</span>
             </p>
           ))}
       </div>
@@ -147,7 +147,7 @@ export default function SingleSimulationContributionsLineChart({
   const barDataKeys: (keyof SingleSimulationContributionsChartDataPoint)[] = [];
   const barColors: string[] = [];
 
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
   let stackId: string | undefined = undefined;
 
   switch (dataView) {

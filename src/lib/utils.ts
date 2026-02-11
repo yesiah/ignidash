@@ -5,14 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatNumber(num: number, fractionDigits: number = 2, prefix: string = ''): string {
+export function formatNumber(num: number, fractionDigits: number = 2): string {
   const absNum = Math.abs(num);
   const sign = num < 0 ? '-' : '';
 
-  if (absNum >= 1000000000) return sign + prefix + (absNum / 1000000000).toFixed(2) + 'B';
-  if (absNum >= 1000000) return sign + prefix + (absNum / 1000000).toFixed(2) + 'M';
-  if (absNum >= 1000) return sign + prefix + (absNum / 1000).toFixed(1) + 'k';
-  return sign + prefix + absNum.toFixed(fractionDigits);
+  if (absNum >= 1000000000) return sign + (absNum / 1000000000).toFixed(2) + 'B';
+  if (absNum >= 1000000) return sign + (absNum / 1000000).toFixed(2) + 'M';
+  if (absNum >= 1000) return sign + (absNum / 1000).toFixed(1) + 'k';
+  return sign + absNum.toFixed(fractionDigits);
 }
 
 export function formatNumberAsNumber(num: number): number {

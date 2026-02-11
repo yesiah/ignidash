@@ -3,7 +3,8 @@
 import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -63,7 +64,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       case 'withdrawalRate':
         return `${(value * 100).toFixed(1)}%`;
       default:
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
     }
   };
 
@@ -77,10 +78,9 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
-            {formatNumber(
+            {formatCompactCurrency(
               payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
+              3
             )}
           </span>
         </p>
@@ -190,46 +190,46 @@ export default function SingleSimulationWithdrawalsLineChart({
 
   switch (dataView) {
     case 'annualAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       barDataKeys.push('annualStockWithdrawals', 'annualBondWithdrawals', 'annualCashWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'cumulativeAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       barDataKeys.push('cumulativeStockWithdrawals', 'cumulativeBondWithdrawals', 'cumulativeCashWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'taxCategory':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       barDataKeys.push('taxableWithdrawals', 'taxDeferredWithdrawals', 'taxFreeWithdrawals', 'cashSavingsWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'realizedGains':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualRealizedGains', 'cumulativeRealizedGains');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'requiredMinimumDistributions':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualRequiredMinimumDistributions', 'cumulativeRequiredMinimumDistributions');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'earlyWithdrawals':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualEarlyWithdrawals', 'cumulativeEarlyWithdrawals');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'shortfall':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualShortfall', 'outstandingShortfall');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
@@ -246,7 +246,7 @@ export default function SingleSimulationWithdrawalsLineChart({
         break;
       }
 
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       chartData = chartData.flatMap(({ age, perAccountData }) =>

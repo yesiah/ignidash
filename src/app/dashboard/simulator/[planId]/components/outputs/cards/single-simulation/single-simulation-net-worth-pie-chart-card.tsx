@@ -8,6 +8,7 @@ import Card from '@/components/ui/card';
 import { Subheading } from '@/components/catalyst/heading';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { formatChartString, formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useAccountData, usePhysicalAssetData, useDebtData } from '@/hooks/use-convex-data';
 import { taxCategoryFromAccountTypeForDisplay } from '@/lib/schemas/inputs/account-form-schema';
 
@@ -206,11 +207,11 @@ export default function SingleSimulationNetWorthPieChartCard({
                 {chartData.map(({ name, value }) => (
                   <Fragment key={name}>
                     <DescriptionTerm>{formatChartString(name)}</DescriptionTerm>
-                    <DescriptionDetails>{`${formatNumber(value, 2, '$')} (${formatNumber((value / totalAbsoluteValue) * 100, 1)}%)`}</DescriptionDetails>
+                    <DescriptionDetails>{`${formatCompactCurrency(value, 2)} (${formatNumber((value / totalAbsoluteValue) * 100, 1)}%)`}</DescriptionDetails>
                   </Fragment>
                 ))}
                 <DescriptionTerm className="font-bold">{nameForTotalValue}</DescriptionTerm>
-                <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+                <DescriptionDetails className="font-bold">{formatCompactCurrency(totalValue, 2)}</DescriptionDetails>
               </DescriptionList>
             </div>
           )}

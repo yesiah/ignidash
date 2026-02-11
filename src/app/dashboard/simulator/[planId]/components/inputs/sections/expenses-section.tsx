@@ -11,7 +11,7 @@ import { expenseToConvex, debtToConvex } from '@/lib/utils/convex-to-zod-transfo
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
 import { estimatePayoffMonths, formatPayoffEstimate } from '@/lib/utils/payoff-estimator';
@@ -30,7 +30,7 @@ function getExpenseDesc(expense: ExpenseInputs) {
   return (
     <>
       <p>
-        {formatNumber(expense.amount, 2, '$')} {frequencyForDisplay(expense.frequency)}
+        {formatCompactCurrency(expense.amount, 2)} {frequencyForDisplay(expense.frequency)}
       </p>
       <p>{timeFrameForDisplay(expense.timeframe.start, expense.timeframe.end)}</p>
     </>
@@ -43,7 +43,7 @@ function getDebtDesc(debt: DebtInputs) {
   return (
     <>
       <p>
-        {formatNumber(debt.monthlyPayment, 2, '$')} / mo | {formatNumber(debt.balance, 2, '$')} owed
+        {formatCompactCurrency(debt.monthlyPayment, 2)} / mo | {formatCompactCurrency(debt.balance, 2)} owed
       </p>
       <p>
         {timeFrameForDisplay(debt.startDate)}

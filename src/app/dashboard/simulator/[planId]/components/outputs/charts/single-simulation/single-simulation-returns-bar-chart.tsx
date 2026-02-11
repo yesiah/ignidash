@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import type { SingleSimulationReturnsChartDataPoint } from '@/lib/types/chart-data-points';
@@ -25,7 +25,7 @@ const CustomLabelListContent = (props: any) => {
       case 'taxCategory':
       case 'appreciation':
       case 'custom':
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
       default:
         return value;
     }
@@ -138,7 +138,7 @@ export default function SingleSimulationReturnsBarChart({
       break;
     }
     case 'annualAmounts': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
@@ -149,7 +149,7 @@ export default function SingleSimulationReturnsBarChart({
       break;
     }
     case 'cumulativeAmounts': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [stockLabel, bondLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
@@ -160,7 +160,7 @@ export default function SingleSimulationReturnsBarChart({
       break;
     }
     case 'taxCategory': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [taxableLabel, taxDeferredLabel, taxFreeLabel, cashLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
@@ -172,7 +172,7 @@ export default function SingleSimulationReturnsBarChart({
       break;
     }
     case 'appreciation': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Annual Appreciation', amount: item.annualAssetAppreciation, color: 'var(--chart-2)' },
@@ -186,7 +186,7 @@ export default function SingleSimulationReturnsBarChart({
         break;
       }
 
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const perAccountData = chartData.flatMap(({ perAccountData }) => perAccountData).filter(({ id }) => id === customDataID);
       if (perAccountData.length > 0) {

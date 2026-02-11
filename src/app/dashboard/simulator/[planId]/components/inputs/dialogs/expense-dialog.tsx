@@ -30,6 +30,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Divider } from '@/components/catalyst/divider';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface ExpenseDialogProps {
   onClose: () => void;
@@ -226,7 +227,15 @@ export default function ExpenseDialog({ onClose, selectedExpense: _selectedExpen
                 </Field>
                 <Field>
                   <Label htmlFor="amount">Amount</Label>
-                  <NumberInput name="amount" control={control} id="amount" inputMode="decimal" placeholder="$50,000" prefix="$" autoFocus />
+                  <NumberInput
+                    name="amount"
+                    control={control}
+                    id="amount"
+                    inputMode="decimal"
+                    placeholder={formatCurrencyPlaceholder(50000)}
+                    prefix={getCurrencySymbol()}
+                    autoFocus
+                  />
                   {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
                 </Field>
                 <Field>
@@ -523,8 +532,8 @@ export default function ExpenseDialog({ onClose, selectedExpense: _selectedExpen
                               control={control}
                               id="growth.growthLimit"
                               inputMode="decimal"
-                              placeholder="$60,000"
-                              prefix="$"
+                              placeholder={formatCurrencyPlaceholder(60000)}
+                              prefix={getCurrencySymbol()}
                             />
                             {errors.growth?.growthLimit && <ErrorMessage>{errors.growth?.growthLimit?.message}</ErrorMessage>}
                           </Field>

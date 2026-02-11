@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import type { MultiSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
@@ -23,7 +23,7 @@ const CustomLabelListContent = (props: any) => {
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
     >
-      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
+      <tspan className="font-semibold">{formatCompactCurrency(value, 1)}</tspan>
     </text>
   );
 };
@@ -52,7 +52,7 @@ export default function MultiSimulationPortfolioBarChart({ age, rawChartData }: 
   const { gridColor, foregroundMutedColor } = useChartTheme();
   const isSmallScreen = useIsMobile();
 
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
   const chartData: { name: string; amount: number; color: string }[] = rawChartData
     .filter((item) => item.age === age)
     .flatMap(({ p10PortfolioValue, p25PortfolioValue, p50PortfolioValue, p75PortfolioValue, p90PortfolioValue }) => [

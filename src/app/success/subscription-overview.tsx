@@ -5,13 +5,7 @@ import type { Stripe } from 'stripe';
 import { Badge } from '@/components/catalyst/badge';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Subheading } from '@/components/catalyst/heading';
-
-function formatCurrency(amount: number, currency: string, locale = 'en-US') {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(amount / 100);
-}
+import { formatCurrency } from '@/lib/utils/format-currency';
 
 interface SubscriptionOverviewProps {
   subscription: Stripe.Subscription;
@@ -49,7 +43,7 @@ export default function SubscriptionOverview({ subscription }: SubscriptionOverv
                 <>
                   <DescriptionTerm>{isFreeTrial ? 'Price After Trial' : 'Amount'}</DescriptionTerm>
                   <DescriptionDetails>
-                    {formatCurrency(plan.amount, plan.currency)} / {plan.interval}
+                    {formatCurrency(plan.amount / 100, { cents: true })} / {plan.interval}
                   </DescriptionDetails>
                 </>
               )}

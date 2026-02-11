@@ -7,6 +7,7 @@ import type { SimulationDataPoint, SimulationResult } from '@/lib/calc/simulatio
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/catalyst/description-list';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import Card from '@/components/ui/card';
 import { SingleSimulationCategory } from '@/lib/types/simulation-category';
 import { Subheading } from '@/components/catalyst/heading';
@@ -139,20 +140,20 @@ function NetWorthDataListCard({ dp, selectedAge }: DataListCardProps) {
       </Subheading>
       <DescriptionList>
         <DescriptionTerm>Annual Returns</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(stockAmount + bondAmount + cashAmount, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(stockAmount + bondAmount + cashAmount, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Annual Contributions</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(annualContributions, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(annualContributions, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Annual Withdrawals</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(annualWithdrawals, 2)}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">
           Net Portfolio Change
           <NetPortfolioChangeTooltip />
         </DescriptionTerm>
         <DescriptionDetails className="font-bold">
-          {formatNumber(stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals, 2, '$')}
+          {formatCompactCurrency(stockAmount + bondAmount + cashAmount + annualContributions - annualWithdrawals, 2)}
         </DescriptionDetails>
       </DescriptionList>
     </Card>
@@ -177,22 +178,22 @@ function CashFlowDataListCard({ dp, selectedAge }: DataListCardProps) {
         </Subheading>
         <DescriptionList>
           <DescriptionTerm>Annual Contributions</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(annualContributions, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(annualContributions, 2)}</DescriptionDetails>
 
           <DescriptionTerm>Annual Withdrawals</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(annualWithdrawals, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Surplus/Deficit
             <SurplusDeficitTooltip />
           </DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(surplusDeficit, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-bold">{formatCompactCurrency(surplusDeficit, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Net Cash Flow
             <NetCashFlowTooltip />
           </DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(netCashFlow, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-bold">{formatCompactCurrency(netCashFlow, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Savings Rate
@@ -224,21 +225,21 @@ function TaxesDataListCard({ dp, selectedAge }: DataListCardProps) {
       </Subheading>
       <DescriptionList>
         <DescriptionTerm>Income Taxed as Ordinary</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(incomeTaxedAsOrdinary, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(incomeTaxedAsOrdinary, 2)}</DescriptionDetails>
 
         <DescriptionTerm>Income Taxed as LTCG</DescriptionTerm>
-        <DescriptionDetails>{formatNumber(incomeTaxedAsLtcg, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails>{formatCompactCurrency(incomeTaxedAsLtcg, 2)}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">
           Gross Income
           <GrossIncomeTooltip />
         </DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(grossIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails className="font-bold">{formatCompactCurrency(grossIncome, 2)}</DescriptionDetails>
 
         <DescriptionTerm className="flex items-center gap-3 font-bold">
           Total Income <TotalIncomeTooltip />
         </DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalIncome, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails className="font-bold">{formatCompactCurrency(totalIncome, 2)}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
@@ -261,16 +262,16 @@ function ReturnsDataListCard({ dp, selectedAge }: DataListCardProps) {
       </Subheading>
       <DescriptionList>
         <DescriptionTerm>Stock Holdings</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * stocksAllocation, 2, '$')} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
+        <DescriptionDetails>{`${formatCompactCurrency(totalValue * stocksAllocation, 2)} (${formatNumber(stocksAllocation * 100, 1)}%)`}</DescriptionDetails>
 
         <DescriptionTerm>Bond Holdings</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * bondsAllocation, 2, '$')} (${formatNumber(bondsAllocation * 100, 1)}%)`}</DescriptionDetails>
+        <DescriptionDetails>{`${formatCompactCurrency(totalValue * bondsAllocation, 2)} (${formatNumber(bondsAllocation * 100, 1)}%)`}</DescriptionDetails>
 
         <DescriptionTerm>Cash Holdings</DescriptionTerm>
-        <DescriptionDetails>{`${formatNumber(totalValue * cashAllocation, 2, '$')} (${formatNumber(cashAllocation * 100, 1)}%)`}</DescriptionDetails>
+        <DescriptionDetails>{`${formatCompactCurrency(totalValue * cashAllocation, 2)} (${formatNumber(cashAllocation * 100, 1)}%)`}</DescriptionDetails>
 
         <DescriptionTerm className="font-bold">Total Portfolio Value</DescriptionTerm>
-        <DescriptionDetails className="font-bold">{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+        <DescriptionDetails className="font-bold">{formatCompactCurrency(totalValue, 2)}</DescriptionDetails>
       </DescriptionList>
     </Card>
   );
@@ -293,16 +294,16 @@ function ContributionsDataListCard({ dp, selectedAge }: DataListCardProps) {
         </Subheading>
         <DescriptionList>
           <DescriptionTerm>Total Portfolio Value</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(totalValue, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3">
             Surplus/Deficit
             <SurplusDeficitTooltip />
           </DescriptionTerm>
-          <DescriptionDetails>{formatNumber(surplusDeficit, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(surplusDeficit, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="font-bold">Annual Contributions</DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(annualContributions, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-bold">{formatCompactCurrency(annualContributions, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Savings Rate
@@ -334,16 +335,16 @@ function WithdrawalsDataListCard({ dp, selectedAge }: DataListCardProps) {
         </Subheading>
         <DescriptionList>
           <DescriptionTerm>Total Portfolio Value</DescriptionTerm>
-          <DescriptionDetails>{formatNumber(totalValue, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(totalValue, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3">
             Surplus/Deficit
             <SurplusDeficitTooltip />
           </DescriptionTerm>
-          <DescriptionDetails>{formatNumber(surplusDeficit, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails>{formatCompactCurrency(surplusDeficit, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="font-bold">Annual Withdrawals</DescriptionTerm>
-          <DescriptionDetails className="font-bold">{formatNumber(annualWithdrawals, 2, '$')}</DescriptionDetails>
+          <DescriptionDetails className="font-bold">{formatCompactCurrency(annualWithdrawals, 2)}</DescriptionDetails>
 
           <DescriptionTerm className="flex items-center gap-3 font-bold">
             Withdrawal Rate <WithdrawalRateTooltip />

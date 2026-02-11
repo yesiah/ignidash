@@ -20,13 +20,7 @@ import {
   type YearlyAggregateTableRow,
   YEARLY_AGGREGATE_TABLE_CONFIG,
 } from '@/lib/schemas/tables/multi-simulation-table-schema';
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
+import { formatCurrency } from '@/lib/utils/format-currency';
 
 const formatValue = (value: unknown, format: ColumnFormat): string => {
   if (value == null) return '–';
@@ -34,7 +28,7 @@ const formatValue = (value: unknown, format: ColumnFormat): string => {
 
   switch (format) {
     case 'currency':
-      return currencyFormatter.format(value as number);
+      return formatCurrency(value as number);
     case 'percentage':
       return `${((value as number) * 100).toFixed(1)}%`;
     case 'number':

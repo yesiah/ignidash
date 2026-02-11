@@ -13,7 +13,7 @@ import { type AssetInputs, assetTypeForDisplay, assetIconForDisplay } from '@/li
 import { type LiabilityInputs, liabilityTypeForDisplay, liabilityIconForDisplay } from '@/lib/schemas/finances/liability-schema';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { Heading, Subheading } from '@/components/catalyst/heading';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Divider } from '@/components/catalyst/divider';
@@ -21,7 +21,6 @@ import DataItem from '@/components/ui/data-item';
 import DataListEmptyStateButton from '@/components/ui/data-list-empty-state-button';
 import DeleteDataItemAlert from '@/components/ui/delete-data-item-alert';
 import { cn } from '@/lib/utils';
-
 import AssetDialog from './dialogs/asset-dialog';
 import LiabilityDialog from './dialogs/liability-dialog';
 
@@ -29,7 +28,7 @@ function getAssetDesc(asset: AssetInputs) {
   return (
     <>
       <p>
-        {formatNumber(asset.value, 1, '$')} | {assetTypeForDisplay(asset.type)}
+        {formatCompactCurrency(asset.value, 1)} | {assetTypeForDisplay(asset.type)}
       </p>
       <p>
         Updated <time dateTime={new Date(asset.updatedAt).toISOString()}>{new Date(asset.updatedAt).toLocaleDateString()}</time>
@@ -42,7 +41,7 @@ function getLiabilityDesc(liability: LiabilityInputs) {
   return (
     <>
       <p>
-        {formatNumber(liability.balance, 1, '$')} | {liabilityTypeForDisplay(liability.type)}
+        {formatCompactCurrency(liability.balance, 1)} | {liabilityTypeForDisplay(liability.type)}
       </p>
       <p>
         Updated <time dateTime={new Date(liability.updatedAt).toISOString()}>{new Date(liability.updatedAt).toLocaleDateString()}</time>
@@ -160,7 +159,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
                 <p>Note: entries are not connected to Simulator plans.</p>
               </TooltipContent>
             </Tooltip>
-            <span className="text-muted-foreground text-2xl/8 font-normal sm:text-xl/8">{formatNumber(netWorth, 2, '$')}</span>
+            <span className="text-muted-foreground text-2xl/8 font-normal sm:text-xl/8">{formatCompactCurrency(netWorth, 2)}</span>
           </div>
           <div className="flex items-center gap-2">
             <Tooltip>
@@ -193,7 +192,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
                   Assets
                 </Subheading>
                 <span className="text-base/7 font-bold text-stone-950 sm:text-sm/6 dark:text-white">
-                  {formatNumber(totalAssets, 2, '$')}
+                  {formatCompactCurrency(totalAssets, 2)}
                 </span>
               </div>
               <ul role="list" className="grid grid-cols-1 gap-3">
@@ -234,7 +233,7 @@ export default function Finances({ preloadedAssets, preloadedLiabilities }: Fina
                   Liabilities
                 </Subheading>
                 <span className="text-base/7 font-bold text-stone-950 sm:text-sm/6 dark:text-white">
-                  {formatNumber(totalLiabilities, 2, '$')}
+                  {formatCompactCurrency(totalLiabilities, 2)}
                 </span>
               </div>
               <ul role="list" className="grid grid-cols-1 gap-3">

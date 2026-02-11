@@ -2,7 +2,8 @@
 
 import { Pie, PieChart, Sector, SectorProps, Cell } from 'recharts';
 
-import { formatNumber, formatChartString } from '@/lib/utils';
+import { formatChartString } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 
 type Coordinate = {
   x: number;
@@ -44,7 +45,7 @@ const renderActiveShape = (props: unknown) => {
         textAnchor="middle"
         fill="currentColor"
         fontSize="14"
-      >{`${value !== undefined ? formatNumber(value, 2, '$') : 'N/A'}`}</text>
+      >{`${value !== undefined ? formatCompactCurrency(value, 2) : 'N/A'}`}</text>
       <text x={cx} y={cy} dy={0} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="600">
         {formatChartString(payload?.name ?? 'N/A')}
       </text>

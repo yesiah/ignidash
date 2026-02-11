@@ -11,6 +11,7 @@ import type { AccountDataWithFlows } from '@/lib/calc/account';
 import type { PhysicalAssetData } from '@/lib/calc/physical-assets';
 import type { DebtData } from '@/lib/calc/debts';
 import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -74,7 +75,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
               })}
             >
               <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+              <span className="ml-1 font-semibold">{formatCompactCurrency(entry.value, 1)}</span>
             </p>
           ))}
         </div>
@@ -86,7 +87,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">{`${formatChartString(dataView)}:`}</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(lineData.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(lineData.value, 3)}</span>
         </p>
       );
       break;
@@ -105,7 +106,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
               })}
             >
               <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-              <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+              <span className="ml-1 font-semibold">{formatCompactCurrency(entry.value, 1)}</span>
             </p>
           ))}
         </div>
@@ -125,7 +126,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             {footerIcon}
             <span className="mr-2">{footerTitle}:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(total, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(total, 3)}</span>
         </p>
       );
       break;
@@ -145,7 +146,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             >
               <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
               <span className="ml-1 font-semibold">
-                {formatNumber(entry.value, 1, '$')}
+                {formatCompactCurrency(entry.value, 1)}
                 {total > 0 && ` (${formatNumber((entry.value / total) * 100, 1)}%)`}
               </span>
             </p>
@@ -156,7 +157,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       footer = (
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
-          <span className="ml-1 font-semibold">{formatNumber(total, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(total, 3)}</span>
         </p>
       );
       break;
@@ -239,7 +240,7 @@ export default function SingleSimulationNetWorthAreaChart({
   )[] = [];
   const barColors: string[] = [];
 
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
   let stackOffset: 'sign' | undefined = undefined;
 
   let customDataType: 'account' | 'asset' | 'debt' | undefined = undefined;

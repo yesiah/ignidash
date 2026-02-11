@@ -20,6 +20,7 @@ import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 import { getErrorMessages } from '@/lib/utils/form-utils';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface LiabilityDialogProps {
   onClose: () => void;
@@ -101,7 +102,15 @@ export default function LiabilityDialog({ onClose, selectedLiability: _selectedL
               </Field>
               <Field>
                 <Label htmlFor="balance">Balance</Label>
-                <NumberInput name="balance" control={control} id="balance" inputMode="decimal" placeholder="$20,000" prefix="$" autoFocus />
+                <NumberInput
+                  name="balance"
+                  control={control}
+                  id="balance"
+                  inputMode="decimal"
+                  placeholder={formatCurrencyPlaceholder(20000)}
+                  prefix={getCurrencySymbol()}
+                  autoFocus
+                />
                 {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
               </Field>
               <Field>

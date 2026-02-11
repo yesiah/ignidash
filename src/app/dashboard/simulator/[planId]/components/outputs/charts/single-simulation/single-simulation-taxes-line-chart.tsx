@@ -4,7 +4,8 @@ import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 import { ChartLineIcon } from 'lucide-react';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -75,7 +76,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       case 'earlyWithdrawalPenalties':
       case 'adjustmentsAndDeductions':
       case 'socialSecurityIncome':
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
       default:
         return value;
     }
@@ -106,10 +107,9 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
-            {formatNumber(
+            {formatCompactCurrency(
               payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
+              3
             )}
           </span>
         </p>
@@ -262,13 +262,13 @@ export default function SingleSimulationTaxesLineChart({
       strokeColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'annualAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('annualIncomeTax', 'annualFicaTax', 'annualCapGainsTax', 'annualNiit', 'annualEarlyWithdrawalPenalties');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'cumulativeAmounts':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push(
         'cumulativeIncomeTax',
@@ -280,7 +280,7 @@ export default function SingleSimulationTaxesLineChart({
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)');
       break;
     case 'taxableIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('taxableIncome');
       strokeColors.push('var(--foreground)');
@@ -304,7 +304,7 @@ export default function SingleSimulationTaxesLineChart({
       stackOffset = 'sign';
       break;
     case 'adjustedGrossIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('adjustedGrossIncome');
       strokeColors.push('var(--foreground)');
@@ -321,50 +321,50 @@ export default function SingleSimulationTaxesLineChart({
       stackOffset = 'sign';
       break;
     case 'investmentIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('taxableInterestIncome', 'taxableDividendIncome', 'realizedGains');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'retirementDistributions':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('taxDeferredWithdrawals', 'earlyRothEarningsWithdrawals');
       barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'taxFreeIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('taxFreeIncome');
       strokeColors.push('var(--chart-2)');
       break;
     case 'ordinaryIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('earnedIncome', 'taxableSocialSecurityIncome', 'taxableInterestIncome', 'taxableRetirementDistributions');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     case 'capGainsAndDividends':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('realizedGains', 'taxableDividendIncome');
       barColors.push('var(--chart-1)', 'var(--chart-2)');
       break;
     case 'earlyWithdrawalPenalties':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = undefined;
 
       barDataKeys.push('annualEarlyWithdrawalPenalties', 'cumulativeEarlyWithdrawalPenalties');
       barColors.push('var(--chart-2)', 'var(--chart-4)');
       break;
     case 'adjustmentsAndDeductions':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('taxDeductibleContributions', 'capitalLossDeduction', 'standardDeduction');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
       break;
     case 'socialSecurityIncome':
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = undefined;
 
       barDataKeys.push('socialSecurityIncome', 'taxableSocialSecurityIncome');

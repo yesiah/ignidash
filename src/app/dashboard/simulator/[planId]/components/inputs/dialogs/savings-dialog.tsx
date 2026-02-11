@@ -20,6 +20,7 @@ import { Button } from '@/components/catalyst/button';
 import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface SavingsDialogProps {
   onClose: () => void;
@@ -100,7 +101,15 @@ export default function SavingsDialog({ onClose, selectedAccount: _selectedAccou
               </Field>
               <Field>
                 <Label htmlFor="balance">Balance</Label>
-                <NumberInput name="balance" control={control} id="balance" inputMode="decimal" placeholder="$15,000" prefix="$" autoFocus />
+                <NumberInput
+                  name="balance"
+                  control={control}
+                  id="balance"
+                  inputMode="decimal"
+                  placeholder={formatCurrencyPlaceholder(15000)}
+                  prefix={getCurrencySymbol()}
+                  autoFocus
+                />
                 {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
               </Field>
             </FieldGroup>

@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine, LabelList } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import type { IncomeTaxBracket } from '@/lib/calc/tax-data/income-tax-brackets';
@@ -37,7 +37,7 @@ const renderTaxBracketReferenceLines = (
       stroke={foregroundMutedColor}
       ifOverflow="extendDomain"
       label={{
-        value: `${(bracket.rate * 100).toFixed(0)}% (${formatNumber(bracket.min, 1, '$')})`,
+        value: `${(bracket.rate * 100).toFixed(0)}% (${formatCompactCurrency(bracket.min, 1)})`,
         position: index !== visibleBrackets.length - 1 ? 'insideBottomRight' : 'insideTopRight',
         fill: foregroundColor,
         fontWeight: '600',
@@ -57,7 +57,7 @@ const renderNiitThresholdReferenceLine = (niitThreshold: number, foregroundColor
       stroke={foregroundMutedColor}
       ifOverflow="extendDomain"
       label={{
-        value: `${(NIIT_RATE * 100).toFixed(1)}% (${formatNumber(niitThreshold, 1, '$')})`,
+        value: `${(NIIT_RATE * 100).toFixed(1)}% (${formatCompactCurrency(niitThreshold, 1)})`,
         position: 'insideTopRight',
         fill: foregroundColor,
         fontWeight: '600',
@@ -109,7 +109,7 @@ const CustomLabelListContent = (props: any) => {
       case 'earlyWithdrawalPenalties':
       case 'adjustmentsAndDeductions':
       case 'socialSecurityIncome':
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
       default:
         return value;
     }
@@ -257,7 +257,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'annualAmounts': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, niitLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
         dataView,
@@ -273,7 +273,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'cumulativeAmounts': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [incomeTaxLabel, ficaTaxLabel, capGainsTaxLabel, niitLabel, earlyWithdrawalPenaltiesLabel] = getLabelsForScreenSize(
         dataView,
@@ -289,7 +289,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'taxableIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       transformedChartData = chartData.flatMap((item) => [
@@ -304,7 +304,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'adjustedGrossIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       stackId = 'stack';
 
       transformedChartData = chartData.flatMap((item) => [
@@ -319,7 +319,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'investmentIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Interest Income', segments: [{ amount: item.taxableInterestIncome, color: 'var(--chart-1)' }] },
@@ -329,7 +329,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'retirementDistributions': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [taxDeferredWithdrawalsLabel, earlyRothWithdrawalsLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
       transformedChartData = chartData.flatMap((item) => [
@@ -339,7 +339,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'taxFreeIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Tax-Free Income', segments: [{ amount: item.taxFreeIncome, color: 'var(--chart-2)' }] },
@@ -347,7 +347,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'ordinaryIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [earnedIncomeLabel, socialSecurityIncomeLabel, interestIncomeLabel, retirementDistributionsLabel] = getLabelsForScreenSize(
         dataView,
@@ -362,7 +362,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'capGainsAndDividends': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       transformedChartData = chartData.flatMap((item) => [
         { name: 'Realized Gains', segments: [{ amount: item.realizedGains, color: 'var(--chart-1)' }] },
@@ -371,7 +371,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'earlyWithdrawalPenalties': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       filterZeroValues = false;
 
       const [annualPenaltiesLabel, cumulativePenaltiesLabel] = getLabelsForScreenSize(dataView, isSmallScreen);
@@ -382,7 +382,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'adjustmentsAndDeductions': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const [taxDeductibleContributionsLabel, capLossDeductionLabel, standardDeductionLabel] = getLabelsForScreenSize(
         dataView,
@@ -396,7 +396,7 @@ export default function SingleSimulationTaxesBarChart({
       break;
     }
     case 'socialSecurityIncome': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
       filterZeroValues = false;
 
       const [socialSecurityLabel, taxableSocialSecurityLabel] = getLabelsForScreenSize(dataView, isSmallScreen);

@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, ReferenceLine } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import type { SingleSimulationCashFlowChartDataPoint } from '@/lib/types/chart-data-points';
@@ -25,7 +25,7 @@ const CustomLabelListContent = (props: any) => {
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
     >
-      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
+      <tspan className="font-semibold">{formatCompactCurrency(value, 1)}</tspan>
     </text>
   );
 };
@@ -98,7 +98,7 @@ export default function SingleSimulationCashFlowBarChart({
   const chartData = rawChartData.filter((item) => item.age === age);
 
   let transformedChartData: { name: string; amount: number; color: string }[] = [];
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
   let showReferenceLineAtZero = false;
 
   switch (dataView) {

@@ -1,4 +1,5 @@
 import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import type { TimePoint, Growth, Frequency } from '@/lib/schemas/inputs/income-expenses-shared-schemas';
 import type { IncomeType } from '@/lib/schemas/inputs/income-form-schema';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
@@ -71,7 +72,7 @@ export const growthForDisplay = (growthRate: Growth['growthRate'], growthLimit: 
   const rate = formatNumber(growthRate, 1);
   if (growthLimit === undefined) return `Rate: ${rate}%, No Limit`;
 
-  return `Rate: ${rate}%, Limit: ${formatNumber(growthLimit, 0, '$')}`;
+  return `Rate: ${rate}%, Limit: ${formatCompactCurrency(growthLimit, 0)}`;
 };
 
 export const frequencyForDisplay = (frequency: Frequency) => {
@@ -93,7 +94,7 @@ export const frequencyForDisplay = (frequency: Frequency) => {
 
 export const maxBalanceForDisplay = (maxBalance: number | undefined) => {
   if (maxBalance === undefined) return 'Never';
-  return `At Balance of ${formatNumber(maxBalance, 0, '$')}`;
+  return `At Balance of ${formatCompactCurrency(maxBalance, 0)}`;
 };
 
 export const incomeTaxTreatmentForDisplay = (type: IncomeType, withholding: number | undefined) => {
@@ -135,9 +136,9 @@ export const keyMetricsForDisplay = (keyMetrics: KeyMetrics) => {
     yearsToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
     bankruptcyAge: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
     yearsToBankruptcy: (v: number | null) => (v !== null ? `${formatNumber(v, 0)}` : '∞'),
-    portfolioAtRetirement: (v: number | null) => (v !== null ? `${formatNumber(v, 2, '$')}` : 'N/A'),
-    lifetimeTaxesAndPenalties: (v: number) => `${formatNumber(v, 2, '$')}`,
-    finalPortfolio: (v: number) => `${formatNumber(v, 2, '$')}`,
+    portfolioAtRetirement: (v: number | null) => (v !== null ? `${formatCompactCurrency(v, 2)}` : 'N/A'),
+    lifetimeTaxesAndPenalties: (v: number) => `${formatCompactCurrency(v, 2)}`,
+    finalPortfolio: (v: number) => `${formatCompactCurrency(v, 2)}`,
     progressToRetirement: (v: number | null) => (v !== null ? `${formatNumber(v * 100, 1)}%` : 'N/A'),
   };
 

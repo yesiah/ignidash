@@ -30,6 +30,7 @@ import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Divider } from '@/components/catalyst/divider';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 import { PayoffEstimate } from './payoff-estimate';
 
@@ -264,8 +265,8 @@ export default function PhysicalAssetDialog({
                     control={control}
                     id="purchasePrice"
                     inputMode="decimal"
-                    placeholder="$460,000"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(460000)}
+                    prefix={getCurrencySymbol()}
                     autoFocus
                   />
                   {errors.purchasePrice && <ErrorMessage>{errors.purchasePrice?.message}</ErrorMessage>}
@@ -280,8 +281,8 @@ export default function PhysicalAssetDialog({
                     control={control}
                     id="marketValue"
                     inputMode="decimal"
-                    placeholder="$525,000"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(525000)}
+                    prefix={getCurrencySymbol()}
                   />
                   {errors.marketValue && <ErrorMessage>{errors.marketValue?.message}</ErrorMessage>}
                 </Field>
@@ -561,8 +562,8 @@ export default function PhysicalAssetDialog({
                                 control={control}
                                 id="paymentMethod.loanBalance"
                                 inputMode="decimal"
-                                placeholder="$400,000"
-                                prefix="$"
+                                placeholder={formatCurrencyPlaceholder(400000)}
+                                prefix={getCurrencySymbol()}
                               />
                               {loanBalanceError && <ErrorMessage>{loanBalanceError.message}</ErrorMessage>}
                             </Field>
@@ -573,8 +574,8 @@ export default function PhysicalAssetDialog({
                                 control={control}
                                 id="paymentMethod.monthlyPayment"
                                 inputMode="decimal"
-                                placeholder="$2,400"
-                                prefix="$"
+                                placeholder={formatCurrencyPlaceholder(2400)}
+                                prefix={getCurrencySymbol()}
                               />
                               {monthlyPaymentError && <ErrorMessage>{monthlyPaymentError.message}</ErrorMessage>}
                             </Field>
@@ -598,8 +599,8 @@ export default function PhysicalAssetDialog({
                                   control={control}
                                   id="paymentMethod.downPayment"
                                   inputMode="decimal"
-                                  placeholder="$100,000"
-                                  prefix="$"
+                                  placeholder={formatCurrencyPlaceholder(100000)}
+                                  prefix={getCurrencySymbol()}
                                 />
                                 {downPaymentError && <ErrorMessage>{downPaymentError.message}</ErrorMessage>}
                               </Field>

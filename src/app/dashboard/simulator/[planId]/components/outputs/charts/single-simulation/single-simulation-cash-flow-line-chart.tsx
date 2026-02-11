@@ -4,7 +4,8 @@ import { useState, useCallback, memo } from 'react';
 import { ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 import { ChartLineIcon } from 'lucide-react';
 
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -52,7 +53,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
       case 'savingsRate':
         return `${(value * 100).toFixed(1)}%`;
       default:
-        return formatNumber(value, 1, '$');
+        return formatCompactCurrency(value, 1);
     }
   };
 
@@ -92,7 +93,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">Surplus/Deficit:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(surplusDeficit.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(surplusDeficit.value, 3)}</span>
         </p>
       );
       break;
@@ -109,7 +110,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
             <ChartLineIcon className="h-3 w-3" />
             <span className="mr-2">Net Cash Flow:</span>
           </span>
-          <span className="ml-1 font-semibold">{formatNumber(netCashFlow.value, 3, '$')}</span>
+          <span className="ml-1 font-semibold">{formatCompactCurrency(netCashFlow.value, 3)}</span>
         </p>
       );
       break;
@@ -119,10 +120,9 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled, dataVi
         <p className="mx-1 mt-2 flex justify-between text-sm font-semibold">
           <span className="mr-2">Total:</span>
           <span className="ml-1 font-semibold">
-            {formatNumber(
+            {formatCompactCurrency(
               payload.reduce((sum, item) => sum + item.value, 0),
-              3,
-              '$'
+              3
             )}
           </span>
         </p>
@@ -210,7 +210,7 @@ export default function SingleSimulationCashFlowLineChart({
 
   switch (dataView) {
     case 'surplusDeficit': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('surplusDeficit');
       strokeColors.push(LINE_COLOR);
@@ -229,7 +229,7 @@ export default function SingleSimulationCashFlowLineChart({
       break;
     }
     case 'cashFlow': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       lineDataKeys.push('netCashFlow');
       strokeColors.push(LINE_COLOR);
@@ -268,14 +268,14 @@ export default function SingleSimulationCashFlowLineChart({
       break;
     }
     case 'incomes': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('earnedIncome', 'socialSecurityIncome', 'taxFreeIncome', 'employerMatch');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)');
       break;
     }
     case 'expenses': {
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       barDataKeys.push('expenses', 'taxesAndPenalties', 'debtPayments');
       barColors.push('var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)');
@@ -287,7 +287,7 @@ export default function SingleSimulationCashFlowLineChart({
         break;
       }
 
-      formatter = (value: number) => formatNumber(value, 1, '$');
+      formatter = (value: number) => formatCompactCurrency(value, 1);
 
       const perIncomeData = chartData.flatMap(({ age, perIncomeData }) =>
         perIncomeData.filter((income) => income.id === customDataID && income.income !== 0).map((income) => ({ age, ...income }))

@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import type { SingleSimulationWithdrawalsChartDataPoint } from '@/lib/types/chart-data-points';
@@ -24,7 +24,7 @@ const CustomLabelListContent = (props: any) => {
       dominantBaseline="middle"
       className="text-xs sm:text-sm"
     >
-      <tspan className="font-semibold">{formatNumber(value, 1, '$')}</tspan>
+      <tspan className="font-semibold">{formatCompactCurrency(value, 1)}</tspan>
     </text>
   );
 };
@@ -89,7 +89,7 @@ export default function SingleSimulationWithdrawalsBarChart({
 
   const chartData = rawChartData.filter((item) => item.age === age);
 
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
   let transformedChartData: { name: string; amount: number; color: string }[] = [];
 
   switch (dataView) {

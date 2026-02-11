@@ -32,7 +32,7 @@ import { Switch, SwitchField } from '@/components/catalyst/switch';
 import ErrorMessageCard from '@/components/ui/error-message-card';
 import { Select } from '@/components/catalyst/select';
 import { Button } from '@/components/catalyst/button';
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency, getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Divider } from '@/components/catalyst/divider';
@@ -179,7 +179,7 @@ export default function ContributionRuleDialog({
                 {errors.accountId && <ErrorMessage>{errors.accountId?.message}</ErrorMessage>}
                 {selectedAccountAnnualContributionLimit !== null && Number.isFinite(selectedAccountAnnualContributionLimit) && (
                   <Description>
-                    You can contribute up to <strong>{formatNumber(selectedAccountAnnualContributionLimit, 0, '$')}</strong> per year.
+                    You can contribute up to <strong>{formatCompactCurrency(selectedAccountAnnualContributionLimit, 0)}</strong> per year.
                   </Description>
                 )}
               </Field>
@@ -220,8 +220,8 @@ export default function ContributionRuleDialog({
                       control={control}
                       id="dollarAmount"
                       inputMode="decimal"
-                      placeholder="$2,500"
-                      prefix="$"
+                      placeholder={formatCurrencyPlaceholder(2500)}
+                      prefix={getCurrencySymbol()}
                       autoFocus={selectedContributionRule !== null}
                     />
                     {dollarAmountError && <ErrorMessage>{dollarAmountError.message}</ErrorMessage>}
@@ -249,7 +249,14 @@ export default function ContributionRuleDialog({
                     <span className="whitespace-nowrap">Maximum Balance</span>
                     <span className="text-muted-foreground hidden truncate text-sm/6 sm:inline">Optional</span>
                   </Label>
-                  <NumberInput name="maxBalance" control={control} id="maxBalance" inputMode="decimal" placeholder="$15,000" prefix="$" />
+                  <NumberInput
+                    name="maxBalance"
+                    control={control}
+                    id="maxBalance"
+                    inputMode="decimal"
+                    placeholder={formatCurrencyPlaceholder(15000)}
+                    prefix={getCurrencySymbol()}
+                  />
                   {errors.maxBalance && <ErrorMessage>{errors.maxBalance?.message}</ErrorMessage>}
                   <Description>Stop contributing to this account once it reaches this balance.</Description>
                 </Field>
@@ -265,8 +272,8 @@ export default function ContributionRuleDialog({
                     control={control}
                     id="employerMatch"
                     inputMode="decimal"
-                    placeholder="$7,000"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(7000)}
+                    prefix={getCurrencySymbol()}
                   />
                   {errors.employerMatch && <ErrorMessage>{errors.employerMatch?.message}</ErrorMessage>}
                   <Description>Employer will match your contributions dollar-for-dollar up to this amount.</Description>

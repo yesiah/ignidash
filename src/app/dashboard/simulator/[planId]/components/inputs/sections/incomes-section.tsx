@@ -11,7 +11,7 @@ import { incomeToConvex } from '@/lib/utils/convex-to-zod-transformers';
 import DisclosureSection from '@/components/ui/disclosure-section';
 import { Dialog } from '@/components/catalyst/dialog';
 import { Button } from '@/components/catalyst/button';
-import { formatNumber } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import type { DisclosureState } from '@/lib/types/disclosure-state';
 import { frequencyForDisplay, timeFrameForDisplay } from '@/lib/utils/data-display-formatters';
 import type { IncomeInputs } from '@/lib/schemas/inputs/income-form-schema';
@@ -27,7 +27,7 @@ function getIncomeDesc(income: IncomeInputs) {
   return (
     <>
       <p>
-        {formatNumber(income.amount, 2, '$')} {frequencyForDisplay(income.frequency)}
+        {formatCompactCurrency(income.amount, 2)} {frequencyForDisplay(income.frequency)}
       </p>
       <p>{timeFrameForDisplay(income.timeframe.start, income.timeframe.end)}</p>
     </>

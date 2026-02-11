@@ -36,6 +36,7 @@ import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Divider } from '@/components/catalyst/divider';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface IncomeDialogProps {
   onClose: () => void;
@@ -267,7 +268,15 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                 </Field>
                 <Field>
                   <Label htmlFor="amount">Pre-tax Amount</Label>
-                  <NumberInput name="amount" control={control} id="amount" inputMode="decimal" placeholder="$85,000" prefix="$" autoFocus />
+                  <NumberInput
+                    name="amount"
+                    control={control}
+                    id="amount"
+                    inputMode="decimal"
+                    placeholder={formatCurrencyPlaceholder(85000)}
+                    prefix={getCurrencySymbol()}
+                    autoFocus
+                  />
                   {errors.amount && <ErrorMessage>{errors.amount?.message}</ErrorMessage>}
                 </Field>
                 <Field>
@@ -564,8 +573,8 @@ export default function IncomeDialog({ onClose, selectedIncome: _selectedIncome,
                               control={control}
                               id="growth.growthLimit"
                               inputMode="decimal"
-                              placeholder="$120,000"
-                              prefix="$"
+                              placeholder={formatCurrencyPlaceholder(120000)}
+                              prefix={getCurrencySymbol()}
                             />
                             {errors.growth?.growthLimit && <ErrorMessage>{errors.growth?.growthLimit?.message}</ErrorMessage>}
                           </Field>

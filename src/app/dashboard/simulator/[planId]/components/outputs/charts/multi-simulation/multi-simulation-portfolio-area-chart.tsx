@@ -5,7 +5,8 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } 
 
 import type { MultiSimulationPortfolioChartDataPoint } from '@/lib/types/chart-data-points';
 import type { KeyMetrics } from '@/lib/types/key-metrics';
-import { formatNumber, formatChartString, cn } from '@/lib/utils';
+import { formatChartString, cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/utils/format-currency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChartTheme } from '@/hooks/use-chart-theme';
 import { useClickDetection } from '@/hooks/use-outside-click';
@@ -50,7 +51,7 @@ const CustomTooltip = memo(({ active, payload, label, startAge, disabled }: Cust
             })}
           >
             <span className="mr-2">{`${formatChartString(entry.dataKey)}:`}</span>
-            <span className="ml-1 font-semibold">{formatNumber(entry.value, 1, '$')}</span>
+            <span className="ml-1 font-semibold">{formatCompactCurrency(entry.value, 1)}</span>
           </p>
         ))}
       </div>
@@ -89,7 +90,7 @@ export default function MultiSimulationPortfolioAreaChart({
 
   const chartData: MultiSimulationPortfolioChartDataPoint[] = useChartDataSlice(rawChartData, 'monteCarlo');
   const dataKeys: (keyof MultiSimulationPortfolioChartDataPoint)[] = ['p75PortfolioValue', 'p50PortfolioValue', 'p25PortfolioValue'];
-  const formatter = (value: number) => formatNumber(value, 1, '$');
+  const formatter = (value: number) => formatCompactCurrency(value, 1);
 
   const interval = useChartInterval(chartData.length);
 

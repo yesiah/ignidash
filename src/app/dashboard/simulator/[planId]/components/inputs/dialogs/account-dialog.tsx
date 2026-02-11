@@ -22,6 +22,7 @@ import { Input } from '@/components/catalyst/input';
 import { useSelectedPlanId } from '@/hooks/use-selected-plan-id';
 import { getErrorMessages } from '@/lib/utils/form-utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { getCurrencySymbol, formatCurrencyPlaceholder } from '@/lib/utils/format-currency';
 
 interface AccountDialogProps {
   onClose: () => void;
@@ -164,8 +165,8 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                     control={control}
                     id="balance"
                     inputMode="decimal"
-                    placeholder="$15,000"
-                    prefix="$"
+                    placeholder={formatCurrencyPlaceholder(15000)}
+                    prefix={getCurrencySymbol()}
                     autoFocus
                   />
                   {errors.balance && <ErrorMessage>{errors.balance?.message}</ErrorMessage>}
@@ -184,7 +185,14 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                         </TooltipContent>
                       </Tooltip>
                     </Label>
-                    <NumberInput name="costBasis" control={control} id="costBasis" inputMode="decimal" placeholder="–" prefix="$" />
+                    <NumberInput
+                      name="costBasis"
+                      control={control}
+                      id="costBasis"
+                      inputMode="decimal"
+                      placeholder="–"
+                      prefix={getCurrencySymbol()}
+                    />
                     {costBasisError && <ErrorMessage>{costBasisError.message}</ErrorMessage>}
                   </Field>
                 )}
@@ -208,7 +216,7 @@ export default function AccountDialog({ onClose, selectedAccount: _selectedAccou
                       id="contributionBasis"
                       inputMode="decimal"
                       placeholder="–"
-                      prefix="$"
+                      prefix={getCurrencySymbol()}
                     />
                     {contributionBasisError && <ErrorMessage>{contributionBasisError.message}</ErrorMessage>}
                   </Field>
