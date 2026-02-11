@@ -1,4 +1,8 @@
-import { CURRENCY_CONFIG } from '@/lib/config/currency';
+export const CURRENCY_CONFIG = {
+  currency: 'USD',
+  locale: 'en-US',
+  symbol: '$',
+} as const;
 
 const currencyFormatter = new Intl.NumberFormat(CURRENCY_CONFIG.locale, {
   style: 'currency',
