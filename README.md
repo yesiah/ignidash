@@ -181,3 +181,7 @@ Open http://localhost:3000 in your browser.
 ## License
 
 [AGPL-3.0](https://github.com/schelskedevco/ignidash/blob/main/LICENSE)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=schelskedevco/ignidash&type=date&legend=bottom-right)](https://www.star-history.com/#schelskedevco/ignidash&type=date&legend=bottom-right)
