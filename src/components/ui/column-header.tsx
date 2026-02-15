@@ -13,14 +13,9 @@ export default function ColumnHeader({ title, icon: Icon, iconButton, className 
   return (
     <header
       className={cn(
-        'border-border/50 from-emphasized-background to-background fixed top-0 z-10 -mx-2 border-b bg-gradient-to-r py-4 sm:-mx-3 lg:-mx-4',
+        'border-border/50 from-emphasized-background to-background fixed top-0 z-10 -mx-2 border-b bg-gradient-to-r py-4 group-data-[animating=true]/sidebar:transition-[left,width] group-data-[animating=true]/sidebar:duration-200 group-data-[animating=true]/sidebar:ease-in-out motion-reduce:transition-none sm:-mx-3 lg:-mx-4',
         className
       )}
-      style={{
-        transitionProperty: 'left, width',
-        transitionDuration: 'var(--sidebar-transition-duration)',
-        transitionTimingFunction: 'var(--sidebar-transition-easing)',
-      }}
     >
       <div className="mx-4 flex items-center justify-between sm:mx-6 lg:mx-8">
         <h2 className="flex min-w-0 items-center gap-2 text-2xl font-semibold tracking-tight lowercase">

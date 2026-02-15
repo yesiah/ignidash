@@ -4,7 +4,7 @@ import { PanelLeftIcon } from 'lucide-react';
 
 import IconButton from '@/components/ui/icon-button';
 import { cn } from '@/lib/utils';
-import { useSidebarCollapsed, useUpdateSidebarCollapsed } from '@/lib/stores/simulator-store';
+import { useSidebarCollapsed, useUpdateSidebarCollapsed, useUpdateSidebarAnimating } from '@/lib/stores/simulator-store';
 
 interface SidebarToggleProps {
   className?: string;
@@ -12,9 +12,16 @@ interface SidebarToggleProps {
 
 export default function SidebarToggle({ className }: SidebarToggleProps) {
   const sidebarCollapsed = useSidebarCollapsed();
-
   const updateSidebarCollapsed = useUpdateSidebarCollapsed();
-  const handleToggle = () => updateSidebarCollapsed(!sidebarCollapsed);
+  const updateSidebarAnimating = useUpdateSidebarAnimating();
+
+  const handleToggle = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+      updateSidebarAnimating(true);
+    }
+    updateSidebarCollapsed(!sidebarCollapsed);
+  };
 
   return (
     <IconButton

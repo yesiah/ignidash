@@ -86,6 +86,7 @@ interface SimulatorState {
   preferences: {
     showReferenceLines: boolean;
     sidebarCollapsed: boolean;
+    sidebarAnimating: boolean;
   };
 
   chat: {
@@ -119,6 +120,7 @@ interface SimulatorState {
     /* Preferences */
     updateShowReferenceLines: (value: boolean) => void;
     updateSidebarCollapsed: (value: boolean) => void;
+    updateSidebarAnimating: (value: boolean) => void;
 
     /* Chat */
     updateSelectedConversationId: (planId: Id<'plans'>, id: Id<'conversations'>) => void;
@@ -153,6 +155,7 @@ export const defaultState: Omit<SimulatorState, 'actions'> = {
   preferences: {
     showReferenceLines: true,
     sidebarCollapsed: false,
+    sidebarAnimating: false,
   },
   chat: {
     selectedConversationId: {},
@@ -226,6 +229,10 @@ export const useSimulatorStore = create<SimulatorState>()(
           updateSidebarCollapsed: (value) =>
             set((state) => {
               state.preferences.sidebarCollapsed = value;
+            }),
+          updateSidebarAnimating: (value) =>
+            set((state) => {
+              state.preferences.sidebarAnimating = value;
             }),
           updateSelectedConversationId: (planId, id) =>
             set((state) => {
@@ -301,6 +308,7 @@ export const useUpdateSingleSimulationCategory = () => useSimulatorStore((state)
 export const useUpdateMultiSimulationCategory = () => useSimulatorStore((state) => state.actions.updateMultiSimulationCategory);
 export const useUpdateShowReferenceLines = () => useSimulatorStore((state) => state.actions.updateShowReferenceLines);
 export const useUpdateSidebarCollapsed = () => useSimulatorStore((state) => state.actions.updateSidebarCollapsed);
+export const useUpdateSidebarAnimating = () => useSimulatorStore((state) => state.actions.updateSidebarAnimating);
 export const useUpdateMonteCarloSortMode = () => useSimulatorStore((state) => state.actions.updateMonteCarloSortMode);
 export const useUpdateChartTimeFrameToShow = () => useSimulatorStore((state) => state.actions.updateChartTimeFrameToShow);
 export const useUpdateMonteCarloTimeFrameToShow = () => useSimulatorStore((state) => state.actions.updateMonteCarloTimeFrameToShow);
@@ -316,6 +324,7 @@ export const useUpdateShowAIChatPulse = () => useSimulatorStore((state) => state
  */
 export const useShowReferenceLines = () => useSimulatorStore((state) => state.preferences.showReferenceLines);
 export const useSidebarCollapsed = () => useSimulatorStore((state) => state.preferences.sidebarCollapsed);
+export const useSidebarAnimating = () => useSimulatorStore((state) => state.preferences.sidebarAnimating);
 
 /**
  * Simulation & Analysis Hooks
