@@ -7,6 +7,7 @@ import { CircleUserRoundIcon } from 'lucide-react';
 import { MenuButton } from '@headlessui/react';
 
 import { Dropdown } from '@/components/catalyst/dropdown';
+import SidebarText from '@/components/layout/sidebar/sidebar-text';
 
 import AccountDropdownMenu from './account-dropdown-menu';
 
@@ -30,9 +31,9 @@ export default function SidebarAuth() {
         ) : (
           <CircleUserRoundIcon className="size-8 shrink-0 rounded-full" />
         )}
-        <span className="ml-2 inline group-data-[state=collapsed]/sidebar:hidden" aria-hidden="true">
+        <SidebarText className="ml-2" aria-hidden="true">
           {name}
-        </span>
+        </SidebarText>
       </MenuButton>
       <AccountDropdownMenu fetchedName={name} fetchedEmail={email} hasActiveSubscription={hasActiveSubscription} />
     </Dropdown>

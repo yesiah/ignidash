@@ -3,6 +3,7 @@
 import { useSidebarCollapsed } from '@/lib/stores/simulator-store';
 import { useThemeSwitcher } from '@/hooks/use-theme-switcher';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import SidebarText from '@/components/layout/sidebar/sidebar-text';
 
 export function SidebarModeToggle() {
   const isSidebarCollapsed = useSidebarCollapsed();
@@ -20,7 +21,7 @@ export function SidebarModeToggle() {
       <div className="p-2">
         <Icon aria-hidden="true" className="size-6 shrink-0" />
       </div>
-      <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{label}</span>
+      <SidebarText>{label}</SidebarText>
     </button>
   );
 

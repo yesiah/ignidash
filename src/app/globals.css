@@ -5,6 +5,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --emphasized-background: #f5f5f4; /* stone-100 */
   --foreground: #1c1917; /* stone-900 */
@@ -20,6 +21,10 @@
   --chart-6: hsl(12 55% 60%);
   --chart-7: hsl(12 55% 40%);
   --chart-8: hsl(12 55% 20%);
+
+  /* Sidebar animation */
+  --sidebar-transition-duration: 200ms;
+  --sidebar-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @theme inline {
@@ -35,6 +40,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #292524; /* stone-800 */
   --emphasized-background: #1c1917; /* stone-900 */
   --foreground: #f5f5f4; /* stone-100 */
@@ -81,6 +87,9 @@ input[type='number'] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --sidebar-transition-duration: 0ms;
+  }
   html {
     scroll-behavior: auto;
   }

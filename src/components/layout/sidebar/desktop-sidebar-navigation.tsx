@@ -4,6 +4,7 @@ import { useNavigationItems, useSecondaryNavigationItems } from '@/hooks/use-sid
 import { cn } from '@/lib/utils';
 
 import SidebarLink from './sidebar-link';
+import SidebarText from './sidebar-text';
 
 export default function DesktopSidebarNavigation() {
   const navigation = useNavigationItems();
@@ -16,7 +17,7 @@ export default function DesktopSidebarNavigation() {
             <div className="p-2">
               <Icon aria-hidden="true" className="size-6 shrink-0" />
             </div>
-            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{name}</span>
+            <SidebarText>{name}</SidebarText>
           </SidebarLink>
         </li>
       ))}
@@ -35,7 +36,7 @@ export function DesktopSidebarSecondaryNavigation() {
             <div className="p-2">
               <Icon aria-hidden="true" className={cn('size-6 shrink-0', { 'text-primary': href === '/pricing' })} />
             </div>
-            <span className="ml-1 inline group-data-[state=collapsed]/sidebar:hidden">{name}</span>
+            <SidebarText>{name}</SidebarText>
           </SidebarLink>
         </li>
       ))}

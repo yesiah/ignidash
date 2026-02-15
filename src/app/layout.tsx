@@ -139,7 +139,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full scheme-light dark:scheme-dark" suppressHydrationWarning>
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={`${figtree.variable} ${geistMono.variable} ${geist.variable} h-full antialiased`}>
         <script
           type="application/ld+json"
