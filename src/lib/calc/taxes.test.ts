@@ -32,45 +32,45 @@ const createMockSimulationState = (age: number): SimulationState => ({
 describe('TaxProcessor', () => {
   describe('income tax brackets', () => {
     describe('single filing status', () => {
-      it('should apply 10% bracket for income up to $11,925', () => {
+      it('should apply 10% bracket for income up to $12,400', () => {
         const processor = new TaxProcessor(createMockSimulationState(65), 'single');
         const incomes = createEmptyIncomesData();
-        // Income of 26,925 - standard deduction of 15,000 = 11,925 taxable
-        incomes.totalIncome = 26925;
+        // Income of 28,500 - standard deduction of 16,100 = 12,400 taxable
+        incomes.totalIncome = 28500;
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(11925);
-        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(1192.5, 2); // 11,925 * 10%
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(12400);
+        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(1240, 2); // 12,400 * 10%
         expect(result.incomeTaxes.topMarginalIncomeTaxRate).toBe(0.1);
       });
 
-      it('should apply 12% bracket for income between $11,925 and $48,475', () => {
+      it('should apply 12% bracket for income between $12,400 and $50,400', () => {
         const processor = new TaxProcessor(createMockSimulationState(65), 'single');
         const incomes = createEmptyIncomesData();
-        // Income of 63,475 - standard deduction of 15,000 = 48,475 taxable
-        incomes.totalIncome = 63475;
+        // Income of 66,500 - standard deduction of 16,100 = 50,400 taxable
+        incomes.totalIncome = 66500;
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(48475);
-        // 11,925 * 10% + (48,475 - 11,925) * 12% = 1,192.50 + 4,386 = 5,578.50
-        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(5578.5, 2);
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(50400);
+        // 12,400 * 10% + (50,400 - 12,400) * 12% = 1,240 + 4,560 = 5,800
+        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(5800, 2);
         expect(result.incomeTaxes.topMarginalIncomeTaxRate).toBe(0.12);
       });
 
       it('should calculate progressive tax across multiple brackets', () => {
         const processor = new TaxProcessor(createMockSimulationState(65), 'single');
         const incomes = createEmptyIncomesData();
-        // Income of 115,000 - standard deduction of 15,000 = 100,000 taxable
+        // Income of 115,000 - standard deduction of 16,100 = 98,900 taxable
         incomes.totalIncome = 115000;
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(100000);
-        // 11,925 * 10% + (48,475 - 11,925) * 12% + (100,000 - 48,475) * 22%
-        // = 1,192.50 + 4,386 + 11,335.50 = 16,914
-        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(16914, 2);
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(98900);
+        // 12,400 * 10% + (50,400 - 12,400) * 12% + (98,900 - 50,400) * 22%
+        // = 1,240 + 4,560 + 10,670 = 16,470
+        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(16470, 2);
         expect(result.incomeTaxes.topMarginalIncomeTaxRate).toBe(0.22);
       });
     });
@@ -79,13 +79,13 @@ describe('TaxProcessor', () => {
       it('should use married filing jointly brackets', () => {
         const processor = new TaxProcessor(createMockSimulationState(65), 'marriedFilingJointly');
         const incomes = createEmptyIncomesData();
-        // Income of 53,850 - standard deduction of 30,000 = 23,850 taxable
-        incomes.totalIncome = 53850;
+        // Income of 57,000 - standard deduction of 32,200 = 24,800 taxable
+        incomes.totalIncome = 57000;
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(23850);
-        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(2385, 2); // 23,850 * 10%
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(24800);
+        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(2480, 2); // 24,800 * 10%
         expect(result.incomeTaxes.topMarginalIncomeTaxRate).toBe(0.1);
       });
     });
@@ -94,13 +94,13 @@ describe('TaxProcessor', () => {
       it('should use head of household brackets', () => {
         const processor = new TaxProcessor(createMockSimulationState(65), 'headOfHousehold');
         const incomes = createEmptyIncomesData();
-        // Income of 39,050 - standard deduction of 22,500 = 16,550 taxable
-        incomes.totalIncome = 39050;
+        // Income of 41,850 - standard deduction of 24,150 = 17,700 taxable
+        incomes.totalIncome = 41850;
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(16550);
-        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(1655, 2); // 16,550 * 10%
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(17700);
+        expect(result.incomeTaxes.incomeTaxAmount).toBeCloseTo(1770, 2); // 17,700 * 10%
         expect(result.incomeTaxes.topMarginalIncomeTaxRate).toBe(0.1);
       });
     });
@@ -113,8 +113,8 @@ describe('TaxProcessor', () => {
 
         const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        // 50,000 - 15,000 standard deduction = 35,000 taxable
-        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(35000);
+        // 50,000 - 16,100 standard deduction = 33,900 taxable
+        expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(33900);
         expect(result.deductions.standardDeduction).toBe(STANDARD_DEDUCTION_SINGLE);
       });
 
@@ -158,9 +158,9 @@ describe('TaxProcessor', () => {
 
         const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-        // Standard deduction of 15k: 10k applied to ordinary, 5k to cap gains
+        // Standard deduction of 16.1k: 10k applied to ordinary, 6.1k to cap gains
         expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(0);
-        expect(result.capitalGainsTaxes.taxableIncomeTaxedAsCapGains).toBe(15000);
+        expect(result.capitalGainsTaxes.taxableIncomeTaxedAsCapGains).toBe(13900);
       });
     });
   });
@@ -174,8 +174,8 @@ describe('TaxProcessor', () => {
       const processor = new TaxProcessor(createMockSimulationState(65), 'single');
       const incomes = createEmptyIncomesData();
       const portfolioData = createEmptyPortfolioData();
-      // No ordinary income, 32,025 gains - 15,000 std deduction = 17,025 taxable
-      portfolioData.realizedGains = 32025;
+      // No ordinary income, 33,125 gains - 16,100 std deduction = 17,025 taxable
+      portfolioData.realizedGains = 33125;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
@@ -187,27 +187,27 @@ describe('TaxProcessor', () => {
       const processor = new TaxProcessor(createMockSimulationState(65), 'single');
       const incomes = createEmptyIncomesData();
       const portfolioData = createEmptyPortfolioData();
-      // No ordinary income, 100,000 gains - 15,000 std deduction = 85,000 taxable
+      // No ordinary income, 100,000 gains - 16,100 std deduction = 83,900 taxable
       portfolioData.realizedGains = 100000;
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-      // 47,025 at 0% + (85,000 - 47,025) at 15% = 0 + 5,696.25 = 5,696.25
-      expect(result.capitalGainsTaxes.capitalGainsTaxAmount).toBeCloseTo(5696.25, 2);
+      // 49,450 at 0% + (83,900 - 49,450) at 15% = 0 + 5,167.50 = 5,167.50
+      expect(result.capitalGainsTaxes.capitalGainsTaxAmount).toBeCloseTo(5167.5, 2);
       expect(result.capitalGainsTaxes.topMarginalCapitalGainsTaxRate).toBe(0.15);
     });
 
     it('should fill brackets with ordinary income first', () => {
       const processor = new TaxProcessor(createMockSimulationState(65), 'single');
       const incomes = createEmptyIncomesData();
-      // 62,025 ordinary - 15,000 std deduction = 47,025 taxable (fills 0% cap gains bracket)
-      incomes.totalIncome = 62025;
+      // 65,550 ordinary - 16,100 std deduction = 49,450 taxable (fills 0% cap gains bracket)
+      incomes.totalIncome = 65550;
       const portfolioData = createEmptyPortfolioData();
       portfolioData.realizedGains = 10000; // All taxed at 15%
 
       const result = processor.process(portfolioData, incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-      // Capital gains start at 47,025 threshold, so 10k at 15%
+      // Capital gains start at 49,450 threshold, so 10k at 15%
       expect(result.capitalGainsTaxes.capitalGainsTaxAmount).toBeCloseTo(1500, 2);
     });
 
@@ -745,8 +745,8 @@ describe('TaxProcessor', () => {
 
       // 20k contributions - 5k employer match = 15k deductible
       expect(result.adjustments.taxDeductibleContributions).toBe(15000);
-      // 100k - 15k deduction - 15k std deduction = 70k taxable
-      expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(70000);
+      // 100k - 15k deduction - 16,100 std deduction = 68,900 taxable
+      expect(result.incomeTaxes.taxableIncomeTaxedAsOrdinary).toBe(68900);
     });
 
     it('should include IRA and HSA contributions as deductible', () => {
@@ -848,7 +848,7 @@ describe('TaxProcessor', () => {
 
       const result = processor.process(createEmptyPortfolioData(), incomes, createEmptyReturnsData(), createEmptyPhysicalAssetsData());
 
-      // Tax on 35k taxable: 11,925 * 10% + 23,075 * 12% = 1,192.5 + 2,769 = 3,961.5
+      // Tax on 33,900 taxable: 12,400 * 10% + 21,500 * 12% = 1,240 + 2,580 = 3,820
       expect(result.totalTaxesRefund).toBeGreaterThan(0);
       expect(result.totalTaxesDue).toBe(0);
     });

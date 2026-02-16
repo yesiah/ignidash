@@ -1,38 +1,38 @@
 /**
  * Federal income tax brackets by filing status
  *
- * Tax year 2025. Source: IRS Revenue Procedure 2024-40.
+ * Tax year 2026. Source: IRS 2026 inflation adjustments (including OBBBA amendments).
  */
 
 /** Progressive bracket for ordinary income taxation */
 export type IncomeTaxBracket = { min: number; max: number; rate: number };
 
 export const INCOME_TAX_BRACKETS_SINGLE: IncomeTaxBracket[] = [
-  { min: 0, max: 11925, rate: 0.1 },
-  { min: 11925, max: 48475, rate: 0.12 },
-  { min: 48475, max: 103350, rate: 0.22 },
-  { min: 103350, max: 197300, rate: 0.24 },
-  { min: 197300, max: 250525, rate: 0.32 },
-  { min: 250525, max: 626350, rate: 0.35 },
-  { min: 626350, max: Infinity, rate: 0.37 },
+  { min: 0, max: 12400, rate: 0.1 },
+  { min: 12400, max: 50400, rate: 0.12 },
+  { min: 50400, max: 105700, rate: 0.22 },
+  { min: 105700, max: 201775, rate: 0.24 },
+  { min: 201775, max: 256225, rate: 0.32 },
+  { min: 256225, max: 640600, rate: 0.35 },
+  { min: 640600, max: Infinity, rate: 0.37 },
 ];
 
 export const INCOME_TAX_BRACKETS_MARRIED_FILING_JOINTLY: IncomeTaxBracket[] = [
-  { min: 0, max: 23850, rate: 0.1 },
-  { min: 23850, max: 96950, rate: 0.12 },
-  { min: 96950, max: 206700, rate: 0.22 },
-  { min: 206700, max: 394600, rate: 0.24 },
-  { min: 394600, max: 501050, rate: 0.32 },
-  { min: 501050, max: 751600, rate: 0.35 },
-  { min: 751600, max: Infinity, rate: 0.37 },
+  { min: 0, max: 24800, rate: 0.1 },
+  { min: 24800, max: 100800, rate: 0.12 },
+  { min: 100800, max: 211400, rate: 0.22 },
+  { min: 211400, max: 403550, rate: 0.24 },
+  { min: 403550, max: 512450, rate: 0.32 },
+  { min: 512450, max: 768700, rate: 0.35 },
+  { min: 768700, max: Infinity, rate: 0.37 },
 ];
 
 export const INCOME_TAX_BRACKETS_HEAD_OF_HOUSEHOLD: IncomeTaxBracket[] = [
-  { min: 0, max: 16550, rate: 0.1 },
-  { min: 16550, max: 63100, rate: 0.12 },
-  { min: 63100, max: 100500, rate: 0.22 },
-  { min: 100500, max: 191950, rate: 0.24 },
-  { min: 191950, max: 243700, rate: 0.32 },
-  { min: 243700, max: 609350, rate: 0.35 },
-  { min: 609350, max: Infinity, rate: 0.37 },
+  { min: 0, max: 17700, rate: 0.1 },
+  { min: 17700, max: 67450, rate: 0.12 },
+  { min: 67450, max: 105700, rate: 0.22 },
+  { min: 105700, max: 201775, rate: 0.24 },
+  { min: 201775, max: 256200, rate: 0.32 },
+  { min: 256200, max: 640600, rate: 0.35 },
+  { min: 640600, max: Infinity, rate: 0.37 },
 ];
