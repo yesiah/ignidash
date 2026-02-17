@@ -44,6 +44,16 @@
   </a>
 </p>
 
+## Custom Fork Changes
+
+This is a customized fork of Ignidash with the following changes:
+
+- **Jujutsu (jj) Version Control:** Switched to using `jj` (colocated with git) for more flexible revision management.
+- **Branching Strategy:** 
+  - `main`: A dedicated mirror for the original [upstream](https://github.com/schelskedevco/ignidash) repository.
+  - `personal`: The default development branch for all custom features and configurations, kept up-to-date via rebasing on `main`. All PRs are targeted here.
+- **Gemini CLI Integration:** Added `GEMINI.md` to provide local context and instructions for the Gemini CLI agent.
+
 ## What is Ignidash?
 
 Ignidash is a web-based retirement planning tool. It focuses on long-term financial projections as opposed to budgeting and day-to-day expense tracking.
